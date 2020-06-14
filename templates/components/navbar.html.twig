@@ -1,0 +1,14 @@
+<nav class="nav-extended red lighten-3">
+    <div class="nav-wrapper">
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="https://www.esftt.com/"><img class="responsive-img" width="70" height="70" src="https://www.esftt.com/images/logo-new.png"></a></li>
+
+            {% for i in 1..7 %}
+                <li><a class="black-text" href="{{ path("journee.show", {id: i}) }}">Journée {{ i }}</a></li>
+            {% endfor %}
+
+            <li><a class="black-text" href="http://esftt-planning.alwaysdata.net/">Été 2020</a></li>
+        </ul>
+    </div>
+</nav>
