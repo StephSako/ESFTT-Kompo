@@ -40,7 +40,7 @@ class HomeController extends AbstractController
      */
     public function indexAction()
     {
-        return $this->render('journee/index.html.twig', [
+        return $this->render('journee/show.html.twig', [
             'journee' => 'Index'
         ]);
     }
@@ -53,7 +53,7 @@ class HomeController extends AbstractController
     public function journeeShow($id)
     {
         $journee = $this->phase_1_Repository->findBy(['journee' => $id]);
-        return $this->render('journee/index.html.twig', [
+        return $this->render('journee/show.html.twig', [
             'journee' => $journee
         ]);
     }

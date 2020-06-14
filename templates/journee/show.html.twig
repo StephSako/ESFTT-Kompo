@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Journee 1{% endblock %}
+
+{% block body %}
+
+    <div class="container center">
+        <h2>Journée {{ app.request.pathinfo | last}}</h2>
+    </div>
+
+
+
+    {% for compo in journee %}
+        <div class="container">
+        {{ dump(compo) }}
+
+            <h4>Journée n°{{ compo.journee }}</h4>
+            <h4>Date : {{ compo.date | date("m/d/Y")}}</h4>
+            <h4>Lieu : {{ compo.lieu }}</h4>
+            <h4>Equipe n°{{ compo.idEquipe }}</h4>
+            <table>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Composition</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                    <td><b>#1</b></td>
+                    <td>{% if compo.idJoueur1 is null %}
+                            <label>Browser Select</label>
+                            <select class="browser-default">
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                            </select>
+                        {% else %}
+                            {{ compo.idJoueur1.nom }} {% if compo.idJoueur1.role == "C" %}<span class="badge blue">Caps</span>{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><b>#2</b></td>
+                    <td>{% if compo.idJoueur2 is null %}
+                            <label>Browser Select</label>
+                            <select class="browser-default">
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                            </select>
+                        {% else %}
+                            {{ compo.idJoueur2.nom }} {% if compo.idJoueur2.role == "C" %}<span class="badge blue">Caps</span>{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><b>#3</b></td>
+                    <td>{% if compo.idJoueur3 is null %}
+                            <label>Browser Select</label>
+                            <select class="browser-default">
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                            </select>
+                        {% else %}
+                            {{ compo.idJoueur3.nom }} {% if compo.idJoueur3.role == "C" %}<span class="badge blue">Caps</span>{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><b>#4</b></td>
+                    <td>{% if compo.idJoueur4 is null %}
+                            <label>Browser Select</label>
+                            <select class="browser-default">
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                            </select>
+                        {% else %}
+                            {{ compo.idJoueur4.nom }} {% if compo.idJoueur4.role == "C" %}<span class="badge blue">Caps</span>{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    {% endfor %}
+
+{% endblock %}

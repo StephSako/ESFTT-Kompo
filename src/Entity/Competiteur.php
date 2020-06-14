@@ -32,16 +32,26 @@ class Competiteur
      */
     private $role;
 
+    /**
+     * @return int|null
+     */
     public function getIdCompetiteur(): ?int
     {
         return $this->idCompetiteur;
     }
 
+    /**
+     * @return int|null
+     */
     public function getLicense(): ?int
     {
         return $this->license;
     }
 
+    /**
+     * @param int $license
+     * @return $this
+     */
     public function setLicense(int $license): self
     {
         $this->license = $license;
@@ -49,11 +59,18 @@ class Competiteur
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
+    /**
+     * @param string $nom
+     * @return $this
+     */
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
@@ -61,11 +78,18 @@ class Competiteur
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getRole(): ?string
     {
         return $this->role;
     }
 
+    /**
+     * @param string $role
+     * @return $this
+     */
     public function setRole(string $role): self
     {
         $this->role = $role;

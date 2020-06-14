@@ -75,9 +75,9 @@ class Phase_1
     private $idCapitaine;
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getIdEquipe()
+    public function getIdEquipe(): ?int
     {
         return $this->idEquipe;
     }
@@ -91,9 +91,9 @@ class Phase_1
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getDate(): DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
@@ -107,9 +107,9 @@ class Phase_1
     }
 
     /**
-     * @return mixed
+     * @return String|null
      */
-    public function getLieu()
+    public function getLieu(): ?String
     {
         return $this->lieu;
     }
@@ -123,9 +123,9 @@ class Phase_1
     }
 
     /**
-     * @return Competiteur
+     * @return Competiteur|null
      */
-    public function getIdJoueur1(): Competiteur
+    public function getIdJoueur1(): ?Competiteur
     {
         return $this->idJoueur1;
     }
@@ -139,9 +139,9 @@ class Phase_1
     }
 
     /**
-     * @return Competiteur
+     * @return Competiteur|null
      */
-    public function getIdJoueur2(): Competiteur
+    public function getIdJoueur2(): ?Competiteur
     {
         return $this->idJoueur2;
     }
@@ -155,9 +155,9 @@ class Phase_1
     }
 
     /**
-     * @return Competiteur
+     * @return Competiteur|null
      */
-    public function getIdJoueur3(): Competiteur
+    public function getIdJoueur3(): ?Competiteur
     {
         return $this->idJoueur3;
     }
@@ -171,9 +171,9 @@ class Phase_1
     }
 
     /**
-     * @return Competiteur
+     * @return Competiteur|null
      */
-    public function getIdJoueur4(): Competiteur
+    public function getIdJoueur4(): ?Competiteur
     {
         return $this->idJoueur4;
     }
@@ -187,9 +187,9 @@ class Phase_1
     }
 
     /**
-     * @return Competiteur
+     * @return Competiteur|null
      */
-    public function getIdCapitaine(): Competiteur
+    public function getIdCapitaine(): ?Competiteur
     {
         return $this->idCapitaine;
     }
@@ -203,9 +203,9 @@ class Phase_1
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -219,9 +219,9 @@ class Phase_1
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getJournee()
+    public function getJournee(): ?int
     {
         return $this->journee;
     }
