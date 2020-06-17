@@ -62,7 +62,6 @@ class HomeController extends AbstractController
      */
     public function journeeShow($id)
     {
-
         $journee = $this->phase_1_Repository->findBy(['journee' => $id]);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
         return $this->render('journee/show.html.twig', [
@@ -85,7 +84,9 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();
             $this->addFlash('success', 'Composition modifiée avec succès !');
-            return $this->redirectToRoute('journee.show');
+            return $this->redirectToRoute('journee.show', [
+                'id' => $firstPhase->getId()
+            ]);
         }
 
         return $this->render('journee/form.html.twig', [

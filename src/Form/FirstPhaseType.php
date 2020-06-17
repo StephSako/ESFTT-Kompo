@@ -17,6 +17,8 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => 'nom',
+                'required'   => false,
+                'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.nom', 'ASC');
@@ -25,6 +27,8 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur2', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => 'nom',
+                'required'   => false,
+                'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.nom', 'ASC');
@@ -33,6 +37,8 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur3', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => 'nom',
+                'required'   => false,
+                'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.nom', 'ASC');
@@ -41,6 +47,8 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur4', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => 'nom',
+                'required'   => false,
+                'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.nom', 'ASC');
