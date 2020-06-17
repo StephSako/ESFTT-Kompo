@@ -20,15 +20,15 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Competiteur[] Returns an array of Competiteur objects
+    //  * @return FirstPhase_[] Returns an array of FirstPhase_ objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
+            ->orderBy('p.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -37,10 +37,10 @@ class CompetiteurRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Competiteur
+    public function findOneBySomeField($value): ?FirstPhase_
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()

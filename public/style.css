@@ -15,3 +15,9 @@ body {
     margin-bottom: 30px;
     border-radius: 10px;
 }
+
+.btn-register {
+    margin-top: 20px;
+    border-bottom-width: 20px;
+    margin-bottom: 20px;
+}

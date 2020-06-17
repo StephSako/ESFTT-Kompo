@@ -1,0 +1,29 @@
+{% macro post(form, button_txt) %}
+    <tr>
+        <td><b>#1</b></td>
+        <td>
+            {{ compo.idJoueur1.nom }} {# if compo.idJoueur1.role == "C" %}<span class="badge blue">Caps</span>{% endif #}
+        </td>
+    </tr>
+
+    <tr>
+        <td><b>#2</b></td>
+        <td>
+            {{ compo.idJoueur2.nom }} {# if compo.idJoueur2.role == "C" %}<span class="badge blue">Caps</span>{% endif #}
+        </td>
+    </tr>
+
+    <tr>
+        <td><b>#3</b></td>
+        <td>
+            {{ compo.idJoueur3.nom }} {# if compo.idJoueur3.role == "C" %}<span class="badge blue">Caps</span>{% endif #}
+        </td>
+    </tr>
+
+    <tr>
+        <td><b>#4</b></td>
+        <td>
+            {{ compo.idJoueur4.nom }} {# if compo.idJoueur4.role == "C" %}<span class="badge blue">Caps</span>{% endif #}
+        </td>
+    </tr>
+{% endmacro %}

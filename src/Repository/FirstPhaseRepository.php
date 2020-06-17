@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Phase_1;
+use App\Entity\FirstPhase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Phase_1|null find($id, $lockMode = null, $lockVersion = null)
- * @method Phase_1|null findOneBy(array $criteria, array $orderBy = null)
- * @method Phase_1[]    findAll()
- * @method Phase_1[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method FirstPhase|null find($id, $lockMode = null, $lockVersion = null)
+ * @method FirstPhase|null findOneBy(array $criteria, array $orderBy = null)
+ * @method FirstPhase[]    findAll()
+ * @method FirstPhase[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class Phase_1Repository extends ServiceEntityRepository
+class FirstPhaseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Phase_1::class);
+        parent::__construct($registry, FirstPhase::class);
     }
 
     // /**
-    //  * @return Phase_1[] Returns an array of Phase_1 objects
+    //  * @return FirstPhase_[] Returns an array of FirstPhase_ objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class Phase_1Repository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Phase_1
+    public function findOneBySomeField($value): ?FirstPhase_
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')
