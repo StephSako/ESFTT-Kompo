@@ -62,8 +62,9 @@ class HomeController extends AbstractController
      */
     public function journeeShow($id)
     {
-        $journee = $this->phase_1_Repository->findBy(['journee' => $id]);
+        $journee = $this->phase_1_Repository->findJournee($id);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
+        dump($journee);
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'competiteurs' => $competiteurs
@@ -72,25 +73,25 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/journee/edit/{id}", name="journee.edit")
-     * @param FirstPhase $firstPhase
+     * @param FirstPhase $compo
      * @param Request $request
      * @return Response
      */
-    public function edit(FirstPhase $firstPhase, Request $request) : Response
+    public function edit(FirstPhase $compo, Request $request) : Response
     {
-        $form = $this->createForm(FirstPhaseType::class, $firstPhase);
+        $form = $this->createForm(FirstPhaseType::class, $compo);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();
             $this->addFlash('success', 'Composition modifiée avec succès !');
             return $this->redirectToRoute('journee.show', [
-                'id' => $firstPhase->getId()
-            ]);
+                'id' => $compo->getIdJournee()->getNJournee()
+            ]); // TODO Issue id de la journee
         }
 
-        return $this->render('journee/form.html.twig', [
-            'tutorial' => $firstPhase,
+        return $this->render('journee/compo.create.html.twig', [
+            'compo' => $compo,
             'form' => $form->createView()
         ]);
     }

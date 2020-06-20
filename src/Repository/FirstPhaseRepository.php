@@ -19,22 +19,21 @@ class FirstPhaseRepository extends ServiceEntityRepository
         parent::__construct($registry, FirstPhase::class);
     }
 
-    // /**
-    //  * @return FirstPhase_[] Returns an array of FirstPhase_ objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param FirstPhase $idJournee
+     * @return int|mixed|string
+     */
+    public function findJournee($idJournee)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('fp')
+            ->select('fp')
+            ->leftJoin('fp.idJournee', 'j')
+            ->addSelect('j')
+            ->where('fp.idJournee = :idJournee')
+            ->setParameter('idJournee', $idJournee)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?FirstPhase_

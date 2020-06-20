@@ -4,11 +4,10 @@
 
 {% block body %}
 
-    <div class="container center">
-        <h2>Modifier la composition</h2>
-    </div>
+    <div class="container center cadre">
 
-    <div class="container center">
+        <h4>Modifier la composition</h4>
+            <h5>Equipe n° {{ compo.idEquipe }} - Journée n°{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.idJournee.lieu }}</h5>
         {{ form_start(form)}}
             {{ form_row(form.idJoueur1) }}
             {{ form_row(form.idJoueur2) }}

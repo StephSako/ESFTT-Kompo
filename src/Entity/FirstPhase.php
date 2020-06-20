@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,25 +18,16 @@ class FirstPhase
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="journee")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journee", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * @var Journee
      */
-    private $journee;
+    private $idJournee;
 
     /**
      * @ORM\Column(type="integer", name="id_equipe")
      */
     private $idEquipe;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="date", type="datetime")
-     */
-    private $date;
-
-    /**
-     * @ORM\Column(type="string", length=255, name="lieu")
-     */
-    private $lieu;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
@@ -88,38 +78,6 @@ class FirstPhase
     public function setIdEquipe($idEquipe): void
     {
         $this->idEquipe = $idEquipe;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getDate(): ?DateTime
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param DateTime $date
-     */
-    public function setDate(DateTime $date): void
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return String|null
-     */
-    public function getLieu(): ?String
-    {
-        return $this->lieu;
-    }
-
-    /**
-     * @param mixed $lieu
-     */
-    public function setLieu($lieu): void
-    {
-        $this->lieu = $lieu;
     }
 
     /**
@@ -219,19 +177,19 @@ class FirstPhase
     }
 
     /**
-     * @return int|null
+     * @return Journee
      */
-    public function getJournee(): ?int
+    public function getIdJournee(): Journee
     {
-        return $this->journee;
+        return $this->idJournee;
     }
 
     /**
-     * @param mixed $journee
+     * @param Journee $idJournee
      */
-    public function setJournee($journee): void
+    public function setIdJournee(Journee $idJournee): void
     {
-        $this->journee = $journee;
+        $this->idJournee = $idJournee;
     }
 
 }

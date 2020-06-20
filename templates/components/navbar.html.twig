@@ -2,13 +2,23 @@
     <div class="nav-wrapper">
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="https://www.esftt.com/"><img class="responsive-img" width="70" height="70" src="https://www.esftt.com/images/logo-new.png"></a></li>
+            <li><a href="https://www.esftt.com/"><img class="responsive-img" width="70" height="70" src="https://www.esftt.com/images/logo-new.png" alt="Logo du club"></a></li>
 
             {% for i in 1..7 %}
                 <li {% if app.request.getPathInfo == '/journee/'~i %}class="active"{% endif %}><a class="black-text" href="{{ path("journee.show", {id: i}) }}">Journée {{ i }}</a></li>
             {% endfor %}
 
             <li><a class="black-text blue" href="http://esftt-planning.alwaysdata.net/">Été 2020</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            {% if app.user %}
+                <li><a class="black-text" href="#">Mon compte</a></li>
+                <li class="divider"></li>
+                <li><a class="black-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+            {% else %}
+                <li><a class="black-text" href="{{ path('login') }}">Se connecter</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>

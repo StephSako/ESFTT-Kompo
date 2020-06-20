@@ -14,6 +14,7 @@ body {
     padding-top: 10px;
     margin-bottom: 30px;
     border-radius: 10px;
+    margin-top: 30px;
 }
 
 .titre {
@@ -21,10 +22,22 @@ body {
     background-color: rgb(255, 255, 255);
     padding-bottom: 2px;
     margin-bottom: 30px;
+    margin-top: 30px;
 }
 
-.btn-register {
+.titre_txt {
+    margin-top: 30px;
+}
+
+.btn {
     margin-top: 20px;
     border-bottom-width: 20px;
     margin-bottom: 20px;
+}
+
+.dispos {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    float: right;
+    margin-top: 30px;
 }

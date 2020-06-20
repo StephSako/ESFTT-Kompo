@@ -1,24 +1,29 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        from_database:
+            entity:
+                class: App\Entity\Competiteur
+                property: username
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
-            lazy: true
-            provider: users_in_memory
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: /journee/1
+            logout:
+                path: /logout
+                target: /journee/1
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/journee/edit, roles: ROLE_CAPITAINE }
+        - { path: ^/compte, roles: ROLE_JOUEUR }
+
+    encoders:
+        App\Entity\Competiteur:
+            algorithm: bcrypt
+            cost: 12
