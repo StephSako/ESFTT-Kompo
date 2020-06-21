@@ -1,4 +1,4 @@
-<nav class="nav-extended red lighten-3">
+<nav class="nav-extended blue lighten-3">
     <div class="nav-wrapper">
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
@@ -8,7 +8,7 @@
                 <li {% if app.request.getPathInfo == '/journee/'~i %}class="active"{% endif %}><a class="black-text" href="{{ path("journee.show", {id: i}) }}">Journée {{ i }}</a></li>
             {% endfor %}
 
-            <li><a class="black-text blue" href="http://esftt-planning.alwaysdata.net/">Été 2020</a></li>
+            <li><a class="black-text blue lighten-4" href="http://esftt-planning.alwaysdata.net/">Été 2020</a></li>
         </ul>
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -17,7 +17,7 @@
                 <li class="divider"></li>
                 <li><a class="black-text" href="{{ path('logout') }}">Se déconnecter</a></li>
             {% else %}
-                <li><a class="black-text" href="{{ path('login') }}">Se connecter</a></li>
+                <li><a class="black-text blue darken-1" href="{{ path('login') }}">Se connecter</a></li>
             {% endif %}
         </ul>
     </div>

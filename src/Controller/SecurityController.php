@@ -18,20 +18,13 @@ class SecurityController extends AbstractController
      */
     public function loginAction(AuthenticationUtils $utils)
     {
-        /*if ($this->getUser() == null) {
-            return $this->render('pages/login.twig', [
-                'lastusername' => $utils->getLastUsername(),
-                'error' => $utils->getLastAuthenticationError(),
-            ]);
+        if ($this->getUser() == null) {
+            return $this->render('security/login.html.twig', [
+                'journee' => 'Index',
+                'lastUsername' => $utils->getLastUsername(),
+                'error' => $utils->getLastAuthenticationError()
+            ]); // TODO Redirect to the good journee's page
         }
-        else return $this->render('redirect/connected.html.twig', [
-            'categories' => $this->categories
-        ]);*/ //TODO Already connected
-
-        return $this->render('security/login.html.twig', [
-            'journee' => 'Index',
-            'lastUsername' => $utils->getLastUsername(),
-            'error' => $utils->getLastAuthenticationError()
-        ]);
+        else return $this->render('security/alreadyConnected.html.twig');
     }
 }

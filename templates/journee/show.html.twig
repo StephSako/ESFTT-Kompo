@@ -11,7 +11,41 @@
                 <h2 class="titre_txt">Journée {{ app.request.pathinfo | last}}</h2>
             </div>
 
-            {% for compo in journee %}
+            {% if app.user %}
+                <div class="card-panel center">
+
+                    <h5>Etes-vous disponible pour cette journée ?</h5>
+
+                    {% if disposJoueur is empty %}
+                        <p>Vous n'êtes pas encore inscrit</p>
+                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
+                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                        </a>
+                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
+                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                        </a>
+                    {% elseif not disposJoueur[0].disponibilite  %}
+                        <p>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></p>
+                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 1}) }}">
+                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                        </a>
+                    {% elseif disposJoueur[0].disponibilite %}
+                        <p>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></p>
+                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 0}) }}">
+                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                        </a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="card-panel green lighten-4 center">
+                    <p>Vous devez vous connecter pour indiquer votre disponibilité pour cette journée.</p>
+                    <a href="{{ path('login') }}">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Se connecter</button>
+                    </a>
+                </div>
+            {% endif %}
+
+            {% for compo in compos %}
                 <div class="cadre center">
                     <div class="row">
                         <h5 class="col s2">Equipe n°{{ compo.idEquipe }}</h5>
@@ -129,15 +163,13 @@
                 </thead>
 
                 <tbody>
-                <tr>
-                    <td>Alvin</td>
-                </tr>
-                <tr>
-                    <td>Stephen</td>
-                </tr>
-                <tr>
-                    <td>Théo</td>
-                </tr>
+                {% for dispo in dispos %}
+                    <tr>
+                        <td class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">
+                            {{ dispo.idCompetiteur.nom }}
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

@@ -66,9 +66,9 @@ class Competiteur implements UserInterface, Serializable
     private $role;
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getIdCompetiteur(): ?int
+    public function getIdCompetiteur(): int
     {
         return $this->idCompetiteur;
     }

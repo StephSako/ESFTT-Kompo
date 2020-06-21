@@ -11,7 +11,6 @@ body {
     background-color: rgb(255, 255, 255);
     padding-right: 20px;
     padding-left: 20px;
-    padding-top: 10px;
     margin-bottom: 30px;
     border-radius: 10px;
     margin-top: 30px;
@@ -20,13 +19,6 @@ body {
 .titre {
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
-    padding-bottom: 2px;
-    margin-bottom: 30px;
-    margin-top: 30px;
-}
-
-.titre_txt {
-    margin-top: 30px;
 }
 
 .btn {

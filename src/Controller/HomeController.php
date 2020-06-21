@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\FirstPhase;
 use App\Form\FirstPhaseType;
 use App\Repository\CompetiteurRepository;
+use App\Repository\DisponibiliteRepository;
 use App\Repository\FirstPhaseRepository;
+use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,27 +33,38 @@ class HomeController extends AbstractController
      * @var CompetiteurRepository
      */
     private $competiteurRepository;
+    /**
+     * @var DisponibiliteRepository
+     */
+    private $disponibiliteRepository;
+    /**
+     * @var JourneeRepository
+     */
+    private $journeeRepository;
 
     /**
+     * @param JourneeRepository $journeeRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param FirstPhaseRepository $phase_1_Repository
      * @param EntityManagerInterface $em
      */
-    public function __construct(CompetiteurRepository $competiteurRepository, FirstPhaseRepository $phase_1_Repository, EntityManagerInterface $em)
+    public function __construct(JourneeRepository $journeeRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, FirstPhaseRepository $phase_1_Repository, EntityManagerInterface $em)
     {
         $this->phase_1_Repository = $phase_1_Repository;
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
+        $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->journeeRepository = $journeeRepository;
     }
 
     /**
      * @Route("/", name="index")
-     * @return Response
      */
     public function indexAction()
     {
-        return $this->render('journee/show.html.twig', [
-            'journee' => 'Index'
+        return $this->redirectToRoute('journee.show', [
+            'id' => 1
         ]);
     }
 
@@ -62,11 +75,18 @@ class HomeController extends AbstractController
      */
     public function journeeShow($id)
     {
-        $journee = $this->phase_1_Repository->findJournee($id);
+        $dispos = $this->disponibiliteRepository->findAllDispos($id);
+        $disposJoueur = null;
+        if ($this->getUser()) $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
+
+        $compos = $this->phase_1_Repository->findJournee($id);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        dump($journee);
+        $journee = $this->journeeRepository->find($id);
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
+            'compos' => $compos,
+            'dispos' => $dispos,
+            'disposJoueur' => $disposJoueur,
             'competiteurs' => $competiteurs
         ]);
     }

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter{% endblock %}
+
+{% block body %}
+
+    <div class="container cadre center">
+        <h3>Vous êtes déjà connecté.</h3>
+
+        <a href="{{ path('logout') }}">
+            <button class="btn waves-effect waves-light center light-blue darken-1">Deconnexion</button>
+        </a>
+        <a href="{{ path('index') }}">
+            <button class="btn waves-effect waves-light center">Retour à l'accueil</button>
+        </a>
+    </div>
+
+{% endblock %}
