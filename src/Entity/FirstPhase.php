@@ -75,9 +75,10 @@ class FirstPhase
     /**
      * @param mixed $idEquipe
      */
-    public function setIdEquipe($idEquipe): void
+    public function setIdEquipe($idEquipe): self
     {
         $this->idEquipe = $idEquipe;
+        return $this;
     }
 
     /**
@@ -89,11 +90,12 @@ class FirstPhase
     }
 
     /**
-     * @param Competiteur $idJoueur1
+     * @param Competiteur|null $idJoueur1
      */
-    public function setIdJoueur1(Competiteur $idJoueur1): void
+    public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
         $this->idJoueur1 = $idJoueur1;
+        return $this;
     }
 
     /**
@@ -105,11 +107,12 @@ class FirstPhase
     }
 
     /**
-     * @param Competiteur $idJoueur2
+     * @param Competiteur|null $idJoueur2
      */
-    public function setIdJoueur2(Competiteur $idJoueur2): void
+    public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
         $this->idJoueur2 = $idJoueur2;
+        return $this;
     }
 
     /**
@@ -121,11 +124,13 @@ class FirstPhase
     }
 
     /**
-     * @param Competiteur $idJoueur3
+     * @param Competiteur|null $idJoueur3
+     * @return $this
      */
-    public function setIdJoueur3(Competiteur $idJoueur3): void
+    public function setIdJoueur3(?Competiteur $idJoueur3): self
     {
         $this->idJoueur3 = $idJoueur3;
+        return $this;
     }
 
     /**
@@ -137,11 +142,13 @@ class FirstPhase
     }
 
     /**
-     * @param Competiteur $idJoueur4
+     * @param Competiteur|null $idJoueur4
+     * @return $this
      */
-    public function setIdJoueur4(Competiteur $idJoueur4): void
+    public function setIdJoueur4(?Competiteur $idJoueur4): self
     {
         $this->idJoueur4 = $idJoueur4;
+        return $this;
     }
 
     /**
@@ -153,11 +160,12 @@ class FirstPhase
     }
 
     /**
-     * @param Competiteur $idCapitaine
+     * @param Competiteur|null $idCapitaine
      */
-    public function setIdCapitaine(Competiteur $idCapitaine): void
+    public function setIdCapitaine(?Competiteur $idCapitaine): self
     {
         $this->idCapitaine = $idCapitaine;
+        return $this;
     }
 
     /**
@@ -169,11 +177,13 @@ class FirstPhase
     }
 
     /**
-     * @param mixed $id
+     * @param $id
+     * @return $this
      */
-    public function setId($id): void
+    public function setId($id): self
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -186,10 +196,12 @@ class FirstPhase
 
     /**
      * @param Journee $idJournee
+     * @return $this
      */
-    public function setIdJournee(Journee $idJournee): void
+    public function setIdJournee(Journee $idJournee): self
     {
         $this->idJournee = $idJournee;
+        return $this;
     }
 
 }

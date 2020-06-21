@@ -33,3 +33,19 @@ body {
     float: right;
     margin-top: 30px;
 }
+
+.nice-select {
+    border-radius: 0;
+    padding-right: 300px;
+    max-width:90%;
+}
+
+.nice-select .list {
+    border-radius: 0;
+    height: 250px;
+    overflow-y: auto;
+}
+.nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
+    color:cornflowerblue;
+    background: none;
+}

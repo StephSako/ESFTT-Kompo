@@ -8,6 +8,7 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\FirstPhaseRepository;
 use App\Repository\JourneeRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,10 +73,12 @@ class HomeController extends AbstractController
      * @param FirstPhase $id
      * @return Response
      * @Route("/journee/{id}", name="journee.show")
+     * @throws DBALException
      */
     public function journeeShow($id)
     {
         $dispos = $this->disponibiliteRepository->findAllDispos($id);
+        $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id);
         $disposJoueur = null;
         if ($this->getUser()) $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
 
@@ -86,6 +89,7 @@ class HomeController extends AbstractController
             'journee' => $journee,
             'compos' => $compos,
             'dispos' => $dispos,
+            'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
             'competiteurs' => $competiteurs
         ]);
@@ -110,7 +114,7 @@ class HomeController extends AbstractController
             ]); // TODO Issue id de la journee
         }
 
-        return $this->render('journee/compo.create.html.twig', [
+        return $this->render('journee/edit.html.twig', [
             'compo' => $compo,
             'form' => $form->createView()
         ]);

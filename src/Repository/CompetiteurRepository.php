@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Competiteur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,15 +20,22 @@ class CompetiteurRepository extends ServiceEntityRepository
         parent::__construct($registry, Competiteur::class);
     }
 
-    /*
-    public function findOneBySomeField($value): ?FirstPhase_
+    /**
+     * @param $idJournee
+     * @return mixed[]
+     * @throws DBALException
+     */
+    public function findJoueursNonDeclares($idJournee)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT competiteur.nom"
+            . " FROM competiteur"
+            . " WHERE competiteur.id_competiteur NOT IN (SELECT DISTINCT id_competiteur"
+										. " FROM disponibilite"
+                                        . " WHERE id_journee = " . $idJournee . ")"
+            . " ORDER BY competiteur.nom";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
-    */
 }

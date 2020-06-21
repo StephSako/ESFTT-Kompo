@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Disponibilite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

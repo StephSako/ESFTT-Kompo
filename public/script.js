@@ -1,7 +1,8 @@
-$(document).ready(function () {
-    $('select').material_select()
-})
-
-$(document).ready(function(){
-    $('.scrollspy').scrollSpy();
+$(document).ready(function() {
+    $('select').niceSelect();
+    $("html").niceScroll();
+    $(".list").niceScroll();
+    $('.xyz').on('click',function(){
+        event();
+    });
 });
