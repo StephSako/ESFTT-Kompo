@@ -4,30 +4,34 @@
 
 {% block body %}
 
-    <div class="container center cadre">
+    {% include("components/navbar.html.twig") %}
 
-        <h4>Modifier la composition</h4>
-            <h5>Equipe n° {{ compo.idEquipe }} - Journée n°{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.idJournee.lieu }}</h5>
-        <div class="container">
-            {{ form_start(form)}}
-            <div class="row">
-                <div class="col s6"><h5>Joueur 1</h5></div>
-                <div class="col s6">{{ form_row(form.idJoueur1) }}</div>
+    <div class="container">
+        <div class="center-align card-panel">
+
+            <h4>Modifier la composition</h4>
+                <h5>Equipe n° {{ compo.idEquipe }} - Journée n°{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.idJournee.lieu }}</h5>
+            <div class="container">
+                {{ form_start(form)}}
+                <div class="row">
+                    <div class="col s6"><h5>Joueur 1</h5></div>
+                    <div class="col s6">{{ form_row(form.idJoueur1) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col s6"><h5>Joueur 2</h5></div>
+                    <div class="col s6">{{ form_row(form.idJoueur2) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col s6"><h5>Joueur 3</h5></div>
+                    <div class="col s6">{{ form_row(form.idJoueur3) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col s6"><h5>Joueur 4</h5></div>
+                    <div class="col s6">{{ form_row(form.idJoueur4) }}</div>
+                </div>
+                    <br><button class="btn waves-effect waves-light blue lighten-2">Modifier</button><br>
+                {{ form_end(form) }}
             </div>
-            <div class="row">
-                <div class="col s6"><h5>Joueur 2</h5></div>
-                <div class="col s6">{{ form_row(form.idJoueur2) }}</div>
-            </div>
-            <div class="row">
-                <div class="col s6"><h5>Joueur 3</h5></div>
-                <div class="col s6">{{ form_row(form.idJoueur3) }}</div>
-            </div>
-            <div class="row">
-                <div class="col s6"><h5>Joueur 4</h5></div>
-                <div class="col s6">{{ form_row(form.idJoueur4) }}</div>
-            </div>
-                <br><button class="btn waves-effect waves-light blue lighten-2">Modifier</button><br>
-            {{ form_end(form) }}
         </div>
     </div>
 

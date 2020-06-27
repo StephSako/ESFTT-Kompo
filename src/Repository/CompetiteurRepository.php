@@ -38,4 +38,18 @@ class CompetiteurRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function findBurnPlayers()
+    {
+        return $this->createQueryBuilder('p')
+            ->where("JSON_VALUE(p.brulage, '$.1') >= 2")
+            ->orWhere("JSON_VALUE(p.brulage, '$.2') >= 2")
+            ->orWhere("JSON_VALUE(p.brulage, '$.3') >= 2")
+            ->orderBy('p.nom')
+            ->getQuery()
+            ->getResult();
+    }
 }

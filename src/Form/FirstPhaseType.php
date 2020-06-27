@@ -16,7 +16,9 @@ class FirstPhaseType extends AbstractType
         $builder
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
-                'choice_label' => 'nom',
+                'choice_label' => function ($competiteur) {
+                    return $competiteur->getNom() . ' ' . $competiteur->getBrulageIdEquipe(1);
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'label' => false,

@@ -1,16 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Journee 1{% endblock %}
+{% block title %}Journee {{ journee.idJournee}}{% endblock %}
 
 {% block body %}
 
-    <div class="row">
-        <div class="col s1"></div>
-        <div class="col s9">
-            <div class="center titre">
-                <h2 class="titre_txt">Journée {{ app.request.pathinfo | last}}</h2>
-            </div>
+    {% include("components/navbar.html.twig") %}
 
+    <div class="row">
+        <div class="col s3">
+            <table class="centered card-panel dispos">
+                <thead>
+                <tr>
+                    <th>Les brûlés en ...</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for joueurBrule in joueursBrules %}
+                    <tr>
+                        <td>{{ joueurBrule.nom }}</td>
+                        <td>
+                            {% if joueurBrule.FirstBurntTeam <= 1 %}
+                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if joueurBrule.FirstBurntTeam <= 2 %}
+                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if joueurBrule.FirstBurntTeam <= 3 %}
+                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col s7">
             {% if app.user %}
                 <div class="card-panel center">
 
@@ -46,107 +78,79 @@
             {% endif %}
 
             {% for compo in compos %}
-                <div class="cadre center">
+                <div class="card-panel center">
                     <div class="row">
                         <h5 class="col s2">Equipe n°{{ compo.idEquipe }}</h5>
                         <h5 class="col s3">Journée n°{{ compo.idJournee.nJournee }}</h5>
                         <h5 class="col s3">{{ compo.idJournee.date | date("m/d/Y")}}</h5>
                         <h5 class="col s4">{{ compo.idJournee.lieu }}</h5>
                     </div>
+                    <table class="centered">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>License</th>
+                            <th>Composition</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><b>#1</b></td>
+                            <td>
+                                {% if compo.idJoueur1 is not null %}
+                                    {{ compo.idJoueur1.license }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if compo.idJoueur1 is not null %}
+                                    {{ compo.idJoueur1.nom }} {% if compo.idJoueur1.role == "C" %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
 
-                    <div class="row">
-                        <div class="col s9">
-                            <table class="centered">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Composition</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td><b>#1</b></td>
-                                    <td>
-                                        {% if compo.idJoueur1 is not null %}
-                                            {{ compo.idJoueur1.nom }} {% if compo.idJoueur1.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                        <tr>
+                            <td><b>#2</b></td>
+                            <td>
+                                {% if compo.idJoueur2 is not null %}
+                                    {{ compo.idJoueur2.license }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if compo.idJoueur2 is not null %}
+                                    {{ compo.idJoueur2.nom }} {% if compo.idJoueur2.role == "C" %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
 
-                                <tr>
-                                    <td><b>#2</b></td>
-                                    <td>
-                                        {% if compo.idJoueur2 is not null %}
-                                            {{ compo.idJoueur2.nom }} {% if compo.idJoueur2.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                        <tr>
+                            <td><b>#3</b></td>
+                            <td>
+                                {% if compo.idJoueur3 is not null %}
+                                    {{ compo.idJoueur3.license }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if compo.idJoueur3 is not null %}
+                                    {{ compo.idJoueur3.nom }} {% if compo.idJoueur3.role == "C" %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
 
-                                <tr>
-                                    <td><b>#3</b></td>
-                                    <td>
-                                        {% if compo.idJoueur3 is not null %}
-                                            {{ compo.idJoueur3.nom }} {% if compo.idJoueur3.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td><b>#4</b></td>
-                                    <td>
-                                        {% if compo.idJoueur4 is not null %}
-                                            {{ compo.idJoueur4.nom }} {% if compo.idJoueur4.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        {% if compo.idEquipe != 1 %}
-                            <div class="col s3">
-                                <table class="centered">
-                                    <thead>
-                                    <tr>
-                                        <th>Joueurs brûlés</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            {% if compo.idJoueur1 is not null %}
-                                                {{ compo.idJoueur1.nom }} {% if compo.idJoueur1.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            {% if compo.idJoueur2 is not null %}
-                                                {{ compo.idJoueur2.nom }} {% if compo.idJoueur2.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            {% if compo.idJoueur3 is not null %}
-                                                {{ compo.idJoueur3.nom }} {% if compo.idJoueur3.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            {% if compo.idJoueur4 is not null %}
-                                                {{ compo.idJoueur4.nom }} {% if compo.idJoueur4.role == "C" %}<span class="new badge red" data-badge-caption="Capitaine"></span>{% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% endif %}
-                    </div>
+                        <tr>
+                            <td><b>#4</b></td>
+                            <td>
+                                {% if compo.idJoueur4 is not null %}
+                                    {{ compo.idJoueur4.license }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if compo.idJoueur4 is not null %}
+                                    {{ compo.idJoueur4.nom }} {% if compo.idJoueur4.role == "C" %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
                     {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
                         <a href="{{ path('journee.edit', {id: compo.id}) }}"
@@ -157,7 +161,7 @@
             {% endfor %}
         </div>
         <div class="col s2">
-            <table class="centered cadre dispos">
+            <table class="centered card-panel dispos">
                 <thead>
                     <tr>
                         <th>Les dispos</th>

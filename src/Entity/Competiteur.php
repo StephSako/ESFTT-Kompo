@@ -66,6 +66,28 @@ class Competiteur implements UserInterface, Serializable
     private $role;
 
     /**
+     * @ORM\Column(type="json", name="brulage")
+     */
+    private $brulage;
+
+    /**
+     * @return array
+     */
+    public function getBrulage(): array
+    {
+        return $this->brulage;
+    }
+
+    /**
+     * @param mixed $brulage
+     */
+    public function setBrulage($brulage): self
+    {
+        $this->brulage = $brulage;
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getIdCompetiteur(): int
@@ -192,5 +214,24 @@ class Competiteur implements UserInterface, Serializable
             $this->username,
             $this->password
             ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    /**
+     * @param $idEquipe
+     * @return string
+     */
+    public function getBrulageIdEquipe($idEquipe){
+        if (($this->brulage[$idEquipe] + 1) == 2) return '<b><span class="orange-text lighten-3">Brûlé au prochain match</span></b>';
+        else if (($this->brulage[$idEquipe]) >= 2) return '<b><span class="red-text lighten-3">Brûlé</span></b>';
+        else return '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getFirstBurntTeam(){
+        /*$array = $this->brulage;
+        arsort($array);
+        return array_key_first($array);*/
     }
 }

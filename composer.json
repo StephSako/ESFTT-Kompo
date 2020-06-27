@@ -28,7 +28,8 @@
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
-        "symfony/yaml": "5.1.*"
+        "symfony/yaml": "5.1.*",
+        "scienta/doctrine-json-functions": "~4.1"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
@@ -46,11 +47,6 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "App\\Tests\\": "tests/"
         }
     },
     "replace": {

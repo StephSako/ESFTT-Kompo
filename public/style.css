@@ -7,7 +7,7 @@ body {
     background-blend-mode: lighten;
 }
 
-.cadre {
+.card-panel {
     background-color: rgb(255, 255, 255);
     padding-right: 20px;
     padding-left: 20px;
@@ -48,4 +48,20 @@ body {
 .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
     color:cornflowerblue;
     background: none;
+}
+
+.nav-wrapper li a, thead th {
+    font-size: 20px;
+}
+
+.nav-wrapper li a, thead th {
+    font-family: Lobster, cursive;
+}
+
+.nav-wrapper li:hover {
+    background-color: #1565c0;
+}
+
+.nav-extended {
+    background: #012242;
 }
