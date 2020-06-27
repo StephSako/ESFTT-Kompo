@@ -65,6 +65,28 @@ class FirstPhase
     private $idCapitaine;
 
     /**
+     * @var String
+     * @ORM\Column(name="lieu", type="string", length=100)
+     */
+    private $lieu;
+
+    /**
+     * @return String|null
+     */
+    public function getLieu(): ?String
+    {
+        return $this->lieu;
+    }
+
+    /**
+     * @param String $lieu
+     */
+    public function setLieu(String $lieu): void
+    {
+        $this->lieu = $lieu;
+    }
+
+    /**
      * @return int|null
      */
     public function getIdEquipe(): ?int

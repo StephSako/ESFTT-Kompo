@@ -80,10 +80,10 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row">
-                        <h5 class="col s2">Equipe n°{{ compo.idEquipe }}</h5>
-                        <h5 class="col s3">Journée n°{{ compo.idJournee.nJournee }}</h5>
+                        <h5 class="col s3">Team #{{ compo.idEquipe }}</h5>
+                        <h5 class="col s3">Journée #{{ compo.idJournee.nJournee }}</h5>
                         <h5 class="col s3">{{ compo.idJournee.date | date("m/d/Y")}}</h5>
-                        <h5 class="col s4">{{ compo.idJournee.lieu }}</h5>
+                        <h5 class="col s3">{{ compo.lieu }}</h5>
                     </div>
                     <table class="centered">
                         <thead>
@@ -172,7 +172,7 @@
                 {% for dispo in dispos %}
                     <tr>
                         <td class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">
-                            {{ dispo.idCompetiteur.nom }}
+                            <b>{{ dispo.idCompetiteur.nom }}</b>
                         </td>
                     </tr>
                 {% endfor %}

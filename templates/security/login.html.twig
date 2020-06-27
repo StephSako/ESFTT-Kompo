@@ -4,29 +4,31 @@
 
 {% block body %}
 
-    <div class="container center cadre">
-        <h2>Se connecter</h2>
+    <div class="container">
+        <div class="card-panel center-align">
+            <h2>Se connecter</h2>
 
-        {% if error %}
-            <div class="card-panel red lighten-2" style="text-align: center; margin-left: 340px; margin-right: 340px;">
-                {{ error.messageKey | trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
-
-        <form action="{{ path('login') }}" method="POST">
-            <div class="row">
-                <div class="input-field col s6">
-                    <input id="username" name="_username" type="text" class="validate" value="{{ lastUsername }}">
-                    <label for="username">Votre pseudo</label>
+            {% if error %}
+                <div class="card-panel red lighten-2" style="text-align: center; margin-left: 340px; margin-right: 340px;">
+                    {{ error.messageKey | trans(error.messageData, 'security') }}
                 </div>
-                <div class="input-field col s6">
-                    <input id="password" name="_password" type="password" class="validate">
-                    <label for="password">Votre mot de passe</label>
-                </div>
-            </div>
+            {% endif %}
 
-            <button class="btn waves-effect waves-light blue lighten-2">C'est parti !</button>
-        </form>
+            <form action="{{ path('login') }}" method="POST">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="username" name="_username" type="text" class="validate" value="{{ lastUsername }}">
+                        <label for="username">Votre pseudo</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="password" name="_password" type="password" class="validate">
+                        <label for="password">Votre mot de passe</label>
+                    </div>
+                </div>
+
+                <button class="btn waves-effect waves-light blue lighten-2">C'est parti !</button>
+            </form>
+        </div>
     </div>
 
 {% endblock %}

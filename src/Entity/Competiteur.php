@@ -21,7 +21,7 @@ class Competiteur implements UserInterface, Serializable
     private $idCompetiteur;
 
     /**
-     * @ORM\Column(name="license", type="integer")
+     * @ORM\Column(name="license", type="integer", length=11)
      */
     private $license;
 
@@ -69,6 +69,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="json", name="brulage")
      */
     private $brulage;
+
+    //TODO Image de profil
 
     /**
      * @return array
@@ -230,8 +232,9 @@ class Competiteur implements UserInterface, Serializable
      * @return int
      */
     public function getFirstBurntTeam(){
-        /*$array = $this->brulage;
-        arsort($array);
-        return array_key_first($array);*/
+        if ($this->brulage[1] >= 2) return 1;
+        else if ($this->brulage[2] >= 2) return 2;
+        else if ($this->brulage[3] >= 2) return 3;
+        else return null;
     }
 }

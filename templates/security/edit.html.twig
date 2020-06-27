@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+
+    {% include("components/navbar.html.twig") %}
+
+    <div class="container">
+        <div class="card-panel center-align">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col s4">
+                        {{ form_row(form.nom) }}
+                    </div>
+                    <div class="col s4">
+                        {{ form_row(form.username) }}
+                    </div>
+                    <div class="col s4">
+                        {{ form_row(form.license) }}
+                    </div>
+                </div>
+                <br><button class="btn waves-effect waves-light light-blue darken-1">Modifier</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

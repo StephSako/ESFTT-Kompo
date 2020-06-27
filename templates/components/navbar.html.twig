@@ -10,8 +10,9 @@
         </ul>
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
             {% if app.user %}
-                <li><a class="white-text" href="#">Mon compte</a></li>
+                <li><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
                 <li class="divider"></li>
                 <li><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
             {% else %}
