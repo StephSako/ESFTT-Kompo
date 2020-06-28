@@ -10,7 +10,7 @@
         <div class="center-align card-panel">
 
             <h4>Modifier la composition</h4>
-                <h5>Equipe n° {{ compo.idEquipe }} - Journée n°{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.idJournee.lieu }}</h5>
+                <h5>Team #{{ compo.idEquipe }} - Journée #{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.lieu }}</h5>
             <div class="container">
                 {{ form_start(form)}}
                 <div class="row">
