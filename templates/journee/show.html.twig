@@ -62,7 +62,7 @@
                     <h5>Etes-vous disponible pour cette journée ?</h5>
 
                     {% if disposJoueur is empty %}
-                        <p>Vous n'êtes pas encore inscrit</p>
+                        <p><i>Vous n'avez pas encore partagé votre disponibilité</i></p>
                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
                             <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                         </a>

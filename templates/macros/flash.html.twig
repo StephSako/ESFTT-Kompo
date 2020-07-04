@@ -1,0 +1,11 @@
+{% macro success(message) %}
+    <div class="card-panel center-align white-text green lighten-1 title_journee">
+        <p class="flash">{{ message }}</p>
+    </div>
+{% endmacro %}
+
+{% macro fail(message) %}
+    <div class="card-panel center-align white-text red lighten-1 title_journee flash">
+        <p class="flash">{{ message }}</p>
+    </div>
+{% endmacro %}

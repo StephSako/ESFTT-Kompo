@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use App\Form\CompetiteurType;
 use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,30 +58,63 @@ class SecurityController extends AbstractController
     /**
      * @Route("/compte", name="account")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      * @return RedirectResponse|Response
      */
-    public function home(Request $request, UserPasswordEncoderInterface $encoder){
+    public function home(Request $request){
         $journees = $this->journeeRepository->findAll();
         $user = $this->getUser();
-        // TODO See user's dispos
+        // TODO Modify competiteur's dispos
 
-        $form = $this->createForm(CompetiteurType::class, $user);
-        $form->handleRequest($request);
+        $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
+        $formCompetiteur->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /*$password = $encoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);*/ //TODO Update password
-
-            $this->em->flush();
-            $this->addFlash('success', 'Informations modifiées avec succès');
-            return $this->redirect($request->getUri());
+        if ($formCompetiteur->isSubmitted()) {
+            if ($formCompetiteur->isValid()){
+                $this->em->flush();
+                $this->addFlash('success', 'Informations modifiées !');
+            }
+            else {
+                $this->addFlash('fail', 'Une erreur est survenue ...');
+            }
+            //return $this->redirect($request->getUri());
         }
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
             'journees' => $journees,
-            'form' => $form->createView()
+            'formCompetiteur' => $formCompetiteur->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/compte/update_password", name="account.update.password")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return RedirectResponse|Response
+     */
+    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){ //TODO Optimize
+        $journees = $this->journeeRepository->findAll();
+        $user = $this->getUser();
+
+        $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
+        $formCompetiteur->handleRequest($request);
+        // TODO See user's dispos
+
+        if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+            $password = $encoder->encodePassword($user, $request->get('new_password'));
+            $user->setPassword($password); //TODO Update password
+
+            $this->em->flush();
+            $this->addFlash('success', 'Mot de passe modifié !');
+        }
+        else {
+            $this->addFlash('fail', 'Le nouveau mot de passe ne correspond pas');
+        }
+
+        return $this->render('security/edit.html.twig', [
+            'user' => $user,
+            'journees' => $journees,
+            'formCompetiteur' => $formCompetiteur->createView()
         ]);
     }
 }

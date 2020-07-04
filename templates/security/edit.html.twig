@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as flash %}
 
 {% block title %}Mon compte{% endblock %}
 
@@ -7,22 +8,46 @@
     {% include("components/navbar.html.twig") %}
 
     <div class="container">
+
+        {% for message in app.flashes('success') %}
+            {{ flash.success(message) }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ flash.fail(message) }}
+        {% endfor %}
+
         <div class="card-panel center-align">
-            {{ form_start(form) }}
+            <h3>Modifier mon compte</h3>
+            {{ form_start(formCompetiteur) }}
                 <div class="row">
                     <div class="col s4">
-                        {{ form_row(form.nom) }}
+                        {{ form_row(formCompetiteur.nom) }}
                     </div>
                     <div class="col s4">
-                        {{ form_row(form.username) }}
+                        {{ form_row(formCompetiteur.username) }}
                     </div>
                     <div class="col s4">
-                        {{ form_row(form.license) }}
+                        {{ form_row(formCompetiteur.license) }}
                     </div>
                 </div>
                 <br><button class="btn waves-effect waves-light light-blue darken-1">Modifier</button>
-            {{ form_end(form) }}
+            {{ form_end(formCompetiteur) }}
+
+            <h3>Modifier mon mot de passe</h3>
+            <form action="{{ path('account.update.password') }}" method="POST">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input name="new_password" id="new_password" type="password" class="validate">
+                        <label for="new_password">Nouveau mot de passe</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input name="new_password_validate" id="new_password_validate" type="password" class="validate">
+                        <label for="new_password_validate">Valider le nouveau mot de passe</label>
+                    </div>
+                </div>
+                <br><button class="btn waves-effect waves-light light-blue darken-1">Modifier</button>
+            </form>
         </div>
-    </div>
 
 {% endblock %}

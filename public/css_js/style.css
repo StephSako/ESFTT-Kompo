@@ -53,8 +53,14 @@ body {
     font-size: 20px;
 }
 
-.nav-wrapper li a, thead th, h5, h4, td.rank {
+.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash {
     font-family: Lobster, cursive;
+}
+
+.flash {
+    font-size: 24px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .nav-wrapper li:hover {
