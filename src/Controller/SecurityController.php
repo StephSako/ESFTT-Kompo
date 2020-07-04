@@ -63,7 +63,7 @@ class SecurityController extends AbstractController
     public function home(Request $request){
         $journees = $this->journeeRepository->findAll();
         $user = $this->getUser();
-        // TODO Modify competiteur's dispos
+        // TODO View to modify competiteur's dispos
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
@@ -92,17 +92,16 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @return RedirectResponse|Response
      */
-    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){ //TODO Optimize
+    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
         $journees = $this->journeeRepository->findAll();
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
-        // TODO See user's dispos
 
         if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
             $password = $encoder->encodePassword($user, $request->get('new_password'));
-            $user->setPassword($password); //TODO Update password
+            $user->setPassword($password);
 
             $this->em->flush();
             $this->addFlash('success', 'Mot de passe modifié !');

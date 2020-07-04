@@ -66,7 +66,7 @@ class HomeController extends AbstractController
     {
         return $this->redirectToRoute('journee.show', [
             'id' => 1
-        ]);
+        ]); //TODO Redirect à la prochaine journée
     }
 
     /**
@@ -85,8 +85,9 @@ class HomeController extends AbstractController
         $compos = $this->phase_1_Repository->findJournee($id);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
         $journee = $this->journeeRepository->find($id);
-        $journees = $this->journeeRepository->findAll(); // TODO As a service
+        $journees = $this->journeeRepository->findAll();
         $joueursBrules = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
+        //TODO Marquer les joueurs sélédctionnées dans la liste à droite
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
@@ -109,6 +110,7 @@ class HomeController extends AbstractController
     {
         $form = $this->createForm(FirstPhaseType::class, $compo);
         $form->handleRequest($request);
+        //TODO Modifier le brûlage des joueurs sélectionées dans la compo d'équipe
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();

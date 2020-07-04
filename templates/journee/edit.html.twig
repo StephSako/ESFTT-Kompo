@@ -67,11 +67,21 @@
                     </thead>
 
                     <tbody>
-                    {% for almostBurntPlayer in almostBurntPlayers %}
+                    {% if compo.idEquipe == 4 %}
                         <tr>
-                            <td>{{ almostBurntPlayer.nom }}</td>
+                            <td>Il n'y a pas de brûlés en dessous de la 4</td>
                         </tr>
-                    {% endfor %}
+                    {% elseif almostBurntPlayers is empty %} %}
+                        <tr>
+                            <td>Il n'y a pas de potentiels futurs brûlés</td>
+                        </tr>
+                    {% else %}
+                        {% for almostBurntPlayer in almostBurntPlayers %}
+                            <tr>
+                                <td>{{ almostBurntPlayer.nom }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                     </tbody>
                 </table>
             </div>

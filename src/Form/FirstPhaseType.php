@@ -28,7 +28,7 @@ class FirstPhaseType extends AbstractType
                 'label' => false,
                 'attr'=> ['class'=>'browser-default'],
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c'); //TODO Bug "Brulé" sélectionnable
+                    $query = $cr->createQueryBuilder('c');
 
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
@@ -47,9 +47,6 @@ class FirstPhaseType extends AbstractType
                                 ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
                             break;
                     }
-                    dump($builder->getData()->getIdEquipe());
-                    dump($query->orderBy('c.nom', 'ASC')->getQuery()->getResult());
-
                     return $query->orderBy('c.nom', 'ASC');
                 }
             ))
@@ -63,7 +60,7 @@ class FirstPhaseType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c'); //TODO Bug "Brulé"
+                    $query = $cr->createQueryBuilder('c');
 
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
@@ -96,7 +93,7 @@ class FirstPhaseType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c'); //TODO Bug "Brulé"
+                    $query = $cr->createQueryBuilder('c');
 
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
@@ -129,7 +126,7 @@ class FirstPhaseType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c'); //TODO Bug "Brulé"
+                    $query = $cr->createQueryBuilder('c');
 
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
