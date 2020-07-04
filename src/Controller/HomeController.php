@@ -115,7 +115,7 @@ class HomeController extends AbstractController
             $this->addFlash('success', 'Composition modifiée avec succès !');
             return $this->redirectToRoute('journee.show', [
                 'id' => $compo->getIdJournee()->getNJournee()
-            ]); // TODO Issue id de la journee
+            ]);
         }
 
         $burntPlayers = $this->competiteurRepository->findBurnPlayers($compo->getIdEquipe());

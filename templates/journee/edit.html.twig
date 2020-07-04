@@ -16,11 +16,17 @@
                     </thead>
 
                     <tbody>
-                    {% for burntPlayer in burntPlayers %}
+                    {% if compo.idEquipe == 1 or burntPlayers is empty %}
                         <tr>
-                            <td>{{ burntPlayer.nom }}</td>
+                            <td>Il n'y a pas de brûlés en {{ compo.idEquipe }}</td>
                         </tr>
-                    {% endfor %}
+                    {% else %}
+                        {% for burntPlayer in burntPlayers %}
+                            <tr>
+                                <td>{{ burntPlayer.nom }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -56,7 +62,7 @@
                 <table class="centered card-panel dispos">
                     <thead>
                     <tr>
-                        <th>Les brûlés si sélectionnés</th>
+                        <th>Futurs brûlés si sélectionnés</th>
                     </tr>
                     </thead>
 

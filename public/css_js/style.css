@@ -73,6 +73,12 @@ body {
     background: #012242;
 }
 
+.title_journee {
+    padding-top: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
 td, li, p, .btn, label {
     font-family: 'IBM Plex Serif', serif;
 }

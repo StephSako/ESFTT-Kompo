@@ -47,16 +47,21 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findBurnPlayers($idTeam)
     {
         $query = $this
-            ->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulage, '$.1') >= 2");
+            ->createQueryBuilder('c');
 
         switch ($idTeam) {
+            case 2:
+                $query = $query
+                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2");
+                break;
             case 3:
                 $query = $query
+                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2")
                     ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2");
                 break;
             case 4:
                 $query = $query
+                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2")
                     ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2")
                     ->orWhere("JSON_VALUE(c.brulage, '$.3') >= 2");
                 break;
@@ -75,7 +80,6 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function findAlmostBurnPlayers($idTeam)
     {
-        dump($idTeam);
         $query = $this->createQueryBuilder('c')
             ->where("JSON_VALUE(c.brulage, '$." . $idTeam . "') = 1")
             ->andWhere("JSON_VALUE(c.brulage, '$.1') < 2");
