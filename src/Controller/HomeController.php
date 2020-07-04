@@ -86,7 +86,7 @@ class HomeController extends AbstractController
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
         $journee = $this->journeeRepository->find($id);
         $journees = $this->journeeRepository->findAll(); // TODO As a service
-        $joueursBrules = $this->competiteurRepository->findBurnPlayers();
+        $joueursBrules = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
@@ -118,8 +118,12 @@ class HomeController extends AbstractController
             ]); // TODO Issue id de la journee
         }
 
+        $burntPlayers = $this->competiteurRepository->findBurnPlayers($compo->getIdEquipe());
+        $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayers($compo->getIdEquipe());
         $journees = $this->journeeRepository->findAll();
         return $this->render('journee/edit.html.twig', [
+            'burntPlayers' => $burntPlayers,
+            'almostBurntPlayers' => $almostBurntPlayers,
             'journees' => $journees,
             'compo' => $compo,
             'form' => $form->createView()

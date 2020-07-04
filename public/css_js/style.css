@@ -53,7 +53,7 @@ body {
     font-size: 20px;
 }
 
-.nav-wrapper li a, thead th, h5 {
+.nav-wrapper li a, thead th, h5, h4, td.rank {
     font-family: Lobster, cursive;
 }
 
@@ -61,6 +61,12 @@ body {
     background-color: #1565c0;
 }
 
-.nav-extended {
+.nav-extended, .title_journee {
+    padding-top: 10px;
+    padding-bottom: 10px;
     background: #012242;
+}
+
+td, li, p, .btn, label {
+    font-family: 'IBM Plex Serif', serif;
 }

@@ -1,36 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Journee 1{% endblock %}
+{% block title %}J{{ compo.idJournee.nJournee }} - Equipe {{ compo.idEquipe }}{% endblock %}
 
 {% block body %}
 
     {% include("components/navbar.html.twig") %}
 
-    <div class="container">
-        <div class="center-align card-panel">
+        <div class="row">
+            <div class="col s3">
+                <table class="centered card-panel dispos">
+                    <thead>
+                    <tr>
+                        <th>Les brûlés en {{ compo.idEquipe }}</th>
+                    </tr>
+                    </thead>
 
-            <h4>Modifier la composition</h4>
-                <h5>Team #{{ compo.idEquipe }} - Journée #{{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d/Y")}} - {{ compo.lieu }}</h5>
-            <div class="container">
-                {{ form_start(form)}}
-                <div class="row">
-                    <div class="col s6"><h5>Joueur 1</h5></div>
-                    <div class="col s6">{{ form_row(form.idJoueur1) }}</div>
+                    <tbody>
+                    {% for burntPlayer in burntPlayers %}
+                        <tr>
+                            <td>{{ burntPlayer.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col s6">
+                <div class="center-align card-panel">
+                    <h4>Composition d'équipe</h4>
+                    <h5>Team {{ compo.idEquipe }} - Journée {{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d")}} - {{ compo.lieu }}</h5>
+                    <br>
+                    <div class="container">
+                        {{ form_start(form)}}
+                        <div class="row">
+                            <div class="col s6"><h5>Joueur 1</h5></div>
+                            <div class="col s6">{{ form_row(form.idJoueur1) }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col s6"><h5>Joueur 2</h5></div>
+                            <div class="col s6">{{ form_row(form.idJoueur2) }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col s6"><h5>Joueur 3</h5></div>
+                            <div class="col s6">{{ form_row(form.idJoueur3) }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col s6"><h5>Joueur 4</h5></div>
+                            <div class="col s6">{{ form_row(form.idJoueur4) }}</div>
+                        </div>
+                        <br><button class="btn waves-effect waves-light blue lighten-2">Modifier</button><br>
+                        {{ form_end(form) }}
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col s6"><h5>Joueur 2</h5></div>
-                    <div class="col s6">{{ form_row(form.idJoueur2) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col s6"><h5>Joueur 3</h5></div>
-                    <div class="col s6">{{ form_row(form.idJoueur3) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col s6"><h5>Joueur 4</h5></div>
-                    <div class="col s6">{{ form_row(form.idJoueur4) }}</div>
-                </div>
-                    <br><button class="btn waves-effect waves-light blue lighten-2">Modifier</button><br>
-                {{ form_end(form) }}
+            </div>
+            <div class="col s3">
+                <table class="centered card-panel dispos">
+                    <thead>
+                    <tr>
+                        <th>Les brûlés si sélectionnés</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for almostBurntPlayer in almostBurntPlayers %}
+                        <tr>
+                            <td>{{ almostBurntPlayer.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

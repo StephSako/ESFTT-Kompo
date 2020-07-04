@@ -40,15 +40,59 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get burnt players for a specific team
+     * @param $idTeam
      * @return int|mixed|string
      */
-    public function findBurnPlayers()
+    public function findBurnPlayers($idTeam)
     {
-        return $this->createQueryBuilder('p')
-            ->where("JSON_VALUE(p.brulage, '$.1') >= 2")
-            ->orWhere("JSON_VALUE(p.brulage, '$.2') >= 2")
-            ->orWhere("JSON_VALUE(p.brulage, '$.3') >= 2")
-            ->orderBy('p.nom')
+        $query = $this
+            ->createQueryBuilder('c')
+            ->where("JSON_VALUE(c.brulage, '$.1') >= 2");
+
+        switch ($idTeam) {
+            case 3:
+                $query = $query
+                    ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2");
+                break;
+            case 4:
+                $query = $query
+                    ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2")
+                    ->orWhere("JSON_VALUE(c.brulage, '$.3') >= 2");
+                break;
+        }
+
+        return $query
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get almost burnt players
+     * @param $idTeam
+     * @return int|mixed|string
+     */
+    public function findAlmostBurnPlayers($idTeam)
+    {
+        dump($idTeam);
+        $query = $this->createQueryBuilder('c')
+            ->where("JSON_VALUE(c.brulage, '$." . $idTeam . "') = 1")
+            ->andWhere("JSON_VALUE(c.brulage, '$.1') < 2");
+
+        switch ($idTeam) {
+            case 3:
+                $query = $query
+                    ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                break;
+            case 4:
+                $query = $query
+                    ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
+                    ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                break;
+        }
+        return $query
+            ->orderBy('c.nom')
             ->getQuery()
             ->getResult();
     }

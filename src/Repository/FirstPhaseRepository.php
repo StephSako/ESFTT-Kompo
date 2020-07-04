@@ -27,9 +27,9 @@ class FirstPhaseRepository extends ServiceEntityRepository
     public function findJournee($idJournee)
     {
         return $this->createQueryBuilder('fp')
-            ->select('fp')
+            //->select('fp')
             ->leftJoin('fp.idJournee', 'j')
-            ->addSelect('j')
+            //->addSelect('j')
             ->where('fp.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->getQuery()

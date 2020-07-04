@@ -11,10 +11,11 @@
             <table class="centered card-panel dispos">
                 <thead>
                 <tr>
-                    <th>Les brûlés en ...</th>
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
+                    <th><h5>Les brûlages</h5></th>
+                    <th><h5>1</h5></th>
+                    <th><h5>2</h5></th>
+                    <th><h5>3</h5></th>
+                    <th><h5>4</h5></th>
                 </tr>
                 </thead>
 
@@ -23,17 +24,25 @@
                     <tr>
                         <td>{{ joueurBrule.nom }}</td>
                         <td>
-                            {% if joueurBrule.FirstBurntTeam <= 1 %}
+                            {% if 1 in joueurBrule.FirstBurntTeam["almost"] %}
+                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% endif %}</td>
+                        <td>
+                            {% if 2 in joueurBrule.FirstBurntTeam["burnt"] %}
                                 <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% elseif 2 in joueurBrule.FirstBurntTeam["almost"] %}
+                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
                             {% endif %}
                         </td>
                         <td>
-                            {% if joueurBrule.FirstBurntTeam <= 2 %}
+                            {% if 3 in joueurBrule.FirstBurntTeam["burnt"] %}
                                 <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                            {% elseif 3 in joueurBrule.FirstBurntTeam["almost"] %}
+                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
                             {% endif %}
                         </td>
                         <td>
-                            {% if joueurBrule.FirstBurntTeam <= 3 %}
+                            {% if 4 in joueurBrule.FirstBurntTeam["burnt"] %}
                                 <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
                             {% endif %}
                         </td>
@@ -43,6 +52,10 @@
             </table>
         </div>
         <div class="col s7">
+            <div class="card-panel center-align white-text title_journee">
+                <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m') }}</h4>
+            </div>
+
             {% if app.user %}
                 <div class="card-panel center">
 
@@ -80,22 +93,20 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row">
-                        <h5 class="col s3">Team #{{ compo.idEquipe }}</h5>
-                        <h5 class="col s3">Journée #{{ compo.idJournee.nJournee }}</h5>
-                        <h5 class="col s3">{{ compo.idJournee.date | date("m/d/Y")}}</h5>
-                        <h5 class="col s3">{{ compo.lieu }}</h5>
+                        <h5 class="col s6">Team {{ compo.idEquipe }}</h5>
+                        <h5 class="col s6">{{ compo.lieu }}</h5>
                     </div>
                     <table class="centered">
                         <thead>
                         <tr>
                             <th></th>
-                            <th>License</th>
-                            <th>Composition</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td><b>#1</b></td>
+                            <td class="rank"><b>#1</b></td>
                             <td>
                                 {% if compo.idJoueur1 is not null %}
                                     {{ compo.idJoueur1.license }}
@@ -109,7 +120,7 @@
                         </tr>
 
                         <tr>
-                            <td><b>#2</b></td>
+                            <td class="rank"><b>#2</b></td>
                             <td>
                                 {% if compo.idJoueur2 is not null %}
                                     {{ compo.idJoueur2.license }}
@@ -123,7 +134,7 @@
                         </tr>
 
                         <tr>
-                            <td><b>#3</b></td>
+                            <td class="rank"><b>#3</b></td>
                             <td>
                                 {% if compo.idJoueur3 is not null %}
                                     {{ compo.idJoueur3.license }}
@@ -137,7 +148,7 @@
                         </tr>
 
                         <tr>
-                            <td><b>#4</b></td>
+                            <td class="rank"><b>#4</b></td>
                             <td>
                                 {% if compo.idJoueur4 is not null %}
                                     {{ compo.idJoueur4.license }}
@@ -164,7 +175,7 @@
             <table class="centered card-panel dispos">
                 <thead>
                     <tr>
-                        <th>Les dispos</th>
+                        <th><h5>Les dispos</h5></th>
                     </tr>
                 </thead>
 
@@ -172,7 +183,7 @@
                 {% for dispo in dispos %}
                     <tr>
                         <td class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">
-                            <b>{{ dispo.idCompetiteur.nom }}</b>
+                            {{ dispo.idCompetiteur.nom }}
                         </td>
                     </tr>
                 {% endfor %}

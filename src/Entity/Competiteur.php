@@ -222,19 +222,26 @@ class Competiteur implements UserInterface, Serializable
      * @param $idEquipe
      * @return string
      */
-    public function getBrulageIdEquipe($idEquipe){
-        if (($this->brulage[$idEquipe] + 1) == 2) return '<b><span class="orange-text lighten-3">Brûlé au prochain match</span></b>';
-        else if (($this->brulage[$idEquipe]) >= 2) return '<b><span class="red-text lighten-3">Brûlé</span></b>';
-        else return '';
+    public function getAlmostBurntIdEquipe($idEquipe){
+        if (($this->brulage[$idEquipe] + 1) == 2) return '<span class="orange-text lighten-3">' . $this->getNom() . '</span>';
+        else return $this->getNom();
     }
 
     /**
-     * @return int
+     * @return array[]
      */
     public function getFirstBurntTeam(){
-        if ($this->brulage[1] >= 2) return 1;
-        else if ($this->brulage[2] >= 2) return 2;
-        else if ($this->brulage[3] >= 2) return 3;
-        else return null;
+        $brulage = [];
+        $almost = [];
+
+        if ($this->brulage[1] == 1) array_push($almost, 1);
+        if ($this->brulage[2] == 1) array_push($almost, 2);
+        if ($this->brulage[3] == 1) array_push($almost, 3);
+
+        if ($this->brulage[1] >= 2) array_push($brulage, 2, 3, 4);
+        else if ($this->brulage[2] >= 2) array_push($brulage, 3, 4);
+        else if ($this->brulage[3] >= 2) array_push($brulage, 4);
+
+        return ["almost" => $almost, "burnt" =>$brulage];
     }
 }
