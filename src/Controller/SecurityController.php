@@ -48,7 +48,7 @@ class SecurityController extends AbstractController
                 'journees' => $journees,
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
-            ]); // TODO Redirect to the good journee's page
+            ]);
         }
         else return $this->render('security/alreadyConnected.html.twig',[
             'journees' => $journees

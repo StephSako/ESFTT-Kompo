@@ -79,6 +79,7 @@ class HomeController extends AbstractController
     {
         $dispos = $this->disponibiliteRepository->findAllDispos($id);
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id);
+
         $disposJoueur = null;
         if ($this->getUser()) $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
 
@@ -87,9 +88,8 @@ class HomeController extends AbstractController
         $journee = $this->journeeRepository->find($id);
         $journees = $this->journeeRepository->findAll();
         $joueursBrules = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-
         $selectedPlayers = $this->phase_1_Repository->findJourneeSelectedPlayers($id);
-        //TODO Marquer les joueurs sélectionnées dans la liste à droite
+
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
@@ -113,9 +113,33 @@ class HomeController extends AbstractController
     {
         $form = $this->createForm(FirstPhaseType::class, $compo);
         $form->handleRequest($request);
-        //TODO Modifier le brûlage des joueurs sélectionées dans la compo d'équipe
+        //TODO Modifier le brûlage des joueurs désélectionés de la précédente compo
 
         if ($form->isSubmitted() && $form->isValid()){
+            if ($form->getData()->getIdJoueur1() != null){
+                $brulage1 = $form->getData()->getIdJoueur1()->getBrulage();
+                $brulage1[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur1()->setBrulage($brulage1);
+            }
+
+            if ($form->getData()->getIdJoueur2() != null){
+                $brulage2 = $form->getData()->getIdJoueur2()->getBrulage();
+                $brulage2[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur2()->setBrulage($brulage2);
+            }
+
+            if ($form->getData()->getIdJoueur3() != null){
+                $brulage3 = $form->getData()->getIdJoueur3()->getBrulage();
+                $brulage3[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur3()->setBrulage($brulage3);
+            }
+
+            if ($form->getData()->getIdJoueur4() != null){
+                $brulage4 = $form->getData()->getIdJoueur4()->getBrulage();
+                $brulage4[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur4()->setBrulage($brulage4);
+            }
+
             $this->em->flush();
             $this->addFlash('success', 'Composition modifiée avec succès !');
             return $this->redirectToRoute('journee.show', [

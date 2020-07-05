@@ -82,6 +82,7 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @param mixed $brulage
+     * @return Competiteur
      */
     public function setBrulage($brulage): self
     {
@@ -112,7 +113,6 @@ class Competiteur implements UserInterface, Serializable
     public function setLicense(int $license): self
     {
         $this->license = $license;
-
         return $this;
     }
 
@@ -131,7 +131,6 @@ class Competiteur implements UserInterface, Serializable
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -150,7 +149,6 @@ class Competiteur implements UserInterface, Serializable
     public function setRole(string $role): self
     {
         $this->role = $role;
-
         return $this;
     }
 
@@ -164,18 +162,22 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @param string $password
+     * @return Competiteur
      */
-    public function setPassword(string $password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+        return $this;
     }
 
     /**
      * @param string $username
+     * @return Competiteur
      */
-    public function setUsername(string $username): void
+    public function setUsername(string $username): self
     {
         $this->username = $username;
+        return $this;
     }
 
     public function getRoles()
@@ -223,7 +225,7 @@ class Competiteur implements UserInterface, Serializable
      * @return string
      */
     public function getAlmostBurntIdEquipe($idEquipe){
-        if (($this->brulage[$idEquipe] + 1) == 2) return '<span class="orange-text lighten-3">' . $this->getNom() . '</span>';
+        if (($this->brulage[$idEquipe] + 1) == 2 && $idEquipe != 4) return '<span class="orange-text lighten-3">' . $this->getNom() . '</span>';
         else return $this->getNom();
     }
 

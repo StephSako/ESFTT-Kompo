@@ -53,7 +53,7 @@ body {
     overflow-y: auto;
 }
 .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
-    color:cornflowerblue;
+    color: #6495ed;
     background: none;
 }
 
@@ -61,7 +61,7 @@ body {
     font-size: 20px;
 }
 
-.nav-extended li {
+.nav-wrapper li {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;

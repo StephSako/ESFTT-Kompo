@@ -38,6 +38,7 @@ class FirstPhaseRepository extends ServiceEntityRepository
      * Get selected players for a specific journee
      * @param $idJournee
      * @return int|mixed|string
+     * @throws DBALException
      */
     public function findJourneeSelectedPlayers($idJournee)
     {
