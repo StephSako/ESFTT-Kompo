@@ -28,7 +28,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findJoueursNonDeclares($idJournee)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT competiteur.nom"
+        $sql = "SELECT competiteur.nom, competiteur.id_competiteur"
             . " FROM competiteur"
             . " WHERE competiteur.id_competiteur NOT IN (SELECT DISTINCT id_competiteur"
 										. " FROM disponibilite"

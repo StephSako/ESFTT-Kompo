@@ -87,12 +87,15 @@ class HomeController extends AbstractController
         $journee = $this->journeeRepository->find($id);
         $journees = $this->journeeRepository->findAll();
         $joueursBrules = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        //TODO Marquer les joueurs sélédctionnées dans la liste à droite
+
+        $selectedPlayers = $this->phase_1_Repository->findJourneeSelectedPlayers($id);
+        //TODO Marquer les joueurs sélectionnées dans la liste à droite
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
             'compos' => $compos,
             'joueursBrules' => $joueursBrules,
+            'selectedPlayers' => $selectedPlayers,
             'dispos' => $dispos,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,

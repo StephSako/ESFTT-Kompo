@@ -58,13 +58,6 @@ class FirstPhase
     private $idJoueur4;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_capitaine", referencedColumnName="id_competiteur")
-     * @var Competiteur
-     */
-    private $idCapitaine;
-
-    /**
      * @var String
      * @ORM\Column(name="lieu", type="string", length=100)
      */
@@ -170,23 +163,6 @@ class FirstPhase
     public function setIdJoueur4(?Competiteur $idJoueur4): self
     {
         $this->idJoueur4 = $idJoueur4;
-        return $this;
-    }
-
-    /**
-     * @return Competiteur|null
-     */
-    public function getIdCapitaine(): ?Competiteur
-    {
-        return $this->idCapitaine;
-    }
-
-    /**
-     * @param Competiteur|null $idCapitaine
-     */
-    public function setIdCapitaine(?Competiteur $idCapitaine): self
-    {
-        $this->idCapitaine = $idCapitaine;
         return $this;
     }
 

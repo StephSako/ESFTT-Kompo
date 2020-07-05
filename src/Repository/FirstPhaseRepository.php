@@ -27,12 +27,26 @@ class FirstPhaseRepository extends ServiceEntityRepository
     public function findJournee($idJournee)
     {
         return $this->createQueryBuilder('fp')
-            //->select('fp')
             ->leftJoin('fp.idJournee', 'j')
-            //->addSelect('j')
             ->where('fp.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Get selected players for a specific journee
+     * @param $idJournee
+     * @return int|mixed|string
+     */
+    public function findJourneeSelectedPlayers($idJournee)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT id_joueur_1, id_joueur_2, id_joueur_3, id_joueur_4"
+                . " FROM phase_1"
+                . " WHERE id_journee = " . $idJournee;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

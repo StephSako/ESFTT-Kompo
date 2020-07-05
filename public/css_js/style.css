@@ -26,6 +26,14 @@ body {
     margin-top: 10px;
 }
 
+.btn_login {
+    margin-top: 0;
+}
+
+.h4_login {
+    margin-top: 0;
+}
+
 .dispos {
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
@@ -53,7 +61,7 @@ body {
     font-size: 20px;
 }
 
-.nav-wrapper li {
+.nav-extended li {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;
