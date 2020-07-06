@@ -107,7 +107,7 @@ class SecurityController extends AbstractController
             $this->addFlash('success', 'Mot de passe modifié !');
         }
         else {
-            $this->addFlash('fail', 'Le nouveau mot de passe ne correspond pas');
+            $this->addFlash('fail', 'Les mots de passe ne correspond pas');
         }
 
         return $this->render('security/edit.html.twig', [

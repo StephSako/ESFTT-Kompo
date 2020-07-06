@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as flash %}
 
 {% block title %}Journee {{ journee.idJournee}}{% endblock %}
 
@@ -25,25 +26,25 @@
                         <td>{{ joueurBrule.nom }}</td>
                         <td>
                             {% if 1 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="orange-text lighten-1 material-icons">error_outline</i>
                             {% endif %}</td>
                         <td>
                             {% if 2 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="red-text lighten-1 material-icons">highlight_off</i>
                             {% elseif 2 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="orange-text lighten-1 material-icons">error_outline</i>
                             {% endif %}
                         </td>
                         <td>
                             {% if 3 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="red-text lighten-1 material-icons">highlight_off</i>
                             {% elseif 3 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="orange-text lighten-1 material-icons">error_outline</i>
                             {% endif %}
                         </td>
                         <td>
                             {% if 4 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">do_not_disturb_on</i>
+                                <i class="red-text lighten-1 material-icons">highlight_off</i>
                             {% endif %}
                         </td>
                     </tr>
@@ -52,6 +53,14 @@
             </table>
         </div>
         <div class="col s6">
+            {% for message in app.flashes('success') %}
+                {{ flash.success(message) }}
+            {% endfor %}
+
+            {% for message in app.flashes('fail') %}
+                {{ flash.fail(message) }}
+            {% endfor %}
+            
             <div class="card-panel center-align white-text title_journee">
                 <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m') }}</h4>
             </div>
@@ -59,7 +68,7 @@
             {% if app.user %}
                 <div class="card-panel center">
 
-                    <h5>Etes-vous disponible pour cette journée ?</h5>
+                    <h5>Êtes-vous disponible pour cette journée ?</h5>
 
                     {% if disposJoueur is empty %}
                         <p><i>Vous n'avez pas encore partagé votre disponibilité</i></p>
@@ -93,10 +102,10 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row">
-                        <h5 class="col s6">Team {{ compo.idEquipe }}</h5>
+                        <h5 class="col s6">Équipe {{ compo.idEquipe }}</h5>
                         <h5 class="col s6">{{ compo.lieu }}</h5>
                     </div>
-                    <table class="centered">
+                    <table class="centered highlight">
                         <thead>
                         <tr>
                             <th></th>
