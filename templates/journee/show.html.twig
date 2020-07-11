@@ -276,11 +276,9 @@
                             <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
                         </td>
                         <td>
-                            {% for joueurs in compos %}
-                                {% if dispo.idCompetiteur.idCompetiteur in joueurs %}
-                                    <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                                {% endif %}
-                            {% endfor %}
+                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
+                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -290,11 +288,9 @@
                             <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
                         </td>
                         <td>
-                            {% for joueurs in compos %}
-                                {% if dispoNonDeclaree.id_competiteur in joueurs %}
-                                    <i class="blue-text darken-1 material-icons">playlist_add_check</i>
-                                {% endif %}
-                            {% endfor %}
+                            {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
+                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

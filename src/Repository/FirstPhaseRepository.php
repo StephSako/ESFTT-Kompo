@@ -20,16 +20,17 @@ class FirstPhaseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param FirstPhase $idJournee
-     * @return int|mixed|string
+     * @param $compos
+     * @return array
      */
-    public function findJournee($idJournee)
-    {
-        return $this->createQueryBuilder('fp')
-            ->leftJoin('fp.idJournee', 'j')
-            ->where('fp.idJournee = :idJournee')
-            ->setParameter('idJournee', $idJournee)
-            ->getQuery()
-            ->getResult();
+    public function getSelectedPlayers($compos){
+        $selectedPlayers = [];
+        foreach ($compos as $compo){
+            if ($compo->getIdJoueur1() != null) array_push($selectedPlayers, $compo->getIdJoueur1()->getIdCompetiteur());
+            if ($compo->getIdJoueur2() != null) array_push($selectedPlayers, $compo->getIdJoueur2()->getIdCompetiteur());
+            if ($compo->getIdJoueur3() != null) array_push($selectedPlayers, $compo->getIdJoueur3()->getIdCompetiteur());
+            if ($compo->getIdJoueur4() != null) array_push($selectedPlayers, $compo->getIdJoueur4()->getIdCompetiteur());
+        }
+        return $selectedPlayers;
     }
 }

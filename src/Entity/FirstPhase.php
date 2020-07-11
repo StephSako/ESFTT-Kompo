@@ -89,6 +89,7 @@ class FirstPhase
 
     /**
      * @param mixed $idEquipe
+     * @return FirstPhase
      */
     public function setIdEquipe($idEquipe): self
     {
@@ -106,6 +107,7 @@ class FirstPhase
 
     /**
      * @param Competiteur|null $idJoueur1
+     * @return FirstPhase
      */
     public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
@@ -123,6 +125,7 @@ class FirstPhase
 
     /**
      * @param Competiteur|null $idJoueur2
+     * @return FirstPhase
      */
     public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
@@ -201,5 +204,4 @@ class FirstPhase
         $this->idJournee = $idJournee;
         return $this;
     }
-
 }
