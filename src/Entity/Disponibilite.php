@@ -26,15 +26,18 @@ class Disponibilite
     private $idDisponibilite;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
-     * @var Competiteur
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+     * })
      */
     private $idCompetiteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Journee", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * })
      * @var Journee
      */
     private $idJournee;

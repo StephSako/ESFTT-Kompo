@@ -21,7 +21,7 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getAlmostBurntIdEquipe($builder->getData()->getIdEquipe());
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
                 },
                 'required'   => false,
                 'empty_data' => null,
@@ -53,7 +53,7 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur2', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getAlmostBurntIdEquipe($builder->getData()->getIdEquipe());
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
                 },
                 'required'   => false,
                 'label' => false,
@@ -86,7 +86,7 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur3', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getAlmostBurntIdEquipe($builder->getData()->getIdEquipe());
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
                 },
                 'required'   => false,
                 'label' => false,
@@ -119,7 +119,7 @@ class FirstPhaseType extends AbstractType
             ->add('idJoueur4', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getAlmostBurntIdEquipe($builder->getData()->getIdEquipe());
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
                 },
                 'label' => false,
                 'attr'=> ['class'=>'browser-default'],

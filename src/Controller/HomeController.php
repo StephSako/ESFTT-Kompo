@@ -8,7 +8,6 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\FirstPhaseRepository;
 use App\Repository\JourneeRepository;
-use Doctrine\Common\Util\Debug;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -146,8 +145,7 @@ class HomeController extends AbstractController
                 $j4->setBrulage($brulageOld4);
             }
 
-            //$this->em->flush();
-
+            /** Incrémenter le brûlage des joueurs sélectionés de la nouvelle compo **/
             if ($form->getData()->getIdJoueur1() != null) {
                 $brulage1 = $form->getData()->getIdJoueur1()->getBrulage();
                 $brulage1[$compo->getIdEquipe()]++;
@@ -175,7 +173,6 @@ class HomeController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Composition modifiée avec succès !');
 
-            //return new Response('');
             return $this->redirectToRoute('journee.show', [
                 'id' => $compo->getIdJournee()->getNJournee()
             ]);

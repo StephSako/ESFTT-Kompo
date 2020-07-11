@@ -66,11 +66,20 @@ class Competiteur implements UserInterface, Serializable
     private $role;
 
     /**
+     * @ORM\Column(type="string", length=255, name="avatar")
+     */
+    private $avatar;
+
+    /**
      * @ORM\Column(type="json", name="brulage")
      */
     private $brulage;
 
-    //TODO Image de profil
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur")
+     */
+    private $dispos;
+    //TODO Issue
 
     /**
      * @return array
@@ -224,9 +233,8 @@ class Competiteur implements UserInterface, Serializable
      * @param $idEquipe
      * @return string
      */
-    public function getAlmostBurntIdEquipe($idEquipe){
-        if (($this->brulage[$idEquipe] + 1) == 2 && $idEquipe != 4) return '<span class="orange-text lighten-3">' . $this->getNom() . '</span>';
-        else return $this->getNom();
+    public function getPlayersChips($idEquipe){
+        return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. "</div>";
     }
 
     /**
@@ -246,4 +254,33 @@ class Competiteur implements UserInterface, Serializable
 
         return ["almost" => $almost, "burnt" =>$brulage];
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getDispos()
+    {
+        $disposId = [];
+        foreach ($this->dispos as $dispo){
+            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+        return $disposId;
+    }
+
+    /**
+     * @param mixed $dispos
+     */
+    public function setDispos($dispos): void
+    {
+        $this->dispos = $dispos;
+    }
+
 }

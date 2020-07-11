@@ -96,3 +96,19 @@ body {
 td, li, p, .btn, label {
     font-family: 'IBM Plex Serif', serif;
 }
+
+.chip {
+    font-size: 16px;
+    background-color: white;
+    height: 40px;
+    line-height: 40px;
+}
+
+.chip>img {
+    height: 40px;
+    width: 40px;
+}
+
+td i, .list i{
+    vertical-align: text-top;
+}
