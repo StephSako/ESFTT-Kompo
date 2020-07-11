@@ -76,26 +76,19 @@ class HomeController extends AbstractController
      */
     public function journeeShow($id)
     {
-        $dispos = $this->disponibiliteRepository->findAllDispos($id);
+        $joueursDeclares = $this->disponibiliteRepository->findAllDispos($id);
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id);
-
-        $disposJoueur = null;
-        if ($this->getUser()) $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
-
-        $compos = $this->phase_1_Repository->findJournee($id);
+        $disposJoueur = $this->getUser() ? $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
+        $compos = $this->phase_1_Repository->findBy(['idJournee' =>$id]);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        $journee = $this->journeeRepository->find($id);
         $journees = $this->journeeRepository->findAll();
-        $joueursBrules = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        $selectedPlayers = $this->phase_1_Repository->findJourneeSelectedPlayers($id);
+        $journee = ($journees[$id - 1]);
 
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
             'compos' => $compos,
-            'joueursBrules' => $joueursBrules,
-            'selectedPlayers' => $selectedPlayers,
-            'dispos' => $dispos,
+            'dispos' => $joueursDeclares,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
             'competiteurs' => $competiteurs
@@ -120,7 +113,7 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** Décrémenter le brûlage des joueurs désélectionés de la précédente compo **/
+            /** Décrémenter le brûlage des joueurs désélectionnés de la précédente compo **/
             if ($j1 != null) {
                 $brulageOld1 = $j1->getBrulage();
                 $brulageOld1[$compo->getIdEquipe()]--;
@@ -145,7 +138,7 @@ class HomeController extends AbstractController
                 $j4->setBrulage($brulageOld4);
             }
 
-            /** Incrémenter le brûlage des joueurs sélectionés de la nouvelle compo **/
+            /** Incrémenter le brûlage des joueurs sélectionnés de la nouvelle compo **/
             if ($form->getData()->getIdJoueur1() != null) {
                 $brulage1 = $form->getData()->getIdJoueur1()->getBrulage();
                 $brulage1[$compo->getIdEquipe()]++;

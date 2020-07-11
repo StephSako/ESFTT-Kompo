@@ -2,10 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Competiteur;
 use App\Entity\FirstPhase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -33,22 +31,5 @@ class FirstPhaseRepository extends ServiceEntityRepository
             ->setParameter('idJournee', $idJournee)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * Get selected players for a specific journee
-     * @param $idJournee
-     * @return int|mixed|string
-     * @throws DBALException
-     */
-    public function findJourneeSelectedPlayers($idJournee)
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT id_joueur_1, id_joueur_2, id_joueur_3, id_joueur_4"
-                . " FROM phase_1"
-                . " WHERE id_journee = " . $idJournee;
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
     }
 }

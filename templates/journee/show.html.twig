@@ -21,7 +21,7 @@
                 </thead>
 
                 <tbody>
-                {% for joueurBrule in joueursBrules %}
+                {% for joueurBrule in competiteurs %}
                     <tr>
                         <td>{{ joueurBrule.nom }}</td>
                         <td>
@@ -62,7 +62,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m') }}</h4>
+                <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m/Y') }}</h4>
             </div>
 
             {% if app.user %}
@@ -70,25 +70,28 @@
 
                     <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
 
-                    {% if disposJoueur is empty %}
-                        <p><i>Vous n'avez pas encore partagé votre disponibilité</i></p>
+                    {% if journee.nJournee in app.user.dispos|keys %}
+                        {% if app.user.dispos[journee.nJournee] %}
+                            <p>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></p>
+                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 0}) }}">
+                                <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                            </a>
+                        {% else %}
+                            <p>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></p>
+                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 1}) }}">
+                                <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <p><i>Vous n'avez pas encore signalé votre disponibilité</i></p>
                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
                             <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                         </a>
                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
                             <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                         </a>
-                    {% elseif not disposJoueur[0].disponibilite  %}
-                        <p>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></p>
-                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 1}) }}">
-                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
-                        </a>
-                    {% elseif disposJoueur[0].disponibilite %}
-                        <p>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></p>
-                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, disposJoueur: disposJoueur[0].idDisponibilite, dispo: 0}) }}">
-                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
-                        </a>
                     {% endif %}
+
                 </div>
             {% else %}
                 <div class="card-panel green lighten-4 center">
@@ -102,8 +105,20 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row">
-                        <h5 class="col s6">Équipe {{ compo.idEquipe }}</h5>
-                        <h5 class="col s6">{{ compo.lieu }}</h5>
+                        <h5 class="col s2"><span class="white-text bulle">
+                                {% if compo.idEquipe == 1 %}
+                                    PR
+                                {% elseif compo.idEquipe == 2 %}
+                                    PR
+                                {% elseif compo.idEquipe == 3 %}
+                                    D1
+                                {% elseif compo.idEquipe == 4 %}
+                                    D3
+                                {% endif %}
+                                </span></h5>
+                        <h5 class="col s3">Équipe {{ compo.idEquipe }}</h5>
+                        <h5 class="col s3">{{ journee.date|date('d/m') }}</h5>
+                        <h5 class="col s3">{{ compo.lieu }}</h5>
                     </div>
                     <table class="highlight centered">
                         <thead>
@@ -111,7 +126,7 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
-                                <th>Sa dispo</th>
+                                <th>Dispo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,14 +145,17 @@
                                         </div>{% if compo.idJoueur1.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
                                     {% endif %}
                                 </td>
-                                <td>{% if journee.nJournee in compo.idJoueur1.dispos|keys %}
-                                        {% if compo.idJoueur1.dispos[journee.nJournee] %}
-                                            <i class="green-text material-icons">check</i>
+                                <td>
+                                    {% if compo.idJoueur1 is not null %}
+                                        {% if journee.nJournee in compo.idJoueur1.dispos|keys %}
+                                            {% if compo.idJoueur1.dispos[journee.nJournee] %}
+                                                <i class="green-text material-icons">check_circle</i>
+                                            {% else %}
+                                                <i class="red-text material-icons">highlight_off</i>
+                                            {% endif %}
                                         {% else %}
-                                            <i class="red-text material-icons">clear</i>
+                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
                                         {% endif %}
-                                    {% else %}
-                                        <i class="grey-text lighten-3 material-icons">clear</i>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -158,14 +176,16 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if journee.nJournee in compo.idJoueur2.dispos|keys %}
-                                        {% if compo.idJoueur2.dispos[journee.nJournee] %}
-                                            <i class="green-text material-icons">check</i>
+                                    {% if compo.idJoueur2 is not null %}
+                                        {% if journee.nJournee in compo.idJoueur2.dispos|keys %}
+                                            {% if compo.idJoueur2.dispos[journee.nJournee] %}
+                                                <i class="green-text material-icons">check_circle</i>
+                                            {% else %}
+                                                <i class="red-text material-icons">highlight_off</i>
+                                            {% endif %}
                                         {% else %}
-                                            <i class="red-text material-icons">clear</i>
+                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
                                         {% endif %}
-                                    {% else %}
-                                        <i class="grey-text lighten-3 material-icons">clear</i>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -185,14 +205,17 @@
                                         </div>{% if compo.idJoueur3.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
                                     {% endif %}
                                 </td>
-                                <td>{% if journee.nJournee in compo.idJoueur3.dispos|keys %}
-                                        {% if compo.idJoueur3.dispos[journee.nJournee] %}
-                                            <i class="green-text material-icons">check</i>
+                                <td>
+                                    {% if compo.idJoueur3 is not null %}
+                                        {% if journee.nJournee in compo.idJoueur3.dispos|keys %}
+                                            {% if compo.idJoueur3.dispos[journee.nJournee] %}
+                                                <i class="green-text material-icons">check_circle</i>
+                                            {% else %}
+                                                <i class="red-text material-icons">highlight_off</i>
+                                            {% endif %}
                                         {% else %}
-                                            <i class="red-text material-icons">clear</i>
+                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
                                         {% endif %}
-                                    {% else %}
-                                        <i class="grey-text lighten-3 material-icons">clear</i>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -212,14 +235,17 @@
                                         </div>{% if compo.idJoueur4.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
                                     {% endif %}
                                 </td>
-                                <td>{% if journee.nJournee in compo.idJoueur4.dispos|keys %}
-                                        {% if compo.idJoueur4.dispos[journee.nJournee] %}
-                                            <i class="green-text material-icons">check</i>
+                                <td>
+                                    {% if compo.idJoueur4 is not null %}
+                                        {% if journee.nJournee in compo.idJoueur4.dispos|keys %}
+                                            {% if compo.idJoueur4.dispos[journee.nJournee] %}
+                                                <i class="green-text material-icons">check_circle</i>
+                                            {% else %}
+                                                <i class="red-text material-icons">highlight_off</i>
+                                            {% endif %}
                                         {% else %}
-                                            <i class="red-text material-icons">clear</i>
+                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
                                         {% endif %}
-                                    {% else %}
-                                        <i class="grey-text lighten-3 material-icons">clear</i>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -250,7 +276,7 @@
                             <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
                         </td>
                         <td>
-                            {% for joueurs in selectedPlayers %}
+                            {% for joueurs in compos %}
                                 {% if dispo.idCompetiteur.idCompetiteur in joueurs %}
                                     <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
                                 {% endif %}
@@ -264,7 +290,7 @@
                             <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
                         </td>
                         <td>
-                            {% for joueurs in selectedPlayers %}
+                            {% for joueurs in compos %}
                                 {% if dispoNonDeclaree.id_competiteur in joueurs %}
                                     <i class="blue-text darken-1 material-icons">playlist_add_check</i>
                                 {% endif %}

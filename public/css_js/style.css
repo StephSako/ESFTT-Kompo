@@ -67,7 +67,7 @@ body {
     margin-right: 4px;
 }
 
-.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash {
+.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash, .bulle {
     font-family: Lobster, cursive;
 }
 
@@ -111,4 +111,11 @@ td, li, p, .btn, label {
 
 td i, .list i{
     vertical-align: text-top;
+}
+
+.bulle {
+    background: #012242;
+    text-align: center;
+    border-radius: 50%;
+    padding: 8px 10px;
 }
