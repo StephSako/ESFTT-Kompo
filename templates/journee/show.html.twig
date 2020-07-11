@@ -60,7 +60,7 @@
             {% for message in app.flashes('fail') %}
                 {{ flash.fail(message) }}
             {% endfor %}
-            
+
             <div class="card-panel center-align white-text title_journee">
                 <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m') }}</h4>
             </div>
@@ -68,7 +68,7 @@
             {% if app.user %}
                 <div class="card-panel center">
 
-                    <h5>Êtes-vous disponible pour cette journée ?</h5>
+                    <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
 
                     {% if disposJoueur is empty %}
                         <p><i>Vous n'avez pas encore partagé votre disponibilité</i></p>

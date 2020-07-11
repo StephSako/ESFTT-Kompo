@@ -76,7 +76,6 @@ class SecurityController extends AbstractController
             else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
-            //return $this->redirect($request->getUri());
         }
 
         return $this->render('security/edit.html.twig', [
