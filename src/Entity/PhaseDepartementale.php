@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\FirstPhaseRepository")
- * @ORM\Table(name="phase_1")
+ * @ORM\Entity(repositoryClass="App\Repository\PhaseDepartementaleRepository")
+ * @ORM\Table(name="phase_departementale")
  */
-class FirstPhase
+class PhaseDepartementale
 {
     /**
      * @ORM\Id()
@@ -18,9 +18,9 @@ class FirstPhase
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Journee", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
-     * @var Journee
+     * @var JourneeDepartementale
      */
     private $idJournee;
 
@@ -89,7 +89,7 @@ class FirstPhase
 
     /**
      * @param mixed $idEquipe
-     * @return FirstPhase
+     * @return PhaseDepartementale
      */
     public function setIdEquipe($idEquipe): self
     {
@@ -107,7 +107,7 @@ class FirstPhase
 
     /**
      * @param Competiteur|null $idJoueur1
-     * @return FirstPhase
+     * @return PhaseDepartementale
      */
     public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
@@ -125,7 +125,7 @@ class FirstPhase
 
     /**
      * @param Competiteur|null $idJoueur2
-     * @return FirstPhase
+     * @return PhaseDepartementale
      */
     public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
@@ -188,18 +188,18 @@ class FirstPhase
     }
 
     /**
-     * @return Journee
+     * @return JourneeDepartementale
      */
-    public function getIdJournee(): Journee
+    public function getIdJournee(): JourneeDepartementale
     {
         return $this->idJournee;
     }
 
     /**
-     * @param Journee $idJournee
+     * @param JourneeDepartementale $idJournee
      * @return $this
      */
-    public function setIdJournee(Journee $idJournee): self
+    public function setIdJournee(JourneeDepartementale $idJournee): self
     {
         $this->idJournee = $idJournee;
         return $this;

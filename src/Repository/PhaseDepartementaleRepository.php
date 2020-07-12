@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\FirstPhase;
+use App\Entity\PhaseDepartementale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method FirstPhase|null find($id, $lockMode = null, $lockVersion = null)
- * @method FirstPhase|null findOneBy(array $criteria, array $orderBy = null)
- * @method FirstPhase[]    findAll()
- * @method FirstPhase[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method PhaseDepartementale|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PhaseDepartementale|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PhaseDepartementale[]    findAll()
+ * @method PhaseDepartementale[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FirstPhaseRepository extends ServiceEntityRepository
+class PhaseDepartementaleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, FirstPhase::class);
+        parent::__construct($registry, PhaseDepartementale::class);
     }
 
     /**

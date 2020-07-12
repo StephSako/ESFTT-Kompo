@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\FirstPhase;
+use App\Entity\PhaseDepartementale;
 use App\Repository\CompetiteurRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -155,7 +155,7 @@ class FirstPhaseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => FirstPhase::class,
+            'data_class' => PhaseDepartementale::class,
             'translation_domain' => 'forms'
         ]);
     }

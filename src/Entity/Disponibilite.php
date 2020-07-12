@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Disponibilite
 {
-    public function __construct(Competiteur $competiteur, Journee $idJournee, bool $disponibilite)
+    public function __construct(Competiteur $competiteur, JourneeDepartementale $idJournee, bool $disponibilite)
     {
         $this
             ->setIdCompetiteur($competiteur)
@@ -34,11 +34,11 @@ class Disponibilite
     private $idCompetiteur;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Journee", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * })
-     * @var Journee
+     * @var JourneeDepartementale
      */
     private $idJournee;
 
@@ -81,18 +81,18 @@ class Disponibilite
     }
 
     /**
-     * @return Journee
+     * @return JourneeDepartementale
      */
-    public function getIdJournee(): Journee
+    public function getIdJournee(): JourneeDepartementale
     {
         return $this->idJournee;
     }
 
     /**
-     * @param Journee $idJournee
+     * @param JourneeDepartementale $idJournee
      * @return Disponibilite
      */
-    public function setIdJournee(Journee $idJournee): self
+    public function setIdJournee(JourneeDepartementale $idJournee): self
     {
         $this->idJournee = $idJournee;
         return $this;

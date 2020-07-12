@@ -6,10 +6,10 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\JourneeRepository")
- * @ORM\Table(name="journee")
+ * @ORM\Entity(repositoryClass="App\Repository\JourneeParisRepository")
+ * @ORM\Table(name="journee_paris")
  */
-class Journee
+class JourneeParis
 {
     /**
      * @ORM\Id()

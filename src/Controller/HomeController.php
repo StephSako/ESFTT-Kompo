@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\FirstPhase;
+use App\Entity\PhaseDepartementale;
 use App\Form\FirstPhaseType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\FirstPhaseRepository;
-use App\Repository\JourneeRepository;
+use App\Repository\PhaseDepartementaleRepository;
+use App\Repository\JourneeDepartementaleRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     /**
-     * @var FirstPhaseRepository
+     * @var PhaseDepartementaleRepository
      */
     private $phase_1_Repository;
     /**
@@ -38,18 +38,18 @@ class HomeController extends AbstractController
      */
     private $disponibiliteRepository;
     /**
-     * @var JourneeRepository
+     * @var JourneeDepartementaleRepository
      */
     private $journeeRepository;
 
     /**
-     * @param JourneeRepository $journeeRepository
+     * @param JourneeDepartementaleRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param FirstPhaseRepository $phase_1_Repository
+     * @param PhaseDepartementaleRepository $phase_1_Repository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, FirstPhaseRepository $phase_1_Repository, EntityManagerInterface $em)
+    public function __construct(JourneeDepartementaleRepository $journeeRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, PhaseDepartementaleRepository $phase_1_Repository, EntityManagerInterface $em)
     {
         $this->phase_1_Repository = $phase_1_Repository;
         $this->em = $em;
@@ -69,7 +69,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @param FirstPhase $id
+     * @param PhaseDepartementale $id
      * @return Response
      * @Route("/journee/{id}", name="journee.show")
      * @throws DBALException
@@ -99,11 +99,11 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/journee/edit/{id}", name="journee.edit")
-     * @param FirstPhase $compo
+     * @param PhaseDepartementale $compo
      * @param Request $request
      * @return Response
      */
-    public function edit(FirstPhase $compo, Request $request) : Response
+    public function edit(PhaseDepartementale $compo, Request $request) : Response
     {
         $oldPlayers = $this->phase_1_Repository->findOneBy(['id' => $compo->getId()]);
         $j1 = $oldPlayers->getIdJoueur1();

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Form\CompetiteurType;
-use App\Repository\JourneeRepository;
+use App\Repository\JourneeDepartementaleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @var JourneeRepository
+     * @var JourneeDepartementaleRepository
      */
     private $journeeRepository;
     /**
@@ -26,10 +26,10 @@ class SecurityController extends AbstractController
 
     /**
      * SecurityController constructor.
-     * @param JourneeRepository $journeeRepository
+     * @param JourneeDepartementaleRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeRepository, EntityManagerInterface $em)
+    public function __construct(JourneeDepartementaleRepository $journeeRepository, EntityManagerInterface $em)
     {
         $this->journeeRepository = $journeeRepository;
         $this->em = $em;

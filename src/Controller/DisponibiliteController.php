@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Disponibilite;
-use App\Entity\Journee;
+use App\Entity\JourneeDepartementale;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,11 +31,11 @@ class DisponibiliteController extends AbstractController
 
     /**
      * @Route("/journee/disponibilite/create/{journee}/{dispo}", name="journee.disponibilite.new")
-     * @param Journee $journee
+     * @param JourneeDepartementale $journee
      * @param $dispo
      * @return Response
      */
-    public function new(Journee $journee, $dispo):Response
+    public function new(JourneeDepartementale $journee, $dispo):Response
     {
         $dispo = new Disponibilite($this->getUser(), $journee, $dispo);
         $this->em->persist($dispo);
@@ -49,12 +49,12 @@ class DisponibiliteController extends AbstractController
 
     /**
      * @Route("/journee/disponibilite/update/{journee}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
-     * @param Journee $journee
+     * @param JourneeDepartementale $journee
      * @param Disponibilite $disposJoueur
      * @param int $dispo
      * @return Response
      */
-    public function edit(Journee $journee, Disponibilite $disposJoueur, $dispo) : Response
+    public function edit(JourneeDepartementale $journee, Disponibilite $disposJoueur, $dispo) : Response
     {
         $disposJoueur->setDisponibilite($dispo);
         $this->em->persist($disposJoueur);
