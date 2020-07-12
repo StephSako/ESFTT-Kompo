@@ -62,7 +62,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.nJournee }} - {{ journee.date|date('d/m/Y') }}</h4>
+                <h4>Journée {{ journee.nJournee }} - {{ journee.type }} - {{ journee.date|date('d/m/Y') }}</h4>
             </div>
 
             {% if app.user %}

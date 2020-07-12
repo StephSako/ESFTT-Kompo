@@ -6,6 +6,7 @@ use App\Entity\PhaseDepartementale;
 use App\Form\FirstPhaseType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\JourneeParisRepository;
 use App\Repository\PhaseDepartementaleRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use Doctrine\DBAL\DBALException;
@@ -40,22 +41,28 @@ class HomeController extends AbstractController
     /**
      * @var JourneeDepartementaleRepository
      */
-    private $journeeRepository;
+    private $journeeDepartementaleRepository;
+    /**
+     * @var JourneeParisRepository
+     */
+    private $journeeParisRepository;
 
     /**
-     * @param JourneeDepartementaleRepository $journeeRepository
+     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeParisRepository $journeeParisRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param PhaseDepartementaleRepository $phase_1_Repository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeDepartementaleRepository $journeeRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, PhaseDepartementaleRepository $phase_1_Repository, EntityManagerInterface $em)
+    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository, JourneeParisRepository $journeeParisRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, PhaseDepartementaleRepository $phase_1_Repository, EntityManagerInterface $em)
     {
         $this->phase_1_Repository = $phase_1_Repository;
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
-        $this->journeeRepository = $journeeRepository;
+        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->journeeParisRepository = $journeeParisRepository;
     }
 
     /**
@@ -64,30 +71,42 @@ class HomeController extends AbstractController
     public function indexAction()
     {
         return $this->redirectToRoute('journee.show', [
+            'type' => 'departemental',
             'id' => 1
-        ]); //TODO Redirect à la prochaine journée
+        ]);
     }
 
     /**
+     * @param $type
      * @param PhaseDepartementale $id
      * @return Response
-     * @Route("/journee/{id}", name="journee.show")
      * @throws DBALException
+     * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journeeShow($id)
+    public function journeeShow($type, $id) //TODO Correct journée(s)
     {
         $joueursDeclares = $this->disponibiliteRepository->findAllDispos($id);
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id);
         $disposJoueur = $this->getUser() ? $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
         $compos = $this->phase_1_Repository->findBy(['idJournee' =>$id]);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        $journees = $this->journeeRepository->findAll();
-        $journee = ($journees[$id - 1]);
+        $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
+        $journeesParis = $this->journeeParisRepository->findAll();
+
         $selectedPlayers = $this->phase_1_Repository->getSelectedPlayers($compos);
+
+        $journee = null;
+        if ($type === 'departemental'){
+            $journee = $this->journeeDepartementaleRepository->find($id);
+        }
+        else if ($type === 'paris'){
+            $journee = $this->journeeParisRepository->find($id);
+        }
 
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
-            'journees' => $journees,
+            'journeesDepartementales' => $journeesDepartementales,
+            'journeesParis' => $journeesParis,
             'compos' => $compos,
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,

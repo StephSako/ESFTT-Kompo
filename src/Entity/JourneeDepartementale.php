@@ -30,6 +30,45 @@ class JourneeDepartementale
     private $date;
 
     /**
+     * @var String
+     */
+    private $type = 'Départemental';
+
+    /**
+     * @return String
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @var String
+     */
+    private $shortType = 'D';
+
+    /**
+     * @return String
+     */
+    public function getShortType(): string
+    {
+        return $this->shortType;
+    }
+
+    /**
+     * @var String
+     */
+    private $linkType = 'departemental';
+
+    /**
+     * @return String
+     */
+    public function getLinkType(): string
+    {
+        return $this->linkType;
+    }
+
+    /**
      * @return mixed
      */
     public function getIdJournee()

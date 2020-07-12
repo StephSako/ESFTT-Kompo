@@ -30,6 +30,45 @@ class JourneeParis
     private $date;
 
     /**
+     * @var String
+     */
+    private $type = 'Champ. de Paris';
+
+    /**
+     * @return String
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @var String
+     */
+    private $shortType = 'P';
+
+    /**
+     * @return String
+     */
+    public function getShortType(): string
+    {
+        return $this->shortType;
+    }
+
+    /**
+     * @var String
+     */
+    private $linkType = 'paris';
+
+    /**
+     * @return String
+     */
+    public function getLinkType(): string
+    {
+        return $this->linkType;
+    }
+
+    /**
      * @return mixed
      */
     public function getIdJournee()

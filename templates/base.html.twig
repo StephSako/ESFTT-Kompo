@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <link rel="icon" href="{{ asset('images/icon.svg') }}">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
@@ -21,10 +20,13 @@
 
         {% block body %}{% endblock %}
 
-        <!--Scripts trigger de Materialize-->
+        <!--Scripts trigger de JQuery-->
         <script type="text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <!--Scripts trigger de Materialize-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <!--Scripts perso -->
         <script src="{{ asset('css_js/script.js') }}"></script>
+        <!--Scripts trigger de Nice-Select-->
         <script src="{{ asset('jquery-nice-select-1.1.0/js/jquery.nice-select.min.js') }}"></script>
     </body>
 </html>
