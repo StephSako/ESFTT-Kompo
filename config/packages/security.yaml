@@ -14,10 +14,10 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-                default_target_path: /journee/1
+                default_target_path: /journee/departementale/1
             logout:
                 path: /logout
-                target: /journee/1
+                target: /journee/departementale/1
 
     access_control:
         - { path: ^/journee/edit, roles: ROLE_CAPITAINE }

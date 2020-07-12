@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Disponibilite;
-use App\Entity\JourneeDepartementale;
+use App\Entity\DisponibiliteDepartementale;
+use App\Entity\DisponibiliteParis;
+use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteParisRepository;
+use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,49 +24,99 @@ class DisponibiliteController extends AbstractController
      * @var EntityManagerInterface
      */
     private $em;
+    /**
+     * @var JourneeParisRepository
+     */
+    private $journeeParisRepository;
+    /**
+     * @var JourneeDepartementaleRepository
+     */
+    private $journeeDepartementaleRepository;
+    /**
+     * @var DisponibiliteDepartementaleRepository
+     */
+    private $disponibiliteDepartementaleRepository;
+    /**
+     * @var DisponibiliteParisRepository
+     */
+    private $disponibiliteParisRepository;
 
     /**
      * @param EntityManagerInterface $em
+     * @param JourneeParisRepository $journeeParisRepository
+     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementale
+     * @param DisponibiliteParisRepository $disponibiliteParis
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em,
+                                JourneeParisRepository $journeeParisRepository,
+                                JourneeDepartementaleRepository $journeeDepartementaleRepository,
+                                DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
+                                DisponibiliteParisRepository $disponibiliteParisRepository)
     {
         $this->em = $em;
+        $this->journeeParisRepository = $journeeParisRepository;
+        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
+        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
     }
 
     /**
-     * @Route("/journee/disponibilite/create/{journee}/{dispo}", name="journee.disponibilite.new")
-     * @param JourneeDepartementale $journee
-     * @param $dispo
+     * @Route("/journee/disponibilite/new/{journee}/{type}/{dispo}", name="journee.disponibilite.new")
+     * @param $journee
+     * @param string $type
+     * @param int $dispo
      * @return Response
      */
-    public function new(JourneeDepartementale $journee, $dispo):Response
+    public function newDispoDepartementale($journee, $type, $dispo):Response
     {
-        $dispo = new Disponibilite($this->getUser(), $journee, $dispo);
+        if ($type == 'departementale'){
+            $journee = $this->journeeDepartementaleRepository->find($journee);
+            $dispo = new DisponibiliteDepartementale($this->getUser(), $journee, $dispo);
+        }
+        else if ($type == 'paris'){
+            $journee = $this->journeeParisRepository->find($journee);
+            $dispo = new DisponibiliteParis($this->getUser(), $journee, $dispo);
+        }
+
         $this->em->persist($dispo);
         $this->em->flush();
+
         return $this->redirectToRoute('journee.show',
             array(
+                'type' => $type,
                 'id' => $journee->getNJournee()
             )
         );
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{journee}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
-     * @param JourneeDepartementale $journee
-     * @param Disponibilite $disposJoueur
-     * @param int $dispo
+     * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}/{NJournee}", name="journee.disponibilite.update")
+     * @param $journee
+     * @param string $type
+     * @param $disposJoueur
+     * @param bool $dispo
+     * @param int $NJournee
      * @return Response
      */
-    public function edit(JourneeDepartementale $journee, Disponibilite $disposJoueur, $dispo) : Response
+    public function update($journee, $type, $disposJoueur, bool $dispo, $NJournee) : Response
     {
-        $disposJoueur->setDisponibilite($dispo);
+        if ($type == 'departementale'){
+            $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
+            $disposJoueur->setDisponibiliteDepartementale($dispo);
+        }
+        else if ($type == 'paris'){
+            $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
+            $disposJoueur->setDisponibiliteParis($dispo);
+        }
+
         $this->em->persist($disposJoueur);
         $this->em->flush();
 
         return $this->redirectToRoute('journee.show',
             array(
-                'id' => $journee->getNJournee()
+                'type' => $type,
+                'id' => $NJournee
             )
         );
     }

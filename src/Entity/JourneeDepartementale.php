@@ -32,7 +32,7 @@ class JourneeDepartementale
     /**
      * @var String
      */
-    private $type = 'Départemental';
+    private $type = 'Départementale';
 
     /**
      * @return String
@@ -58,7 +58,7 @@ class JourneeDepartementale
     /**
      * @var String
      */
-    private $linkType = 'departemental';
+    private $linkType = 'departementale';
 
     /**
      * @return String

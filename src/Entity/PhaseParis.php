@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PhaseDepartementaleRepository")
- * @ORM\Table(name="phase_departementale")
+ * @ORM\Entity(repositoryClass="App\Repository\PhaseParisRepository")
+ * @ORM\Table(name="phase_paris")
  */
-class PhaseDepartementale
+class PhaseParis
 {
     /**
      * @ORM\Id()
@@ -17,22 +17,14 @@ class PhaseDepartementale
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
-     * @var JourneeDepartementale
-     */
-    private $idJournee;
-
-    /**
-     * @var string
-     */
     private $division;
 
     /**
-     * @ORM\Column(type="integer", name="id_equipe")
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * @var JourneeParis
      */
-    private $idEquipe;
+    private $idJournee;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
@@ -63,6 +55,26 @@ class PhaseDepartementale
     private $idJoueur4;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_joueur_5", referencedColumnName="id_competiteur")
+     * @var Competiteur
+     */
+    private $idJoueur5;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_joueur_6", referencedColumnName="id_competiteur")
+     * @var Competiteur
+     */
+    private $idJoueur6;
+
+    /**
+     * @var String
+     * @ORM\Column(name="equipe", type="string", length=10)
+     */
+    private $equipe;
+
+    /**
      * @var String
      * @ORM\Column(name="lieu", type="string", length=100)
      */
@@ -85,24 +97,6 @@ class PhaseDepartementale
     }
 
     /**
-     * @return int|null
-     */
-    public function getIdEquipe(): ?int
-    {
-        return $this->idEquipe;
-    }
-
-    /**
-     * @param mixed $idEquipe
-     * @return PhaseDepartementale
-     */
-    public function setIdEquipe($idEquipe): self
-    {
-        $this->idEquipe = $idEquipe;
-        return $this;
-    }
-
-    /**
      * @return Competiteur|null
      */
     public function getIdJoueur1(): ?Competiteur
@@ -112,7 +106,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur1
-     * @return PhaseDepartementale
+     * @return PhaseParis
      */
     public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
@@ -130,7 +124,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur2
-     * @return PhaseDepartementale
+     * @return PhaseParis
      */
     public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
@@ -148,7 +142,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur3
-     * @return PhaseDepartementale
+     * @return PhaseParis
      */
     public function setIdJoueur3(?Competiteur $idJoueur3): self
     {
@@ -166,11 +160,47 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur4
-     * @return PhaseDepartementale
+     * @return PhaseParis
      */
     public function setIdJoueur4(?Competiteur $idJoueur4): self
     {
         $this->idJoueur4 = $idJoueur4;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur5(): ?Competiteur
+    {
+        return $this->idJoueur5;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur5
+     * @return PhaseParis
+     */
+    public function setIdJoueur5(?Competiteur $idJoueur5): self
+    {
+        $this->idJoueur5 = $idJoueur5;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur6(): ?Competiteur
+    {
+        return $this->idJoueur6;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur6
+     * @return PhaseParis
+     */
+    public function setIdJoueur6(?Competiteur $idJoueur6): self
+    {
+        $this->idJoueur6 = $idJoueur6;
         return $this;
     }
 
@@ -184,7 +214,7 @@ class PhaseDepartementale
 
     /**
      * @param $id
-     * @return PhaseDepartementale
+     * @return PhaseParis
      */
     public function setId($id): self
     {
@@ -193,18 +223,18 @@ class PhaseDepartementale
     }
 
     /**
-     * @return JourneeDepartementale
+     * @return JourneeParis
      */
-    public function getIdJournee(): JourneeDepartementale
+    public function getIdJournee(): JourneeParis
     {
         return $this->idJournee;
     }
 
     /**
-     * @param JourneeDepartementale $idJournee
-     * @return PhaseDepartementale
+     * @param JourneeParis $idJournee
+     * @return PhaseParis
      */
-    public function setIdJournee(JourneeDepartementale $idJournee): self
+    public function setIdJournee(JourneeParis $idJournee): self
     {
         $this->idJournee = $idJournee;
         return $this;
@@ -215,7 +245,23 @@ class PhaseDepartementale
      */
     public function getDivision(): string
     {
-        $divisions = ["PR", "PR", "D2", "D3"];
-        return $divisions[$this->idEquipe - 1];
+        if ($this->getEquipe() == 'haut') return "PR";
+        else if ($this->getEquipe() == 'bas') return "D2";
+    }
+
+    /**
+     * @return String
+     */
+    public function getEquipe(): string
+    {
+        return $this->equipe;
+    }
+
+    /**
+     * @param String $equipe
+     */
+    public function setEquipe(string $equipe): void
+    {
+        $this->equipe = $equipe;
     }
 }

@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\Disponibilite;
+use App\Entity\DisponibiliteParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Disponibilite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Disponibilite|null findOneBy(array $criteria, array $orderBy = null)
- * @method Disponibilite[]    findAll()
- * @method Disponibilite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method DisponibiliteParis|null find($id, $lockMode = null, $lockVersion = null)
+ * @method DisponibiliteParis|null findOneBy(array $criteria, array $orderBy = null)
+ * @method DisponibiliteParis[]    findAll()
+ * @method DisponibiliteParis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DisponibiliteRepository extends ServiceEntityRepository
+class DisponibiliteParisRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Disponibilite::class);
+        parent::__construct($registry, DisponibiliteParis::class);
     }
 
     /**

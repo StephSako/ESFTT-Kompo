@@ -5,16 +5,16 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteRepository")
- * @ORM\Table(name="disponibilite")
+ * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteDepartementaleRepository")
+ * @ORM\Table(name="disponibilite_departementale")
  */
-class Disponibilite
+class DisponibiliteDepartementale
 {
-    public function __construct(Competiteur $competiteur, JourneeDepartementale $idJournee, bool $disponibilite)
+    public function __construct(Competiteur $competiteur, $idJournee, bool $disponibilite)
     {
         $this
             ->setIdCompetiteur($competiteur)
-            ->setDisponibilite($disponibilite)
+            ->setDisponibiliteDepartementale($disponibilite)
             ->setIdJournee($idJournee);
     }
 
@@ -26,7 +26,7 @@ class Disponibilite
     private $idDisponibilite;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementales")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
      * })
@@ -90,7 +90,7 @@ class Disponibilite
 
     /**
      * @param JourneeDepartementale $idJournee
-     * @return Disponibilite
+     * @return DisponibiliteDepartementale
      */
     public function setIdJournee(JourneeDepartementale $idJournee): self
     {
@@ -110,7 +110,7 @@ class Disponibilite
      * @param bool $disponibilite
      * @return $this
      */
-    public function setDisponibilite(bool $disponibilite): self
+    public function setDisponibiliteDepartementale(bool $disponibilite): self
     {
         $this->disponibilite = $disponibilite;
         return $this;

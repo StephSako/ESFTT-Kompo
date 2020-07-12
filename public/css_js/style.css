@@ -73,7 +73,7 @@ body {
     padding-bottom: 4px;
 }
 
-.nav-wrapper li:hover {
+.nav-wrapper li:hover, .dropdown-content li a:hover {
     background-color: #1565c0;
 }
 
@@ -116,6 +116,10 @@ td i, .list i{
     padding: 8px 10px;
 }
 
-.li_in_line a, thead th, nav ul a {
-    font-size: 20px;
+.li_in_line a, thead th, nav ul a, .dropdown-content li>a {
+    font-size: 18px;
+}
+
+.header_compo {
+    margin-bottom: 0;
 }

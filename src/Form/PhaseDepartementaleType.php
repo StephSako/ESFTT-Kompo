@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FirstPhaseType extends AbstractType
+class PhaseDepartementaleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

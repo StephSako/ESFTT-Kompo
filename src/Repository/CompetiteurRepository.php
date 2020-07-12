@@ -22,16 +22,17 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * @param $idJournee
+     * @param $tableDispo
      * @return mixed[]
      * @throws DBALException
      */
-    public function findJoueursNonDeclares($idJournee)
+    public function findJoueursNonDeclares($idJournee, $tableDispo)
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT competiteur.nom, competiteur.id_competiteur"
             . " FROM competiteur"
             . " WHERE competiteur.id_competiteur NOT IN (SELECT DISTINCT id_competiteur"
-										. " FROM disponibilite"
+										. " FROM " . $tableDispo . ""
                                         . " WHERE id_journee = " . $idJournee . ")"
             . " ORDER BY competiteur.nom";
         $stmt = $conn->prepare($sql);

@@ -76,9 +76,14 @@ class Competiteur implements UserInterface, Serializable
     private $brulage;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur")
+     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
      */
-    private $dispos;
+    private $disposDepartementales;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur")
+     */
+    private $disposParis;
     //TODO Issue
 
     /**
@@ -266,10 +271,10 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int[]
      */
-    public function getDispos()
+    public function getDisposDepartemental()
     {
         $disposId = [];
-        foreach ($this->dispos as $dispo){
+        foreach ($this->disposDepartementales as $dispo){
             $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
         }
         return $disposId;
@@ -277,10 +282,34 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @param mixed $dispos
+     * @return Competiteur
      */
-    public function setDispos($dispos): void
+    public function setDisposDepartemental($dispos): self
     {
-        $this->dispos = $dispos;
+        $this->disposDepartementales = $dispos;
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getDisposParis()
+    {
+        $disposId = [];
+        foreach ($this->disposParis as $dispo){
+            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+        return $disposId;
+    }
+
+    /**
+     * @param mixed $dispos
+     * @return Competiteur
+     */
+    public function setDisposParis($dispos): self
+    {
+        $this->disposParis = $dispos;
+        return $this;
     }
 
 }

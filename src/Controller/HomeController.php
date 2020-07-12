@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\PhaseDepartementale;
-use App\Form\FirstPhaseType;
+use App\Form\PhaseDepartementaleType;
 use App\Repository\CompetiteurRepository;
-use App\Repository\DisponibiliteRepository;
+use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteParisRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\PhaseDepartementaleRepository;
 use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\PhaseParisRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +27,7 @@ class HomeController extends AbstractController
     /**
      * @var PhaseDepartementaleRepository
      */
-    private $phase_1_Repository;
+    private $phaseDepartementaleRepository;
     /**
      * @var EntityManagerInterface
      */
@@ -35,9 +37,13 @@ class HomeController extends AbstractController
      */
     private $competiteurRepository;
     /**
-     * @var DisponibiliteRepository
+     * @var DisponibiliteDepartementaleRepository
      */
-    private $disponibiliteRepository;
+    private $disponibiliteDepartementaleRepository;
+    /**
+     * @var DisponibiliteParisRepository
+     */
+    private $disponibiliteParisRepository;
     /**
      * @var JourneeDepartementaleRepository
      */
@@ -46,23 +52,38 @@ class HomeController extends AbstractController
      * @var JourneeParisRepository
      */
     private $journeeParisRepository;
+    /**
+     * @var PhaseParisRepository
+     */
+    private $phaseParisRepository;
 
     /**
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
-     * @param DisponibiliteRepository $disponibiliteRepository
+     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
+     * @param DisponibiliteParisRepository $disponibiliteParisRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param PhaseDepartementaleRepository $phase_1_Repository
+     * @param PhaseDepartementaleRepository $phaseDepartementaleRepository
+     * @param PhaseParisRepository $phaseParisRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository, JourneeParisRepository $journeeParisRepository, DisponibiliteRepository $disponibiliteRepository, CompetiteurRepository $competiteurRepository, PhaseDepartementaleRepository $phase_1_Repository, EntityManagerInterface $em)
+    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
+                                JourneeParisRepository $journeeParisRepository,
+                                DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
+                                DisponibiliteParisRepository $disponibiliteParisRepository,
+                                CompetiteurRepository $competiteurRepository,
+                                PhaseDepartementaleRepository $phaseDepartementaleRepository,
+                                PhaseParisRepository $phaseParisRepository,
+                                EntityManagerInterface $em)
     {
-        $this->phase_1_Repository = $phase_1_Repository;
         $this->em = $em;
+        $this->phaseDepartementaleRepository = $phaseDepartementaleRepository;
         $this->competiteurRepository = $competiteurRepository;
-        $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
+        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
         $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->journeeParisRepository = $journeeParisRepository;
+        $this->phaseParisRepository = $phaseParisRepository;
     }
 
     /**
@@ -71,7 +92,7 @@ class HomeController extends AbstractController
     public function indexAction()
     {
         return $this->redirectToRoute('journee.show', [
-            'type' => 'departemental',
+            'type' => 'departementale',
             'id' => 1
         ]);
     }
@@ -83,24 +104,28 @@ class HomeController extends AbstractController
      * @throws DBALException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journeeShow($type, $id) //TODO Correct journée(s)
+    public function journeeShow($type, $id) //TODO Correct journée(s) entre paris et departemental
     {
-        $joueursDeclares = $this->disponibiliteRepository->findAllDispos($id);
-        $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id);
-        $disposJoueur = $this->getUser() ? $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-        $compos = $this->phase_1_Repository->findBy(['idJournee' =>$id]);
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
+
         $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
         $journeesParis = $this->journeeParisRepository->findAll();
 
-        $selectedPlayers = $this->phase_1_Repository->getSelectedPlayers($compos);
-
-        $journee = null;
-        if ($type === 'departemental'){
+        if ($type === 'departementale'){
+            $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeDepartementaleRepository->find($id);
+            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDispos($id);
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
+            $compos = $this->phaseDepartementaleRepository->findBy(['idJournee' =>$id]);
+            $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($compos);
         }
         else if ($type === 'paris'){
+            $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
+            $joueursDeclares = $this->disponibiliteParisRepository->findAllDispos($id);
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
+            $compos = $this->phaseParisRepository->findBy(['idJournee' =>$id]);
+            $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($compos);
         }
 
         return $this->render('journee/show.html.twig', [
@@ -117,20 +142,21 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/journee/edit/{id}", name="journee.edit")
+     * @Route("/journee/edit/{type}/{id}", name="journee.edit")
+     * @param $type
      * @param PhaseDepartementale $compo
      * @param Request $request
      * @return Response
      */
-    public function edit(PhaseDepartementale $compo, Request $request) : Response
-    {
-        $oldPlayers = $this->phase_1_Repository->findOneBy(['id' => $compo->getId()]);
+    public function edit($type, PhaseDepartementale $compo, Request $request) : Response
+    { //TODO Considéré selon le type
+        $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
         $j1 = $oldPlayers->getIdJoueur1();
         $j2 = $oldPlayers->getIdJoueur2();
         $j3 = $oldPlayers->getIdJoueur3();
         $j4 = $oldPlayers->getIdJoueur4();
 
-        $form = $this->createForm(FirstPhaseType::class, $compo);
+        $form = $this->createForm(PhaseDepartementaleType::class, $compo);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -188,17 +214,20 @@ class HomeController extends AbstractController
             $this->addFlash('success', 'Composition modifiée avec succès !');
 
             return $this->redirectToRoute('journee.show', [
+                'type' => $compo->getIdJournee()->getLinkType(),
                 'id' => $compo->getIdJournee()->getNJournee()
             ]);
         }
 
         $burntPlayers = $this->competiteurRepository->findBurnPlayers($compo->getIdEquipe());
         $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayers($compo->getIdEquipe());
-        $journees = $this->journeeRepository->findAll();
+        $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
+        $journeesParis = $this->journeeParisRepository->findAll();
         return $this->render('journee/edit.html.twig', [
             'burntPlayers' => $burntPlayers,
             'almostBurntPlayers' => $almostBurntPlayers,
-            'journees' => $journees,
+            'journeesDepartementales' => $journeesDepartementales,
+            'journeesParis' => $journeesParis,
             'compo' => $compo,
             'form' => $form->createView()
         ]);
