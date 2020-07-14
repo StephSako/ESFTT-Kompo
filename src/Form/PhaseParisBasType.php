@@ -17,7 +17,6 @@ class PhaseParisBasType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO Gérer les brûlés
         $builder
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\CompetiteurType;
 use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,22 +17,30 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @var JourneeDepartementaleRepository
-     */
-    private $journeeRepository;
-    /**
      * @var EntityManagerInterface
      */
     private $em;
+    /**
+     * @var JourneeDepartementaleRepository
+     */
+    private $journeeDepartementaleRepository;
+    /**
+     * @var JourneeParisRepository
+     */
+    private $journeeParisRepository;
 
     /**
      * SecurityController constructor.
-     * @param JourneeDepartementaleRepository $journeeRepository
+     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeParisRepository $journeeParisRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeDepartementaleRepository $journeeRepository, EntityManagerInterface $em)
+    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
+                                JourneeParisRepository $journeeParisRepository,
+                                EntityManagerInterface $em)
     {
-        $this->journeeRepository = $journeeRepository;
+        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->journeeParisRepository = $journeeParisRepository;
         $this->em = $em;
     }
 
@@ -42,16 +51,20 @@ class SecurityController extends AbstractController
      */
     public function loginAction(AuthenticationUtils $utils)
     {
-        $journees = $this->journeeRepository->findAll();
+        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
+        $journeesParis = $this->journeeDepartementaleRepository->findAll();
+
         if ($this->getUser() == null) {
             return $this->render('security/login.html.twig', [
-                'journees' => $journees,
+                'journeesDepartementales' => $journeesDepartementale,
+                'journeesParis' => $journeesParis,
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
             ]);
         }
         else return $this->render('security/alreadyConnected.html.twig',[
-            'journees' => $journees
+            'journeesDepartementales' => $journeesDepartementale,
+            'journeesParis' => $journeesParis,
         ]);
     }
 
@@ -61,7 +74,8 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function home(Request $request){
-        $journees = $this->journeeRepository->findAll();
+        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
+        $journeesParis = $this->journeeDepartementaleRepository->findAll();
         $user = $this->getUser();
         // TODO View to modify competiteur's dispos
 
@@ -80,7 +94,8 @@ class SecurityController extends AbstractController
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
-            'journees' => $journees,
+            'journeesDepartementales' => $journeesDepartementale,
+            'journeesParis' => $journeesParis,
             'formCompetiteur' => $formCompetiteur->createView()
         ]);
     }
@@ -92,7 +107,8 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
-        $journees = $this->journeeRepository->findAll();
+        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
+        $journeesParis = $this->journeeDepartementaleRepository->findAll();
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
@@ -111,7 +127,8 @@ class SecurityController extends AbstractController
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
-            'journees' => $journees,
+            'journeesDepartementales' => $journeesDepartementale,
+            'journeesParis' => $journeesParis,
             'formCompetiteur' => $formCompetiteur->createView()
         ]);
     }

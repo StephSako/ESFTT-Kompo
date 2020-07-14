@@ -89,7 +89,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur")
      */
     private $disposParis;
-    //TODO Issue
 
     /**
      * @return array

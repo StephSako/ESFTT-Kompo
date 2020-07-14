@@ -5,6 +5,8 @@
 
 {% block body %}
 
+    {% include("components/navbar.html.twig") %}
+
     <div class="container">
         <div class="card-panel center-align">
             <h3>Se connecter</h3>
@@ -14,12 +16,12 @@
             {% endif %}
 
             <form action="{{ path('login') }}" method="POST">
-                <div class="row">
-                    <div class="input-field col s6">
+                <div class="container">
+                    <div class="input-field">
                         <input id="username" name="_username" type="text" class="validate" value="{{ lastUsername }}">
                         <label for="username">Votre pseudo</label>
                     </div>
-                    <div class="input-field col s6">
+                    <div class="input-field">
                         <input id="password" name="_password" type="password" class="validate">
                         <label for="password">Votre mot de passe</label>
                     </div>

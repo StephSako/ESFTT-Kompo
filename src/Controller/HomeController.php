@@ -326,8 +326,6 @@ class HomeController extends AbstractController
             ]);
         }
 
-        //TODO Liste des brûlés à faire pour champ. de Paris
-
         if ($type === 'departementale'){
             $burntPlayers = $this->competiteurRepository->findBurnPlayersDepartementale($compo->getIdEquipe());
             $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersDepartementale($compo->getIdEquipe());

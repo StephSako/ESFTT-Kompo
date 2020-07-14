@@ -82,9 +82,17 @@ body {
 }
 
 .nav-extended, .title_journee {
+    background: #012242;
+}
+
+.nav-extended {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.title_journee {
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #012242;
 }
 
 .title_journee {
