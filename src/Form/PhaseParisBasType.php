@@ -17,6 +17,7 @@ class PhaseParisBasType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        //TODO Gérer les brûlés
         $builder
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
@@ -33,18 +34,7 @@ class PhaseParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
-                            break;
-                        case 3:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
-                            break;
-                        case 4:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
                             break;
                     }
                     return $query->orderBy('c.nom', 'ASC');
@@ -65,18 +55,7 @@ class PhaseParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
-                            break;
-                        case 3:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
-                            break;
-                        case 4:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
                             break;
                     }
 
@@ -98,18 +77,7 @@ class PhaseParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
-                            break;
-                        case 3:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
-                            break;
-                        case 4:
-                            $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
                             break;
                     }
 

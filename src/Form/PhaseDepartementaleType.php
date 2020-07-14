@@ -33,18 +33,18 @@ class PhaseDepartementaleType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
                     return $query->orderBy('c.nom', 'ASC');
@@ -65,18 +65,18 @@ class PhaseDepartementaleType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
 
@@ -98,18 +98,18 @@ class PhaseDepartementaleType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
 
@@ -131,18 +131,18 @@ class PhaseDepartementaleType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulage, '$.1') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                                ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
 

@@ -15,8 +15,10 @@
                     <th><h5>Brûlages</h5></th>
                     <th><h5>1</h5></th>
                     <th><h5>2</h5></th>
-                    <th><h5>3</h5></th>
-                    <th><h5>4</h5></th>
+                    {% if journee.linkType == 'departementale' %}
+                        <th><h5>3</h5></th>
+                        <th><h5>4</h5></th>
+                    {% endif %}
                 </tr>
                 </thead>
 
@@ -24,29 +26,43 @@
                 {% for joueurBrule in competiteurs %}
                     <tr>
                         <td>{{ joueurBrule.nom }}</td>
-                        <td>
-                            {% if 1 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">error_outline</i>
-                            {% endif %}</td>
-                        <td>
-                            {% if 2 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">highlight_off</i>
-                            {% elseif 2 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">error_outline</i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if 3 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">highlight_off</i>
-                            {% elseif 3 in joueurBrule.FirstBurntTeam["almost"] %}
-                                <i class="orange-text lighten-1 material-icons">error_outline</i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if 4 in joueurBrule.FirstBurntTeam["burnt"] %}
-                                <i class="red-text lighten-1 material-icons">highlight_off</i>
-                            {% endif %}
-                        </td>
+                        {% if journee.linkType == 'departementale' %}
+                            <td>
+                                {% if 1 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
+                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
+                                {% endif %}</td>
+                            <td>
+                                {% if 2 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
+                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
+                                {% elseif 2 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
+                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if 3 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
+                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
+                                {% elseif 3 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
+                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if 4 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
+                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
+                                {% endif %}
+                            </td>
+                        {% elseif journee.linkType == 'paris' %}
+                            <td>
+                                {% if 1 in joueurBrule.FirstBurntTeamParis["almost"] %}
+                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
+                                {% endif %}</td>
+                            <td>
+                                {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
+                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
+                                {% elseif 2 in joueurBrule.FirstBurntTeamParis["almost"] %}
+                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

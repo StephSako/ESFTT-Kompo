@@ -71,9 +71,14 @@ class Competiteur implements UserInterface, Serializable
     private $avatar;
 
     /**
-     * @ORM\Column(type="json", name="brulage")
+     * @ORM\Column(type="json", name="brulageDepartemental")
      */
-    private $brulage;
+    private $brulageDepartemental;
+
+    /**
+     * @ORM\Column(type="json", name="brulageParis")
+     */
+    private $brulageParis;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
@@ -89,18 +94,18 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return array
      */
-    public function getBrulage(): array
+    public function getBrulageDepartemental(): array
     {
-        return $this->brulage;
+        return $this->brulageDepartemental;
     }
 
     /**
-     * @param mixed $brulage
+     * @param mixed $brulageDepartemental
      * @return Competiteur
      */
-    public function setBrulage($brulage): self
+    public function setBrulageDepartemental($brulageDepartemental): self
     {
-        $this->brulage = $brulage;
+        $this->brulageDepartemental = $brulageDepartemental;
         return $this;
     }
 
@@ -235,29 +240,44 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param $idEquipe
      * @return string
      */
-    public function getPlayersChips($idEquipe){
+    public function getPlayersChips(){
         return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. "</div>";
     }
 
     /**
      * @return array[]
      */
-    public function getFirstBurntTeam(){
-        $brulage = [];
+    public function getFirstBurntTeamDepartemental(){
+        $brulageDepartemental = [];
         $almost = [];
 
-        if ($this->brulage[1] == 1) array_push($almost, 1);
-        if ($this->brulage[2] == 1) array_push($almost, 2);
-        if ($this->brulage[3] == 1) array_push($almost, 3);
+        if ($this->brulageDepartemental[1] == 1) array_push($almost, 1);
+        if ($this->brulageDepartemental[2] == 1) array_push($almost, 2);
+        if ($this->brulageDepartemental[3] == 1) array_push($almost, 3);
 
-        if ($this->brulage[1] >= 2) array_push($brulage, 2, 3, 4);
-        else if ($this->brulage[2] >= 2) array_push($brulage, 3, 4);
-        else if ($this->brulage[3] >= 2) array_push($brulage, 4);
+        if ($this->brulageDepartemental[1] >= 2) array_push($brulageDepartemental, 2, 3, 4);
+        else if ($this->brulageDepartemental[2] >= 2) array_push($brulageDepartemental, 3, 4);
+        else if ($this->brulageDepartemental[3] >= 2) array_push($brulageDepartemental, 4);
 
-        return ["almost" => $almost, "burnt" =>$brulage];
+        return ["almost" => $almost, "burnt" =>$brulageDepartemental];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getFirstBurntTeamParis(){
+        $brulageParis = [];
+        $almost = [];
+
+        if ($this->brulageParis[1] == 1) array_push($almost, 1);
+        if ($this->brulageParis[2] == 1) array_push($almost, 2);
+
+        if ($this->brulageParis[1] >= 2) array_push($brulageParis, 2, 3, 4);
+        else if ($this->brulageParis[2] >= 2) array_push($brulageParis, 3, 4);
+
+        return ["almost" => $almost, "burnt" =>$brulageParis];
     }
 
     /**
@@ -310,6 +330,22 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->disposParis = $dispos;
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrulageParis()
+    {
+        return $this->brulageParis;
+    }
+
+    /**
+     * @param mixed $brulageParis
+     */
+    public function setBrulageParis($brulageParis): void
+    {
+        $this->brulageParis = $brulageParis;
     }
 
 }

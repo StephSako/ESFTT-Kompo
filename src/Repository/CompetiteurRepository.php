@@ -53,18 +53,18 @@ class CompetiteurRepository extends ServiceEntityRepository
         switch ($idTeam) {
             case 2:
                 $query = $query
-                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2");
+                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2");
                 break;
             case 3:
                 $query = $query
-                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2");
+                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2")
+                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.2') >= 2");
                 break;
             case 4:
                 $query = $query
-                    ->where("JSON_VALUE(c.brulage, '$.1') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulage, '$.2') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulage, '$.3') >= 2");
+                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2")
+                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.2') >= 2")
+                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.3') >= 2");
                 break;
         }
 
@@ -82,18 +82,18 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAlmostBurnPlayers($idTeam)
     {
         $query = $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulage, '$." . $idTeam . "') = 1")
-            ->andWhere("JSON_VALUE(c.brulage, '$.1') < 2");
+            ->where("JSON_VALUE(c.brulageDepartemental, '$." . $idTeam . "') = 1")
+            ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
 
         switch ($idTeam) {
             case 3:
                 $query = $query
-                    ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2");
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                 break;
             case 4:
                 $query = $query
-                    ->andWhere("JSON_VALUE(c.brulage, '$.2') < 2")
-                    ->andWhere("JSON_VALUE(c.brulage, '$.3') < 2");
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                 break;
         }
         return $query
