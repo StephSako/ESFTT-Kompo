@@ -109,8 +109,8 @@ td, li, p, .btn, label {
     width: 40px;
 }
 
-td i, .list i{
-    vertical-align: text-top;
+i {
+    vertical-align: bottom;
 }
 
 .bulle {

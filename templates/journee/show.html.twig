@@ -9,10 +9,10 @@
 
     <div class="row">
         <div class="col s3">
-            <table class="centered highlight card-panel dispos">
+            <table class="centered striped card-panel dispos">
                 <thead>
                 <tr>
-                    <th><h5>Brûlages</h5></th>
+                    <th><h5>Brûlages <i class="orange-text material-icons">whatshot</i></h5></th>
                     <th><h5>1</h5></th>
                     <th><h5>2</h5></th>
                     {% if journee.linkType == 'departementale' %}
@@ -134,7 +134,7 @@
                         <h5 class="col {% if journee.linkType == 'departementale' %}s3{% else %}s5{% endif %}">{{ journee.date|date('d/m') }}</h5>
                         <h5 class="col {% if journee.linkType == 'departementale' %}s3{% else %}s5{% endif %}">{{ compo.lieu }}</h5>
                     </div>
-                    <table class="highlight centered">
+                    <table class="striped centered">
                         <thead>
                             <tr>
                                 <th></th>
@@ -375,10 +375,10 @@
             {% endfor %}
         </div>
         <div class="col s3">
-            <table class="centered highlight card-panel dispos">
+            <table class="centered striped card-panel dispos">
                 <thead>
                     <tr>
-                        <th><h5>Les dispos</h5></th>
+                        <th><h5>Dispos <i class="light-blue-text darken-3 material-icons">record_voice_over</i></h5></th>
                         <th></th>
                     </tr>
                 </thead>
