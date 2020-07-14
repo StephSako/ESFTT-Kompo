@@ -1,90 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}J{{ compo.idJournee.nJournee }} - Equipe {{ compo.idEquipe }}{% endblock %}
+{% block title %}J{{ compo.idJournee.shortType }}{{ compo.idJournee.nJournee }} - Equipe {{ compo.idEquipe }}{% endblock %}
 
 {% block body %}
 
     {% include("components/navbar.html.twig") %}
 
-        <div class="row">
-            <div class="col s3">
-                <table class="centered highlight card-panel dispos">
-                    <thead>
-                    <tr>
-                        <th>Les brûlés en {{ compo.idEquipe }}</th>
-                    </tr>
-                    </thead>
+    <div class="row">
+        <div class="col s3">
+            <table class="centered highlight card-panel dispos">
+                <thead>
+                <tr>
+                    <th>Les brûlés en {{ compo.idEquipe }}</th>
+                </tr>
+                </thead>
 
-                    <tbody>
-                    {% if compo.idEquipe == 1 or burntPlayers is empty %}
+                <tbody>
+                {% if compo.idEquipe == 1 or burntPlayers is empty %}
+                    <tr>
+                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe }}</td>
+                    </tr>
+                {% else %}
+                    {% for burntPlayer in burntPlayers %}
                         <tr>
-                            <td>Il n'y a pas de brûlés en {{ compo.idEquipe }}</td>
+                            <td>{{ burntPlayer.nom }}</td>
                         </tr>
-                    {% else %}
-                        {% for burntPlayer in burntPlayers %}
-                            <tr>
-                                <td>{{ burntPlayer.nom }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col s6">
-                <div class="center-align card-panel">
-                    <h4>Composition d'équipe</h4>
-                    <h5>Team {{ compo.idEquipe }} - Journée {{ compo.idJournee.nJournee }} - {{ compo.idJournee.date | date("m/d")}} - {{ compo.lieu }}</h5>
-                    <br>
-                    <div class="container">
-                        {{ form_start(form)}}
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col s6">
+            <div class="center-align card-panel">
+                <h4 class="h4_form">Composition d'équipe - Equipe {{ compo.idEquipe }}</h4>
+                <h5>Journée {{ compo.idJournee.nJournee }} - {{ compo.idJournee.type }} - {{ compo.idJournee.date | date("d/m")}} - {{ compo.lieu }}</h5>
+                <br>
+                <div class="container">
+                    {{ form_start(form)}}
+                    <div class="form_div_list">
                         <div class="row">
-                            <div class="col s6"><h5>Joueur 1</h5></div>
-                            <div class="col s6">{{ form_row(form.idJoueur1) }}</div>
+                            <div class="col s4"><h5>Joueur 1</h5></div>
+                            <div class="col s4">{{ form_row(form.idJoueur1) }}</div>
+                            <div class="col s4"></div>
                         </div>
                         <div class="row">
-                            <div class="col s6"><h5>Joueur 2</h5></div>
-                            <div class="col s6">{{ form_row(form.idJoueur2) }}</div>
+                            <div class="col s4"><h5>Joueur 2</h5></div>
+                            <div class="col s4">{{ form_row(form.idJoueur2) }}</div>
+                            <div class="col s4"></div>
                         </div>
                         <div class="row">
-                            <div class="col s6"><h5>Joueur 3</h5></div>
-                            <div class="col s6">{{ form_row(form.idJoueur3) }}</div>
+                            <div class="col s4"><h5>Joueur 3</h5></div>
+                            <div class="col s4">{{ form_row(form.idJoueur3) }}</div>
+                            <div class="col s4"></div>
                         </div>
-                        <div class="row">
-                            <div class="col s6"><h5>Joueur 4</h5></div>
-                            <div class="col s6">{{ form_row(form.idJoueur4) }}</div>
-                        </div>
-                        <br><button class="btn waves-effect waves-light blue lighten-2">Modifier</button><br>
-                        {{ form_end(form) }}
+
+                        {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe == 1) %}
+                            <div class="row">
+                                <div class="col s4"><h5>Joueur 4</h5></div>
+                                <div class="col s4">{{ form_row(form.idJoueur4) }}</div>
+                                <div class="col s4"></div>
+                            </div>
+                        {% endif %}
+
+                        {% if compo.idJournee.linkType == 'paris' and compo.idEquipe == 1 %}
+                            <div class="row">
+                                <div class="col s4"><h5>Joueur 5</h5></div>
+                                <div class="col s4">{{ form_row(form.idJoueur5) }}</div>
+                                <div class="col s4"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col s4"><h5>Joueur 6</h5></div>
+                                <div class="col s4">{{ form_row(form.idJoueur6) }}</div>
+                                <div class="col s4"></div>
+                            </div>
+                        {% endif %}
+
                     </div>
+                    <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Modifier</button><br>
+                    {{ form_end(form) }}
                 </div>
             </div>
-            <div class="col s3">
-                <table class="centered highlight card-panel dispos">
-                    <thead>
-                    <tr>
-                        <th>Futurs brûlés si sélectionnés</th>
-                    </tr>
-                    </thead>
+        </div>
+        <div class="col s3">
+            <table class="centered highlight card-panel dispos">
+                <thead>
+                <tr>
+                    <th>Futurs brûlés si sélectionnés</th>
+                </tr>
+                </thead>
 
-                    <tbody>
-                    {% if compo.idEquipe == 4 %}
+                <tbody>
+                {% if compo.idEquipe == 4 %}
+                    <tr>
+                        <td>Il n'y a pas de brûlés en dessous de la 4</td>
+                    </tr>
+                {% elseif almostBurntPlayers is empty %} %}
+                    <tr>
+                        <td>Il n'y a pas de potentiels futurs brûlés</td>
+                    </tr>
+                {% else %}
+                    {% for almostBurntPlayer in almostBurntPlayers %}
                         <tr>
-                            <td>Il n'y a pas de brûlés en dessous de la 4</td>
+                            <td>{{ almostBurntPlayer.nom }}</td>
                         </tr>
-                    {% elseif almostBurntPlayers is empty %} %}
-                        <tr>
-                            <td>Il n'y a pas de potentiels futurs brûlés</td>
-                        </tr>
-                    {% else %}
-                        {% for almostBurntPlayer in almostBurntPlayers %}
-                            <tr>
-                                <td>{{ almostBurntPlayer.nom }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 

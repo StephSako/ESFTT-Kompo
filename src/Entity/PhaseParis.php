@@ -17,8 +17,6 @@ class PhaseParis
      */
     private $id;
 
-    private $division;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
@@ -69,10 +67,15 @@ class PhaseParis
     private $idJoueur6;
 
     /**
-     * @var String
-     * @ORM\Column(name="equipe", type="string", length=10)
+     * @var int
+     * @ORM\Column(name="id_equipe", type="integer", length=10)
      */
-    private $equipe;
+    private $idEquipe;
+
+    /**
+     * @var string
+     */
+    private $division;
 
     /**
      * @var String
@@ -241,27 +244,29 @@ class PhaseParis
     }
 
     /**
+     * @return int|null
+     */
+    public function getIdEquipe(): ?int
+    {
+        return $this->idEquipe;
+    }
+
+    /**
+     * @param int $idEquipe
+     * @return PhaseParis
+     */
+    public function setIdEquipe(int $idEquipe): self
+    {
+        $this->idEquipe = $idEquipe;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDivision(): string
     {
-        if ($this->getEquipe() == 'haut') return "PR";
-        else if ($this->getEquipe() == 'bas') return "D2";
-    }
-
-    /**
-     * @return String
-     */
-    public function getEquipe(): string
-    {
-        return $this->equipe;
-    }
-
-    /**
-     * @param String $equipe
-     */
-    public function setEquipe(string $equipe): void
-    {
-        $this->equipe = $equipe;
+        if ($this->getIdEquipe() === 1) return "PR";
+        else if ($this->getIdEquipe() === 2) return "D2";
     }
 }

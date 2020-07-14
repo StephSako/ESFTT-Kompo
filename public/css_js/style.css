@@ -26,11 +26,11 @@ body {
     margin-top: 10px;
 }
 
-.btn_login {
-    margin-top: 0;
+.btn_form {
+    margin: 0;
 }
 
-.h4_login {
+.h4_form {
     margin-top: 0;
 }
 
@@ -63,8 +63,12 @@ body {
     margin-right: 4px;
 }
 
-.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash, .bulle {
+.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     font-family: Lobster, cursive;
+}
+
+.lobster {
+    font-size: 20px;
 }
 
 .flash {
@@ -121,5 +125,9 @@ td i, .list i{
 }
 
 .header_compo {
+    margin-bottom: 0;
+}
+
+.form_div_list div:last-child {
     margin-bottom: 0;
 }

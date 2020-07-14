@@ -30,6 +30,7 @@ class PhaseDepartementale
     private $division;
 
     /**
+     * @var int
      * @ORM\Column(type="integer", name="id_equipe")
      */
     private $idEquipe;
@@ -93,10 +94,10 @@ class PhaseDepartementale
     }
 
     /**
-     * @param mixed $idEquipe
+     * @param int $idEquipe
      * @return PhaseDepartementale
      */
-    public function setIdEquipe($idEquipe): self
+    public function setIdEquipe(int $idEquipe): self
     {
         $this->idEquipe = $idEquipe;
         return $this;

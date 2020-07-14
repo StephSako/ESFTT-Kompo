@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\PhaseDepartementale;
 use App\Form\PhaseDepartementaleType;
+use App\Form\PhaseParisBasType;
+use App\Form\PhaseParisHautType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
@@ -99,12 +100,12 @@ class HomeController extends AbstractController
 
     /**
      * @param $type
-     * @param PhaseDepartementale $id
+     * @param $id
      * @return Response
      * @throws DBALException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journeeShow($type, $id) //TODO Correct journée(s) entre paris et departemental
+    public function journeeShow($type, $id)
     {
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
 
@@ -142,22 +143,42 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/journee/edit/{type}/{id}", name="journee.edit")
-     * @param $type
-     * @param PhaseDepartementale $compo
+     * @Route("/composition/edit/{type}/{compo}", name="compodition.edit")
+     * @param string $type
+     * @param $compo
      * @param Request $request
      * @return Response
      */
-    public function edit($type, PhaseDepartementale $compo, Request $request) : Response
-    { //TODO Considéré selon le type
-        $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
+    public function edit($type, $compo, Request $request) : Response
+    {
+        if ($type == 'departementale'){
+            $compo = $this->phaseDepartementaleRepository->find($compo);
+            $form = $this->createForm(PhaseDepartementaleType::class, $compo);
+            $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
+            $j4 = $oldPlayers->getIdJoueur4();
+        }
+        else if ($type == 'paris'){
+            $compo = $this->phaseParisRepository->find($compo);
+            $levelEquipe = $compo->getIdEquipe();
+            $oldPlayers = $this->phaseParisRepository->findOneBy(['id' => $compo->getId()]);
+            if ($levelEquipe === 1){
+                $form = $this->createForm(PhaseParisHautType::class, $compo);
+                $j4 = $oldPlayers->getIdJoueur4();
+                $j5 = $oldPlayers->getIdJoueur5();
+                $j6 = $oldPlayers->getIdJoueur6();
+            }
+            else if ($levelEquipe === 2){
+                $form = $this->createForm(PhaseParisBasType::class, $compo);
+            }
+        }
+
         $j1 = $oldPlayers->getIdJoueur1();
         $j2 = $oldPlayers->getIdJoueur2();
         $j3 = $oldPlayers->getIdJoueur3();
-        $j4 = $oldPlayers->getIdJoueur4();
 
-        $form = $this->createForm(PhaseDepartementaleType::class, $compo);
         $form->handleRequest($request);
+
+        dump($form);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** Décrémenter le brûlage des joueurs désélectionnés de la précédente compo **/
@@ -179,10 +200,26 @@ class HomeController extends AbstractController
                 $j3->setBrulage($brulageOld3);
             }
 
-            if ($j4 != null) {
-                $brulageOld4 = $j4->getBrulage();
-                $brulageOld4[$compo->getIdEquipe()]--;
-                $j4->setBrulage($brulageOld4);
+            if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
+                if ($j4 != null) {
+                    $brulageOld4 = $j4->getBrulage();
+                    $brulageOld4[$compo->getIdEquipe()]--;
+                    $j4->setBrulage($brulageOld4);
+                }
+            }
+
+            if ($type === 'paris' && $levelEquipe === 1) {
+                if ($j5 != null) {
+                    $brulageOld5 = $j5->getBrulage();
+                    $brulageOld5[$compo->getIdEquipe()]--;
+                    $j5->setBrulage($brulageOld5);
+                }
+
+                if ($j6 != null) {
+                    $brulageOld6 = $j6->getBrulage();
+                    $brulageOld6[$compo->getIdEquipe()]--;
+                    $j6->setBrulage($brulageOld6);
+                }
             }
 
             /** Incrémenter le brûlage des joueurs sélectionnés de la nouvelle compo **/
@@ -208,6 +245,18 @@ class HomeController extends AbstractController
                 $brulage4 = $form->getData()->getIdJoueur4()->getBrulage();
                 $brulage4[$compo->getIdEquipe()]++;
                 $compo->getIdJoueur4()->setBrulage($brulage4);
+            }
+
+            if ($form->getData()->getIdJoueur5() != null) {
+                $brulage5 = $form->getData()->getIdJoueur5()->getBrulage();
+                $brulage5[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur5()->setBrulage($brulage5);
+            }
+
+            if ($form->getData()->getIdJoueur6() != null) {
+                $brulage6 = $form->getData()->getIdJoueur6()->getBrulage();
+                $brulage6[$compo->getIdEquipe()]++;
+                $compo->getIdJoueur6()->setBrulage($brulage6);
             }
 
             $this->em->flush();

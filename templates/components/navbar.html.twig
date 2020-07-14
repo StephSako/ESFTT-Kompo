@@ -8,31 +8,33 @@
     {% endfor %}
 </ul>
 
-<nav class="nav-extended">
-    <div class="nav-wrapper">
-        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-        <ul id="nav-mobile" class="left hide-on-med-and-down">
-            {% for journee in journeesDepartementales %}
-                <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">J{{ journee.shortType }}{{ journee.nJournee }} - {{ journee.date|date('d/m') }}</a></li>
-            {% endfor %}
-            <!-- Dropdown Trigger -->
-            <li id="dropdown_link" {% if app.request.getPathInfo starts with '/journee/paris/' %}class="active blue darken-3"{% endif %}>
-                <a class="dropdown-trigger" href="#" data-target="champ_de_paris">
-                    Champ. de Paris<i class="material-icons right">arrow_drop_down</i>
-                </a>
-            </li>
+<div class="navbar-fixed">
+    <nav class="nav-extended">
+        <div class="nav-wrapper">
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                {% for journee in journeesDepartementales %}
+                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">J{{ journee.shortType }}{{ journee.nJournee }} - {{ journee.date|date('d/m') }}</a></li>
+                {% endfor %}
+                <!-- Dropdown Trigger -->
+                <li id="dropdown_link" {% if app.request.getPathInfo starts with '/journee/paris/' %}class="active blue darken-3"{% endif %}>
+                    <a class="dropdown-trigger" href="#" data-target="champ_de_paris">
+                        Champ. de Paris<i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
 
-        </ul>
+            </ul>
 
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
-            {% if app.user %}
-                <li {% if app.request.getPathInfo == '/compte' %}class="active blue darken-3"{% endif %}><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
-                <li class="divider"></li>
-                <li><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
-            {% else %}
-                <li><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
-            {% endif %}
-        </ul>
-    </div>
-</nav>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
+                {% if app.user %}
+                    <li {% if app.request.getPathInfo == '/compte' %}class="active blue darken-3"{% endif %}><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
+                    <li class="divider"></li>
+                    <li><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+                {% else %}
+                    <li><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>

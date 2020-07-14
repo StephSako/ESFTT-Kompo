@@ -18,7 +18,7 @@
         {% endfor %}
 
         <div class="card-panel center-align">
-            <h4 class="h4_login">Modifier mon compte</h4>
+            <h4 class="h4_form">Modifier mon compte</h4>
             {{ form_start(formCompetiteur) }}
                 <div class="row">
                     <div class="col s4">
@@ -31,12 +31,12 @@
                         {{ form_row(formCompetiteur.license) }}
                     </div>
                 </div>
-                <br><button class="btn btn_login waves-effect waves-light light-blue darken-1">Modifier</button>
+                <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
             {{ form_end(formCompetiteur) }}
         </div>
 
         <div class="card-panel center-align">
-            <h4 class="h4_login">Modifier mon mot de passe</h4>
+            <h4 class="h4_form">Modifier mon mot de passe</h4>
             <form action="{{ path('account.update.password') }}" method="POST">
                 <div class="row">
                     <div class="input-field col s6">
@@ -48,7 +48,7 @@
                         <label for="new_password_validate">Valider le nouveau mot de passe</label>
                     </div>
                 </div>
-                <br><button class="btn btn_login waves-effect waves-light light-blue darken-1">Modifier</button>
+                <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
             </form>
         </div>
 

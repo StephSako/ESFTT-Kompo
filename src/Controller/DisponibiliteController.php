@@ -45,8 +45,8 @@ class DisponibiliteController extends AbstractController
      * @param EntityManagerInterface $em
      * @param JourneeParisRepository $journeeParisRepository
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
-     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementale
-     * @param DisponibiliteParisRepository $disponibiliteParis
+     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
+     * @param DisponibiliteParisRepository $disponibiliteParisRepository
      */
     public function __construct(EntityManagerInterface $em,
                                 JourneeParisRepository $journeeParisRepository,
@@ -92,14 +92,13 @@ class DisponibiliteController extends AbstractController
 
     /**
      * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}/{NJournee}", name="journee.disponibilite.update")
-     * @param $journee
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo
      * @param int $NJournee
      * @return Response
      */
-    public function update($journee, $type, $disposJoueur, bool $dispo, $NJournee) : Response
+    public function update($type, $disposJoueur, bool $dispo, $NJournee) : Response
     {
         if ($type == 'departementale'){
             $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
