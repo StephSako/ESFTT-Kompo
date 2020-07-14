@@ -151,7 +151,6 @@ class HomeController extends AbstractController
      */
     public function edit($type, $compo, Request $request) : Response
     {
-        //TODO Gérer les brûlages des joueurs selon le type de journée entre Départementale et Paris
         if ($type == 'departementale'){
             $compo = $this->phaseDepartementaleRepository->find($compo);
             $form = $this->createForm(PhaseDepartementaleType::class, $compo);
@@ -304,8 +303,6 @@ class HomeController extends AbstractController
                 }
             }
 
-            //TODO Bug edit compo departementale
-
             if ($type === 'paris' && $levelEquipe === 1) {
                 if ($form->getData()->getIdJoueur5() != null) {
                     $brulage5 = $form->getData()->getIdJoueur5()->getBrulageParis();
@@ -329,8 +326,17 @@ class HomeController extends AbstractController
             ]);
         }
 
-        $burntPlayers = $this->competiteurRepository->findBurnPlayers($compo->getIdEquipe());
-        $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayers($compo->getIdEquipe());
+        //TODO Liste des brûlés à faire pour champ. de Paris
+
+        if ($type === 'departementale'){
+            $burntPlayers = $this->competiteurRepository->findBurnPlayersDepartementale($compo->getIdEquipe());
+            $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersDepartementale($compo->getIdEquipe());
+        }
+        else if ($type === 'paris'){
+            $burntPlayers = $this->competiteurRepository->findBurnPlayersParis($compo->getIdEquipe());
+            $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersParis();
+        }
+
         $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
         $journeesParis = $this->journeeParisRepository->findAll();
         return $this->render('journee/edit.html.twig', [

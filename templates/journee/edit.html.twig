@@ -91,9 +91,9 @@
                 </thead>
 
                 <tbody>
-                {% if compo.idEquipe == 4 %}
+                {% if (compo.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
                     <tr>
-                        <td>Il n'y a pas de brûlés en dessous de la 4</td>
+                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
                     </tr>
                 {% elseif almostBurntPlayers is empty %} %}
                     <tr>

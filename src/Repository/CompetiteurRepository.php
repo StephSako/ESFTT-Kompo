@@ -41,11 +41,11 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get burnt players for a specific team
+     * Get burnt players for a specific team in departementale
      * @param $idTeam
      * @return int|mixed|string
      */
-    public function findBurnPlayers($idTeam)
+    public function findBurnPlayersDepartementale($idTeam)
     {
         $query = $this
             ->createQueryBuilder('c');
@@ -75,11 +75,28 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get almost burnt players
+     * Get burnt players for a specific team in paris
      * @param $idTeam
      * @return int|mixed|string
      */
-    public function findAlmostBurnPlayers($idTeam)
+    public function findBurnPlayersParis($idTeam)
+    {
+        $query = $this
+            ->createQueryBuilder('c')
+            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 2");
+
+        return $query
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get almost burnt players in departementale
+     * @param $idTeam
+     * @return int|mixed|string
+     */
+    public function findAlmostBurnPlayersDepartementale($idTeam)
     {
         $query = $this->createQueryBuilder('c')
             ->where("JSON_VALUE(c.brulageDepartemental, '$." . $idTeam . "') = 1")
@@ -96,6 +113,22 @@ class CompetiteurRepository extends ServiceEntityRepository
                     ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                 break;
         }
+
+        return $query
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get almost burnt players in paris
+     * @return int|mixed|string
+     */
+    public function findAlmostBurnPlayersParis()
+    {
+        $query = $this->createQueryBuilder('c')
+            ->where("JSON_VALUE(c.brulageParis, '$.1') = 1")
+            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 2");
         return $query
             ->orderBy('c.nom')
             ->getQuery()
