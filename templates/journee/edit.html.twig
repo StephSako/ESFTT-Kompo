@@ -8,7 +8,7 @@
 
     <div class="row">
         <div class="col s3">
-            <table class="centered striped card-panel dispos">
+            <table class="centered striped card-panel dispos brulage_edit">
                 <thead>
                 <tr>
                     <th>
@@ -26,6 +26,33 @@
                     {% for burntPlayer in burntPlayers %}
                         <tr>
                             <td>{{ burntPlayer.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+            <table class="centered striped card-panel dispos">
+                <thead>
+                <tr>
+                    <th>
+                        <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% if (compo.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
+                    <tr>
+                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
+                    </tr>
+                {% elseif almostBurntPlayers is empty %} %}
+                    <tr>
+                        <td>Il n'y a pas de potentiels futurs brûlés</td>
+                    </tr>
+                {% else %}
+                    {% for almostBurntPlayer in almostBurntPlayers %}
+                        <tr>
+                            <td>{{ almostBurntPlayer.nom }}</td>
                         </tr>
                     {% endfor %}
                 {% endif %}
@@ -88,28 +115,36 @@
             <table class="centered striped card-panel dispos">
                 <thead>
                 <tr>
-                    <th>
-                        <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
-                    </th>
+                    <th><h5>Dispos <i class="light-blue-text darken-3 material-icons">record_voice_over</i></h5></th>
+                    <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {% if (compo.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
+                {% for dispo in dispos %}
                     <tr>
-                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
+                        <td>
+                            <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                        </td>
+                        <td>
+                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
+                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                            {% endif %}
+                        </td>
                     </tr>
-                {% elseif almostBurntPlayers is empty %} %}
+                {% endfor %}
+                {% for dispoNonDeclaree in joueursNonDeclares %}
                     <tr>
-                        <td>Il n'y a pas de potentiels futurs brûlés</td>
+                        <td>
+                            <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
+                        </td>
+                        <td>
+                            {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
+                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                            {% endif %}
+                        </td>
                     </tr>
-                {% else %}
-                    {% for almostBurntPlayer in almostBurntPlayers %}
-                        <tr>
-                            <td>{{ almostBurntPlayer.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
+                {% endfor %}
                 </tbody>
             </table>
         </div>
