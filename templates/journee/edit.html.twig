@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}J{{ compo.idJournee.shortType }}{{ compo.idJournee.nJournee }} - Equipe {{ compo.idEquipe }}{% endblock %}
+{% block title %}J{{ compo.idJournee.nJournee }} - Equipe {{ compo.idEquipe.idEquipe }}{% endblock %}
 
 {% block body %}
 
@@ -12,15 +12,15 @@
                 <thead>
                 <tr>
                     <th>
-                        <h5>Brûlés en {{ compo.idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
+                        <h5>Brûlés en {{ compo.idEquipe.idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
                     </th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {% if compo.idEquipe == 1 or burntPlayers is empty %}
+                {% if compo.idEquipe.idEquipe == 1 or burntPlayers is empty %}
                     <tr>
-                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe }}</td>
+                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe.idEquipe }}</td>
                     </tr>
                 {% else %}
                     {% for burntPlayer in burntPlayers %}
@@ -41,7 +41,7 @@
                 </thead>
 
                 <tbody>
-                {% if (compo.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
+                {% if (compo.idEquipe.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
                     <tr>
                         <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
                     </tr>
@@ -61,7 +61,7 @@
         </div>
         <div class="col s6">
             <div class="center-align card-panel">
-                <h4 class="h4_form">Composition d'équipe - Equipe {{ compo.idEquipe }}</h4>
+                <h4 class="h4_form">Composition d'équipe - Equipe {{ compo.idEquipe.idEquipe }}</h4>
                 <h5>Journée {{ compo.idJournee.nJournee }} - {{ compo.idJournee.type }} - {{ compo.idJournee.date | date("d/m")}} - {{ compo.lieu }}</h5>
                 <br>
                 <div class="container">
@@ -83,7 +83,7 @@
                             <div class="col s4"></div>
                         </div>
 
-                        {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe == 1) %}
+                        {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                             <div class="row">
                                 <div class="col s4"><h5>Joueur 4</h5></div>
                                 <div class="col s4">{{ form_row(form.idJoueur4) }}</div>
@@ -91,7 +91,7 @@
                             </div>
                         {% endif %}
 
-                        {% if compo.idJournee.linkType == 'paris' and compo.idEquipe == 1 %}
+                        {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
                             <div class="row">
                                 <div class="col s4"><h5>Joueur 5</h5></div>
                                 <div class="col s4">{{ form_row(form.idJoueur5) }}</div>

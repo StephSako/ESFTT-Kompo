@@ -45,19 +45,6 @@ class JourneeParis
     /**
      * @var String
      */
-    private $shortType = 'P';
-
-    /**
-     * @return String
-     */
-    public function getShortType(): string
-    {
-        return $this->shortType;
-    }
-
-    /**
-     * @var String
-     */
     private $linkType = 'paris';
 
     /**

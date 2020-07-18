@@ -25,13 +25,9 @@ class PhaseDepartementale
     private $idJournee;
 
     /**
-     * @var string
-     */
-    private $division;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", name="id_equipe")
+     * @var EquipeDepartementale
+     * @ORM\OneToOne(targetEntity="App\Entity\EquipeDepartementale")
+     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
      */
     private $idEquipe;
 
@@ -70,6 +66,12 @@ class PhaseDepartementale
     private $lieu;
 
     /**
+     * @var String
+     * @ORM\Column(name="adversaire", type="string", length=100)
+     */
+    private $adversaire;
+
+    /**
      * @return String|null
      */
     public function getLieu(): ?String
@@ -83,24 +85,6 @@ class PhaseDepartementale
     public function setLieu(String $lieu): void
     {
         $this->lieu = $lieu;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getIdEquipe(): ?int
-    {
-        return $this->idEquipe;
-    }
-
-    /**
-     * @param int $idEquipe
-     * @return PhaseDepartementale
-     */
-    public function setIdEquipe(int $idEquipe): self
-    {
-        $this->idEquipe = $idEquipe;
-        return $this;
     }
 
     /**
@@ -212,11 +196,38 @@ class PhaseDepartementale
     }
 
     /**
-     * @return string
+     * @return String
      */
-    public function getDivision(): string
+    public function getAdversaire(): string
     {
-        $divisions = ["PR", "PR", "D2", "D3"];
-        return $divisions[$this->idEquipe - 1];
+        return $this->adversaire;
+    }
+
+    /**
+     * @param String $adversaire
+     * @return PhaseDepartementale
+     */
+    public function setAdversaire(string $adversaire): self
+    {
+        $this->adversaire = $adversaire;
+        return $this;
+    }
+
+    /**
+     * @param EquipeDepartementale $idEquipe
+     * @return PhaseDepartementale
+     */
+    public function setIdEquipe(EquipeDepartementale $idEquipe): PhaseDepartementale
+    {
+        $this->idEquipe = $idEquipe;
+        return $this;
+    }
+
+    /**
+     * @return EquipeDepartementale
+     */
+    public function getIdEquipe(): EquipeDepartementale
+    {
+        return $this->idEquipe;
     }
 }

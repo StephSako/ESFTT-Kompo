@@ -63,7 +63,7 @@ body {
     margin-right: 4px;
 }
 
-.nav-wrapper li a, thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
+thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     font-family: Lobster, cursive;
 }
 
@@ -101,8 +101,9 @@ body {
     padding-right: 6px;
 }
 
-td, li, p, .btn, label {
+td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a {
     font-family: 'IBM Plex Serif', serif;
+    font-size: 95%;
 }
 
 .chip {
@@ -142,4 +143,8 @@ i {
 
 .brulage_edit {
     margin-bottom: 0;
+}
+
+p.lobster {
+    margin-top: 0;
 }

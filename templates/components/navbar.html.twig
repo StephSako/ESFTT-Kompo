@@ -3,7 +3,7 @@
     {% for journee in journeesParis %}
         <li style="background-color: #012242" {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}class="active blue darken-3"{% endif %}>
             <a class="white-text center-align" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">
-                J{{ journee.shortType }}{{ journee.nJournee }} - {{ journee.date|date('d/m/Y') }}</a>
+                J{{ journee.nJournee }} - {{ journee.date|date('d/m/Y') }}</a>
         </li>
     {% endfor %}
 </ul>
@@ -14,7 +14,7 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
                 {% for journee in journeesDepartementales %}
-                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">J{{ journee.shortType }}{{ journee.nJournee }} - {{ journee.date|date('d/m') }}</a></li>
+                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">J{{ journee.nJournee }} - {{ journee.date|date('d/m') }}</a></li>
                 {% endfor %}
                 <!-- Dropdown Trigger -->
                 <li id="dropdown_link" {% if app.request.getPathInfo starts with '/journee/paris/' %}class="active blue darken-3"{% endif %}>
@@ -26,13 +26,13 @@
             </ul>
 
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
+                <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
                 {% if app.user %}
-                    <li {% if app.request.getPathInfo == '/compte' %}class="active blue darken-3"{% endif %}><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
+                    <li class="li_in_line{% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
                     <li class="divider"></li>
-                    <li><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+                    <li class="li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
                 {% else %}
-                    <li><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
+                    <li class="li_in_line"><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
                 {% endif %}
             </ul>
         </div>

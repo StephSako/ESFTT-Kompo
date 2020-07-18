@@ -21,9 +21,14 @@ class Competiteur implements UserInterface, Serializable
     private $idCompetiteur;
 
     /**
-     * @ORM\Column(name="license", type="integer", length=11)
+     * @ORM\Column(name="licence", type="integer", length=11)
      */
-    private $license;
+    private $licence;
+
+    /**
+     * @ORM\Column(name="classement_officiel", type="integer", length=11)
+     */
+    private $classement_officiel;
 
     /**
      * @var string
@@ -119,18 +124,18 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int|null
      */
-    public function getLicense(): ?int
+    public function getLicence(): ?int
     {
-        return $this->license;
+        return $this->licence;
     }
 
     /**
-     * @param int $license
+     * @param int $licence
      * @return $this
      */
-    public function setLicense(int $license): self
+    public function setLicence(int $licence): self
     {
-        $this->license = $license;
+        $this->licence = $licence;
         return $this;
     }
 
@@ -288,50 +293,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int[]
-     */
-    public function getDisposDepartemental()
-    {
-        $disposId = [];
-        foreach ($this->disposDepartementales as $dispo){
-            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
-        }
-        return $disposId;
-    }
-
-    /**
-     * @param mixed $dispos
-     * @return Competiteur
-     */
-    public function setDisposDepartemental($dispos): self
-    {
-        $this->disposDepartementales = $dispos;
-        return $this;
-    }
-
-    /**
-     * @return int[]
-     */
-    public function getDisposParis()
-    {
-        $disposId = [];
-        foreach ($this->disposParis as $dispo){
-            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
-        }
-        return $disposId;
-    }
-
-    /**
-     * @param mixed $dispos
-     * @return Competiteur
-     */
-    public function setDisposParis($dispos): self
-    {
-        $this->disposParis = $dispos;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getBrulageParis()
@@ -345,6 +306,40 @@ class Competiteur implements UserInterface, Serializable
     public function setBrulageParis($brulageParis): void
     {
         $this->brulageParis = $brulageParis;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassementOfficiel()
+    {
+        return $this->classement_officiel;
+    }
+
+    /**
+     * @param mixed $classement_officiel
+     * @return Competiteur
+     */
+    public function setClassementOfficiel($classement_officiel): self
+    {
+        $this->classement_officiel = $classement_officiel;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisposDepartementales()
+    {
+        return $this->disposDepartementales;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisposParis()
+    {
+        return $this->disposParis;
     }
 
 }

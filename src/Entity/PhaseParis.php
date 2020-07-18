@@ -67,21 +67,23 @@ class PhaseParis
     private $idJoueur6;
 
     /**
-     * @var int
-     * @ORM\Column(name="id_equipe", type="integer", length=10)
+     * @var EquipeParis
+     * @ORM\OneToOne(targetEntity="App\Entity\EquipeParis")
+     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
      */
     private $idEquipe;
-
-    /**
-     * @var string
-     */
-    private $division;
 
     /**
      * @var String
      * @ORM\Column(name="lieu", type="string", length=100)
      */
     private $lieu;
+
+    /**
+     * @var String
+     * @ORM\Column(name="adversaire", type="string", length=100)
+     */
+    private $adversaire;
 
     /**
      * @return String|null
@@ -244,29 +246,47 @@ class PhaseParis
     }
 
     /**
-     * @return int|null
-     */
-    public function getIdEquipe(): ?int
-    {
-        return $this->idEquipe;
-    }
-
-    /**
-     * @param int $idEquipe
-     * @return PhaseParis
-     */
-    public function setIdEquipe(int $idEquipe): self
-    {
-        $this->idEquipe = $idEquipe;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getDivision(): string
     {
         if ($this->getIdEquipe() === 1) return "PR";
         else if ($this->getIdEquipe() === 2) return "D2";
+    }
+
+    /**
+     * @return String
+     */
+    public function getAdversaire(): string
+    {
+        return $this->adversaire;
+    }
+
+    /**
+     * @param String $adversaire
+     * @return PhaseParis
+     */
+    public function setAdversaire(string $adversaire): self
+    {
+        $this->adversaire = $adversaire;
+        return $this;
+    }
+
+    /**
+     * @param EquipeParis $idEquipe
+     * @return PhaseParis
+     */
+    public function setIdEquipe(EquipeParis $idEquipe): PhaseParis
+    {
+        $this->idEquipe = $idEquipe;
+        return $this;
+    }
+
+    /**
+     * @return EquipeParis
+     */
+    public function getIdEquipe(): EquipeParis
+    {
+        return $this->idEquipe;
     }
 }

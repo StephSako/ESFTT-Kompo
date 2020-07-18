@@ -30,7 +30,7 @@ class PhaseDepartementaleType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
@@ -62,7 +62,7 @@ class PhaseDepartementaleType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
@@ -95,7 +95,7 @@ class PhaseDepartementaleType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
@@ -128,7 +128,7 @@ class PhaseDepartementaleType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");

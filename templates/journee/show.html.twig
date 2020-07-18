@@ -87,7 +87,7 @@
                     <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
 
                     {% if journee.linkType == 'departementale' %}
-                        {% set dispoJournee = app.user.disposDepartemental %}
+                        {% set dispoJournee = app.user.disposDepartementales %}
                     {% elseif journee.linkType == 'paris' %}
                         {% set dispoJournee = app.user.disposParis %}
                     {% endif %}
@@ -127,28 +127,33 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row header_compo">
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s3{% else %}s2{% endif %}">
-                            <span class="white-text bulle">{{ compo.division }}</span>
+                        <div class="col s2">
+                            <h5>
+                                <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
+                            </h5>
+                            <p class="lobster">Poule {{ compo.idEquipe.poule }}</p>
+                        </div>
+                        {% if journee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+                        <h5 class="col {% if journee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ journee.date|date('d/m') }}</h5>
+                        <h5 class="col {% if journee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
+                            {% if compo.lieu == 'home'%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                            {% elseif compo.lieu == 'away'%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                            {% endif %}
                         </h5>
-                        {% if journee.linkType == 'departementale' %}<h5 class="col s3">Équipe {{ compo.idEquipe }}</h5>{% endif %}
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s3{% else %}s5{% endif %}">{{ journee.date|date('d/m') }}</h5>
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s3{% else %}s5{% endif %}">{{ compo.lieu }}</h5>
+                        <h5 class="col s5">{{ compo.adversaire }}</h5>
                     </div>
-                    <table class="striped centered">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>Dispo</th>
-                            </tr>
-                        </thead>
+                    <table class="striped">
                         <tbody>
                             <tr>
                                 <td class="rank"><b>#1</b></td>
                                 <td>
                                     {% if compo.idJoueur1 is not null %}
-                                        {{ compo.idJoueur1.license }}
+                                        {{ compo.idJoueur1.licence }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if compo.idJoueur1 is not null %}
+                                        <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur1.classementOfficiel }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -156,26 +161,7 @@
                                         <div class="chip">
                                             <img src="{{ compo.idJoueur1.avatar }}" alt="Avatar">
                                             <span>{{ compo.idJoueur1.nom }}</span>
-                                        </div>{% if compo.idJoueur1.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur1 is not null %}
-                                        {% if journee.linkType == 'departementale' %}
-                                            {% set dispoJournee = compo.idJoueur1.disposDepartemental %}
-                                        {% elseif journee.linkType == 'paris' %}
-                                            {% set dispoJournee = compo.idJoueur1.disposParis %}
-                                        {% endif %}
-
-                                        {% if journee.nJournee in dispoJournee|keys %}
-                                            {% if dispoJournee[journee.nJournee] %}
-                                                <i class="green-text material-icons">check_circle</i>
-                                            {% else %}
-                                                <i class="red-text material-icons">highlight_off</i>
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                        {% endif %}
+                                        </div>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -184,7 +170,12 @@
                                 <td class="rank"><b>#2</b></td>
                                 <td>
                                     {% if compo.idJoueur2 is not null %}
-                                        {{ compo.idJoueur2.license }}
+                                        {{ compo.idJoueur2.licence }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if compo.idJoueur2 is not null %}
+                                        <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur2.classementOfficiel }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -192,26 +183,7 @@
                                         <div class="chip">
                                             <img src="{{ compo.idJoueur2.avatar }}" alt="Avatar">
                                             {{ compo.idJoueur2.nom }}
-                                        </div>{% if compo.idJoueur2.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur2 is not null %}
-                                        {% if journee.linkType == 'departementale' %}
-                                            {% set dispoJournee = compo.idJoueur2.disposDepartemental %}
-                                        {% elseif journee.linkType == 'paris' %}
-                                            {% set dispoJournee = compo.idJoueur2.disposParis %}
-                                        {% endif %}
-
-                                        {% if journee.nJournee in dispoJournee|keys %}
-                                            {% if dispoJournee[journee.nJournee] %}
-                                                <i class="green-text material-icons">check_circle</i>
-                                            {% else %}
-                                                <i class="red-text material-icons">highlight_off</i>
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                        {% endif %}
+                                        </div>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -220,7 +192,12 @@
                                 <td class="rank"><b>#3</b></td>
                                 <td>
                                     {% if compo.idJoueur3 is not null %}
-                                        {{ compo.idJoueur3.license }}
+                                        {{ compo.idJoueur3.licence }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if compo.idJoueur3 is not null %}
+                                        <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur3.classementOfficiel }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -228,36 +205,22 @@
                                         <div class="chip">
                                             <img src="{{ compo.idJoueur3.avatar }}" alt="Avatar">
                                             {{ compo.idJoueur3.nom }}
-                                        </div>{% if compo.idJoueur3.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur3 is not null %}
-                                        {% if journee.linkType == 'departementale' %}
-                                            {% set dispoJournee = compo.idJoueur3.disposDepartemental %}
-                                        {% elseif journee.linkType == 'paris' %}
-                                            {% set dispoJournee = compo.idJoueur3.disposParis %}
-                                        {% endif %}
-
-                                        {% if journee.nJournee in dispoJournee|keys %}
-                                            {% if dispoJournee[journee.nJournee] %}
-                                                <i class="green-text material-icons">check_circle</i>
-                                            {% else %}
-                                                <i class="red-text material-icons">highlight_off</i>
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                        {% endif %}
+                                        </div>
                                     {% endif %}
                                 </td>
                             </tr>
 
-                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe == 1) %}
+                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                                 <tr>
                                     <td class="rank"><b>#4</b></td>
                                     <td>
                                         {% if compo.idJoueur4 is not null %}
-                                            {{ compo.idJoueur4.license }}
+                                            {{ compo.idJoueur4.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur4 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur4.classementOfficiel }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -265,37 +228,23 @@
                                             <div class="chip">
                                                 <img src="{{ compo.idJoueur4.avatar }}" alt="Avatar">
                                                 {{ compo.idJoueur4.nom }}
-                                            </div>{% if compo.idJoueur4.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur4 is not null %}
-                                            {% if journee.linkType == 'departementale' %}
-                                                {% set dispoJournee = compo.idJoueur4.disposDepartemental %}
-                                            {% elseif journee.linkType == 'paris' %}
-                                                {% set dispoJournee = compo.idJoueur4.disposParis %}
-                                            {% endif %}
-
-                                            {% if journee.nJournee in dispoJournee|keys %}
-                                                {% if dispoJournee[journee.nJournee] %}
-                                                    <i class="green-text material-icons">check_circle</i>
-                                                {% else %}
-                                                    <i class="red-text material-icons">highlight_off</i>
-                                                {% endif %}
-                                            {% else %}
-                                                <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                            {% endif %}
+                                            </div>
                                         {% endif %}
                                     </td>
                                 </tr>
                             {% endif %}
 
-                            {% if journee.linkType == 'paris' and compo.idEquipe == 1 %}
+                            {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
                                 <tr>
                                     <td class="rank"><b>#5</b></td>
                                     <td>
                                         {% if compo.idJoueur5 is not null %}
-                                            {{ compo.idJoueur5.license }}
+                                            {{ compo.idJoueur5.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur5 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur5.classementOfficiel }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -303,26 +252,7 @@
                                             <div class="chip">
                                             <img src="{{ compo.idJoueur5.avatar }}" alt="Avatar">
                                             {{ compo.idJoueur5.nom }}
-                                            </div>{% if compo.idJoueur5.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur5 is not null %}
-                                            {% if journee.linkType == 'departementale' %}
-                                                {% set dispoJournee = compo.idJoueur5.disposDepartemental %}
-                                            {% elseif journee.linkType == 'paris' %}
-                                                {% set dispoJournee = compo.idJoueur5.disposParis %}
-                                            {% endif %}
-
-                                            {% if journee.nJournee in dispoJournee|keys %}
-                                                {% if dispoJournee[journee.nJournee] %}
-                                                    <i class="green-text material-icons">check_circle</i>
-                                                {% else %}
-                                                    <i class="red-text material-icons">highlight_off</i>
-                                                {% endif %}
-                                            {% else %}
-                                                <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                            {% endif %}
+                                            </div>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -331,7 +261,12 @@
                                     <td class="rank"><b>#6</b></td>
                                     <td>
                                         {% if compo.idJoueur6 is not null %}
-                                            {{ compo.idJoueur6.license }}
+                                            {{ compo.idJoueur6.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur6 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur6.classementOfficiel }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -339,26 +274,7 @@
                                             <div class="chip">
                                             <img src="{{ compo.idJoueur6.avatar }}" alt="Avatar">
                                             {{ compo.idJoueur6.nom }}
-                                            </div>{% if compo.idJoueur6.role == "C" %}<i class="blue-text material-icons">copyright</i>{% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur6 is not null %}
-                                            {% if journee.linkType == 'departementale' %}
-                                                {% set dispoJournee = compo.idJoueur6.disposDepartemental %}
-                                            {% elseif journee.linkType == 'paris' %}
-                                                {% set dispoJournee = compo.idJoueur6.disposParis %}
-                                            {% endif %}
-
-                                            {% if journee.nJournee in dispoJournee|keys %}
-                                                {% if dispoJournee[journee.nJournee] %}
-                                                    <i class="green-text material-icons">check_circle</i>
-                                                {% else %}
-                                                    <i class="red-text material-icons">highlight_off</i>
-                                                {% endif %}
-                                            {% else %}
-                                                <i class="grey-text lighten-3 material-icons">help_outline</i>
-                                            {% endif %}
+                                            </div>{
                                         {% endif %}
                                     </td>
                                 </tr>

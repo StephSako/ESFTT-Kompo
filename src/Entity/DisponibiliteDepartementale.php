@@ -73,6 +73,7 @@ class DisponibiliteDepartementale
 
     /**
      * @param Competiteur $idCompetiteur
+     * @return DisponibiliteDepartementale
      */
     public function setIdCompetiteur(Competiteur $idCompetiteur): self
     {

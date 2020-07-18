@@ -30,7 +30,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
@@ -51,7 +51,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
@@ -73,7 +73,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
@@ -95,7 +95,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
@@ -117,7 +117,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
@@ -139,7 +139,7 @@ class PhaseParisHautType extends AbstractType
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c');
 
-                    switch ($builder->getData()->getIdEquipe()) {
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
                                 ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");

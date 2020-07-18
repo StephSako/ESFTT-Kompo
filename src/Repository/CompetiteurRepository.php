@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
+use App\Entity\EquipeDepartementale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,15 +43,15 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Get burnt players for a specific team in departementale
-     * @param $idTeam
+     * @param EquipeDepartementale $team
      * @return int|mixed|string
      */
-    public function findBurnPlayersDepartementale($idTeam)
+    public function findBurnPlayersDepartementale($team)
     {
         $query = $this
             ->createQueryBuilder('c');
 
-        switch ($idTeam) {
+        switch ($team->getIdEquipe()) {
             case 2:
                 $query = $query
                     ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2");
@@ -76,10 +77,9 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Get burnt players for a specific team in paris
-     * @param $idTeam
      * @return int|mixed|string
      */
-    public function findBurnPlayersParis($idTeam)
+    public function findBurnPlayersParis()
     {
         $query = $this
             ->createQueryBuilder('c')
@@ -93,16 +93,16 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Get almost burnt players in departementale
-     * @param $idTeam
+     * @param EquipeDepartementale $team
      * @return int|mixed|string
      */
-    public function findAlmostBurnPlayersDepartementale($idTeam)
+    public function findAlmostBurnPlayersDepartementale($team)
     {
         $query = $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageDepartemental, '$." . $idTeam . "') = 1")
+            ->where("JSON_VALUE(c.brulageDepartemental, '$." . $team->getIdEquipe() . "') = 1")
             ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
 
-        switch ($idTeam) {
+        switch ($team->getIdEquipe()) {
             case 3:
                 $query = $query
                     ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");

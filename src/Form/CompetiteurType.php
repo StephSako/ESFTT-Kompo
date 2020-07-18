@@ -18,7 +18,7 @@ class CompetiteurType extends AbstractType
                 'attr' => ['data-length' => 60]])
             ->add('username', TextType::class,[
                 'attr' => ['data-length' => 50]])
-            ->add('license', NumberType::class,[
+            ->add('licence', NumberType::class,[
                 'attr' => ['data-length' => 11]]);
     }
 

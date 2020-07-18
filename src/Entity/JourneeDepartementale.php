@@ -45,19 +45,6 @@ class JourneeDepartementale
     /**
      * @var String
      */
-    private $shortType = 'D';
-
-    /**
-     * @return String
-     */
-    public function getShortType(): string
-    {
-        return $this->shortType;
-    }
-
-    /**
-     * @var String
-     */
     private $linkType = 'departementale';
 
     /**
