@@ -107,12 +107,10 @@ class HomeController extends AbstractController
      */
     public function journeeShow($type, $id)
     {
-        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journeesDepartementales = $journeesParis = null;
+        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = null;
         $disposJoueur = [];
 
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
-        $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
-        $journeesParis = $this->journeeParisRepository->findAll();
 
         if ($type === 'departementale'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
@@ -121,6 +119,7 @@ class HomeController extends AbstractController
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
             $compos = $this->phaseDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($compos);
+            $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
@@ -129,12 +128,12 @@ class HomeController extends AbstractController
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
             $compos = $this->phaseParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($compos);
+            $journees = $this->journeeParisRepository->findAll();
         }
 
         return $this->render('journee/show.html.twig', [
             'journee' => $journee,
-            'journeesDepartementales' => $journeesDepartementales,
-            'journeesParis' => $journeesParis,
+            'journees' => $journees,
             'compos' => $compos,
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,
@@ -153,7 +152,7 @@ class HomeController extends AbstractController
      */
     public function edit($type, $compo, Request $request) : Response
     {
-        $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = null;
+        $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
 
         if ($type == 'departementale'){
             $compo = $this->phaseDepartementaleRepository->find($compo);
@@ -163,6 +162,7 @@ class HomeController extends AbstractController
             $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
             $j4 = $oldPlayers->getIdJoueur4();
             $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($journeeSelectedPlayers);
+            $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type == 'paris'){
             $compo = $this->phaseParisRepository->find($compo);
@@ -183,6 +183,7 @@ class HomeController extends AbstractController
                 $form = $this->createForm(PhaseParisBasType::class, $compo);
             }
             $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($journeeSelectedPlayers);
+            $journees = $this->journeeParisRepository->findAll();
         }
 
         $j1 = $oldPlayers->getIdJoueur1();
@@ -384,15 +385,12 @@ class HomeController extends AbstractController
             $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersParis();
         }
 
-        $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
-        $journeesParis = $this->journeeParisRepository->findAll();
         return $this->render('journee/edit.html.twig', [
             'burntPlayers' => $burntPlayers,
             'selectionnables' => $selectionnables,
             'almostBurntPlayers' => $almostBurntPlayers,
             'selectedPlayers' => $selectedPlayers,
-            'journeesDepartementales' => $journeesDepartementales,
-            'journeesParis' => $journeesParis,
+            'journees' => $journees,
             'compo' => $compo,
             'form' => $form->createView()
         ]);

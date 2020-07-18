@@ -1,25 +1,24 @@
-<!-- Dropdown Structure -->
-<ul id="champ_de_paris" class="dropdown-content">
-    {% for journee in journeesParis %}
-        <li style="background-color: #012242" {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.idJournee %}class="active blue darken-3"{% endif %}>
-            <a class="white-text center-align" href="{{ path("journee.show", {type: journee.linkType, id: journee.idJournee}) }}">
-                J{{ journee.idJournee }} - {{ journee.date|date('d/m/Y') }}</a>
-        </li>
-    {% endfor %}
-</ul>
-
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper">
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
-                {% for journee in journeesDepartementales %}
-                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a></li>
+
+                {% set type = (app.request.getPathInfo|split('/'))[2] %}
+                {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
+
+                {% for journee in journees %}
+                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a></li>
                 {% endfor %}
-                <!-- Dropdown Trigger -->
-                <li id="dropdown_link" {% if app.request.getPathInfo starts with '/journee/paris/' %}class="active blue darken-3"{% endif %}>
-                    <a class="dropdown-trigger" href="#" data-target="champ_de_paris">
-                        Champ. de Paris<i class="material-icons right">arrow_drop_down</i>
+
+                <li id="btn_link">
+                    <a class="dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
+                        <i class="material-icons left">compare_arrows</i>
+                        {% if type == 'paris' %}
+                            Champ. depart.
+                        {% elseif type == 'departementale' %}
+                            Champ. de Paris
+                        {% endif %}
                     </a>
                 </li>
 

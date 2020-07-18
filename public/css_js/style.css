@@ -57,10 +57,14 @@ body {
     background: none;
 }
 
-.li_in_line, #dropdown_link {
+.li_in_line, #btn_link {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;
+}
+
+#btn_link {
+    background-color: #316397;
 }
 
 thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
@@ -104,6 +108,8 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
 td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a {
     font-family: 'IBM Plex Serif', serif;
     font-size: 95%;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .chip {
