@@ -1,5 +1,3 @@
-$('.dropdown-trigger').dropdown();
-
 $(document).ready(function() {
     $('select').niceSelect();
     $("html").niceScroll();

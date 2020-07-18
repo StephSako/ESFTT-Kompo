@@ -4,7 +4,7 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
 
-                {% set type = (app.request.getPathInfo|split('/'))[2] %}
+                {% set type = ('departementale' in app.request.getPathInfo ? 'departementale' : 'paris') %}
                 {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
                 {% for journee in journees %}

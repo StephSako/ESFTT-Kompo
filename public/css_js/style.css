@@ -77,8 +77,10 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
 
 .flash {
     font-size: 24px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .nav-wrapper li:hover, .dropdown-content li a:hover {
