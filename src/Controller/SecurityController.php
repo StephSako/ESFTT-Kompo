@@ -51,20 +51,17 @@ class SecurityController extends AbstractController
      */
     public function loginAction(AuthenticationUtils $utils)
     {
-        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
-        $journeesParis = $this->journeeDepartementaleRepository->findAll();
+        $journees = $this->journeeDepartementaleRepository->findAll();
 
         if ($this->getUser() == null) {
             return $this->render('security/login.html.twig', [
-                'journeesDepartementales' => $journeesDepartementale,
-                'journeesParis' => $journeesParis,
+                'journees' => $journees,
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
             ]);
         }
         else return $this->render('security/alreadyConnected.html.twig',[
-            'journeesDepartementales' => $journeesDepartementale,
-            'journeesParis' => $journeesParis,
+            'journees' => $journees
         ]);
     }
 
@@ -74,8 +71,7 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function home(Request $request){
-        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
-        $journeesParis = $this->journeeDepartementaleRepository->findAll();
+        $journees = $this->journeeDepartementaleRepository->findAll();
         $user = $this->getUser();
         // TODO View to modify competiteur's dispos
 
@@ -94,8 +90,7 @@ class SecurityController extends AbstractController
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
-            'journeesDepartementales' => $journeesDepartementale,
-            'journeesParis' => $journeesParis,
+            'journees' => $journees,
             'formCompetiteur' => $formCompetiteur->createView()
         ]);
     }
@@ -107,8 +102,7 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
-        $journeesDepartementale = $this->journeeDepartementaleRepository->findAll();
-        $journeesParis = $this->journeeDepartementaleRepository->findAll();
+        $journees = $this->journeeDepartementaleRepository->findAll();
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
@@ -127,8 +121,7 @@ class SecurityController extends AbstractController
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
-            'journeesDepartementales' => $journeesDepartementale,
-            'journeesParis' => $journeesParis,
+            'journees' => $journees,
             'formCompetiteur' => $formCompetiteur->createView()
         ]);
     }

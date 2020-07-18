@@ -4,11 +4,19 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
 
-                {% set type = ('departementale' in app.request.getPathInfo ? 'departementale' : 'paris') %}
+                {% if app.request.getPathInfo == '/compte' %}
+                    {% set type = 'departementale' %}
+                {% elseif app.request.getPathInfo|split('/')[2] != 'paris' or app.request.getPathInfo|split('/')[2] != 'departementale' %}
+                    {% set type = ('departementale' in app.request.getPathInfo ? 'departementale' : 'paris') %}
+                {% else %}
+                    {% set type = 'departementale' %}
+                {% endif %}
                 {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
                 {% for journee in journees %}
-                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a></li>
+                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
+                        <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
+                    </li>
                 {% endfor %}
 
                 <li id="btn_link">
@@ -27,7 +35,9 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
                 {% if app.user %}
-                    <li class="li_in_line{% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path('account') }}">Mon compte</a></li>
+                    <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+                        <a class="white-text" href="{{ path('account') }}">Mon compte</a>
+                    </li>
                     <li class="divider"></li>
                     <li class="li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
                 {% else %}

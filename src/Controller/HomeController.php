@@ -144,7 +144,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/edit/{type}/{compo}", name="compodition.edit")
+     * @Route("/composition/{type}/edit/{compo}", name="compodition.edit")
      * @param string $type
      * @param $compo
      * @param Request $request
