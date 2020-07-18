@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\PhaseDepartementale;
 use App\Repository\CompetiteurRepository;
+use App\Repository\DisponibiliteDepartementaleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,26 +29,30 @@ class PhaseDepartementaleType extends AbstractType
                 'label' => false,
                 'attr'=> ['class'=>'browser-default'],
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
+                    $query = $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposDepartementales', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1');
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $query->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur2', EntityType::class, array(
@@ -60,27 +65,30 @@ class PhaseDepartementaleType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
+                    $query = $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposDepartementales', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1');
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $query->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur3', EntityType::class, array(
@@ -93,27 +101,30 @@ class PhaseDepartementaleType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
+                    $query = $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposDepartementales', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1');
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $query->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur4', EntityType::class, array(
@@ -126,27 +137,30 @@ class PhaseDepartementaleType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
+                    $query = $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposDepartementales', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1');
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
                             break;
                         case 3:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
                             break;
                         case 4:
                             $query
-                                ->where("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
+                                ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
                                 ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
                             break;
                     }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $query->orderBy('c.nom');
                 }
             ));
     }

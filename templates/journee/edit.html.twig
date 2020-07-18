@@ -45,7 +45,7 @@
                     <tr>
                         <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
                     </tr>
-                {% elseif almostBurntPlayers is empty %} %}
+                {% elseif almostBurntPlayers is empty %}
                     <tr>
                         <td>Il n'y a pas de potentiels futurs brûlés</td>
                     </tr>
@@ -61,9 +61,25 @@
         </div>
         <div class="col s6">
             <div class="center-align card-panel">
-                <h4 class="h4_form">Composition d'équipe - Equipe {{ compo.idEquipe.idEquipe }}</h4>
-                <h5>Journée {{ compo.idJournee.idJournee }} - {{ compo.idJournee.type }} - {{ compo.idJournee.date | date("d/m")}} - {{ compo.lieu }}</h5>
-                <br>
+                <h4>Composition d'équipe</h4>
+
+                <div class="row header_compo">
+                    <div class="col s2">
+                        <h5>
+                            <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
+                        </h5>
+                        <p class="lobster">Poule {{ compo.idEquipe.poule }}</p>
+                    </div>
+                    {% if compo.idJournee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+                    <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ compo.idJournee.date|date('d/m') }}</h5>
+                    <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
+                        {% if compo.lieu == 'home'%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                        {% elseif compo.lieu == 'away'%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                        {% endif %}
+                    </h5>
+                    <h5 class="col s5">{{ compo.adversaire }}</h5>
+                </div>
+
                 <div class="container">
                     {{ form_start(form)}}
                     <div class="form_div_list">
@@ -141,31 +157,19 @@
             <table class="centered striped card-panel dispos">
                 <thead>
                 <tr>
-                    <th><h5>Dispos <i class="light-blue-text darken-3 material-icons">record_voice_over</i></h5></th>
+                    <th><h5>Sélectionnables <i class="light-green-text darken-3 material-icons">done</i></h5></th>
                     <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {% for dispo in dispos %}
+                {% for selectionnable in selectionnables %}
                     <tr>
                         <td>
-                            <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                            <span class="{% if selectionnable.disponibilite %} green-text lighten-3 {% elseif not selectionnable.disponibilite %} red-text lighten-3 {% endif %}">{{ selectionnable.idCompetiteur.nom }}</span>
                         </td>
                         <td>
-                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% for dispoNonDeclaree in joueursNonDeclares %}
-                    <tr>
-                        <td>
-                            <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
-                        </td>
-                        <td>
-                            {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
+                            {% if selectionnable.idCompetiteur.idCompetiteur in selectedPlayers %}
                                 <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
                             {% endif %}
                         </td>

@@ -28,15 +28,12 @@ class PhaseParisHautType extends AbstractType
                 'label' => false,
                 'attr'=> ['class'=>'browser-default'],
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur2', EntityType::class, array(
@@ -49,16 +46,12 @@ class PhaseParisHautType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur3', EntityType::class, array(
@@ -71,16 +64,12 @@ class PhaseParisHautType extends AbstractType
                 'attr'=> ['class'=>'browser-default'],
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur4', EntityType::class, array(
@@ -93,16 +82,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur5', EntityType::class, array(
@@ -115,16 +100,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur6', EntityType::class, array(
@@ -137,16 +118,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur7', EntityType::class, array(
@@ -159,16 +136,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur8', EntityType::class, array(
@@ -181,16 +154,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur9', EntityType::class, array(
@@ -203,16 +172,12 @@ class PhaseParisHautType extends AbstractType
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c');
-
-                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
-                        case 2:
-                            $query
-                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
-                            break;
-                    }
-
-                    return $query->orderBy('c.nom', 'ASC');
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.disposParis', 'd')
+                        ->where('d.idJournee = :idJournee')
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->andWhere('d.disponibilite = 1')
+                        ->orderBy('c.nom');
                 }
             ));
     }

@@ -150,17 +150,15 @@ class HomeController extends AbstractController
      * @param $compo
      * @param Request $request
      * @return Response
-     * @throws DBALException
      */
     public function edit($type, $compo, Request $request) : Response
     {
-        $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $joueursDeclares = $joueursNonDeclares = $almostBurntPlayers = $selectedPlayers = null;
+        $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = null;
 
         if ($type == 'departementale'){
             $compo = $this->phaseDepartementaleRepository->find($compo);
             $journeeSelectedPlayers = $this->phaseDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDispos($compo->getIdJournee()->getIdJournee());
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getIdJournee(), 'disponibilite_departementale');
+            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
             $form = $this->createForm(PhaseDepartementaleType::class, $compo);
             $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
             $j4 = $oldPlayers->getIdJoueur4();
@@ -169,8 +167,7 @@ class HomeController extends AbstractController
         else if ($type == 'paris'){
             $compo = $this->phaseParisRepository->find($compo);
             $journeeSelectedPlayers = $this->phaseParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
-            $joueursDeclares = $this->disponibiliteParisRepository->findAllDispos($compo->getIdJournee()->getIdJournee());
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getIdJournee(), 'disponibilite_paris');
+            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
             $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
             $oldPlayers = $this->phaseParisRepository->findOneBy(['id' => $compo->getId()]);
             if ($levelEquipe === 1){
@@ -391,8 +388,7 @@ class HomeController extends AbstractController
         $journeesParis = $this->journeeParisRepository->findAll();
         return $this->render('journee/edit.html.twig', [
             'burntPlayers' => $burntPlayers,
-            'dispos' => $joueursDeclares,
-            'joueursNonDeclares' => $joueursNonDeclares,
+            'selectionnables' => $selectionnables,
             'almostBurntPlayers' => $almostBurntPlayers,
             'selectedPlayers' => $selectedPlayers,
             'journeesDepartementales' => $journeesDepartementales,
