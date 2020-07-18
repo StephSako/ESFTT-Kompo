@@ -1,9 +1,9 @@
 <!-- Dropdown Structure -->
 <ul id="champ_de_paris" class="dropdown-content">
     {% for journee in journeesParis %}
-        <li style="background-color: #012242" {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}class="active blue darken-3"{% endif %}>
-            <a class="white-text center-align" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">
-                J{{ journee.nJournee }} - {{ journee.date|date('d/m/Y') }}</a>
+        <li style="background-color: #012242" {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.idJournee %}class="active blue darken-3"{% endif %}>
+            <a class="white-text center-align" href="{{ path("journee.show", {type: journee.linkType, id: journee.idJournee}) }}">
+                J{{ journee.idJournee }} - {{ journee.date|date('d/m/Y') }}</a>
         </li>
     {% endfor %}
 </ul>
@@ -14,7 +14,7 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
                 {% for journee in journeesDepartementales %}
-                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.nJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.nJournee}) }}">J{{ journee.nJournee }} - {{ journee.date|date('d/m') }}</a></li>
+                    <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ journee.linkType ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}"><a class="white-text" href="{{ path("journee.show", {type: journee.linkType, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a></li>
                 {% endfor %}
                 <!-- Dropdown Trigger -->
                 <li id="dropdown_link" {% if app.request.getPathInfo starts with '/journee/paris/' %}class="active blue darken-3"{% endif %}>

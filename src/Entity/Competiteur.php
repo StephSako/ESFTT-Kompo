@@ -327,19 +327,47 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return mixed
+     * @return int[]
      */
     public function getDisposDepartementales()
     {
-        return $this->disposDepartementales;
+        $disposId = [];
+        foreach ($this->disposDepartementales as $dispo){
+            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+        return $disposId;
     }
 
     /**
-     * @return mixed
+     * @param mixed $dispos
+     * @return Competiteur
+     */
+    public function setDisposDepartemental($dispos): self
+    {
+        $this->disposDepartementales = $dispos;
+        return $this;
+    }
+
+    /**
+     * @return int[]
      */
     public function getDisposParis()
     {
-        return $this->disposParis;
+        $disposId = [];
+        foreach ($this->disposParis as $dispo){
+            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+        return $disposId;
+    }
+
+    /**
+     * @param mixed $dispos
+     * @return Competiteur
+     */
+    public function setDisposParis($dispos): self
+    {
+        $this->disposParis = $dispos;
+        return $this;
     }
 
 }

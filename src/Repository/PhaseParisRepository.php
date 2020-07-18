@@ -32,6 +32,9 @@ class PhaseParisRepository extends ServiceEntityRepository
             if ($compo->getIdJoueur4() != null) array_push($selectedPlayers, $compo->getIdJoueur4()->getIdCompetiteur());
             if ($compo->getIdJoueur5() != null) array_push($selectedPlayers, $compo->getIdJoueur5()->getIdCompetiteur());
             if ($compo->getIdJoueur6() != null) array_push($selectedPlayers, $compo->getIdJoueur6()->getIdCompetiteur());
+            if ($compo->getIdJoueur7() != null) array_push($selectedPlayers, $compo->getIdJoueur7()->getIdCompetiteur());
+            if ($compo->getIdJoueur8() != null) array_push($selectedPlayers, $compo->getIdJoueur8()->getIdCompetiteur());
+            if ($compo->getIdJoueur9() != null) array_push($selectedPlayers, $compo->getIdJoueur9()->getIdCompetiteur());
         }
         return $selectedPlayers;
     }

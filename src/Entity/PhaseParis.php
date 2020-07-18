@@ -67,6 +67,27 @@ class PhaseParis
     private $idJoueur6;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_joueur_7", referencedColumnName="id_competiteur")
+     * @var Competiteur
+     */
+    private $idJoueur7;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_joueur_8", referencedColumnName="id_competiteur")
+     * @var Competiteur
+     */
+    private $idJoueur8;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_joueur_9", referencedColumnName="id_competiteur")
+     * @var Competiteur
+     */
+    private $idJoueur9;
+
+    /**
      * @var EquipeParis
      * @ORM\OneToOne(targetEntity="App\Entity\EquipeParis")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
@@ -152,6 +173,60 @@ class PhaseParis
     public function setIdJoueur3(?Competiteur $idJoueur3): self
     {
         $this->idJoueur3 = $idJoueur3;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur7(): ?Competiteur
+    {
+        return $this->idJoueur7;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur7
+     * @return PhaseParis
+     */
+    public function setIdJoueur7(?Competiteur $idJoueur7): self
+    {
+        $this->idJoueur7 = $idJoueur7;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur8(): ?Competiteur
+    {
+        return $this->idJoueur8;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur8
+     * @return PhaseParis
+     */
+    public function setIdJoueur8(?Competiteur $idJoueur8): self
+    {
+        $this->idJoueur8 = $idJoueur8;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur9(): ?Competiteur
+    {
+        return $this->idJoueur9;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur9
+     * @return PhaseParis
+     */
+    public function setIdJoueur9(?Competiteur $idJoueur9): self
+    {
+        $this->idJoueur9 = $idJoueur9;
         return $this;
     }
 
@@ -252,6 +327,7 @@ class PhaseParis
     {
         if ($this->getIdEquipe() === 1) return "PR";
         else if ($this->getIdEquipe() === 2) return "D2";
+        else return '';
     }
 
     /**

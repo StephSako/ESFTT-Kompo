@@ -19,11 +19,6 @@ class JourneeDepartementale
     private $idJournee;
 
     /**
-     * @ORM\Column(type="integer", name="n_journee")
-     */
-    private $nJournee;
-
-    /**
      * @var DateTime
      * @ORM\Column(type="date", name="date")
      */
@@ -69,22 +64,6 @@ class JourneeDepartementale
     public function setIdJournee($idJournee): void
     {
         $this->idJournee = $idJournee;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getNJournee(): ?int
-    {
-        return $this->nJournee;
-    }
-
-    /**
-     * @param mixed $nJournee
-     */
-    public function setNJournee($nJournee): void
-    {
-        $this->nJournee = $nJournee;
     }
 
     /**

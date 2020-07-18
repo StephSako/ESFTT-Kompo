@@ -148,6 +148,72 @@ class PhaseParisHautType extends AbstractType
 
                     return $query->orderBy('c.nom', 'ASC');
                 }
+            ))
+            ->add('idJoueur7', EntityType::class, array(
+                'class' => 'App\Entity\Competiteur',
+                'choice_label' => function ($competiteur) use($builder) {
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                },
+                'label' => false,
+                'attr'=> ['class'=>'browser-default'],
+                'required'   => false,
+                'empty_data' => null,
+                'query_builder' => function (CompetiteurRepository $cr) use($builder) {
+                    $query = $cr->createQueryBuilder('c');
+
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
+                        case 2:
+                            $query
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                            break;
+                    }
+
+                    return $query->orderBy('c.nom', 'ASC');
+                }
+            ))
+            ->add('idJoueur8', EntityType::class, array(
+                'class' => 'App\Entity\Competiteur',
+                'choice_label' => function ($competiteur) use($builder) {
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                },
+                'label' => false,
+                'attr'=> ['class'=>'browser-default'],
+                'required'   => false,
+                'empty_data' => null,
+                'query_builder' => function (CompetiteurRepository $cr) use($builder) {
+                    $query = $cr->createQueryBuilder('c');
+
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
+                        case 2:
+                            $query
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                            break;
+                    }
+
+                    return $query->orderBy('c.nom', 'ASC');
+                }
+            ))
+            ->add('idJoueur9', EntityType::class, array(
+                'class' => 'App\Entity\Competiteur',
+                'choice_label' => function ($competiteur) use($builder) {
+                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                },
+                'label' => false,
+                'attr'=> ['class'=>'browser-default'],
+                'required'   => false,
+                'empty_data' => null,
+                'query_builder' => function (CompetiteurRepository $cr) use($builder) {
+                    $query = $cr->createQueryBuilder('c');
+
+                    switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
+                        case 2:
+                            $query
+                                ->where("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                            break;
+                    }
+
+                    return $query->orderBy('c.nom', 'ASC');
+                }
             ));
     }
 

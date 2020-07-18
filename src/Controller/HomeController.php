@@ -107,7 +107,8 @@ class HomeController extends AbstractController
      */
     public function journeeShow($type, $id)
     {
-        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $disposJoueur = $journeesDepartementales = $journeesParis = null;
+        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journeesDepartementales = $journeesParis = null;
+        $disposJoueur = [];
 
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
         $journeesDepartementales = $this->journeeDepartementaleRepository->findAll();
@@ -157,9 +158,9 @@ class HomeController extends AbstractController
 
         if ($type == 'departementale'){
             $compo = $this->phaseDepartementaleRepository->find($compo);
-            $journeeSelectedPlayers = $this->phaseDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getNJournee()]);
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDispos($compo->getIdJournee()->getNJournee());
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getNJournee(), 'disponibilite_departementale');
+            $journeeSelectedPlayers = $this->phaseDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
+            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDispos($compo->getIdJournee()->getIdJournee());
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getIdJournee(), 'disponibilite_departementale');
             $form = $this->createForm(PhaseDepartementaleType::class, $compo);
             $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
             $j4 = $oldPlayers->getIdJoueur4();
@@ -167,9 +168,9 @@ class HomeController extends AbstractController
         }
         else if ($type == 'paris'){
             $compo = $this->phaseParisRepository->find($compo);
-            $journeeSelectedPlayers = $this->phaseParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getNJournee()]);
-            $joueursDeclares = $this->disponibiliteParisRepository->findAllDispos($compo->getIdJournee()->getNJournee());
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getNJournee(), 'disponibilite_paris');
+            $journeeSelectedPlayers = $this->phaseParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
+            $joueursDeclares = $this->disponibiliteParisRepository->findAllDispos($compo->getIdJournee()->getIdJournee());
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($compo->getIdJournee()->getIdJournee(), 'disponibilite_paris');
             $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
             $oldPlayers = $this->phaseParisRepository->findOneBy(['id' => $compo->getId()]);
             if ($levelEquipe === 1){
@@ -177,6 +178,9 @@ class HomeController extends AbstractController
                 $j4 = $oldPlayers->getIdJoueur4();
                 $j5 = $oldPlayers->getIdJoueur5();
                 $j6 = $oldPlayers->getIdJoueur6();
+                $j7 = $oldPlayers->getIdJoueur7();
+                $j8 = $oldPlayers->getIdJoueur8();
+                $j9 = $oldPlayers->getIdJoueur9();
             }
             else if ($levelEquipe === 2){
                 $form = $this->createForm(PhaseParisBasType::class, $compo);
@@ -258,6 +262,24 @@ class HomeController extends AbstractController
                     $brulageOld6[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j6->setBrulageParis($brulageOld6);
                 }
+
+                if ($j7 != null) {
+                    $brulageOld7 = $j7->getBrulageParis();
+                    $brulageOld7[$compo->getIdEquipe()->getIdEquipe()]--;
+                    $j7->setBrulageParis($brulageOld7);
+                }
+
+                if ($j8 != null) {
+                    $brulageOld8 = $j8->getBrulageParis();
+                    $brulageOld8[$compo->getIdEquipe()->getIdEquipe()]--;
+                    $j8->setBrulageParis($brulageOld8);
+                }
+
+                if ($j9 != null) {
+                    $brulageOld9 = $j9->getBrulageParis();
+                    $brulageOld9[$compo->getIdEquipe()->getIdEquipe()]--;
+                    $j9->setBrulageParis($brulageOld9);
+                }
             }
 
             /** Incrémenter le brûlage des joueurs sélectionnés de la nouvelle compo **/
@@ -327,6 +349,24 @@ class HomeController extends AbstractController
                     $brulage6[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur6()->setBrulageParis($brulage6);
                 }
+
+                if ($form->getData()->getIdJoueur7() != null) {
+                    $brulage7 = $form->getData()->getIdJoueur7()->getBrulageParis();
+                    $brulage7[$compo->getIdEquipe()->getIdEquipe()]++;
+                    $compo->getIdJoueur7()->setBrulageParis($brulage7);
+                }
+
+                if ($form->getData()->getIdJoueur8() != null) {
+                    $brulage8 = $form->getData()->getIdJoueur8()->getBrulageParis();
+                    $brulage8[$compo->getIdEquipe()->getIdEquipe()]++;
+                    $compo->getIdJoueur8()->setBrulageParis($brulage8);
+                }
+
+                if ($form->getData()->getIdJoueur9() != null) {
+                    $brulage9 = $form->getData()->getIdJoueur9()->getBrulageParis();
+                    $brulage9[$compo->getIdEquipe()->getIdEquipe()]++;
+                    $compo->getIdJoueur9()->setBrulageParis($brulage9);
+                }
             }
 
             $this->em->flush();
@@ -334,7 +374,7 @@ class HomeController extends AbstractController
 
             return $this->redirectToRoute('journee.show', [
                 'type' => $compo->getIdJournee()->getLinkType(),
-                'id' => $compo->getIdJournee()->getNJournee()
+                'id' => $compo->getIdJournee()->getIdJournee()
             ]);
         }
 

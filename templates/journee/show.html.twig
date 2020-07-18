@@ -58,8 +58,6 @@
                             <td>
                                 {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
                                     <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% elseif 2 in joueurBrule.FirstBurntTeamParis["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -78,7 +76,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.nJournee }} - {{ journee.type }} - {{ journee.date|date('d/m/Y') }}</h4>
+                <h4>Journée {{ journee.idJournee }} - {{ journee.type }} - {{ journee.date|date('d/m/Y') }}</h4>
             </div>
 
             {% if app.user %}
@@ -92,15 +90,15 @@
                         {% set dispoJournee = app.user.disposParis %}
                     {% endif %}
 
-                    {% if journee.nJournee in dispoJournee|keys %}
-                        {% if dispoJournee[journee.nJournee] %}
+                    {% if journee.idJournee in dispoJournee|keys %}
+                        {% if dispoJournee[journee.idJournee] %}
                             <p>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></p>
-                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0, NJournee: journee.nJournee}) }}">
+                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0, NJournee: journee.idJournee}) }}">
                                 <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                             </a>
                         {% else %}
                             <p>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></p>
-                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1, NJournee: journee.nJournee}) }}">
+                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1, NJournee: journee.idJournee}) }}">
                                 <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                             </a>
                         {% endif %}
@@ -210,6 +208,15 @@
                                 </td>
                             </tr>
 
+                            {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
+                                    </tbody>
+                                </table>
+                                <br><div class="grey lighten-1 divider"></div><br>
+                                <table class="striped">
+                                    <tbody>
+                            {% endif %}
+
+
                             {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                                 <tr>
                                     <td class="rank"><b>#4</b></td>
@@ -274,7 +281,81 @@
                                             <div class="chip">
                                             <img src="{{ compo.idJoueur6.avatar }}" alt="Avatar">
                                             {{ compo.idJoueur6.nom }}
-                                            </div>{
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                            {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
+                                    </tbody>
+                                </table>
+                                <br><div class="grey lighten-1 divider"></div><br>
+                                <table class="striped">
+                                    <tbody>
+                        {% endif %}
+
+                                <tr>
+                                    <td class="rank"><b>#7</b></td>
+                                    <td>
+                                        {% if compo.idJoueur7 is not null %}
+                                            {{ compo.idJoueur7.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur7 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur7.classementOfficiel }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur7 is not null %}
+                                            <div class="chip">
+                                                <img src="{{ compo.idJoueur7.avatar }}" alt="Avatar">
+                                                {{ compo.idJoueur7.nom }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="rank"><b>#8</b></td>
+                                    <td>
+                                        {% if compo.idJoueur8 is not null %}
+                                            {{ compo.idJoueur8.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur8 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur8.classementOfficiel }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur8 is not null %}
+                                            <div class="chip">
+                                                <img src="{{ compo.idJoueur8.avatar }}" alt="Avatar">
+                                                {{ compo.idJoueur8.nom }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="rank"><b>#9</b></td>
+                                    <td>
+                                        {% if compo.idJoueur9 is not null %}
+                                            {{ compo.idJoueur9.licence }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur9 is not null %}
+                                            <span class="new badge blue darken-4" data-badge-caption="">{{ compo.idJoueur9.classementOfficiel }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if compo.idJoueur9 is not null %}
+                                            <div class="chip">
+                                                <img src="{{ compo.idJoueur9.avatar }}" alt="Avatar">
+                                                {{ compo.idJoueur9.nom }}
+                                            </div>
                                         {% endif %}
                                     </td>
                                 </tr>

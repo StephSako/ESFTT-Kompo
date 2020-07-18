@@ -85,7 +85,7 @@ class DisponibiliteController extends AbstractController
         return $this->redirectToRoute('journee.show',
             array(
                 'type' => $type,
-                'id' => $journee->getNJournee()
+                'id' => $journee->getIdJournee()
             )
         );
     }

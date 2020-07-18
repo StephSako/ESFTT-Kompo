@@ -27,17 +27,13 @@ class DisponibiliteParis
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposParis")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
-     * })
+     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
      */
     private $idCompetiteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
-     * })
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * @var JourneeParis
      */
     private $idJournee;
