@@ -18,4 +18,16 @@ class JourneeDepartementaleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, JourneeDepartementale::class);
     }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function findAllDates()
+    {
+        return $this->createQueryBuilder('jd')
+            ->select('jd.date')
+            ->orderBy('jd.date')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -18,6 +18,8 @@ security:
             logout:
                 path: /logout
                 target: /journee/departementale/1
+            remember_me:
+                secret:   '%kernel.secret%'
 
     access_control:
         - { path: ^/journee/edit, roles: ROLE_CAPITAINE }

@@ -1,10 +1,5 @@
 body {
-    background-image: url('https://img3.goodfon.com/wallpaper/nbig/e/83/nastolnyy-tennis-ping-pong.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: rgba(255, 255, 255, 0.55);
-    background-blend-mode: lighten;
+    background: linear-gradient(135deg, rgb(17, 116, 184) 1%, rgba(0,19,23,1) 100%);
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
@@ -38,7 +33,7 @@ body {
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
     float: right;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .nice-select {
@@ -61,10 +56,6 @@ body {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;
-}
-
-#btn_link {
-    background-color: #316397;
 }
 
 thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
@@ -107,11 +98,16 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     padding-right: 6px;
 }
 
-td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a {
+td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a, .card-panel .bottom_0 {
     font-family: 'IBM Plex Serif', serif;
     font-size: 95%;
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.card-panel.bottom_0 {
+    padding-top: 10px;
+    padding-bottom: 6px;
 }
 
 .chip {
@@ -119,6 +115,7 @@ td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a {
     background-color: transparent;
     height: 40px;
     line-height: 40px;
+    color: black;
 }
 
 .chip>img {
@@ -141,15 +138,7 @@ i {
     font-size: 18px;
 }
 
-.header_compo {
-    margin-bottom: 0;
-}
-
-.form_div_list div:last-child {
-    margin-bottom: 0;
-}
-
-.brulage_edit {
+.header_compo, .form_div_list div:last-child, .brulage_edit, .bottom_0 {
     margin-bottom: 0;
 }
 

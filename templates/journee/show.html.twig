@@ -9,17 +9,30 @@
 
     <div class="row">
         <div class="col s3">
+
+            <div class="card-panel bottom_0">
+                <div class="row bottom_0">
+                    <div class="col s2"><i class="red-text lighten-1 material-icons">highlight_off</i></div>
+                    <div class="col s10">Brûlé dans l'équipe</div>
+                </div>
+
+                <div class="row bottom_0">
+                    <div class="col s2"><i class="orange-text lighten-1 material-icons">error_outline</i></div>
+                    <div class="col s10">Futur brûlé en équipes inférieures</div>
+                </div>
+            </div>
+
             <table class="centered striped card-panel dispos">
                 <thead>
-                <tr>
-                    <th><h5>Brûlages <i class="orange-text material-icons">whatshot</i></h5></th>
-                    <th><h5>1</h5></th>
-                    <th><h5>2</h5></th>
-                    {% if journee.linkType == 'departementale' %}
-                        <th><h5>3</h5></th>
-                        <th><h5>4</h5></th>
-                    {% endif %}
-                </tr>
+                    <tr>
+                        <th><h5>Brûlages</h5></th>
+                        <th><h5>1</h5></th>
+                        <th><h5>2</h5></th>
+                        {% if journee.linkType == 'departementale' %}
+                            <th><h5>3</h5></th>
+                            <th><h5>4</h5></th>
+                        {% endif %}
+                    </tr>
                 </thead>
 
                 <tbody>
@@ -129,7 +142,7 @@
                             <h5>
                                 <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                             </h5>
-                            <p class="lobster">Poule {{ compo.idEquipe.poule }}</p>
+                            <p class="lobster" style="font-size: 1rem;">Poule {{ compo.idEquipe.poule }}</p>
                         </div>
                         {% if journee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
                         <h5 class="col {% if journee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ journee.date|date('d/m') }}</h5>
@@ -372,11 +385,20 @@
             {% endfor %}
         </div>
         <div class="col s3">
+
+            <div class="card-panel bottom_0">
+                <div class="row bottom_0">
+                    <div class="col s2"><i class="blue-text darken-1 material-icons">playlist_add_check</i></div>
+                    <div class="col s10">Sélectionné pour cette journée</div>
+                </div>
+            </div>
+
             <table class="centered striped card-panel dispos">
                 <thead>
                     <tr>
-                        <th><h5>Dispos <i class="light-blue-text darken-3 material-icons">record_voice_over</i></h5></th>
-                        <th></th>
+                        <th>
+                            <h5>Les dispos</h5>
+                        </th>
                     </tr>
                 </thead>
 

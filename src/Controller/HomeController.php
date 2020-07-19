@@ -92,9 +92,17 @@ class HomeController extends AbstractController
      */
     public function indexAction()
     {
+        $dates = $this->journeeDepartementaleRepository->findAllDates();
+        $NJournee = 0;
+
+        while ($NJournee < 7 && (int) (new \DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
+            $NJournee++;
+        }
+        $NJournee++;
+
         return $this->redirectToRoute('journee.show', [
             'type' => 'departementale',
-            'id' => 1
+            'id' => $NJournee
         ]);
     }
 

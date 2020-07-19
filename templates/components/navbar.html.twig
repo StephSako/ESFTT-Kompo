@@ -4,7 +4,7 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
 
-                {% if app.request.getPathInfo == '/compte' %}
+                {% if app.request.getPathInfo == '/compte' or app.request.getPathInfo == '/login' %}
                     {% set type = 'departementale' %}
                 {% elseif app.request.getPathInfo|split('/')[2] != 'paris' or app.request.getPathInfo|split('/')[2] != 'departementale' %}
                     {% set type = ('departementale' in app.request.getPathInfo ? 'departementale' : 'paris') %}
@@ -19,11 +19,11 @@
                     </li>
                 {% endfor %}
 
-                <li id="btn_link">
+                <li id="btn_link" class="blue darken-4">
                     <a class="dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
                         <i class="material-icons left">compare_arrows</i>
                         {% if type == 'paris' %}
-                            Champ. depart.
+                            Champ. départemental
                         {% elseif type == 'departementale' %}
                             Champ. de Paris
                         {% endif %}
