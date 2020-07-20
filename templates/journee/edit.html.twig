@@ -101,7 +101,11 @@
 
                         {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                                <div class="grey lighten-1 divider"></div><br>
+                                        </div>
+                                    </div>
+                                <br><div class="divider"></div><br>
+                                    <div class="container">
+                                        <div class="form_div_list">
                             {% endif %}
 
                             <div class="row">
@@ -125,7 +129,11 @@
                             </div>
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                                <div class="grey lighten-1 divider"></div><br>
+                                        </div>
+                                    </div>
+                                <br><div class="divider"></div><br>
+                                    <div class="container">
+                                        <div class="form_div_list">
                             {% endif %}
 
                             <div class="row">

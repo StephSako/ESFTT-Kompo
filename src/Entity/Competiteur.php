@@ -244,13 +244,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
-     */
-    public function getPlayersChips(){
-        return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. "</div>";
-    }
-
-    /**
      * @return array[]
      */
     public function getFirstBurntTeamDepartemental(){
@@ -368,6 +361,13 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->disposParis = $dispos;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlayersChips(){
+        return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. " - " . $this->getClassementOfficiel() . " pts</div>";
     }
 
 }

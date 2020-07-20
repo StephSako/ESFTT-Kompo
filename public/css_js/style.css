@@ -39,7 +39,7 @@ body {
 .nice-select {
     border-radius: 0;
     padding-right: 300px;
-    max-width:90%;
+    width: 350px;
 }
 
 .nice-select .list {
@@ -144,4 +144,9 @@ i {
 
 p.lobster {
     margin-top: 0;
+}
+
+.divider {
+    height: 3px;
+    background: #012242;
 }
