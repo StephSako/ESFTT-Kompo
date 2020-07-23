@@ -74,7 +74,7 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     margin-bottom: 10px;
 }
 
-.nav-wrapper li:hover, .dropdown-content li a:hover {
+.nav-wrapper li:hover {
     background-color: #1565c0;
 }
 
@@ -98,7 +98,7 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     padding-right: 6px;
 }
 
-td, li, p, .btn, label, .nav-extended li a, nav ul a, .dropdown-content li>a, .card-panel .bottom_0 {
+td, li, p, .btn, label, .nav-extended li a, nav ul a, .card-panel .bottom_0, .tab a {
     font-family: 'IBM Plex Serif', serif;
     font-size: 95%;
     padding-left: 10px;
@@ -134,7 +134,7 @@ i {
     padding: 8px 10px;
 }
 
-.li_in_line a, thead th, nav ul a, .dropdown-content li>a {
+.li_in_line a, thead th, nav ul a {
     font-size: 18px;
 }
 
@@ -149,4 +149,9 @@ p.lobster {
 .divider {
     height: 3px;
     background: #012242;
+}
+
+.gestion {
+    border: 1px solid #01579b ;
+    border-radius: 5px;
 }

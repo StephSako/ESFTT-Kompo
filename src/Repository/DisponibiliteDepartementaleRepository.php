@@ -21,10 +21,11 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des dispos par journée
      * @param $idJournee
      * @return int|mixed|string
      */
-    public function findAllDispos($idJournee)
+    public function findAllDisposByJournee($idJournee)
     {
         return $this->createQueryBuilder('d')
             ->select('d')
@@ -33,7 +34,22 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->orderBy('d.disponibilite', 'DESC')
-            ->addOrderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Liste de toutes les disponibilités du championnat départemental affichée dans le back-office
+     * @return int|mixed|string
+     */
+    public function findAllDispos()
+    {
+        return $this->createQueryBuilder('d')
+            ->select('d')
+            ->leftJoin('d.idCompetiteur', 'c')
+            ->addSelect('c')
+            ->orderBy('c.nom')
+            ->addOrderBy('d.idJournee')
             ->getQuery()
             ->getResult();
     }

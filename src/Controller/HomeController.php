@@ -123,7 +123,7 @@ class HomeController extends AbstractController
         if ($type === 'departementale'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeDepartementaleRepository->find($id);
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDispos($id);
+            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
             $compos = $this->phaseDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($compos);
@@ -132,7 +132,7 @@ class HomeController extends AbstractController
         else if ($type === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
-            $joueursDeclares = $this->disponibiliteParisRepository->findAllDispos($id);
+            $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
             $compos = $this->phaseParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($compos);
@@ -152,7 +152,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/{type}/edit/{compo}", name="compodition.edit")
+     * @Route("/composition/{type}/edit/{compo}", name="composition.edit")
      * @param string $type
      * @param $compo
      * @param Request $request
