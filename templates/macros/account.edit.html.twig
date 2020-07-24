@@ -1,0 +1,44 @@
+{% macro edit_account(title, form) %}
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ title }}</h4>
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col s4">
+                {{ form_row(form.nom) }}
+            </div>
+            <div class="col s4">
+                {{ form_row(form.username) }}
+            </div>
+            <div class="col s4">
+                {{ form_row(form.licence) }}
+            </div>
+        </div>
+        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+{% endmacro %}
+
+{% macro edit_password(title, path, type, options) %}
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ title }}</h4>
+
+        {% if type == 'general' %}
+            <form action="{{ path(path) }}" method="POST">
+        {% elseif type == 'backoffice' %}
+            <form action="{{ path(path, {id: options.competiteurId}) }}" method="POST">
+        {% endif %}
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <input name="new_password" id="new_password" type="password" class="validate" required>
+                    <label for="new_password">Nouveau mot de passe</label>
+                </div>
+                <div class="input-field col s6">
+                    <input name="new_password_validate" id="new_password_validate" type="password" class="validate" required>
+                    <label for="new_password_validate">Valider le nouveau mot de passe</label>
+                </div>
+            </div>
+            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        </form>
+    </div>
+{% endmacro %}

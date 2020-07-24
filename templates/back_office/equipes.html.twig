@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back office - Les équipes{% endblock %}
+
+{% block body %}
+
+    {{ include("components/navbar_backoffice.html.twig") }}
+
+    <div class="container">
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les équipes</h4>
+        </div>
+
+        <ul class="tabs">
+            <li class="tab col s3"><a href="#equipes_departementales" class="active">Les équipes départementales</a></li>
+            <li class="tab col s3"><a href="#equipes_paris">Les équipes de Paris</a></li>
+        </ul>
+
+        <div class="card-panel center" id="equipes_departementales">
+            <table class="striped">
+                <thead>
+                <tr>
+                    <th><h5>N° équipe</h5></th>
+                    <th><h5>Division</h5></th>
+                    <th><h5>Poule</h5></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for equipe in equipesDepartementales %}
+                    <tr>
+                        <td>{{ equipe.idEquipe }}</td>
+                        <td>{{ equipe.division }}</td>
+                        <td>{{ equipe.poule }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-panel center" id="equipes_paris">
+            <table class="striped">
+                <thead>
+                <tr>
+                    <th><h5>N° équipe</h5></th>
+                    <th><h5>Division</h5></th>
+                    <th><h5>Poule</h5></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for equipe in equipesParis %}
+                    <tr>
+                        <td>{{ equipe.idEquipe }}</td>
+                        <td>{{ equipe.division }}</td>
+                        <td>{{ equipe.poule }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

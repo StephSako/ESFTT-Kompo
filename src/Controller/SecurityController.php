@@ -89,9 +89,11 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/edit.html.twig', [
+            'type' => 'general',
             'user' => $user,
+            'path' => 'account.update.password',
             'journees' => $journees,
-            'formCompetiteur' => $formCompetiteur->createView()
+            'form' => $formCompetiteur->createView()
         ]);
     }
 
@@ -121,8 +123,10 @@ class SecurityController extends AbstractController
 
         return $this->render('security/edit.html.twig', [
             'user' => $user,
+            'type' => 'general',
+            'path' => 'account.update.password',
             'journees' => $journees,
-            'formCompetiteur' => $formCompetiteur->createView()
+            'form' => $formCompetiteur->createView()
         ]);
     }
 }

@@ -139,7 +139,7 @@ class HomeController extends AbstractController
             $journees = $this->journeeParisRepository->findAll();
         }
 
-        return $this->render('journee/show.html.twig', [
+        return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
             'compos' => $compos,

@@ -1,11 +1,16 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as flash %}
+{% import 'macros/account.edit.html.twig' as edit_account %}
 
 {% block title %}Mon compte{% endblock %}
 
 {% block body %}
 
-    {% include("components/navbar.html.twig") %}
+    {% if type == 'general' %}
+        {% include("components/navbar.html.twig") %}
+    {% elseif type == 'backoffice' %}
+        {% include("components/navbar_backoffice.html.twig") %}
+    {% endif %}
 
     <div class="container">
 
@@ -17,40 +22,13 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
-        <div class="card-panel center-align">
-            <h4 class="h4_form">Modifier mon compte</h4>
-            {{ form_start(formCompetiteur) }}
-                <div class="row">
-                    <div class="col s4">
-                        {{ form_row(formCompetiteur.nom) }}
-                    </div>
-                    <div class="col s4">
-                        {{ form_row(formCompetiteur.username) }}
-                    </div>
-                    <div class="col s4">
-                        {{ form_row(formCompetiteur.licence) }}
-                    </div>
-                </div>
-                <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
-            {{ form_end(formCompetiteur) }}
-        </div>
-
-        <div class="card-panel center-align">
-            <h4 class="h4_form">Modifier mon mot de passe</h4>
-            <form action="{{ path('account.update.password') }}" method="POST">
-                <div class="row">
-                    <div class="input-field col s6">
-                        <input name="new_password" id="new_password" type="password" class="validate" required>
-                        <label for="new_password">Nouveau mot de passe</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input name="new_password_validate" id="new_password_validate" type="password" class="validate" required>
-                        <label for="new_password_validate">Valider le nouveau mot de passe</label>
-                    </div>
-                </div>
-                <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
-            </form>
-        </div>
+        {% if type == 'general' %}
+            {{ edit_account.edit_account('Modifier mon compte', form) }}
+            {{ edit_account.edit_password('Modifier mon mot de passe', path, type) }}
+        {% elseif type == 'backoffice' %}
+            {{ edit_account.edit_account('Modifier son compte', form) }}
+            {{ edit_account.edit_password('Modifier son mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}
+        {% endif %}
     </div>
 
 {% endblock %}

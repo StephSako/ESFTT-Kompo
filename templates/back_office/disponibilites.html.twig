@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back office - Les dispos{% endblock %}
+
+{% block body %}
+
+    {{ include("components/navbar_backoffice.html.twig") }}
+
+    <div class="container">
+
+        <div id="disponibilites">
+            <div class="card-panel center-align white-text title_journee">
+                <h4>Les disponibilités</h4>
+            </div>
+
+            <ul class="tabs">
+                <li class="tab col s3"><a href="#disponibilites_departementales" class="active">Les disponibilités champ. départementales</a></li>
+                <li class="tab col s3"><a href="#disponibilites_paris">Les disponibilités champ. de Paris</a></li>
+            </ul>
+
+            <div class="card-panel center" id="disponibilites_departementales">
+                <table class="striped centered">
+                    <thead>
+                        <tr>
+                            <th><h5>Joueur</h5></th>
+                            <th><h5>N° de journée</h5></th>
+                            <th><h5>Date</h5></th>
+                            <th><h5>Disponibilité</h5></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for dispo in disponibiliteDepartementales %}
+                        <tr>
+                            <td>{{ dispo.idCompetiteur.nom }}</td>
+                            <td>{{ dispo.idJournee.idJournee }}</td>
+                            <td>{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td>{{ dispo.disponibilite == 0 ? '<span class="red-text lighten-3">Indisponible</span>' : '<span class="green-text lighten-3">Disponible</span>' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-panel center" id="disponibilites_paris">
+                <table class="striped centered">
+                    <thead>
+                        <tr>
+                            <th><h5>Joueur</h5></th>
+                            <th><h5>N° de journée</h5></th>
+                            <th><h5>Date</h5></th>
+                            <th><h5>Disponiblité</h5></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for dispo in disponibiliteParis %}
+                        <tr>
+                            <td>{{ dispo.idCompetiteur.nom }}</td>
+                            <td>{{ dispo.idJournee.idJournee }}</td>
+                            <td>{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td>{{ dispo.disponibilite == 0 ? 'Indisponible' : 'Disponible' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

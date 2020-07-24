@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back office - Les compétiteurs{% endblock %}
+{% import 'macros/flash.html.twig' as flash %}
+
+{% block body %}
+
+    {{ include("components/navbar_backoffice.html.twig") }}
+
+    <div class="container">
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les compétiteurs</h4>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            {{ flash.success(message) }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ flash.fail(message) }}
+        {% endfor %}
+
+        <div class="card-panel center">
+            <table class="striped centered">
+                <thead>
+                <tr>
+                    <th><h5>Nom</h5></th>
+                    <th><h5>Identifiant</h5></th>
+                    <th><h5>License</h5></th>
+                    <th><h5>Classement officiel</h5></th>
+                    <th><h5>Rôle</h5></th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for competiteur in competiteurs %}
+                    <tr>
+                        <td>{{ competiteur.nom }}</td>
+                        <td>{{ competiteur.username }}</td>
+                        <td>{{ competiteur.licence }}</td>
+                        <td>{{ competiteur.classementOfficiel }}</td>
+                        <td>{% if competiteur.role == 'P' %}
+                                Joueur
+                            {% elseif competiteur.role == 'C' %}
+                                Capitaine
+                            {% endif %}
+                        </td>
+                        <td><a href="{{ path('backoffice.account.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}
