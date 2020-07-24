@@ -7,7 +7,7 @@
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link rel="stylesheet" href="{{ asset('css_js/materialize-v1.0.0/materialize/css/materialize.min.css') }}">
         <!--Import JQuery beautiful Select-->
         <link rel="stylesheet" href="{{ asset('jquery-nice-select-1.1.0/css/nice-select.css') }}">
         <!--Import my own style.css-->
@@ -21,9 +21,9 @@
         {% block body %}{% endblock %}
 
         <!--Scripts trigger de JQuery-->
-        <script type="text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ asset('css_js/jquery.min.js') }}"></script>
         <!--Scripts trigger de Materialize-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="{{ asset('css_js/materialize-v1.0.0/materialize/js/materialize.min.js') }}"></script>
         <!--Scripts perso -->
         <script src="{{ asset('css_js/script.js') }}"></script>
         <!--Scripts trigger de Nice-Select-->
