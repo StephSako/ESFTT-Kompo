@@ -2,7 +2,13 @@
 {% import 'macros/flash.html.twig' as flash %}
 {% import 'macros/account.edit.html.twig' as edit_account %}
 
-{% block title %}Mon compte{% endblock %}
+{% block title %}
+    {% if type == 'general' %}
+        Mon compte
+    {% elseif type == 'backoffice' %}
+        Modifier le compte
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 
@@ -23,10 +29,10 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account('Modifier mon compte', form) }}
+            {{ edit_account.edit_account('Modifier mon compte', form, urlImage) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type) }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account('Modifier son compte', form) }}
+            {{ edit_account.edit_account('Modifier son compte', form, urlImage) }}
             {{ edit_account.edit_password('Modifier son mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}
         {% endif %}
     </div>

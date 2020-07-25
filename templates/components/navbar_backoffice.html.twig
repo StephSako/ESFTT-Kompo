@@ -6,18 +6,18 @@
 
                 <li id="btn_link" class="blue darken-4">
                     <a class="dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
-                        Retour à la compétition
+                        <i class="material-icons left">subdirectory_arrow_left</i>Retour à la compétition
                     </a>
                 </li>
 
-                <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.disponibilites") }}">Les disponibilités</a>
-                </li>
                 <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/competiteurs' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.competiteurs") }}">Les compétiteurs</a>
+                    <a class="white-text" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Les compétiteurs</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/equipes' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.equipes") }}">Les équipes</a>
+                    <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
+                </li>
+                <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Les disponibilités</a>
                 </li>
 
             </ul>

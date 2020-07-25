@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeParisRepository")
@@ -18,12 +19,27 @@ class EquipeParis
     private $idEquipe;
 
     /**
-     * @ORM\Column(name="poule", type="integer", length=11)
+     *
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 2,
+     *      minMessage = "Votre poule doit contenir au moins {{ limit }} letttres",
+     *      maxMessage = "Votre poule doit contenir au maximum {{ limit }} letttres"
+     * )
+     *
+     * @ORM\Column(name="poule", type="string", length=2)
      */
     private $poule;
 
     /**
-     * @ORM\Column(name="division", type="string", length=15)
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 20,
+     *      minMessage = "Votre division doit contenir au moins {{ limit }} letttres",
+     *      maxMessage = "Votre division doit contenir au maximum {{ limit }} letttres"
+     * )
+     *
+     * @ORM\Column(name="division", type="string", length=20)
      */
     private $division;
 

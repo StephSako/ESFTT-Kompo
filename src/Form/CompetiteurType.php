@@ -6,6 +6,7 @@ use App\Entity\Competiteur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +17,11 @@ class CompetiteurType extends AbstractType
         $builder
             ->add('nom', TextType::class,[
                 'attr' => ['data-length' => 60]])
+            ->add('avatar', UrlType::class,[
+                'label' => 'Image de profil',
+                'attr' => ['data-length' => 60]])
             ->add('username', TextType::class,[
+                'label' => 'Identifiant',
                 'attr' => ['data-length' => 50]])
             ->add('licence', NumberType::class,[
                 'attr' => ['data-length' => 11]]);
@@ -27,7 +32,7 @@ class CompetiteurType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Competiteur::class,
             'translation_domain' => 'forms',
-            'validation_groups' => array('edit')
+            'validation_groups' => ['edit', 'registration']
         ]);
     }
 }

@@ -91,14 +91,14 @@ class DisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}/{NJournee}", name="journee.disponibilite.update")
+     * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo
-     * @param int $NJournee
+     * @param int $journee
      * @return Response
      */
-    public function update($type, $disposJoueur, bool $dispo, $NJournee) : Response
+    public function update($type, $disposJoueur, bool $dispo, $journee) : Response
     {
         if ($type == 'departementale'){
             $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
@@ -109,13 +109,12 @@ class DisponibiliteController extends AbstractController
             $disposJoueur->setDisponibiliteParis($dispo);
         }
 
-        $this->em->persist($disposJoueur);
         $this->em->flush();
 
         return $this->redirectToRoute('journee.show',
             array(
                 'type' => $type,
-                'id' => $NJournee
+                'id' => $journee
             )
         );
     }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeDepartementaleRepository")
@@ -18,12 +19,22 @@ class EquipeDepartementale
     private $idEquipe;
 
     /**
-     * @ORM\Column(name="poule", type="integer", length=11)
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 2
+     * )
+     *
+     * @ORM\Column(name="poule", type="string", length=2)
      */
     private $poule;
 
     /**
-     * @ORM\Column(name="division", type="string", length=15)
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 20
+     * )
+     *
+     * @ORM\Column(name="division", type="string", length=20)
      */
     private $division;
 

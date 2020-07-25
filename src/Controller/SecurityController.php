@@ -54,13 +54,13 @@ class SecurityController extends AbstractController
         $journees = $this->journeeDepartementaleRepository->findAll();
 
         if ($this->getUser() == null) {
-            return $this->render('security/login.html.twig', [
+            return $this->render('account/login.html.twig', [
                 'journees' => $journees,
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
             ]);
         }
-        else return $this->render('security/alreadyConnected.html.twig',[
+        else return $this->render('account/alreadyConnected.html.twig',[
             'journees' => $journees
         ]);
     }
@@ -88,9 +88,10 @@ class SecurityController extends AbstractController
             }
         }
 
-        return $this->render('security/edit.html.twig', [
+        return $this->render('account/edit.html.twig', [
             'type' => 'general',
             'user' => $user,
+            'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
             'journees' => $journees,
             'form' => $formCompetiteur->createView()
@@ -121,9 +122,10 @@ class SecurityController extends AbstractController
             $this->addFlash('fail', 'Les mots de passe ne correspond pas');
         }
 
-        return $this->render('security/edit.html.twig', [
+        return $this->render('account/edit.html.twig', [
             'user' => $user,
             'type' => 'general',
+            'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
             'journees' => $journees,
             'form' => $formCompetiteur->createView()

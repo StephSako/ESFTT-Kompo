@@ -1,28 +1,35 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Back office - Les équipes{% endblock %}
+{% import 'macros/flash.html.twig' as flash %}
 
 {% block body %}
 
     {{ include("components/navbar_backoffice.html.twig") }}
 
     <div class="container">
-        <div class="card-panel center-align white-text title_journee">
-            <h4>Les équipes</h4>
-        </div>
 
-        <ul class="tabs">
-            <li class="tab col s3"><a href="#equipes_departementales" class="active">Les équipes départementales</a></li>
-            <li class="tab col s3"><a href="#equipes_paris">Les équipes de Paris</a></li>
+        {% for message in app.flashes('success') %}
+            {{ flash.success(message) }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ flash.fail(message) }}
+        {% endfor %}
+
+        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+            <li class="tab"><a href="#equipes_departementales" class="active">Les équipes départementales</a></li>
+            <li class="tab"><a href="#equipes_paris">Les équipes de Paris</a></li>
         </ul>
 
         <div class="card-panel center" id="equipes_departementales">
-            <table class="striped">
+            <table class="striped centered">
                 <thead>
                 <tr>
                     <th><h5>N° équipe</h5></th>
                     <th><h5>Division</h5></th>
                     <th><h5>Poule</h5></th>
+                    <th></th>
                 </tr>
                 </thead>
 
@@ -32,6 +39,7 @@
                         <td>{{ equipe.idEquipe }}</td>
                         <td>{{ equipe.division }}</td>
                         <td>{{ equipe.poule }}</td>
+                        <td><a href="{{ path('backoffice.equipe.edit', {id: equipe.idEquipe, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -39,12 +47,13 @@
         </div>
 
         <div class="card-panel center" id="equipes_paris">
-            <table class="striped">
+            <table class="striped centered">
                 <thead>
                 <tr>
                     <th><h5>N° équipe</h5></th>
                     <th><h5>Division</h5></th>
                     <th><h5>Poule</h5></th>
+                    <th></th>
                 </tr>
                 </thead>
 
@@ -54,6 +63,7 @@
                         <td>{{ equipe.idEquipe }}</td>
                         <td>{{ equipe.division }}</td>
                         <td>{{ equipe.poule }}</td>
+                        <td><a href="{{ path('backoffice.equipe.edit', {id: equipe.idEquipe, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

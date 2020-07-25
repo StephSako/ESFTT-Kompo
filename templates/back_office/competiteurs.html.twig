@@ -8,9 +8,6 @@
     {{ include("components/navbar_backoffice.html.twig") }}
 
     <div class="container">
-        <div class="card-panel center-align white-text title_journee">
-            <h4>Les compétiteurs</h4>
-        </div>
 
         {% for message in app.flashes('success') %}
             {{ flash.success(message) }}
@@ -24,6 +21,7 @@
             <table class="striped centered">
                 <thead>
                 <tr>
+                    <th><h5>Image de profil</h5></th>
                     <th><h5>Nom</h5></th>
                     <th><h5>Identifiant</h5></th>
                     <th><h5>License</h5></th>
@@ -36,6 +34,7 @@
                 <tbody>
                 {% for competiteur in competiteurs %}
                     <tr>
+                        <td><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
                         <td>{{ competiteur.licence }}</td>

@@ -24,6 +24,7 @@ security:
     access_control:
         - { path: ^/journee/edit, roles: ROLE_CAPITAINE }
         - { path: ^/compte, roles: ROLE_JOUEUR }
+        - { path: ^/backoffice, roles: ROLE_CAPITAINE }
 
     encoders:
         App\Entity\Competiteur:

@@ -71,6 +71,21 @@ class Competiteur implements UserInterface, Serializable
     private $role;
 
     /**
+     * @var string
+     *
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Votre lien doit contenir au moins {{ limit }} letttres",
+     *      maxMessage = "Votre lien doit contenir au maximum {{ limit }} letttres"
+     * )
+     *
+     * @Assert\Url(
+     *      message = "The url '{{ value }}' is not a valid url",
+     *      protocols = {"http", "https", "ftp"},
+     *      relativeProtocol = true
+     * )
+     *
      * @ORM\Column(type="string", length=255, name="avatar")
      */
     private $avatar;
@@ -286,6 +301,16 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @param $avatar
+     * @return Competiteur
+     */
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getBrulageParis()
@@ -295,10 +320,12 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @param mixed $brulageParis
+     * @return Competiteur
      */
-    public function setBrulageParis($brulageParis): void
+    public function setBrulageParis($brulageParis): self
     {
         $this->brulageParis = $brulageParis;
+        return $this;
     }
 
     /**

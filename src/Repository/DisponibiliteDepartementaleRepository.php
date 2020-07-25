@@ -34,6 +34,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->orderBy('d.disponibilite', 'DESC')
+            ->addOrderBy('c.nom')
             ->getQuery()
             ->getResult();
     }
