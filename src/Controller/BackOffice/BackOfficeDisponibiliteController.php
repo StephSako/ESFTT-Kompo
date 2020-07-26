@@ -5,6 +5,7 @@ namespace App\Controller\BackOffice;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,15 +51,13 @@ class BackOfficeDisponibiliteController extends AbstractController
     /**
      * @Route("/backoffice/disponibilites", name="back_office.disponibilites")
      * @return Response
+     * @throws DBALException
      */
     public function indexDisponibilites()
     {
-        $competiteurs = $this->competiteurRepository->findUncompletedDispos();
-
         return $this->render('back_office/disponibilites/disponibilites.html.twig', [
-            'disponibiliteDepartementales' => $this->disponibiliteDepartementaleRepository->findAllDispos(),
-            'disponibiliteParis' => $this->disponibiliteParisRepository->findAllDispos(),
-            'competiteurs' => $competiteurs
+            'disponibiliteDepartementales' => $this->competiteurRepository->findAllDispos("departementale"),
+            'disponibiliteParis' => $this->competiteurRepository->findAllDispos("paris")
         ]);
     }
 

@@ -133,16 +133,20 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Liste des compétiteurs n'ayant pas rempli toutes leurs dispos pour le championnat départemental
+     * @param string $type
      * @return int|mixed|string
+     * @throws DBALException
      */
-    public function findUncompletedDispos()
+    public function findAllDispos($type)
     {
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.disposDepartementales', 'disposDepartementales')
-            ->groupBy('c.idCompetiteur')
-            ->having('COUNT(c.idCompetiteur) < 7')
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT competiteur.nom, journee_" . $type . ".id_journee, journee_" . $type . ".date,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . " WHERE competiteur.id_competiteur=disponibilite_" . $type . ".id_competiteur AND disponibilite_" . $type . ".id_journee=journee_" . $type . ".id_journee) AS disponibilite,"
+            .   " (SELECT id_disponibilite FROM disponibilite_" . $type . " WHERE competiteur.id_competiteur=disponibilite_" . $type . ".id_competiteur AND disponibilite_" . $type . ".id_journee=journee_" . $type . ".id_journee) AS id_disponibilite"
+            .   " FROM competiteur, journee_" . $type . ""
+            .   " ORDER BY competiteur.nom, journee_" . $type . ".id_journee";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

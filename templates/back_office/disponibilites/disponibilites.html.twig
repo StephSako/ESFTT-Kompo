@@ -26,41 +26,6 @@
 
             <div class="card-panel center" id="disponibilites_departementales">
 
-                <div class="row container">
-                    <h5 class="center-align">Ajouter une disponibilité</h5>
-
-                    <div class="col s4">
-                        <select name="competiteur">
-                            <option>Sélectionnez un joueur</option>
-                            {% for competiteur in competiteurs %}
-                                <option value="{{ competiteur.idCompetiteur }}">{{ competiteur.playersChips }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col s4">
-                        <select name="journee">
-                            <option>Sélectionnez une journée</option>
-                            {% for i in 1..7 %}
-                                <option value="{{ i }}">Journée {{ i }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col s4">
-                        <select name="disponibilite">
-                            <option>Sélectionnez une disponibilité</option>
-                            <option value="{{ 0 }}">Disponible</option>
-                            <option value="{{ 1 }}">Indisponible</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="btn waves-effect waves-light light-blue darken-2" type="submit" name="action">Créer
-                    <i class="material-icons right">send</i>
-                </button>
-                <br><br><br>
-
                 <table class="striped">
                     <thead>
                         <tr>
@@ -74,19 +39,24 @@
                     <tbody>
                     {% for dispo in disponibiliteDepartementales %}
                         <tr>
-                            <td>{{ dispo.idCompetiteur.playersChips | raw }}</td>
-                            <td class="center">{{ dispo.idJournee.idJournee }}</td>
-                            <td class="center">{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td>{{ dispo.nom | raw }}</td>
+                            <td class="center">{{ dispo.id_journee }}</td>
+                            <td class="center">{{ dispo.date | date("d/m/Y") }}</td>
                             <td class="center">
-                                {% if dispo.disponibilite == 1 %}
-                                    <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'departementale', disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
-                                        <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
-                                    </a>
+                                {% if dispo.id_disponibilite is null %}
+                                    <p>inexistant</p>
                                 {% else %}
-                                    <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'departementale', disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
-                                        <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
-                                    </a>
+                                    {% if dispo.disponibilite == 1 %}
+                                        <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.id_journee, type: 'departementale', disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
+                                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.id_journee, type: 'departementale', disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
+                                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -108,18 +78,22 @@
                     <tbody>
                     {% for dispo in disponibiliteParis %}
                         <tr>
-                            <td>{{ dispo.idCompetiteur.playersChips | raw }}</td>
-                            <td class="center">{{ dispo.idJournee.idJournee }}</td>
-                            <td class="center">{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td>{{ dispo.nom | raw }}</td>
+                            <td class="center">{{ dispo.id_journee }}</td>
+                            <td class="center">{{ dispo.date | date("d/m/Y") }}</td>
                             <td class="center">
-                                {% if dispo.disponibilite == 1 %}
-                                    <a href="{{ path('journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'paris', disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
-                                        <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
-                                    </a>
+                                {% if dispo.id_disponibilite is null %}
+                                    <p>inexistant</p>
                                 {% else %}
-                                    <a href="{{ path('journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'paris', disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
-                                        <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
-                                    </a>
+                                    {% if dispo.disponibilite == 1 %}
+                                        <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.id_journee, type: 'paris', disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
+                                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.id_journee, type: 'paris', disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
+                                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </tr>
