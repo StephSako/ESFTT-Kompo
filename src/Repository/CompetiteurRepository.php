@@ -140,7 +140,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAllDispos($type)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT competiteur.id_competiteur, competiteur.nom, journee_" . $type . ".id_journee, journee_" . $type . ".date,"
+        $sql = "SELECT avatar, competiteur.id_competiteur, competiteur.nom, journee_" . $type . ".id_journee, journee_" . $type . ".date,"
             .   " (SELECT disponibilite FROM disponibilite_" . $type . " WHERE competiteur.id_competiteur=disponibilite_" . $type . ".id_competiteur AND disponibilite_" . $type . ".id_journee=journee_" . $type . ".id_journee) AS disponibilite,"
             .   " (SELECT id_disponibilite FROM disponibilite_" . $type . " WHERE competiteur.id_competiteur=disponibilite_" . $type . ".id_competiteur AND disponibilite_" . $type . ".id_journee=journee_" . $type . ".id_journee) AS id_disponibilite"
             .   " FROM competiteur, journee_" . $type . ""

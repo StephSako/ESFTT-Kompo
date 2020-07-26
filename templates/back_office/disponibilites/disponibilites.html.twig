@@ -26,12 +26,12 @@
 
             <div class="card-panel center" id="disponibilites_departementales">
 
-                <table class="striped">
+                <table class="centered striped">
                     <thead>
                         <tr>
-                            <th class="center"><h5>Joueur</h5></th>
-                            <th class="center"><h5>Journée</h5></th>
-                            <th class="center"><h5>Date</h5></th>
+                            <th><h5>Joueur</h5></th>
+                            <th><h5>Journée</h5></th>
+                            <th><h5>Date</h5></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -39,10 +39,22 @@
                     <tbody>
                     {% for dispo in disponibiliteDepartementales %}
                         <tr>
-                            <td>{{ dispo.nom | raw }}</td>
-                            <td class="center">{{ dispo.id_journee }}</td>
-                            <td class="center">{{ dispo.date | date("d/m/Y") }}</td>
-                            <td class="center">
+                            <td>
+                                {% if dispo.disponibilite is not null %}
+                                    {% if dispo.disponibilite == 1 %}
+                                        <p class="green lighten-3 white-text center">Disponible</p>
+                                    {% elseif dispo.disponibilite == 0 %}
+                                        <p class="red lighten-3 white-text center">Indisponible</p>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="chip">
+                                    <img src="{{ dispo.avatar }}" alt="Avatar">
+                                    <span>{{ dispo.nom }}</span>
+                                </div>
+                            </td>
+                            <td>{{ dispo.id_journee }}</td>
+                            <td>{{ dispo.date | date("d/m/Y") }}</td>
+                            <td>
                                 {% if dispo.id_disponibilite is null %}
                                     <span><i>Disponibilité non déclarée</i></span><br>
                                     <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: 'departementale', dispo: 1}) }}">
@@ -53,12 +65,10 @@
                                     </a>
                                 {% else %}
                                     {% if dispo.disponibilite == 1 %}
-                                        <p class="green lighten-3 white-text">Disponible</p>
                                         <a href="{{ path('backoffice.disponibilite.update', {type: 'departementale', disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
                                             <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
                                         </a>
                                     {% else %}
-                                        <p class="red lighten-3 white-text">Indisponible</p>
                                         <a href="{{ path('backoffice.disponibilite.update', {type: 'departementale', disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
                                             <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
                                         </a>
@@ -73,12 +83,12 @@
 
             <div class="card-panel center" id="disponibilites_paris">
 
-                <table class="striped">
+                <table class="centered striped">
                     <thead>
                         <tr>
-                            <th class="center"><h5>Joueur</h5></th>
-                            <th class="center"><h5>Journée</h5></th>
-                            <th class="center"><h5>Date</h5></th>
+                            <th><h5>Joueur</h5></th>
+                            <th><h5>Journée</h5></th>
+                            <th><h5>Date</h5></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -86,7 +96,19 @@
                     <tbody>
                     {% for dispo in disponibiliteParis %}
                         <tr>
-                            <td>{{ dispo.nom | raw }}</td>
+                            <td>
+                                {% if dispo.disponibilite is not null %}
+                                    {% if dispo.disponibilite == 1 %}
+                                        <p class="green lighten-3 white-text center">Disponible</p>
+                                    {% elseif dispo.disponibilite == 0 %}
+                                        <p class="red lighten-3 white-text center">Indisponible</p>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="chip">
+                                    <img src="{{ dispo.avatar }}" alt="Avatar">
+                                    <span>{{ dispo.nom }}</span>
+                                </div>
+                            </td>
                             <td class="center">{{ dispo.id_journee }}</td>
                             <td class="center">{{ dispo.date | date("d/m/Y") }}</td>
                             <td class="center">
@@ -100,12 +122,10 @@
                                     </a>
                                 {% else %}
                                     {% if dispo.disponibilite == 1 %}
-                                        <p class="green lighten-3 white-text">Disponible</p>
                                         <a href="{{ path('backoffice.disponibilite.update', {journee: dispo.id_journee, type: 'paris', disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
                                             <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
                                         </a>
                                     {% else %}
-                                        <p class="red lighten-3 white-text">Indisponible</p>
                                         <a href="{{ path('backoffice.disponibilite.update', {journee: dispo.id_journee, type: 'paris', disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
                                             <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
                                         </a>
