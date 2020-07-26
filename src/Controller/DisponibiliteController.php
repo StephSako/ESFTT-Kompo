@@ -68,7 +68,7 @@ class DisponibiliteController extends AbstractController
      * @param int $dispo
      * @return Response
      */
-    public function newDispoDepartementale($journee, $type, $dispo):Response
+    public function new($journee, $type, $dispo):Response
     {
         if ($type == 'departementale'){
             $journee = $this->journeeDepartementaleRepository->find($journee);
