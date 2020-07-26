@@ -20,18 +20,20 @@ class EquipeDepartementale
 
     /**
      * @Assert\Length(
-     *      min = 1,
-     *      max = 2
+     *      max = 1,
+     *      maxMessage = "Votre poule doit contenir au maximum {{ limit }} letttres"
      * )
      *
-     * @ORM\Column(name="poule", type="string", length=2)
+     * @ORM\Column(name="poule", type="string", length=1)
      */
     private $poule;
 
     /**
      * @Assert\Length(
      *      min = 1,
-     *      max = 20
+     *      max = 20,
+     *      minMessage = "Votre division doit contenir au moins {{ limit }} letttres",
+     *      maxMessage = "Votre division doit contenir au maximum {{ limit }} letttres"
      * )
      *
      * @ORM\Column(name="division", type="string", length=20)

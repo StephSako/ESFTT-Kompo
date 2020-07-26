@@ -21,8 +21,7 @@ class EquipeParisType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EquipeParis::class,
-            'translation_domain' => 'forms',
-            'validation_groups' => array('edit')
+            'translation_domain' => 'forms'
         ]);
     }
 }

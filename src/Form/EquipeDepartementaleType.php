@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Valid;
 
 class EquipeDepartementaleType extends AbstractType
 {
@@ -22,8 +21,7 @@ class EquipeDepartementaleType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EquipeDepartementale::class,
-            'translation_domain' => 'forms',
-            'validation_groups' => array('edit')
+            'translation_domain' => 'forms'
         ]);
     }
 }

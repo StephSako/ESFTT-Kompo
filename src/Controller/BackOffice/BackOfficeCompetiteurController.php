@@ -58,10 +58,15 @@ class BackOfficeCompetiteurController extends AbstractController
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            $this->em->flush();
-            $this->addFlash('success', 'Utilisateur modifié avec succès !');
-            return $this->redirectToRoute('back_office.competiteurs');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()){
+                $this->em->flush();
+                $this->addFlash('success', 'Utilisateur modifié avec succès !');
+                return $this->redirectToRoute('back_office.competiteurs');
+            }
+            else {
+                $this->addFlash('fail', 'Une erreur est survenue ...');
+            }
         }
 
         return $this->render('account/edit.html.twig', [

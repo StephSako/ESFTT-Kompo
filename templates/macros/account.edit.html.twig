@@ -3,14 +3,11 @@
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
         <div class="row valign-wrapper">
-            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
+            <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
                 {{ form_row(form.nom) }}
             </div>
-            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
+            <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
                 {{ form_row(form.username) }}
-            </div>
-            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
-                {{ form_row(form.licence) }}
             </div>
             {% if type == 'backoffice' %}
                 <div class="col s3">
@@ -18,10 +15,21 @@
                 </div>
             {% endif %}
         </div>
+
+        <div class="row valign-wrapper">
+            <div class="col s6">
+                {{ form_row(form.licence) }}
+            </div>
+            <div class="col s6">
+                {{ form_row(form.classementOfficiel) }}
+            </div>
+        </div>
+
         <div class="row">
             <div class="col s2"><img id="img_competiteur_avatar" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem"></div>
             <div class="col s10">{{ form_row(form.avatar) }}</div>
         </div>
+
         <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         {{ form_end(form) }}
     </div>

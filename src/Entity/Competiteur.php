@@ -21,33 +21,49 @@ class Competiteur implements UserInterface, Serializable
     private $idCompetiteur;
 
     /**
-     * @ORM\Column(name="licence", type="integer", length=11)
+     * @Assert\Length(
+     *      min = 5,
+     *      max = 8,
+     *      minMessage = "La licence doit contenir au moins {{ limit }} chiffres",
+     *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
+     * )
+     *
+     * @ORM\Column(name="licence", type="integer", length=8, nullable=false)
      */
     private $licence;
 
     /**
-     * @ORM\Column(name="classement_officiel", type="integer", length=11)
+     * @Assert\GreaterThanOrEqual(500)
+     *
+     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=false)
      */
     private $classement_officiel;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=60, name="nom")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 100,
+     *      minMessage = "Le nom doit contenir au moins {{ limit }} caractères",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=100, name="nom")
      */
     private $nom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=250, nullable=false)
+     * @ORM\Column(name="password", type="string", length=100, nullable=false)
      *
      * @Assert\Length(
      *      min = 3,
-     *      max = 250,
-     *      minMessage = "Votre mot de passe doit contenir au moins {{ limit }} letttres",
-     *      maxMessage = "Votre mot de passe doit contenir au maximum {{ limit }} letttres",
-     *     )
+     *      max = 100,
+     *      minMessage = "Le mot de passe doit contenir au moins {{ limit }} caractères",
+     *      maxMessage = "Le mot de passe doit contenir au maximum {{ limit }} caractères"
+     * )
      */
     private $password;
 
@@ -57,11 +73,11 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="username", type="string", length=50, nullable=false)
      *
      * @Assert\Length(
-     *      min = 3,
-     *      max = 30,
-     *      minMessage = "Votre pseudo doit contenir au moins {{ limit }} letttres",
-     *      maxMessage = "Votre pseudo doit contenir au maximum {{ limit }} letttres",
-     *     )
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le pseudo doit contenir au moins {{ limit }} caractères",
+     *      maxMessage = "Le pseudo doit contenir au maximum {{ limit }} caractères"
+     * )
      */
     private $username;
 
@@ -73,15 +89,8 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
-     * @Assert\Length(
-     *      min = 10,
-     *      max = 255,
-     *      minMessage = "Votre lien doit contenir au moins {{ limit }} letttres",
-     *      maxMessage = "Votre lien doit contenir au maximum {{ limit }} letttres"
-     * )
-     *
      * @Assert\Url(
-     *      message = "The url '{{ value }}' is not a valid url",
+     *      message = "Cet URL n'est pas valide",
      *      protocols = {"http", "https", "ftp"},
      *      relativeProtocol = true
      * )

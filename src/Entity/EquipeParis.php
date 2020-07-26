@@ -21,13 +21,11 @@ class EquipeParis
     /**
      *
      * @Assert\Length(
-     *      min = 1,
-     *      max = 2,
-     *      minMessage = "Votre poule doit contenir au moins {{ limit }} letttres",
+     *      max = 1,
      *      maxMessage = "Votre poule doit contenir au maximum {{ limit }} letttres"
      * )
      *
-     * @ORM\Column(name="poule", type="string", length=2)
+     * @ORM\Column(name="poule", type="string", length=1)
      */
     private $poule;
 
