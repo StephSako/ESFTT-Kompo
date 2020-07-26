@@ -3,7 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Competiteur;
-use App\Form\CompetiteurType;
+use App\Form\BackofficeCompetiteurType;
 use App\Repository\CompetiteurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,7 +55,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function editCompetiteurAccount(Competiteur $competiteur, Request $request)
     {
-        $form = $this->createForm(CompetiteurType::class, $competiteur);
+        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
@@ -81,7 +81,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updateCompetiteurPassword(Competiteur $competiteur, Request $request, UserPasswordEncoderInterface $encoder){
-        $form = $this->createForm(CompetiteurType::class, $competiteur);
+        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {

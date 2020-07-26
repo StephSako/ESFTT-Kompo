@@ -1,17 +1,22 @@
-{% macro edit_account(title, form, urlImage) %}
+{% macro edit_account(type, title, form, urlImage) %}
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
-        <div class="row">
-            <div class="col s4">
+        <div class="row valign-wrapper">
+            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
                 {{ form_row(form.nom) }}
             </div>
-            <div class="col s4">
+            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
                 {{ form_row(form.username) }}
             </div>
-            <div class="col s4">
+            <div class="col {% if type == 'backoffice' %}s3{% else %}s4{% endif %}">
                 {{ form_row(form.licence) }}
             </div>
+            {% if type == 'backoffice' %}
+                <div class="col s3">
+                    {{ form_row(form.role) }}
+                </div>
+            {% endif %}
         </div>
         <div class="row">
             <div class="col s2"><img id="img_competiteur_avatar" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem"></div>

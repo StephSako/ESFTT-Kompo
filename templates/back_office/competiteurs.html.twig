@@ -39,10 +39,10 @@
                         <td>{{ competiteur.username }}</td>
                         <td>{{ competiteur.licence }}</td>
                         <td>{{ competiteur.classementOfficiel }}</td>
-                        <td>{% if competiteur.role == 'P' %}
-                                Joueur
-                            {% elseif competiteur.role == 'C' %}
+                        <td>{% if competiteur.role %}
                                 Capitaine
+                            {% else %}
+                                Joueur
                             {% endif %}
                         </td>
                         <td><a href="{{ path('backoffice.account.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>

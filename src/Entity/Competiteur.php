@@ -66,9 +66,9 @@ class Competiteur implements UserInterface, Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=1, name="role")
+     * @ORM\Column(type="boolean", name="is_capitaine")
      */
-    private $role;
+    private $isCapitaine;
 
     /**
      * @var string
@@ -173,20 +173,20 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string|null
+     * @return bool
      */
-    public function getRole(): ?string
+    public function getRole(): ?bool
     {
-        return $this->role;
+        return $this->isCapitaine;
     }
 
     /**
-     * @param string $role
+     * @param bool $isCapitaine
      * @return $this
      */
-    public function setRole(string $role): self
+    public function setRole(bool $isCapitaine): self
     {
-        $this->role = $role;
+        $this->isCapitaine = $isCapitaine;
         return $this;
     }
 
@@ -220,7 +220,7 @@ class Competiteur implements UserInterface, Serializable
 
     public function getRoles()
     {
-        if ($this->getRole() == 'C') {
+        if ($this->getRole()) {
             return ['ROLE_CAPITAINE', 'ROLE_JOUEUR'];
         } else {
             return ['ROLE_JOUEUR'];
