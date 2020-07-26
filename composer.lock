@@ -1800,7 +1800,7 @@
             "require": {
                 "laminas/laminas-code": "^3.4.1",
                 "ocramius/package-versions": "^1.5.1",
-                "php": "^7.4.0",
+                "php": "^7.3.0",
                 "webimpress/safe-writer": "^2.0"
             },
             "conflict": {

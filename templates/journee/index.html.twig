@@ -22,15 +22,15 @@
                 </div>
             </div>
 
-            <table class="centered striped card-panel dispos">
+            <table class="striped card-panel dispos">
                 <thead>
                     <tr>
-                        <th><h5>Brûlages</h5></th>
-                        <th><h5>1</h5></th>
-                        <th><h5>2</h5></th>
+                        <th class="center"><h5>Brûlages</h5></th>
+                        <th class="center"><h5>1</h5></th>
+                        <th class="center"><h5>2</h5></th>
                         {% if journee.linkType == 'departementale' %}
-                            <th><h5>3</h5></th>
-                            <th><h5>4</h5></th>
+                            <th class="center"><h5>3</h5></th>
+                            <th class="center"><h5>4</h5></th>
                         {% endif %}
                     </tr>
                 </thead>
@@ -38,37 +38,37 @@
                 <tbody>
                 {% for joueurBrule in competiteurs %}
                     <tr>
-                        <td>{{ joueurBrule.nom }}</td>
+                        <td class="left">{{ joueurBrule.nom }}</td>
                         {% if journee.linkType == 'departementale' %}
-                            <td>
+                            <td class="center">
                                 {% if 1 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
                                     <i class="orange-text lighten-1 material-icons">error_outline</i>
                                 {% endif %}</td>
-                            <td>
+                            <td class="center">
                                 {% if 2 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
                                     <i class="red-text lighten-1 material-icons">highlight_off</i>
                                 {% elseif 2 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
                                     <i class="orange-text lighten-1 material-icons">error_outline</i>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="center">
                                 {% if 3 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
                                     <i class="red-text lighten-1 material-icons">highlight_off</i>
                                 {% elseif 3 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
                                     <i class="orange-text lighten-1 material-icons">error_outline</i>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="center">
                                 {% if 4 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
                                     <i class="red-text lighten-1 material-icons">highlight_off</i>
                                 {% endif %}
                             </td>
                         {% elseif journee.linkType == 'paris' %}
-                            <td>
+                            <td class="center">
                                 {% if 1 in joueurBrule.FirstBurntTeamParis["almost"] %}
                                     <i class="orange-text lighten-1 material-icons">error_outline</i>
                                 {% endif %}</td>
-                            <td>
+                            <td class="center">
                                 {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
                                     <i class="red-text lighten-1 material-icons">highlight_off</i>
                                 {% endif %}
@@ -80,7 +80,7 @@
             </table>
         </div>
 
-        <div class="col s6">
+        <div class="col s7">
             {% for message in app.flashes('success') %}
                 {{ flash.success(message) }}
             {% endfor %}
@@ -157,13 +157,13 @@
                     <table class="striped">
                         <tbody>
                             <tr>
-                                <td class="rank"><b>#1</b></td>
-                                <td>
+                                <td class="rank center"><b>#1</b></td>
+                                <td class="center">
                                     {% if compo.idJoueur1 is not null %}
                                         {{ compo.idJoueur1.licence }}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="center">
                                     {% if compo.idJoueur1 is not null %}
                                         <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur1.classementOfficiel }}</span>
                                     {% endif %}
@@ -179,13 +179,13 @@
                             </tr>
 
                             <tr>
-                                <td class="rank"><b>#2</b></td>
-                                <td>
+                                <td class="rank center"><b>#2</b></td>
+                                <td class="center">
                                     {% if compo.idJoueur2 is not null %}
                                         {{ compo.idJoueur2.licence }}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="center">
                                     {% if compo.idJoueur2 is not null %}
                                         <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur2.classementOfficiel }}</span>
                                     {% endif %}
@@ -201,13 +201,13 @@
                             </tr>
 
                             <tr>
-                                <td class="rank"><b>#3</b></td>
-                                <td>
+                                <td class="rank center"><b>#3</b></td>
+                                <td class="center">
                                     {% if compo.idJoueur3 is not null %}
                                         {{ compo.idJoueur3.licence }}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="center">
                                     {% if compo.idJoueur3 is not null %}
                                         <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur3.classementOfficiel }}</span>
                                     {% endif %}
@@ -233,13 +233,13 @@
 
                             {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                                 <tr>
-                                    <td class="rank"><b>#4</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#4</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur4 is not null %}
                                             {{ compo.idJoueur4.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur4 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur4.classementOfficiel }}</span>
                                         {% endif %}
@@ -257,13 +257,13 @@
 
                             {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
                                 <tr>
-                                    <td class="rank"><b>#5</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#5</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur5 is not null %}
                                             {{ compo.idJoueur5.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur5 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur5.classementOfficiel }}</span>
                                         {% endif %}
@@ -279,13 +279,13 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="rank"><b>#6</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#6</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur6 is not null %}
                                             {{ compo.idJoueur6.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur6 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur6.classementOfficiel }}</span>
                                         {% endif %}
@@ -309,13 +309,13 @@
                         {% endif %}
 
                                 <tr>
-                                    <td class="rank"><b>#7</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#7</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur7 is not null %}
                                             {{ compo.idJoueur7.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur7 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur7.classementOfficiel }}</span>
                                         {% endif %}
@@ -331,13 +331,13 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="rank"><b>#8</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#8</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur8 is not null %}
                                             {{ compo.idJoueur8.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur8 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur8.classementOfficiel }}</span>
                                         {% endif %}
@@ -353,13 +353,13 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="rank"><b>#9</b></td>
-                                    <td>
+                                    <td class="rank center"><b>#9</b></td>
+                                    <td class="center">
                                         {% if compo.idJoueur9 is not null %}
                                             {{ compo.idJoueur9.licence }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="center">
                                         {% if compo.idJoueur9 is not null %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur9.classementOfficiel }}</span>
                                         {% endif %}
@@ -386,20 +386,20 @@
             {% endfor %}
         </div>
 
-        <div class="col s3">
+        <div class="col s2">
 
             <div class="card-panel bottom_0">
                 <div class="row bottom_0">
                     <div class="col s2"><i class="blue-text darken-1 material-icons">playlist_add_check</i></div>
-                    <div class="col s10">Sélectionné pour cette journée</div>
+                    <div class="col s10">Sélectionné</div>
                 </div>
             </div>
 
-            <table class="centered striped card-panel dispos">
+            <table class="striped card-panel dispos">
                 <thead>
                     <tr>
                         <th>
-                            <h5>Les dispos</h5>
+                            <h5 class="center">Les dispos</h5>
                         </th>
                     </tr>
                 </thead>
@@ -410,7 +410,7 @@
                         <td>
                             <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
                         </td>
-                        <td>
+                        <td class="left">
                             {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
                                 <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
                             {% endif %}
@@ -422,7 +422,7 @@
                         <td>
                             <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
                         </td>
-                        <td>
+                        <td class="left">
                             {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
                                 <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
                             {% endif %}

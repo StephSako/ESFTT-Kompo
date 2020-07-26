@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,20 +24,27 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @var DisponibiliteParisRepository
      */
     private $disponibiliteParisRepository;
+    /**
+     * @var CompetiteurRepository
+     */
+    private $competiteurRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
      * @param DisponibiliteParisRepository $disponibiliteParisRepository
+     * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
+                                CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
         $this->disponibiliteParisRepository = $disponibiliteParisRepository;
+        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -45,14 +53,17 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function indexDisponibilites()
     {
+        $competiteurs = $this->competiteurRepository->findUncompletedDispos();
+
         return $this->render('back_office/disponibilites/disponibilites.html.twig', [
             'disponibiliteDepartementales' => $this->disponibiliteDepartementaleRepository->findAllDispos(),
             'disponibiliteParis' => $this->disponibiliteParisRepository->findAllDispos(),
+            'competiteurs' => $competiteurs
         ]);
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}", name="backoffice.journee.disponibilite.update")
+     * @Route("/backoffice/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}", name="backoffice.journee.disponibilite.update")
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo

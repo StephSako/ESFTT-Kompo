@@ -81,11 +81,8 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function findBurnPlayersParis()
     {
-        $query = $this
-            ->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 2");
-
-        return $query
+        return $this->createQueryBuilder('c')
+            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 2")
             ->orderBy('c.nom')
             ->getQuery()
             ->getResult();
@@ -126,10 +123,24 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function findAlmostBurnPlayersParis()
     {
-        $query = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->where("JSON_VALUE(c.brulageParis, '$.1') = 1")
-            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 2");
-        return $query
+            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 2")
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Liste des compétiteurs n'ayant pas rempli toutes leurs dispos pour le championnat départemental
+     * @return int|mixed|string
+     */
+    public function findUncompletedDispos()
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.disposDepartementales', 'disposDepartementales')
+            ->groupBy('c.idCompetiteur')
+            ->having('COUNT(c.idCompetiteur) < 7')
             ->orderBy('c.nom')
             ->getQuery()
             ->getResult();

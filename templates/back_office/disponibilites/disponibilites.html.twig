@@ -25,23 +25,59 @@
             </ul>
 
             <div class="card-panel center" id="disponibilites_departementales">
-                <table class="striped centered">
+
+                <div class="row container">
+                    <h5 class="center-align">Ajouter une disponibilité</h5>
+
+                    <div class="col s4">
+                        <select name="competiteur">
+                            <option>Sélectionnez un joueur</option>
+                            {% for competiteur in competiteurs %}
+                                <option value="{{ competiteur.idCompetiteur }}">{{ competiteur.playersChips }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col s4">
+                        <select name="journee">
+                            <option>Sélectionnez une journée</option>
+                            {% for i in 1..7 %}
+                                <option value="{{ i }}">Journée {{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col s4">
+                        <select name="disponibilite">
+                            <option>Sélectionnez une disponibilité</option>
+                            <option value="{{ 0 }}">Disponible</option>
+                            <option value="{{ 1 }}">Indisponible</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn waves-effect waves-light light-blue darken-2" type="submit" name="action">Créer
+                    <i class="material-icons right">send</i>
+                </button>
+                <br><br><br>
+
+                <table class="striped">
                     <thead>
                         <tr>
-                            <th><h5>Joueur</h5></th>
-                            <th><h5>Journée</h5></th>
-                            <th><h5>Date</h5></th>
-                            <th><h5>Disponibilité</h5></th>
+                            <th class="center"><h5>Joueur</h5></th>
+                            <th class="center"><h5>Journée</h5></th>
+                            <th class="center"><h5>Date</h5></th>
+                            <th></th>
                         </tr>
                     </thead>
 
                     <tbody>
                     {% for dispo in disponibiliteDepartementales %}
                         <tr>
-                            <td>{{ dispo.idCompetiteur.nom }}</td>
-                            <td>{{ dispo.idJournee.idJournee }}</td>
-                            <td>{{ dispo.idJournee.date | date("d/m/Y") }}</td>
-                            <td>
+                            <td>{{ dispo.idCompetiteur.playersChips | raw }}</td>
+                            <td class="center">{{ dispo.idJournee.idJournee }}</td>
+                            <td class="center">{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td class="center">
                                 {% if dispo.disponibilite == 1 %}
                                     <a href="{{ path('backoffice.journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'departementale', disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
                                         <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
@@ -58,23 +94,25 @@
             </div>
 
             <div class="card-panel center" id="disponibilites_paris">
-                <table class="striped centered">
+
+                <table class="striped">
                     <thead>
                         <tr>
-                            <th><h5>Joueur</h5></th>
-                            <th><h5>Journée</h5></th>
-                            <th><h5>Date</h5></th>
-                            <th><h5>Disponiblité</h5></th>
+                            <th class="center"><h5>Joueur</h5></th>
+                            <th class="center"><h5>Journée</h5></th>
+                            <th class="center"><h5>Date</h5></th>
+                            <th></th>
                         </tr>
                     </thead>
 
                     <tbody>
                     {% for dispo in disponibiliteParis %}
                         <tr>
-                            <td>{{ dispo.idCompetiteur.nom }}</td>
-                            <td>{{ dispo.idJournee.idJournee }}</td>
-                            <td>{{ dispo.idJournee.date | date("d/m/Y") }}</td>
-                            <td>{% if dispo.disponibilite == 1 %}
+                            <td>{{ dispo.idCompetiteur.playersChips | raw }}</td>
+                            <td class="center">{{ dispo.idJournee.idJournee }}</td>
+                            <td class="center">{{ dispo.idJournee.date | date("d/m/Y") }}</td>
+                            <td class="center">
+                                {% if dispo.disponibilite == 1 %}
                                     <a href="{{ path('journee.disponibilite.update', {journee: dispo.idJournee.idJournee, type: 'paris', disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
                                         <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Déclarer indisponible</button>
                                     </a>
