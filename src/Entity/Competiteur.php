@@ -37,7 +37,7 @@ class Competiteur implements UserInterface, Serializable
      *
      * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=false, options={"default":500})
      */
-    private $classement_officiel;
+    private $classement_officiel = 500;
 
     /**
      * @var string
@@ -102,12 +102,12 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @ORM\Column(type="json", name="brulageDepartemental", options={"default":"{'1':0,'2':0,'3':0,'4':0}"})
      */
-    private $brulageDepartemental = "{'1':0,'2':0,'3':0,'4':0}";
+    private $brulageDepartemental = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
     /**
      * @ORM\Column(type="json", name="brulageParis", options={"default":"{'1':0,'2':0}"})
      */
-    private $brulageParis = "{'1':0,'2':0}";
+    private $brulageParis = [1 => 0, 2 => 0];
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
@@ -120,9 +120,9 @@ class Competiteur implements UserInterface, Serializable
     private $disposParis;
 
     /**
-     * @return string
+     * @return array
      */
-    public function getBrulageDepartemental(): string
+    public function getBrulageDepartemental(): array
     {
         return $this->brulageDepartemental;
     }
@@ -184,7 +184,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return bool
      */
-    public function getRole(): ?bool
+    public function getRole(): bool
     {
         return $this->isCapitaine;
     }
@@ -302,9 +302,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getAvatar()
+    public function getAvatar(): string
     {
         return $this->avatar;
     }
@@ -320,9 +320,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getBrulageParis()
+    public function getBrulageParis(): array
     {
         return $this->brulageParis;
     }
@@ -338,9 +338,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getClassementOfficiel()
+    public function getClassementOfficiel(): int
     {
         return $this->classement_officiel;
     }
@@ -402,7 +402,8 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return string
      */
-    public function getPlayersChips(){
+    public function getPlayersChips(): string
+    {
         return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. " - " . $this->getClassementOfficiel() . " pts</div>";
     }
 
