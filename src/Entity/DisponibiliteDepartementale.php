@@ -53,10 +53,12 @@ class DisponibiliteDepartementale
 
     /**
      * @param mixed $idDisponibilite
+     * @return DisponibiliteDepartementale
      */
-    public function setIdDisponibilite($idDisponibilite): void
+    public function setIdDisponibilite($idDisponibilite): self
     {
         $this->idDisponibilite = $idDisponibilite;
+        return $this;
     }
 
     /**

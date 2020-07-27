@@ -179,3 +179,8 @@ p.lobster {
 .tabs .indicator {
     background-color:#000;
 } /*Color of underline*/
+
+.poule {
+    font-size: 1rem;
+    margin-top: 10%;
+}

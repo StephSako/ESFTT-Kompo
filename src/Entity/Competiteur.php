@@ -35,7 +35,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @Assert\GreaterThanOrEqual(500)
      *
-     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=false)
+     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=false, options={"default":500})
      */
     private $classement_officiel;
 
@@ -56,7 +56,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=100, nullable=false)
+     * @ORM\Column(name="password", type="string", length=100, nullable=false, options={"default":"$2y$12$sOKw0xGfJpYyRRamBiT8kO5qZx7SllVHQ6DEas0S48JbGUxSW7nqC"} )
      *
      * @Assert\Length(
      *      min = 3,
@@ -65,7 +65,7 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "Le mot de passe doit contenir au maximum {{ limit }} caractères"
      * )
      */
-    private $password;
+    private $password = '$2y$12$sOKw0xGfJpYyRRamBiT8kO5qZx7SllVHQ6DEas0S48JbGUxSW7nqC';
 
     /**
      * @var string
@@ -84,7 +84,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @ORM\Column(type="boolean", name="is_capitaine")
      */
-    private $isCapitaine;
+    private $isCapitaine = false;
 
     /**
      * @var string
@@ -95,19 +95,19 @@ class Competiteur implements UserInterface, Serializable
      *      relativeProtocol = true
      * )
      *
-     * @ORM\Column(type="string", length=255, name="avatar")
+     * @ORM\Column(type="string", length=255, name="avatar", options={"default":"https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png"})
      */
-    private $avatar;
+    private $avatar = 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png';
 
     /**
-     * @ORM\Column(type="json", name="brulageDepartemental")
+     * @ORM\Column(type="json", name="brulageDepartemental", options={"default":"{'1':0,'2':0,'3':0,'4':0}"})
      */
-    private $brulageDepartemental;
+    private $brulageDepartemental = "{'1':0,'2':0,'3':0,'4':0}";
 
     /**
-     * @ORM\Column(type="json", name="brulageParis")
+     * @ORM\Column(type="json", name="brulageParis", options={"default":"{'1':0,'2':0}"})
      */
-    private $brulageParis;
+    private $brulageParis = "{'1':0,'2':0}";
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
@@ -120,9 +120,9 @@ class Competiteur implements UserInterface, Serializable
     private $disposParis;
 
     /**
-     * @return array
+     * @return string
      */
-    public function getBrulageDepartemental(): array
+    public function getBrulageDepartemental(): string
     {
         return $this->brulageDepartemental;
     }
@@ -368,7 +368,7 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param mixed $dispos
+     * @param mixed|null $dispos
      * @return Competiteur
      */
     public function setDisposDepartemental($dispos): self
@@ -390,7 +390,7 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param mixed $dispos
+     * @param mixed|null $dispos
      * @return Competiteur
      */
     public function setDisposParis($dispos): self

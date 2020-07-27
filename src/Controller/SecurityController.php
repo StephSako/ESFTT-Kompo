@@ -82,6 +82,7 @@ class SecurityController extends AbstractController
             if ($formCompetiteur->isValid()){
                 $this->em->flush();
                 $this->addFlash('success', 'Informations modifiées !');
+                return $this->redirectToRoute('account');
             }
             else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');

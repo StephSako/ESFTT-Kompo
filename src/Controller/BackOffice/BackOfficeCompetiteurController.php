@@ -38,12 +38,32 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs", name="back_office.competiteurs")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function indexCompetiteurs()
+    public function indexCompetiteurs(Request $request, UserPasswordEncoderInterface $encoder)
     {
+        $competiteur = new Competiteur();
+        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()){
+            dump($competiteur);
+            if ($form->isValid()){
+                $this->em->persist($competiteur);
+                $this->em->flush();
+                $this->addFlash('success', 'Compétiteur créé avec succès !');
+                return $this->redirectToRoute('back_office.competiteurs');
+            } else {
+                dump($form->getErrors());
+                $this->addFlash('fail', 'Une erreur est survenue ...');
+            }
+        }
+
         return $this->render('back_office/competiteurs.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC']),
+            'form' => $form->createView()
         ]);
     }
 

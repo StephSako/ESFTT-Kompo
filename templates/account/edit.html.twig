@@ -29,8 +29,8 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage) }}
-            {{ edit_account.edit_password('Modifier mon mot de passe', path, type) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, 'Modifier') }}
+            {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
             {{ edit_account.edit_account(type, 'Modifier son compte', form, urlImage) }}
             {{ edit_account.edit_password('Modifier son mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}

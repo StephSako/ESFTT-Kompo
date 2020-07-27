@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage) %}
+{% macro edit_account(type, title, form, urlImage, btn_text) %}
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
@@ -30,7 +30,7 @@
             <div class="col s10">{{ form_row(form.avatar) }}</div>
         </div>
 
-        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}

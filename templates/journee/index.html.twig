@@ -143,7 +143,7 @@
                             <h5>
                                 <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                             </h5>
-                            <p class="lobster" style="font-size: 1rem;">Poule {{ compo.idEquipe.poule }}</p>
+                            <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
                         </div>
                         {% if journee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
                         <h5 class="col {% if journee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ journee.date|date('d/m') }}</h5>

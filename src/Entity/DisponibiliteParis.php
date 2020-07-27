@@ -53,10 +53,12 @@ class DisponibiliteParis
 
     /**
      * @param mixed $idDisponibilite
+     * @return DisponibiliteParis
      */
-    public function setIdDisponibilite($idDisponibilite): void
+    public function setIdDisponibilite($idDisponibilite): self
     {
         $this->idDisponibilite = $idDisponibilite;
+        return $this;
     }
 
     /**
@@ -69,6 +71,7 @@ class DisponibiliteParis
 
     /**
      * @param Competiteur $idCompetiteur
+     * @return DisponibiliteParis
      */
     public function setIdCompetiteur(Competiteur $idCompetiteur): self
     {
