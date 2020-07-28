@@ -106,23 +106,23 @@
 
                     {% if journee.idJournee in dispoJournee|keys %}
                         {% if dispoJournee[journee.idJournee] %}
-                            <p>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></p>
+                            <p><i>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></i></p>
                             <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">
-                                <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                                <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                             </a>
                         {% else %}
-                            <p>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></p>
+                            <p><i>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></i></p>
                             <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1}) }}">
-                                <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                                <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                             </a>
                         {% endif %}
                     {% else %}
                         <p><i>Vous n'avez pas encore signalé votre disponibilité</i></p>
                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
-                            <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                            <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                         </a>
                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
-                            <button class="btn waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                            <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                         </a>
                     {% endif %}
 
@@ -131,7 +131,7 @@
                 <div class="card-panel green lighten-4 center">
                     <p class="lobster">Vous devez vous connecter pour indiquer votre disponibilité pour cette journée.</p>
                     <a href="{{ path('login') }}">
-                        <button class="btn waves-effect waves-light" type="submit" name="action">Se connecter</button>
+                        <button class="btn btn_form waves-effect waves-light" type="submit" name="action">Se connecter</button>
                     </a>
                 </div>
             {% endif %}
