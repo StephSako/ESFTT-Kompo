@@ -2,35 +2,50 @@
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
-        <div class="row valign-wrapper">
-            <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
-                {{ form_row(form.nom) }}
-            </div>
-            <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
-                {{ form_row(form.username) }}
-            </div>
-            {% if type == 'backoffice' %}
-                <div class="col s3">
-                    {{ form_row(form.role) }}
+            <div class="row valign-wrapper">
+                <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
+                    <div class="input-field">
+                        <i class="material-icons prefix">person</i>
+                        {{ form_row(form.nom) }}
+                    </div>
                 </div>
-            {% endif %}
-        </div>
 
-        <div class="row valign-wrapper">
-            <div class="col s6">
-                {{ form_row(form.licence) }}
+                <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
+                    <div class="input-field">
+                        <i class="material-icons prefix">account_circle</i>
+                        {{ form_row(form.username) }}
+                    </div>
+                </div>
+                {% if type == 'backoffice' %}
+                    <div class="col s3">
+                        {{ form_row(form.role) }}
+                    </div>
+                {% endif %}
             </div>
-            <div class="col s6">
-                {{ form_row(form.classementOfficiel) }}
+
+            <div class="row valign-wrapper">
+                <div class="col s6">
+                    <div class="input-field">
+                        <i class="material-icons prefix">card_membership</i>
+                        {{ form_row(form.licence) }}
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="input-field">
+                        <i class="material-icons prefix">trending_up</i>
+                        {{ form_row(form.classementOfficiel) }}
+                    </div>
+                </div>
             </div>
+
+        <div class="input-field">
+            <i class="material-icons prefix">sentiment_very_satisfied</i>
+            {{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
         </div>
 
-        <div class="row">
-            <div class="col s2"><img id="img_competiteur_avatar" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem"></div>
-            <div class="col s10">{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}</div>
-        </div>
+        <img id="img_competiteur_avatar" class="center-align" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem">
 
-        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
+            <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}
@@ -52,7 +67,7 @@
                 </div>
                 <div class="input-field col s6">
                     <input name="new_password_validate" id="new_password_validate" type="password" class="validate" required>
-                    <label for="new_password_validate">Valider le nouveau mot de passe</label>
+                    <label for="new_password_validate">Ressaisissez le nouveau mot de passe</label>
                 </div>
             </div>
             <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>

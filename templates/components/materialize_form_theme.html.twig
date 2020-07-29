@@ -1,13 +1,9 @@
 {% extends 'form_div_layout.html.twig' %}
 
 {% block form_row -%}
-    <div class="row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
-        <div class="input-field col s12">
-            {{- form_widget(form) -}}
-            {{- form_label(form) -}}
-            {{- form_errors(form) -}}
-        </div>
-    </div>
+    {{- form_widget(form) -}}
+    {{- form_label(form) -}}
+    {{- form_errors(form) -}}
 {%- endblock form_row %}
 
 {% block form_widget_simple %}

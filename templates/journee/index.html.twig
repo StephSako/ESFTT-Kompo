@@ -90,7 +90,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.idJournee }} - {{ journee.type }} - {{ journee.date|date('d/m/Y') }}</h4>
+                <h4>Journée {{ journee.idJournee }} - {{ journee.type }} - {{ journee.date|format_datetime('long', 'none', locale='fr') }}</h4>
             </div>
 
             {% if app.user %}
@@ -139,20 +139,19 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row header_compo">
-                        <div class="col s2">
+                        <div class="col">
                             <h5>
                                 <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                             </h5>
                             <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
                         </div>
-                        {% if journee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ journee.date|date('d/m') }}</h5>
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
+                        {% if journee.linkType == 'departementale' %}<h5 class="col">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+                        <h5 class="col">
                             {% if compo.lieu == 'home'%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
                             {% elseif compo.lieu == 'away'%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                             {% endif %}
                         </h5>
-                        <h5 class="col s5">{{ compo.adversaire }}</h5>
+                        <h5 class="col">{{ compo.adversaire }}</h5>
                     </div>
                     <table class="striped responsive-table">
                         <tbody>

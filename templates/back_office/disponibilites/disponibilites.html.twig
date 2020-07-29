@@ -46,6 +46,8 @@
                                     {% elseif dispo.disponibilite == 0 %}
                                         <p class="red lighten-3 white-text center">Indisponible</p>
                                     {% endif %}
+                                {% else %}
+                                    <p><i>Disponibilité non déclarée</i></p>
                                 {% endif %}
                                 <div class="chip">
                                     <img src="{{ dispo.avatar }}" alt="Avatar">
@@ -56,7 +58,6 @@
                             <td>{{ dispo.date | date("d/m/Y") }}</td>
                             <td>
                                 {% if dispo.id_disponibilite is null %}
-                                    <span><i>Disponibilité non déclarée</i></span><br>
                                     <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: 'departementale', dispo: 1}) }}">
                                         <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
                                     </a>
@@ -103,6 +104,8 @@
                                     {% elseif dispo.disponibilite == 0 %}
                                         <p class="red lighten-3 white-text center">Indisponible</p>
                                     {% endif %}
+                                {% else %}
+                                    <p><i>Disponibilité non déclarée</i></p>
                                 {% endif %}
                                 <div class="chip">
                                     <img src="{{ dispo.avatar }}" alt="Avatar">
@@ -113,7 +116,6 @@
                             <td class="center">{{ dispo.date | date("d/m/Y") }}</td>
                             <td class="center">
                                 {% if dispo.id_disponibilite is null %}
-                                    <span><i>Disponibilité non déclarée</i></span><br>
                                     <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: 'paris', dispo: 1}) }}">
                                         <button class="btn waves-effect green lighten-2 waves-light" type="submit" name="action">Déclarer disponible</button>
                                     </a>
