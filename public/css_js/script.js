@@ -8,6 +8,18 @@ $(document).ready(function() {
 
     $('.tabs').tabs();
 
+    $('.datepicker').datepicker({
+        firstDay: 1,
+        i18n: {
+            months: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre' ],
+            monthsShort: [ 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Jui', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc' ],
+            weekdays: [ 'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi' ],
+            weekdaysShort: [ 'Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam' ],
+            weekdaysAbbrev: [ 'D', 'L', 'M', 'M', 'J', 'V', 'S' ],
+            cancel: 'Annuler'
+        }
+    });
+
     $('#competiteur_avatar').on('keyup', function () {
         $('#img_competiteur_avatar').attr("src", $('#competiteur_avatar').val());
     });

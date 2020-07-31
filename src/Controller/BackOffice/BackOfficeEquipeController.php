@@ -48,28 +48,28 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function indexEquipes()
     {
-        return $this->render('back_office/equipes/equipes.html.twig', [
+        return $this->render('back_office/equipes/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
             'equipesParis' => $this->equipeParisRepository->findAll(),
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/{type}/{id}", name="backoffice.equipe.edit")
-     * @param $id
+     * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
+     * @param $idEquipe
      * @param $type
      * @param Request $request
      * @return Response
      */
-    public function editEquipeAccount($type, $id, Request $request)
+    public function editEquipe($type, $idEquipe, Request $request)
     {
         $form = null;
         if ($type == 'departementale'){
-            $equipe = $this->equipeDepartementaleRepository->find($id);
+            $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
             $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
         }
         else if ($type == 'paris'){
-            $equipe = $this->equipeParisRepository->find($id);
+            $equipe = $this->equipeParisRepository->find($idEquipe);
             $form = $this->createForm(EquipeParisType::class, $equipe);
         }
 

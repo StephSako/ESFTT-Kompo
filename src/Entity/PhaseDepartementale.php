@@ -60,10 +60,10 @@ class PhaseDepartementale
     private $idJoueur4;
 
     /**
-     * @var String
-     * @ORM\Column(name="lieu", type="string", length=100)
+     * @var boolean
+     * @ORM\Column(name="domicile", type="boolean")
      */
-    private $lieu;
+    private $domicile;
 
     /**
      * @var String
@@ -72,19 +72,21 @@ class PhaseDepartementale
     private $adversaire;
 
     /**
-     * @return String|null
+     * @return bool
      */
-    public function getLieu(): ?String
+    public function getdomicile(): bool
     {
-        return $this->lieu;
+        return $this->domicile;
     }
 
     /**
-     * @param String $lieu
+     * @param bool $domicile
+     * @return PhaseDepartementale
      */
-    public function setLieu(String $lieu): void
+    public function setdomicile(bool $domicile): self
     {
-        $this->lieu = $lieu;
+        $this->domicile = $domicile;
+        return $this;
     }
 
     /**

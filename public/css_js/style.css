@@ -197,3 +197,11 @@ p.lobster {
 .nav-wrapper li:last-child {
     margin-right: 0.6rem;
 }
+
+.datepicker-date-display {
+    background-color: #023a72;
+}
+
+.select-wrapper input.select-dropdown {
+    font-size: 14px;
+}

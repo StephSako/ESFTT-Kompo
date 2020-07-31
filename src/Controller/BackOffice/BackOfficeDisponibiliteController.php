@@ -73,14 +73,14 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function indexDisponibilites()
     {
-        return $this->render('back_office/disponibilites/disponibilites.html.twig', [
+        return $this->render('back_office/disponibilites/index.html.twig', [
             'disponibiliteDepartementales' => $this->competiteurRepository->findAllDispos("departementale"),
             'disponibiliteParis' => $this->competiteurRepository->findAllDispos("paris")
         ]);
     }
 
     /**
-     * @Route("/backoffice/disponibilite/new/{idCompetiteur}/{journee}/{type}/{dispo}", name="backoffice.disponibilite.new")
+     * @Route("/backoffice/disponibilites/new/{idCompetiteur}/{journee}/{type}/{dispo}", name="backoffice.disponibilite.new")
      * @param $journee
      * @param string $type
      * @param int $dispo
@@ -104,7 +104,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/disponibilite/update/{type}/{disposJoueur}/{dispo}", name="backoffice.disponibilite.update")
+     * @Route("/backoffice/disponibilites/update/{type}/{disposJoueur}/{dispo}", name="backoffice.disponibilite.update")
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo

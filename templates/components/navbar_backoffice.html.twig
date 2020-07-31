@@ -19,6 +19,12 @@
                 <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/equipes' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
                 </li>
+                <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/phase' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">tonality</i>La phase</a>
+                </li>
+                <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/rencontres' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">today</i>Les rencontres</a>
+                </li>
 
             </ul>
 
