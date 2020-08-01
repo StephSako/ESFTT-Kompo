@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as flash %}
+{% import 'macros/edit/journee.html.twig' as edit %}
 
 {% block title %}Modifier la journée de phase{% endblock %}
 
@@ -17,22 +18,7 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
-        <div class="card-panel center-align">
-            <h4 class="h4_form">Modifier la date de la journée{% if type == 'paris' %} de {% endif %} {{ type | capitalize }}</h4>
-            <h5>Journée N° {{ idJournee }}</h5><br>
-            {{ form_start(form) }}
-            <div class="row">
-                <div class="col s6">
-                    {{ form_row(form.date) }}
-                </div>
-                <div class="col s6">
-                    <div class="valign-wrapper">
-                        <button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
-                    </div>
-                </div>
-            </div>
-            {{ form_end(form) }}
-        </div>
+        {{ edit.journee(type, idJournee, form) }}
     </div>
 
 {% endblock %}

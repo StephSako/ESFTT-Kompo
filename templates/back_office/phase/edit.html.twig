@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as flash %}
+{% import 'macros/edit/rencontre.html.twig' as edit %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}Modifier la rencontre{% endblock %}
@@ -18,21 +19,7 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
-        <div class="card-panel center-align">
-            <h4 class="h4_form">Modifier la rencontre{% if type == 'paris' %} de {% endif %} {{ type | capitalize }}</h4>
-            <h5>Journée N° {{ idJournee }} - Equipe N° {{ idEquipe }} - {{ date|format_datetime('long', 'none', locale='fr') }}</h5><br>
-            {{ form_start(form) }}
-                <div class="row">
-                    <div class="col s6">
-                        {{ form_row(form.adversaire) }}
-                    </div>
-                    <div class="col s6">
-                        {{ form_row(form.domicile) }}
-                    </div>
-                </div>
-
-                <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
-            {{ form_end(form) }}
+        {{ edit.rencontre(idJournee, type, idEquipe, date, form) }}
         </div>
     </div>
 

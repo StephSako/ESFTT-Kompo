@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as flash %}
+{% import 'macros/composition.html.twig' as composition %}
 
 {% block title %}Journee {{ journee.idJournee}} - {{ journee.type }}{% endblock %}
 
@@ -155,86 +156,9 @@
                     </div>
                     <table class="striped responsive-table">
                         <tbody>
-                            <tr>
-                                <td class="rank center"><b>#1</b></td>
-                                <td class="center">
-                                    {% if compo.idJoueur1 is not null %}
-                                        <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur1.classementOfficiel }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur1 is not null %}
-                                        <div class="chip">
-                                            <img src="{{ compo.idJoueur1.avatar }}" alt="Avatar">
-                                            <span>{{ compo.idJoueur1.nom }}</span>
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur1.role %}
-                                        <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                    {% endif %}
-                                </td>
-                                <td class="center">
-                                    {% if compo.idJoueur1 is not null %}
-                                        {{ compo.idJoueur1.licence }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="rank center"><b>#2</b></td>
-                                 <td class="center">
-                                    {% if compo.idJoueur2 is not null %}
-                                        <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur2.classementOfficiel }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur2 is not null %}
-                                        <div class="chip">
-                                            <img src="{{ compo.idJoueur2.avatar }}" alt="Avatar">
-                                            {{ compo.idJoueur2.nom }}
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur2.role %}
-                                        <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                    {% endif %}
-                                </td>
-                                <td class="center">
-                                    {% if compo.idJoueur2 is not null %}
-                                        {{ compo.idJoueur2.licence }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="rank center"><b>#3</b></td>
-                                <td class="center">
-                                    {% if compo.idJoueur3 is not null %}
-                                        <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur3.classementOfficiel }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur3 is not null %}
-                                        <div class="chip">
-                                            <img src="{{ compo.idJoueur3.avatar }}" alt="Avatar">
-                                            {{ compo.idJoueur3.nom }}
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if compo.idJoueur3.role %}
-                                        <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                    {% endif %}
-                                </td>
-                                <td class="center">
-                                    {% if compo.idJoueur3 is not null %}
-                                        {{ compo.idJoueur3.licence }}
-                                    {% endif %}
-                                </td>
-                            </tr>
+                            {{ composition.tr("1", compo.idJoueur1) }}
+                            {{ composition.tr("2", compo.idJoueur2) }}
+                            {{ composition.tr("3", compo.idJoueur3) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
                                     </tbody>
@@ -244,90 +168,13 @@
                                     <tbody>
                             {% endif %}
 
-
                             {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
-                                <tr>
-                                    <td class="rank center"><b>#4</b></td>
-                                    <td class="center">
-                                        {% if compo.idJoueur4 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur4.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur4 is not null %}
-                                            <div class="chip">
-                                                <img src="{{ compo.idJoueur4.avatar }}" alt="Avatar">
-                                                {{ compo.idJoueur4.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur4.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur4 is not null %}
-                                            {{ compo.idJoueur4.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                                {{ composition.tr("4", compo.idJoueur4) }}
                             {% endif %}
 
                             {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                                <tr>
-                                    <td class="rank center"><b>#5</b></td>
-                                    <td class="center">
-                                        {% if compo.idJoueur5 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur5.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur5 is not null %}
-                                            <div class="chip">
-                                            <img src="{{ compo.idJoueur5.avatar }}" alt="Avatar">
-                                            {{ compo.idJoueur5.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur5.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur5 is not null %}
-                                            {{ compo.idJoueur5.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="rank center"><b>#6</b></td>
-                                    <td class="center">
-                                        {% if compo.idJoueur6 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur6.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur6 is not null %}
-                                            <div class="chip">
-                                            <img src="{{ compo.idJoueur6.avatar }}" alt="Avatar">
-                                            {{ compo.idJoueur6.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur6.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur6 is not null %}
-                                            {{ compo.idJoueur6.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                            {{ composition.tr("5", compo.idJoueur5) }}
+                            {{ composition.tr("6", compo.idJoueur6) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
                                     </tbody>
@@ -335,88 +182,12 @@
                                 <br><div class="divider"></div><br>
                                 <table class="striped  responsive-table">
                                     <tbody>
-                        {% endif %}
+                            {% endif %}
 
-                                <tr>
-                                    <td class="rank center"><b>#7</b></td>
-                                    <td class="center">
-                                        {% if compo.idJoueur7 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur7.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur7 is not null %}
-                                            <div class="chip">
-                                                <img src="{{ compo.idJoueur7.avatar }}" alt="Avatar">
-                                                {{ compo.idJoueur7.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur7.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur7 is not null %}
-                                            {{ compo.idJoueur7.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                            {{ composition.tr("7", compo.idJoueur7) }}
+                            {{ composition.tr("8", compo.idJoueur8) }}
+                            {{ composition.tr("9", compo.idJoueur9) }}
 
-                                <tr>
-                                    <td class="rank center"><b>#8</b></td>
-                                    <td class="center">
-                                        {% if compo.idJoueur8 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur8.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur8 is not null %}
-                                            <div class="chip">
-                                                <img src="{{ compo.idJoueur8.avatar }}" alt="Avatar">
-                                                {{ compo.idJoueur8.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur8.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur8 is not null %}
-                                            {{ compo.idJoueur8.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="rank center"><b>#9</b></td>
-                                     <td class="center">
-                                        {% if compo.idJoueur9 is not null %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ compo.idJoueur9.classementOfficiel }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur9 is not null %}
-                                            <div class="chip">
-                                                <img src="{{ compo.idJoueur9.avatar }}" alt="Avatar">
-                                                {{ compo.idJoueur9.nom }}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if compo.idJoueur9.role %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="center">
-                                        {% if compo.idJoueur9 is not null %}
-                                            {{ compo.idJoueur9.licence }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
                             {% endif %}
                         </tbody>
                     </table>

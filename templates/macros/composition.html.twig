@@ -1,0 +1,30 @@
+{% macro tr(rank, competiteur) %}
+    <tr>
+        <td class="rank center"><b>#{{ rank }}</b></td>
+        <td class="center">
+            {% if competiteur is not null %}
+                <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ competiteur.classementOfficiel }}</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if competiteur is not null %}
+                <div class="chip">
+                    <img src="{{ competiteur.avatar }}" alt="Avatar">
+                    <span>{{ competiteur.nom }}</span>
+                </div>
+            {% endif %}
+        </td>
+        <td>
+            {% if competiteur is not null %}
+                {% if competiteur.role %}
+                    <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                {% endif %}
+            {% endif %}
+        </td>
+        <td class="center">
+            {% if competiteur is not null %}
+                {{ competiteur.licence }}
+            {% endif %}
+        </td>
+    </tr>
+{% endmacro %}

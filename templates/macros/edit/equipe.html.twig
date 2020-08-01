@@ -1,0 +1,17 @@
+{% macro equipe(form) %}
+    <div class="card-panel center-align">
+        <h4 class="h4_form">Modifier l'équipe</h4>
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col s6">
+                    {{ form_row(form.division) }}
+                </div>
+                <div class="col s6">
+                    {{ form_row(form.poule) }}
+                </div>
+            </div>
+
+            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+{% endmacro %}
