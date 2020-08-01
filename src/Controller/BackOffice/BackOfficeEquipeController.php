@@ -82,7 +82,6 @@ class BackOfficeEquipeController extends AbstractController
         }
 
         return $this->render('back_office/equipes/edit.html.twig', [
-            'type' => 'backoffice',
             'equipe' => $equipe,
             'form' => $form->createView()
         ]);

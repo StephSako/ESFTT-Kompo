@@ -39,10 +39,9 @@ class BackOfficeCompetiteurController extends AbstractController
     /**
      * @Route("/backoffice/competiteurs", name="back_office.competiteurs")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function indexCompetiteurs(Request $request, UserPasswordEncoderInterface $encoder)
+    public function indexCompetiteurs(Request $request)
     {
         $competiteur = new Competiteur();
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
