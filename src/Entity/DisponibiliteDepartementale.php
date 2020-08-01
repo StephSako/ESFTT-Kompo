@@ -21,7 +21,7 @@ class DisponibiliteDepartementale
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id_disponibilite")
+     * @ORM\Column(type="integer", name="id_disponibilite", nullable=false)
      */
     private $idDisponibilite;
 
@@ -39,7 +39,7 @@ class DisponibiliteDepartementale
     private $idJournee;
 
     /**
-     * @ORM\Column(type="boolean", name="disponibilite")
+     * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;
 
@@ -98,9 +98,9 @@ class DisponibiliteDepartementale
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getDisponibilite(): ?bool
+    public function getDisponibilite(): bool
     {
         return $this->disponibilite;
     }

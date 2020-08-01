@@ -73,8 +73,8 @@
                     {% if compo.idJournee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
                     <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ compo.idJournee.date|date('d/m') }}</h5>
                     <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
-                        {% if compo.lieu == 'home'%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                        {% elseif compo.lieu == 'away'%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                         {% endif %}
                     </h5>
                     <h5 class="col s5">{{ compo.adversaire }}</h5>

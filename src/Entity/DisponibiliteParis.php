@@ -39,7 +39,7 @@ class DisponibiliteParis
     private $idJournee;
 
     /**
-     * @ORM\Column(type="boolean", name="disponibilite")
+     * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;
 
@@ -98,9 +98,9 @@ class DisponibiliteParis
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getDisponibilite(): ?bool
+    public function getDisponibilite(): bool
     {
         return $this->disponibilite;
     }

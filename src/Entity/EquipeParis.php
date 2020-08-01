@@ -25,7 +25,7 @@ class EquipeParis
      *      maxMessage = "Votre poule doit contenir au maximum {{ limit }} letttres"
      * )
      *
-     * @ORM\Column(name="poule", type="string", length=1)
+     * @ORM\Column(name="poule", type="string", length=1, nullable=false)
      */
     private $poule;
 
@@ -37,7 +37,7 @@ class EquipeParis
      *      maxMessage = "Votre division doit contenir au maximum {{ limit }} letttres"
      * )
      *
-     * @ORM\Column(name="division", type="string", length=20)
+     * @ORM\Column(name="division", type="string", length=20, nullable=false)
      */
     private $division;
 
@@ -60,15 +60,15 @@ class EquipeParis
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPoule()
+    public function getPoule(): string
     {
         return $this->poule;
     }
 
     /**
-     * @param mixed $poule
+     * @param string $poule
      * @return EquipeParis
      */
     public function setPoule($poule): self
@@ -78,7 +78,7 @@ class EquipeParis
     }
 
     /**
-     * @param mixed $division
+     * @param string $division
      * @return EquipeParis
      */
     public function setDivision($division)
@@ -88,9 +88,9 @@ class EquipeParis
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDivision()
+    public function getDivision(): string
     {
         return $this->division;
     }

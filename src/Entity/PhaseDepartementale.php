@@ -61,13 +61,13 @@ class PhaseDepartementale
 
     /**
      * @var boolean
-     * @ORM\Column(name="domicile", type="boolean")
+     * @ORM\Column(name="domicile", type="boolean", nullable=false)
      */
     private $domicile;
 
     /**
      * @var String
-     * @ORM\Column(name="adversaire", type="string", length=100)
+     * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
      */
     private $adversaire;
 
@@ -162,9 +162,9 @@ class PhaseDepartementale
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

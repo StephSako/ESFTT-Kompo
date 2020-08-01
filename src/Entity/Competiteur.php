@@ -49,7 +49,7 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(type="string", length=100, name="nom")
+     * @ORM\Column(type="string", length=100, name="nom", nullable=false)
      */
     private $nom;
 
@@ -82,7 +82,7 @@ class Competiteur implements UserInterface, Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="boolean", name="is_capitaine")
+     * @ORM\Column(type="boolean", name="is_capitaine", nullable=false)
      */
     private $isCapitaine = false;
 
@@ -95,17 +95,17 @@ class Competiteur implements UserInterface, Serializable
      *      relativeProtocol = true
      * )
      *
-     * @ORM\Column(type="string", length=255, name="avatar", options={"default":"https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png"})
+     * @ORM\Column(type="string", length=255, name="avatar", nullable=false, options={"default":"https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png"})
      */
     private $avatar = 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png';
 
     /**
-     * @ORM\Column(type="json", name="brulageDepartemental", options={"default":"{'1':0,'2':0,'3':0,'4':0}"})
+     * @ORM\Column(type="json", name="brulageDepartemental", nullable=false, options={"default":"{'1':0,'2':0,'3':0,'4':0}"})
      */
     private $brulageDepartemental = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
     /**
-     * @ORM\Column(type="json", name="brulageParis", options={"default":"{'1':0,'2':0}"})
+     * @ORM\Column(type="json", name="brulageParis", nullable=false, options={"default":"{'1':0,'2':0}"})
      */
     private $brulageParis = [1 => 0, 2 => 0];
 
@@ -146,9 +146,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getLicence(): ?int
+    public function getLicence(): int
     {
         return $this->licence;
     }
@@ -164,9 +164,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -346,7 +346,7 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param mixed $classement_officiel
+     * @param int $classement_officiel
      * @return Competiteur
      */
     public function setClassementOfficiel($classement_officiel): self

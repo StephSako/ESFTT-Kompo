@@ -20,7 +20,7 @@ class JourneeDepartementale
 
     /**
      * @var DateTime
-     * @ORM\Column(type="date", name="date")
+     * @ORM\Column(type="date", name="date", nullable=false)
      */
     private $date;
 
@@ -60,25 +60,29 @@ class JourneeDepartementale
 
     /**
      * @param mixed $idJournee
+     * @return JourneeDepartementale
      */
-    public function setIdJournee($idJournee): void
+    public function setIdJournee($idJournee): self
     {
         $this->idJournee = $idJournee;
+        return $this;
     }
 
     /**
-     * @return DateTime|null
+     * @return DateTime
      */
-    public function getDate(): ?DateTime
+    public function getDate(): DateTime
     {
         return $this->date;
     }
 
     /**
      * @param DateTime $date
+     * @return JourneeDepartementale
      */
-    public function setDate(Datetime $date): void
+    public function setDate(Datetime $date): self
     {
         $this->date = $date;
+        return $this;
     }
 }

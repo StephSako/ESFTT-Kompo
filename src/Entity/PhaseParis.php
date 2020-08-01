@@ -96,13 +96,13 @@ class PhaseParis
 
     /**
      * @var boolean
-     * @ORM\Column(name="domicile", type="boolean")
+     * @ORM\Column(name="domicile", type="boolean", nullable=false)
      */
     private $domicile;
 
     /**
      * @var String
-     * @ORM\Column(name="adversaire", type="string", length=100)
+     * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
      */
     private $adversaire;
 
@@ -181,60 +181,6 @@ class PhaseParis
     /**
      * @return Competiteur|null
      */
-    public function getIdJoueur7(): ?Competiteur
-    {
-        return $this->idJoueur7;
-    }
-
-    /**
-     * @param Competiteur|null $idJoueur7
-     * @return PhaseParis
-     */
-    public function setIdJoueur7(?Competiteur $idJoueur7): self
-    {
-        $this->idJoueur7 = $idJoueur7;
-        return $this;
-    }
-
-    /**
-     * @return Competiteur|null
-     */
-    public function getIdJoueur8(): ?Competiteur
-    {
-        return $this->idJoueur8;
-    }
-
-    /**
-     * @param Competiteur|null $idJoueur8
-     * @return PhaseParis
-     */
-    public function setIdJoueur8(?Competiteur $idJoueur8): self
-    {
-        $this->idJoueur8 = $idJoueur8;
-        return $this;
-    }
-
-    /**
-     * @return Competiteur|null
-     */
-    public function getIdJoueur9(): ?Competiteur
-    {
-        return $this->idJoueur9;
-    }
-
-    /**
-     * @param Competiteur|null $idJoueur9
-     * @return PhaseParis
-     */
-    public function setIdJoueur9(?Competiteur $idJoueur9): self
-    {
-        $this->idJoueur9 = $idJoueur9;
-        return $this;
-    }
-
-    /**
-     * @return Competiteur|null
-     */
     public function getIdJoueur4(): ?Competiteur
     {
         return $this->idJoueur4;
@@ -287,9 +233,63 @@ class PhaseParis
     }
 
     /**
-     * @return int|null
+     * @return Competiteur|null
      */
-    public function getId(): ?int
+    public function getIdJoueur7(): ?Competiteur
+    {
+        return $this->idJoueur7;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur7
+     * @return PhaseParis
+     */
+    public function setIdJoueur7(?Competiteur $idJoueur7): self
+    {
+        $this->idJoueur7 = $idJoueur7;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur8(): ?Competiteur
+    {
+        return $this->idJoueur8;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur8
+     * @return PhaseParis
+     */
+    public function setIdJoueur8(?Competiteur $idJoueur8): self
+    {
+        $this->idJoueur8 = $idJoueur8;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur|null
+     */
+    public function getIdJoueur9(): ?Competiteur
+    {
+        return $this->idJoueur9;
+    }
+
+    /**
+     * @param Competiteur|null $idJoueur9
+     * @return PhaseParis
+     */
+    public function setIdJoueur9(?Competiteur $idJoueur9): self
+    {
+        $this->idJoueur9 = $idJoueur9;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
