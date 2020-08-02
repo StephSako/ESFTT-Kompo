@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\PhaseDepartementale;
+use App\Entity\RencontreDepartementale;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BackOfficePhaseDepartementaleType extends AbstractType
+class BackOfficeRencontreDepartementaleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -23,7 +23,7 @@ class BackOfficePhaseDepartementaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PhaseDepartementale::class,
+            'data_class' => RencontreDepartementale::class,
             'translation_domain' => 'forms'
         ]);
     }

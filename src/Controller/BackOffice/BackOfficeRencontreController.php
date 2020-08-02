@@ -2,55 +2,56 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Form\BackOfficePhaseDepartementaleType;
-use App\Form\BackOfficePhaseParisType;
-use App\Repository\PhaseDepartementaleRepository;
-use App\Repository\PhaseParisRepository;
+use App\Form\BackOfficeRencontreDepartementaleType;
+use App\Form\BackOfficeRencontreParisType;
+use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class BackOfficePhaseController extends AbstractController
+class BackOfficeRencontreController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
      */
     private $em;
     /**
-     * @var PhaseDepartementaleRepository
+     * @var RencontreDepartementaleRepository
      */
-    private $phaseDepartementaleRepository;
+    private $rencontreDepartementaleRepository;
     /**
-     * @var PhaseParisRepository
+     * @var RencontreParisRepository
      */
-    private $phaseParisRepository;
+    private $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.
-     * @param PhaseDepartementaleRepository $phaseDepartementaleRepository
-     * @param PhaseParisRepository $phaseParisRepository
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(PhaseParisRepository $phaseParisRepository,
-                                PhaseDepartementaleRepository $phaseDepartementaleRepository,
+    public function __construct(RencontreParisRepository $rencontreParisRepository,
+                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->phaseParisRepository = $phaseParisRepository;
-        $this->phaseDepartementaleRepository = $phaseDepartementaleRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
     }
 
     /**
      * @Route("/backoffice/rencontres", name="back_office.rencontres")
      * @return Response
      */
-    public function indexPhase()
+    public function indexRencontre()
     {
-        return $this->render('back_office/phase/index.html.twig', [
-            'rencontreDepartementales' => $this->phaseDepartementaleRepository->findAll(),
-            'rencontreParis' => $this->phaseParisRepository->findAll()
+        return $this->render('back_office/rencontre/index.html.twig', [
+            'rencontreDepartementales' => $this->rencontreDepartementaleRepository->findAll(),
+            'rencontreParis' => $this->rencontreParisRepository->findAll()
         ]);
     }
 
@@ -60,18 +61,18 @@ class BackOfficePhaseController extends AbstractController
      * @param $type
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function editRencontre($type, $idRencontre, Request $request)
     {
         $rencontre = $form = null;
         if ($type == 'departementale'){
-            $rencontre = $this->phaseDepartementaleRepository->find($idRencontre);
-            $form = $this->createForm(BackOfficePhaseDepartementaleType::class, $rencontre);
+            $rencontre = $this->rencontreDepartementaleRepository->find($idRencontre);
+            $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
         }
         else if ($type == 'paris'){
-            $rencontre = $this->phaseParisRepository->find($idRencontre);
-            $form = $this->createForm(BackOfficePhaseParisType::class, $rencontre);
+            $rencontre = $this->rencontreParisRepository->find($idRencontre);
+            $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
         }
 
         $form->handleRequest($request);
@@ -82,7 +83,7 @@ class BackOfficePhaseController extends AbstractController
             return $this->redirectToRoute('back_office.rencontres');
         }
 
-        return $this->render('back_office/phase/edit.html.twig', [
+        return $this->render('back_office/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
             'date' => $rencontre->getIdJournee()->getDate(),

@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\PhaseDepartementale;
+use App\Entity\RencontreDepartementale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method PhaseDepartementale|null find($id, $lockMode = null, $lockVersion = null)
- * @method PhaseDepartementale|null findOneBy(array $criteria, array $orderBy = null)
- * @method PhaseDepartementale[]    findAll()
- * @method PhaseDepartementale[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RencontreDepartementale|null find($id, $lockMode = null, $lockVersion = null)
+ * @method RencontreDepartementale|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RencontreDepartementale[]    findAll()
+ * @method RencontreDepartementale[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PhaseDepartementaleRepository extends ServiceEntityRepository
+class RencontreDepartementaleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PhaseDepartementale::class);
+        parent::__construct($registry, RencontreDepartementale::class);
     }
 
     /**

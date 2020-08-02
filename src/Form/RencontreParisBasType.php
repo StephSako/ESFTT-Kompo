@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\PhaseParis;
+use App\Entity\RencontreParis;
 use App\Repository\CompetiteurRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PhaseParisBasType extends AbstractType
+class RencontreParisBasType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -98,7 +98,7 @@ class PhaseParisBasType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PhaseParis::class,
+            'data_class' => RencontreParis::class,
             'translation_domain' => 'forms'
         ]);
     }

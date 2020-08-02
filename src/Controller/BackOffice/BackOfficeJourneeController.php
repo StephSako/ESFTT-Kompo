@@ -7,6 +7,7 @@ use App\Form\JourneeParisType;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,7 @@ class BackOfficeJourneeController extends AbstractController
      * @param $type
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function editJournee($type, $idJournee, Request $request)
     {

@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\PhaseParis;
+use App\Entity\RencontreParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method PhaseParis|null find($id, $lockMode = null, $lockVersion = null)
- * @method PhaseParis|null findOneBy(array $criteria, array $orderBy = null)
- * @method PhaseParis[]    findAll()
- * @method PhaseParis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RencontreParis|null find($id, $lockMode = null, $lockVersion = null)
+ * @method RencontreParis|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RencontreParis[]    findAll()
+ * @method RencontreParis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PhaseParisRepository extends ServiceEntityRepository
+class RencontreParisRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PhaseParis::class);
+        parent::__construct($registry, RencontreParis::class);
     }
 
     /**

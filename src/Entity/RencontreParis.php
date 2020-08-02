@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PhaseParisRepository")
- * @ORM\Table(name="phase_paris")
+ * @ORM\Entity(repositoryClass="App\Repository\RencontreParisRepository")
+ * @ORM\Table(name="rencontre_paris")
  */
-class PhaseParis
+class RencontreParis
 {
     /**
      * @ORM\Id()
@@ -116,7 +116,7 @@ class PhaseParis
 
     /**
      * @param bool $domicile
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setdomicile(bool $domicile): self
     {
@@ -134,7 +134,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur1
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
@@ -152,7 +152,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur2
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
@@ -170,7 +170,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur3
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur3(?Competiteur $idJoueur3): self
     {
@@ -188,7 +188,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur4
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur4(?Competiteur $idJoueur4): self
     {
@@ -206,7 +206,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur5
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur5(?Competiteur $idJoueur5): self
     {
@@ -224,7 +224,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur6
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur6(?Competiteur $idJoueur6): self
     {
@@ -242,7 +242,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur7
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur7(?Competiteur $idJoueur7): self
     {
@@ -260,7 +260,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur8
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur8(?Competiteur $idJoueur8): self
     {
@@ -278,7 +278,7 @@ class PhaseParis
 
     /**
      * @param Competiteur|null $idJoueur9
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJoueur9(?Competiteur $idJoueur9): self
     {
@@ -296,7 +296,7 @@ class PhaseParis
 
     /**
      * @param $id
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setId($id): self
     {
@@ -314,7 +314,7 @@ class PhaseParis
 
     /**
      * @param JourneeParis $idJournee
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setIdJournee(JourneeParis $idJournee): self
     {
@@ -342,7 +342,7 @@ class PhaseParis
 
     /**
      * @param String $adversaire
-     * @return PhaseParis
+     * @return RencontreParis
      */
     public function setAdversaire(string $adversaire): self
     {
@@ -352,9 +352,9 @@ class PhaseParis
 
     /**
      * @param EquipeParis $idEquipe
-     * @return PhaseParis
+     * @return RencontreParis
      */
-    public function setIdEquipe(EquipeParis $idEquipe): PhaseParis
+    public function setIdEquipe(EquipeParis $idEquipe): RencontreParis
     {
         $this->idEquipe = $idEquipe;
         return $this;

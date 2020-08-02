@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\PhaseDepartementale;
+use App\Entity\RencontreDepartementale;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -10,7 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PhaseDepartementaleType extends AbstractType
+class RencontreDepartementaleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -168,7 +168,7 @@ class PhaseDepartementaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PhaseDepartementale::class,
+            'data_class' => RencontreDepartementale::class,
             'translation_domain' => 'forms'
         ]);
     }

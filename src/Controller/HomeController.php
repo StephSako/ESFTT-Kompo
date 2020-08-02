@@ -2,16 +2,17 @@
 
 namespace App\Controller;
 
-use App\Form\PhaseDepartementaleType;
-use App\Form\PhaseParisBasType;
-use App\Form\PhaseParisHautType;
+use App\Form\RencontreDepartementaleType;
+use App\Form\RencontreParisBasType;
+use App\Form\RencontreParisHautType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
 use App\Repository\JourneeParisRepository;
-use App\Repository\PhaseDepartementaleRepository;
+use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\PhaseParisRepository;
+use App\Repository\RencontreParisRepository;
+use DateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,15 +21,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class Phase_1Controller
+ * Class Rencontre_1Controller
  * @package App\Controller
  */
 class HomeController extends AbstractController
 {
-    /**
-     * @var PhaseDepartementaleRepository
-     */
-    private $phaseDepartementaleRepository;
     /**
      * @var EntityManagerInterface
      */
@@ -54,9 +51,13 @@ class HomeController extends AbstractController
      */
     private $journeeParisRepository;
     /**
-     * @var PhaseParisRepository
+     * @var RencontreDepartementaleRepository
      */
-    private $phaseParisRepository;
+    private $rencontreDepartementaleRepository;
+    /**
+     * @var RencontreParisRepository
+     */
+    private $rencontreParisRepository;
 
     /**
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
@@ -64,8 +65,8 @@ class HomeController extends AbstractController
      * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
      * @param DisponibiliteParisRepository $disponibiliteParisRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param PhaseDepartementaleRepository $phaseDepartementaleRepository
-     * @param PhaseParisRepository $phaseParisRepository
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
@@ -73,18 +74,18 @@ class HomeController extends AbstractController
                                 DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
                                 CompetiteurRepository $competiteurRepository,
-                                PhaseDepartementaleRepository $phaseDepartementaleRepository,
-                                PhaseParisRepository $phaseParisRepository,
+                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                RencontreParisRepository $rencontreParisRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->phaseDepartementaleRepository = $phaseDepartementaleRepository;
+        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
         $this->disponibiliteParisRepository = $disponibiliteParisRepository;
         $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->journeeParisRepository = $journeeParisRepository;
-        $this->phaseParisRepository = $phaseParisRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
     }
 
     /**
@@ -95,7 +96,7 @@ class HomeController extends AbstractController
         $dates = $this->journeeDepartementaleRepository->findAllDates();
         $NJournee = 0;
 
-        while ($NJournee < 7 && (int) (new \DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
+        while ($NJournee < 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
             $NJournee++;
         }
         $NJournee++;
@@ -125,17 +126,16 @@ class HomeController extends AbstractController
             $journee = $this->journeeDepartementaleRepository->find($id);
             $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
-            $compos = $this->phaseDepartementaleRepository->findBy(['idJournee' => $id]);
-            $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($compos);
+            $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
+            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
             $journees = $this->journeeDepartementaleRepository->findAll();
-        }
-        else if ($type === 'paris'){
+        } else if ($type === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
-            $compos = $this->phaseParisRepository->findBy(['idJournee' => $id]);
-            $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($compos);
+            $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
+            $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
             $journees = $this->journeeParisRepository->findAll();
         }
 
@@ -163,34 +163,32 @@ class HomeController extends AbstractController
         $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
 
         if ($type == 'departementale'){
-            $compo = $this->phaseDepartementaleRepository->find($compo);
-            $journeeSelectedPlayers = $this->phaseDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
+            $compo = $this->rencontreDepartementaleRepository->find($compo);
+            $journeeSelectedPlayers = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
             $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
-            $form = $this->createForm(PhaseDepartementaleType::class, $compo);
-            $oldPlayers = $this->phaseDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
+            $form = $this->createForm(RencontreDepartementaleType::class, $compo);
+            $oldPlayers = $this->rencontreDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
             $j4 = $oldPlayers->getIdJoueur4();
-            $selectedPlayers = $this->phaseDepartementaleRepository->getSelectedPlayers($journeeSelectedPlayers);
+            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($journeeSelectedPlayers);
             $journees = $this->journeeDepartementaleRepository->findAll();
-        }
-        else if ($type == 'paris'){
-            $compo = $this->phaseParisRepository->find($compo);
-            $journeeSelectedPlayers = $this->phaseParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
+        } else if ($type == 'paris'){
+            $compo = $this->rencontreParisRepository->find($compo);
+            $journeeSelectedPlayers = $this->rencontreParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
             $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
             $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
-            $oldPlayers = $this->phaseParisRepository->findOneBy(['id' => $compo->getId()]);
+            $oldPlayers = $this->rencontreParisRepository->findOneBy(['id' => $compo->getId()]);
             if ($levelEquipe === 1){
-                $form = $this->createForm(PhaseParisHautType::class, $compo);
+                $form = $this->createForm(RencontreParisHautType::class, $compo);
                 $j4 = $oldPlayers->getIdJoueur4();
                 $j5 = $oldPlayers->getIdJoueur5();
                 $j6 = $oldPlayers->getIdJoueur6();
                 $j7 = $oldPlayers->getIdJoueur7();
                 $j8 = $oldPlayers->getIdJoueur8();
                 $j9 = $oldPlayers->getIdJoueur9();
+            } else if ($levelEquipe === 2){
+                $form = $this->createForm(RencontreParisBasType::class, $compo);
             }
-            else if ($levelEquipe === 2){
-                $form = $this->createForm(PhaseParisBasType::class, $compo);
-            }
-            $selectedPlayers = $this->phaseParisRepository->getSelectedPlayers($journeeSelectedPlayers);
+            $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($journeeSelectedPlayers);
             $journees = $this->journeeParisRepository->findAll();
         }
 
@@ -207,8 +205,7 @@ class HomeController extends AbstractController
                     $brulageOld1 = $j1->getBrulageDepartemental();
                     $brulageOld1[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j1->setBrulageDepartemental($brulageOld1);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulageOld1 = $j1->getBrulageParis();
                     $brulageOld1[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j1->setBrulageParis($brulageOld1);
@@ -220,8 +217,7 @@ class HomeController extends AbstractController
                     $brulageOld2 = $j2->getBrulageDepartemental();
                     $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j2->setBrulageDepartemental($brulageOld2);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulageOld2 = $j2->getBrulageParis();
                     $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j2->setBrulageParis($brulageOld2);
@@ -233,8 +229,7 @@ class HomeController extends AbstractController
                     $brulageOld3 = $j3->getBrulageDepartemental();
                     $brulageOld3[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j3->setBrulageDepartemental($brulageOld3);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulageOld3 = $j3->getBrulageParis();
                     $brulageOld3[$compo->getIdEquipe()->getIdEquipe()]--;
                     $j3->setBrulageParis($brulageOld3);
@@ -247,8 +242,7 @@ class HomeController extends AbstractController
                         $brulageOld4 = $j4->getBrulageDepartemental();
                         $brulageOld4[$compo->getIdEquipe()->getIdEquipe()]--;
                         $j4->setBrulageDepartemental($brulageOld4);
-                    }
-                    else if ($type === 'paris'){
+                    } else if ($type === 'paris'){
                         $brulageOld4 = $j4->getBrulageParis();
                         $brulageOld4[$compo->getIdEquipe()->getIdEquipe()]--;
                         $j4->setBrulageParis($brulageOld4);
@@ -294,8 +288,7 @@ class HomeController extends AbstractController
                     $brulage1 = $form->getData()->getIdJoueur1()->getBrulageDepartemental();
                     $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur1()->setBrulageDepartemental($brulage1);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulage1 = $form->getData()->getIdJoueur1()->getBrulageParis();
                     $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur1()->setBrulageParis($brulage1);
@@ -307,8 +300,7 @@ class HomeController extends AbstractController
                     $brulage2 = $form->getData()->getIdJoueur2()->getBrulageDepartemental();
                     $brulage2[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur2()->setBrulageDepartemental($brulage2);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulage2 = $form->getData()->getIdJoueur2()->getBrulageParis();
                     $brulage2[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur2()->setBrulageParis($brulage2);
@@ -320,8 +312,7 @@ class HomeController extends AbstractController
                     $brulage3 = $form->getData()->getIdJoueur3()->getBrulageDepartemental();
                     $brulage3[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur3()->setBrulageDepartemental($brulage3);
-                }
-                else if ($type === 'paris') {
+                } else if ($type === 'paris') {
                     $brulage3 = $form->getData()->getIdJoueur3()->getBrulageParis();
                     $brulage3[$compo->getIdEquipe()->getIdEquipe()]++;
                     $compo->getIdJoueur3()->setBrulageParis($brulage3);
@@ -334,8 +325,7 @@ class HomeController extends AbstractController
                         $brulage4 = $form->getData()->getIdJoueur4()->getBrulageDepartemental();
                         $brulage4[$compo->getIdEquipe()->getIdEquipe()]++;
                         $compo->getIdJoueur4()->setBrulageDepartemental($brulage4);
-                    }
-                    else if ($type === 'paris'){
+                    } else if ($type === 'paris'){
                         $brulage4 = $form->getData()->getIdJoueur4()->getBrulageParis();
                         $brulage4[$compo->getIdEquipe()->getIdEquipe()]++;
                         $compo->getIdJoueur4()->setBrulageParis($brulage4);
@@ -387,8 +377,7 @@ class HomeController extends AbstractController
         if ($type === 'departementale'){
             $burntPlayers = $this->competiteurRepository->findBurnPlayersDepartementale($compo->getIdEquipe());
             $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersDepartementale($compo->getIdEquipe());
-        }
-        else if ($type === 'paris'){
+        } else if ($type === 'paris'){
             $burntPlayers = $this->competiteurRepository->findBurnPlayersParis();
             $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersParis();
         }

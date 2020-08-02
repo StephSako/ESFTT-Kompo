@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PhaseDepartementaleRepository")
- * @ORM\Table(name="phase_departementale")
+ * @ORM\Entity(repositoryClass="App\Repository\RencontreDepartementaleRepository")
+ * @ORM\Table(name="rencontre_departementale")
  */
-class PhaseDepartementale
+class RencontreDepartementale
 {
     /**
      * @ORM\Id()
@@ -81,7 +81,7 @@ class PhaseDepartementale
 
     /**
      * @param bool $domicile
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setdomicile(bool $domicile): self
     {
@@ -99,7 +99,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur1
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setIdJoueur1(?Competiteur $idJoueur1): self
     {
@@ -117,7 +117,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur2
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setIdJoueur2(?Competiteur $idJoueur2): self
     {
@@ -135,7 +135,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur3
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setIdJoueur3(?Competiteur $idJoueur3): self
     {
@@ -153,7 +153,7 @@ class PhaseDepartementale
 
     /**
      * @param Competiteur|null $idJoueur4
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setIdJoueur4(?Competiteur $idJoueur4): self
     {
@@ -171,7 +171,7 @@ class PhaseDepartementale
 
     /**
      * @param $id
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setId($id): self
     {
@@ -189,7 +189,7 @@ class PhaseDepartementale
 
     /**
      * @param JourneeDepartementale $idJournee
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setIdJournee(JourneeDepartementale $idJournee): self
     {
@@ -207,7 +207,7 @@ class PhaseDepartementale
 
     /**
      * @param String $adversaire
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
     public function setAdversaire(string $adversaire): self
     {
@@ -217,9 +217,9 @@ class PhaseDepartementale
 
     /**
      * @param EquipeDepartementale $idEquipe
-     * @return PhaseDepartementale
+     * @return RencontreDepartementale
      */
-    public function setIdEquipe(EquipeDepartementale $idEquipe): PhaseDepartementale
+    public function setIdEquipe(EquipeDepartementale $idEquipe): RencontreDepartementale
     {
         $this->idEquipe = $idEquipe;
         return $this;
