@@ -16,10 +16,6 @@
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lobster" />
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
         <link href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap" rel="stylesheet">
-    </head>
-    <body>
-
-        {% block body %}{% endblock %}
 
         <!--Scripts trigger de JQuery-->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -31,5 +27,7 @@
         <script src="{{ asset('jquery.nicescroll-3.7.6/jquery.nicescroll.js') }}"></script>
         <!--Scripts trigger de Nice-Select-->
         <script src="{{ asset('jquery-nice-select-1.1.0/js/jquery.nice-select.min.js') }}"></script>
-    </body>
+    </head>
+
+    <body> {% block body %}{% endblock %} </body>
 </html>

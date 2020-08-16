@@ -205,3 +205,9 @@ p.lobster {
 .select-wrapper input.select-dropdown {
     font-size: 14px;
 }
+
+@media screen and (max-width: 600px) {
+    .brulages_large {
+        display:none;
+    }
+}

@@ -6,6 +6,10 @@ $(document).ready(function() {
 
     $("select").niceSelect();
 
+    $('.sidenav').sidenav({
+        closeOnClick: true
+    });
+
     $('.tabs').tabs();
 
     $('.datepicker').datepicker({

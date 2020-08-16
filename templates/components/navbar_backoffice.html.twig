@@ -1,9 +1,8 @@
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper">
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <a data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
-
                 <li id="btn_link" class="blue darken-4">
                     <a class="dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
                         <i class="material-icons left">subdirectory_arrow_left</i>Retour à la compétition
@@ -47,5 +46,46 @@
                 {% endif %}
             </ul>
         </div>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li id="btn_link" class="blue darken-4">
+                <a class="center-align dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
+                    <i class="material-icons left">subdirectory_arrow_left</i>Retour à la compétition
+                </a>
+            </li>
+
+            <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
+                <a class="center-align" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Les disponibilités</a>
+            </li>
+            <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
+                <a class="center-align" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Les compétiteurs</a>
+            </li>
+            <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
+                <a class="center-align" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
+            </li>
+            <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
+                <a class="center-align" href="{{ path("back_office.phase") }}"><i class="material-icons left">tonality</i>La phase</a>
+            </li>
+            <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
+                <a class="center-align" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">today</i>Les rencontres</a>
+            </li>
+
+            <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
+            {% if app.user %}
+                <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+                    <a class="center-align" href="{{ path('account') }}">Mon compte</a>
+                </li>
+
+                {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+                    <li class="li_in_line gestion {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
+                        <a class="center-align" href="{{ path('back_office') }}">Gestion</a>
+                    </li>
+                {% endif %}
+
+                <li class="li_in_line"><a class="center-align" href="{{ path('logout') }}">Se déconnecter</a></li>
+            {% else %}
+                <li class="li_in_line"><a class="center-align" href="{{ path('login') }}">Se connecter</a></li>
+            {% endif %}
+        </ul>
     </nav>
 </div>

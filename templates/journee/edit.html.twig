@@ -6,8 +6,8 @@
 
     {% include("components/navbar.html.twig") %}
 
-    <div class="row">
-        <div class="col s3">
+    <div class="row main">
+        <div class="col l3 brulages_large">
             <table style="margin-top: 30px;" class="centered striped card-panel dispos brulage_edit">
                 <thead>
                 <tr>
@@ -59,22 +59,21 @@
                 </tbody>
             </table>
         </div>
-        <div class="col s6">
+        <div class="col s12 l6">
             <div class="center-align card-panel">
-                <h4>Composition d'équipe</h4>
+                <h4>Composition d'équipe{% if compo.idJournee.linkType == 'departementale' %} - Équipe {{ compo.idEquipe.idEquipe }}{% endif %}</h4>
 
                 <div class="row header_compo">
-                    <div class="col s2">
+                    <div class="col s3">
                         <h5>
                             <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                         </h5>
                         <p class="lobster">Poule {{ compo.idEquipe.poule }}</p>
                     </div>
-                    {% if compo.idJournee.linkType == 'departementale' %}<h5 class="col s2">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
-                    <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s2{% else %}s3{% endif %}">{{ compo.idJournee.date|date('d/m') }}</h5>
+                    <h5 class="col s2">{{ compo.idJournee.date|date('d/m') }}</h5>
                     <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
-                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                        {% else %} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                         {% endif %}
                     </h5>
                     <h5 class="col s5">{{ compo.adversaire }}</h5>
@@ -84,18 +83,18 @@
                     {{ form_start(form)}}
                     <div class="form_div_list">
                         <div class="row">
-                            <div class="col s4"><h5>Joueur 1</h5></div>
-                            <div class="col s4">{{ form_row(form.idJoueur1) }}</div>
+                            <div class="col s12 l4"><h5>Joueur 1</h5></div>
+                            <div class="col s12 l4">{{ form_row(form.idJoueur1) }}</div>
+                            <div class="col l4"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12 l4"><h5>Joueur 2</h5></div>
+                            <div class="col s12 l4">{{ form_row(form.idJoueur2) }}</div>
                             <div class="col s4"></div>
                         </div>
                         <div class="row">
-                            <div class="col s4"><h5>Joueur 2</h5></div>
-                            <div class="col s4">{{ form_row(form.idJoueur2) }}</div>
-                            <div class="col s4"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col s4"><h5>Joueur 3</h5></div>
-                            <div class="col s4">{{ form_row(form.idJoueur3) }}</div>
+                            <div class="col s12 l4"><h5>Joueur 3</h5></div>
+                            <div class="col s12 l4">{{ form_row(form.idJoueur3) }}</div>
                             <div class="col s4"></div>
                         </div>
 
@@ -109,22 +108,22 @@
                             {% endif %}
 
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 4</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur4) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 4</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur4) }}</div>
                                 <div class="col s4"></div>
                             </div>
                         {% endif %}
 
                         {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 5</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur5) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 5</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur5) }}</div>
                                 <div class="col s4"></div>
                             </div>
 
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 6</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur6) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 6</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur6) }}</div>
                                 <div class="col s4"></div>
                             </div>
 
@@ -137,20 +136,20 @@
                             {% endif %}
 
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 7</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur7) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 7</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur7) }}</div>
                                 <div class="col s4"></div>
                             </div>
 
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 8</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur8) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 8</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur8) }}</div>
                                 <div class="col s4"></div>
                             </div>
 
                             <div class="row">
-                                <div class="col s4"><h5>Joueur 9</h5></div>
-                                <div class="col s4">{{ form_row(form.idJoueur9) }}</div>
+                                <div class="col s12 l4"><h5>Joueur 9</h5></div>
+                                <div class="col s12 l4">{{ form_row(form.idJoueur9) }}</div>
                                 <div class="col s4"></div>
                             </div>
                         {% endif %}
@@ -161,7 +160,59 @@
                 </div>
             </div>
         </div>
-        <div class="col s3">
+        <div class="col s12 brulage_mobile">
+            <table style="margin-top: 30px;" class="centered striped card-panel dispos brulage_edit">
+                <thead>
+                <tr>
+                    <th>
+                        <h5>Brûlés en {{ compo.idEquipe.idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% if compo.idEquipe.idEquipe == 1 or burntPlayers is empty %}
+                    <tr>
+                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe.idEquipe }}</td>
+                    </tr>
+                {% else %}
+                    {% for burntPlayer in burntPlayers %}
+                        <tr>
+                            <td>{{ burntPlayer.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+            <table class="centered striped card-panel dispos">
+                <thead>
+                <tr>
+                    <th>
+                        <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% if (compo.idEquipe.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
+                    <tr>
+                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
+                    </tr>
+                {% elseif almostBurntPlayers is empty %}
+                    <tr>
+                        <td>Il n'y a pas de potentiels futurs brûlés</td>
+                    </tr>
+                {% else %}
+                    {% for almostBurntPlayer in almostBurntPlayers %}
+                        <tr>
+                            <td>{{ almostBurntPlayer.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col s12 l3">
             <table style="margin-top: 30px;" class="centered striped card-panel dispos">
                 <thead>
                 <tr>
@@ -187,5 +238,18 @@
             </table>
         </div>
     </div>
+
+    <script>
+        $(window).ready(function() {
+            if ($(window).width() <= 600){
+                $('.main').addClass("container");
+                $('.brulage_mobile').removeAttr('hidden');
+            }
+            else{
+                $('.main').removeClass("container");
+                $('.brulage_mobile').attr("hidden", true);
+            }
+        });
+    </script>
 
 {% endblock %}

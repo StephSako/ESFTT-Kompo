@@ -17,20 +17,24 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les rencontres</h4>
+        </div>
+
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#journees_departementales" class="active">Les rencontres départementales</a></li>
-            <li class="tab"><a href="#journees_paris">Les rencontres de Paris</a></li>
+            <li class="tab"><a href="#journees_departementales" class="active">Champ. départemental</a></li>
+            <li class="tab"><a href="#journees_paris">Champ. de Paris</a></li>
         </ul>
 
         <div class="card-panel center" id="journees_departementales">
-            <table class="striped centered">
+            <table class="striped centered responsive-table">
                 <thead>
                 <tr>
-                    <th><h5>Equipe n°</h5></th>
-                    <th><h5>Journée n°</h5></th>
-                    <th><h5>Date</h5></th>
-                    <th><h5>Adversaire</h5></th>
-                    <th><h5>Lieu</h5></th>
+                    <th>Equipe n°</th>
+                    <th>Journée n°</th>
+                    <th>Date</th>
+                    <th>Adversaire</th>
+                    <th>Lieu</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -55,7 +59,7 @@
         </div>
 
         <div class="card-panel center" id="journees_paris">
-            <table class="striped centered">
+            <table class="striped centered responsive-table">
                 <thead>
                 <tr>
                     <th><h5>Equipe n°</h5></th>
@@ -86,5 +90,18 @@
             </table>
         </div>
     </div>
+
+    <script>
+        $(window).ready(function() {
+            if ($(window).width() <= 600){
+                $('.main').addClass("container");
+                $('.brulage_mobile').removeAttr('hidden');
+            }
+            else{
+                $('.main').removeClass("container");
+                $('.brulage_mobile').attr("hidden", true);
+            }
+        });
+    </script>
 
 {% endblock %}
