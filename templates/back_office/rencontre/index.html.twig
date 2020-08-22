@@ -22,86 +22,73 @@
         </div>
 
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#journees_departementales" class="active">Champ. départemental</a></li>
-            <li class="tab"><a href="#journees_paris">Champ. de Paris</a></li>
+            <li class="tab"><a href="#journees_departementales" class="active">Départemental</a></li>
+            <li class="tab"><a href="#journees_paris">Paris</a></li>
         </ul>
 
-        <div class="card-panel center" id="journees_departementales">
+        <div class="card-panel" id="journees_departementales">
             <table class="striped centered responsive-table">
                 <thead>
-                <tr>
-                    <th>Equipe n°</th>
-                    <th>Journée n°</th>
-                    <th>Date</th>
-                    <th>Adversaire</th>
-                    <th>Lieu</th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th>Equipe n°</th>
+                        <th>Journée n°</th>
+                        <th>Date</th>
+                        <th>Adversaire</th>
+                        <th>Lieu</th>
+                        <th></th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                {% for rencontre in rencontreDepartementales %}
-                    <tr>
-                        <td>{{ rencontre.idEquipe.idEquipe }}</td>
-                        <td>{{ rencontre.idJournee.idJournee }}</td>
-                        <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                        <td>{{ rencontre.adversaire }}</td>
-                        <td>
-                            {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                            {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
-                            {% endif %}
-                        </td>
-                        <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
-                    </tr>
-                {% endfor %}
+                    {% for rencontre in rencontreDepartementales %}
+                        <tr>
+                            <td>{{ rencontre.idEquipe.idEquipe }}</td>
+                            <td>{{ rencontre.idJournee.idJournee }}</td>
+                            <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
+                            <td>{{ rencontre.adversaire }}</td>
+                            <td>
+                                {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <div class="card-panel center" id="journees_paris">
+        <div class="card-panel" id="journees_paris">
             <table class="striped centered responsive-table">
                 <thead>
-                <tr>
-                    <th><h5>Equipe n°</h5></th>
-                    <th><h5>Journée n°</h5></th>
-                    <th><h5>Date</h5></th>
-                    <th><h5>Adversaire</h5></th>
-                    <th><h5>Lieu</h5></th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th>Equipe n°</th>
+                        <th>Journée n°</th>
+                        <th>Date</th>
+                        <th>Adversaire</th>
+                        <th>Lieu</th>
+                        <th></th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                {% for rencontre in rencontreParis %}
-                    <tr>
-                        <td>{{ rencontre.idEquipe.idEquipe }}</td>
-                        <td>{{ rencontre.idJournee.idJournee }}</td>
-                        <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                        <td>{{ rencontre.adversaire }}</td>
-                        <td>
-                            {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                            {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
-                            {% endif %}
-                        </td>
-                        <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
-                    </tr>
-                {% endfor %}
+                    {% for rencontre in rencontreParis %}
+                        <tr>
+                            <td>{{ rencontre.idEquipe.idEquipe }}</td>
+                            <td>{{ rencontre.idJournee.idJournee }}</td>
+                            <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
+                            <td>{{ rencontre.adversaire }}</td>
+                            <td>
+                                {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
-    <script>
-        $(window).ready(function() {
-            if ($(window).width() <= 600){
-                $('.main').addClass("container");
-                $('.brulage_mobile').removeAttr('hidden');
-            }
-            else{
-                $('.main').removeClass("container");
-                $('.brulage_mobile').attr("hidden", true);
-            }
-        });
-    </script>
 
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.idEquipe }}{% endblock %}
 
@@ -59,6 +60,7 @@
                 </tbody>
             </table>
         </div>
+
         <div class="col s12 l6">
             <div class="center-align card-panel">
                 <h4>Composition d'équipe{% if compo.idJournee.linkType == 'departementale' %} - Équipe {{ compo.idEquipe.idEquipe }}{% endif %}</h4>
@@ -83,19 +85,16 @@
                     {{ form_start(form)}}
                     <div class="form_div_list">
                         <div class="row">
-                            <div class="col s12 l4"><h5>Joueur 1</h5></div>
-                            <div class="col s12 l4">{{ form_row(form.idJoueur1) }}</div>
-                            <div class="col l4"></div>
+                            <div class="col s12 l3"><h5>Joueur 1</h5></div>
+                            <div class="col s12 l9">{{ form_row(form.idJoueur1) }}</div>
                         </div>
                         <div class="row">
-                            <div class="col s12 l4"><h5>Joueur 2</h5></div>
-                            <div class="col s12 l4">{{ form_row(form.idJoueur2) }}</div>
-                            <div class="col s4"></div>
+                            <div class="col s12 l3"><h5>Joueur 2</h5></div>
+                            <div class="col s12 l9">{{ form_row(form.idJoueur2) }}</div>
                         </div>
                         <div class="row">
-                            <div class="col s12 l4"><h5>Joueur 3</h5></div>
-                            <div class="col s12 l4">{{ form_row(form.idJoueur3) }}</div>
-                            <div class="col s4"></div>
+                            <div class="col s12 l3"><h5>Joueur 3</h5></div>
+                            <div class="col s12 l9">{{ form_row(form.idJoueur3) }}</div>
                         </div>
 
                         {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
@@ -108,23 +107,20 @@
                             {% endif %}
 
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 4</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur4) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 4</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur4) }}</div>
                             </div>
                         {% endif %}
 
                         {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 5</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur5) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 5</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur5) }}</div>
                             </div>
 
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 6</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur6) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 6</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur6) }}</div>
                             </div>
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
@@ -136,21 +132,18 @@
                             {% endif %}
 
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 7</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur7) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 7</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur7) }}</div>
                             </div>
 
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 8</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur8) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 8</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur8) }}</div>
                             </div>
 
                             <div class="row">
-                                <div class="col s12 l4"><h5>Joueur 9</h5></div>
-                                <div class="col s12 l4">{{ form_row(form.idJoueur9) }}</div>
-                                <div class="col s4"></div>
+                                <div class="col s12 l3"><h5>Joueur 9</h5></div>
+                                <div class="col s12 l9">{{ form_row(form.idJoueur9) }}</div>
                             </div>
                         {% endif %}
 

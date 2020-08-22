@@ -3,7 +3,7 @@
         <div class="nav-wrapper">
             <a data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li id="btn_link" class="blue darken-4">
+                <li id="btn_link">
                     <a class="dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
                         <i class="material-icons left">subdirectory_arrow_left</i>Retour à la compétition
                     </a>
@@ -19,10 +19,10 @@
                     <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">tonality</i>La phase</a>
+                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">today</i>Les rencontres</a>
+                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
                 </li>
 
             </ul>
@@ -64,10 +64,10 @@
                 <a class="center-align" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
             </li>
             <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-                <a class="center-align" href="{{ path("back_office.phase") }}"><i class="material-icons left">tonality</i>La phase</a>
+                <a class="center-align" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
             </li>
             <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-                <a class="center-align" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">today</i>Les rencontres</a>
+                <a class="center-align" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
             </li>
 
             <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>

@@ -402,9 +402,9 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return string
      */
-    public function getPlayersChips(): string
+    public function getSelect(): string
     {
-        return "<div class='chip'><img src='" . $this->getAvatar() . "' alt='Avatar'>" . $this->nom. " - " . $this->getClassementOfficiel() . " pts</div>";
+        return $this->nom. " - " . $this->getClassementOfficiel() . " pts";
     }
 
 }

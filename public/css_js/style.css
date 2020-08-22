@@ -38,22 +38,6 @@ html {
     margin-top: 10px;
 }
 
-.nice-select {
-    border-radius: 0;
-    padding-right: 300px;
-    width: 350px;
-}
-
-.nice-select .list {
-    border-radius: 0;
-    height: 250px;
-    overflow-y: auto;
-}
-.nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
-    color: #6495ed;
-    background: none;
-}
-
 .li_in_line, #btn_link {
     border-radius: 5px;
     margin-left: 4px;
@@ -158,11 +142,6 @@ p.lobster {
     margin-top: 100px;
 }
 
-.gestion {
-    border: 1px solid #01579b ;
-    border-radius: 5px;
-}
-
 .tabs {
     margin-top: 40px;
 }
@@ -198,12 +177,8 @@ p.lobster {
     margin-right: 0.6rem;
 }
 
-.datepicker-date-display {
-    background-color: #023a72;
-}
-
-.select-wrapper input.select-dropdown {
-    font-size: 14px;
+.select-dropdown li img {
+    border-radius: 50%;
 }
 
 @media screen and (max-width: 600px) {

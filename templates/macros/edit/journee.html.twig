@@ -7,15 +7,12 @@
 
         {{ form_start(form) }}
             <div class="row">
-                <div class="col s6">
+                <div class="col s12">
                     {{ form_row(form.date) }}
                 </div>
-                <div class="col s6">
-                    <div class="valign-wrapper">
-                        <button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
-                    </div>
-                </div>
             </div>
+
+            <button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}

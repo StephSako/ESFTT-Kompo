@@ -21,12 +21,14 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'empty_data' => null,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     return $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
@@ -39,11 +41,13 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur2', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     return $cr->createQueryBuilder('c')
@@ -57,11 +61,13 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur3', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     return $cr->createQueryBuilder('c')
@@ -75,10 +81,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur4', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -93,10 +101,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur5', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -111,10 +121,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur6', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -129,10 +141,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur7', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -147,10 +161,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur8', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -165,10 +181,12 @@ class RencontreParisHautType extends AbstractType
             ->add('idJoueur9', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {

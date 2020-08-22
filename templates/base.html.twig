@@ -2,14 +2,13 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="icon" href="{{ asset('images/icon.svg') }}">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
         <link rel="stylesheet" href="{{ asset('css_js/materialize-v1.0.0/materialize/css/materialize.min.css') }}">
-        <!--Import JQuery beautiful Select-->
-        <link rel="stylesheet" href="{{ asset('jquery-nice-select-1.1.0/css/nice-select.css') }}">
         <!--Import my own style.css-->
         <link type="text/css" rel="stylesheet" href="{{ asset('css_js/style.css') }}" media="screen,projection" />
         <!--Import Google Font Family-->
@@ -25,8 +24,6 @@
         <script src="{{ asset('css_js/script.js') }}"></script>
         <!--Scripts trigger de Nice-Scroll-->
         <script src="{{ asset('jquery.nicescroll-3.7.6/jquery.nicescroll.js') }}"></script>
-        <!--Scripts trigger de Nice-Select-->
-        <script src="{{ asset('jquery-nice-select-1.1.0/js/jquery.nice-select.min.js') }}"></script>
     </head>
 
     <body> {% block body %}{% endblock %} </body>

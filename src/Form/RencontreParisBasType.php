@@ -21,12 +21,14 @@ class RencontreParisBasType extends AbstractType
             ->add('idJoueur1', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'empty_data' => null,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
@@ -46,11 +48,13 @@ class RencontreParisBasType extends AbstractType
             ->add('idJoueur2', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c')
@@ -71,11 +75,13 @@ class RencontreParisBasType extends AbstractType
             ->add('idJoueur3', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
-                    return $competiteur->getPlayersChips($builder->getData()->getIdEquipe());
+                    return $competiteur->getSelect();
                 },
                 'required'   => false,
                 'label' => false,
-                'attr'=> ['class'=>'browser-default'],
+                'choice_attr' => function ($competiteur) use($builder) {
+                    return ['data-icon' => $competiteur->getAvatar()];
+                },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c')

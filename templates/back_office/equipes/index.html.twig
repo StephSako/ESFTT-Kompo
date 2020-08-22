@@ -17,18 +17,22 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les équipes</h4>
+        </div>
+
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#equipes_departementales" class="active">Les équipes départementales</a></li>
-            <li class="tab"><a href="#equipes_paris">Les équipes de Paris</a></li>
+            <li class="tab"><a href="#equipes_departementales" class="active">Départemental</a></li>
+            <li class="tab"><a href="#equipes_paris">Paris</a></li>
         </ul>
 
-        <div class="card-panel center" id="equipes_departementales">
-            <table class="striped centered">
+        <div class="card-panel" id="equipes_departementales">
+            <table class="striped centered responsive-table">
                 <thead>
                 <tr>
-                    <th><h5>Equipe n°</h5></th>
-                    <th><h5>Division</h5></th>
-                    <th><h5>Poule</h5></th>
+                    <th>Equipe</th>
+                    <th>Division</th>
+                    <th>Poule</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -46,13 +50,13 @@
             </table>
         </div>
 
-        <div class="card-panel center" id="equipes_paris">
-            <table class="striped centered">
+        <div class="card-panel" id="equipes_paris">
+            <table class="striped centered responsive-table">
                 <thead>
                 <tr>
-                    <th><h5>Equipe n°</h5></th>
-                    <th><h5>Division</h5></th>
-                    <th><h5>Poule</h5></th>
+                    <th>Equipe</th>
+                    <th>Division</th>
+                    <th>Poule</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -70,5 +74,7 @@
             </table>
         </div>
     </div>
+
+
 
 {% endblock %}

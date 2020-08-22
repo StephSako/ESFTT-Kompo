@@ -1,10 +1,10 @@
 $(document).ready(function() {
     $("html").niceScroll({
-        cursorcolor:"#012242",
+        cursorcolor:"#023a72",
         cursorwidth:"10px"
     });
 
-    $("select").niceSelect();
+    $('select').formSelect();
 
     $('.sidenav').sidenav({
         closeOnClick: true
