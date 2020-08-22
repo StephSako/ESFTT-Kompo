@@ -2,50 +2,42 @@
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
-            <div class="row valign-wrapper">
-                <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
-                    <div class="input-field">
-                        <i class="material-icons prefix">person</i>
-                        {{ form_row(form.nom) }}
-                    </div>
+            <div class="row">
+                <div class="col {% if type == 'backoffice' %}s12 m4{% else %}s12 m6{% endif %}">
+                    <span><i class="material-icons prefix">person</i>NOM Prénom</span>{{ form_row(form.nom) }}
+                </div>
+                <div class="col {% if type == 'backoffice' %}s12 m4{% else %}s12 m6{% endif %}">
+                    <span><i class="material-icons prefix">account_circle</i>Identifiant</span>{{ form_row(form.username) }}
                 </div>
 
-                <div class="col {% if type == 'backoffice' %}s6{% else %}s6{% endif %}">
-                    <div class="input-field">
-                        <i class="material-icons prefix">account_circle</i>
-                        {{ form_row(form.username) }}
-                    </div>
-                </div>
                 {% if type == 'backoffice' %}
-                    <div class="col s3">
-                        {{ form_row(form.role) }}
+                    <div class="col s12 m4">
+                        <span>{{ form_row(form.role) }}
                     </div>
                 {% endif %}
             </div>
+            <br>
 
-            <div class="row valign-wrapper">
-                <div class="col s6">
-                    <div class="input-field">
-                        <i class="material-icons prefix">payment</i>
-                        {{ form_row(form.licence) }}
-                    </div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <span><i class="material-icons prefix">payment</i>Licence</span>{{ form_row(form.licence) }}
                 </div>
-                <div class="col s6">
-                    <div class="input-field">
-                        <i class="material-icons prefix">trending_up</i>
-                        {{ form_row(form.classementOfficiel) }}
-                    </div>
+                <div class="col s12 m6">
+                    <span><i class="material-icons prefix">trending_up</i>Classement</span>{{ form_row(form.classementOfficiel) }}
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="col s12 m9">
+                    <span><i class="material-icons prefix">face</i>Avatar</span>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
+                </div>
+                <div class="col s12 m3">
+                    <img id="img_competiteur_avatar" class="center-align" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem">
                 </div>
             </div>
 
-        <div class="input-field">
-            <i class="material-icons prefix">portrait</i>
-            {{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
-        </div>
-
-        <img id="img_competiteur_avatar" class="center-align" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem">
-
-        <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
+            <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}
@@ -61,11 +53,11 @@
         {% endif %}
 
             <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s12 m6">
                     <input name="new_password" id="new_password" type="password" class="validate" required>
                     <label for="new_password">Nouveau mot de passe</label>
                 </div>
-                <div class="input-field col s6">
+                <div class="input-field col s12 m6">
                     <input name="new_password_validate" id="new_password_validate" type="password" class="validate" required>
                     <label for="new_password_validate">Ressaisissez le nouveau mot de passe</label>
                 </div>

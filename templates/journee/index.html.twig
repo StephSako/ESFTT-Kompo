@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <table class="striped card-panel dispos">
+            <table class="card-panel dispos">
                 <thead>
                     <tr>
                         <th class="center"><h5>Brûlages</h5></th>
@@ -90,7 +90,8 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.idJournee }} - {{ journee.type }} - {{ journee.date|format_datetime('long', 'none', locale='fr') }}</h4>
+                <h4>Journée {{ journee.idJournee }} - {{ journee.type }}</h4>
+                <h5>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</h5>
             </div>
 
             {% if app.user %}
@@ -153,7 +154,7 @@
                         </h5>
                         <h5 class="col">{{ compo.adversaire }}</h5>
                     </div>
-                    <table class="striped centered responsive-table">
+                    <table class="striped responsive-table">
                         <tbody>
                             {{ composition.tr("1", compo.idJoueur1) }}
                             {{ composition.tr("2", compo.idJoueur2) }}
@@ -214,7 +215,7 @@
                 </div>
             </div>
 
-            <table class="striped card-panel dispos">
+            <table class="card-panel dispos">
                 <thead>
                 <tr>
                     <th class="center"><h5>Brûlages</h5></th>
@@ -281,7 +282,7 @@
                 </div>
             </div>
 
-            <table class="striped card-panel dispos">
+            <table class="card-panel dispos">
                 <thead>
                     <tr>
                         <th>

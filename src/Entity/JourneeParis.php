@@ -27,7 +27,7 @@ class JourneeParis
     /**
      * @var String
      */
-    private $type = 'Champ. de Paris';
+    private $type = 'Paris';
 
     /**
      * @return String

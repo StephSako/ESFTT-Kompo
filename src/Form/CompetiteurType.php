@@ -15,14 +15,11 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class,[
-                'label' => 'Nom (NOM Prénom)'])
-            ->add('classementOfficiel', NumberType::class)
-            ->add('avatar', UrlType::class,[
-                'label' => 'Image de profil'])
-            ->add('username', TextType::class,[
-                'label' => 'Identifiant'])
-            ->add('licence', NumberType::class);
+            ->add('nom', TextType::class, ['label' => ' '])
+            ->add('classementOfficiel', NumberType::class, ['label' => ' '])
+            ->add('avatar', UrlType::class, ['label' => ' '])
+            ->add('username', TextType::class, ['label' => ' '])
+            ->add('licence', NumberType::class, ['label' => ' ']);
     }
 
     public function configureOptions(OptionsResolver $resolver)

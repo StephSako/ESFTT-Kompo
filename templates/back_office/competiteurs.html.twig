@@ -24,15 +24,15 @@
         {{ edit_account.edit_account('backoffice', 'Ajouter un compétiteur', form, 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png', 'Créer') }}
 
         <div class="card-panel center">
-            <table class="striped centered">
+            <table class="striped centered responsive-table table_competiteur_backoffice">
                 <thead>
                 <tr>
                     <th></th>
-                    <th><h5>Image de profil</h5></th>
-                    <th><h5>Nom</h5></th>
-                    <th><h5>Identifiant</h5></th>
-                    <th><h5>Licence</h5></th>
-                    <th><h5>Classement officiel</h5></th>
+                    <th class="avatar">Avatar</th>
+                    <th>Nom</th>
+                    <th>Identifiant</th>
+                    <th>Licence</th>
+                    <th>Classement</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -41,7 +41,7 @@
                 {% for competiteur in competiteurs %}
                     <tr>
                         <td>{% if competiteur.role %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}</td>
-                        <td><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
+                        <td class="avatar"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
                         <td>{{ competiteur.licence }}</td>

@@ -1,7 +1,6 @@
 html {
-    background: linear-gradient(135deg, rgb(17, 116, 184) 1%, rgba(0,19,23,1) 100%);
     font-family: 'Lato', sans-serif;
-    background-attachment: fixed;
+    background: linear-gradient(135deg, rgb(17, 116, 184) 1%, rgba(0, 19, 23, 1) 100%) fixed;
     background-size: cover;
 }
 
@@ -33,12 +32,16 @@ html {
 
 .dispos {
     border-radius: 10px;
-    background-color: rgb(255, 255, 255);
+    background-color: #ffffff;
     float: right;
     margin-top: 10px;
 }
 
-.li_in_line, #btn_link {
+#btn_link {
+    border-radius: 5px;
+}
+
+.li_in_line {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;
@@ -64,7 +67,7 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     background-color: #1565c0;
 }
 
-.nav-extended, .title_journee {
+.nav-extended, .sidenav, .title_journee {
     background: #012242;
 }
 
@@ -75,20 +78,16 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
 }
 
 .title_journee {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-top: 6px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 6px 6px 10px;
 }
 
-td, li, p, .btn, label, .nav-extended li a, nav ul a, .card-panel .bottom_0, .tab a {
+td, li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
     font-size: 100%;
     padding-left: 10px;
     padding-right: 10px;
 }
 
-.nav-extended li a, .poule, .card-panel>h5 {
+.nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5 {
     font-family: 'Lobster Two', cursive;
 }
 
@@ -181,8 +180,35 @@ p.lobster {
     border-radius: 50%;
 }
 
+.dot {
+    height: 11px;
+    width: 11px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.dot1 {
+    background-color: #2db009;
+
+}
+
+.dot2 {
+    background-color: #ff0000;
+}
+
+.dot3 {
+    background-color: #918c8c;
+}
+
 @media screen and (max-width: 600px) {
     .brulages_large {
         display:none;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .table_competiteur_backoffice td:nth-child(2), .table_competiteur_backoffice th:nth-child(2){
+        display: none;
     }
 }

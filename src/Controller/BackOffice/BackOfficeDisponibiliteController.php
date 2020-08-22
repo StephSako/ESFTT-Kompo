@@ -98,7 +98,7 @@ class BackOfficeDisponibiliteController extends AbstractController
 
         $this->em->persist($dispo);
         $this->em->flush();
-        $this->addFlash('success', 'Disponiblité créée avec succès !');
+        $this->addFlash('success', 'Disponibilité créée avec succès !');
 
         return $this->redirectToRoute('back_office.disponibilites');
     }
@@ -122,7 +122,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         }
 
         $this->em->flush();
-        $this->addFlash('success', 'Disponiblité modifiée avec succès !');
+        $this->addFlash('success', 'Disponibilité modifiée avec succès !');
 
         return $this->redirectToRoute('back_office.disponibilites');
     }

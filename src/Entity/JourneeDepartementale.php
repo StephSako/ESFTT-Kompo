@@ -27,7 +27,7 @@ class JourneeDepartementale
     /**
      * @var String
      */
-    private $type = 'Départementale';
+    private $type = 'Départemental';
 
     /**
      * @return String
