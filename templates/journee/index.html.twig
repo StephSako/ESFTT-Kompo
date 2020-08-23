@@ -80,7 +80,7 @@
             </table>
         </div>
 
-        <div class="col s12 l7">
+        <div class="col s12 m7">
             {% for message in app.flashes('success') %}
                 {{ flash.success(message) }}
             {% endfor %}
@@ -140,19 +140,25 @@
             {% for compo in compos %}
                 <div class="card-panel center">
                     <div class="row header_compo">
-                        <div class="col">
+
+                        <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
+
+                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m4{% endif %}">
                             <h5>
                                 <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                             </h5>
                             <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
                         </div>
-                        {% if journee.linkType == 'departementale' %}<h5 class="col">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
-                        <h5 class="col">
+
+                        {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+
+                        <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m4{% endif %}">
                             {% if compo.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
                             {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                             {% endif %}
                         </h5>
-                        <h5 class="col">{{ compo.adversaire }}</h5>
+
+                        <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
                     </div>
                     <table class="striped responsive-table">
                         <tbody>
@@ -273,7 +279,7 @@
             </table>
         </div>
 
-        <div class="col s12 l2">
+        <div class="col s12 m2">
 
             <div class="card-panel bottom_0">
                 <div class="row bottom_0">
@@ -326,10 +332,14 @@
             if ($(window).width() <= 600){
                 $('.main').addClass("container");
                 $('.brulage_mobile').removeAttr('hidden');
+                $("[id='nom_ad_pc']").attr("hidden", true);
+                $("[id='nom_ad_mobile']").removeAttr('hidden');
             }
             else{
                 $('.main').removeClass("container");
                 $('.brulage_mobile').attr("hidden", true);
+                $("[id='nom_ad_mobile']").attr("hidden", true);
+                $("[id='#nom_ad_pc']").removeAttr('hidden');
             }
         });
     </script>

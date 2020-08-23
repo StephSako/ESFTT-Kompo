@@ -14,12 +14,12 @@
 
                 {% for journee in journees %}
                     <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
-                        <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
+                        <a class="waves-light waves-effect white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
                     </li>
                 {% endfor %}
 
                 <li id="btn_link">
-                    <a class="dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
+                    <a class="waves-light waves-effect dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
                         <i class="material-icons left green-text">swap_horiz</i>
                         {% if type == 'paris' %}
                             Champ. départemental
@@ -32,21 +32,24 @@
             </ul>
 
             <ul class="right hide-on-med-and-down">
-                <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
+                <li class="li_in_line">
+                    <a class="waves-light waves-effect white-text" href="https://www.esftt.com/forum">Forums</a>
+                </li>
+
                 {% if app.user %}
                     <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                        <a class="white-text" href="{{ path('account') }}">Mon compte</a>
+                        <a class="waves-light waves-effect white-text" href="{{ path('account') }}">Mon compte</a>
                     </li>
 
                     {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
                         <li class="li_in_line {% if app.request.getPathInfo == '/back/office' %}active blue darken-3{% endif %}">
-                            <a class="white-text" href="{{ path('back_office') }}">Gestion</a>
+                            <a class="waves-light waves-effect white-text" href="{{ path('back_office') }}">Gestion</a>
                         </li>
                     {% endif %}
 
-                    <li class="li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+                    <li class="li_in_line"><a class="waves-light waves-effect white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
                 {% else %}
-                    <li class="li_in_line"><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
+                    <li class="li_in_line"><a class="waves-light waves-effect white-text" href="{{ path('login') }}">Se connecter</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -63,14 +66,16 @@
     {% endif %}
     {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
-    {% for journee in journees %}
-        <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">J{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
-        </li>
-    {% endfor %}
+    <div class="first_sidenav">
+        {% for journee in journees %}
+            <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
+                <a class="white-text waves-light waves-effect center-align" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">Journée {{ journee.idJournee }} - {{ journee.date|date('d/m/Y') }}</a>
+            </li>
+        {% endfor %}
+    </div>
 
     <li id="btn_link">
-        <a class="white-text dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
+        <a class="waves-light waves-effect white-text dropdown-trigger" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
             <i class="material-icons left green-text">swap_horiz</i>
             {% if type == 'paris' %}
                 Champ. départemental
@@ -79,21 +84,5 @@
             {% endif %}
         </a>
     </li>
-    <li><div class="divider"></div></li>
-    <li class="li_in_line"><a class="white-text center-align" href="https://www.esftt.com/forum"><i class="white-text material-icons left">mode_comment</i>Forums</a></li>
-    {% if app.user %}
-        <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('account') }}"><i class="white-text material-icons left">account_circle</i>Mon compte</a>
-        </li>
-
-        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-            <li class="li_in_line {% if app.request.getPathInfo == '/back/office' %}active blue darken-3{% endif %}">
-                <a class="white-text center-align" href="{{ path('back_office') }}"><i class="white-text material-icons left">format_list_bulleted</i>Gestion</a>
-            </li>
-        {% endif %}
-
-        <li class="li_in_line"><a class="white-text center-align" href="{{ path('logout') }}"><i class="white-text material-icons left">power_settings_new</i>Se déconnecter</a></li>
-    {% else %}
-        <li class="li_in_line"><a class="white-text center-align" href="{{ path('login') }}"><i class="white-text material-icons left">input</i>Se connecter</a></li>
-    {% endif %}
+    {% include('macros/navbar_common.html.twig') %}
 </ul>

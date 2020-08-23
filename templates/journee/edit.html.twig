@@ -7,6 +7,12 @@
 
     {% include("components/navbar.html.twig") %}
 
+    <style>
+        #nom_ad_mobile {
+            margin-top: 10px;
+        }
+    </style>
+
     <div class="row main">
         <div class="col l3 brulages_large">
             <table style="margin-top: 30px;" class="centered card-panel dispos brulage_edit">
@@ -61,24 +67,29 @@
             </table>
         </div>
 
-        <div class="col s12 l6">
+        <div class="col s12 m7">
             <div class="center-align card-panel">
                 <h4>Composition d'équipe{% if compo.idJournee.linkType == 'departementale' %} - Équipe {{ compo.idEquipe.idEquipe }}{% endif %}</h4>
 
                 <div class="row header_compo">
-                    <div class="col s3">
+                    <h5 id="nom_ad_mobile" class="col s12 m5"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
+
+                    <div class="col s4 m2">
                         <h5>
                             <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                         </h5>
-                        <p class="lobster">Poule {{ compo.idEquipe.poule }}</p>
+                        <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
                     </div>
-                    <h5 class="col s2">{{ compo.idJournee.date|date('d/m') }}</h5>
-                    <h5 class="col {% if compo.idJournee.linkType == 'departementale' %}s1{% else %}s2{% endif %}">
+
+                    <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
+
+                    <h5 class="col s4 m2">
                         {% if compo.domicile %} <i style="font-size: 2.1rem;" class="material-icons">home</i>
                         {% else %} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                         {% endif %}
                     </h5>
-                    <h5 class="col s5">{{ compo.adversaire }}</h5>
+
+                    <h5 id="nom_ad_pc" class="col s12 m5"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
                 </div>
 
                     {{ form_start(form)}}
@@ -199,7 +210,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col s12 l3">
+        <div class="col s12 m2">
             <table style="margin-top: 30px;" class="centered card-panel dispos">
                 <thead>
                 <tr>
@@ -231,10 +242,14 @@
             if ($(window).width() <= 600){
                 $('.main').addClass("container");
                 $('.brulage_mobile').removeAttr('hidden');
+                $("[id='nom_ad_pc']").attr("hidden", true);
+                $("[id='nom_ad_mobile']").removeAttr('hidden');
             }
             else{
                 $('.main').removeClass("container");
                 $('.brulage_mobile').attr("hidden", true);
+                $("[id='nom_ad_mobile']").attr("hidden", true);
+                $("[id='#nom_ad_pc']").removeAttr('hidden');
             }
         });
     </script>

@@ -41,10 +41,17 @@ html {
     border-radius: 5px;
 }
 
+#nom_ad_mobile {
+    margin-bottom: 8px;
+    margin-top: 5px;
+}
+
 .li_in_line {
     border-radius: 5px;
     margin-left: 4px;
     margin-right: 4px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
@@ -166,6 +173,7 @@ p.lobster {
 .poule {
     font-size: 1.3rem;
     margin-top: 3%;
+    margin-bottom: 5px;
 }
 
 .nav-wrapper li:first-child {
@@ -199,6 +207,10 @@ p.lobster {
 
 .dot3 {
     background-color: #918c8c;
+}
+
+.first_sidenav {
+    margin-top: 5px;
 }
 
 @media screen and (max-width: 600px) {

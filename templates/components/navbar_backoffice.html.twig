@@ -4,44 +4,47 @@
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="left hide-on-med-and-down">
                 <li class="li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Les disponibilités</a>
+                    <a class="waves-light waves-effect white-text" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Les disponibilités</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Les compétiteurs</a>
+                    <a class="waves-light waves-effect white-text" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Les compétiteurs</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
+                    <a class="waves-light waves-effect white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
+                    <a class="waves-light waves-effect white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
                 </li>
                 <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
+                    <a class="waves-light waves-effect white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
                 </li>
 
                 <li id="btn_link">
-                    <a class="dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
+                    <a class="waves-light waves-effect dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
                         <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour à la compétition
                     </a>
                 </li>
             </ul>
 
             <ul class="right hide-on-med-and-down">
-                <li class="li_in_line"><a class="white-text" href="https://www.esftt.com/forum">Forums</a></li>
+                <li class="li_in_line">
+                    <a class="waves-light waves-effect white-text" href="https://www.esftt.com/forum">Forums</a>
+                </li>
+
                 {% if app.user %}
                     <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                        <a class="white-text" href="{{ path('account') }}">Mon compte</a>
+                        <a class="waves-light waves-effect white-text" href="{{ path('account') }}">Mon compte</a>
                     </li>
 
                     {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
                         <li class="li_in_line gestion {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
-                            <a class="white-text" href="{{ path('back_office') }}">Gestion</a>
+                            <a class="waves-light waves-effect white-text" href="{{ path('back_office') }}">Gestion</a>
                         </li>
                     {% endif %}
 
-                    <li class="li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+                    <li class="li_in_line"><a class="waves-light waves-effect white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
                 {% else %}
-                    <li class="li_in_line"><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
+                    <li class="li_in_line"><a class="waves-light waves-effect white-text" href="{{ path('login') }}">Se connecter</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -49,41 +52,25 @@
 </div>
 
 <ul id="slide-out" class="sidenav">
-    <li class="i_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.disponibilites") }}"><i class="white-text material-icons left">textsms</i>Les disponibilités</a>
+    <li class="first_sidenav i_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
+        <a class="waves-light waves-effect white-text center-align" href="{{ path("back_office.disponibilites") }}"><i class="white-text material-icons left">textsms</i>Les disponibilités</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.competiteurs") }}"><i class="white-text material-icons left">account_box</i>Les compétiteurs</a>
+        <a class="waves-light waves-effect white-text center-align" href="{{ path("back_office.competiteurs") }}"><i class="white-text material-icons left">account_box</i>Les compétiteurs</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.equipes") }}"><i class="white-text material-icons left">format_list_numbered</i>Les équipes</a>
+        <a class="waves-light waves-effect white-text center-align" href="{{ path("back_office.equipes") }}"><i class="white-text material-icons left">format_list_numbered</i>Les équipes</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.phase") }}"><i class="white-text material-icons left">today</i>La phase</a>
+        <a class="waves-light waves-effect white-text center-align" href="{{ path("back_office.phase") }}"><i class="white-text material-icons left">today</i>La phase</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.rencontres") }}"><i class="white-text material-icons left">tonality</i>Les rencontres</a>
+        <a class="waves-light waves-effect white-text center-align" href="{{ path("back_office.rencontres") }}"><i class="white-text material-icons left">tonality</i>Les rencontres</a>
     </li>
     <li id="btn_link">
-        <a class="white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
+        <a class="waves-light waves-effect white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
             <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour à la compétition
         </a>
     </li>
-    <li><div class="divider"></div></li>
-    <li class="li_in_line"><a class="white-text center-align" href="https://www.esftt.com/forum"><i class="white-text material-icons left">mode_comment</i>Forums</a></li>
-    {% if app.user %}
-        <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('account') }}"><i class="white-text material-icons left">account_circle</i>Mon compte</a>
-        </li>
-
-        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-            <li class="li_in_line gestion {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
-                <a class="white-text center-align" href="{{ path('back_office') }}"><i class="white-text material-icons left">format_list_bulleted</i>Gestion</a>
-            </li>
-        {% endif %}
-
-        <li class="li_in_line"><a class="white-text center-align" href="{{ path('logout') }}"><i class="white-text material-icons left">power_settings_new</i>Se déconnecter</a></li>
-    {% else %}
-        <li class="li_in_line"><a class="white-text center-align" href="{{ path('login') }}"><i class="white-text material-icons left">input</i>Se connecter</a></li>
-    {% endif %}
+    {% include('macros/navbar_common.html.twig') %}
 </ul>
