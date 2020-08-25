@@ -37,21 +37,9 @@ html {
     margin-top: 10px;
 }
 
-#btn_link {
-    border-radius: 5px;
-}
-
 #nom_ad_mobile {
     margin-bottom: 8px;
     margin-top: 5px;
-}
-
-.li_in_line {
-    border-radius: 5px;
-    margin-left: 4px;
-    margin-right: 4px;
-    padding-left: 0;
-    padding-right: 0;
 }
 
 thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
@@ -68,10 +56,6 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     padding-bottom: 0;
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-.nav-wrapper li:hover {
-    background-color: #1565c0;
 }
 
 .nav-extended, .sidenav, .title_journee {
@@ -127,8 +111,20 @@ i {
     padding: 8px 10px;
 }
 
+.li_in_line {
+    border-radius: 5px;
+    margin-left: 4px;
+    margin-right: 4px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .li_in_line a, thead th, nav ul a {
     font-size: 18px;
+}
+
+.li_in_line:hover {
+    background-color: #1565c0;
 }
 
 .header_compo, .form_div_list div:last-child, .brulage_edit, .bottom_0 {

@@ -1,0 +1,21 @@
+<ul class="right hide-on-med-and-down">
+    <li class="waves-light waves-effect li_in_line">
+        <a class="white-text" href="https://www.esftt.com/forum">Forums</a>
+    </li>
+
+    {% if app.user %}
+        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path('account') }}">Mon compte</a>
+        </li>
+
+        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+            <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
+                <a class="white-text" href="{{ path('back_office') }}">Gestion</a>
+            </li>
+        {% endif %}
+
+        <li class="waves-light waves-effect li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+    {% else %}
+        <li class="waves-light waves-effect li_in_line"><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
+    {% endif %}
+</ul>
