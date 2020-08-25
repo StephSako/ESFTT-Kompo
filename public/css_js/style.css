@@ -38,7 +38,7 @@ html {
 }
 
 #nom_ad_mobile {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     margin-top: 5px;
 }
 
@@ -113,10 +113,17 @@ i {
 
 .li_in_line {
     border-radius: 5px;
-    margin-left: 4px;
-    margin-right: 4px;
     padding-left: 0;
     padding-right: 0;
+}
+
+.nav-wrapper .li_in_line {
+    margin-left: 4px;
+    margin-right: 4px;
+
+}
+.sidenav .li_in_line {
+    margin: 4px;
 }
 
 .li_in_line a, thead th, nav ul a {

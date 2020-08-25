@@ -141,9 +141,9 @@
                 <div class="card-panel center">
                     <div class="row header_compo">
 
-                        <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
+                        <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
 
-                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m4{% endif %}">
+                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
                             <h5>
                                 <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
                             </h5>
@@ -152,13 +152,13 @@
 
                         {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
 
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m4{% endif %}">
-                            {% if compo.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                            {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                        <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
+                            {% if compo.domicile%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">home</i>
+                            {% else%} <i style="font-size: 2.1rem;" class="orange-text darken-4 material-icons">directions_car</i>
                             {% endif %}
                         </h5>
 
-                        <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="material-icons">location_on</i>{{ compo.adversaire }}</h5>
+                        <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
                     </div>
                     <table class="striped responsive-table">
                         <tbody>
@@ -294,6 +294,7 @@
                         <th>
                             <h5 class="center">Les dispos</h5>
                         </th>
+                        <th></th>
                     </tr>
                 </thead>
 
