@@ -14,7 +14,8 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('adversaire', TextType::class)
+            ->add('adversaire', TextType::class,[
+                'label' => ' '])
             ->add('domicile', CheckboxType::class,[
                 'label' => 'Rencontre à domicile',
                 'required' => false]);

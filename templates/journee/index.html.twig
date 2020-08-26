@@ -107,12 +107,12 @@
 
                     {% if journee.idJournee in dispoJournee|keys %}
                         {% if dispoJournee[journee.idJournee] %}
-                            <p><i>Vous vous êtes inscrit comme étant <span class="green-text lighten-3"><b>disponible</b></span></i></p>
+                            <p><i>Vous vous êtes inscrit comme étant </i><span class="green-text lighten-3"><b>disponible</b></span></p>
                             <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">
                                 <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                             </a>
                         {% else %}
-                            <p><i>Vous vous êtes inscrit comme étant <span class="red-text lighten-3"><b>indisponible</b></span></i></p>
+                            <p><i>Vous vous êtes inscrit comme étant </i><span class="red-text lighten-3"><b>indisponible</b></span></p>
                             <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1}) }}">
                                 <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                             </a>
@@ -130,9 +130,9 @@
                 </div>
             {% else %}
                 <div class="card-panel green lighten-4 center">
-                    <p class="lobster">Vous devez vous connecter pour indiquer votre disponibilité pour cette journée.</p>
+                    <p class="lobster">Vous devez vous connecter pour indiquer vos disponibilités</p>
                     <a href="{{ path('login') }}">
-                        <button class="btn btn_form waves-effect waves-light" type="submit" name="action">Se connecter</button>
+                        <button class="btn btn_form waves-effect waves-light blue lighten-1" type="submit" name="action">Se connecter</button>
                     </a>
                 </div>
             {% endif %}

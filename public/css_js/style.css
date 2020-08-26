@@ -82,6 +82,10 @@ td, li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab
     font-family: 'Lobster Two', cursive;
 }
 
+.sidenav li a {
+    font-size: 17px;
+}
+
 .card-panel.bottom_0 {
     padding-top: 10px;
     padding-bottom: 6px;
@@ -214,6 +218,10 @@ p.lobster {
 
 .first_sidenav {
     margin-top: 5px;
+}
+
+.titre_edit_journée {
+    margin-bottom: 40px;
 }
 
 @media screen and (max-width: 600px) {
