@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as flash %}
+{% import 'macros/composition.html.twig' as composition %}
+
+{% block title %}Erreur serveur{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="card-panel center-align">
+            <i class="red-text darken-2 large material-icons">sentiment_dissatisfied</i>
+            <h4>Oups ... On dirait qu'un problème est survenu de notre côté ...</h4>
+
+            <a href="{{ path('index') }}">
+                <button class="btn waves-effect blue lighten-2 waves-light center">Réessayer</button>
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
