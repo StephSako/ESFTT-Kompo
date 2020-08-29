@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Competiteur;
 use App\Entity\DisponibiliteDepartementale;
 use App\Entity\DisponibiliteParis;
 use App\Repository\DisponibiliteDepartementaleRepository;
@@ -19,27 +20,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DisponibiliteController extends AbstractController
 {
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var JourneeParisRepository
-     */
-    private $journeeParisRepository;
-    /**
-     * @var JourneeDepartementaleRepository
-     */
-    private $journeeDepartementaleRepository;
-    /**
-     * @var DisponibiliteDepartementaleRepository
-     */
-    private $disponibiliteDepartementaleRepository;
-    /**
-     * @var DisponibiliteParisRepository
-     */
-    private $disponibiliteParisRepository;
+    private EntityManagerInterface $em;
+    private JourneeParisRepository $journeeParisRepository;
+    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
+    private DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository;
+    private DisponibiliteParisRepository $disponibiliteParisRepository;
 
     /**
      * @param EntityManagerInterface $em
@@ -70,17 +55,29 @@ class DisponibiliteController extends AbstractController
      */
     public function new($journee, $type, $dispo):Response
     {
-        if ($type == 'departementale'){
-            $journee = $this->journeeDepartementaleRepository->find($journee);
-            $dispo = new DisponibiliteDepartementale($this->getUser(), $journee, $dispo);
-        }
-        else if ($type == 'paris'){
-            $journee = $this->journeeParisRepository->find($journee);
-            $dispo = new DisponibiliteParis($this->getUser(), $journee, $dispo);
-        }
+        $competiteur = $this->getUser();
 
-        $this->em->persist($dispo);
-        $this->em->flush();
+        if ($type) {
+            if ($type == 'departementale') {
+                $journee = $this->journeeDepartementaleRepository->find($journee);
+                if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
+                    $disponibilite = new DisponibiliteDepartementale($competiteur, $this->journeeDepartementaleRepository->find($journee), $dispo);
+
+                    $this->em->persist($disponibilite);
+                    $this->em->flush();
+                    $this->addFlash('success', 'Disponibilité signalée avec succès !');
+                } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
+            } else if ($type == 'paris') {
+                $journee = $this->journeeParisRepository->find($journee);
+                if (sizeof($this->disponibiliteParisRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
+                    $disponibilite = new DisponibiliteParis($competiteur, $this->journeeParisRepository->find($journee), $dispo);
+
+                    $this->em->persist($disponibilite);
+                    $this->em->flush();
+                    $this->addFlash('success', 'Disponibilité signalée avec succès !');
+                } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
+            } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
+        } else $this->addFlash('fail', 'Compétition non renseignée !');
 
         return $this->redirectToRoute('journee.show',
             array(
@@ -100,16 +97,21 @@ class DisponibiliteController extends AbstractController
      */
     public function update($type, $disposJoueur, bool $dispo, $journee) : Response
     {
-        if ($type == 'departementale'){
-            $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
-            $disposJoueur->setDisponibiliteDepartementale($dispo);
-        }
-        else if ($type == 'paris'){
-            $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
-            $disposJoueur->setDisponibiliteParis($dispo);
-        }
+        if ($type) {
+            if ($type == 'departementale'){
+                $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
+                $disposJoueur->setDisponibiliteDepartementale($dispo);
+                $this->em->flush();
+                $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+            }
+            else if ($type == 'paris'){
+                $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
+                $disposJoueur->setDisponibiliteParis($dispo);
+                $this->em->flush();
+                $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+            } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
+        } else $this->addFlash('fail', 'Compétition non renseignée !');
 
-        $this->em->flush();
 
         return $this->redirectToRoute('journee.show',
             array(

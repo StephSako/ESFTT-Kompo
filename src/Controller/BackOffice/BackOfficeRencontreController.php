@@ -50,8 +50,8 @@ class BackOfficeRencontreController extends AbstractController
     public function indexRencontre()
     {
         return $this->render('back_office/rencontre/index.html.twig', [
-            'rencontreDepartementales' => $this->rencontreDepartementaleRepository->findAll(),
-            'rencontreParis' => $this->rencontreParisRepository->findAll()
+            'rencontreDepartementales' => $this->rencontreDepartementaleRepository->findBy([], ['idEquipe' => 'ASC']),
+            'rencontreParis' => $this->rencontreParisRepository->findBy([], ['idEquipe' => 'ASC'])
         ]);
     }
 

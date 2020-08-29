@@ -224,6 +224,14 @@ p.lobster {
     margin-bottom: 40px;
 }
 
+.page-footer {
+    background-color: #012242;
+}
+
+.brand-logo-span {
+    margin-left: 10px;
+}
+
 @media screen and (max-width: 600px) {
     .brulages_large {
         display:none;
