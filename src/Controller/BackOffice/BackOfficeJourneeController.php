@@ -15,18 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeJourneeController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var JourneeDepartementaleRepository
-     */
-    private $journeeDepartementaleRepository;
-    /**
-     * @var JourneeParisRepository
-     */
-    private $journeeParisRepository;
+    private EntityManagerInterface $em;
+    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
+    private JourneeParisRepository $journeeParisRepository;
 
     /**
      * BackOfficeController constructor.

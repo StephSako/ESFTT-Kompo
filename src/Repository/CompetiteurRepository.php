@@ -137,7 +137,7 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @return int|mixed|string
      * @throws DBALException
      */
-    public function findAllDispos($type)
+    public function findAllDispos(string $type)
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT avatar, competiteur.id_competiteur, competiteur.nom, journee_" . $type . ".id_journee, journee_" . $type . ".date,"
@@ -145,6 +145,35 @@ class CompetiteurRepository extends ServiceEntityRepository
             .   " (SELECT id_disponibilite FROM disponibilite_" . $type . " WHERE competiteur.id_competiteur=disponibilite_" . $type . ".id_competiteur AND disponibilite_" . $type . ".id_journee=journee_" . $type . ".id_journee) AS id_disponibilite"
             .   " FROM competiteur, journee_" . $type . ""
             .   " ORDER BY competiteur.nom, journee_" . $type . ".id_journee";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Récapitulatif de toutes les disponibilités
+     * @param string $type
+     * @return mixed[]
+     * @throws DBALException
+     */
+    public function findAllDisposRecapitulatif(string $type){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT avatar, competiteur.nom,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 1) AS j1,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 2) AS j2,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 3) AS j3,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 4) AS j4,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 5) AS j5,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 6) AS j6,"
+            .   " (SELECT disponibilite FROM disponibilite_" . $type . ""
+            .   " WHERE competiteur.id_competiteur = disponibilite_" . $type . ".id_competiteur AND id_journee = 7) AS j7"
+            .   " FROM competiteur ORDER BY competiteur.nom";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

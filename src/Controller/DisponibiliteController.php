@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Competiteur;
 use App\Entity\DisponibiliteDepartementale;
 use App\Entity\DisponibiliteParis;
 use App\Repository\DisponibiliteDepartementaleRepository;

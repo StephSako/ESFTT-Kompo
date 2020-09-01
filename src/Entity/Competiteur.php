@@ -406,5 +406,4 @@ class Competiteur implements UserInterface, Serializable
     {
         return $this->nom. " - " . $this->getClassementOfficiel() . " pts";
     }
-
 }

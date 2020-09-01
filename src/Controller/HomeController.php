@@ -15,10 +15,15 @@ use App\Repository\RencontreParisRepository;
 use DateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use FFTTApi\Exception\InvalidURIParametersException;
+use FFTTApi\Exception\JoueurNotFound;
+use FFTTApi\Exception\NoFFTTResponseException;
+use FFTTApi\Exception\URIPartNotValidException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use FFTTApi\FFTTApi;
 
 /**
  * Class Rencontre_1Controller
@@ -26,38 +31,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class HomeController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var CompetiteurRepository
-     */
-    private $competiteurRepository;
-    /**
-     * @var DisponibiliteDepartementaleRepository
-     */
-    private $disponibiliteDepartementaleRepository;
-    /**
-     * @var DisponibiliteParisRepository
-     */
-    private $disponibiliteParisRepository;
-    /**
-     * @var JourneeDepartementaleRepository
-     */
-    private $journeeDepartementaleRepository;
-    /**
-     * @var JourneeParisRepository
-     */
-    private $journeeParisRepository;
-    /**
-     * @var RencontreDepartementaleRepository
-     */
-    private $rencontreDepartementaleRepository;
-    /**
-     * @var RencontreParisRepository
-     */
-    private $rencontreParisRepository;
+    private EntityManagerInterface $em;
+    private CompetiteurRepository $competiteurRepository;
+    private DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository;
+    private DisponibiliteParisRepository $disponibiliteParisRepository;
+    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
+    private JourneeParisRepository $journeeParisRepository;
+    private RencontreDepartementaleRepository $rencontreDepartementaleRepository;
+    private RencontreParisRepository $rencontreParisRepository;
 
     /**
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
@@ -86,6 +67,22 @@ class HomeController extends AbstractController
         $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->journeeParisRepository = $journeeParisRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
+    }
+
+    /**
+     * @Route("/test_api", name="test_api")
+     */
+    public function testApiFFTTAction(){
+        $api = new FFTTApi("SW405", "d7ZG56dQKf");
+        try {
+            var_dump($api->getClassementJoueurByLicence('9529825'));
+        } catch (InvalidURIParametersException $e) {var_dump($e->getMessage());
+        } catch (NoFFTTResponseException $e) {var_dump($e->getMessage());
+        } catch (URIPartNotValidException $e) {var_dump($e->getMessage());
+        } catch (JoueurNotFound $e) {var_dump($e->getMessage());
+        }
+
+        return new Response('');
     }
 
     /**
@@ -147,7 +144,9 @@ class HomeController extends AbstractController
             'dispos' => $joueursDeclares,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
-            'competiteurs' => $competiteurs
+            'competiteurs' => $competiteurs,
+            'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
+            'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
         ]);
     }
 
@@ -158,7 +157,7 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function edit($type, $compo, Request $request) : Response
+    public function edit(string $type, $compo, Request $request) : Response
     {
         $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
 

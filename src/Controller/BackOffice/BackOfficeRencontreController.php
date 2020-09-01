@@ -15,18 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeRencontreController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var RencontreDepartementaleRepository
-     */
-    private $rencontreDepartementaleRepository;
-    /**
-     * @var RencontreParisRepository
-     */
-    private $rencontreParisRepository;
+    private EntityManagerInterface $em;
+    private RencontreDepartementaleRepository $rencontreDepartementaleRepository;
+    private RencontreParisRepository $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.

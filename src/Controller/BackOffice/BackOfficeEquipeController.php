@@ -14,18 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeEquipeController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var EquipeDepartementaleRepository
-     */
-    private $equipeDepartementaleRepository;
-    /**
-     * @var EquipeParisRepository
-     */
-    private $equipeParisRepository;
+    private EntityManagerInterface $em;
+    private EquipeDepartementaleRepository $equipeDepartementaleRepository;
+    private EquipeParisRepository $equipeParisRepository;
 
     /**
      * BackOfficeController constructor.

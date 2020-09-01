@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
-{% import 'macros/flash.html.twig' as flash %}
-{% import 'macros/composition.html.twig' as composition %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/composition.html.twig' as _composition %}
+{% import 'macros/actualite.html.twig' as _actualite %}
+{% import 'macros/brulages.html.twig' as _brulage %}
+{% import 'macros/disponibilites.html.twig' as _disponibilites %}
 
 {% block title %}Journee {{ journee.idJournee}} - {{ journee.type }}{% endblock %}
 
@@ -10,87 +13,20 @@
 
     <div class="row main">
         <div class="col l3 brulages_large">
-            <div class="card-panel bottom_0">
-                <div class="row bottom_0">
-                    <div class="col s2"><i class="red-text lighten-1 material-icons">highlight_off</i></div>
-                    <div class="col s10">Brûlé dans l'équipe</div>
-                </div>
-
-                <div class="row bottom_0">
-                    <div class="col s2"><i class="orange-text lighten-1 material-icons">error_outline</i></div>
-                    <div class="col s10">Futur brûlé en équipes inférieures</div>
-                </div>
-            </div>
-
-            <table class="card-panel dispos">
-                <thead>
-                    <tr>
-                        <th class="center"><h5>Brûlages</h5></th>
-                        <th class="center"><h5>1</h5></th>
-                        <th class="center"><h5>2</h5></th>
-                        {% if journee.linkType == 'departementale' %}
-                            <th class="center"><h5>3</h5></th>
-                            <th class="center"><h5>4</h5></th>
-                        {% endif %}
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for joueurBrule in competiteurs %}
-                    <tr>
-                        <td class="left">{{ joueurBrule.nom }}</td>
-                        {% if journee.linkType == 'departementale' %}
-                            <td class="center">
-                                {% if 1 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}</td>
-                            <td class="center">
-                                {% if 2 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% elseif 2 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
-                            <td class="center">
-                                {% if 3 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% elseif 3 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
-                            <td class="center">
-                                {% if 4 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% endif %}
-                            </td>
-                        {% elseif journee.linkType == 'paris' %}
-                            <td class="center">
-                                {% if 1 in joueurBrule.FirstBurntTeamParis["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}</td>
-                            <td class="center">
-                                {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% endif %}
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ _brulage.table(journee.linkType, competiteurs) }}
         </div>
 
         <div class="col s12 m7">
             {% for message in app.flashes('success') %}
-                {{ flash.success(message) }}
+                {{ _flash.success(message) }}
             {% endfor %}
 
             {% for message in app.flashes('fail') %}
-                {{ flash.fail(message) }}
+                {{ _flash.fail(message) }}
             {% endfor %}
 
             {% for message in app.flashes('warning') %}
-                {{ flash.warning(message) }}
+                {{ _flash.warning(message) }}
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
@@ -172,9 +108,9 @@
                     </div>
                     <table class="striped responsive-table">
                         <tbody>
-                            {{ composition.tr("1", compo.idJoueur1) }}
-                            {{ composition.tr("2", compo.idJoueur2) }}
-                            {{ composition.tr("3", compo.idJoueur3) }}
+                            {{ _composition.tr("1", compo.idJoueur1) }}
+                            {{ _composition.tr("2", compo.idJoueur2) }}
+                            {{ _composition.tr("3", compo.idJoueur3) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
                                     </tbody>
@@ -185,12 +121,12 @@
                             {% endif %}
 
                             {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
-                                {{ composition.tr("4", compo.idJoueur4) }}
+                                {{ _composition.tr("4", compo.idJoueur4) }}
                             {% endif %}
 
                             {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                            {{ composition.tr("5", compo.idJoueur5) }}
-                            {{ composition.tr("6", compo.idJoueur6) }}
+                            {{ _composition.tr("5", compo.idJoueur5) }}
+                            {{ _composition.tr("6", compo.idJoueur6) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
                                     </tbody>
@@ -200,9 +136,9 @@
                                     <tbody>
                             {% endif %}
 
-                            {{ composition.tr("7", compo.idJoueur7) }}
-                            {{ composition.tr("8", compo.idJoueur8) }}
-                            {{ composition.tr("9", compo.idJoueur9) }}
+                            {{ _composition.tr("7", compo.idJoueur7) }}
+                            {{ _composition.tr("8", compo.idJoueur8) }}
+                            {{ _composition.tr("9", compo.idJoueur9) }}
 
                             {% endif %}
                         </tbody>
@@ -218,125 +154,35 @@
         </div>
 
         <div class="col s12 brulage_mobile" hidden>
-
-            <div class="card-panel bottom_0">
-                <div class="row bottom_0">
-                    <div class="col s2"><i class="red-text lighten-1 material-icons">highlight_off</i></div>
-                    <div class="col s10">Brûlé dans l'équipe</div>
-                </div>
-
-                <div class="row bottom_0">
-                    <div class="col s2"><i class="orange-text lighten-1 material-icons">error_outline</i></div>
-                    <div class="col s10">Futur brûlé en équipes inférieures</div>
-                </div>
-            </div>
-
-            <table class="card-panel dispos">
-                <thead>
-                <tr>
-                    <th class="center"><h5>Brûlages</h5></th>
-                    <th class="center"><h5>1</h5></th>
-                    <th class="center"><h5>2</h5></th>
-                    {% if journee.linkType == 'departementale' %}
-                        <th class="center"><h5>3</h5></th>
-                        <th class="center"><h5>4</h5></th>
-                    {% endif %}
-                </tr>
-                </thead>
-
-                <tbody>
-                {% for joueurBrule in competiteurs %}
-                    <tr>
-                        <td class="left">{{ joueurBrule.nom }}</td>
-                        {% if journee.linkType == 'departementale' %}
-                            <td class="center">
-                                {% if 1 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}</td>
-                            <td class="center">
-                                {% if 2 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% elseif 2 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
-                            <td class="center">
-                                {% if 3 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% elseif 3 in joueurBrule.FirstBurntTeamDepartemental["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
-                            <td class="center">
-                                {% if 4 in joueurBrule.FirstBurntTeamDepartemental["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% endif %}
-                            </td>
-                        {% elseif journee.linkType == 'paris' %}
-                            <td class="center">
-                                {% if 1 in joueurBrule.FirstBurntTeamParis["almost"] %}
-                                    <i class="orange-text lighten-1 material-icons">error_outline</i>
-                                {% endif %}</td>
-                            <td class="center">
-                                {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
-                                    <i class="red-text lighten-1 material-icons">highlight_off</i>
-                                {% endif %}
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ _brulage.table(journee.linkType, competiteurs) }}
         </div>
 
         <div class="col s12 m2">
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos) }}
+        </div>
 
-            <div class="card-panel bottom_0">
-                <div class="row bottom_0">
-                    <div class="col s2"><i class="blue-text darken-1 material-icons">playlist_add_check</i></div>
-                    <div class="col s10">Sélectionné</div>
-                </div>
+        <a class="modal-trigger btn waves-effect waves-light blue lighten-2" href="#modal"><i class="material-icons">format_list_bulleted</i>Tout voir</a>
+        <div id="modal" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                {{ _disponibilites.recapitulatif(allDisponibilitesDepartementales, allDisponibiliteParis) }}
             </div>
-
-            <table class="card-panel dispos">
-                <thead>
-                    <tr>
-                        <th>
-                            <h5 class="center">Les dispos</h5>
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for dispo in dispos %}
-                    <tr>
-                        <td>
-                            <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
-                        </td>
-                        <td class="left">
-                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% for dispoNonDeclaree in joueursNonDeclares %}
-                    <tr>
-                        <td>
-                            <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
-                        </td>
-                        <td class="left">
-                            {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
-                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2">OK</a>
+            </div>
         </div>
     </div>
+
+    {# <div class="row">
+        <div class="container">
+            <div class="center-align white-text">
+                <h4>Les actualités FFTT</h4>
+            </div>
+        </div>
+
+        {% for actu in actualites %}
+            {{ _actualite.actualite(actu.date, actu.titre, actu.description, actu.url, actu.photo, actu.categorie) }}
+        {% endfor %}
+    </div> #}
 
     <script>
         $(window).ready(function() {
