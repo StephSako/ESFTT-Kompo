@@ -1,8 +1,18 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos) %}
+{% macro table(joueursNonDeclares, selectedPlayers, dispos, allDisponibilitesDepartementales, allDisponibiliteParis) %}
     <div class="card-panel bottom_0">
         <div class="row bottom_0">
             <div class="col s2"><i class="blue-text darken-1 material-icons">playlist_add_check</i></div>
             <div class="col s10">Sélectionné</div>
+        </div>
+    </div>
+
+    <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#modal"><i class="material-icons">format_list_bulleted</i>Tout voir</a>
+    <div id="modal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            {{ _self.recapitulatif(allDisponibilitesDepartementales, allDisponibiliteParis) }}
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2">OK</a>
         </div>
     </div>
 
@@ -20,7 +30,20 @@
         {% for dispo in dispos %}
             <tr>
                 <td>
-                    <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                    <div class="valign-wrapper">
+                        {% if dispo.disponibilite is not null %}
+                            {% if dispo.disponibilite == 1 %}
+                                <span class="dot dot1 center">&nbsp;</span>
+                            {% elseif dispo.disponibilite == 0 %}
+                                <span class="dot dot2 center">&nbsp;</span>
+                            {% else %}
+                                <span class="dot dot3 center">&nbsp;</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="dot dot3 center">&nbsp;</span>
+                        {% endif %}
+                        <span class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                    </div>
                 </td>
                 <td class="left">
                     {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
@@ -32,7 +55,10 @@
         {% for dispoNonDeclaree in joueursNonDeclares %}
             <tr>
                 <td>
-                    <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
+                    <div class="valign-wrapper">
+                        <span class="dot dot3 center">&nbsp;</span>
+                        <span class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
+                    </div>
                 </td>
                 <td class="left">
                     {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
