@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteDepartementaleRepository")
- * @ORM\Table(name="disponibilite_departementale")
+ * @ORM\Table(name="prive_disponibilite_departementale")
  */
 class DisponibiliteDepartementale
 {
@@ -29,19 +29,18 @@ class DisponibiliteDepartementale
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementales")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
      */
-    private $idCompetiteur;
+    private Competiteur $idCompetiteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
-     * @var JourneeDepartementale
      */
-    private $idJournee;
+    private JourneeDepartementale $idJournee;
 
     /**
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
-    private $disponibilite;
+    private bool $disponibilite;
 
     /**
      * @return mixed

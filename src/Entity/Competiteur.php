@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetiteurRepository")
- * @ORM\Table(name="competiteur")
+ * @ORM\Table(name="prive_competiteur")
  */
 class Competiteur implements UserInterface, Serializable
 {
@@ -349,7 +349,7 @@ class Competiteur implements UserInterface, Serializable
      * @param int $classement_officiel
      * @return Competiteur
      */
-    public function setClassementOfficiel($classement_officiel): self
+    public function setClassementOfficiel(int $classement_officiel): self
     {
         $this->classement_officiel = $classement_officiel;
         return $this;

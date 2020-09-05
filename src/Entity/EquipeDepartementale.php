@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeDepartementaleRepository")
- * @ORM\Table(name="equipe_departementale")
+ * @ORM\Table(name="prive_equipe_departementale")
  */
 class EquipeDepartementale
 {
@@ -26,7 +26,7 @@ class EquipeDepartementale
      *
      * @ORM\Column(name="poule", type="string", length=1, nullable=false)
      */
-    private $poule;
+    private string $poule;
 
     /**
      * @Assert\Length(
@@ -38,7 +38,7 @@ class EquipeDepartementale
      *
      * @ORM\Column(name="division", type="string", length=20, nullable=false)
      */
-    private $division;
+    private string $division;
 
     /**
      * @return mixed
@@ -70,7 +70,7 @@ class EquipeDepartementale
      * @param string $poule
      * @return EquipeDepartementale
      */
-    public function setPoule($poule): self
+    public function setPoule(string $poule): self
     {
         $this->poule = $poule;
         return $this;
@@ -80,7 +80,7 @@ class EquipeDepartementale
      * @param string $division
      * @return EquipeDepartementale
      */
-    public function setDivision($division)
+    public function setDivision(string $division)
     {
         $this->division = $division;
         return $this;
