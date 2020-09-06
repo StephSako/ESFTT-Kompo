@@ -1,15 +1,17 @@
 $(document).ready(function() {
-    $('.modal').modal();
-
-    $("html").niceScroll({
-        cursorcolor:"#023a72",
-        cursorwidth:"10px"
+    $('.carousel.carousel-slider').carousel({
+        fullWidth: true,
+        indicators: true
     });
+
+    $('.modal').modal();
 
     $('select').formSelect();
 
     $('.sidenav').sidenav({
-        closeOnClick: true
+        closeOnClick: true,
+        draggable: true,
+        preventScrolling: true
     });
 
     $('.tabs').tabs();

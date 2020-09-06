@@ -34,90 +34,81 @@
                 <h5>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</h5>
             </div>
 
-            {% if app.user %}
-                <div class="card-panel center">
+            <div class="card-panel center">
+                <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
 
-                    <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
+                {% if journee.linkType == 'departementale' %}
+                    {% set dispoJournee = app.user.disposDepartementales %}
+                {% elseif journee.linkType == 'paris' %}
+                    {% set dispoJournee = app.user.disposParis %}
+                {% endif %}
 
-                    {% if journee.linkType == 'departementale' %}
-                        {% set dispoJournee = app.user.disposDepartementales %}
-                    {% elseif journee.linkType == 'paris' %}
-                        {% set dispoJournee = app.user.disposParis %}
-                    {% endif %}
-
-                    {% if journee.idJournee in dispoJournee|keys %}
-                        {% if dispoJournee[journee.idJournee] %}
-                            <p><i>Vous vous êtes inscrit comme étant </i><span class="green-text lighten-3"><b>disponible</b></span></p>
-                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">
-                                <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
-                            </a>
-                        {% else %}
-                            <p><i>Vous vous êtes inscrit comme étant </i><span class="red-text lighten-3"><b>indisponible</b></span></p>
-                            <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1}) }}">
-                                <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
-                            </a>
-                        {% endif %}
+                {% if journee.idJournee in dispoJournee|keys %}
+                    {% if dispoJournee[journee.idJournee] %}
+                        <p><i>Vous vous êtes inscrit comme étant </i><span class="green-text lighten-3"><b>disponible</b></span></p>
+                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">
+                            <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                        </a>
                     {% else %}
-                        <p><i>Vous n'avez pas encore signalé votre disponibilité</i></p>
-                        <div class="row">
-                            <div class="col s6">
-                                <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
-                                    <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
-                                </a>
-                            </div>
-                            <div class="col s6">
-                                <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
-                                    <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
-                                </a>
-                            </div>
-                        </div>
+                        <p><i>Vous vous êtes inscrit comme étant </i><span class="red-text lighten-3"><b>indisponible</b></span></p>
+                        <a href="{{ path('journee.disponibilite.update', {journee: journee.idJournee, type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1}) }}">
+                            <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                        </a>
                     {% endif %}
-
-                </div>
-            {% else %}
-                <div class="card-panel green lighten-4 center">
-                    <p class="lobster">Vous devez vous connecter pour indiquer vos disponibilités</p>
-                    <a href="{{ path('login') }}">
-                        <button class="btn btn_form waves-effect waves-light blue lighten-1" type="submit" name="action">Se connecter</button>
-                    </a>
-                </div>
-            {% endif %}
+                {% else %}
+                    <p><i>Vous n'avez pas encore signalé votre disponibilité</i></p>
+                    <div class="row">
+                        <div class="col s6">
+                            <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
+                                <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
+                            </a>
+                        </div>
+                        <div class="col s6">
+                            <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
+                                <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
 
             {% for compo in compos %}
-                <div class="card-panel center">
-                    <div class="row header_compo">
 
-                        <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
+                <div class="carousel carousel-slider center card-panel">
+                    <div class="carousel-item" href="#one!">
+                        <div class="row header_compo">
 
-                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
-                            <h5>
-                                <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
+                            <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
+
+                            <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
+                                <h5>
+                                    <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
+                                </h5>
+                                <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
+                            </div>
+
+                            {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+
+                            <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
+                                {% if compo.domicile%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">home</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
+                                {% endif %}
                             </h5>
-                            <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
+
+                            <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
                         </div>
-
-                        {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
-
-                        <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
-                            {% if compo.domicile%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">home</i>
-                            {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
-                            {% endif %}
-                        </h5>
-
-                        <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
-                    </div>
-                    <table class="striped responsive-table">
-                        <tbody>
+                        <table class="striped responsive-table">
+                            <tbody>
                             {{ _composition.tr("1", compo.idJoueur1) }}
                             {{ _composition.tr("2", compo.idJoueur2) }}
                             {{ _composition.tr("3", compo.idJoueur3) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                                    </tbody>
-                                </table>
-                                <br><div class="divider"></div><br>
-                                <table class="striped responsive-table">
-                                    <tbody>
+                            </tbody>
+                        </table>
+                        <br><div class="divider"></div><br>
+                        <table class="striped responsive-table">
+                            <tbody>
                             {% endif %}
 
                             {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
@@ -129,11 +120,11 @@
                             {{ _composition.tr("6", compo.idJoueur6) }}
 
                             {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                                    </tbody>
-                                </table>
-                                <br><div class="divider"></div><br>
-                                <table class="striped responsive-table">
-                                    <tbody>
+                            </tbody>
+                        </table>
+                        <br><div class="divider"></div><br>
+                        <table class="striped responsive-table">
+                            <tbody>
                             {% endif %}
 
                             {{ _composition.tr("7", compo.idJoueur7) }}
@@ -141,14 +132,73 @@
                             {{ _composition.tr("9", compo.idJoueur9) }}
 
                             {% endif %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
 
-                    {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-                        <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
-                           class="btn waves-effect waves-light blue lighten-2">Modifier la compo
-                        </a>
-                    {% endif %}
+                        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+                            <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
+                               class="btn waves-effect waves-light blue lighten-2">Modifier la compo
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="carousel-item" style="font-size: 95%;" href="#two!">
+
+                        {# <table class="striped">
+                            <tbody>
+                            <tr>
+                                <td class="rank center"><b>1</b></td>
+                                <td>Saint Martin du Tertre</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>2</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>3</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>4</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>5</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>6</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>7</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            <tr>
+                                <td class="rank center"><b>8</b></td>
+                                <td>Herblay</td>
+                                <td>12</td>
+                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
+                            </tr>
+                            </tbody>
+                        </table> #}
+
+                        <h5 class="center-align">Le classement de la poule sera bientôt disponible ;)</h5>
+                    </div>
                 </div>
             {% endfor %}
         </div>
