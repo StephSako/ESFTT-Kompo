@@ -19,11 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DisponibiliteController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private JourneeParisRepository $journeeParisRepository;
-    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
-    private DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository;
-    private DisponibiliteParisRepository $disponibiliteParisRepository;
+    private $em;
+    private $journeeParisRepository;
+    private $journeeDepartementaleRepository;
+    private $disponibiliteDepartementaleRepository;
+    private $disponibiliteParisRepository;
 
     /**
      * @param EntityManagerInterface $em

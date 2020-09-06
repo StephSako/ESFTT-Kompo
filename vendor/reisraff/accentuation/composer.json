@@ -1,0 +1,33 @@
+{
+    "name": "reisraff/accentuation",
+    "homepage": "https://github.com/reisraff/accentuation",
+    "keywords": ["package", "parser", "remove", "replace", "accentuation"],
+    "type": "library",
+    "license": "MIT",
+    "description": "This repository works making a parser in some string replacing the accented characters",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "authors": [
+        {
+            "name":  "Rafael Reis",
+            "email": "reisraff@gmail.com",
+            "homepage": "http://reisraff.github.io/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/reisraff/accentuation/issues"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "" : "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.5.*",
+        "phpmd/phpmd": "2.1.*",
+        "phploc/phploc": "2.0.*",
+        "sebastian/phpcpd": "2.0.*",
+        "squizlabs/php_codesniffer": "2.0.*@dev"
+    }
+}

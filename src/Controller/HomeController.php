@@ -31,14 +31,14 @@ use FFTTApi\FFTTApi;
  */
 class HomeController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private CompetiteurRepository $competiteurRepository;
-    private DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository;
-    private DisponibiliteParisRepository $disponibiliteParisRepository;
-    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
-    private JourneeParisRepository $journeeParisRepository;
-    private RencontreDepartementaleRepository $rencontreDepartementaleRepository;
-    private RencontreParisRepository $rencontreParisRepository;
+    private $em;
+    private $competiteurRepository;
+    private $disponibiliteDepartementaleRepository;
+    private $disponibiliteParisRepository;
+    private $journeeDepartementaleRepository;
+    private $journeeParisRepository;
+    private $rencontreDepartementaleRepository;
+    private $rencontreParisRepository;
 
     /**
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository

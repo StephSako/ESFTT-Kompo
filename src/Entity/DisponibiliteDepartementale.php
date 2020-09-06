@@ -29,18 +29,18 @@ class DisponibiliteDepartementale
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementales")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
      */
-    private Competiteur $idCompetiteur;
+    private $idCompetiteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      */
-    private JourneeDepartementale $idJournee;
+    private $idJournee;
 
     /**
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
-    private bool $disponibilite;
+    private $disponibilite;
 
     /**
      * @return mixed

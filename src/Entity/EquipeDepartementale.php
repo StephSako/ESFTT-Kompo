@@ -26,7 +26,7 @@ class EquipeDepartementale
      *
      * @ORM\Column(name="poule", type="string", length=1, nullable=false)
      */
-    private string $poule;
+    private $poule;
 
     /**
      * @Assert\Length(
@@ -38,7 +38,7 @@ class EquipeDepartementale
      *
      * @ORM\Column(name="division", type="string", length=20, nullable=false)
      */
-    private string $division;
+    private $division;
 
     /**
      * @return mixed

@@ -29,19 +29,19 @@ class DisponibiliteParis
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposParis")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
      */
-    private Competiteur $idCompetiteur;
+    private $idCompetiteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * @var JourneeParis
      */
-    private JourneeParis $idJournee;
+    private $idJournee;
 
     /**
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
-    private bool $disponibilite;
+    private $disponibilite;
 
     /**
      * @return mixed

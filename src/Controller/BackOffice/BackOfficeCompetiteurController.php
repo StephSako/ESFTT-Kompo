@@ -15,8 +15,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private CompetiteurRepository $competiteurRepository;
+    private $em;
+    private $competiteurRepository;
 
     /**
      * BackOfficeController constructor.

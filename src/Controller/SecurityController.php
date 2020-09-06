@@ -16,9 +16,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
-    private JourneeParisRepository $journeeParisRepository;
+    private $em;
+    private $journeeDepartementaleRepository;
+    private $journeeParisRepository;
 
     /**
      * SecurityController constructor.

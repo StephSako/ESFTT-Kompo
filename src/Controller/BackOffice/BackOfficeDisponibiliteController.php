@@ -17,12 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeDisponibiliteController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository;
-    private DisponibiliteParisRepository $disponibiliteParisRepository;
-    private CompetiteurRepository $competiteurRepository;
-    private JourneeDepartementaleRepository $journeeDepartementaleRepository;
-    private JourneeParisRepository $journeeParisRepository;
+    private $em;
+    private $disponibiliteDepartementaleRepository;
+    private $disponibiliteParisRepository;
+    private $competiteurRepository;
+    private $journeeDepartementaleRepository;
+    private $journeeParisRepository;
 
     /**
      * BackOfficeController constructor.
