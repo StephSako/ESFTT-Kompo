@@ -4,6 +4,7 @@
 {% import 'macros/actualite.html.twig' as _actualite %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
+{% import 'macros/classement.poule.html.twig' as _poule %}
 
 {% block title %}Journee {{ journee.idJournee}} - {{ journee.type }}{% endblock %}
 
@@ -74,136 +75,118 @@
 
             {% for compo in compos %}
 
-                <div class="carousel carousel-slider center card-panel">
-                    <div class="carousel-item" href="#one!">
-                        <div class="row header_compo">
+                <div class="center card-panel">
+                    <div class="row header_compo">
 
-                            <h5 id="nom_ad_mobile" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
+                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                            <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
-                                <h5>
-                                    <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
-                                </h5>
-                                <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
+                        <div class="row hide-on-med-and-up">
+                            <div class="col s9 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire">
+                                <h5><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
                             </div>
 
-                            {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
-
-                            <h5 class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
-                                {% if compo.domicile%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">home</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
-                                {% endif %}
-                            </h5>
-
-                            <h5 id="nom_ad_pc" class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
+                            <div class="col s3">
+                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                            </div>
                         </div>
-                        <table class="striped responsive-table">
-                            <tbody>
-                            {{ _composition.tr("1", compo.idJoueur1) }}
-                            {{ _composition.tr("2", compo.idJoueur2) }}
-                            {{ _composition.tr("3", compo.idJoueur3) }}
 
-                            {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                            </tbody>
-                        </table>
-                        <br><div class="divider"></div><br>
-                        <table class="striped responsive-table">
-                            <tbody>
+                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
+                            <h5>
+                                <span class="white-text bulle">{{ compo.idEquipe.division }}</span><br>
+                            </h5>
+                            <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
+                        </div>
+
+                        {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+
+                        <h5 class="col {% if journee.linkType == 'departementale' %}s4 m1{% else %}s6 m1{% endif %}">
+                            {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
+                            {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
                             {% endif %}
+                        </h5>
 
-                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
-                                {{ _composition.tr("4", compo.idJoueur4) }}
-                            {% endif %}
+                        <div class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire hide-on-small-only">
+                            <h5><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
+                        </div>
 
-                            {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                            {{ _composition.tr("5", compo.idJoueur5) }}
-                            {{ _composition.tr("6", compo.idJoueur6) }}
+                        <div class="hide-on-small-only col m1">
+                            <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                        </div>
 
-                            {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                            </tbody>
-                        </table>
-                        <br><div class="divider"></div><br>
-                        <table class="striped responsive-table">
-                            <tbody>
-                            {% endif %}
+                        <div id="classement" class="modal modal-fixed-footer">
+                            <div class="modal-content">
+                                {{ _poule.classement(classement) }}
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2">OK</a>
+                            </div>
+                        </div>
+                    </div>
 
-                            {{ _composition.tr("7", compo.idJoueur7) }}
-                            {{ _composition.tr("8", compo.idJoueur8) }}
-                            {{ _composition.tr("9", compo.idJoueur9) }}
+                    <table class="striped responsive-table">
+                        <tbody>
+                        {{ _composition.tr("1", compo.idJoueur1) }}
+                        {{ _composition.tr("2", compo.idJoueur2) }}
+                        {{ _composition.tr("3", compo.idJoueur3) }}
 
-                            {% endif %}
-                            </tbody>
-                        </table>
-
-                        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-                            <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
-                               class="btn waves-effect waves-light blue lighten-2">Modifier la compo
-                            </a>
+                        {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
+                        </tbody>
+                    </table>
+                    <br><div class="divider"></div><br>
+                    <table class="striped responsive-table">
+                        <tbody>
                         {% endif %}
-                    </div>
 
-                    <div class="carousel-item" style="font-size: 95%;" href="#two!">
+                        {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
+                            {{ _composition.tr("4", compo.idJoueur4) }}
+                        {% endif %}
 
-                        {# <table class="striped">
-                            <tbody>
-                            <tr>
-                                <td class="rank center"><b>1</b></td>
-                                <td>Saint Martin du Tertre</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>2</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>3</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>4</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>5</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>6</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>7</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            <tr>
-                                <td class="rank center"><b>8</b></td>
-                                <td>Herblay</td>
-                                <td>12</td>
-                                <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-                            </tr>
-                            </tbody>
-                        </table> #}
+                        {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
+                        {{ _composition.tr("5", compo.idJoueur5) }}
+                        {{ _composition.tr("6", compo.idJoueur6) }}
 
-                        <h5 class="center-align">Le classement de la poule sera bientôt disponible ;)</h5>
-                    </div>
+                        {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
+                        </tbody>
+                    </table>
+                    <br><div class="divider"></div><br>
+                    <table class="striped responsive-table">
+                        <tbody>
+                        {% endif %}
+
+                        {{ _composition.tr("7", compo.idJoueur7) }}
+                        {{ _composition.tr("8", compo.idJoueur8) }}
+                        {{ _composition.tr("9", compo.idJoueur9) }}
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+
+                    {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+                        <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
+                            {% if journee.linkType == 'departementale' %}
+                                {% if compo.isEmpty %}
+                                    class="btn waves-effect waves-light green lighten-2">
+                                    Créer la compo
+                                {% else %}
+                                    class="btn waves-effect waves-light blue lighten-2">
+                                    Modifier la compo
+                                {% endif %}
+                            {% elseif journee.linkType == 'paris' %}
+                                {% if compo.isEmptyHaut or compo.isEmptyBas %}
+                                    class="btn waves-effect waves-light green lighten-2">
+                                    Créer la compo
+                                {% else %}
+                                    class="btn waves-effect waves-light blue lighten-2">
+                                    Modifier la compo
+                                {% endif %}
+                            {% endif %}
+                        </a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
 
-        <div class="col s12 brulage_mobile" hidden>
+        <div class="col s12 show-on-small" hidden>
             {{ _brulage.table(journee.linkType, competiteurs) }}
         </div>
 
@@ -226,18 +209,8 @@
 
     <script>
         $(window).ready(function() {
-            if ($(window).width() <= 600){
-                $('.main').addClass("container");
-                $('.brulage_mobile').removeAttr('hidden');
-                $("[id='nom_ad_pc']").attr("hidden", true);
-                $("[id='nom_ad_mobile']").removeAttr('hidden');
-            }
-            else{
-                $('.main').removeClass("container");
-                $('.brulage_mobile').attr("hidden", true);
-                $("[id='nom_ad_mobile']").attr("hidden", true);
-                $("[id='#nom_ad_pc']").removeAttr('hidden');
-            }
+            if ($(window).width() <= 600) $('.main').addClass("container");
+            else $('.main').removeClass("container");
         });
     </script>
 

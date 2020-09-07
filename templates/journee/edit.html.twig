@@ -72,6 +72,8 @@
                 <h4>Composition d'équipe{% if compo.idJournee.linkType == 'departementale' %}</h4><h5 style="font-family: Lobster, cursive; margin-bottom: 15px; margin-top: 0;">Équipe {{ compo.idEquipe.idEquipe }}{% endif %}</h5>
 
                 <div class="row header_compo">
+                    {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+
                     <h5 id="nom_ad_mobile" class="col s12 m5"><i class="red-text darken-2 material-icons">place</i>{{ compo.adversaire }}</h5>
 
                     <div class="col s4 m2">
@@ -84,7 +86,7 @@
                     <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
 
                     <h5 class="col s4 m2">
-                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">home</i>
+                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
                         {% else %} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
                         {% endif %}
                     </h5>
@@ -154,7 +156,7 @@
                         {% endif %}
 
                     </div>
-                <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Modifier</button><br>
+                <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
                 {{ form_end(form) }}
             </div>
         </div>

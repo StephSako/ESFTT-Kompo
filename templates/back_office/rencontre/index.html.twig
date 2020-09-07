@@ -35,6 +35,7 @@
                         <th>Date</th>
                         <th>Adversaire</th>
                         <th>Lieu</th>
+                        <th>Salle dispo</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -49,6 +50,11 @@
                             <td>
                                 {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
                                 {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
                                 {% endif %}
                             </td>
                             <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
@@ -67,6 +73,7 @@
                         <th>Date</th>
                         <th>Adversaire</th>
                         <th>Lieu</th>
+                        <th>Salle dispo</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -81,6 +88,11 @@
                             <td>
                                 {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
                                 {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
                                 {% endif %}
                             </td>
                             <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>

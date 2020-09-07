@@ -16,6 +16,9 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
         $builder
             ->add('adversaire', TextType::class,[
                 'label' => ' '])
+            ->add('hosted', CheckboxType::class,[
+                'label' => 'Match délocalisé à Herblay',
+                'required' => false])
             ->add('domicile', CheckboxType::class,[
                 'label' => 'Rencontre à domicile',
                 'required' => false]);

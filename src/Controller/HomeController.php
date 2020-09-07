@@ -75,11 +75,11 @@ class HomeController extends AbstractController
     public function testApiFFTTAction(){
         $api = new FFTTApi("SW405", "d7ZG56dQKf");
         try {
-            var_dump($api->getClassementJoueurByLicence('9529825'));
-        } catch (InvalidURIParametersException $e) {var_dump($e->getMessage());
-        } catch (NoFFTTResponseException $e) {var_dump($e->getMessage());
-        } catch (URIPartNotValidException $e) {var_dump($e->getMessage());
-        } catch (JoueurNotFound $e) {var_dump($e->getMessage());
+            //var_dump($api->getEquipesByClub('08951331'));
+        } catch (InvalidURIParametersException $e) {//var_dump($e->getMessage());
+        } catch (NoFFTTResponseException $e) {//var_dump($e->getMessage());
+        } catch (URIPartNotValidException $e) {//var_dump($e->getMessage());
+        } catch (JoueurNotFound $e) {//var_dump($e->getMessage());
         }
 
         return new Response('');
@@ -136,6 +136,8 @@ class HomeController extends AbstractController
             $journees = $this->journeeParisRepository->findAll();
         }
 
+        $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
@@ -145,6 +147,7 @@ class HomeController extends AbstractController
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
             'competiteurs' => $competiteurs,
+            'classement' => $classement,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
         ]);

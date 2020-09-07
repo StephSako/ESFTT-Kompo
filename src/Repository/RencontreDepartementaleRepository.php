@@ -33,4 +33,17 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         }
         return $selectedPlayers;
     }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function getOrderedRencontres(){
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.idJournee', 'j')
+            ->orderBy('j.date')
+            ->addOrderBy('c.idJournee')
+            ->addOrderBy('c.idEquipe')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -66,6 +66,12 @@ class RencontreDepartementale
     private $domicile;
 
     /**
+     * @var boolean
+     * @ORM\Column(name="hosted", type="boolean", nullable=false)
+     */
+    private $hosted;
+
+    /**
      * @var String
      * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
      */
@@ -231,5 +237,30 @@ class RencontreDepartementale
     public function getIdEquipe(): EquipeDepartementale
     {
         return $this->idEquipe;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEmpty() {
+        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHosted(): bool
+    {
+        return $this->hosted;
+    }
+
+    /**
+     * @param bool $hosted
+     * @return RencontreDepartementale
+     */
+    public function setHosted(bool $hosted): self
+    {
+        $this->hosted = $hosted;
+        return $this;
     }
 }

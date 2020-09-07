@@ -42,14 +42,12 @@ class BackOfficeCompetiteurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
-            dump($competiteur);
             if ($form->isValid()){
                 $this->em->persist($competiteur);
                 $this->em->flush();
                 $this->addFlash('success', 'Compétiteur créé avec succès !');
                 return $this->redirectToRoute('back_office.competiteurs');
             } else {
-                dump($form->getErrors());
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
         }

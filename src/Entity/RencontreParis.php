@@ -101,6 +101,12 @@ class RencontreParis
     private $domicile;
 
     /**
+     * @var boolean
+     * @ORM\Column(name="hosted", type="boolean", nullable=false)
+     */
+    private $hosted;
+
+    /**
      * @var String
      * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
      */
@@ -323,16 +329,6 @@ class RencontreParis
     }
 
     /**
-     * @return string
-     */
-    public function getDivision(): string
-    {
-        if ($this->getIdEquipe() === 1) return "PR";
-        else if ($this->getIdEquipe() === 2) return "D2";
-        else return '';
-    }
-
-    /**
      * @return String
      */
     public function getAdversaire(): string
@@ -366,5 +362,37 @@ class RencontreParis
     public function getIdEquipe(): EquipeParis
     {
         return $this->idEquipe;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEmptyHaut() {
+        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6() && !$this->getIdJoueur7() && !$this->getIdJoueur8() && !$this->getIdJoueur9());
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEmptyBas() {
+        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHosted(): bool
+    {
+        return $this->hosted;
+    }
+
+    /**
+     * @param bool $hosted
+     * @return RencontreParis
+     */
+    public function setHosted(bool $hosted): self
+    {
+        $this->hosted = $hosted;
+        return $this;
     }
 }
