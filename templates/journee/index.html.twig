@@ -5,7 +5,7 @@
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
 {% import 'macros/classement.poule.html.twig' as _poule %}
 
-{% block title %}Journee {{ journee.idJournee}} - {{ journee.type }}{% endblock %}
+{% block title %}J{{ journee.idJournee}} - {{ journee.type }}{% endblock %}
 
 {% block body %}
 
@@ -82,7 +82,7 @@
                         {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
                         <div class="row hide-on-med-and-up">
-                            <div class="col s9 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire">
+                            <div class="col s9 m5 nom_adversaire">
                                 <h5>{{ compo.adversaire }}</h5>
                             </div>
 
@@ -95,26 +95,28 @@
                             </div>
                         </div>
 
-                        <div class="col {% if journee.linkType == 'departementale' %}s4 m2{% else %}s6 m2{% endif %}">
+                        <div class="col s4 m2">
                             <h5>
                                 <span class="white-text bulle">{% if compo.idEquipe.division|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division }}{% if compo.idEquipe.division|length == 1 %}&thinsp;{% endif %}</span><br>
                             </h5>
                             <p class="poule">Poule {{ compo.idEquipe.poule }}</p>
                         </div>
 
-                        {% if journee.linkType == 'departementale' %}<h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>{% endif %}
+                        <h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>
 
-                        <div style="padding-left: 30px; padding-right: 30px;" class="col {% if journee.linkType == 'departementale' %}s4 m1{% else %}s6 m1{% endif %}">
+                        <div class="col s4 m1">
                             <h5 class="hide-on-small-only">
                                 {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
                                 {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
                                 {% endif %}
                             </h5>
 
-                            <a style="margin-bottom: 0; margin-top: 10px;" class="hide-on-med-and-up card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                            <div style="padding-left: 20px; padding-right: 20px;">
+                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="hide-on-med-and-up card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                            </div>
                         </div>
 
-                        <div class="col s12 {% if journee.linkType == 'departementale' %}m5{% else %}m4{% endif%} nom_adversaire hide-on-small-only">
+                        <div class="col s12 m5 nom_adversaire hide-on-small-only">
                             <h5>{{ compo.adversaire }}</h5>
                         </div>
 
