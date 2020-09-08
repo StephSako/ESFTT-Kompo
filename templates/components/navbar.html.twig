@@ -1,34 +1,41 @@
+{% if app.request.getPathInfo == '/login' %}
+    {% set type = 'departementale' %}
+{% else %}
+    {% if app.session.get('type') is not null %}
+        {% set type = app.session.get('type') %}
+    {% else %}
+        {% set type = 'departementale' %}
+    {% endif %}
+{% endif %}
+
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper">
             <a href="#" class="brand-logo show-on-small hide-on-med-and-up"><img width="100%" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul class="left hide-on-med-and-down">
-                {% if app.request.getPathInfo == '/login' %}
-                    {% set type = 'departementale' %}
-                {% else %}
-                    {% set type = app.session.get('type') %}
-                {% endif %}
 
-                {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
+            {% if app.user %}
+                <ul class="left hide-on-med-and-down">
+                    {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
-                {% for journee in journees %}
-                    <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
-                        <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}"><span style="font-family: 'Lora', serif;">J</span>{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
+                    {% for journee in journees %}
+                        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
+                            <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}"><span style="font-family: 'Lora', serif;">J</span>{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
+                        </li>
+                    {% endfor %}
+
+                    <li class="waves-light waves-effect li_in_line">
+                        <a class="white-text" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
+                            <i class="material-icons left green-text">swap_horiz</i>
+                            {% if type == 'paris' %}
+                                Champ. départemental
+                            {% elseif type == 'departementale' %}
+                                Champ. de Paris
+                            {% endif %}
+                        </a>
                     </li>
-                {% endfor %}
-
-                <li class="waves-light waves-effect li_in_line">
-                    <a class="white-text" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
-                        <i class="material-icons left green-text">swap_horiz</i>
-                        {% if type == 'paris' %}
-                            Champ. départemental
-                        {% elseif type == 'departementale' %}
-                            Champ. de Paris
-                        {% endif %}
-                    </a>
-                </li>
-            </ul>
+                </ul>
+            {% endif %}
 
             {% include('components/navbar_common_pc.html.twig') %}
         </div>
@@ -36,12 +43,6 @@
 </div>
 
 <ul id="slide-out" class="sidenav">
-    {% if app.request.getPathInfo == '/login' %}
-        {% set type = 'departementale' %}
-    {% else %}
-        {% set type = app.session.get('type') %}
-    {% endif %}
-
     {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
     <div class="first_sidenav">

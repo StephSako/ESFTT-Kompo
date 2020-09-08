@@ -1,8 +1,15 @@
+{% if app.session.get('type') is not null %}
+    {% set type = app.session.get('type') %}
+{% else %}
+    {% set type = 'departementale' %}
+{% endif %}
+
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper">
             <a href="#" class="brand-logo show-on-small hide-on-med-and-up"><img width="100%" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
             <ul class="left hide-on-med-and-down">
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
@@ -20,7 +27,7 @@
                     <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line">
-                    <a class="white-text" href="{{ path("journee.show", {type: app.session.get('type'), id: 1}) }}">
+                    <a class="white-text" href="{{ path("journee.show", {type: type, id: 1}) }}">
                         <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour aux compositions
                     </a>
                 </li>
@@ -48,7 +55,7 @@
         <a class="white-text center-align" href="{{ path("back_office.rencontres") }}"><i class="white-text material-icons left">tonality</i>Les rencontres</a>
     </li>
     <li class="li_in_line">
-        <a class="white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: app.session.get('type'), id: 1}) }}">
+        <a class="white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: type, id: 1}) }}">
             <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour aux compositions
         </a>
     </li>
