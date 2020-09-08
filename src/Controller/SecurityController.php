@@ -62,9 +62,11 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function home(Request $request){
-        $journees = $this->journeeDepartementaleRepository->findAll();
+        $journees = [];
+        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
+        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
+
         $user = $this->getUser();
-        // TODO View to modify competiteur's dispos
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
@@ -97,7 +99,10 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
-        $journees = $this->journeeDepartementaleRepository->findAll();
+        $journees = [];
+        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
+        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
+
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);

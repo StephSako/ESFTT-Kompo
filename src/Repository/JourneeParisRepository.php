@@ -18,4 +18,16 @@ class JourneeParisRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, JourneeParis::class);
     }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function findAllDates()
+    {
+        return $this->createQueryBuilder('jp')
+            ->select('jp.date')
+            ->orderBy('jp.date')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -20,7 +20,7 @@
                     <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line">
-                    <a class="white-text" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
+                    <a class="white-text" href="{{ path("journee.show", {type: app.session.get('type'), id: 1}) }}">
                         <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour aux compositions
                     </a>
                 </li>
@@ -48,8 +48,8 @@
         <a class="white-text center-align" href="{{ path("back_office.rencontres") }}"><i class="white-text material-icons left">tonality</i>Les rencontres</a>
     </li>
     <li class="li_in_line">
-        <a class="white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: 'departementale', id: 1}) }}">
-            <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour à la compétition
+        <a class="white-text center-align dropdown-trigger" href="{{ path("journee.show", {type: app.session.get('type'), id: 1}) }}">
+            <i class="green-text material-icons left">subdirectory_arrow_left</i>Retour aux compositions
         </a>
     </li>
     {% include('components/navbar_common_mobile.html.twig') %}

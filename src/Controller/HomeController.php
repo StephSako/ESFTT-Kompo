@@ -19,11 +19,15 @@ use FFTTApi\Exception\InvalidURIParametersException;
 use FFTTApi\Exception\JoueurNotFound;
 use FFTTApi\Exception\NoFFTTResponseException;
 use FFTTApi\Exception\URIPartNotValidException;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use FFTTApi\FFTTApi;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * Class Rencontre_1Controller
@@ -90,7 +94,9 @@ class HomeController extends AbstractController
      */
     public function indexAction()
     {
-        $dates = $this->journeeDepartementaleRepository->findAllDates();
+        $dates = [];
+        if ($this->get('session')->get('type') == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
+        else if ($this->get('session')->get('type') == 'paris') $dates = $this->journeeParisRepository->findAllDates();
         $NJournee = 0;
 
         while ($NJournee < 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
@@ -99,7 +105,7 @@ class HomeController extends AbstractController
         $NJournee++;
 
         return $this->redirectToRoute('journee.show', [
-            'type' => 'departementale',
+            'type' => $this->get('session')->get('type'),
             'id' => $NJournee
         ]);
     }
@@ -113,12 +119,13 @@ class HomeController extends AbstractController
      */
     public function journeeShow($type, $id)
     {
+        $this->get('session')->set('type', $type);
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = null;
         $disposJoueur = [];
 
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
 
-        if ($type === 'departementale'){
+        if ($this->get('session')->get('type') === 'departementale'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeDepartementaleRepository->find($id);
             $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
@@ -126,7 +133,7 @@ class HomeController extends AbstractController
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
             $journees = $this->journeeDepartementaleRepository->findAll();
-        } else if ($type === 'paris'){
+        } else if ($this->get('session')->get('type') === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
