@@ -95,8 +95,9 @@ class HomeController extends AbstractController
     public function indexAction()
     {
         $dates = [];
-        if ($this->get('session')->get('type') == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
-        else if ($this->get('session')->get('type') == 'paris') $dates = $this->journeeParisRepository->findAllDates();
+        $type = ($this->get('session')->get('type') ?: 'departementale');
+        if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
+        else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
         $NJournee = 0;
 
         while ($NJournee < 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
@@ -105,7 +106,7 @@ class HomeController extends AbstractController
         $NJournee++;
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $this->get('session')->get('type'),
+            'type' => $type,
             'id' => $NJournee
         ]);
     }
