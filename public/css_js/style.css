@@ -78,7 +78,7 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
     margin-bottom: 10px;
 }
 
-td, li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
+li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
     font-size: 100%;
     padding-left: 10px;
     padding-right: 10px;
@@ -136,7 +136,7 @@ i {
     margin: 4px;
 }
 
-.li_in_line a, thead th, nav ul a {
+.li_in_line a, nav ul a {
     font-size: 18px;
 }
 
@@ -149,6 +149,10 @@ i {
 }
 
 p.lobster {
+    margin-top: 0;
+}
+
+.btn_gestion {
     margin-top: 0;
 }
 

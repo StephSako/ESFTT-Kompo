@@ -30,16 +30,14 @@ $(document).ready(function() {
     $("#back_office_rencontre_departementale_domicile").change(function() {
         if(this.checked) $("#back_office_rencontre_departementale_hosted").removeAttr("disabled");
         else{
-            $("#back_office_rencontre_departementale_hosted").prop("checked", false);
-            $("#back_office_rencontre_departementale_hosted").attr("disabled", true);
+            $("#back_office_rencontre_departementale_hosted").prop("checked", false).attr("disabled", true);
         }
     });
 
     $("#back_office_rencontre_paris_domicile").change(function() {
         if(this.checked) $("#back_office_rencontre_paris_hosted").removeAttr("disabled");
         else{
-            $("#back_office_rencontre_paris_hosted").prop("checked", false);
-            $("#back_office_rencontre_paris_hosted").attr("disabled", true);
+            $("#back_office_rencontre_paris_hosted").prop("checked", false).attr("disabled", true);
         }
     });
 });

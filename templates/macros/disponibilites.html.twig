@@ -1,5 +1,5 @@
 {% macro table(joueursNonDeclares, selectedPlayers, dispos, allDisponibilitesDepartementales, allDisponibiliteParis) %}
-    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#all_dispos"><i class="material-icons">format_list_bulleted</i>Tout voir</a>
+    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#all_dispos">Tout voir</a>
     <div id="all_dispos" class="modal modal-fixed-footer">
         <div class="modal-content">
             {{ _self.recapitulatif(allDisponibilitesDepartementales, allDisponibiliteParis) }}
@@ -80,115 +80,31 @@
     </ul>
 
     <div id="all_dispo_departementale">
-        <table class="responsive-table striped card-panel dispos">
+        <table class="centered responsive-table striped card-panel dispos">
             <thead>
-            <tr>
-                <th>Joueurs</th>
-                <th>J1</th>
-                <th>J2</th>
-                <th>J3</th>
-                <th>J4</th>
-                <th>J5</th>
-                <th>J6</th>
-                <th>J7</th>
-            </tr>
+                <tr>
+                    <th><span class="hide-on-small-only">Joueurs</span></th>
+                    <th>J1</th>
+                    <th>J2</th>
+                    <th>J3</th>
+                    <th>J4</th>
+                    <th>J5</th>
+                    <th>J6</th>
+                    <th>J7</th>
+                </tr>
             </thead>
 
             <tbody>
             {% for dispo in disponibilitesDep %}
                 <tr>
                     <td>{{ dispo.nom }}</td>
-                    <td>
-                        {% if dispo.j1 is not null %}
-                            {% if dispo.j1 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j1 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j2 is not null %}
-                            {% if dispo.j2 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j2 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j3 is not null %}
-                            {% if dispo.j3 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j3 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j4 is not null %}
-                            {% if dispo.j4 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j4 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j5 is not null %}
-                            {% if dispo.j5 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j5 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j6 is not null %}
-                            {% if dispo.j6 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j6 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j7 is not null %}
-                            {% if dispo.j7 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j7 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
+                    {{ _self.td_recap(dispo.j1) }}
+                    {{ _self.td_recap(dispo.j2) }}
+                    {{ _self.td_recap(dispo.j3) }}
+                    {{ _self.td_recap(dispo.j4) }}
+                    {{ _self.td_recap(dispo.j5) }}
+                    {{ _self.td_recap(dispo.j6) }}
+                    {{ _self.td_recap(dispo.j7) }}
                 </tr>
             {% endfor %}
             </tbody>
@@ -196,118 +112,50 @@
     </div>
 
     <div id="all_dispo_paris">
-        <table class="responsive-table striped card-panel dispos">
+        <table class="centered responsive-table striped card-panel dispos">
             <thead>
-            <tr>
-                <th>Joueurs</th>
-                <th>J1</th>
-                <th>J2</th>
-                <th>J3</th>
-                <th>J4</th>
-                <th>J5</th>
-                <th>J6</th>
-                <th>J7</th>
-            </tr>
+                <tr>
+                    <th><span class="hide-on-small-only">Joueurs</span></th>
+                    <th>J1</th>
+                    <th>J2</th>
+                    <th>J3</th>
+                    <th>J4</th>
+                    <th>J5</th>
+                    <th>J6</th>
+                    <th>J7</th>
+                </tr>
             </thead>
 
             <tbody>
             {% for dispo in disponibilitesParis %}
                 <tr>
                     <td>{{ dispo.nom }}</td>
-                    <td>
-                        {% if dispo.j1 is not null %}
-                            {% if dispo.j1 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j1 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j2 is not null %}
-                            {% if dispo.j2 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j2 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j3 is not null %}
-                            {% if dispo.j3 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j3 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j4 is not null %}
-                            {% if dispo.j4 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j4 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j5 is not null %}
-                            {% if dispo.j5 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j5 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j6 is not null %}
-                            {% if dispo.j6 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j6 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.j7 is not null %}
-                            {% if dispo.j7 == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.j7 == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="dot dot3 center">&nbsp;</span>
-                        {% endif %}
-                    </td>
+                    {{ _self.td_recap(dispo.j1) }}
+                    {{ _self.td_recap(dispo.j2) }}
+                    {{ _self.td_recap(dispo.j3) }}
+                    {{ _self.td_recap(dispo.j4) }}
+                    {{ _self.td_recap(dispo.j5) }}
+                    {{ _self.td_recap(dispo.j6) }}
+                    {{ _self.td_recap(dispo.j7) }}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+{% endmacro %}
+
+{% macro td_recap(dispo) %}
+    <td>
+            {% if dispo is not null %}
+                {% if dispo == 1 %}
+                    <span class="dot dot1 center">&nbsp;</span>
+                {% elseif dispo == 0 %}
+                    <span class="dot dot2 center">&nbsp;</span>
+                {% else %}
+                    <span class="dot dot3 center">&nbsp;</span>
+                {% endif %}
+            {% else %}
+                <span class="dot dot3 center">&nbsp;</span>
+            {% endif %}
+    </td>
 {% endmacro %}

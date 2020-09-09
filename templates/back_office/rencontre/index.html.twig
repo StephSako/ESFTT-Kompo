@@ -48,8 +48,8 @@
                             <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
                             <td>{{ rencontre.adversaire }}</td>
                             <td>
-                                {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% if rencontre.domicile%} <i class="material-icons">home</i>
+                                {% else%} <i class="material-icons">directions_car</i>
                                 {% endif %}
                             </td>
                             <td>
@@ -60,7 +60,7 @@
                                 {% else %}-
                                 {% endif %}
                             </td>
-                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
+                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -89,8 +89,8 @@
                             <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
                             <td>{{ rencontre.adversaire }}</td>
                             <td>
-                                {% if rencontre.domicile%} <i style="font-size: 2.1rem;" class="material-icons">home</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                {% if rencontre.domicile%} <i class="material-icons">home</i>
+                                {% else%} <i class="material-icons">directions_car</i>
                                 {% endif %}
                             </td>
                             <td>
@@ -98,7 +98,7 @@
                                 {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
                                 {% endif %}
                             </td>
-                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>
+                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

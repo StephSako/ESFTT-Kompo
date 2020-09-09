@@ -1,7 +1,7 @@
 {% macro tr(rank, competiteur) %}
     <tr>
-        <td class="rank center"><b>#{{ rank }}</b></td>
-        <td class="center">
+        <td class="rank"><b>#{{ rank }}</b></td>
+        <td>
             {% if competiteur is not null %}
                 <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ competiteur.classementOfficiel }}</span>
             {% endif %}
@@ -14,7 +14,7 @@
                 </div>
             {% endif %}
         </td>
-        <td class="center">
+        <td>
             {% if competiteur is not null %}
                 {{ competiteur.licence }}
             {% endif %}
