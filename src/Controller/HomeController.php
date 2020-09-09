@@ -19,15 +19,11 @@ use FFTTApi\Exception\InvalidURIParametersException;
 use FFTTApi\Exception\JoueurNotFound;
 use FFTTApi\Exception\NoFFTTResponseException;
 use FFTTApi\Exception\URIPartNotValidException;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use FFTTApi\FFTTApi;
-use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * Class Rencontre_1Controller
@@ -170,7 +166,7 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request) : Response
     {
-        $oldPlayers = $form = $j4 = $j5 = $j6 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
+        $oldPlayers = $form = $j4 = $j5 = $j6 = $j7 = $j8 = $j9 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
 
         if ($type == 'departementale'){
             $compo = $this->rencontreDepartementaleRepository->find($compo);
@@ -210,169 +206,37 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** Décrémenter le brûlage des joueurs désélectionnés de la précédente compo **/
-            if ($j1 != null) {
-                if ($type === 'departementale') {
-                    $brulageOld1 = $j1->getBrulageDepartemental();
-                    $brulageOld1[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j1->setBrulageDepartemental($brulageOld1);
-                } else if ($type === 'paris') {
-                    $brulageOld1 = $j1->getBrulageParis();
-                    $brulageOld1[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j1->setBrulageParis($brulageOld1);
-                }
-            }
-
-            if ($j2 != null) {
-                if ($type === 'departementale') {
-                    $brulageOld2 = $j2->getBrulageDepartemental();
-                    $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j2->setBrulageDepartemental($brulageOld2);
-                } else if ($type === 'paris') {
-                    $brulageOld2 = $j2->getBrulageParis();
-                    $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j2->setBrulageParis($brulageOld2);
-                }
-            }
-
-            if ($j3 != null) {
-                if ($type === 'departementale') {
-                    $brulageOld3 = $j3->getBrulageDepartemental();
-                    $brulageOld3[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j3->setBrulageDepartemental($brulageOld3);
-                } else if ($type === 'paris') {
-                    $brulageOld3 = $j3->getBrulageParis();
-                    $brulageOld3[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j3->setBrulageParis($brulageOld3);
-                }
-            }
+            $this->decrementeBrulage1234($j1, $type, $compo);
+            $this->decrementeBrulage1234($j2, $type, $compo);
+            $this->decrementeBrulage1234($j3, $type, $compo);
 
             if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                if ($j4 != null) {
-                    if ($type === 'departementale') {
-                        $brulageOld4 = $j4->getBrulageDepartemental();
-                        $brulageOld4[$compo->getIdEquipe()->getIdEquipe()]--;
-                        $j4->setBrulageDepartemental($brulageOld4);
-                    } else if ($type === 'paris'){
-                        $brulageOld4 = $j4->getBrulageParis();
-                        $brulageOld4[$compo->getIdEquipe()->getIdEquipe()]--;
-                        $j4->setBrulageParis($brulageOld4);
-                    }
-                }
+                $this->decrementeBrulage1234($j4, $type, $compo);
             }
 
             if ($type === 'paris' && $levelEquipe === 1) {
-                if ($j5 != null) {
-                    $brulageOld5 = $j5->getBrulageParis();
-                    $brulageOld5[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j5->setBrulageParis($brulageOld5);
-                }
-
-                if ($j6 != null) {
-                    $brulageOld6 = $j6->getBrulageParis();
-                    $brulageOld6[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j6->setBrulageParis($brulageOld6);
-                }
-
-                if ($j7 != null) {
-                    $brulageOld7 = $j7->getBrulageParis();
-                    $brulageOld7[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j7->setBrulageParis($brulageOld7);
-                }
-
-                if ($j8 != null) {
-                    $brulageOld8 = $j8->getBrulageParis();
-                    $brulageOld8[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j8->setBrulageParis($brulageOld8);
-                }
-
-                if ($j9 != null) {
-                    $brulageOld9 = $j9->getBrulageParis();
-                    $brulageOld9[$compo->getIdEquipe()->getIdEquipe()]--;
-                    $j9->setBrulageParis($brulageOld9);
-                }
+                $this->decrementeBrulage56789($j5, $compo);
+                $this->decrementeBrulage56789($j6, $compo);
+                $this->decrementeBrulage56789($j7, $compo);
+                $this->decrementeBrulage56789($j8, $compo);
+                $this->decrementeBrulage56789($j9, $compo);
             }
 
             /** Incrémenter le brûlage des joueurs sélectionnés de la nouvelle compo **/
-            if ($form->getData()->getIdJoueur1() != null) {
-                if ($type === 'departementale') {
-                    $brulage1 = $form->getData()->getIdJoueur1()->getBrulageDepartemental();
-                    $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur1()->setBrulageDepartemental($brulage1);
-                } else if ($type === 'paris') {
-                    $brulage1 = $form->getData()->getIdJoueur1()->getBrulageParis();
-                    $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur1()->setBrulageParis($brulage1);
-                }
-            }
-
-            if ($form->getData()->getIdJoueur2() != null) {
-                if ($type === 'departementale') {
-                    $brulage2 = $form->getData()->getIdJoueur2()->getBrulageDepartemental();
-                    $brulage2[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur2()->setBrulageDepartemental($brulage2);
-                } else if ($type === 'paris') {
-                    $brulage2 = $form->getData()->getIdJoueur2()->getBrulageParis();
-                    $brulage2[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur2()->setBrulageParis($brulage2);
-                }
-            }
-
-            if ($form->getData()->getIdJoueur3() != null) {
-                if ($type === 'departementale') {
-                    $brulage3 = $form->getData()->getIdJoueur3()->getBrulageDepartemental();
-                    $brulage3[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur3()->setBrulageDepartemental($brulage3);
-                } else if ($type === 'paris') {
-                    $brulage3 = $form->getData()->getIdJoueur3()->getBrulageParis();
-                    $brulage3[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur3()->setBrulageParis($brulage3);
-                }
-            }
+            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
+            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
+            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur3(), $compo->getIdJoueur3());
 
             if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                if ($form->getData()->getIdJoueur4() != null) {
-                    if ($type === 'departementale') {
-                        $brulage4 = $form->getData()->getIdJoueur4()->getBrulageDepartemental();
-                        $brulage4[$compo->getIdEquipe()->getIdEquipe()]++;
-                        $compo->getIdJoueur4()->setBrulageDepartemental($brulage4);
-                    } else if ($type === 'paris'){
-                        $brulage4 = $form->getData()->getIdJoueur4()->getBrulageParis();
-                        $brulage4[$compo->getIdEquipe()->getIdEquipe()]++;
-                        $compo->getIdJoueur4()->setBrulageParis($brulage4);
-                    }
-                }
+                $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur4(), $compo->getIdJoueur4());
             }
 
             if ($type === 'paris' && $levelEquipe === 1) {
-                if ($form->getData()->getIdJoueur5() != null) {
-                    $brulage5 = $form->getData()->getIdJoueur5()->getBrulageParis();
-                    $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur5()->setBrulageParis($brulage5);
-                }
-
-                if ($form->getData()->getIdJoueur6() != null) {
-                    $brulage6 = $form->getData()->getIdJoueur6()->getBrulageParis();
-                    $brulage6[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur6()->setBrulageParis($brulage6);
-                }
-
-                if ($form->getData()->getIdJoueur7() != null) {
-                    $brulage7 = $form->getData()->getIdJoueur7()->getBrulageParis();
-                    $brulage7[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur7()->setBrulageParis($brulage7);
-                }
-
-                if ($form->getData()->getIdJoueur8() != null) {
-                    $brulage8 = $form->getData()->getIdJoueur8()->getBrulageParis();
-                    $brulage8[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur8()->setBrulageParis($brulage8);
-                }
-
-                if ($form->getData()->getIdJoueur9() != null) {
-                    $brulage9 = $form->getData()->getIdJoueur9()->getBrulageParis();
-                    $brulage9[$compo->getIdEquipe()->getIdEquipe()]++;
-                    $compo->getIdJoueur9()->setBrulageParis($brulage9);
-                }
+                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur5(), $compo->getIdJoueur5());
+                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur6(), $compo->getIdJoueur6());
+                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur7(), $compo->getIdJoueur7());
+                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur8(), $compo->getIdJoueur8());
+                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur9(), $compo->getIdJoueur9());
             }
 
             $this->em->flush();
@@ -401,5 +265,69 @@ class HomeController extends AbstractController
             'compo' => $compo,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @param $j
+     * @param $type
+     * @param $compo
+     */
+    public function decrementeBrulage1234($j, $type, $compo){
+        if ($j != null) {
+            if ($type === 'departementale') {
+                $brulageOld2 = $j->getBrulageDepartemental();
+                $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
+                $j->setBrulageDepartemental($brulageOld2);
+            } else if ($type === 'paris') {
+                $brulageOld2 = $j->getBrulageParis();
+                $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
+                $j->setBrulageParis($brulageOld2);
+            }
+        }
+    }
+
+    /**
+     * @param $j
+     * @param $compo
+     */
+    public function decrementeBrulage56789($j, $compo){
+        if ($j != null) {
+            $brulageOld5 = $j->getBrulageParis();
+            $brulageOld5[$compo->getIdEquipe()->getIdEquipe()]--;
+            $j->setBrulageParis($brulageOld5);
+        }
+    }
+
+    /**
+     * @param $type
+     * @param $compo
+     * @param $jForm
+     * @param $jCompo
+     */
+    public function incrementeBrulage1234($type, $compo, $jForm, $jCompo){
+        if ($jForm != null) {
+            if ($type === 'departementale') {
+                $brulage1 = $jForm->getBrulageDepartemental();
+                $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
+                $jCompo->setBrulageDepartemental($brulage1);
+            } else if ($type === 'paris') {
+                $brulage1 = $jForm->getBrulageParis();
+                $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
+                $jCompo->setBrulageParis($brulage1);
+            }
+        }
+    }
+
+    /**
+     * @param $compo
+     * @param $jForm
+     * @param $jCompo
+     */
+    public function incrementeBrulage56789($compo, $jForm, $jCompo){
+        if ($jForm != null) {
+            $brulage5 = $jForm->getBrulageParis();
+            $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
+            $jCompo->setBrulageParis($brulage5);
+        }
     }
 }

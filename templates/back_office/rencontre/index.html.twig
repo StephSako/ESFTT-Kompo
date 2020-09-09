@@ -53,8 +53,11 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
+                                {% if rencontre.domicile%}
+                                    {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
+                                    {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
+                                    {% endif %}
+                                {% else %}-
                                 {% endif %}
                             </td>
                             <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2"><i class="material-icons">edit</i></a></td>

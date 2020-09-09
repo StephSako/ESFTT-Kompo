@@ -158,22 +158,16 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function findAllDisposRecapitulatif(string $type){
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT avatar, prive_competiteur.nom,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 1) AS j1,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 2) AS j2,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 3) AS j3,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 4) AS j4,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 5) AS j5,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 6) AS j6,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
-            .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = 7) AS j7"
-            .   " FROM prive_competiteur ORDER BY prive_competiteur.nom";
+        $sql = "SELECT avatar, prive_competiteur.nom,";
+
+        for ($i = 1; $i <= 7; $i++){
+            $sql .= " (SELECT disponibilite FROM prive_disponibilite_" . $type . ""
+                .   " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = " . $i . ") AS j" . $i;
+            if ($i < 7) $sql .= ",";
+        }
+
+        $sql .= " FROM prive_competiteur ORDER BY prive_competiteur.nom";
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
