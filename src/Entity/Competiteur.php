@@ -271,8 +271,7 @@ class Competiteur implements UserInterface, Serializable
      * @return array[]
      */
     public function getFirstBurntTeamDepartemental(){
-        $brulageDepartemental = [];
-        $almost = [];
+        $brulageDepartemental = []; $almost = [];
 
         if ($this->brulageDepartemental[1] == 1) array_push($almost, 1);
         if ($this->brulageDepartemental[2] == 1) array_push($almost, 2);
@@ -282,21 +281,17 @@ class Competiteur implements UserInterface, Serializable
         else if ($this->brulageDepartemental[2] >= 2) array_push($brulageDepartemental, 3, 4);
         else if ($this->brulageDepartemental[3] >= 2) array_push($brulageDepartemental, 4);
 
-        return ["almost" => $almost, "burnt" =>$brulageDepartemental];
+        return ["almost" => $almost, "burnt" => $brulageDepartemental];
     }
 
     /**
-     * @return array[]
+     * @return int[]|null[]
      */
     public function getFirstBurntTeamParis(){
-        $brulageParis = [];
-        $almost = [];
+        $brulageParis = $almost = null;
 
-        if ($this->brulageParis[1] == 1) array_push($almost, 1);
-        if ($this->brulageParis[2] == 1) array_push($almost, 2);
-
-        if ($this->brulageParis[1] >= 2) array_push($brulageParis, 2, 3, 4);
-        else if ($this->brulageParis[2] >= 2) array_push($brulageParis, 3, 4);
+        if ($this->brulageParis[1] == 1) $almost = 1;
+        if ($this->brulageParis[1] >= 2) $brulageParis = 2;
 
         return ["almost" => $almost, "burnt" =>$brulageParis];
     }

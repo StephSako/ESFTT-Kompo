@@ -54,11 +54,11 @@
                     </td>
                 {% elseif type == 'paris' %}
                     <td class="center">
-                        {% if 1 in joueurBrule.FirstBurntTeamParis["almost"] %}
+                        {% if joueurBrule.FirstBurntTeamParis["almost"] == 1 %}
                             <i class="orange-text lighten-1 material-icons">error_outline</i>
                         {% endif %}</td>
                     <td class="center">
-                        {% if 2 in joueurBrule.FirstBurntTeamParis["burnt"] %}
+                        {% if joueurBrule.FirstBurntTeamParis["burnt"] == 2 %}
                             <i class="red-text lighten-1 material-icons">highlight_off</i>
                         {% endif %}
                     </td>
