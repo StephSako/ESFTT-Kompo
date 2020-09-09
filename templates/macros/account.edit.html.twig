@@ -2,12 +2,12 @@
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
         {{ form_start(form) }}
-            <div class="row">
+            <div class="row valign-wrapper">
                 <div class="col {% if type == 'backoffice' %}s12 m4{% else %}s12 m6{% endif %}">
                     <span><i class="material-icons prefix">person</i>NOM Prénom</span>{{ form_row(form.nom) }}
                 </div>
                 <div class="col {% if type == 'backoffice' %}s12 m4{% else %}s12 m6{% endif %}">
-                    <span><i class="material-icons prefix">account_circle</i>Identifiant</span>{{ form_row(form.username) }}
+                    <span><i class="material-icons prefix">account_circle</i>Pseudo</span>{{ form_row(form.username) }}
                 </div>
 
                 {% if type == 'backoffice' %}
@@ -28,14 +28,18 @@
             </div>
             <br>
 
-            <div class="row">
+            <div class="row" style="margin-bottom: 0;">
                 <div class="col s12 m9">
-                    <span><i class="material-icons prefix">face</i>Avatar</span>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
+                    <span><i class="material-icons prefix">face</i>Avatar (URL)</span>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
                 </div>
                 <div class="col s12 m3">
                     <img id="img_competiteur_avatar" class="center-align" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem">
                 </div>
             </div>
+
+            {% if app.request.getPathInfo == '/backoffice/competiteurs' %}
+                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text lighten-1"><i class="material-icons">info</i> Le mot de passe par défaut est <b>esftt</b></p>
+            {% endif %}
 
             <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}

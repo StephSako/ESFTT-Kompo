@@ -72,7 +72,7 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 $this->em->flush();
-                $this->addFlash('success', 'Utilisateur modifié avec succès !');
+                $this->addFlash('success', 'Compétiteur modifié avec succès !');
                 return $this->redirectToRoute('back_office.competiteurs');
             }
             else {
