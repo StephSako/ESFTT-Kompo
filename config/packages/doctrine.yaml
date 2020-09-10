@@ -19,3 +19,4 @@ doctrine:
         dql:
             string_functions:
                 JSON_VALUE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mariadb\JsonValue
+                GROUP_CONCAT: DoctrineExtensions\Query\Mysql\GroupConcat

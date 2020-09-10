@@ -34,6 +34,7 @@ final class Versions
      */
     const VERSIONS          = array (
   'al37350/fftt-api' => '1.7.3@295830beb1b61ed21552933c6d2be47e7445f7f1',
+  'beberlei/doctrineextensions' => 'v1.2.7@5f16b305dda06eda0d2d293c9d2bbd299249a996',
   'composer/package-versions-deprecated' => '1.11.99@c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855',
   'doctrine/annotations' => '1.10.4@bfe91e31984e2ba76df1c1339681770401ec262f',
   'doctrine/cache' => '1.10.2@13e3381b25847283a91948d04640543941309727',
@@ -150,14 +151,14 @@ final class Versions
   'symfony/profiler-pack' => 'v1.0.5@29ec66471082b4eb068db11eb4f0a48c277653f7',
   'symfony/test-pack' => 'v1.0.6@ff87e800a67d06c423389f77b8209bc9dc469def',
   'symfony/web-profiler-bundle' => 'v5.1.5@57580233309788f66e69ad783989880b1b85c77f',
-  'paragonie/random_compat' => '2.*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-ctype' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-iconv' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-php72' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-php71' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-php70' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  'symfony/polyfill-php56' => '*@c30f88e64c83d6255b3752d52cb8b32a353f064d',
-  '__root__' => 'dev-master@c30f88e64c83d6255b3752d52cb8b32a353f064d',
+  'paragonie/random_compat' => '2.*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-ctype' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-iconv' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-php72' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-php71' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-php70' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  'symfony/polyfill-php56' => '*@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
+  '__root__' => 'dev-master@f91a7ecca5a99103cb572f9267a7d5fcb9ad7620',
 );
 
     private function __construct()

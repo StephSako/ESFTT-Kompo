@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "al37350/fftt-api": "^1.7",
+        "beberlei/doctrineextensions": "^1.2",
         "scienta/doctrine-json-functions": "~4.1",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",

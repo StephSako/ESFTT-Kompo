@@ -46,4 +46,41 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $idJournee
+     * @param $idEquipe
+     * @param $idCompetiteur
+     * @return int|mixed|string
+     */
+    public function getSelectedWhenBurnt($idJournee, $idEquipe, $idCompetiteur){
+        $query = $this->createQueryBuilder('rd')
+            ->select('GROUP_CONCAT(rd.id) as id_compos')
+            ->from('App:Competiteur', 'c')
+            ->where('rd.idJournee >= (:idJournee + 1)')
+            ->andWhere('rd.idJournee <= 6')
+            ->setParameter('idJournee', $idJournee)
+            ->andWhere('rd.idEquipe > :idEquipe')
+            ->setParameter('idEquipe', $idEquipe)
+            ->andWhere('c.idCompetiteur = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
+            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur');
+
+        switch ($idEquipe) {
+            case 1:
+                $query
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2");
+                break;
+            case 2:
+                $query
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2");
+                break;
+            case 3:
+                $query
+                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.3') >= 2");
+                break;
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

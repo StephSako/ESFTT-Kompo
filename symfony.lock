@@ -2,6 +2,9 @@
     "al37350/fftt-api": {
         "version": "1.7.3"
     },
+    "beberlei/doctrineextensions": {
+        "version": "v1.2.7"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99"
     },

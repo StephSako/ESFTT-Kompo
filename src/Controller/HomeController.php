@@ -142,6 +142,8 @@ class HomeController extends AbstractController
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
 
+        dump($this->rencontreDepartementaleRepository->getSelectedWhenBurnt(2, 2, 2));
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
