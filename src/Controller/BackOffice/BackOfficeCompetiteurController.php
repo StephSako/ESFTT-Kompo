@@ -32,10 +32,9 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs", name="back_office.competiteurs")
-     * @param Request $request
      * @return Response
      */
-    public function indexCompetiteurs(Request $request)
+    public function indexCompetiteurs()
     {
         return $this->render('back_office/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
