@@ -48,39 +48,25 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $idJournee
-     * @param $idEquipe
      * @param $idCompetiteur
+     * @param $idJournee
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt($idJournee, $idEquipe, $idCompetiteur){
-        $query = $this->createQueryBuilder('rd')
-            ->select('GROUP_CONCAT(rd.id) as id_compos')
+    public function getSelectedWhenBurnt($idCompetiteur, $idJournee){
+        return $this->createQueryBuilder('rd')
+            ->select('rd as compo')
+            ->addSelect("IF(rd.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
+            ->addSelect("IF(rd.idJoueur2=:idCompetiteur, 1, 0) as isPlayer2")
+            ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
+            ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
             ->from('App:Competiteur', 'c')
-            ->where('rd.idJournee >= (:idJournee + 1)')
-            ->andWhere('rd.idJournee <= 6')
+            ->where('rd.idJournee > (:idJournee + 1)')
             ->setParameter('idJournee', $idJournee)
-            ->andWhere('rd.idEquipe > :idEquipe')
-            ->setParameter('idEquipe', $idEquipe)
+            ->andWhere('rd.idJournee <= 7')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur');
-
-        switch ($idEquipe) {
-            case 1:
-                $query
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2");
-                break;
-            case 2:
-                $query
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2");
-                break;
-            case 3:
-                $query
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.3') >= 2");
-                break;
-        }
-
-        return $query->getQuery()->getResult();
+            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
+            ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.3') >= 2")
+            ->getQuery()->getResult();
     }
 }

@@ -119,7 +119,6 @@ class HomeController extends AbstractController
         $this->get('session')->set('type', $type);
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = null;
         $disposJoueur = [];
-
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
 
         if ($this->get('session')->get('type') === 'departementale'){
@@ -141,8 +140,6 @@ class HomeController extends AbstractController
         }
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
-
-        dump($this->rencontreDepartementaleRepository->getSelectedWhenBurnt(2, 2, 2));
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -224,7 +221,7 @@ class HomeController extends AbstractController
                 $this->decrementeBrulage56789($j9, $compo);
             }
 
-            /** Incrémenter le brûlage des joueurs sélectionnés de la nouvelle compo **/
+            /** Incrémenter le brûlage des joueurs selectionnés de la nouvelle compo **/
             $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
             $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
             $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur3(), $compo->getIdJoueur3());
@@ -312,6 +309,10 @@ class HomeController extends AbstractController
                 $brulage1 = $jForm->getBrulageDepartemental();
                 $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
                 $jCompo->setBrulageDepartemental($brulage1);
+                $this->em->flush();
+
+                /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+                $this->deleteBurntSelectedPlayerDepartementale($jForm, $compo->getIdJournee());
             } else if ($type === 'paris') {
                 $brulage1 = $jForm->getBrulageParis();
                 $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
@@ -330,6 +331,17 @@ class HomeController extends AbstractController
             $brulage5 = $jForm->getBrulageParis();
             $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
             $jCompo->setBrulageParis($brulage5);
+        }
+    }
+
+    public function deleteBurntSelectedPlayerDepartementale($j, $idJournee){
+        foreach ($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($j, $idJournee) as $compo){
+            if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
+            if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
+            if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
+            if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
+            $this->decrementeBrulage1234($j, 'departementale', $compo["compo"]);
+            $this->em->flush();
         }
     }
 }
