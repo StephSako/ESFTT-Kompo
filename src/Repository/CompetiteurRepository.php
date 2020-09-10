@@ -82,7 +82,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findBurnPlayersParis()
     {
         return $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 2")
+            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 3")
             ->orderBy('c.nom')
             ->getQuery()
             ->getResult();
@@ -124,8 +124,8 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAlmostBurnPlayersParis()
     {
         return $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageParis, '$.1') = 1")
-            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 2")
+            ->where("JSON_VALUE(c.brulageParis, '$.1') = 2")
+            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 3")
             ->orderBy('c.nom')
             ->getQuery()
             ->getResult();

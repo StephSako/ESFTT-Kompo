@@ -290,8 +290,8 @@ class Competiteur implements UserInterface, Serializable
     public function getFirstBurntTeamParis(){
         $brulageParis = $almost = null;
 
-        if ($this->brulageParis[1] == 1) $almost = 1;
-        if ($this->brulageParis[1] >= 2) $brulageParis = 2;
+        if ($this->brulageParis[1] == 2) $almost = 1;
+        if ($this->brulageParis[1] >= 3) $brulageParis = 2;
 
         return ["almost" => $almost, "burnt" =>$brulageParis];
     }

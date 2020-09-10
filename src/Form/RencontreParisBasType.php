@@ -39,7 +39,7 @@ class RencontreParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 3");
                             break;
                     }
                     return $query->orderBy('c.nom');
@@ -66,7 +66,7 @@ class RencontreParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 3");
                             break;
                     }
                     return $query->orderBy('c.nom');
@@ -93,7 +93,7 @@ class RencontreParisBasType extends AbstractType
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
                             $query
-                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                                ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 3");
                             break;
                     }
                     return $query->orderBy('c.nom');

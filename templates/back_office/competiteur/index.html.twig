@@ -3,7 +3,6 @@
 {% block title %}Back office - Les compétiteurs{% endblock %}
 {% import 'macros/flash.html.twig' as flash %}
 {% import 'macros/account.edit.html.twig' as edit_account %}
-{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block body %}
 
@@ -19,11 +18,10 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
-        {{ form_errors(form) }}
-
-        {{ edit_account.edit_account('backoffice', 'Créer un compétiteur', form, 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png', 'Créer') }}
-
         <div class="card-panel center">
+
+            <a style="margin-bottom: 20px;" href="{{ path('back_office.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">person_add</i> Créer un compétiteur</a>
+
             <table class="striped centered responsive-table table_competiteur_backoffice">
                 <thead>
                 <tr>
@@ -40,7 +38,12 @@
                 <tbody>
                 {% for competiteur in competiteurs %}
                     <tr>
-                        <td>{% if competiteur.role %}<span class="new badge blue" data-badge-caption="Capitaine"></span>{% endif %}</td>
+                        <td>
+                            {% if competiteur.role %}
+                                <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                            {% else %}
+                                <span class="new badge green" data-badge-caption="Joueur"></span>
+                            {% endif %}</td>
                         <td class="avatar"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>

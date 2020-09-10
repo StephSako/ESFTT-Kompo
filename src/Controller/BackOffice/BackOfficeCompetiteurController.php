@@ -37,6 +37,18 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function indexCompetiteurs(Request $request)
     {
+        return $this->render('back_office/competiteur/index.html.twig', [
+            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/new", name="back_office.competiteur.new")
+     * @param Request $request
+     * @return Response
+     */
+    public function newCompetiteurs(Request $request)
+    {
         $competiteur = new Competiteur();
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
@@ -52,8 +64,7 @@ class BackOfficeCompetiteurController extends AbstractController
             }
         }
 
-        return $this->render('back_office/competiteurs.html.twig', [
-            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC']),
+        return $this->render('back_office/competiteur/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
