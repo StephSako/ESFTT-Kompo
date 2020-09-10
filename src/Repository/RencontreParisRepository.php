@@ -51,4 +51,33 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $idCompetiteur
+     * @param $idJournee
+     * @return int|mixed|string
+     */
+    public function getSelectedWhenBurnt($idCompetiteur, $idJournee){
+        return $this->createQueryBuilder('rp')
+            ->select('rp as compo')
+            ->addSelect("IF(rp.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
+            ->addSelect("IF(rp.idJoueur2=:idCompetiteur, 1, 0) as isPlayer2")
+            ->addSelect("IF(rp.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
+            ->addSelect("IF(rp.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
+            ->addSelect("IF(rp.idJoueur5=:idCompetiteur, 1, 0) as isPlayer5")
+            ->addSelect("IF(rp.idJoueur6=:idCompetiteur, 1, 0) as isPlayer6")
+            ->addSelect("IF(rp.idJoueur7=:idCompetiteur, 1, 0) as isPlayer7")
+            ->addSelect("IF(rp.idJoueur8=:idCompetiteur, 1, 0) as isPlayer8")
+            ->addSelect("IF(rp.idJoueur9=:idCompetiteur, 1, 0) as isPlayer9")
+            ->from('App:Competiteur', 'c')
+            ->where('rp.idJournee >= (:idJournee + 1)')
+            ->setParameter('idJournee', $idJournee)
+            ->andWhere('rp.idJournee <= 7')
+            ->andWhere('rp.idEquipe = 2')
+            ->andWhere('c.idCompetiteur = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
+            ->andWhere('rp.idJoueur1 = c.idCompetiteur OR rp.idJoueur2 = c.idCompetiteur OR rp.idJoueur3 = c.idCompetiteur OR rp.idJoueur4 = c.idCompetiteur OR rp.idJoueur5 = c.idCompetiteur OR rp.idJoueur6 = c.idCompetiteur OR rp.idJoueur7 = c.idCompetiteur OR rp.idJoueur8 = c.idCompetiteur OR rp.idJoueur9 = c.idCompetiteur')
+            ->andWhere("JSON_VALUE(c.brulageParis, '$.1') >= 3")
+            ->getQuery()->getResult();
+    }
 }

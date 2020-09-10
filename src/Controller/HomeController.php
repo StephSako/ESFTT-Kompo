@@ -312,11 +312,14 @@ class HomeController extends AbstractController
                 $this->em->flush();
 
                 /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
-                $this->deleteBurntSelectedPlayerDepartementale($jForm, $compo->getIdJournee());
+                $this->deleteBurntSelectedPlayerDepartementale($jForm, $compo->getIdJournee(), $compo->getIdEquipe());
             } else if ($type === 'paris') {
                 $brulage1 = $jForm->getBrulageParis();
                 $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
                 $jCompo->setBrulageParis($brulage1);
+
+                /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+                $this->deleteBurntSelectedPlayerParis($jForm, $compo->getIdJournee());
             }
         }
     }
@@ -331,16 +334,44 @@ class HomeController extends AbstractController
             $brulage5 = $jForm->getBrulageParis();
             $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
             $jCompo->setBrulageParis($brulage5);
+
+            /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+            $this->deleteBurntSelectedPlayerParis($jForm, $compo->getIdJournee());
         }
     }
 
-    public function deleteBurntSelectedPlayerDepartementale($j, $idJournee){
-        foreach ($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($j, $idJournee) as $compo){
+    /**
+     * @param $j
+     * @param $idJournee
+     * @param $idEquipe
+     */
+    public function deleteBurntSelectedPlayerDepartementale($j, $idJournee, $idEquipe){
+        foreach ($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($j, $idJournee, $idEquipe) as $compo){
             if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
             if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
             if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
             if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
             $this->decrementeBrulage1234($j, 'departementale', $compo["compo"]);
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @param $j
+     * @param $idJournee
+     */
+    public function deleteBurntSelectedPlayerParis($j, $idJournee){
+        foreach ($this->rencontreParisRepository->getSelectedWhenBurnt($j, $idJournee) as $compo){
+            if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
+            if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
+            if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
+            if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
+            if ($compo["isPlayer5"]) $compo["compo"]->setIdJoueur5(NULL);
+            if ($compo["isPlayer6"]) $compo["compo"]->setIdJoueur6(NULL);
+            if ($compo["isPlayer7"]) $compo["compo"]->setIdJoueur7(NULL);
+            if ($compo["isPlayer8"]) $compo["compo"]->setIdJoueur8(NULL);
+            if ($compo["isPlayer9"]) $compo["compo"]->setIdJoueur9(NULL);
+            $this->decrementeBrulage1234($j, 'paris', $compo["compo"]);
             $this->em->flush();
         }
     }

@@ -50,9 +50,10 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     /**
      * @param $idCompetiteur
      * @param $idJournee
+     * @param $idEquipe
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt($idCompetiteur, $idJournee){
+    public function getSelectedWhenBurnt($idCompetiteur, $idJournee, $idEquipe){
         return $this->createQueryBuilder('rd')
             ->select('rd as compo')
             ->addSelect("IF(rd.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
@@ -60,8 +61,10 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
             ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
             ->from('App:Competiteur', 'c')
-            ->where('rd.idJournee > (:idJournee + 1)')
+            ->where('rd.idJournee >= (:idJournee + 1)')
             ->setParameter('idJournee', $idJournee)
+            ->andWhere('rd.idEquipe > :idEquipe')
+            ->setParameter('idEquipe', $idEquipe)
             ->andWhere('rd.idJournee <= 7')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
