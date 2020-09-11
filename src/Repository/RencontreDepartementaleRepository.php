@@ -61,7 +61,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
             ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
             ->from('App:Competiteur', 'c')
-            ->where('rd.idJournee >= (:idJournee + 1)')
+            ->where('rd.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('rd.idEquipe > :idEquipe')
             ->setParameter('idEquipe', $idEquipe)

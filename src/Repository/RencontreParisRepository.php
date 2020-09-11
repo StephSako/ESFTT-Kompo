@@ -70,7 +70,7 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->addSelect("IF(rp.idJoueur8=:idCompetiteur, 1, 0) as isPlayer8")
             ->addSelect("IF(rp.idJoueur9=:idCompetiteur, 1, 0) as isPlayer9")
             ->from('App:Competiteur', 'c')
-            ->where('rp.idJournee >= (:idJournee + 1)')
+            ->where('rp.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('rp.idJournee <= 7')
             ->andWhere('rp.idEquipe = 2')

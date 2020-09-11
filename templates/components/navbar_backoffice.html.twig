@@ -12,19 +12,19 @@
 
             <ul class="left hide-on-med-and-down">
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Les rencontres</a>
+                    <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Rencontres</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>La phase</a>
+                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>Phase</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Les équipes</a>
+                    <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Équipes</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Les disponibilités</a>
+                    <a class="white-text" href="{{ path("back_office.disponibilites") }}"><i class="material-icons left">textsms</i>Disponibilités</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Les compétiteurs</a>
+                    <a class="white-text" href="{{ path("back_office.competiteurs") }}"><i class="material-icons left">account_box</i>Compétiteurs</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line">
                     <a class="white-text" href="{{ path("journee.show", {type: type, id: 1}) }}">
