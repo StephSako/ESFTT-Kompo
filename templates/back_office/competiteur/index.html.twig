@@ -23,15 +23,23 @@
 
             <table class="striped centered responsive-table table_competiteur_backoffice">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th class="avatar">Avatar</th>
-                    <th>Nom</th>
-                    <th>Identifiant</th>
-                    <th>Licence</th>
-                    <th>Classement</th>
-                    <th></th>
-                </tr>
+                    <tr class="hide-on-small-only">
+                        <th></th>
+                        <th class="avatar hide-on-small-only">Avatar</th>
+                        <th>Nom</th>
+                        <th>Pseudo</th>
+                        <th>Licence</th>
+                        <th>Classement</th>
+                        <th></th>
+                    </tr>
+                    <tr class="hide-on-med-and-up">
+                        <th></th>
+                        <th>Nom</th>
+                        <th>Pseudo</th>
+                        <th>Lic.</th>
+                        <th>Class.</th>
+                        <th></th>
+                    </tr>
                 </thead>
 
                 <tbody>
@@ -43,7 +51,7 @@
                             {% else %}
                                 <span class="new badge green" data-badge-caption="Joueur"></span>
                             {% endif %}</td>
-                        <td class="avatar"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
+                        <td class="avatar hide-on-small-only"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
                         <td>{{ competiteur.licence }}</td>

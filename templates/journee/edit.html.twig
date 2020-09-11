@@ -15,7 +15,7 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            <table style="margin-top: 30px;" class="centered card-panel dispos brulage_edit">
+            <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
                 <thead>
                 <tr>
                     <th>
@@ -161,7 +161,7 @@
             </div>
         </div>
         <div class="col s12 hide-on-med-and-up">
-            <table style="margin-top: 30px;" class="centered card-panel dispos brulage_edit">
+            <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
                 <thead>
                 <tr>
                     <th>
@@ -213,27 +213,33 @@
             </table>
         </div>
         <div class="col s12 m2">
-            <table style="margin-top: 30px;" class="centered card-panel dispos">
+            <table style="margin-top: 20px;" class="centered card-panel dispos">
                 <thead>
                 <tr>
-                    <th><h5>Sélectionnables <i class="light-green-text darken-3 material-icons">done</i></h5></th>
+                    <th><h5>Sélectionnables</h5></th>
                     <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {% for selectionnable in selectionnables %}
+                {% if selectionnables is empty %}
                     <tr>
-                        <td>
-                            <span class="{% if selectionnable.disponibilite %} green-text lighten-3 {% elseif not selectionnable.disponibilite %} red-text lighten-3 {% endif %}">{{ selectionnable.idCompetiteur.nom }}</span>
-                        </td>
-                        <td>
-                            {% if selectionnable.idCompetiteur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                            {% endif %}
-                        </td>
+                        <td>Il n'y a pas de joueurs sélectionnables</td>
                     </tr>
-                {% endfor %}
+                {% else %}
+                    {% for selectionnable in selectionnables %}
+                        <tr>
+                            <td>
+                                {{ selectionnable.idCompetiteur.nom }}
+                            </td>
+                            <td>
+                                {% if selectionnable.idCompetiteur.idCompetiteur in selectedPlayers %}
+                                    <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>

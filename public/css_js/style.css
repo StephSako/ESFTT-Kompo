@@ -243,9 +243,3 @@ p.lobster {
 .indicator-item {
     padding: 5px;
 }
-
-@media screen and (max-width: 992px) {
-    .table_competiteur_backoffice td:nth-child(2), .table_competiteur_backoffice th:nth-child(2){
-        display: none;
-    }
-}

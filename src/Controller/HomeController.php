@@ -75,11 +75,11 @@ class HomeController extends AbstractController
     public function testApiFFTTAction(){
         $api = new FFTTApi("SW405", "d7ZG56dQKf");
         try {
-            //var_dump($api->getEquipesByClub('08951331'));
-        } catch (InvalidURIParametersException $e) {//var_dump($e->getMessage());
-        } catch (NoFFTTResponseException $e) {//var_dump($e->getMessage());
-        } catch (URIPartNotValidException $e) {//var_dump($e->getMessage());
-        } catch (JoueurNotFound $e) {//var_dump($e->getMessage());
+            var_dump($api->getEquipesByClub("08951331"));
+        } catch (InvalidURIParametersException $e) {var_dump($e->getMessage());
+        } catch (NoFFTTResponseException $e) {var_dump($e->getMessage());
+        } catch (URIPartNotValidException $e) {var_dump($e->getMessage());
+        } catch (JoueurNotFound $e) {var_dump($e->getMessage());
         }
 
         return new Response('');
@@ -221,6 +221,8 @@ class HomeController extends AbstractController
                 $this->decrementeBrulage56789($j9, $compo);
             }
 
+            $this->em->flush();
+
             /** Incrémenter le brûlage des joueurs selectionnés de la nouvelle compo **/
             $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
             $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
@@ -334,6 +336,7 @@ class HomeController extends AbstractController
             $brulage5 = $jForm->getBrulageParis();
             $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
             $jCompo->setBrulageParis($brulage5);
+            $this->em->flush();
 
             /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
             $this->deleteBurntSelectedPlayerParis($jForm, $compo->getIdJournee());

@@ -73,7 +73,7 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
         switch ($team->getIdEquipe()) {
             case 2:
                 $query
-                    ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 2");
+                    ->andWhere("JSON_VALUE(c.brulageParis, '$.1') < 3");
                 break;
         }
 
