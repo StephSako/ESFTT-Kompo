@@ -69,7 +69,8 @@
 
         <div class="col s12 m7">
             <div class="center-align card-panel">
-                <h4>Composition d'équipe</h4><h5 style="font-family: Lobster, cursive; margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
+                <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
 
                 <div class="row header_compo">
                     {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
@@ -154,7 +155,6 @@
                                 <div class="col s12 m9">{{ form_row(form.idJoueur9) }}</div>
                             </div>
                         {% endif %}
-
                     </div>
                 <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
                 {{ form_end(form) }}

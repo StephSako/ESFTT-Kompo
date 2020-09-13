@@ -17,6 +17,10 @@
             {{ flash.fail(message) }}
         {% endfor %}
 
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les Compétiteurs</h4>
+        </div>
+
         <div class="card-panel center">
 
             <a style="margin-bottom: 20px;" href="{{ path('back_office.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">person_add</i> Créer un compétiteur</a>

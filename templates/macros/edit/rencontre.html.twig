@@ -1,9 +1,7 @@
 {% macro rencontre(idJournee, type, idEquipe, date, form) %}
     <div class="card-panel center-align">
-        <h4 class="h4_form">Modifier la rencontre{% if type == 'paris' %} de Paris{% else %} départementale{% endif %}</h4>
-
-        <h5 id="titre_edit_journée_pc" class="titre_edit_journée">Journée N° {{ idJournee }} - Equipe N° {{ idEquipe }} - {{ date|format_datetime('long', 'none', locale='fr') }}</h5>
-        <h5 id="titre_edit_journée_mobile" class="titre_edit_journée">J{{ idJournee }} - Equipe {{ idEquipe }} - {{ date|date("m/d/Y") }}</h5>
+        <h4 class="hide-on-small-only titre">Journée {{ idJournee }} - Equipe {{ idEquipe }} - {{ date|format_datetime('long', 'none', locale='fr') }}</h4>
+        <h4 class="hide-on-med-and-up titre">J{{ idJournee }} - Equipe {{ idEquipe }}<br>{{ date|date("m/d/Y") }}</h4>
 
         {{ form_start(form) }}
             <div class="row">
@@ -22,18 +20,4 @@
             <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         {{ form_end(form) }}
     </div>
-
-    <script>
-        $(window).ready(function() {
-            if ($(window).width() <= 600){
-                $("#titre_edit_journée_pc").attr("hidden", true);
-                $("#titre_edit_journée_mobile").removeAttr('hidden');
-            }
-            else{
-                $("#titre_edit_journée_mobile").attr("hidden", true);
-                $("#titre_edit_journée_pc").removeAttr('hidden');
-            }
-        });
-    </script>
-
 {% endmacro %}
