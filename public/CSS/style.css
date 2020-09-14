@@ -26,11 +26,20 @@ html {
   margin-top: 0;
 }
 
-.dispos {
+.dispos, .brulages {
   border-radius: 10px;
   background-color: white;
   float: right;
   margin-top: 10px;
+  font-size: 95%;
+}
+
+.brulages td:not(:first-child) {
+  background-color: rgba(153, 152, 152, 0.1);
+  border-left-color: white;
+  border-left-style: solid;
+  border-right-color: white;
+  width: 35.6px;
 }
 
 #nom_ad_mobile {

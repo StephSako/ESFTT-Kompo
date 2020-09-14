@@ -1,27 +1,27 @@
 {% macro table(type, competiteurs) %}
-    <div class="card-panel bottom_0">
+    <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text lighten-1 material-icons">highlight_off</i></div>
-            <div class="col s10">Brûlé dans l'équipe</div>
+            <div class="col s10" style="padding-left: 0;">Brûlé dans l'équipe</div>
         </div>
 
         <div class="row bottom_0">
             <div class="col s2"><i class="orange-text lighten-1 material-icons">error_outline</i></div>
-            <div class="col s10">Futur brûlé en équipes inférieures</div>
+            <div class="col s10" style="padding-left: 0;">Dernier match dans l'équipe avant brûlage</div>
         </div>
     </div>
 
-    <table class="card-panel dispos">
+    <table class="card-panel brulages">
         <thead>
-        <tr>
-            <th class="center"><h5>Brûlages</h5></th>
-            <th class="center"><h5>1</h5></th>
-            <th class="center"><h5>2</h5></th>
-            {% if type == 'departementale' %}
-                <th class="center"><h5>3</h5></th>
-                <th class="center"><h5>4</h5></th>
-            {% endif %}
-        </tr>
+            <tr>
+                <th class="center"><h5>Brûlages</h5></th>
+                <th class="center"><h5>1</h5></th>
+                <th class="center"><h5>2</h5></th>
+                {% if type == 'departementale' %}
+                    <th class="center"><h5>3</h5></th>
+                    <th class="center"><h5>4</h5></th>
+                {% endif %}
+            </tr>
         </thead>
 
         <tbody>

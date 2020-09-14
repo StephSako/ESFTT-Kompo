@@ -1,6 +1,7 @@
 $green: #2db009;
 $red: #ff0000;
 $grey: #918c8c;
+$light_grey: #999898;
 $dark_blue: #012242;
 $light_blue: #1565c0;
 $gradient_blue_light: rgb(17, 116, 184);
@@ -38,6 +39,19 @@ html {
   background-color: white;
   float: right;
   margin-top: 10px;
+  font-size: 95%;
+}
+
+.brulages {
+  @extend .dispos;
+
+  td:not(:first-child) {
+    background-color: rgba($light_grey,0.1);
+    border-left-color: white;
+    border-left-style: solid;
+    border-right-color: white;
+    width: 35.6px;
+  }
 }
 
 #nom_ad_mobile {
