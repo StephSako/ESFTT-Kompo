@@ -1,6 +1,5 @@
-<li><div class="divider"></div></li>
 <li class="li_in_line">
-    <a class="white-text center-align" href="https://www.esftt.com/forum"><i class="white-text material-icons left">chat</i>Forums</a>
+    <a class="white-text center-align" href="https://www.esftt.com/forum"><i class="white-text material-icons left">chat</i>Forum ESFTT</a>
 </li>
 
 {% if app.user %}
@@ -15,6 +14,4 @@
     {% endif %}
 
     <li class="li_in_line"><a class="white-text center-align" href="{{ path('logout') }}"><i class="white-text material-icons left">power_settings_new</i>Se déconnecter</a></li>
-{% else %}
-    <li class="li_in_line"><a class="white-text center-align" href="{{ path('login') }}"><i class="white-text material-icons left">input</i>Se connecter</a></li>
 {% endif %}

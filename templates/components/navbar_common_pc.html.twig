@@ -1,6 +1,6 @@
 <ul class="right hide-on-med-and-down">
     <li class="waves-light waves-effect li_in_line">
-        <a class="white-text" href="https://www.esftt.com/forum">Forums</a>
+        <a class="white-text" href="https://www.esftt.com/forum">Forum ESFTT</a>
     </li>
 
     {% if app.user %}
@@ -15,7 +15,5 @@
         {% endif %}
 
         <li class="waves-light waves-effect li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
-    {% else %}
-        <li class="waves-light waves-effect li_in_line"><a class="white-text" href="{{ path('login') }}">Se connecter</a></li>
     {% endif %}
 </ul>
