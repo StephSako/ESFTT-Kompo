@@ -73,6 +73,11 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    /**
+     * @param $idCompetiteur
+     * @param $idJournee
+     * @return int|mixed|string
+     */
     public function getSelectedWhenIndispo($idCompetiteur, $idJournee){
         return $this->createQueryBuilder('rd')
             ->select('rd as compo')

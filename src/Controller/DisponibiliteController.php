@@ -117,7 +117,7 @@ class DisponibiliteController extends AbstractController
             else if ($type == 'paris'){
                 $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteParis($dispo);
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerParis($this->getUser(), $this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $journee));
+                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerParis($this->getUser(), $this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $journee));
 
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
