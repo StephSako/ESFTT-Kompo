@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\InvalidSelectionController;
 use App\Entity\DisponibiliteDepartementale;
 use App\Entity\DisponibiliteParis;
 use App\Repository\CompetiteurRepository;
@@ -9,6 +10,8 @@ use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
+use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\RencontreParisRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +26,8 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $competiteurRepository;
     private $journeeDepartementaleRepository;
     private $journeeParisRepository;
+    private $rencontreDepartementaleRepository;
+    private $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.
@@ -32,13 +37,17 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
      * @param EntityManagerInterface $em
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      */
     public function __construct(DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 JourneeDepartementaleRepository $journeeDepartementaleRepository,
                                 JourneeParisRepository $journeeParisRepository,
-                                EntityManagerInterface $em)
+                                EntityManagerInterface $em,
+                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
@@ -46,6 +55,8 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->competiteurRepository = $competiteurRepository;
         $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->journeeParisRepository = $journeeParisRepository;
+        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
     }
 
     /**
@@ -101,19 +112,28 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo
+     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      */
-    public function update($type, $disposJoueur, bool $dispo) : Response
+    public function update(string $type, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
         if ($type || $type != 'departementale' || $type != 'paris') {
             if ($type == 'departementale') {
                 $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
+
+                /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
+                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerDepartementale($this->getUser(), $this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()));
+
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
-            } else if ($type == 'paris') {
+            }
+            else if ($type == 'paris') {
                 $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteParis($dispo);
+
+                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerParis($this->getUser(), $this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()));
+
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
             } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');

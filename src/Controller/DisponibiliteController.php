@@ -93,20 +93,21 @@ class DisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{journee}/{type}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
+     * @Route("/journee/disponibilite/update/{type}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param string $type
      * @param $disposJoueur
      * @param bool $dispo
-     * @param int $journee
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      */
-    public function update($type, $disposJoueur, bool $dispo, $journee, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(string $type, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
+        $journee =1;
         if ($type) {
             if ($type == 'departementale'){
                 $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
+                $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
                 /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
                 if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerDepartementale($this->getUser(), $this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $journee));
@@ -117,6 +118,8 @@ class DisponibiliteController extends AbstractController
             else if ($type == 'paris'){
                 $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteParis($dispo);
+                $journee = $disposJoueur->getIdJournee()->getIdJournee();
+
                 if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerParis($this->getUser(), $this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $journee));
 
                 $this->em->flush();
