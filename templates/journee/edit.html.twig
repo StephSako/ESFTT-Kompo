@@ -79,9 +79,9 @@
 
                     <div class="col s4 m2">
                         <h5>
-                            <span class="white-text bulle">{% if compo.idEquipe.division|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division }}{% if compo.idEquipe.division|length == 1 %}&thinsp;{% endif %}</span><br>
+                            <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                         </h5>
-                        <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule }}</span></p>
+                        <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
                     </div>
 
                     <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>

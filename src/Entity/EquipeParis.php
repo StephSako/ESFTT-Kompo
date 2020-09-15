@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeParisRepository")
@@ -19,27 +18,16 @@ class EquipeParis
     private $idEquipe;
 
     /**
-     *
-     * @Assert\Length(
-     *      max = 1,
-     *      maxMessage = "Votre poule doit contenir au maximum {{ limit }} letttres"
-     * )
-     *
-     * @ORM\Column(name="poule", type="string", length=1, nullable=false)
-     */
-    private $poule;
-
-    /**
-     * @Assert\Length(
-     *      min = 1,
-     *      max = 20,
-     *      minMessage = "Votre division doit contenir au moins {{ limit }} letttres",
-     *      maxMessage = "Votre division doit contenir au maximum {{ limit }} letttres"
-     * )
-     *
-     * @ORM\Column(name="division", type="string", length=20, nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Division", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_division", referencedColumnName="id")
      */
     private $division;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_poule", referencedColumnName="id")
+     */
+    private $poule;
 
     /**
      * @return mixed
@@ -53,32 +41,22 @@ class EquipeParis
      * @param mixed $idEquipe
      * @return EquipeParis
      */
-    public function setIdEquipe($idEquipe): self
+    public function setIdEquipe($idEquipe)
     {
         $this->idEquipe = $idEquipe;
         return $this;
     }
 
     /**
-     * @return string
+     * @return Division
      */
-    public function getPoule(): string
+    public function getDivision()
     {
-        return $this->poule;
+        return $this->division;
     }
 
     /**
-     * @param string $poule
-     * @return EquipeParis
-     */
-    public function setPoule($poule): self
-    {
-        $this->poule = $poule;
-        return $this;
-    }
-
-    /**
-     * @param string $division
+     * @param mixed $division
      * @return EquipeParis
      */
     public function setDivision($division)
@@ -88,12 +66,20 @@ class EquipeParis
     }
 
     /**
-     * @return string
+     * @return Poule
      */
-    public function getDivision(): string
+    public function getPoule()
     {
-        return $this->division;
+        return $this->poule;
     }
 
-
+    /**
+     * @param mixed $poule
+     * @return EquipeParis
+     */
+    public function setPoule($poule)
+    {
+        $this->poule = $poule;
+        return $this;
+    }
 }

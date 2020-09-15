@@ -15,7 +15,7 @@
                     <a class="white-text" href="{{ path("back_office.rencontres") }}"><i class="material-icons left">tonality</i>Rencontres</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>Phase</a>
+                    <a class="white-text" href="{{ path("back_office.phase") }}"><i class="material-icons left">today</i>Dates</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("back_office.equipes") }}"><i class="material-icons left">format_list_numbered</i>Équipes</a>
@@ -43,7 +43,7 @@
         <a class="white-text center-align" href="{{ path("back_office.rencontres") }}"><i class="white-text material-icons left">tonality</i>Rencontres</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/phase' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("back_office.phase") }}"><i class="white-text material-icons left">today</i>Phase</a>
+        <a class="white-text center-align" href="{{ path("back_office.phase") }}"><i class="white-text material-icons left">today</i>Dates</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("back_office.equipes") }}"><i class="white-text material-icons left">format_list_numbered</i>Équipes</a>
