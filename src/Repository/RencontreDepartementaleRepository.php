@@ -72,4 +72,20 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.3') >= 2")
             ->getQuery()->getResult();
     }
+
+    public function getSelectedWhenIndispo($idCompetiteur, $idJournee){
+        return $this->createQueryBuilder('rd')
+            ->select('rd as compo')
+            ->addSelect("IF(rd.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
+            ->addSelect("IF(rd.idJoueur2=:idCompetiteur, 1, 0) as isPlayer2")
+            ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
+            ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
+            ->from('App:Competiteur', 'c')
+            ->where('rd.idJournee = :idJournee')
+            ->setParameter('idJournee', $idJournee)
+            ->andWhere('c.idCompetiteur = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
+            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
+            ->getQuery()->getResult();
+    }
 }

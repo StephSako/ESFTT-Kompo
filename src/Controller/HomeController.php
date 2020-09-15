@@ -25,10 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FFTTApi\FFTTApi;
 
-/**
- * Class Rencontre_1Controller
- * @package App\Controller
- */
 class HomeController extends AbstractController
 {
     private $em;
@@ -110,11 +106,11 @@ class HomeController extends AbstractController
     /**
      * @param $type
      * @param $id
+     * @Route("/journee/{type}/{id}", name="journee.show")
      * @return Response
      * @throws DBALException
-     * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journeeShow($type, $id)
+    public function journee($type, $id)
     {
         $this->get('session')->set('type', $type);
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = null;
@@ -161,9 +157,10 @@ class HomeController extends AbstractController
      * @param string $type
      * @param $compo
      * @param Request $request
+     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      */
-    public function edit(string $type, $compo, Request $request) : Response
+    public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
         $oldPlayers = $form = $j4 = $j5 = $j6 = $j7 = $j8 = $j9 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
 
@@ -205,39 +202,39 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** Décrémenter le brûlage des joueurs désélectionnés de la précédente compo **/
-            $this->decrementeBrulage1234($j1, $type, $compo);
-            $this->decrementeBrulage1234($j2, $type, $compo);
-            $this->decrementeBrulage1234($j3, $type, $compo);
+            $invalidSelectionController->decrementeBrulage($j1, $type, $compo);
+            $invalidSelectionController->decrementeBrulage($j2, $type, $compo);
+            $invalidSelectionController->decrementeBrulage($j3, $type, $compo);
 
             if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                $this->decrementeBrulage1234($j4, $type, $compo);
+                $invalidSelectionController->decrementeBrulage($j4, $type, $compo);
             }
 
             if ($type === 'paris' && $levelEquipe === 1) {
-                $this->decrementeBrulage56789($j5, $compo);
-                $this->decrementeBrulage56789($j6, $compo);
-                $this->decrementeBrulage56789($j7, $compo);
-                $this->decrementeBrulage56789($j8, $compo);
-                $this->decrementeBrulage56789($j9, $compo);
+                $invalidSelectionController->decrementeBrulage($j5, $type, $compo);
+                $invalidSelectionController->decrementeBrulage($j6, $type, $compo);
+                $invalidSelectionController->decrementeBrulage($j7, $type, $compo);
+                $invalidSelectionController->decrementeBrulage($j8, $type, $compo);
+                $invalidSelectionController->decrementeBrulage($j9, $type, $compo);
             }
 
             $this->em->flush();
 
             /** Incrémenter le brûlage des joueurs selectionnés de la nouvelle compo **/
-            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
-            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
-            $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur3(), $compo->getIdJoueur3());
+            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
+            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
+            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur3(), $compo->getIdJoueur3());
 
             if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                $this->incrementeBrulage1234($type, $compo, $form->getData()->getIdJoueur4(), $compo->getIdJoueur4());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur4(), $compo->getIdJoueur4());
             }
 
             if ($type === 'paris' && $levelEquipe === 1) {
-                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur5(), $compo->getIdJoueur5());
-                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur6(), $compo->getIdJoueur6());
-                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur7(), $compo->getIdJoueur7());
-                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur8(), $compo->getIdJoueur8());
-                $this->incrementeBrulage56789($compo, $form->getData()->getIdJoueur9(), $compo->getIdJoueur9());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur5(), $compo->getIdJoueur5());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur6(), $compo->getIdJoueur6());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur7(), $compo->getIdJoueur7());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur8(), $compo->getIdJoueur8());
+                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur9(), $compo->getIdJoueur9());
             }
 
             $this->em->flush();
@@ -266,116 +263,5 @@ class HomeController extends AbstractController
             'compo' => $compo,
             'form' => $form->createView()
         ]);
-    }
-
-    /**
-     * @param $j
-     * @param $type
-     * @param $compo
-     */
-    public function decrementeBrulage1234($j, $type, $compo){
-        if ($j != null) {
-            if ($type === 'departementale') {
-                $brulageOld2 = $j->getBrulageDepartemental();
-                $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
-                $j->setBrulageDepartemental($brulageOld2);
-            } else if ($type === 'paris') {
-                $brulageOld2 = $j->getBrulageParis();
-                $brulageOld2[$compo->getIdEquipe()->getIdEquipe()]--;
-                $j->setBrulageParis($brulageOld2);
-            }
-        }
-    }
-
-    /**
-     * @param $j
-     * @param $compo
-     */
-    public function decrementeBrulage56789($j, $compo){
-        if ($j != null) {
-            $brulageOld5 = $j->getBrulageParis();
-            $brulageOld5[$compo->getIdEquipe()->getIdEquipe()]--;
-            $j->setBrulageParis($brulageOld5);
-        }
-    }
-
-    /**
-     * @param $type
-     * @param $compo
-     * @param $jForm
-     * @param $jCompo
-     */
-    public function incrementeBrulage1234($type, $compo, $jForm, $jCompo){
-        if ($jForm != null) {
-            if ($type === 'departementale') {
-                $brulage1 = $jForm->getBrulageDepartemental();
-                $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
-                $jCompo->setBrulageDepartemental($brulage1);
-                $this->em->flush();
-
-                /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
-                $this->deleteBurntSelectedPlayerDepartementale($jForm, $compo->getIdJournee(), $compo->getIdEquipe());
-            } else if ($type === 'paris') {
-                $brulage1 = $jForm->getBrulageParis();
-                $brulage1[$compo->getIdEquipe()->getIdEquipe()]++;
-                $jCompo->setBrulageParis($brulage1);
-
-                /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
-                $this->deleteBurntSelectedPlayerParis($jForm, $compo->getIdJournee());
-            }
-        }
-    }
-
-    /**
-     * @param $compo
-     * @param $jForm
-     * @param $jCompo
-     */
-    public function incrementeBrulage56789($compo, $jForm, $jCompo){
-        if ($jForm != null) {
-            $brulage5 = $jForm->getBrulageParis();
-            $brulage5[$compo->getIdEquipe()->getIdEquipe()]++;
-            $jCompo->setBrulageParis($brulage5);
-            $this->em->flush();
-
-            /** On vérifie si le joueur n'est pas brûlé et selectionné dans de futures compositions **/
-            $this->deleteBurntSelectedPlayerParis($jForm, $compo->getIdJournee());
-        }
-    }
-
-    /**
-     * @param $j
-     * @param $idJournee
-     * @param $idEquipe
-     */
-    public function deleteBurntSelectedPlayerDepartementale($j, $idJournee, $idEquipe){
-        foreach ($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($j, $idJournee, $idEquipe) as $compo){
-            if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
-            if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
-            if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
-            if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
-            $this->decrementeBrulage1234($j, 'departementale', $compo["compo"]);
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * @param $j
-     * @param $idJournee
-     */
-    public function deleteBurntSelectedPlayerParis($j, $idJournee){
-        foreach ($this->rencontreParisRepository->getSelectedWhenBurnt($j, $idJournee) as $compo){
-            if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
-            if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
-            if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
-            if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
-            if ($compo["isPlayer5"]) $compo["compo"]->setIdJoueur5(NULL);
-            if ($compo["isPlayer6"]) $compo["compo"]->setIdJoueur6(NULL);
-            if ($compo["isPlayer7"]) $compo["compo"]->setIdJoueur7(NULL);
-            if ($compo["isPlayer8"]) $compo["compo"]->setIdJoueur8(NULL);
-            if ($compo["isPlayer9"]) $compo["compo"]->setIdJoueur9(NULL);
-            $this->decrementeBrulage1234($j, 'paris', $compo["compo"]);
-            $this->em->flush();
-        }
     }
 }
