@@ -57,7 +57,7 @@ Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux bou
 Vous pouvez modifier vos disponibilités n'importe quand.
 
 #### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
-#### /!\ ATTENTION BIS : si vous vous déclarer disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclaré finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
+#### /!\ ATTENTION BIS : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
 
 ### Tableau des brûlages
 
@@ -107,7 +107,7 @@ Chaque joueur sélectionné est listé avec son classement **officiel** (début 
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264968-composition-equipe-min.png"></p>
 
-C'est depuis cette page que les équipes sont composées. Les brûlés et futurs brûlés sont listés sur la gauche et les joueurs sélectionnables sur la droite.
+C'est depuis cette page que les équipes sont composées. Les brûlés et pré-brûlés sont listés sur la gauche, les joueurs sélectionnables sur la droite.
 
 Sont sélectionnables les joueurs :
 * non brûlés;
@@ -116,11 +116,11 @@ Sont sélectionnables les joueurs :
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264985-selection-min.png"></p>
 
-Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre une sélection à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez enfin la composition avec le bouton CONFIRMER.
+Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre l'emplacement d'un joueur à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez la composition avec le bouton CONFIRMER.
 
 Les brûlages sont gérés automatiquement à la validation.
 
-## Adaptation sur portable
+## Responsive
 
 Le site est totalement adapté aux version mobiles et tablettes. Voici quelques captures d'écran :
 
