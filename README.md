@@ -1,6 +1,8 @@
+
 <p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="50%"></p>
  
 #  <p align="center">Bienvenue sur Kompo !</p>
+
 ## En résumé ...
 Ce site permet aux membres compétiteurs du club de <b>l'ESFTT</b> (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipes et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
 
@@ -96,7 +98,7 @@ Chaque joueur sélectionné est listé avec son classement <b>officiel</b> (déb
 
 #### Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.
 
-## Composition d'équipe (capitaines  ... et curieux 😊)
+## Composition d'équipe
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600255405-composition-equipe.png"></p>
 
@@ -112,6 +114,26 @@ Sont sélectionnables les joueurs :
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre une sélection à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez enfin la composition avec le bouton CONFIRMER.
 
 Les brûlages sont gérés automatiquement à la validation.
+
+## Adaptation sur portable
+
+Le site est totalement adapté aux version mobiles et tablettes. Voici quelques captures d'écran :
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600257296-res-login.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p>
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600258298-res-accueil.jpg" width="35%"><br><i><legend>Accueil</legend></i></p>
+
+Le menu déroulant apparaît en cliquant sur le hamburger (les 3 bâtons en haut à gauche).
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600257598-res-navbar.jpg" width="35%"><br></p>
+
+Sur mobile, la liste des joueurs se déroule de gauche à droite.
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600257641-res-compo.jpg" width="35%"><br></p>
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600257818-res-edit-compte.jpg" width="35%"><br><i><legend>Modifier son compte</legend></i></p>
+
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600258178-res-edit-compo.jpg" width="35%"><br><i><legend>Modifier une compo</legend></i></p>
 
 ## 
 
