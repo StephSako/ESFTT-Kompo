@@ -1,11 +1,11 @@
 <ul class="right hide-on-med-and-down">
     <li class="waves-light waves-effect li_in_line">
-        <a class="white-text" href="https://www.esftt.com/forum">Forum ESFTT</a>
+        <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
     </li>
 
     {% if app.user %}
         <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-            <a class="white-text" href="{{ path('account') }}">Mon compte</a>
+            <a class="white-text" href="{{ path('account') }}">Compte</a>
         </li>
 
         {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
