@@ -69,7 +69,7 @@
                             <td>
                                 {% if dispo.id_disponibilite is null %}
                                     <div class="row" style="margin-bottom: 0;">
-                                        <div class="col s12 xl6" style="margin-bottom: 2px;">
+                                        <div class="col s12 xl6" style="margin-bottom: 5px;">
                                             <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: 'departementale', dispo: 1}) }}">
                                                 <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
                                             </a>
