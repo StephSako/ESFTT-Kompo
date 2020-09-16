@@ -5,11 +5,11 @@
 #  <p align="center">Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a>!</p>
 
 ## En résumé ...
-Ce site permet aux membres compétiteurs du club de <b>l'ESFTT</b> (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
+Ce site permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
 
 Enfin, les capitaines ont accès à un back-office pour gérer les dates des rencontres, adversaires, divisions / poules des équipes, fiche des joueurs, etc ...
 
-Lien du site : <a href="https://www.prive.esftt.com/"> Kompo</a> !
+Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 ## Page de connexion
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264780-login-min.png"></p>
@@ -39,11 +39,11 @@ Sur la gauche, vous pouvez accéder :
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264857-modifier-son-compte-min.png"></p>
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264877-modifier-mot-de-passe-min.png"></p>
 
-- au back-office (<b>accès réservé aux capitaines</b>) permettant de gérer :
-		- les rencontres (adversaires, le déplacement, et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
-		- les dates;
-		- les équipes (divisions et poules);
-		- les compétiteurs (modification et création).
+- au back-office (**accès réservé aux capitaines**) permettant de gérer :
+	* les rencontres (adversaires, le déplacement, et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
+	* les dates;
+	* les équipes (divisions et poules);
+	* les compétiteurs (modification et création).
 
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons DISPONIBLE ou INDISPONIBLE. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
@@ -56,18 +56,18 @@ Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux bou
    <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264906-dispo-renseignee-min.png"></p>
 Vous pouvez modifier vos disponibilités n'importe quand.
 
-#### <u>/!\ ATTENTION</u> : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
-#### <u>/!\ ATTENTION BIS</u> : si vous vous déclarer disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclaré finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
+#### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
+#### /!\ ATTENTION BIS : si vous vous déclarer disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclaré finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
 
 ### Tableau des brûlages
 Sur la gauche sont détaillés les brûlages et pré-brûlages de chaque joueur. 
-* Un <b>brûlage</b> (croix rouge) intervient lorsqu'un joueur joue au moins 2 matches dans une équipes au cours de la phase en championnat départemental, 3 en championnat de Paris : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur joue au moins 2 matches dans une équipes au cours de la phase en championnat départemental, 3 en championnat de Paris : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
 
 	<u>Exemple sur l'image :</u>
 	- Thomas a joué au moins 2 matches en équipe 1, il est donc brûlé en équipe 2, 3 et 4. 
 	- Rémy a joué au moins 2 matches en équipe 3, il est donc brûlé en équipe 4.<br>
 
-* Le <b>pré-brûlage</b> ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'il reste un match pour le joueur dans l'équipe marquée d'un "!" orange avant d'être brûlé.
+* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'il reste un match pour le joueur dans l'équipe marquée d'un "!" orange avant d'être brûlé.
 
 	<u>Exemple sur l'image :</u>
 	- Renaud a joué 1 match seulement en équipe 1. Il sera donc  brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée.
@@ -97,7 +97,7 @@ Pour chaque équipe, est affiché :
 - l'adversaire;
 - un bouton ouvrant le classement actuel de la poule.
 
-Chaque joueur sélectionné est listé avec son classement <b>officiel</b> (début de phase), son avatar, son nom et sa licence. Ce classement de joueurs permet de se projeter sur l'ordre des joueurs à renseigner sur la feuille de match.
+Chaque joueur sélectionné est listé avec son classement **officiel** (début de phase), son avatar, son nom et sa licence. Ce classement de joueurs permet de se projeter sur l'ordre des joueurs à renseigner sur la feuille de match.
 
 #### Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.
 
@@ -109,7 +109,7 @@ C'est depuis cette page que les équipes sont composées. Les brûlés et futurs
 
 Sont sélectionnables les joueurs :
 * non brûlés;
-* <b>signalés disponibles</b>;
+* **signalés disponibles**;
 * non sélectionnés dans d'autres équipes de la journée.
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264985-selection-min.png"></p>
