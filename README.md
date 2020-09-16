@@ -12,7 +12,7 @@ Enfin, les capitaines ont accès à un back-office pour gérer les dates des ren
 Lien du site : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 ## Page de connexion
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600203090-login.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264780-login-min.png"></p>
 Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
 <br><br>
 
@@ -20,7 +20,7 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 ## Page d'accueil
 
- <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600254337-accueil.png"></p>
+ <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264742-accueil-min.png"></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
@@ -32,12 +32,12 @@ Le dernier item permet de <i>switcher</i> de championnat entre départemental et
 Sur la gauche, vous pouvez accéder :
 - aux forums sur le site officiel du club <a href="https://www.esftt.com/">https://www.esftt.com/</a>;
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600207731-forum.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
 
 - à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, classement officiel, licence et avatar (sous forme d'URL, privilégiez une photo carré ...);
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600207371-modifier-son-compte.png"></p>
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600207371-modifier-mot-de-passe.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264857-modifier-son-compte-min.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264877-modifier-mot-de-passe-min.png"></p>
 
 - au back-office (<b>accès réservé aux capitaines</b>) permettant de gérer :
 		- les rencontres (adversaires, le déplacement, et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
@@ -48,12 +48,12 @@ Sur la gauche, vous pouvez accéder :
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons DISPONIBLE ou INDISPONIBLE. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
- <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600205980-dispo-non-renseignee.png"></p>
+ <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264896-dispo-non-renseignee-min.png"></p>
   <p align="center"><i>Click sur</i> DISPONIBLE</p>
   
   <p align="center"><img width="10%" src="https://i.skyrock.net/1888/98201888/pics/3297173862_1_3_rWb2O1aM.png"></p>
   
-   <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600206052-dispo-renseignee.png"></p>
+   <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264906-dispo-renseignee-min.png"></p>
 Vous pouvez modifier vos disponibilités n'importe quand.
 
 #### <u>/!\ ATTENTION</u> : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
@@ -85,11 +85,11 @@ Le tableau sur la droite de la page liste toutes les disponibilités de chaque c
 
 Le bouton bleu TOUT VOIR au dessus du tableau ouvre un panneau détaillant toutes les disponibilités sur toute la phase pour les deux championnats.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600206667-toutes-les-dispos.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264924-toutes-les-dispos-min.png"></p>
 
 ### Composition d'équipe
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600208728-composition.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264950-composition-min.png"></p>
 
 Pour chaque équipe, est affiché :
 - la division et la poule;
@@ -103,7 +103,7 @@ Chaque joueur sélectionné est listé avec son classement <b>officiel</b> (déb
 
 ## Composition d'équipe
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600255405-composition-equipe.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264968-composition-equipe-min.png"></p>
 
 C'est depuis cette page que les équipes sont composées. Les brûlés et futurs brûlés sont listés sur la gauche et les joueurs sélectionnables sur la droite.
 
@@ -112,7 +112,7 @@ Sont sélectionnables les joueurs :
 * <b>signalés disponibles</b>;
 * non sélectionnés dans d'autres équipes de la journée.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600255953-selection.png"></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264985-selection-min.png"></p>
 
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre une sélection à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez enfin la composition avec le bouton CONFIRMER.
 
