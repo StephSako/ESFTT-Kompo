@@ -122,19 +122,19 @@ Les brûlages sont gérés automatiquement à la validation.
 
 Le site est totalement adapté aux version mobiles et tablettes. Voici quelques captures d'écran :
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-accueil-min.jpg" width="35%"><br><i><legend>Accueil</legend></i></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-accueil-min.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
 
 Le menu déroulant apparaît en cliquant sur le hamburger (les 3 bâtons en haut à gauche).
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-navbar-min.jpg" width="35%"><br></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-navbar-min.jpg" width="35%"><br></p><br>
 
 Sur mobile, la liste des joueurs se déroule de gauche à droite.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-compo-min.jpg" width="35%"><br></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-compo-min.jpg" width="35%"><br></p><br>
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-edit-compte-min.jpg" width="35%"><br><i><legend>Modifier son compte</legend></i></p>
+<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-edit-compte-min.jpg" width="35%"><br><i><legend>Modifier son compte</legend></i></p><br>
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-edit-compo-min.jpg" width="35%"><br><i><legend>Modifier une compo</legend></i></p>
 
