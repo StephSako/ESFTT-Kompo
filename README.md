@@ -60,23 +60,25 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 #### /!\ ATTENTION BIS : si vous vous déclarer disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclaré finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
 
 ### Tableau des brûlages
-Sur la gauche sont détaillés les brûlages et pré-brûlages de chaque joueur. 
-* Un **brûlage** (croix rouge) intervient lorsqu'un joueur joue au moins 2 matches dans une équipes au cours de la phase en championnat départemental, 3 en championnat de Paris : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
 
-	<u>Exemple sur l'image :</u>
+Sur la gauche sont détaillés les brûlages et pré-brûlages de chaque joueur. 
+
+<p align="center"><img width="35%" src="https://image.noelshack.com/fichiers/2020/38/4/1600295174-tableau-brulage-min.png"></p>
+
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné au moins 2 matches dans une équipe au cours de la phase en championnat départemental, 3 en championnat de Paris : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
+
+	Exemple sur l'image ci-dessus :
 	- Thomas a joué au moins 2 matches en équipe 1, il est donc brûlé en équipe 2, 3 et 4. 
 	- Rémy a joué au moins 2 matches en équipe 3, il est donc brûlé en équipe 4.<br>
 
 * Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'il reste un match pour le joueur dans l'équipe marquée d'un "!" orange avant d'être brûlé.
 
-	<u>Exemple sur l'image :</u>
-	- Renaud a joué 1 match seulement en équipe 1. Il sera donc  brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée.
-	- Noël n'a joué qu'1 match en équipe 2 et 3. Si à la prochaine journée il joue en équipe 3, il sera brûlé en équipe 4 et toujours pré-brûlé pour l'équipe 2. En revanche, s'il joue le prochain match en équipe 2, il sera brûlé en équipe 3 et 4.<br>
+	Exemple sur l'image ci-dessus :
+	- Renaud a joué 1 match seulement en équipe 1. Il sera donc brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée.
+	- Noël a joué 1 match en équipe 2 et en équipe 3. Si à la prochaine journée il joue en équipe 3, il sera brûlé en équipe 4 et toujours pré-brûlé pour l'équipe 2. En revanche, s'il joue le prochain match en équipe 2, il sera brûlé en équipe 3 et 4.<br>
 
 #### Si un joueur est sélectionné dans une équipe en milieu / fin de phase, puis qu'il devient brûlé, il sera automatiquement supprimé des compositions des équipes dans lesquelles il est brûlé.
 
-
-##### Le brûlage en championnat de Paris débute à partir de 3 matches.
 > Ca va ? On suit ? 😊 Alors on continue !
 
 ### Tableau des disponibilités
