@@ -1,12 +1,15 @@
 
+
 <p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="50%"></p>
  
-#  <p align="center">Bienvenue sur Kompo !</p>
+#  <p align="center">Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a>!</p>
 
 ## En résumé ...
 Ce site permet aux membres compétiteurs du club de <b>l'ESFTT</b> (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipes et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
 
 Enfin, les capitaines ont accès à un back-office pour gérer les dates des rencontres, adversaires, divisions / poules des équipes, fiche des joueurs, etc ...
+
+Lien du site : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 ## Page de connexion
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600203090-login.png"></p>
