@@ -10,7 +10,7 @@ Enfin, les capitaines ont accès à un back-office pour gérer les dates des ren
 
 ## Page de connexion
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/2/1600203090-login.png"></p>
-Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiquer durant l'entraînement.
+Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
 <br><br>
 
 > Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a>
