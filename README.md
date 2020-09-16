@@ -32,7 +32,7 @@ Le dernier item permet de <i>switcher</i> de championnat entre départemental et
 Sur la gauche, vous pouvez accéder :
 - aux forums sur le site officiel du club <a href="https://www.esftt.com/">https://www.esftt.com/</a>;
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
+<p align="center"><img width="80%" src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
 
 - à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, classement officiel, licence et avatar (sous forme d'URL, privilégiez une photo carré ...);
 
