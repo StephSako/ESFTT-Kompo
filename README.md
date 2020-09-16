@@ -13,7 +13,7 @@ Enfin, les capitaines ont accès à un back-office pour gérer les dates des ren
 Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiquer durant l'entraînement.
 <br><br>
 
-> Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a> .
+> Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a>
 
 ## Page d'accueil
 
