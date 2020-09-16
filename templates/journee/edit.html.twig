@@ -7,12 +7,6 @@
 
     {% include("components/navbar.html.twig") %}
 
-    <style>
-        #nom_ad_mobile {
-            margin-top: 10px;
-        }
-    </style>
-
     <div class="row main">
         <div class="col l3 hide-on-small-only">
             <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
@@ -217,7 +211,6 @@
                 <thead>
                 <tr>
                     <th><h5>Sélectionnables</h5></th>
-                    <th></th>
                 </tr>
                 </thead>
 
@@ -231,11 +224,6 @@
                         <tr>
                             <td>
                                 {{ selectionnable.idCompetiteur.nom }}
-                            </td>
-                            <td>
-                                {% if selectionnable.idCompetiteur.idCompetiteur in selectedPlayers %}
-                                    <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
-                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

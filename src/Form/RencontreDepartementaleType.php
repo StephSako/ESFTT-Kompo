@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\RencontreDepartementale;
 use App\Repository\CompetiteurRepository;
-use App\Repository\DisponibiliteDepartementaleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,7 +34,11 @@ class RencontreDepartementaleType extends AbstractType
                         ->leftJoin('c.disposDepartementales', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
-                        ->andWhere('d.disponibilite = 1');
+                        ->andWhere('d.disponibilite = 1')
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1<>'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2.idJoueur2<>'NULL', p2.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2 WHERE p2.idJournee = d.idJournee AND p2.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3.idJoueur3<>'NULL', p3.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3 WHERE p3.idJournee = d.idJournee AND p3.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4.idJoueur4<>'NULL', p4.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4 WHERE p4.idJournee = d.idJournee AND p4.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")");
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
@@ -73,7 +76,11 @@ class RencontreDepartementaleType extends AbstractType
                         ->leftJoin('c.disposDepartementales', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
-                        ->andWhere('d.disponibilite = 1');
+                        ->andWhere('d.disponibilite = 1')
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1<>'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2.idJoueur2<>'NULL', p2.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2 WHERE p2.idJournee = d.idJournee AND p2.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3.idJoueur3<>'NULL', p3.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3 WHERE p3.idJournee = d.idJournee AND p3.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4.idJoueur4<>'NULL', p4.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4 WHERE p4.idJournee = d.idJournee AND p4.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")");
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
@@ -111,7 +118,11 @@ class RencontreDepartementaleType extends AbstractType
                         ->leftJoin('c.disposDepartementales', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
-                        ->andWhere('d.disponibilite = 1');
+                        ->andWhere('d.disponibilite = 1')
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1<>'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2.idJoueur2<>'NULL', p2.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2 WHERE p2.idJournee = d.idJournee AND p2.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3.idJoueur3<>'NULL', p3.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3 WHERE p3.idJournee = d.idJournee AND p3.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4.idJoueur4<>'NULL', p4.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4 WHERE p4.idJournee = d.idJournee AND p4.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")");
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:
@@ -149,7 +160,11 @@ class RencontreDepartementaleType extends AbstractType
                         ->leftJoin('c.disposDepartementales', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
-                        ->andWhere('d.disponibilite = 1');
+                        ->andWhere('d.disponibilite = 1')
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1<>'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2.idJoueur2<>'NULL', p2.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2 WHERE p2.idJournee = d.idJournee AND p2.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3.idJoueur3<>'NULL', p3.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3 WHERE p3.idJournee = d.idJournee AND p3.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
+                        ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4.idJoueur4<>'NULL', p4.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4 WHERE p4.idJournee = d.idJournee AND p4.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")");
 
                     switch ($builder->getData()->getIdEquipe()->getIdEquipe()) {
                         case 2:

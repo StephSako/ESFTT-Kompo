@@ -162,21 +162,18 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $oldPlayers = $form = $j4 = $j5 = $j6 = $j7 = $j8 = $j9 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $selectedPlayers = $journees = null;
+        $oldPlayers = $form = $j4 = $j5 = $j6 = $j7 = $j8 = $j9 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $journees = null;
 
         if ($type == 'departementale'){
             $compo = $this->rencontreDepartementaleRepository->find($compo);
-            $journeeSelectedPlayers = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
-            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
+            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $oldPlayers = $this->rencontreDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
             $j4 = $oldPlayers->getIdJoueur4();
-            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($journeeSelectedPlayers);
             $journees = $this->journeeDepartementaleRepository->findAll();
         } else if ($type == 'paris'){
             $compo = $this->rencontreParisRepository->find($compo);
-            $journeeSelectedPlayers = $this->rencontreParisRepository->findBy(['idJournee' => $compo->getIdJournee()->getIdJournee()]);
-            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee());
+            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
             $oldPlayers = $this->rencontreParisRepository->findOneBy(['id' => $compo->getId()]);
             if ($levelEquipe === 1){
@@ -190,7 +187,6 @@ class HomeController extends AbstractController
             } else if ($levelEquipe === 2){
                 $form = $this->createForm(RencontreParisBasType::class, $compo);
             }
-            $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($journeeSelectedPlayers);
             $journees = $this->journeeParisRepository->findAll();
         }
 
@@ -258,7 +254,6 @@ class HomeController extends AbstractController
             'burntPlayers' => $burntPlayers,
             'selectionnables' => $selectionnables,
             'almostBurntPlayers' => $almostBurntPlayers,
-            'selectedPlayers' => $selectedPlayers,
             'journees' => $journees,
             'compo' => $compo,
             'form' => $form->createView()
