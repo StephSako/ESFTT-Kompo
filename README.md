@@ -129,7 +129,7 @@ Le site est totalement adapté aux version mobiles et tablettes. Voici quelques 
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-accueil-min.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
+<p align="center"><img src="https://zupimages.net/up/20/38/2buh.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
 
 Le menu déroulant apparaît en cliquant sur le hamburger (les 3 bâtons en haut à gauche).
 
