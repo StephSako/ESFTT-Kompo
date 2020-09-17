@@ -205,12 +205,12 @@
             {% endfor %}
         </div>
 
-        <div class="col s12 hide-on-med-and-up">
-            {{ _brulage.table(journee.linkType, competiteurs) }}
-        </div>
-
         <div class="col s12 m2">
             {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, allDisponibilitesDepartementales, allDisponibiliteParis) }}
+        </div>
+
+        <div class="col s12 hide-on-med-and-up">
+            {{ _brulage.table(journee.linkType, competiteurs) }}
         </div>
     </div>
 

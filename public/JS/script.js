@@ -3,6 +3,8 @@ $(document).ready(function() {
 
     $('select').formSelect();
 
+    $(".dropdown-trigger").dropdown();
+
     $('.sidenav').sidenav({
         closeOnClick: true,
         draggable: true,

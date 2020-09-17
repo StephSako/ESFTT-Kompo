@@ -67,6 +67,18 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   background: #012242;
 }
 
+#menu {
+  background-color: #012242;
+  padding: 0 4px;
+}
+#menu li {
+  border-radius: 5px;
+  margin: 4px 0;
+}
+#menu li:hover {
+  background-color: #1565c0;
+}
+
 .nav-extended {
   padding-top: 6px;
   padding-bottom: 6px;
@@ -222,6 +234,16 @@ p.lobster {
 
 .titre_edit_journée {
   margin-bottom: 40px;
+}
+
+@media screen and (min-width: 993px) and (max-width: 1334px) {
+  .menu_navbar {
+    display: block;
+  }
+
+  .right_items_navbar {
+    display: none;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
