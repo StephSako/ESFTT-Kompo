@@ -113,7 +113,7 @@ class HomeController extends AbstractController
     public function journee($type, $id)
     {
         $this->get('session')->set('type', $type);
-        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = null;
+        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = null;
         $disposJoueur = [];
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
 
@@ -125,6 +125,10 @@ class HomeController extends AbstractController
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
             $journees = $this->journeeDepartementaleRepository->findAll();
+
+            if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposDepartementales())) $disponible = $this->getUser()->getDisposDepartementales()[$journee->getIdJournee()];
+            else $disponible = null;
+
         } else if ($this->get('session')->get('type') === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
@@ -133,6 +137,9 @@ class HomeController extends AbstractController
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
             $journees = $this->journeeParisRepository->findAll();
+
+            if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
+            else $disponible = null;
         }
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
@@ -143,6 +150,7 @@ class HomeController extends AbstractController
             'compos' => $compos,
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,
+            'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
             'competiteurs' => $competiteurs,

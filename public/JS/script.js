@@ -3,8 +3,6 @@ $(document).ready(function() {
 
     $('select').formSelect();
 
-    $(".dropdown-trigger").dropdown();
-
     $('.sidenav').sidenav({
         closeOnClick: true,
         draggable: true,
@@ -42,4 +40,6 @@ $(document).ready(function() {
             $("#back_office_rencontre_paris_hosted").prop("checked", false).attr("disabled", true);
         }
     });
+
+    $("#dropdowner").dropdown();
 });
