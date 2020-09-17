@@ -1,5 +1,3 @@
-
-
 <p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="50%"></p>
  
 #  <p align="center">Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a>!</p>
@@ -29,8 +27,8 @@ Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de 
 Sur le haut de la page sont listées toutes les journées de la phase, numérotées et datées. Il suffit de cliquer dessus pour accéder aux compositions de la journée correspondante.
 Le dernier item permet de <i>switcher</i> de championnat entre départemental et Paris.
 
-Sur la gauche, vous pouvez accéder :
-- aux forums sur le site officiel du club <a href="https://www.esftt.com/">https://www.esftt.com/</a>;
+Sur la droite, vous pouvez accéder :
+- au forum sur le <a href="https://www.esftt.com/">site officiel du club</a>;
 
 <p align="center"><img width="80%" src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
 
@@ -44,6 +42,11 @@ Sur la gauche, vous pouvez accéder :
 	* les dates;
 	* les équipes (divisions et poules);
 	* les compétiteurs (modification et création).
+
+Sur tablette, les items de droite sont rangés dans une liste déroulante comme illustré ci-dessous.
+
+<p align="center"><img src="https://zupimages.net/up/20/38/a9rx.png" width="12%"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/aiwd.png" width="12%"></p>
 
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons DISPONIBLE ou INDISPONIBLE. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
