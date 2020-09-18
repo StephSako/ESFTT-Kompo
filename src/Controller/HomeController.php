@@ -176,22 +176,22 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $brulages = $form = $levelEquipe = $selectionnables = $journees = null;
+        $brulages = $form = $idEquipe = $selectionnables = $journees = null;
 
         if ($type == 'departementale'){
             $compo = $this->rencontreDepartementaleRepository->find($compo);
-            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type == 'paris'){
             $compo = $this->rencontreParisRepository->find($compo);
-            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
-            $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
+            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
 
-            if ($levelEquipe === 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
-            else if ($levelEquipe === 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
+            if ($idEquipe === 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
+            else if ($idEquipe === 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
@@ -203,11 +203,11 @@ class HomeController extends AbstractController
             $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
             $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
 
-            if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
+            if ($type === 'departementale' || ($type === 'paris' && $idEquipe === 1)) {
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
             }
 
-            if ($type === 'paris' && $levelEquipe === 1) {
+            if ($type === 'paris' && $idEquipe === 1) {
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());

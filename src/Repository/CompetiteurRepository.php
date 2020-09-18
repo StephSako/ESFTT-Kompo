@@ -93,7 +93,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) AS E3')
             ->addSelect('c.nom')
             ->setParameter('idJournee', $idJournee)
-            ->addOrderBy('c.nom', 'ASC')
+            ->addOrderBy('c.nom')
             ->getQuery()
             ->getResult();
 
@@ -104,12 +104,17 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         return $allBrulage;
     }
+
+    /**
+     * @param int $idJournee
+     * @return array
+     */
     public function getCompetiteurBrulageParis(int $idJournee){
         $brulages = $this->createQueryBuilder('c')
             ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
             ->addSelect('c.nom')
             ->setParameter('idJournee', $idJournee)
-            ->addOrderBy('c.nom', 'ASC')
+            ->addOrderBy('c.nom')
             ->getQuery()
             ->getResult();
 
@@ -120,6 +125,4 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         return $allBrulage;
     }
-
-
 }

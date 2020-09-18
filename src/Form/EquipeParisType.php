@@ -19,7 +19,7 @@ class EquipeParisType extends AbstractType
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
-                        ->orderBy('d.idDivision', 'ASC');
+                        ->orderBy('d.idDivision');
                 }
             ))
             ->add('poule', EntityType::class, array(
@@ -27,7 +27,7 @@ class EquipeParisType extends AbstractType
                 'choice_label' => 'poule',
                 'query_builder' => function (EntityRepository $pr) {
                     return $pr->createQueryBuilder('p')
-                        ->orderBy('p.poule', 'ASC');
+                        ->orderBy('p.poule');
                 }
             ));
     }
