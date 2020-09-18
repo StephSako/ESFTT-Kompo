@@ -54,12 +54,12 @@ Sur tablette, les items de droite sont rangés dans une liste déroulante comme 
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons DISPONIBLE ou INDISPONIBLE. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
- <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264896-dispo-non-renseignee-min.png"></p>
+ <p align="center"><img src="https://zupimages.net/up/20/38/2tpc.png"></p>
   <p align="center"><i>Click sur</i> DISPONIBLE</p>
   
-  <p align="center"><img width="10%" src="https://i.skyrock.net/1888/98201888/pics/3297173862_1_3_rWb2O1aM.png"></p>
+  <p align="center"><img width="8%" src="https://i.skyrock.net/1888/98201888/pics/3297173862_1_3_rWb2O1aM.png"></p>
   
-   <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264906-dispo-renseignee-min.png"></p>
+   <p align="center"><img src="https://zupimages.net/up/20/38/qcoz.png"></p>
 Vous pouvez modifier vos disponibilités n'importe quand.
 
 #### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
