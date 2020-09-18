@@ -62,25 +62,27 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 #### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
 #### /!\ ATTENTION BIS : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
 
-### Tableau des brûlages
+### Les brûlages
 
-Sur la gauche sont détaillés les brûlages et pré-brûlages de chaque joueur. 
+Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur. 
 
 <p align="center"><img width="35%" src="https://image.noelshack.com/fichiers/2020/38/4/1600295174-tableau-brulage-min.png"></p>
 
-* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné au moins 2 matches dans une équipe au cours de la phase en championnat départemental, 3 en championnat de Paris : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné lors d'au moins 2 journées dans une même équipe au cours de la phase en championnat départemental (3 journées en championnat de Paris) : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
 
 	Exemple sur l'image ci-dessus :
-	- Thomas a joué au moins 2 matches en équipe 1, il est donc brûlé en équipe 2, 3 et 4. 
+	- Thomas est brûlé dans les équipes 2, 3 et 4 car il a joué au moins 2 matches en équipe 1; 
 	- Rémy a joué au moins 2 matches en équipe 3, il est donc brûlé en équipe 4.<br>
 
-* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'il reste un match pour le joueur dans l'équipe marquée d'un "!" orange avant d'être brûlé.
+* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'un joueur sélectionnée dans une équipe marquée d'un "!" orange sera brûlé à la prochaijne journée.
 
 	Exemple sur l'image ci-dessus :
-	- Renaud a joué 1 match seulement en équipe 1. Il sera donc brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée.
+	- Renaud a joué 1 match seulement en équipe 1. Il sera donc brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée;
 	- Noël a joué 1 match en équipe 2 et en équipe 3. Si à la prochaine journée il joue en équipe 3, il sera brûlé en équipe 4 et toujours pré-brûlé pour l'équipe 2. En revanche, s'il joue le prochain match en équipe 2, il sera brûlé en équipe 3 et 4.<br>
 
 #### Si un joueur est sélectionné dans une équipe en milieu / fin de phase, puis qu'il devient brûlé, il sera automatiquement supprimé des compositions des équipes dans lesquelles il est brûlé.
+
+Les brûlages sont chargés dynamiquement en fonction de la journée de championnat sélectionnée. De cette manière, un joueur brûlé peut tout à fait changer d'équipe dans les journées antèrieures à son brûlage. C'est ainsi que les prévisions de brûlages sont concrètes et informatives pour la journée J+1.
 
 > Ca va ? On suit ? 😊 Alors on continue !
 
