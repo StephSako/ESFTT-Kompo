@@ -6,7 +6,7 @@
 
 <p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="30%"></p>
 
-Ce site permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
+Kompo permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
 
 Enfin, les capitaines ont accès à un back-office pour gérer les dates des rencontres, adversaires, divisions / poules des équipes, fiche des joueurs, etc ...
 
