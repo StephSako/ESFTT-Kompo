@@ -20,15 +20,15 @@
 
         <div class="col s12 m7">
             {% for message in app.flashes('success') %}
-                {{ _flash.success(message) }}
+                {{ flash.message(message, 'green') }}
             {% endfor %}
 
             {% for message in app.flashes('fail') %}
-                {{ _flash.fail(message) }}
+                {{ flash.message(message, 'red') }}
             {% endfor %}
 
             {% for message in app.flashes('warning') %}
-                {{ _flash.warning(message) }}
+                {{ flash.message(message, 'orange') }}
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
@@ -74,7 +74,7 @@
 
                         {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                        <div class="row hide-on-med-and-up">
+                        <div class="row hide-on-med-and-up" style="margin-bottom: 10px;">
                             <div class="col s9 m5 nom_adversaire">
                                 <h5>{{ compo.adversaire }}</h5>
                             </div>
@@ -104,8 +104,8 @@
                                 {% endif %}
                             </h5>
 
-                            <div style="padding-left: 20px; padding-right: 20px;">
-                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="hide-on-med-and-up card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                            <div class="hide-on-med-and-up" style="padding-left: 20px; padding-right: 20px;">
+                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
                             </div>
                         </div>
 
@@ -113,8 +113,8 @@
                             <h5>{{ compo.adversaire }}</h5>
                         </div>
 
-                        <div class="hide-on-small-only col m1">
-                            <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                        <div class="hide-on-small-only col m1" style="padding-left: 0;">
+                            <a style="padding-left: 0; padding-right: 0;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
                         </div>
 
                         <div id="classement" class="modal modal-fixed-footer">

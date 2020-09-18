@@ -1,17 +1,5 @@
-{% macro success(message) %}
-    <div class="card-panel center-align white-text green lighten-1 title_journee">
-        <p class="flash">{{ message }}</p>
-    </div>
-{% endmacro %}
-
-{% macro fail(message) %}
-    <div class="card-panel center-align white-text red lighten-1 title_journee">
-        <p style="font-size: 95%" class="flash">{{ message }}</p>
-    </div>
-{% endmacro %}
-
-{% macro warning(message) %}
-    <div class="card-panel center-align white-text orange lighten-1 title_journee">
+{% macro message(message, color) %}
+    <div class="card-panel center-align white-text {{ color }} lighten-1 title_journee">
         <p class="flash">{{ message }}</p>
     </div>
 {% endmacro %}

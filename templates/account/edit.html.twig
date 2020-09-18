@@ -22,11 +22,11 @@
     <div class="container">
 
         {% for message in app.flashes('success') %}
-            {{ flash.success(message) }}
+            {{ flash.message(message, 'green') }}
         {% endfor %}
 
         {% for message in app.flashes('fail') %}
-            {{ flash.fail(message) }}
+            {{ flash.message(message, 'red') }}
         {% endfor %}
 
         {% if type == 'general' %}

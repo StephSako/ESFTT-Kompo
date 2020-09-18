@@ -8,16 +8,17 @@
                 <span>&nbsp</span>
             {% endif %}
         </td>
-        <td>
+
             {% if competiteur is not null %}
-                <div class="chip">
-                    <img src="{{ competiteur.avatar }}" alt="Avatar">
-                    <span>{{ competiteur.nom }}</span>
-                </div>
+                <td>
+                    <div class="chip">
+                        <img src="{{ competiteur.avatar }}" alt="Avatar">
+                        <span>{{ competiteur.nom }}</span>
+                    </div>
+                </td>
             {% else %}
-                <span>&nbsp</span>
+                <td style="height: 75px;"></td>
             {% endif %}
-        </td>
         <td>
             {% if competiteur is not null %}
                 {{ competiteur.licence }}

@@ -42,4 +42,8 @@ $(document).ready(function() {
     });
 
     $("#dropdowner").dropdown();
+
+    $('li[id^="select-options"]').on('touchend', function (e) {
+        e.stopPropagation();
+    });
 });

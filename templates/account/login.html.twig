@@ -12,7 +12,7 @@
             <h3 style="margin-top: 0">Se connecter</h3>
 
             {% if error %}
-                {{ flash.fail(error.messageKey | trans(error.messageData, 'security')) }}
+                {{ flash.message(error.messageKey | trans(error.messageData, 'security'), 'red') }}
             {% endif %}
 
             <form action="{{ path('login') }}" method="POST">

@@ -10,11 +10,11 @@
     <div class="container">
 
         {% for message in app.flashes('success') %}
-            {{ flash.success(message) }}
+            {{ flash.message(message, 'green') }}
         {% endfor %}
 
         {% for message in app.flashes('fail') %}
-            {{ flash.fail(message) }}
+            {{ flash.message(message, 'red') }}
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
@@ -55,7 +55,7 @@
                             {% else %}
                                 <span class="new badge green" data-badge-caption="Joueur"></span>
                             {% endif %}</td>
-                        <td class="avatar hide-on-small-only"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
+                        <td class="hide-on-small-only"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
                         <td>{{ competiteur.licence }}</td>
