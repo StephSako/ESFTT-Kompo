@@ -38,7 +38,7 @@
 
             <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
 
-                {% if disponible %}
+                {% if disponible is not null %}
                     {% if disponible == 1 %}
                         <h5>Vous vous êtes déclaré <span class="green-text lighten-3">disponible</span></h5>
                         <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">

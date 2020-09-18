@@ -90,6 +90,7 @@ class HomeController extends AbstractController
         $type = ($this->get('session')->get('type') ?: 'departementale');
         if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
         else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
+        else $dates = $this->journeeDepartementaleRepository->findAllDates();
         $NJournee = 0;
 
         while ($NJournee < 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
@@ -112,6 +113,8 @@ class HomeController extends AbstractController
      */
     public function journee($type, $id)
     {
+        if ($id < 1 || $id > 7) throw $this->createNotFoundException('Journée inexistante');
+
         $this->get('session')->set('type', $type);
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = null;
         $disposJoueur = [];
@@ -141,6 +144,7 @@ class HomeController extends AbstractController
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
             else $disponible = null;
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
 
@@ -197,6 +201,7 @@ class HomeController extends AbstractController
             }
             $journees = $this->journeeParisRepository->findAll();
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $j1 = $oldPlayers->getIdJoueur1();
         $j2 = $oldPlayers->getIdJoueur2();
