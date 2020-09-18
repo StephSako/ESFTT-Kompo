@@ -115,7 +115,9 @@ class HomeController extends AbstractController
     {
         if ($id < 1 || $id > 7) throw $this->createNotFoundException('Journée inexistante');
 
-        $this->get('session')->set('type', $type);
+        if ($type == 'departementale' || $type == 'paris') $this->get('session')->set('type', $type);
+        else throw $this->createNotFoundException('Championnat inexistant');
+
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = null;
         $disposJoueur = [];
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
@@ -144,7 +146,6 @@ class HomeController extends AbstractController
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
             else $disponible = null;
         }
-        else throw $this->createNotFoundException('Championnat inexistant');
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
 
