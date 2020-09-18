@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
-use App\Entity\EquipeDepartementale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,96 +38,6 @@ class CompetiteurRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
-    }
-
-    /**
-     * Get burnt players for a specific team in departementale
-     * @param EquipeDepartementale $team
-     * @return int|mixed|string
-     */
-    public function findBurnPlayersDepartementale($team)
-    {
-        $query = $this
-            ->createQueryBuilder('c');
-
-        switch ($team->getIdEquipe()) {
-            case 2:
-                $query = $query
-                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2");
-                break;
-            case 3:
-                $query = $query
-                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.2') >= 2");
-                break;
-            case 4:
-                $query = $query
-                    ->where("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.2') >= 2")
-                    ->orWhere("JSON_VALUE(c.brulageDepartemental, '$.3') >= 2");
-                break;
-        }
-
-        return $query
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get burnt players for a specific team in paris
-     * @return int|mixed|string
-     */
-    public function findBurnPlayersParis()
-    {
-        return $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageParis, '$.1') >= 3")
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get almost burnt players in departementale
-     * @param EquipeDepartementale $team
-     * @return int|mixed|string
-     */
-    public function findAlmostBurnPlayersDepartementale($team)
-    {
-        $query = $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageDepartemental, '$." . $team->getIdEquipe() . "') = 1")
-            ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') < 2");
-
-        switch ($team->getIdEquipe()) {
-            case 3:
-                $query = $query
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2");
-                break;
-            case 4:
-                $query = $query
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.2') < 2")
-                    ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.3') < 2");
-                break;
-        }
-
-        return $query
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get almost burnt players in paris
-     * @return int|mixed|string
-     */
-    public function findAlmostBurnPlayersParis()
-    {
-        return $this->createQueryBuilder('c')
-            ->where("JSON_VALUE(c.brulageParis, '$.1') = 2")
-            ->andWhere("JSON_VALUE(c.brulageParis, '$.2') < 3")
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
     }
 
     /**
@@ -172,4 +81,45 @@ class CompetiteurRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    /**
+     * @param int $idJournee
+     * @return int|mixed|string
+     */
+    public function getCompetiteurBrulageDepartemental(int $idJournee){
+        $brulages = $this->createQueryBuilder('c')
+            ->select('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = c.idCompetiteur OR p1.idJoueur2 = c.idCompetiteur OR p1.idJoueur3 = c.idCompetiteur OR p1.idJoueur4 = c.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe = 1) AS E1')
+            ->addSelect('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = c.idCompetiteur OR p2.idJoueur2 = c.idCompetiteur OR p2.idJoueur3 = c.idCompetiteur OR p2.idJoueur4 = c.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) AS E2')
+            ->addSelect('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) AS E3')
+            ->addSelect('c.nom')
+            ->setParameter('idJournee', $idJournee)
+            ->addOrderBy('c.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $allBrulage = [];
+        foreach ($brulages as $brulage){
+            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "E2"=>$brulage["E2"], "E3" => $brulage["E3"]];
+        }
+
+        return $allBrulage;
+    }
+    public function getCompetiteurBrulageParis(int $idJournee){
+        $brulages = $this->createQueryBuilder('c')
+            ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
+            ->addSelect('c.nom')
+            ->setParameter('idJournee', $idJournee)
+            ->addOrderBy('c.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $allBrulage = [];
+        foreach ($brulages as $brulage){
+            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"]];
+        }
+
+        return $allBrulage;
+    }
+
+
 }

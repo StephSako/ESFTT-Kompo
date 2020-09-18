@@ -86,7 +86,6 @@ class HomeController extends AbstractController
      */
     public function indexAction()
     {
-        $dates = [];
         $type = ($this->get('session')->get('type') ?: 'departementale');
         if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
         else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
@@ -118,9 +117,8 @@ class HomeController extends AbstractController
         if ($type == 'departementale' || $type == 'paris') $this->get('session')->set('type', $type);
         else throw $this->createNotFoundException('Championnat inexistant');
 
-        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = null;
+        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = $brulages = null;
         $disposJoueur = [];
-        $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC']);
 
         if ($this->get('session')->get('type') === 'departementale'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
@@ -130,11 +128,13 @@ class HomeController extends AbstractController
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
             $journees = $this->journeeDepartementaleRepository->findAll();
+            $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($journee->getIdJournee());
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposDepartementales())) $disponible = $this->getUser()->getDisposDepartementales()[$journee->getIdJournee()];
             else $disponible = null;
 
-        } else if ($this->get('session')->get('type') === 'paris'){
+        }
+        else if ($this->get('session')->get('type') === 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
@@ -142,6 +142,7 @@ class HomeController extends AbstractController
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
             $journees = $this->journeeParisRepository->findAll();
+            $brulages = $this->competiteurRepository->getCompetiteurBrulageParis($journee->getIdJournee());
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
             else $disponible = null;
@@ -158,7 +159,7 @@ class HomeController extends AbstractController
             'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
-            'competiteurs' => $competiteurs,
+            'brulages' => $brulages,
             'classement' => $classement,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
@@ -175,76 +176,43 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $oldPlayers = $form = $j4 = $j5 = $j6 = $j7 = $j8 = $j9 = $levelEquipe = $burntPlayers = $selectionnables = $almostBurntPlayers = $journees = null;
+        $brulages = $form = $levelEquipe = $selectionnables = $journees = null;
 
         if ($type == 'departementale'){
             $compo = $this->rencontreDepartementaleRepository->find($compo);
             $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
-            $oldPlayers = $this->rencontreDepartementaleRepository->findOneBy(['id' => $compo->getId()]);
-            $j4 = $oldPlayers->getIdJoueur4();
             $journees = $this->journeeDepartementaleRepository->findAll();
-        } else if ($type == 'paris'){
+        }
+        else if ($type == 'paris'){
             $compo = $this->rencontreParisRepository->find($compo);
             $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdEquipe(), $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $levelEquipe = $compo->getIdEquipe()->getIdEquipe();
-            $oldPlayers = $this->rencontreParisRepository->findOneBy(['id' => $compo->getId()]);
-            if ($levelEquipe === 1){
-                $form = $this->createForm(RencontreParisHautType::class, $compo);
-                $j4 = $oldPlayers->getIdJoueur4();
-                $j5 = $oldPlayers->getIdJoueur5();
-                $j6 = $oldPlayers->getIdJoueur6();
-                $j7 = $oldPlayers->getIdJoueur7();
-                $j8 = $oldPlayers->getIdJoueur8();
-                $j9 = $oldPlayers->getIdJoueur9();
-            } else if ($levelEquipe === 2){
-                $form = $this->createForm(RencontreParisBasType::class, $compo);
-            }
             $journees = $this->journeeParisRepository->findAll();
+
+            if ($levelEquipe === 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
+            else if ($levelEquipe === 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
-
-        $j1 = $oldPlayers->getIdJoueur1();
-        $j2 = $oldPlayers->getIdJoueur2();
-        $j3 = $oldPlayers->getIdJoueur3();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** Décrémenter le brûlage des joueurs désélectionnés de la précédente compo **/
-            $invalidSelectionController->decrementeBrulage($j1, $type, $compo);
-            $invalidSelectionController->decrementeBrulage($j2, $type, $compo);
-            $invalidSelectionController->decrementeBrulage($j3, $type, $compo);
+            /** On vérifie que le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur1());
+            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
+            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
 
             if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                $invalidSelectionController->decrementeBrulage($j4, $type, $compo);
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
             }
 
             if ($type === 'paris' && $levelEquipe === 1) {
-                $invalidSelectionController->decrementeBrulage($j5, $type, $compo);
-                $invalidSelectionController->decrementeBrulage($j6, $type, $compo);
-                $invalidSelectionController->decrementeBrulage($j7, $type, $compo);
-                $invalidSelectionController->decrementeBrulage($j8, $type, $compo);
-                $invalidSelectionController->decrementeBrulage($j9, $type, $compo);
-            }
-
-            $this->em->flush();
-
-            /** Incrémenter le brûlage des joueurs selectionnés de la nouvelle compo **/
-            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur1(), $compo->getIdJoueur1());
-            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur2(), $compo->getIdJoueur2());
-            $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur3(), $compo->getIdJoueur3());
-
-            if ($type === 'departementale' || ($type === 'paris' && $levelEquipe === 1)) {
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur4(), $compo->getIdJoueur4());
-            }
-
-            if ($type === 'paris' && $levelEquipe === 1) {
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur5(), $compo->getIdJoueur5());
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur6(), $compo->getIdJoueur6());
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur7(), $compo->getIdJoueur7());
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur8(), $compo->getIdJoueur8());
-                $invalidSelectionController->incrementeBrulage($type, $compo, $form->getData()->getIdJoueur9(), $compo->getIdJoueur9());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());
             }
 
             $this->em->flush();
@@ -256,20 +224,15 @@ class HomeController extends AbstractController
             ]);
         }
 
-        if ($type === 'departementale'){
-            $burntPlayers = $this->competiteurRepository->findBurnPlayersDepartementale($compo->getIdEquipe());
-            $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersDepartementale($compo->getIdEquipe());
-        } else if ($type === 'paris'){
-            $burntPlayers = $this->competiteurRepository->findBurnPlayersParis();
-            $almostBurntPlayers = $this->competiteurRepository->findAlmostBurnPlayersParis();
-        }
+        if ($type === 'departementale') $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
+        else if ($type === 'paris') $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
 
         return $this->render('journee/edit.html.twig', [
-            'burntPlayers' => $burntPlayers,
+            'brulages' => $brulages,
             'selectionnables' => $selectionnables,
-            'almostBurntPlayers' => $almostBurntPlayers,
             'journees' => $journees,
             'compo' => $compo,
+            'type' => $type,
             'form' => $form->createView()
         ]);
     }

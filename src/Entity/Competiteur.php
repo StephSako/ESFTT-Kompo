@@ -102,16 +102,6 @@ class Competiteur implements UserInterface, Serializable
     private $avatar = 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png';
 
     /**
-     * @ORM\Column(type="json", name="brulageDepartemental", nullable=false, options={"default":"{'1':0,'2':0,'3':0,'4':0}"})
-     */
-    private $brulageDepartemental = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
-
-    /**
-     * @ORM\Column(type="json", name="brulageParis", nullable=false, options={"default":"{'1':0,'2':0}"})
-     */
-    private $brulageParis = [1 => 0, 2 => 0];
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
      */
     private $disposDepartementales;
@@ -120,24 +110,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur")
      */
     private $disposParis;
-
-    /**
-     * @return array
-     */
-    public function getBrulageDepartemental(): array
-    {
-        return $this->brulageDepartemental;
-    }
-
-    /**
-     * @param mixed $brulageDepartemental
-     * @return Competiteur
-     */
-    public function setBrulageDepartemental($brulageDepartemental): self
-    {
-        $this->brulageDepartemental = $brulageDepartemental;
-        return $this;
-    }
 
     /**
      * @return int
@@ -270,35 +242,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return array[]
-     */
-    public function getFirstBurntTeamDepartemental(){
-        $brulageDepartemental = []; $almost = [];
-
-        if ($this->brulageDepartemental[1] == 1) array_push($almost, 1);
-        if ($this->brulageDepartemental[2] == 1) array_push($almost, 2);
-        if ($this->brulageDepartemental[3] == 1) array_push($almost, 3);
-
-        if ($this->brulageDepartemental[1] >= 2) array_push($brulageDepartemental, 2, 3, 4);
-        else if ($this->brulageDepartemental[2] >= 2) array_push($brulageDepartemental, 3, 4);
-        else if ($this->brulageDepartemental[3] >= 2) array_push($brulageDepartemental, 4);
-
-        return ["almost" => $almost, "burnt" => $brulageDepartemental];
-    }
-
-    /**
-     * @return int[]|null[]
-     */
-    public function getFirstBurntTeamParis(){
-        $brulageParis = $almost = null;
-
-        if ($this->brulageParis[1] == 2) $almost = 1;
-        if ($this->brulageParis[1] >= 3) $brulageParis = 2;
-
-        return ["almost" => $almost, "burnt" =>$brulageParis];
-    }
-
-    /**
      * @return string
      */
     public function getAvatar(): string
@@ -313,24 +256,6 @@ class Competiteur implements UserInterface, Serializable
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBrulageParis(): array
-    {
-        return $this->brulageParis;
-    }
-
-    /**
-     * @param mixed $brulageParis
-     * @return Competiteur
-     */
-    public function setBrulageParis($brulageParis): self
-    {
-        $this->brulageParis = $brulageParis;
         return $this;
     }
 

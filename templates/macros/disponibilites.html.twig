@@ -159,3 +159,29 @@
             {% endif %}
     </td>
 {% endmacro %}
+
+{% macro selectionnables(selectionnables) %}
+    <table style="margin-top: 20px;" class="centered card-panel dispos">
+        <thead>
+            <tr>
+                <th><h5>Sélectionnables</h5></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if selectionnables is empty %}
+                <tr>
+                    <td>Il n'y a pas de joueurs sélectionnables</td>
+                </tr>
+            {% else %}
+                {% for selectionnable in selectionnables %}
+                    <tr>
+                        <td>
+                            {{ selectionnable.idCompetiteur.nom }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+{% endmacro %}

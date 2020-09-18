@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
+{% import 'macros/brulages.html.twig' as _brulage %}
+{% import 'macros/disponibilites.html.twig' as _disponibilites %}
 
 {% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.idEquipe }}{% endblock %}
 
@@ -9,56 +11,9 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
-                <thead>
-                <tr>
-                    <th>
-                        <h5>Brûlés en {{ compo.idEquipe.idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
-                    </th>
-                </tr>
-                </thead>
+            {{ _brulage.joueursBrules(type, brulages, compo.idEquipe.idEquipe) }}
 
-                <tbody>
-                {% if compo.idEquipe.idEquipe == 1 or burntPlayers is empty %}
-                    <tr>
-                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe.idEquipe }}</td>
-                    </tr>
-                {% else %}
-                    {% for burntPlayer in burntPlayers %}
-                        <tr>
-                            <td>{{ burntPlayer.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
-            <table class="centered card-panel dispos">
-                <thead>
-                <tr>
-                    <th>
-                        <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
-                    </th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {% if (compo.idEquipe.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
-                    <tr>
-                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
-                    </tr>
-                {% elseif almostBurntPlayers is empty %}
-                    <tr>
-                        <td>Il n'y a pas de potentiels futurs brûlés</td>
-                    </tr>
-                {% else %}
-                    {% for almostBurntPlayer in almostBurntPlayers %}
-                        <tr>
-                            <td>{{ almostBurntPlayer.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
+            {{ _brulage.joueursPreBrules(type, brulages, compo.idEquipe.idEquipe) }}
         </div>
 
         <div class="col s12 m7">
@@ -155,81 +110,12 @@
             </div>
         </div>
         <div class="col s12 hide-on-med-and-up">
-            <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
-                <thead>
-                <tr>
-                    <th>
-                        <h5>Brûlés en {{ compo.idEquipe.idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
-                    </th>
-                </tr>
-                </thead>
+            {{ _brulage.joueursBrules(type, brulages, compo.idEquipe.idEquipe) }}
 
-                <tbody>
-                {% if compo.idEquipe.idEquipe == 1 or burntPlayers is empty %}
-                    <tr>
-                        <td>Il n'y a pas de brûlés en {{ compo.idEquipe.idEquipe }}</td>
-                    </tr>
-                {% else %}
-                    {% for burntPlayer in burntPlayers %}
-                        <tr>
-                            <td>{{ burntPlayer.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
-            <table class="centered card-panel dispos">
-                <thead>
-                <tr>
-                    <th>
-                        <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
-                    </th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {% if (compo.idEquipe.idEquipe == 4 and compo.idJournee.linkType == 'departementale') or (compo.idEquipe.idEquipe == 2 and compo.idJournee.linkType == 'paris') %}
-                    <tr>
-                        <td>Il n'y a pas de brûlés en dessous de cette équipe</td>
-                    </tr>
-                {% elseif almostBurntPlayers is empty %}
-                    <tr>
-                        <td>Il n'y a pas de potentiels futurs brûlés</td>
-                    </tr>
-                {% else %}
-                    {% for almostBurntPlayer in almostBurntPlayers %}
-                        <tr>
-                            <td>{{ almostBurntPlayer.nom }}</td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
+            {{ _brulage.joueursPreBrules(type, brulages, compo.idEquipe.idEquipe) }}
         </div>
         <div class="col s12 m2">
-            <table style="margin-top: 20px;" class="centered card-panel dispos">
-                <thead>
-                <tr>
-                    <th><h5>Sélectionnables</h5></th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {% if selectionnables is empty %}
-                    <tr>
-                        <td>Il n'y a pas de joueurs sélectionnables</td>
-                    </tr>
-                {% else %}
-                    {% for selectionnable in selectionnables %}
-                        <tr>
-                            <td>
-                                {{ selectionnable.idCompetiteur.nom }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
+            {{ _disponibilites.selectionnables(selectionnables) }}
         </div>
     </div>
 
