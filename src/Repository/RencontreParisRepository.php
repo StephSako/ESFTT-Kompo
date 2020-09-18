@@ -77,7 +77,7 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere('rp.idJoueur1 = c.idCompetiteur OR rp.idJoueur2 = c.idCompetiteur OR rp.idJoueur3 = c.idCompetiteur OR rp.idJoueur4 = c.idCompetiteur OR rp.idJoueur5 = c.idCompetiteur OR rp.idJoueur6 = c.idCompetiteur OR rp.idJoueur7 = c.idCompetiteur OR rp.idJoueur8 = c.idCompetiteur OR rp.idJoueur9 = c.idCompetiteur')
-            ->andWhere("JSON_VALUE(c.brulageParis, '$.1') >= 3")
+            ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idEquipe = 1) >= 2")
             ->getQuery()->getResult();
     }
 

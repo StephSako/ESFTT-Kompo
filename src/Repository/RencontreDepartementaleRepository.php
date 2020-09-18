@@ -69,7 +69,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
-            ->andWhere("JSON_VALUE(c.brulageDepartemental, '$.1') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.2') >= 2 OR JSON_VALUE(c.brulageDepartemental, '$.3') >= 2")
+            ->andWhere("(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = c.idCompetiteur OR p1.idJoueur2 = c.idCompetiteur OR p1.idJoueur3 = c.idCompetiteur OR p1.idJoueur4 = c.idCompetiteur) AND p1.idEquipe = 1) >= 1 OR (SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = c.idCompetiteur OR p2.idJoueur2 = c.idCompetiteur OR p2.idJoueur3 = c.idCompetiteur OR p2.idJoueur4 = c.idCompetiteur) AND p2.idEquipe = 2) >= 1 OR (SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idEquipe = 3) >= 1")
             ->getQuery()->getResult();
     }
 
