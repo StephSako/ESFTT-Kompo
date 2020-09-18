@@ -123,7 +123,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
 
                 /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerDepartementale($this->getUser(), $this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()));
+                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->getUser(), $this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()), 'departementale');
 
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
@@ -132,7 +132,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
                 $disposJoueur->setDisponibiliteParis($dispo);
 
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayerParis($this->getUser(), $this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()));
+                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->getUser(), $this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $disposJoueur->getIdJournee()), 'paris');
 
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');

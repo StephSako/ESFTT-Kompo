@@ -20,15 +20,15 @@
 
         <div class="col s12 m7">
             {% for message in app.flashes('success') %}
-                {{ flash.message(message, 'green') }}
+                {{ _flash.message(message, 'green') }}
             {% endfor %}
 
             {% for message in app.flashes('fail') %}
-                {{ flash.message(message, 'red') }}
+                {{ _flash.message(message, 'red') }}
             {% endfor %}
 
             {% for message in app.flashes('warning') %}
-                {{ flash.message(message, 'orange') }}
+                {{ _flash.message(message, 'orange') }}
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">

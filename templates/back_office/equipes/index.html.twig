@@ -10,11 +10,11 @@
     <div class="container">
 
         {% for message in app.flashes('success') %}
-            {{ flash.message(message, 'green') }}
+            {{ _flash.message(message, 'green') }}
         {% endfor %}
 
         {% for message in app.flashes('fail') %}
-            {{ flash.message(message, 'red') }}
+            {{ _flash.message(message, 'red') }}
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
