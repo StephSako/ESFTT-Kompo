@@ -1,6 +1,6 @@
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-<p align="center"><img src="https://zupimages.net/up/20/38/46gr.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/4hoo.png"></p>
 
 ## En résumé ...
 
@@ -21,7 +21,7 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 ## Page d'accueil
 
- <p align="center"><img src="https://zupimages.net/up/20/38/2r12.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
+ <p align="center"><img src="https://zupimages.net/up/20/38/c3i4.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
