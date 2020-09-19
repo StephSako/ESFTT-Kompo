@@ -65,6 +65,7 @@ class BackOfficeJourneeController extends AbstractController
             $journee = $this->journeeParisRepository->find($idJournee);
             $form = $this->createForm(JourneeParisType::class, $journee);
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $form->handleRequest($request);
 

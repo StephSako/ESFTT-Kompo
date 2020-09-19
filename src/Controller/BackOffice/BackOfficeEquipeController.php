@@ -63,6 +63,7 @@ class BackOfficeEquipeController extends AbstractController
             $equipe = $this->equipeParisRepository->find($idEquipe);
             $form = $this->createForm(EquipeParisType::class, $equipe);
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $form->handleRequest($request);
 

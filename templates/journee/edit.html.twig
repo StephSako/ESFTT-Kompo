@@ -11,9 +11,8 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            {{ _brulage.joueursBrules(type, brulages, compo.idEquipe.idEquipe) }}
-
-            {{ _brulage.joueursPreBrules(type, brulages, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
         </div>
 
         <div class="col s12 m7">
@@ -110,9 +109,8 @@
             </div>
         </div>
         <div class="col s12 hide-on-med-and-up">
-            {{ _brulage.joueursBrules(type, brulages, compo.idEquipe.idEquipe) }}
-
-            {{ _brulage.joueursPreBrules(type, brulages, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
         </div>
         <div class="col s12 m2">
             {{ _disponibilites.selectionnables(selectionnables) }}

@@ -69,66 +69,54 @@
     </table>
 {% endmacro %}
 
-{% macro joueursBrules(type, brulages, idEquipe) %}
+{% macro joueursBrules(type, joueursBrules, idEquipe) %}
     <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
         <thead>
-        <tr>
-            <th>
-                <h5>Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
-            </th>
-        </tr>
+            <tr>
+                <th>
+                    <h5>Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
+                </th>
+            </tr>
         </thead>
 
         <tbody>
-        {% for nom, brulage in brulages %}
-            <tr>
-                {% if idEquipe == 2 %}
-                    {% if (type == 'departementale' and brulage["E1"] >= 2) or (type == 'paris' and brulage["E1"] >= 3) %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% elseif idEquipe == 3 %}
-                    {% if not (brulage["E1"] < 2 and brulage["E2"] < 2) %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% elseif idEquipe == 4 %}
-                    {% if not (brulage["E1"] < 2 and brulage["E2"] < 2 and brulage["E3"] < 2) %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% endif %}
-            </tr>
-        {% endfor %}
+            {% if joueursBrules|length == 0 %}
+                <tr>
+                    <td>Aucun joueur brûlé</td>
+                </tr>
+            {% else %}
+                {% for joueur in joueursBrules %}
+                    <tr>
+                        <td>{{ joueur }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 {% endmacro %}
 
-{% macro joueursPreBrules(type, brulages, idEquipe) %}
+{% macro joueursPreBrules(type, joueursPreBrules, idEquipe) %}
     <table class="centered card-panel dispos">
         <thead>
-        <tr>
-            <th>
-                <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
-            </th>
-        </tr>
+            <tr>
+                <th>
+                    <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
+                </th>
+            </tr>
         </thead>
 
         <tbody>
-        {% for nom, brulage in brulages %}
-            <tr>
-                {% if idEquipe == 1 %}
-                    {% if (type == 'departementale' and brulage["E1"] == 1) or (type == 'paris' and brulage["E1"] == 2) %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% elseif idEquipe == 2 %}
-                    {% if brulage["E2"] == 1 %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% elseif idEquipe == 3 %}
-                    {% if brulage["E3"] == 1 %}
-                        <td>{{ nom }}</td>
-                    {% endif %}
-                {% endif %}
-            </tr>
-        {% endfor %}
+            {% if joueursPreBrules|length == 0 %}
+                <tr>
+                    <td>Aucun joueur pré-brûlé</td>
+                </tr>
+            {% else %}
+                {% for joueur in joueursPreBrules %}
+                    <tr>
+                        <td>{{ joueur }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 {% endmacro %}

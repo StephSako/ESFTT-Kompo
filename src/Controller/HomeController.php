@@ -120,7 +120,7 @@ class HomeController extends AbstractController
         $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = $brulages = null;
         $disposJoueur = [];
 
-        if ($this->get('session')->get('type') === 'departementale'){
+        if ($type == 'departementale'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeDepartementaleRepository->find($id);
             $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
@@ -134,7 +134,7 @@ class HomeController extends AbstractController
             else $disponible = null;
 
         }
-        else if ($this->get('session')->get('type') === 'paris'){
+        else if ($type == 'paris'){
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
@@ -183,7 +183,8 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $brulages = $form = $idEquipe = $selectionnables = $journees = null;
+        $form = $idEquipe = $selectionnables = $journees = null;
+        $joueursBrules = $joueursPreBrules = [];
 
         if ($type == 'departementale'){
             $compo = $this->rencontreDepartementaleRepository->find($compo);
@@ -197,8 +198,8 @@ class HomeController extends AbstractController
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
 
-            if ($idEquipe === 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
-            else if ($idEquipe === 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
+            if ($idEquipe == 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
+            else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
@@ -210,11 +211,11 @@ class HomeController extends AbstractController
             $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
             $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
 
-            if ($type === 'departementale' || ($type === 'paris' && $idEquipe === 1)) {
+            if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
             }
 
-            if ($type === 'paris' && $idEquipe === 1) {
+            if ($type == 'paris' && $idEquipe == 1) {
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
@@ -231,25 +232,54 @@ class HomeController extends AbstractController
             ]);
         }
 
-        if ($type === 'departementale') $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
-        else if ($type === 'paris') $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
+        if ($type == 'departementale'){
+            $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
+
+            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
+            foreach ($brulages as $nom => $brulage){
+                switch ($compo->getIdEquipe()->getIdEquipe()){
+                    case 1:
+                        if ($brulage["E1"] == 1) array_push($joueursPreBrules, $nom);
+                        break;
+                    case 2:
+                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $nom);
+                        else if ($brulage["E2"] == 1) array_push($joueursPreBrules, $nom);
+                        break;
+                    case 3:
+                        if (!($brulage["E1"] < 2 && $brulage["E2"] < 2)) array_push($joueursBrules, $nom);
+                        else if ($brulage["E3"] == 1) array_push($joueursPreBrules, $nom);
+                        break;
+                    case 4:
+                        if (!($brulage["E1"] < 2 && $brulage["E2"] < 2 && $brulage["E3"] < 2)) array_push($joueursBrules, $nom);
+                        break;
+                }
+            }
+        }
+        else if ($type == 'paris'){
+            $brulages = $this->competiteurRepository->getCompetiteurBrulageParis($compo->getIdJournee()->getIdJournee());
+
+            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
+            foreach ($brulages as $nom => $brulage) {
+                switch ($compo->getIdEquipe()->getIdEquipe()){
+                    case 1:
+                        if ($brulage["E1"] >= 3) array_push($joueursBrules, $nom);
+                        break;
+                    case 2:
+                        if ($brulage["E1"] == 2) array_push($joueursPreBrules, $nom);
+                        break;
+                }
+            }
+        }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         return $this->render('journee/edit.html.twig', [
-            'brulages' => $brulages,
+            'joueursBrules' => $joueursBrules,
+            'joueursPreBrules' => $joueursPreBrules,
             'selectionnables' => $selectionnables,
             'journees' => $journees,
             'compo' => $compo,
             'type' => $type,
             'form' => $form->createView()
         ]);
-    }
-
-    /**
-     * @param $dispo
-     * @return int
-     */
-    function estDispos($dispo)
-    {
-        return $dispo->getDisponiblite() & true;
     }
 }

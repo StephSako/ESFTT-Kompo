@@ -65,6 +65,7 @@ class BackOfficeRencontreController extends AbstractController
             $rencontre = $this->rencontreParisRepository->find($idRencontre);
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $form->handleRequest($request);
 
