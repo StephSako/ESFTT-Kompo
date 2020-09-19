@@ -112,41 +112,41 @@ class HomeController extends AbstractController
      */
     public function journee($type, $id)
     {
-        if ($id < 1 || $id > 7) throw $this->createNotFoundException('Journée inexistante');
-
-        if ($type == 'departementale' || $type == 'paris') $this->get('session')->set('type', $type);
-        else throw $this->createNotFoundException('Championnat inexistant');
-
-        $journee = $compos = $selectedPlayers = $joueursDeclares = $joueursNonDeclares = $journees = $disponible = $brulages = null;
-        $disposJoueur = [];
-
         if ($type == 'departementale'){
+            $this->get('session')->set('type', $type);
+            $journees = $this->journeeDepartementaleRepository->findAll();
+
+            if ($id < 1 || $id > count($journees)) throw $this->createNotFoundException('Journée inexistante');
+
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeDepartementaleRepository->find($id);
             $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
-            $journees = $this->journeeDepartementaleRepository->findAll();
             $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($journee->getIdJournee());
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposDepartementales())) $disponible = $this->getUser()->getDisposDepartementales()[$journee->getIdJournee()];
             else $disponible = null;
-
         }
         else if ($type == 'paris'){
+            $this->get('session')->set('type', $type);
+            $journees = $this->journeeParisRepository->findAll();
+
+            if ($id < 1 || $id > count($journees)) throw $this->createNotFoundException('Journée inexistante');
+
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
             $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
-            $journees = $this->journeeParisRepository->findAll();
             $brulages = $this->competiteurRepository->getCompetiteurBrulageParis($journee->getIdJournee());
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
             else $disponible = null;
         }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
 
@@ -187,12 +187,16 @@ class HomeController extends AbstractController
         $joueursBrules = $joueursPreBrules = [];
 
         if ($type == 'departementale'){
+            if ($compo < 1 || $compo > count($this->rencontreDepartementaleRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
+
             $compo = $this->rencontreDepartementaleRepository->find($compo);
             $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type == 'paris'){
+            if ($compo < 1 || $compo > count($this->rencontreParisRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
+
             $compo = $this->rencontreParisRepository->find($compo);
             $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
