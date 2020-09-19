@@ -275,6 +275,12 @@ li.error {
   color: red;
 }
 
+#all_dispo_departementale, #all_dispo_paris {
+  .dispos>tbody>tr>td:not(:first-child)>span {
+    margin-right: 0;
+  }
+}
+
 @media screen and (min-width: 993px) and (max-width: 1334px) {
   .menu_navbar {
     display: block;
