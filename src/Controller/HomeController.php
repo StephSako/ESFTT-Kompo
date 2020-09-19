@@ -150,6 +150,12 @@ class HomeController extends AbstractController
 
         $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
 
+        $nbDispos = count(array_filter($joueursDeclares, function($dispo)
+            {
+                return $dispo->getDisponibilite() & true;
+            }
+        ));
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
@@ -159,6 +165,7 @@ class HomeController extends AbstractController
             'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
             'disposJoueur' => $disposJoueur,
+            'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'classement' => $classement,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
@@ -235,5 +242,14 @@ class HomeController extends AbstractController
             'type' => $type,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @param $dispo
+     * @return int
+     */
+    function estDispos($dispo)
+    {
+        return $dispo->getDisponiblite() & true;
     }
 }

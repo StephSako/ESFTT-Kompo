@@ -1,6 +1,6 @@
 $green: #2db009;
 $grey: #918c8c;
-$light_grey: #999898;
+$light_grey: #aba9a9;
 $dark_blue: #012242;
 $light_blue: #1565c0;
 $gradient_blue_light: rgb(17, 116, 184);
@@ -39,6 +39,11 @@ html {
   float: right;
   margin-top: 10px;
   font-size: 95%;
+
+  tr:first-child th {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .brulages {

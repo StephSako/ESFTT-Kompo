@@ -33,9 +33,13 @@ html {
   margin-top: 10px;
   font-size: 95%;
 }
+.dispos tr:first-child th, .brulages tr:first-child th {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
 .brulages td:not(:first-child) {
-  background-color: rgba(153, 152, 152, 0.1);
+  background-color: rgba(171, 169, 169, 0.1);
   border-left-color: white;
   border-left-style: solid;
   border-right-color: white;
