@@ -58,9 +58,16 @@ html {
   }
 }
 
-#nom_ad_mobile {
-  margin-bottom: 10px;
-  margin-top: 5px;
+.complete_compos {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-size: 100%;
+
+  & h5 {
+    font-size: 1.5rem;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
 }
 
 thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
@@ -119,7 +126,7 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
   padding-right: 10px;
 }
 
-.nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5 {
+.nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5, .complete_compos h5 {
   font-family: 'Lobster Two', cursive;
 }
 

@@ -9,37 +9,7 @@
         </div>
     </div>
 
-    <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0; margin-top: 10px;">
-        <div class="row bottom_0">
-            <div class="col s2"><i class="blue-text lighten-1 material-icons">playlist_add_check</i></div>
-            <div class="col s6" style="padding-right: 0;">Sélectionnés</div>
-            <div style="font-size: 100%" class="col s4 lobster
-                {% if (selectedPlayers|length == 16 and type == 'departementale') or (selectedPlayers|length == 12 and type == 'paris') %}
-                    green-text lighten-1
-                {% elseif (selectedPlayers|length >= 12 and type == 'departementale') or (selectedPlayers|length >= 8 and type == 'paris') %}
-                    orange-text lighten-1
-                {% else %}
-                    red-text lighten-1
-                {% endif %}" style="font-size: 110%;">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}
-            </div>
-        </div>
-
-        <div class="row bottom_0 valign-wrapper">
-            <div class="col s2 valign-wrapper">
-                <span style="margin-right: 0;" class="dot dot1 center-align">&nbsp;</span>
-            </div>
-            <div class="col s6" style="padding-right: 0;">Disponibles</div>
-            <div style="font-size: 100%" class="col s4 lobster
-                {% if (nbDispos >= 16 and type == 'departementale') or (nbDispos >= 12 and type == 'paris') %}
-                    green-text lighten-1
-                {% elseif (nbDispos >= 12 and type == 'departementale') or (nbDispos >= 8 and type == 'paris') %}
-                    orange-text lighten-1
-                {% else %}
-                    red-text lighten-1>
-                {% endif %}">{{ nbDispos }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}
-            </div>
-        </div>
-    </div>
+    {{ _self.labelDispoSelec(selectedPlayers, type, nbDispos) }}
 
     <table class="card-panel dispos">
         <thead>
@@ -211,4 +181,38 @@
             {% endif %}
         </tbody>
     </table>
+{% endmacro %}
+
+{% macro labelDispoSelec(selectedPlayers, type, nbDispos) %}
+    <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0; margin-top: 10px;">
+        <div class="row bottom_0">
+            <div class="col s2"><i class="blue-text lighten-1 material-icons">playlist_add_check</i></div>
+            <div class="col s7" style="padding-right: 0;">Sélectionnés</div>
+            <div style="font-size: 100%" class="col s3 lobster">
+                {% if (selectedPlayers|length == 16 and type == 'departementale') or (selectedPlayers|length == 12 and type == 'paris') %}
+                    <span class="green-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                {% elseif (selectedPlayers|length >= 12 and type == 'departementale') or (selectedPlayers|length >= 8 and type == 'paris') %}
+                    <span class="orange-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                {% else %}
+                    <span class="red-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row bottom_0 valign-wrapper">
+            <div class="col s2 valign-wrapper">
+                <span style="margin-right: 0;" class="dot dot1 center-align">&nbsp;</span>
+            </div>
+            <div class="col s7" style="padding-right: 0;">Disponibles</div>
+            <div style="font-size: 100%" class="col s3 lobster
+                {% if (nbDispos >= 16 and type == 'departementale') or (nbDispos >= 12 and type == 'paris') %}
+                    green-text lighten-1
+                {% elseif (nbDispos >= 12 and type == 'departementale') or (nbDispos >= 8 and type == 'paris') %}
+                    orange-text lighten-1
+                {% else %}
+                    red-text lighten-1>
+                {% endif %}">{{ nbDispos }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}
+            </div>
+        </div>
+    </div>
 {% endmacro %}

@@ -36,6 +36,18 @@
                 <h5>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</h5>
             </div>
 
+            {% if (selectedPlayers|length == 16 and journee.linkType == 'departementale') or (selectedPlayers|length == 12 and journee.linkType == 'paris') %}
+                <div class="complete_compos card-panel center green lighten-1 title_journee">
+                    <div class="white-text">
+                        <h5><i class="material-icons">check_circle</i> Compositions complètes</h5>
+                    </div>
+                </div>
+            {% else %}
+                <div class="hide-on-med-and-up">
+                    {{ _disponibilites.labelDispoSelec(selectedPlayers, journee.linkType, nbDispos) }}
+                </div>
+            {% endif %}
+
             <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
 
                 {% if disponible is not null %}
