@@ -6,9 +6,10 @@
 
 <p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="30%"></p>
 
-Kompo permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également de visualiser les brûlages et prévisions de brûlages à J+1 pour chaque joueur.
+**Kompo** permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également pour chacune des journées de visualiser les brûlages des joueurs et prévisions de brûlages à J+1.
 
-Enfin, les capitaines ont accès à un back-office pour gérer les dates des rencontres, adversaires, divisions / poules des équipes, fiche des joueurs, etc ...
+Les capitaines ont accès à un back-office pour gérer les dates des rencontres, adversaires, divisions / poules des équipes, fiche des joueurs, etc ...<br><br>
+Enfin, **Kompo** étant entièrement adapté aux versions mobiles, il leur permettra de remplir facilement les feuilles de matches avec les informations de chaque joueur avant chaque début de match.
 
 Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
@@ -52,7 +53,7 @@ Sur tablette, les items de droite sont rangés dans une liste déroulante comme 
 <p align="center"><img src="https://zupimages.net/up/20/38/aiwd.png" width="12%"></p>
 
 ### Signaler sa disponibilité
-Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons DISPONIBLE ou INDISPONIBLE. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
+Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
  <p align="center"><img src="https://zupimages.net/up/20/38/2tpc.png"></p>
   <p align="center"><i>Click sur</i> DISPONIBLE</p>
@@ -91,9 +92,9 @@ Les brûlages sont chargés dynamiquement en fonction de la journée de champion
 
 ### Tableau des disponibilités
 
-Le tableau sur la droite de la page liste toutes les disponibilités de chaque compétiteur pour la journée. Un joueur en vert est disponible, en rouge indisponible et en gris n'a pas signaler sa disponibilité. Si un logo bleu est devant un joueur, cela signifie qu'il a été sélectionné dans une des équipes pour la journée actuelle.
+Le tableau sur la droite de la page liste toutes les disponibilités de chaque compétiteur pour la journée. Un joueur en vert est disponible, en rouge indisponible et en gris n'a pas déclaré sa disponibilité. Si un logo bleu suit un joueur, cela signifie qu'il est sélectionné dans une des équipes de la journée.
 
-Le bouton bleu TOUT VOIR au dessus du tableau ouvre un panneau détaillant toutes les disponibilités sur toute la phase pour les deux championnats.
+Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant toutes les disponibilités de la phase entière pour chacun des championnats.
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264924-toutes-les-dispos-min.png"></p>
 
@@ -124,7 +125,7 @@ Sont sélectionnables les joueurs :
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264985-selection-min.png"></p>
 
-Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre l'emplacement d'un joueur à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez la composition avec le bouton CONFIRMER.
+Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre l'emplacement d'un joueur à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
 
 Les brûlages sont gérés automatiquement à la validation.
 
