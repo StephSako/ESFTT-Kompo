@@ -127,11 +127,9 @@ Sont sélectionnables les joueurs :
 
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre l'emplacement d'un joueur à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
 
-Les brûlages sont gérés automatiquement à la validation.
-
 ## Responsive
 
-Le site est totalement adapté aux version mobiles et tablettes. Voici quelques captures d'écran :
+**Kompo** est entièrement adapté aux versions mobiles et tablettes. Voici quelques captures d'écran :
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
 
