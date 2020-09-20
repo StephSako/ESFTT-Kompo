@@ -115,10 +115,9 @@ class HomeController extends AbstractController
             $this->get('session')->set('type', $type);
             $journees = $this->journeeDepartementaleRepository->findAll();
 
-            if ($id < 1 || $id > count($journees)) throw $this->createNotFoundException('Journée inexistante');
+            if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
 
             $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-            $journee = $this->journeeDepartementaleRepository->find($id);
             $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
@@ -132,10 +131,9 @@ class HomeController extends AbstractController
             $this->get('session')->set('type', $type);
             $journees = $this->journeeParisRepository->findAll();
 
-            if ($id < 1 || $id > count($journees)) throw $this->createNotFoundException('Journée inexistante');
+            if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
 
             $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-            $journee = $this->journeeParisRepository->find($id);
             $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
@@ -186,17 +184,15 @@ class HomeController extends AbstractController
         $joueursBrules = $joueursPreBrules = [];
 
         if ($type == 'departementale'){
-            if ($compo < 1 || $compo > count($this->rencontreDepartementaleRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
+            if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
-            $compo = $this->rencontreDepartementaleRepository->find($compo);
             $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type == 'paris'){
-            if ($compo < 1 || $compo > count($this->rencontreParisRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
+            if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
-            $compo = $this->rencontreParisRepository->find($compo);
             $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
@@ -216,14 +212,14 @@ class HomeController extends AbstractController
 
             if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
-            }
 
-            if ($type == 'paris' && $idEquipe == 1) {
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());
+                if ($type == 'paris' && $idEquipe == 1) {
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());
+                }
             }
 
             $this->em->flush();

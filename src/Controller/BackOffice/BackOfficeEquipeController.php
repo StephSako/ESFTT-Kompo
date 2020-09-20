@@ -56,15 +56,11 @@ class BackOfficeEquipeController extends AbstractController
     {
         $form = null;
         if ($type == 'departementale'){
-            if ($idEquipe < 1 || $idEquipe > count($this->equipeDepartementaleRepository->findAll())) throw $this->createNotFoundException('Equipe inexistante');
-
-            $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
+            if (!($equipe = $this->equipeDepartementaleRepository->find($idEquipe))) throw $this->createNotFoundException('Equipe inexistante');
             $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
         }
         else if ($type == 'paris'){
-            if ($idEquipe < 1 || $idEquipe > count($this->equipeParisRepository->findAll())) throw $this->createNotFoundException('Equipe inexistante');
-
-            $equipe = $this->equipeParisRepository->find($idEquipe);
+            if (!($equipe = $this->equipeParisRepository->find($idEquipe))) throw $this->createNotFoundException('Equipe inexistante');
             $form = $this->createForm(EquipeParisType::class, $equipe);
         }
         else throw $this->createNotFoundException('Championnat inexistant');

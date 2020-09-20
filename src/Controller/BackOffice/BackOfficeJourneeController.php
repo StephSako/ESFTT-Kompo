@@ -58,15 +58,11 @@ class BackOfficeJourneeController extends AbstractController
     {
         $form = null;
         if ($type == 'departementale'){
-            if ($idJournee < 1 || $idJournee > count($this->journeeDepartementaleRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
-
-            $journee = $this->journeeDepartementaleRepository->find($idJournee);
+            if (!($journee = $this->journeeDepartementaleRepository->find($idJournee))) throw $this->createNotFoundException('Journée inexistante');
             $form = $this->createForm(JourneeDepartementaleType::class, $journee);
         }
         else if ($type == 'paris'){
-            if ($idJournee < 1 || $idJournee > count($this->journeeParisRepository->findAll())) throw $this->createNotFoundException('Journée inexistante');
-
-            $journee = $this->journeeParisRepository->find($idJournee);
+            if (!($journee = $this->journeeParisRepository->find($idJournee))) throw $this->createNotFoundException('Journée inexistante');
             $form = $this->createForm(JourneeParisType::class, $journee);
         }
         else throw $this->createNotFoundException('Championnat inexistant');

@@ -139,40 +139,22 @@
                         </div>
                     </div>
 
-                    <table class="striped responsive-table">
+                    <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                         <tbody>
                         {{ _composition.tr("1", compo.idJoueur1) }}
                         {{ _composition.tr("2", compo.idJoueur2) }}
                         {{ _composition.tr("3", compo.idJoueur3) }}
-
-                        {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                        </tbody>
-                    </table>
-                    <br><div class="divider"></div><br>
-                    <table class="striped responsive-table">
-                        <tbody>
-                        {% endif %}
 
                         {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
                             {{ _composition.tr("4", compo.idJoueur4) }}
                         {% endif %}
 
                         {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                        {{ _composition.tr("5", compo.idJoueur5) }}
-                        {{ _composition.tr("6", compo.idJoueur6) }}
-
-                        {% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}
-                        </tbody>
-                    </table>
-                    <br><div class="divider"></div><br>
-                    <table class="striped responsive-table">
-                        <tbody>
-                        {% endif %}
-
-                        {{ _composition.tr("7", compo.idJoueur7) }}
-                        {{ _composition.tr("8", compo.idJoueur8) }}
-                        {{ _composition.tr("9", compo.idJoueur9) }}
-
+                            {{ _composition.tr("5", compo.idJoueur5) }}
+                            {{ _composition.tr("6", compo.idJoueur6) }}
+                            {{ _composition.tr("7", compo.idJoueur7) }}
+                            {{ _composition.tr("8", compo.idJoueur8) }}
+                            {{ _composition.tr("9", compo.idJoueur9) }}
                         {% endif %}
                         </tbody>
                     </table>

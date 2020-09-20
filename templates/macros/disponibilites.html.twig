@@ -139,14 +139,14 @@
     <td>
         {% if dispo is not null %}
             {% if dispo == 1 %}
-                <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot1 center">&nbsp;</span>
+                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot1 center">&nbsp;</span>
             {% elseif dispo == 0 %}
-                <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot2 center">&nbsp;</span>
+                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot2 center">&nbsp;</span>
             {% else %}
-                <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot3 center">&nbsp;</span>
+                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
             {% endif %}
         {% else %}
-            <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot3 center">&nbsp;</span>
+            <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
         {% endif %}
     </td>
 {% endmacro %}
@@ -222,19 +222,19 @@
         <tbody>
         {% for dispo in disponibilites %}
             <tr>
-                <td class="valign-wrapper">
+                <td>
                     {% if dispo.disponibilite is not null %}
                         {% if dispo.disponibilite == 1 %}
-                            <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot1 center">&nbsp;</span>
+                            <span style="vertical-align: sub; width: 10px; height: 10px;" class="dot dot1 center">&nbsp;</span>
                         {% elseif dispo.disponibilite == 0 %}
-                            <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot2 center">&nbsp;</span>
+                            <span style="vertical-align: sub; width: 10px; height: 10px;" class="dot dot2 center">&nbsp;</span>
                         {% else %}
-                            <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot3 center">&nbsp;</span>
+                            <span style="vertical-align: sub; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
                         {% endif %}
                     {% else %}
-                        <span style="vertical-align: middle; width: 8px; height: 8px;" class="dot dot3 center">&nbsp;</span>
+                        <span style="vertical-align: sub; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
                     {% endif %}
-                    <div class="chip">
+                    <div class="chip" style="margin-bottom: 0;">
                         <img style="margin-left: 0;" src="{{ dispo.avatar }}" alt="Avatar">
                         <span>{{ dispo.nom }}</span>
                     </div>
