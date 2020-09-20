@@ -1,8 +1,0 @@
-version: '3'
-
-services:
-  php:
-    container_name: fftt-api
-    image: registry.gitlab.com/al37350/php-apache-composer:latest
-    volumes:
-      - .:/var/www/html
