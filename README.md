@@ -103,12 +103,13 @@ Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant t
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264950-composition-min.png"></p>
 
 Pour chaque équipe, est affiché :
+- la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
 - la division et la poule;
 - le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
 - l'adversaire;
-- un bouton ouvrant le classement actuel de la poule.
+- un bouton ouvrant le classement actuel de la poule :
 
-Chaque joueur sélectionné est listé avec son classement **officiel** (début de phase), son avatar, son nom et sa licence. Ce classement de joueurs permet de se projeter sur l'ordre des joueurs à renseigner sur la feuille de match.
+<p align="center"><img src="https://zupimages.net/up/20/39/ui2o.jpg" width="80%"></p>
 
 #### Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.
 
