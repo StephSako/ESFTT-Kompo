@@ -52,14 +52,18 @@ class BackOfficeEquipeController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function editEquipe($type, $idEquipe, Request $request)
+    public function update($type, $idEquipe, Request $request)
     {
         $form = null;
         if ($type == 'departementale'){
+            if ($idEquipe < 1 || $idEquipe > count($this->equipeDepartementaleRepository->findAll())) throw $this->createNotFoundException('Equipe inexistante');
+
             $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
             $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
         }
         else if ($type == 'paris'){
+            if ($idEquipe < 1 || $idEquipe > count($this->equipeParisRepository->findAll())) throw $this->createNotFoundException('Equipe inexistante');
+
             $equipe = $this->equipeParisRepository->find($idEquipe);
             $form = $this->createForm(EquipeParisType::class, $equipe);
         }

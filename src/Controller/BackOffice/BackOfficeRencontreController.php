@@ -56,12 +56,16 @@ class BackOfficeRencontreController extends AbstractController
      */
     public function editRencontre($type, $idRencontre, Request $request)
     {
-        $rencontre = $form = null;
+        $form = null;
         if ($type == 'departementale'){
+            if ($idRencontre < 1 || $idRencontre > count($this->rencontreDepartementaleRepository->findAll())) throw $this->createNotFoundException('Composition inexistante');
+
             $rencontre = $this->rencontreDepartementaleRepository->find($idRencontre);
             $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
         }
         else if ($type == 'paris'){
+            if ($idRencontre < 1 || $idRencontre > count($this->rencontreParisRepository->findAll())) throw $this->createNotFoundException('Composition inexistante');
+
             $rencontre = $this->rencontreParisRepository->find($idRencontre);
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
         }

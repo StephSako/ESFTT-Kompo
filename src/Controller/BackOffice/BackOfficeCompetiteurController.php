@@ -74,7 +74,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function editCompetiteurAccount(Competiteur $competiteur, Request $request)
+    public function edit(Competiteur $competiteur, Request $request)
     {
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
