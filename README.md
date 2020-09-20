@@ -1,6 +1,6 @@
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-<p align="center"><img src="https://zupimages.net/up/20/38/4hoo.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/va13.png"></p>
 
 ## En résumé ...
 
@@ -22,7 +22,7 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 ## Page d'accueil
 
- <p align="center"><img src="https://zupimages.net/up/20/38/c3i4.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
+ <p align="center"><img src="https://zupimages.net/up/20/38/dgji.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
@@ -96,7 +96,7 @@ Le tableau sur la droite de la page liste toutes les disponibilités de chaque c
 
 Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant toutes les disponibilités de la phase entière pour chacun des championnats.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264924-toutes-les-dispos-min.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/ptc8.png"></p>
 
 ### Composition d'équipe
 
@@ -133,7 +133,7 @@ Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettr
 
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
 
-<p align="center"><img src="https://zupimages.net/up/20/38/2buh.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
+<p align="center"><img src="https://zupimages.net/up/20/38/khg3.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
 
 Le menu déroulant apparaît en cliquant sur le hamburger (les 3 bâtons en haut à gauche).
 
