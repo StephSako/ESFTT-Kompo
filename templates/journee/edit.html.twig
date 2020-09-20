@@ -21,7 +21,7 @@
                 <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
 
                 <div class="row header_compo">
-                    {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                    {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
                     <h5 class="col s12 m5 hide-on-med-and-up">{{ compo.adversaire }}</h5>
 
@@ -35,8 +35,8 @@
                     <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
 
                     <h5 class="col s4 m2">
-                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                        {% else %} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
+                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
+                        {% else %} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
                         {% endif %}
                     </h5>
 

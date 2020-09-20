@@ -33,12 +33,12 @@
                         {% else %}
                             <span class="dot dot3 center">&nbsp;</span>
                         {% endif %}
-                        <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text lighten-3 {% elseif not dispo.disponibilite %} red-text lighten-3 {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                        <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
                     </div>
                 </td>
                 <td class="" style="padding-left: 0; padding-right: 0;">
                     {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                        <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                        <i class="blue-text right-align material-icons">playlist_add_check</i>
                     {% endif %}
                 </td>
             </tr>
@@ -48,12 +48,12 @@
                 <td>
                     <div class="valign-wrapper">
                         <span class="dot dot3 center">&nbsp;</span>
-                        <span style="margin-left: 2%;" class="grey-text lighten-3">{{ dispoNonDeclaree.nom }}</span>
+                        <span style="margin-left: 2%;" class="grey-text">{{ dispoNonDeclaree.nom }}</span>
                     </div>
                 </td>
                 <td class="left">
                     {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
-                        <i class="blue-text right-align darken-1 material-icons">playlist_add_check</i>
+                        <i class="blue-text right-align material-icons">playlist_add_check</i>
                     {% endif %}
                 </td>
             </tr>
@@ -184,11 +184,11 @@
             <div class="col s7 offset-s1">Sélectionnés</div>
             <div style="font-size: 100%" class="col s4 lobster">
                 {% if (selectedPlayers|length == 16 and type == 'departementale') or (selectedPlayers|length == 12 and type == 'paris') %}
-                    <span class="green-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                    <span class="green-text">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
                 {% elseif (selectedPlayers|length >= 12 and type == 'departementale') or (selectedPlayers|length >= 8 and type == 'paris') %}
-                    <span class="orange-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                    <span class="orange-text text-darken-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
                 {% else %}
-                    <span class="red-text lighten-1">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
+                    <span class="red-text">{{ selectedPlayers|length }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}</span>
                 {% endif %}
             </div>
         </div>
@@ -197,11 +197,11 @@
             <div class="col s7 offset-s1">Disponibles</div>
             <div style="font-size: 100%" class="col s4 lobster
                 {% if (nbDispos >= 16 and type == 'departementale') or (nbDispos >= 12 and type == 'paris') %}
-                    green-text lighten-1
+                    green-text
                 {% elseif (nbDispos >= 12 and type == 'departementale') or (nbDispos >= 8 and type == 'paris') %}
-                    orange-text lighten-1
+                    orange-text text-darken-1
                 {% else %}
-                    red-text lighten-1>
+                    red-text
                 {% endif %}">{{ nbDispos }}/{% if type == 'departementale' %}16{% elseif type == 'paris' %}12{% endif %}
             </div>
         </div>

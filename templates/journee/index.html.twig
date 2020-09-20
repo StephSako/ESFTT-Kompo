@@ -52,12 +52,12 @@
 
                 {% if disponible is not null %}
                     {% if disponible == 1 %}
-                        <h5>Vous vous êtes déclaré <span class="green-text lighten-3">disponible</span></h5>
+                        <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                         <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 0}) }}">
                             <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                         </a>
                     {% elseif disponible == 0 %}
-                        <h5>Vous vous êtes déclaré <span class="red-text lighten-3">indisponible</span></h5>
+                        <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                         <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, disposJoueur: disposJoueur.idDisponibilite, dispo: 1}) }}">
                             <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                         </a>
@@ -84,7 +84,7 @@
                 <div class="center card-panel">
                     <div class="row header_compo">
 
-                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text lighten-2"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
                         <div class="row hide-on-med-and-up" style="margin-bottom: 10px;">
                             <div class="col s9 m5 nom_adversaire">
@@ -93,8 +93,8 @@
 
                             <div class="col s3">
                                 <h5>
-                                    {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                    {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
+                                    {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
+                                    {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
                                     {% endif %}
                                 </h5>
                             </div>
@@ -111,8 +111,8 @@
 
                         <div class="col s4 m1">
                             <h5 class="hide-on-small-only">
-                                {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text lighten-2{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="green-text darken-4 material-icons">directions_car</i>
+                                {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
                                 {% endif %}
                             </h5>
 

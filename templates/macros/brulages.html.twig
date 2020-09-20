@@ -1,12 +1,12 @@
 {% macro table(type, brulages) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
         <div class="row bottom_0">
-            <div class="col s2"><i class="red-text lighten-1 material-icons">highlight_off</i></div>
+            <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
             <div class="col s10">Brûlé dans l'équipe</div>
         </div>
 
         <div class="row bottom_0">
-            <div class="col s2"><i class="orange-text lighten-1 material-icons">error_outline</i></div>
+            <div class="col s2"><i class="orange-text material-icons">error_outline</i></div>
             <div class="col s10">Futur brûlé si sélectionné</div>
         </div>
     </div>
@@ -31,35 +31,35 @@
                 {% if type == 'departementale' %}
                     <td class="center">
                         {% if brulage["E1"] == 1 %}
-                            <i class="orange-text lighten-1 material-icons">error_outline</i>
+                            <i class="orange-text material-icons">error_outline</i>
                         {% endif %}</td>
                     <td class="center">
                         {% if not (brulage["E1"] < 2) %}
-                            <i class="red-text lighten-1 material-icons">highlight_off</i>
+                            <i class="red-text material-icons">highlight_off</i>
                         {% elseif brulage["E2"] == 1 %}
-                            <i class="orange-text lighten-1 material-icons">error_outline</i>
+                            <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
                     <td class="center">
                         {% if not (brulage["E1"] < 2 and brulage["E2"] < 2) %}
-                            <i class="red-text lighten-1 material-icons">highlight_off</i>
+                            <i class="red-text material-icons">highlight_off</i>
                         {% elseif brulage["E3"] == 1 %}
-                            <i class="orange-text lighten-1 material-icons">error_outline</i>
+                            <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
                     <td class="center">
                         {% if not (brulage["E1"] < 2 and brulage["E2"] < 2 and brulage["E3"] < 2) %}
-                            <i class="red-text lighten-1 material-icons">highlight_off</i>
+                            <i class="red-text material-icons">highlight_off</i>
                         {% endif %}
                     </td>
                 {% elseif type == 'paris' %}
                     <td class="center">
                         {% if brulage["E1"] == 2 %}
-                            <i class="orange-text lighten-1 material-icons">error_outline</i>
+                            <i class="orange-text material-icons">error_outline</i>
                         {% endif %}</td>
                     <td class="center">
                         {% if brulage["E1"] >= 3 %}
-                            <i class="red-text lighten-1 material-icons">highlight_off</i>
+                            <i class="red-text material-icons">highlight_off</i>
                         {% endif %}
                     </td>
                 {% endif %}
@@ -100,7 +100,7 @@
         <thead>
             <tr>
                 <th>
-                    <h5>Futurs brûlés si sélectionnés <i class="orange-text lighten-1 material-icons">whatshot</i></h5>
+                    <h5>Futurs brûlés si sélectionnés <i class="orange-text material-icons">whatshot</i></h5>
                 </th>
             </tr>
         </thead>

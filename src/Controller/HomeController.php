@@ -90,12 +90,11 @@ class HomeController extends AbstractController
         if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
         else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
         else $dates = $this->journeeDepartementaleRepository->findAllDates();
-        $NJournee = 0;
+        $NJournee = 1;
 
-        while ($NJournee < 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
+        while ($NJournee <= 7 && (int) (new DateTime())->diff($dates[$NJournee]["date"])->format('%R%a') <= 0){
             $NJournee++;
         }
-        $NJournee++;
 
         return $this->redirectToRoute('journee.show', [
             'type' => $type,
