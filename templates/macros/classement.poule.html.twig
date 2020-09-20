@@ -1,56 +1,29 @@
 {% macro classement(classement) %}
+    {% if classement is empty %}
+        <p class="center-align">Classement indisponible</p>
+    {% else %}
+        <table class="striped" style="height: 100%;">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Equipe</th>
+                    <th>pts</th>
+                    <th>V</th>
+                    <th>D</th>
+                </tr>
+            </thead>
 
-    <h5 class="center-align">Le classement de la poule sera bientôt disponible ;)</h5>
-    {# <table class="striped">
-        <tbody>
-        <tr>
-            <td class="rank center"><b>1</b></td>
-            <td>Saint Martin du Tertre</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>2</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>3</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>4</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>5</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>6</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>7</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        <tr>
-            <td class="rank center"><b>8</b></td>
-            <td>Herblay</td>
-            <td>12</td>
-            <td><span class="green-text">3</span>/<span class="red-text">4</span></td>
-        </tr>
-        </tbody>
-    </table> #}
+            <tbody>
+            {% for key, equipe in classement %}
+                <tr>
+                    <td style="padding-top: 11px; padding-bottom: 11px;" class="rank"><b>{{ key + 1 }}</b></td>
+                    <td style="padding-top: 11px; padding-bottom: 11px;">{{ equipe.nomEquipe }}</td>
+                    <td style="padding-top: 11px; padding-bottom: 11px;">{{ equipe.points }}</td>
+                    <td style="padding-top: 11px; padding-bottom: 11px;"><span class="green-text">{{ equipe.victoires }}</span></td>
+                    <td style="padding-top: 11px; padding-bottom: 11px;"><span class="red-text">{{ equipe.defaites }}</span></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endmacro %}

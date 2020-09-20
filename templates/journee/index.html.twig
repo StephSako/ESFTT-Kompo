@@ -117,7 +117,7 @@
                             </h5>
 
                             <div class="hide-on-med-and-up" style="padding-left: 20px; padding-right: 20px;">
-                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
                             </div>
                         </div>
 
@@ -126,15 +126,16 @@
                         </div>
 
                         <div class="hide-on-small-only col m1" style="padding-left: 0;">
-                            <a style="padding-left: 0; padding-right: 0;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement"><i class="material-icons">equalizer</i></a>
+                            <a style="padding-left: 0; padding-right: 0; margin-top: 20%;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
                         </div>
 
-                        <div id="classement" class="modal modal-fixed-footer">
-                            <div class="modal-content">
-                                {{ _poule.classement(classement) }}
+                        <div id="classement{{ compo.idEquipe.idEquipe }}" class="modal modal-fixed-footer">
+                            <div class="modal-content" style="padding: 0 1%;">
+                                {{ _poule.classement(classement[compo.idEquipe.idEquipe]) }}
                             </div>
                             <div class="modal-footer">
-                                <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2">OK</a>
+                                {% if classement is not empty %} <h6 class="valign-wrapper left"><b>{{ compo.idEquipe.division.shortName }} - Poule {{ compo.idEquipe.poule.poule }}</b></h6> {% endif %}
+                                <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2 right">OK</a>
                             </div>
                         </div>
                     </div>

@@ -8,6 +8,8 @@ use App\Form\RencontreParisHautType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
+use App\Repository\EquipeDepartementaleRepository;
+use App\Repository\EquipeParisRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\JourneeDepartementaleRepository;
@@ -16,7 +18,6 @@ use DateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use FFTTApi\Exception\InvalidURIParametersException;
-use FFTTApi\Exception\JoueurNotFound;
 use FFTTApi\Exception\NoFFTTResponseException;
 use FFTTApi\Exception\URIPartNotValidException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +30,8 @@ class HomeController extends AbstractController
 {
     private $em;
     private $competiteurRepository;
+    private $equipeDepartementalRepository;
+    private $equipeParisRepository;
     private $disponibiliteDepartementaleRepository;
     private $disponibiliteParisRepository;
     private $journeeDepartementaleRepository;
@@ -44,6 +47,8 @@ class HomeController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
      * @param RencontreParisRepository $rencontreParisRepository
+     * @param EquipeDepartementaleRepository $equipeDepartementalRepository
+     * @param EquipeParisRepository $equipeParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
@@ -53,6 +58,8 @@ class HomeController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 RencontreParisRepository $rencontreParisRepository,
+                                EquipeDepartementaleRepository $equipeDepartementalRepository,
+                                EquipeParisRepository $equipeParisRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -63,22 +70,8 @@ class HomeController extends AbstractController
         $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->journeeParisRepository = $journeeParisRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
-    }
-
-    /**
-     * @Route("/test_api", name="test_api")
-     */
-    public function testApiFFTTAction(){
-        $api = new FFTTApi("SW405", "d7ZG56dQKf");
-        try {
-            var_dump($api->getEquipesByClub("08951331"));
-        } catch (InvalidURIParametersException $e) {var_dump($e->getMessage());
-        } catch (NoFFTTResponseException $e) {var_dump($e->getMessage());
-        } catch (URIPartNotValidException $e) {var_dump($e->getMessage());
-        } catch (JoueurNotFound $e) {var_dump($e->getMessage());
-        }
-
-        return new Response('');
+        $this->equipeDepartementalRepository = $equipeDepartementalRepository;
+        $this->equipeParisRepository = $equipeParisRepository;
     }
 
     /**
@@ -145,7 +138,27 @@ class HomeController extends AbstractController
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
-        $classement = array("1"=>[], "2"=>[], "3"=>[], "4"=>[]);
+        /** Génération des classements des poules grâce à l'API de la FFTT */
+        $api = new FFTTApi("SW405", "d7ZG56dQKf");
+        try {
+            if ($type == 'departementale'){
+                $classement = [
+                    1 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(1)->getLienDivision()),
+                    2 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(2)->getLienDivision()),
+                    3 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(3)->getLienDivision()),
+                    4 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(4)->getLienDivision())
+                ];
+            } else if ($type == 'paris'){
+                $classement = [
+                    1 => $api->getClassementPouleByLienDivision($this->equipeParisRepository->find(1)->getLienDivision()),
+                    2 => $api->getClassementPouleByLienDivision($this->equipeParisRepository->find(2)->getLienDivision())
+                ];
+            }
+            else $classement = [];
+        }
+        catch (InvalidURIParametersException $e) { $classement = []; }
+        catch (NoFFTTResponseException $e) { $classement = []; }
+        catch (URIPartNotValidException $e) { $classement = []; }
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
             {
