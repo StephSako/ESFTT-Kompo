@@ -140,21 +140,29 @@ class HomeController extends AbstractController
 
         /** Génération des classements des poules grâce à l'API de la FFTT */
         $api = new FFTTApi("SW405", "d7ZG56dQKf");
+        $classement = null;
         try {
             if ($type == 'departementale'){
+                $classementE1 = $this->equipeDepartementalRepository->find(1)->getLienDivision();
+                $classementE2 = $this->equipeDepartementalRepository->find(2)->getLienDivision();
+                $classementE3 = $this->equipeDepartementalRepository->find(3)->getLienDivision();
+                $classementE4 = $this->equipeDepartementalRepository->find(4)->getLienDivision();
+
                 $classement = [
-                    1 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(1)->getLienDivision()),
-                    2 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(2)->getLienDivision()),
-                    3 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(3)->getLienDivision()),
-                    4 => $api->getClassementPouleByLienDivision($this->equipeDepartementalRepository->find(4)->getLienDivision())
+                    1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
+                    2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : []),
+                    3 => (!empty($classementE3) ? $api->getClassementPouleByLienDivision($classementE3) : []),
+                    4 => (!empty($classementE4) ? $api->getClassementPouleByLienDivision($classementE4) : [])
                 ];
             } else if ($type == 'paris'){
+                $classementE1 = $this->equipeParisRepository->find(1)->getLienDivision();
+                $classementE2 = $this->equipeParisRepository->find(2)->getLienDivision();
+
                 $classement = [
-                    1 => $api->getClassementPouleByLienDivision($this->equipeParisRepository->find(1)->getLienDivision()),
-                    2 => $api->getClassementPouleByLienDivision($this->equipeParisRepository->find(2)->getLienDivision())
+                    1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
+                    2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : [])
                 ];
             }
-            else $classement = [];
         }
         catch (InvalidURIParametersException $e) { $classement = []; }
         catch (NoFFTTResponseException $e) { $classement = []; }
