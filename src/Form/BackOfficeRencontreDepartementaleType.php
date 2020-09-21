@@ -24,7 +24,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
                 'label' => 'Match à Herblay',
                 'required' => false])
             ->add('exempt', CheckboxType::class,[
-                'label' => 'Exempt',
+                'label' => 'Exemptée',
                 'required' => false])
             ->add('domicile', CheckboxType::class,[
                 'label' => 'Rencontre à domicile',

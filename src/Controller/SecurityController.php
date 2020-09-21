@@ -42,18 +42,15 @@ class SecurityController extends AbstractController
      */
     public function loginAction(AuthenticationUtils $utils)
     {
-        $journees = $this->journeeDepartementaleRepository->findAll();
-
-        if ($this->getUser() == null) {
+        if ($this->getUser() != null){
+            dump('deja connecté');
+            return $this->redirectToRoute('index');
+        } else {
             return $this->render('account/login.html.twig', [
-                'journees' => $journees,
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
             ]);
         }
-        else return $this->render('account/alreadyConnected.html.twig',[
-            'journees' => $journees
-        ]);
     }
 
     /**
