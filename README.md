@@ -42,7 +42,7 @@ Sur la droite, vous pouvez accéder :
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264877-modifier-mot-de-passe-min.png"></p>
 
 - au back-office (**accès réservé aux capitaines**) permettant de gérer :
-	* les rencontres (adversaires, le déplacement, et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
+	* les rencontres (l'adversaire sinon un bouton pour signaler si l'équipe est exemptée, le lieu de la rencontre (domicile ou extérieur), et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
 	* les dates;
 	* les équipes (divisions et poules);
 	* les compétiteurs (modification et création).
