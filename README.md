@@ -107,7 +107,7 @@ Pour chaque équipe, est affiché :
 - la division et la poule;
 - le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
 - l'adversaire;
-- un bouton ouvrant le classement actuel de la poule :
+- un bouton affichant le classement actuel de la poule (pour raisons de performances, il est actualisé toutes les 12h) :
 
 <p align="center"><img src="https://zupimages.net/up/20/39/ui2o.jpg" width="80%"></p>
 
