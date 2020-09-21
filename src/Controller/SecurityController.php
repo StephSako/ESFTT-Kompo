@@ -43,7 +43,6 @@ class SecurityController extends AbstractController
     public function loginAction(AuthenticationUtils $utils)
     {
         if ($this->getUser() != null){
-            dump('deja connecté');
             return $this->redirectToRoute('index');
         } else {
             return $this->render('account/login.html.twig', [

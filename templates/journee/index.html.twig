@@ -145,7 +145,7 @@
                                 {{ _poule.classement(classement[compo.idEquipe.idEquipe]) }}
                             </div>
                             <div class="modal-footer">
-                                {% if classement is not empty %} <h6 class="valign-wrapper left"><b>{{ compo.idEquipe.division.shortName }} - Poule {{ compo.idEquipe.poule.poule }}</b></h6> {% endif %}
+                                {% if classement is not empty %} <h6 class="valign-wrapper left"><b>{{ compo.idEquipe.division.shortName }} - Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></b></h6> {% endif %}
                                 <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2 right">OK</a>
                             </div>
                         </div>

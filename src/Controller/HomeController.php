@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FFTTApi\FFTTApi;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class HomeController extends AbstractController
 {
@@ -98,11 +100,12 @@ class HomeController extends AbstractController
     /**
      * @param string $type
      * @param int $id
-     * @Route("/journee/{type}/{id}", name="journee.show")
+     * @param CacheInterface $cache
      * @return Response
      * @throws DBALException
+     * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journee(string $type, int $id)
+    public function journee(string $type, int $id, CacheInterface $cache)
     {
         if ($type == 'departementale'){
             $this->get('session')->set('type', $type);
@@ -138,35 +141,39 @@ class HomeController extends AbstractController
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
-        /** Génération des classements des poules grâce à l'API de la FFTT */
-        $api = new FFTTApi("SW405", "d7ZG56dQKf");
-        $classement = null;
-        try {
-            if ($type == 'departementale'){
-                $classementE1 = $this->equipeDepartementalRepository->find(1)->getLienDivision();
-                $classementE2 = $this->equipeDepartementalRepository->find(2)->getLienDivision();
-                $classementE3 = $this->equipeDepartementalRepository->find(3)->getLienDivision();
-                $classementE4 = $this->equipeDepartementalRepository->find(4)->getLienDivision();
+        /** Génération des classements des poules grâce à l'API de la FFTT stockés dans le cache */
+        $classement = $cache->get('classement', function(ItemInterface  $item, $type){
+            $item->expiresAfter(60 * 60 * 12); // Expire toutes les 12h
+            try {
+                $api = new FFTTApi("SW405", "d7ZG56dQKf");
+                if ($type == 'departementale'){
+                    $classementE1 = $this->equipeDepartementalRepository->find(1)->getLienDivision();
+                    $classementE2 = $this->equipeDepartementalRepository->find(2)->getLienDivision();
+                    $classementE3 = $this->equipeDepartementalRepository->find(3)->getLienDivision();
+                    $classementE4 = $this->equipeDepartementalRepository->find(4)->getLienDivision();
 
-                $classement = [
-                    1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
-                    2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : []),
-                    3 => (!empty($classementE3) ? $api->getClassementPouleByLienDivision($classementE3) : []),
-                    4 => (!empty($classementE4) ? $api->getClassementPouleByLienDivision($classementE4) : [])
-                ];
-            } else if ($type == 'paris'){
-                $classementE1 = $this->equipeParisRepository->find(1)->getLienDivision();
-                $classementE2 = $this->equipeParisRepository->find(2)->getLienDivision();
+                    return [
+                        1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
+                        2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : []),
+                        3 => (!empty($classementE3) ? $api->getClassementPouleByLienDivision($classementE3) : []),
+                        4 => (!empty($classementE4) ? $api->getClassementPouleByLienDivision($classementE4) : [])
+                    ];
+                } else if ($type == 'paris'){
+                    $classementE1 = $this->equipeParisRepository->find(1)->getLienDivision();
+                    $classementE2 = $this->equipeParisRepository->find(2)->getLienDivision();
 
-                $classement = [
-                    1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
-                    2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : [])
-                ];
+                    return [
+                        1 => (!empty($classementE1) ? $api->getClassementPouleByLienDivision($classementE1) : []),
+                        2 => (!empty($classementE2) ? $api->getClassementPouleByLienDivision($classementE2) : [])
+                    ];
+                }
             }
-        }
-        catch (InvalidURIParametersException $e) { $classement = []; }
-        catch (NoFFTTResponseException $e) { $classement = []; }
-        catch (URIPartNotValidException $e) { $classement = []; }
+            catch (InvalidURIParametersException $e) {  }
+            catch (NoFFTTResponseException $e) {  }
+            catch (URIPartNotValidException $e) {  }
+
+            return [1 =>  [], 2 =>  [], 3 =>  [], 4 =>  []];
+        });
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
             {
