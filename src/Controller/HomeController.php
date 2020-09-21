@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use FFTTApi\Exception\InvalidURIParametersException;
 use FFTTApi\Exception\NoFFTTResponseException;
 use FFTTApi\Exception\URIPartNotValidException;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -103,11 +104,12 @@ class HomeController extends AbstractController
      * @param CacheInterface $cache
      * @return Response
      * @throws DBALException
+     * @throws InvalidArgumentException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
     public function journee(string $type, int $id, CacheInterface $cache)
     {
-        if ($type == 'departementale'){
+        if ($type == 'departementale') {
             $this->get('session')->set('type', $type);
             $journees = $this->journeeDepartementaleRepository->findAll();
 
@@ -122,8 +124,7 @@ class HomeController extends AbstractController
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposDepartementales())) $disponible = $this->getUser()->getDisposDepartementales()[$journee->getIdJournee()];
             else $disponible = null;
-        }
-        else if ($type == 'paris'){
+        } else if ($type == 'paris') {
             $this->get('session')->set('type', $type);
             $journees = $this->journeeParisRepository->findAll();
 
@@ -138,8 +139,7 @@ class HomeController extends AbstractController
 
             if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
             else $disponible = null;
-        }
-        else throw $this->createNotFoundException('Championnat inexistant');
+        } else throw $this->createNotFoundException('Championnat inexistant');
 
         /** Génération des classements des poules grâce à l'API de la FFTT stockés dans le cache */
         $classement = $cache->get('classement', function(ItemInterface  $item, $type){
@@ -307,6 +307,53 @@ class HomeController extends AbstractController
             'compo' => $compo,
             'type' => $type,
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/composition/empty/{type}/{id}", name="composition.vider")
+     * @param string $type
+     * @param int id
+     * @return Response
+     */
+    public function emptyComposition(string $type, int $id) : Response
+    {
+        $compo = null;
+        if ($type == 'departementale'){
+            if (!($compo = $this->rencontreDepartementaleRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
+
+            $compo->setIdJoueur1(null);
+            $compo->setIdJoueur2(null);
+            $compo->setIdJoueur3(null);
+            $compo->setIdJoueur4(null);
+
+            $this->em->flush();
+            $this->addFlash('success', 'Composition vidée avec succès !');
+        }
+        else if ($type == 'paris'){
+            if (!($compo = $this->rencontreParisRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
+
+            $compo->setIdJoueur1(null);
+            $compo->setIdJoueur2(null);
+            $compo->setIdJoueur3(null);
+
+            if ($compo->getIdEquipe()->getIdEquipe() == 1){
+                $compo->setIdJoueur4(null);
+                $compo->setIdJoueur5(null);
+                $compo->setIdJoueur6(null);
+                $compo->setIdJoueur7(null);
+                $compo->setIdJoueur8(null);
+                $compo->setIdJoueur9(null);
+            }
+
+            $this->em->flush();
+            $this->addFlash('success', 'Composition vidée avec succès !');
+        } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
+
+
+        return $this->redirectToRoute('journee.show', [
+            'type' => $compo->getIdJournee()->getLinkType(),
+            'id' => $compo->getIdJournee()->getIdJournee()
         ]);
     }
 }

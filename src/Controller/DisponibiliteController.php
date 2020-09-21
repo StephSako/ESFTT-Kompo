@@ -102,31 +102,28 @@ class DisponibiliteController extends AbstractController
      */
     public function update(string $type, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $journee =1;
-        if ($type) {
-            if ($type == 'departementale'){
-                $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
-                $disposJoueur->setDisponibiliteDepartementale($dispo);
-                $journee = $disposJoueur->getIdJournee()->getIdJournee();
+        $journee = 1;
+        if ($type == 'departementale'){
+            $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
+            $disposJoueur->setDisponibiliteDepartementale($dispo);
+            $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
-                /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'departementale');
+            /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
+            if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'departementale');
 
-                $this->em->flush();
-                $this->addFlash('success', 'Disponibilité modifiée avec succès !');
-            }
-            else if ($type == 'paris'){
-                $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
-                $disposJoueur->setDisponibiliteParis($dispo);
-                $journee = $disposJoueur->getIdJournee()->getIdJournee();
+            $this->em->flush();
+            $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+        }
+        else if ($type == 'paris'){
+            $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
+            $disposJoueur->setDisponibiliteParis($dispo);
+            $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'paris');
+            if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'paris');
 
-                $this->em->flush();
-                $this->addFlash('success', 'Disponibilité modifiée avec succès !');
-            } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
-        } else $this->addFlash('fail', 'Compétition non renseignée !');
-
+            $this->em->flush();
+            $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+        } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
 
         return $this->redirectToRoute('journee.show',
             array(

@@ -1,0 +1,11 @@
+{% macro btnCreateEditCompo(type, idCompo, text, color) %}
+    <a href="{{ path('composition.edit', {type: type, compo: idCompo}) }}" class="center-align btn waves-effect waves-light {{ color }} lighten-2">
+        {{ text }}
+    </a>
+{% endmacro %}
+
+{% macro btnEmptyCompo(type, idCompo) %}
+    <a class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {type: type, id: idCompo}) }}">
+        <i class="material-icons">delete</i>Vider
+    </a>
+{% endmacro %}
