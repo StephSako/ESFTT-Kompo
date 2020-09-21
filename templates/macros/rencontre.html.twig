@@ -1,4 +1,4 @@
-{% macro table(rencontres) %}
+{% macro table(rencontres, type) %}
     <table class="striped centered responsive-table">
         <thead>
             <tr>
@@ -46,7 +46,7 @@
                             {% endif %}
                         {% endif %}
                     </td>
-                    <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                    <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
                 </tr>
             {% endfor %}
         </tbody>

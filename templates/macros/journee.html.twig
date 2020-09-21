@@ -1,4 +1,4 @@
-{% macro table(journees) %}
+{% macro table(journees, type) %}
     <table class="striped centered">
         <thead>
             <tr>
@@ -13,7 +13,7 @@
                 <tr>
                     <td><b>{{ journee.idJournee }}</b></td>
                     <td>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                    <td><a href="{{ path('backoffice.phase.edit', {idJournee: journee.idJournee, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                    <td><a href="{{ path('backoffice.phase.edit', {idJournee: journee.idJournee, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
                 </tr>
             {% endfor %}
         </tbody>

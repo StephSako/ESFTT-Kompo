@@ -1,4 +1,4 @@
-{% macro table(equipes) %}
+{% macro table(equipes, type) %}
     <table class="striped centered">
         <thead>
             <tr>
@@ -15,7 +15,7 @@
                     <td>{{ equipe.idEquipe }}</td>
                     <td>{{ equipe.division.longName }}</td>
                     <td>{{ equipe.poule.poule }}</td>
-                    <td><a href="{{ path('backoffice.equipe.edit', {idEquipe: equipe.idEquipe, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                    <td><a href="{{ path('backoffice.equipe.edit', {idEquipe: equipe.idEquipe, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
                 </tr>
             {% endfor %}
         </tbody>
