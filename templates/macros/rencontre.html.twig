@@ -1,0 +1,54 @@
+{% macro table(rencontres) %}
+    <table class="striped centered responsive-table">
+        <thead>
+            <tr>
+                <th>Equipe n°</th>
+                <th>Journée n°</th>
+                <th>Date</th>
+                <th>Adversaire</th>
+                <th>Lieu</th>
+                <th>Salle dispo</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for rencontre in rencontres %}
+                <tr>
+                    <td>{{ rencontre.idEquipe.idEquipe }}</td>
+                    <td>{{ rencontre.idJournee.idJournee }}</td>
+                    <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
+                    <td>
+                        {% if rencontre.exempt %}
+                            <span class="new badge red exempt white-text" data-badge-caption=>Exempt</span>
+                        {% else %}
+                            {{ rencontre.adversaire }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if rencontre.exempt %}
+                            -
+                        {% else %}
+                            {% if rencontre.domicile%} <i class="material-icons">home</i>
+                            {% else%} <i class="material-icons">directions_car</i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if rencontre.exempt %}
+                            -
+                        {% else %}
+                            {% if rencontre.domicile%}
+                                {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
+                                {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
+                                {% endif %}
+                            {% else %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

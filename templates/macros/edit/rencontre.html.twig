@@ -5,10 +5,14 @@
 
         {{ form_start(form) }}
             <div class="row">
-                <div class="col s12 m4">
-                    <span>Adversaire</span>{{ form_row(form.adversaire) }}
+                <div class="col s12">
+                    {{ form_row(form.adversaire) }}
                 </div>
-                <br>
+            </div>
+            <div class="row">
+                <div class="col s12 m4">
+                    {{ form_row(form.exempt) }}
+                </div>
                 <div class="col s12 m4">
                     {{ form_row(form.domicile) }}
                 </div>

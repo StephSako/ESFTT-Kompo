@@ -96,13 +96,13 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @param $type
-     * @param $id
+     * @param string $type
+     * @param int $id
      * @Route("/journee/{type}/{id}", name="journee.show")
      * @return Response
      * @throws DBALException
      */
-    public function journee($type, $id)
+    public function journee(string $type, int $id)
     {
         if ($type == 'departementale'){
             $this->get('session')->set('type', $type);

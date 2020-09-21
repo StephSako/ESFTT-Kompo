@@ -18,6 +18,11 @@ html {
   margin-top: 20px;
 }
 
+.exempt {
+  border-radius: 20%;
+  padding: 10px;
+}
+
 .btn_form {
   margin: 0;
 }

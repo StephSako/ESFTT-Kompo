@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RencontreDepartementaleRepository")
@@ -73,9 +74,21 @@ class RencontreDepartementale
 
     /**
      * @var String
-     * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "L'adversaire doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="adversaire", type="string", length=100)
      */
     private $adversaire;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="exempt", type="boolean", nullable=false)
+     */
+    private $exempt;
 
     /**
      * @return bool
@@ -204,18 +217,18 @@ class RencontreDepartementale
     }
 
     /**
-     * @return String
+     * @return String|null
      */
-    public function getAdversaire(): string
+    public function getAdversaire(): ?string
     {
         return $this->adversaire;
     }
 
     /**
-     * @param String $adversaire
+     * @param String|null $adversaire
      * @return RencontreDepartementale
      */
-    public function setAdversaire(string $adversaire): self
+    public function setAdversaire(?string $adversaire): self
     {
         $this->adversaire = $adversaire;
         return $this;
@@ -261,6 +274,24 @@ class RencontreDepartementale
     public function setHosted(bool $hosted): self
     {
         $this->hosted = $hosted;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExempt(): bool
+    {
+        return $this->exempt;
+    }
+
+    /**
+     * @param bool $exempt
+     * @return RencontreDepartementale
+     */
+    public function setExempt(bool $exempt): self
+    {
+        $this->exempt = $exempt;
         return $this;
     }
 }

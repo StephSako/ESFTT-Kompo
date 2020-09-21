@@ -2,6 +2,7 @@
 
 {% block title %}Back office - Les rencontres{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/rencontre.html.twig' as _rencontre %}
 
 {% block body %}
 
@@ -27,82 +28,11 @@
         </ul>
 
         <div class="card-panel" id="journees_departementales">
-            <table class="striped centered responsive-table">
-                <thead>
-                    <tr>
-                        <th>Equipe n°</th>
-                        <th>Journée n°</th>
-                        <th>Date</th>
-                        <th>Adversaire</th>
-                        <th>Lieu</th>
-                        <th>Salle dispo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for rencontre in rencontreDepartementales %}
-                        <tr>
-                            <td>{{ rencontre.idEquipe.idEquipe }}</td>
-                            <td>{{ rencontre.idJournee.idJournee }}</td>
-                            <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                            <td>{{ rencontre.adversaire }}</td>
-                            <td>
-                                {% if rencontre.domicile%} <i class="material-icons">home</i>
-                                {% else%} <i class="material-icons">directions_car</i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if rencontre.domicile%}
-                                    {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
-                                    {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
-                                    {% endif %}
-                                {% else %}-
-                                {% endif %}
-                            </td>
-                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {{ _rencontre.table(rencontreDepartementales) }}
         </div>
 
         <div class="card-panel" id="journees_paris">
-            <table class="striped centered responsive-table">
-                <thead>
-                    <tr>
-                        <th>Equipe n°</th>
-                        <th>Journée n°</th>
-                        <th>Date</th>
-                        <th>Adversaire</th>
-                        <th>Lieu</th>
-                        <th>Salle dispo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for rencontre in rencontreParis %}
-                        <tr>
-                            <td>{{ rencontre.idEquipe.idEquipe }}</td>
-                            <td>{{ rencontre.idJournee.idJournee }}</td>
-                            <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                            <td>{{ rencontre.adversaire }}</td>
-                            <td>
-                                {% if rencontre.domicile%} <i class="material-icons">home</i>
-                                {% else%} <i class="material-icons">directions_car</i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if not rencontre.hosted%} <i style="font-size: 2.1rem;" class="green-text material-icons">check</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="red-text material-icons">clear</i>
-                                {% endif %}
-                            </td>
-                            <td><a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {{ _rencontre.table(rencontreParis) }}
         </div>
     </div>
 

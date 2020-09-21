@@ -2,6 +2,7 @@
 
 {% block title %}Back office - La phase{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/journee.html.twig' as _journee %}
 
 {% block body %}
 
@@ -27,47 +28,11 @@
         </ul>
 
         <div class="card-panel" id="journees_departementales">
-            <table class="striped centered">
-                <thead>
-                    <tr>
-                        <th>Journée n°</th>
-                        <th>Date</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for journee in journeeDepartementales %}
-                    <tr>
-                        <td><b>{{ journee.idJournee }}</b></td>
-                        <td>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                        <td><a href="{{ path('backoffice.phase.edit', {idJournee: journee.idJournee, type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ _journee.table(journeeDepartementales) }}
         </div>
 
         <div class="card-panel" id="journees_paris">
-            <table class="striped centered">
-                <thead>
-                    <tr>
-                        <th>Journée n°</th>
-                        <th>Date</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for journee in journeeParis %}
-                    <tr>
-                        <td><b>{{ journee.idJournee }}</b></td>
-                        <td>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</td>
-                        <td><a href="{{ path('backoffice.phase.edit', {idJournee: journee.idJournee, type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {{ _journee.table(journeeParis) }}
         </div>
     </div>
 

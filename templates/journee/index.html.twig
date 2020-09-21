@@ -80,39 +80,46 @@
             </div>
 
             {% for compo in compos %}
-
                 <div class="center card-panel">
                     <div class="row header_compo">
 
                         {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                        <div class="row hide-on-med-and-up" style="margin-bottom: 10px;">
-                            <div class="col s9 m5 nom_adversaire">
-                                <h5>{{ compo.adversaire }}</h5>
+                        <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
+                            <div class="col {% if not compo.exempt %}s9 m5{% else %}s12{% endif%} nom_adversaire">
+                                {% if compo.exempt %}
+                                    <h5 style="margin-top: 0;" class="red-text">Exemptée</h5>
+                                {% else %}
+                                    <h5 style="margin-top: 0;">{{ compo.adversaire | title  }}</h5>
+                                {% endif %}
                             </div>
 
-                            <div class="col s3">
-                                <h5>
-                                    {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                    {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
-                                    {% endif %}
-                                </h5>
-                            </div>
+                            {% if not compo.exempt %}
+                                <div class="col s3">
+                                    <h5 style="margin-top: 0;">
+                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
+                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                        {% endif %}
+                                    </h5>
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="col s4 m2">
                             <h5>
                                 <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                             </h5>
-                            <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
+                            <p class="poule" style="margin-bottom: 0;">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
                         </div>
 
                         <h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>
 
                         <div class="col s4 m1">
                             <h5 class="hide-on-small-only">
-                                {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                                {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                {% if not compo.exempt %}
+                                    {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
+                                    {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                    {% endif %}
                                 {% endif %}
                             </h5>
 
@@ -122,7 +129,11 @@
                         </div>
 
                         <div class="col s12 m5 nom_adversaire hide-on-small-only">
-                            <h5>{{ compo.adversaire }}</h5>
+                            {% if compo.exempt %}
+                                <h5 class="red-text">Exemptée</h5>
+                            {% else %}
+                                <h5>{{ compo.adversaire | title  }}</h5>
+                            {% endif %}
                         </div>
 
                         <div class="hide-on-small-only col m1" style="padding-left: 0;">
@@ -140,54 +151,56 @@
                         </div>
                     </div>
 
-                    <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
-                        <tbody>
-                        {{ _composition.tr("1", compo.idJoueur1) }}
-                        {{ _composition.tr("2", compo.idJoueur2) }}
-                        {{ _composition.tr("3", compo.idJoueur3) }}
+                    {% if not compo.exempt %}
+                        <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
+                            <tbody>
+                            {{ _composition.tr("1", compo.idJoueur1) }}
+                            {{ _composition.tr("2", compo.idJoueur2) }}
+                            {{ _composition.tr("3", compo.idJoueur3) }}
 
-                        {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
-                            {{ _composition.tr("4", compo.idJoueur4) }}
-                        {% endif %}
-
-                        {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                            {{ _composition.tr("5", compo.idJoueur5) }}
-                            {{ _composition.tr("6", compo.idJoueur6) }}
-                            {{ _composition.tr("7", compo.idJoueur7) }}
-                            {{ _composition.tr("8", compo.idJoueur8) }}
-                            {{ _composition.tr("9", compo.idJoueur9) }}
-                        {% endif %}
-                        </tbody>
-                    </table>
-
-                    {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-                        <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
-                            {% if journee.linkType == 'departementale' %}
-                                {% if compo.isEmpty %}
-                                    class="btn waves-effect waves-light green lighten-2">
-                                    Créer la compo
-                                {% else %}
-                                    class="btn waves-effect waves-light blue lighten-2">
-                                    Modifier la compo
-                                {% endif %}
-                            {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1%}
-                                {% if compo.isEmptyHaut %}
-                                    class="btn waves-effect waves-light green lighten-2">
-                                    Créer la compo
-                                {% else %}
-                                    class="btn waves-effect waves-light blue lighten-2">
-                                    Modifier la compo
-                                {% endif %}
-                            {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 2%}
-                                {% if compo.isEmptyBas %}
-                                    class="btn waves-effect waves-light green lighten-2">
-                                    Créer la compo
-                                {% else %}
-                                    class="btn waves-effect waves-light blue lighten-2">
-                                    Modifier la compo
-                                {% endif %}
+                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
+                                {{ _composition.tr("4", compo.idJoueur4) }}
                             {% endif %}
-                        </a>
+
+                            {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
+                                {{ _composition.tr("5", compo.idJoueur5) }}
+                                {{ _composition.tr("6", compo.idJoueur6) }}
+                                {{ _composition.tr("7", compo.idJoueur7) }}
+                                {{ _composition.tr("8", compo.idJoueur8) }}
+                                {{ _composition.tr("9", compo.idJoueur9) }}
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+                            <a href="{{ path('composition.edit', {type: journee.linkType, compo: compo.id}) }}"
+                                {% if journee.linkType == 'departementale' %}
+                                    {% if compo.isEmpty %}
+                                        class="btn waves-effect waves-light green lighten-2">
+                                        Créer la compo
+                                    {% else %}
+                                        class="btn waves-effect waves-light blue lighten-2">
+                                        Modifier la compo
+                                    {% endif %}
+                                {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1%}
+                                    {% if compo.isEmptyHaut %}
+                                        class="btn waves-effect waves-light green lighten-2">
+                                        Créer la compo
+                                    {% else %}
+                                        class="btn waves-effect waves-light blue lighten-2">
+                                        Modifier la compo
+                                    {% endif %}
+                                {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 2%}
+                                    {% if compo.isEmptyBas %}
+                                        class="btn waves-effect waves-light green lighten-2">
+                                        Créer la compo
+                                    {% else %}
+                                        class="btn waves-effect waves-light blue lighten-2">
+                                        Modifier la compo
+                                    {% endif %}
+                                {% endif %}
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RencontreParisRepository")
@@ -23,6 +24,12 @@ class RencontreParis
      * @var JourneeParis
      */
     private $idJournee;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="exempt", type="boolean", nullable=false)
+     */
+    private $exempt;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
@@ -108,7 +115,13 @@ class RencontreParis
 
     /**
      * @var String
-     * @ORM\Column(name="adversaire", type="string", length=100, nullable=false)
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "L'adversaire doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="adversaire", type="string", length=100)
      */
     private $adversaire;
 
@@ -329,18 +342,18 @@ class RencontreParis
     }
 
     /**
-     * @return String
+     * @return String|null
      */
-    public function getAdversaire(): string
+    public function getAdversaire(): ?string
     {
         return $this->adversaire;
     }
 
     /**
-     * @param String $adversaire
+     * @param String|null $adversaire
      * @return RencontreParis
      */
-    public function setAdversaire(string $adversaire): self
+    public function setAdversaire(?string $adversaire): self
     {
         $this->adversaire = $adversaire;
         return $this;
@@ -393,6 +406,24 @@ class RencontreParis
     public function setHosted(bool $hosted): self
     {
         $this->hosted = $hosted;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExempt(): bool
+    {
+        return $this->exempt;
+    }
+
+    /**
+     * @param bool $exempt
+     * @return RencontreParis
+     */
+    public function setExempt(bool $exempt): self
+    {
+        $this->exempt = $exempt;
         return $this;
     }
 }
