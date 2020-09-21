@@ -100,7 +100,7 @@ Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant t
 
 ### Composition d'équipe
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264950-composition-min.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/39/62wo.png"></p>
 
 Pour chaque équipe, est affiché :
 - la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
@@ -109,7 +109,10 @@ Pour chaque équipe, est affiché :
 - l'adversaire;
 - un bouton affichant le classement actuel de la poule (pour raisons de performances, il est actualisé toutes les 12h) :
 
-<p align="center"><img src="https://zupimages.net/up/20/39/ui2o.jpg" width="80%"></p>
+<p align="center"><img src="https://zupimages.net/up/20/39/ui2o.jpg" width="70%"></p>
+
+- un bouton permettant de vider rapidement et entièrement la composition;
+- un bouton permettant de modifier la composition.
 
 #### Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.
 
