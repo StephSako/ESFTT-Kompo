@@ -72,13 +72,13 @@ Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour ch
 
 <p align="center"><img width="35%" src="https://image.noelshack.com/fichiers/2020/38/4/1600295174-tableau-brulage-min.png"></p>
 
-* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné lors d'au moins 2 journées dans une même équipe au cours de la phase en championnat départemental (3 journées en championnat de Paris) : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné lors d'au moins 2 journées dans une même équipe au cours de la phase en championnat départemental (3 journées pour le championnat de Paris) : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
 
 	Exemple sur l'image ci-dessus :
 	- Thomas est brûlé dans les équipes 2, 3 et 4 car il a joué au moins 2 matches en équipe 1; 
 	- Rémy a joué au moins 2 matches en équipe 3, il est donc brûlé en équipe 4.<br>
 
-* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'un joueur sélectionnée dans une équipe marquée d'un "!" orange sera brûlé à la prochaijne journée.
+* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'un joueur sélectionné dans une équipe marquée d'un "!" orange sera brûlé à la prochaine journée.
 
 	Exemple sur l'image ci-dessus :
 	- Renaud a joué 1 match seulement en équipe 1. Il sera donc brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée;
