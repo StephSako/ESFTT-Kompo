@@ -176,9 +176,9 @@ class HomeController extends AbstractController
         });
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
-            {
-                return $dispo->getDisponibilite() & true;
-            }
+        {
+            return $dispo->getDisponibilite();
+        }
         ));
 
         return $this->render('journee/index.html.twig', [

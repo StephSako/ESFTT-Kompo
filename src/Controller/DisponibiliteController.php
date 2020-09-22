@@ -64,18 +64,18 @@ class DisponibiliteController extends AbstractController
 
         if ($type) {
             if ($type == 'departementale') {
-                $journee = $this->journeeDepartementaleRepository->find($journee);
+                if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
                 if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new DisponibiliteDepartementale($competiteur, $this->journeeDepartementaleRepository->find($journee), $dispo);
+                    $disponibilite = new DisponibiliteDepartementale($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
                     $this->em->flush();
                     $this->addFlash('success', 'Disponibilité signalée avec succès !');
                 } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
             } else if ($type == 'paris') {
-                $journee = $this->journeeParisRepository->find($journee);
+                if (!($journee = $this->journeeParisRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
                 if (sizeof($this->disponibiliteParisRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new DisponibiliteParis($competiteur, $this->journeeParisRepository->find($journee), $dispo);
+                    $disponibilite = new DisponibiliteParis($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
                     $this->em->flush();
@@ -93,18 +93,18 @@ class DisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{type}/{disposJoueur}/{dispo}", name="journee.disponibilite.update")
+     * @Route("/journee/disponibilite/update/{type}/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param string $type
-     * @param $disposJoueur
+     * @param $dispoJoueur
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      */
-    public function update(string $type, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(string $type, $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
         $journee = 1;
         if ($type == 'departementale'){
-            $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
+            if (!($disposJoueur = $this->disponibiliteDepartementaleRepository->find($dispoJoueur))) throw $this->createNotFoundException('Disponibilité inexistante');
             $disposJoueur->setDisponibiliteDepartementale($dispo);
             $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
@@ -115,7 +115,7 @@ class DisponibiliteController extends AbstractController
             $this->addFlash('success', 'Disponibilité modifiée avec succès !');
         }
         else if ($type == 'paris'){
-            $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
+            if (!($disposJoueur = $this->disponibiliteParisRepository->find($dispoJoueur))) throw $this->createNotFoundException('Disponibilité inexistante');
             $disposJoueur->setDisponibiliteParis($dispo);
             $journee = $disposJoueur->getIdJournee()->getIdJournee();
 

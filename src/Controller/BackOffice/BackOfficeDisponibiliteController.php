@@ -82,12 +82,13 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function new($journee, string $type, int $dispo, $idCompetiteur):Response
     {
-        $competiteur = $this->competiteurRepository->find($idCompetiteur);
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
 
         if ($type) {
             if ($type == 'departementale') {
                 if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new DisponibiliteDepartementale($competiteur, $this->journeeDepartementaleRepository->find($journee), $dispo);
+                    if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
+                    $disponibilite = new DisponibiliteDepartementale($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
                     $this->em->flush();
@@ -95,7 +96,8 @@ class BackOfficeDisponibiliteController extends AbstractController
                 } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
             } else if ($type == 'paris') {
                 if (sizeof($this->disponibiliteParisRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new DisponibiliteParis($competiteur, $this->journeeParisRepository->find($journee), $dispo);
+                    if (!($journee = $this->journeeParisRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
+                    $disponibilite = new DisponibiliteParis($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
                     $this->em->flush();
@@ -118,11 +120,11 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function update(string $type, $idCompetiteur, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $competiteur = $this->competiteurRepository->find($idCompetiteur);
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
 
         if ($type || $type != 'departementale' || $type != 'paris') {
             if ($type == 'departementale') {
-                $disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur);
+                if (!($disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur))) throw $this->createNotFoundException('Disponibilité inexistant');
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
 
                 /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
@@ -132,7 +134,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
             }
             else if ($type == 'paris') {
-                $disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur);
+                if (!($disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur))) throw $this->createNotFoundException('Disponibilité inexistant');
                 $disposJoueur->setDisponibiliteParis($dispo);
 
                 if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayer($this->rencontreParisRepository->getSelectedWhenIndispo($competiteur, $disposJoueur->getIdJournee()), 'paris');

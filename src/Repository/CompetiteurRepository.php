@@ -32,8 +32,8 @@ class CompetiteurRepository extends ServiceEntityRepository
         $sql = "SELECT prive_competiteur.nom, prive_competiteur.id_competiteur"
             . " FROM prive_competiteur"
             . " WHERE prive_competiteur.id_competiteur NOT IN (SELECT DISTINCT id_competiteur"
-										. " FROM prive_" . $tableDispo . ""
-                                        . " WHERE id_journee = " . $idJournee . ")"
+            . " FROM prive_" . $tableDispo . ""
+            . " WHERE id_journee = " . $idJournee . ")"
             . " ORDER BY prive_competiteur.nom";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
