@@ -26,8 +26,14 @@ html {
 }
 
 .exempt {
-  border-radius: 20%;
-  padding: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 2px;
+  border-radius: 0;
+
+  span {
+    color: red;
+  }
 }
 
 .btn_form {
@@ -138,14 +144,6 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
 .sidenav li a {
   font-size: 17px;
 }
-
-.exempt {
-  margin-top: 20px;
-  padding-top: 20px;
-  padding-bottom: 2px;
-  background-color: rgba(red, 0.2);
-  border-radius: 0;
- }
 
 .card-panel.bottom_0 {
   padding-top: 10px;
