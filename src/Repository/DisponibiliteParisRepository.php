@@ -20,10 +20,11 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des personnes ayant déclaré leur disponibilité pour la journée
      * @param $idJournee
      * @return int|mixed|string
      */
-    public function findAllDisposByJournee($idJournee)
+    public function findJoueursDeclaresJournee($idJournee)
     {
         return $this->createQueryBuilder('d')
             ->select('d')
@@ -38,28 +39,12 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste de toutes les disponibilités du championnat départemental affichée dans le back-office
-     * @return int|mixed|string
-     */
-    public function findAllDispos()
-    {
-        return $this->createQueryBuilder('d')
-            ->select('d')
-            ->leftJoin('d.idCompetiteur', 'c')
-            ->addSelect('c')
-            ->orderBy('c.nom')
-            ->addOrderBy('d.idJournee')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Liste des joueurs sémectionables pour la composition d'une équipe (joueurs disponibles et non brûlés)
      * @param int $idJournee
      * @param int $idEquipe
      * @return int|mixed|string
      */
-    public function findSelectionnablesParis(int $idJournee, int $idEquipe)
+    public function findJoueursSelectionnables(int $idJournee, int $idEquipe)
     {
         $query = $this->createQueryBuilder('d')
             ->select('d')

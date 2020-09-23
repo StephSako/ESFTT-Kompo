@@ -106,36 +106,47 @@ class HomeController extends AbstractController
     public function journee(string $type, int $id, CacheInterface $cache, FFTTApiController $apiController)
     {
         if ($type == 'departementale') {
+            // On vérifie que la journée existe
+            if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
             $this->get('session')->set('type', $type);
+
+            // Toutes les journées du type de championnat visé
             $journees = $this->journeeDepartementaleRepository->findAll();
 
-            if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
+            // Objet Disponibilité du joueur
+            $dispoJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
 
-            $disposJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findAllDisposByJournee($id);
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_departementale');
+            // Joueurs ayant déclaré leur disponibilité
+            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findJoueursDeclaresJournee($id);
+
+            // Joueurs non déclarés
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
+
+            // Compositions d'équipe
             $compos = $this->rencontreDepartementaleRepository->findBy(['idJournee' => $id]);
-            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
-            $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($journee->getIdJournee());
 
-            if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposDepartementales())) $disponible = $this->getUser()->getDisposDepartementales()[$journee->getIdJournee()];
-            else $disponible = null;
-        } else if ($type == 'paris') {
+            // Joueurs sélectionnées
+            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
+
+            // Brûlages des joueurs
+            $brulages = $this->competiteurRepository->getBrulagesDepartemental($journee->getIdJournee());
+
+            // Disponibilité du joueur
+            $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
+        }
+        else if ($type == 'paris') {
+            if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
             $this->get('session')->set('type', $type);
             $journees = $this->journeeParisRepository->findAll();
-
-            if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
-
-            $disposJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-            $joueursDeclares = $this->disponibiliteParisRepository->findAllDisposByJournee($id);
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, 'disponibilite_paris');
+            $dispoJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
+            $joueursDeclares = $this->disponibiliteParisRepository->findJoueursDeclaresJournee($id);
+            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
-            $brulages = $this->competiteurRepository->getCompetiteurBrulageParis($journee->getIdJournee());
-
-            if (array_key_exists($journee->getIdJournee(), $this->getUser()->getDisposParis())) $disponible = $this->getUser()->getDisposParis()[$journee->getIdJournee()];
-            else $disponible = null;
-        } else throw $this->createNotFoundException('Championnat inexistant');
+            $brulages = $this->competiteurRepository->getBrulagesParis($journee->getIdJournee());
+            $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
+        }
+        else throw $this->createNotFoundException('Championnat inexistant');
 
         /** Génération des classements des poules grâce à l'API de la FFTT stockés dans le cache */
         $classement = $apiController->getClassement($cache, $type);
@@ -154,7 +165,7 @@ class HomeController extends AbstractController
             'dispos' => $joueursDeclares,
             'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
-            'disposJoueur' => $disposJoueur,
+            'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'classement' => $classement,
@@ -179,14 +190,14 @@ class HomeController extends AbstractController
         if ($type == 'departementale'){
             if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
-            $selectionnables = $this->disponibiliteDepartementaleRepository->findSelectionnablesDepartementales($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $selectionnables = $this->disponibiliteDepartementaleRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
         }
         else if ($type == 'paris'){
             if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
-            $selectionnables = $this->disponibiliteParisRepository->findSelectionnablesParis($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
 
@@ -225,7 +236,7 @@ class HomeController extends AbstractController
         }
 
         if ($type == 'departementale'){
-            $brulages = $this->competiteurRepository->getCompetiteurBrulageDepartemental($compo->getIdJournee()->getIdJournee());
+            $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
 
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
             foreach ($brulages as $nom => $brulage){
@@ -248,7 +259,7 @@ class HomeController extends AbstractController
             }
         }
         else if ($type == 'paris'){
-            $brulages = $this->competiteurRepository->getCompetiteurBrulageParis($compo->getIdJournee()->getIdJournee());
+            $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
 
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
             foreach ($brulages as $nom => $brulage) {

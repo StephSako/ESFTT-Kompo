@@ -44,16 +44,16 @@
                 </td>
             </tr>
         {% endfor %}
-        {% for dispoNonDeclaree in joueursNonDeclares %}
+        {% for joueur in joueursNonDeclares %}
             <tr>
                 <td>
                     <div class="valign-wrapper">
                         <span class="dot dot3 center">&nbsp;</span>
-                        <span style="margin-left: 2%;" class="grey-text">{{ dispoNonDeclaree.nom }}</span>
+                        <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }}</span>
                     </div>
                 </td>
                 <td class="left">
-                    {% if dispoNonDeclaree.id_competiteur in selectedPlayers %}
+                    {% if joueur.idCompetiteur in selectedPlayers %}
                         <i class="blue-text right-align material-icons">playlist_add_check</i>
                     {% endif %}
                 </td>

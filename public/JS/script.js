@@ -36,25 +36,6 @@ $(document).ready(function() {
     });
 
     /*
-     * Au démarrage de la page
-     */
-    if (exemptDep.is(':checked')){
-        adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
-        adversaireDep.prop('disabled', true);
-        lieu_rencontre.prop('checked', false).prop('disabled', true);
-        hostedDep.prop('checked', false).prop('disabled', true);
-    }
-    else adversaireDep.prop('disabled', false);
-
-    if (exemptPar.is(':checked')){
-        adversairePar.val("").attr('placeholder', "Pas d'adversaire");
-        adversairePar.prop('disabled', true);
-        lieu_rencontre.prop('checked', false).prop('disabled', true);
-        hostedPar.prop('checked', false).prop('disabled', true);
-    }
-    else adversairePar.prop('disabled', false);
-
-    /*
      * Triggers
      */
     exemptDep.change(function() {
@@ -63,11 +44,19 @@ $(document).ready(function() {
             hostedDep.prop('checked', false).prop('disabled', true);
             adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
             adversaireDep.prop('disabled', true);
+            span_domicile.css("font-weight", "normal");
+            span_exterieur.css("font-weight", "normal");
+            span_domicile.css("color", "#a4a2a2");
+            span_exterieur.css("color", "#a4a2a2");
         }
         else{
+            hostedDep.prop('checked', false).prop('disabled', false);
             adversaireDep.attr('placeholder', "Adversaire");
             adversaireDep.prop('disabled', false);
             lieu_rencontre.prop('disabled', false);
+            span_domicile.css("font-weight", "bold");
+            span_domicile.css("color", "#000000");
+            span_exterieur.css("color", "#000000");
         }
     });
 
@@ -77,11 +66,18 @@ $(document).ready(function() {
             hostedPar.prop('checked', false).prop('disabled', true);
             adversairePar.val("").attr('placeholder', "Pas d'adversaire");
             adversairePar.prop('disabled', true);
+            span_domicile.css("font-weight", "normal");
+            span_exterieur.css("font-weight", "normal");
+            span_domicile.css("color", "#a4a2a2");
+            span_exterieur.css("color", "#a4a2a2");
         }
         else{
             adversairePar.attr('placeholder', "Adversaire");
             adversairePar.prop('disabled', false);
             lieu_rencontre.prop('disabled', false);
+            span_domicile.css("color", "#000000");
+            span_exterieur.css("color", "#000000");
+            span_domicile.css("font-weight", "bold");
         }
     });
 

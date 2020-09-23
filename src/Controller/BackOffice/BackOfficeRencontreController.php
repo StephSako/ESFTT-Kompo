@@ -60,12 +60,12 @@ class BackOfficeRencontreController extends AbstractController
         if ($type == 'departementale'){
             if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
             $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
-            $domicile = $rencontre->getDomicile();
+            $domicile = ($rencontre->getDomicile() ? "D" : "E");
         }
         else if ($type == 'paris'){
             if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
-            $domicile = $rencontre->getDomicile();
+            $domicile = ($rencontre->getDomicile() ? "D" : "E");
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
@@ -74,7 +74,7 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
             $this->em->flush();
-            $this->addFlash('success', 'Recontre modifiée avec succès !');
+            $this->addFlash('success', 'Rencontre modifiée avec succès !');
             return $this->redirectToRoute('back_office.rencontres');
         }
 

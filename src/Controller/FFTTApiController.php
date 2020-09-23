@@ -23,8 +23,7 @@ class FFTTApiController extends AbstractController
      * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
      * @param EquipeParisRepository $equipeParisRepository
      */
-    public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository,
-                                EquipeParisRepository $equipeParisRepository)
+    public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository, EquipeParisRepository $equipeParisRepository)
     {
         $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
         $this->equipeParisRepository = $equipeParisRepository;
@@ -61,7 +60,7 @@ class FFTTApiController extends AbstractController
                 catch (NoFFTTResponseException $e) {  }
                 catch (URIPartNotValidException $e) {  }
 
-                return [1 =>  [], 2 =>  [], 3 =>  [], 4 =>  []];
+                return [1 => [], 2 => [], 3 => [], 4 => []];
             });
         }
         else if ($type == 'paris'){
@@ -82,9 +81,9 @@ class FFTTApiController extends AbstractController
                 catch (NoFFTTResponseException $e) {  }
                 catch (URIPartNotValidException $e) {  }
 
-                return [1 =>  [], 2 =>  [], 3 =>  [], 4 =>  []];
+                return [1 =>  [], 2 => []];
             });
         }
-        else return [1 =>  [], 2 =>  [], 3 =>  [], 4 =>  []];
+        else return [1 =>  [], 2 => []];
     }
 }
