@@ -56,22 +56,23 @@ class BackOfficeRencontreController extends AbstractController
      */
     public function editRencontre($type, $idRencontre, Request $request)
     {
-        $form = null;
+        $domicile = null;
         if ($type == 'departementale'){
             if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
             $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
+            $domicile = $rencontre->getDomicile();
         }
         else if ($type == 'paris'){
             if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
-
-            $rencontre = $this->rencontreParisRepository->find($idRencontre);
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
+            $domicile = $rencontre->getDomicile();
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
             $this->em->flush();
             $this->addFlash('success', 'Recontre modifiée avec succès !');
             return $this->redirectToRoute('back_office.rencontres');
@@ -80,6 +81,7 @@ class BackOfficeRencontreController extends AbstractController
         return $this->render('back_office/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
+            'domicile' => $domicile,
             'date' => $rencontre->getIdJournee()->getDate(),
             'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
             'idEquipe' => $rencontre->getIdEquipe()->getIdEquipe()

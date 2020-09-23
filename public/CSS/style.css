@@ -115,12 +115,20 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
   padding-right: 10px;
 }
 
-.nav-wrapper li a, .sidenav li a, .poule, .card-panel > h5, .complete_compos h5, h6 {
+.nav-wrapper li a, .sidenav li a, .poule, .card-panel > h5, .complete_compos h5, h6, .lobster_2 {
   font-family: "Lobster Two", cursive;
 }
 
 .sidenav li a {
   font-size: 17px;
+}
+
+.exempt {
+  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 2px;
+  background-color: rgba(255, 0, 0, 0.2);
+  border-radius: 0;
 }
 
 .card-panel.bottom_0 {
@@ -191,9 +199,9 @@ p.lobster {
   margin-top: 0;
 }
 
-.paris_table > tbody > tr:nth-child(3), .paris_table > tbody > tr:nth-child(6) {
-  border-width: 0.15rem;
-  border-color: #1565c0;
+.paris_table > tbody > tr:nth-child(1) > .rank, .paris_table > tbody > tr:nth-child(2) > .rank, .paris_table > tbody > tr:nth-child(3) > .rank,
+.paris_table > tbody > tr:nth-child(7) > .rank, .paris_table > tbody > tr:nth-child(8) > .rank, .paris_table > tbody > tr:nth-child(9) > .rank {
+  color: #1565c0;
 }
 
 .divider {
@@ -261,6 +269,22 @@ li.error {
 
 #all_dispo_departementale .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_departementale .brulages > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .brulages > tbody > tr > td:not(:first-child) > span {
   margin-right: 0;
+}
+
+.switch label {
+  color: black;
+}
+.switch label input[type=checkbox]:checked + .lever:after {
+  background-color: #1174b8;
+}
+.switch label input[type=checkbox]:checked + .lever {
+  background-color: rgba(17, 116, 184, 0.5);
+}
+.switch label input[type=checkbox] + .lever:after {
+  background-color: #1174b8;
+}
+.switch label input[type=checkbox] + .lever {
+  background-color: rgba(17, 116, 184, 0.5);
 }
 
 @media screen and (min-width: 993px) and (max-width: 1334px) {

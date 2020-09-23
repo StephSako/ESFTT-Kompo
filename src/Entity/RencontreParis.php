@@ -128,7 +128,7 @@ class RencontreParis
     /**
      * @return bool
      */
-    public function getdomicile(): bool
+    public function getDomicile(): bool
     {
         return $this->domicile;
     }
@@ -137,7 +137,7 @@ class RencontreParis
      * @param bool $domicile
      * @return RencontreParis
      */
-    public function setdomicile(bool $domicile): self
+    public function setDomicile(bool $domicile): self
     {
         $this->domicile = $domicile;
         return $this;

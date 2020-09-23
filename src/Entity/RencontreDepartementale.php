@@ -93,7 +93,7 @@ class RencontreDepartementale
     /**
      * @return bool
      */
-    public function getdomicile(): bool
+    public function getDomicile(): bool
     {
         return $this->domicile;
     }
@@ -102,7 +102,7 @@ class RencontreDepartementale
      * @param bool $domicile
      * @return RencontreDepartementale
      */
-    public function setdomicile(bool $domicile): self
+    public function setDomicile(bool $domicile): self
     {
         $this->domicile = $domicile;
         return $this;

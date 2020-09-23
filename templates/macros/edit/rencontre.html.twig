@@ -1,4 +1,4 @@
-{% macro rencontre(idJournee, type, idEquipe, date, form) %}
+{% macro rencontre(idJournee, type, idEquipe, date, form, domicile) %}
     <div class="card-panel center-align">
         <h4 class="hide-on-small-only titre">Journée {{ idJournee }} - Equipe {{ idEquipe }} - {{ date|format_datetime('long', 'none', locale='fr') }}</h4>
         <h4 class="hide-on-med-and-up titre">J{{ idJournee }} - Equipe {{ idEquipe }}<br>{{ date|date("m/d/Y") }}</h4>
@@ -10,18 +10,51 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m4">
-                    {{ form_row(form.exempt) }}
+                <div class="col s12 m6">
+                    <div class="switch">
+                        <label>
+                            <span id="domicile">Domicile</span>
+                            <input type="checkbox" name="lieu_rencontre" class="validate" id="lieu_rencontre">
+                            <span class="lever"></span>
+                            <span id="exterieur">Extérieur</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="col s12 m4">
-                    {{ form_row(form.domicile) }}
-                </div>
-                <div class="col s12 m4">
+                <div class="col s12 m6">
                     {{ form_row(form.hosted) }}
                 </div>
+            </div>
+
+            <div class="exempt">
+                {{ form_row(form.exempt) }}
             </div>
 
             <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         {{ form_end(form) }}
     </div>
+
+    <script>
+        $(document).ready(function() {
+            let exterieur = parseInt("{{ domicile }}");
+            let lieu_rencontre = $('#lieu_rencontre');
+            let hostedDep = $('#back_office_rencontre_departementale_hosted');
+            let hostedPar = $('#back_office_rencontre_paris_hosted');
+            let span_domicile = $('#domicile');
+            let span_exterieur = $('#exterieur');
+
+            if (exterieur !== 1){
+                lieu_rencontre.prop('checked', true);
+                hostedDep.prop('disabled', true);
+                hostedPar.prop('disabled', true);
+                span_domicile.css("font-weight", "normal");
+                span_exterieur.css("font-weight", "bold");
+            }
+            else{
+                hostedDep.prop('disabled', false);
+                hostedPar.prop('disabled', false);
+                span_domicile.css("font-weight", "bold");
+                span_exterieur.css("font-weight", "normal");
+            }
+        });
+    </script>
 {% endmacro %}

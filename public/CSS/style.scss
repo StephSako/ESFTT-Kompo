@@ -55,7 +55,7 @@ html {
   @extend .dispos;
 
   td:not(:first-child) {
-    background-color: rgba($light_grey,0.1);
+    background-color: rgba($light_grey, 0.1);
     border-left-color: white;
     border-left-style: solid;
     border-right-color: white;
@@ -131,13 +131,21 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
   padding-right: 10px;
 }
 
-.nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5, .complete_compos h5, h6 {
+.nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5, .complete_compos h5, h6, .lobster_2 {
   font-family: 'Lobster Two', cursive;
 }
 
 .sidenav li a {
   font-size: 17px;
 }
+
+.exempt {
+  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 2px;
+  background-color: rgba(red, 0.2);
+  border-radius: 0;
+ }
 
 .card-panel.bottom_0 {
   padding-top: 10px;
@@ -213,10 +221,9 @@ p.lobster {
 .btn_gestion {
   margin-top: 0;
 }
-
-.paris_table>tbody>tr:nth-child(3), .paris_table>tbody>tr:nth-child(6) {
-  border-width: 0.15rem;
-  border-color: $light_blue;
+.paris_table>tbody>tr:nth-child(1)>.rank, .paris_table>tbody>tr:nth-child(2)>.rank, .paris_table>tbody>tr:nth-child(3)>.rank,
+.paris_table>tbody>tr:nth-child(7)>.rank, .paris_table>tbody>tr:nth-child(8)>.rank, .paris_table>tbody>tr:nth-child(9)>.rank {
+  color: $light_blue;
 }
 
 .divider {
@@ -294,6 +301,26 @@ li.error {
 #all_dispo_departementale, #all_dispo_paris {
   .dispos>tbody>tr>td:not(:first-child)>span {
     margin-right: 0;
+  }
+}
+
+.switch label {
+  color: black;
+
+  input[type=checkbox]:checked + .lever:after {
+    background-color: $gradient_blue_light;
+  }
+
+  input[type=checkbox]:checked+.lever {
+    background-color: rgba($gradient_blue_light, 0.5);
+  }
+
+  input[type=checkbox]+.lever:after {
+    background-color: $gradient_blue_light;
+  }
+
+  input[type=checkbox]+.lever {
+    background-color: rgba($gradient_blue_light, 0.5);
   }
 }
 

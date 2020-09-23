@@ -1,13 +1,15 @@
 $(document).ready(function() {
     let exemptDep = $('#back_office_rencontre_departementale_exempt');
     let adversaireDep = $('#back_office_rencontre_departementale_adversaire');
-    let domicileDep = $('#back_office_rencontre_departementale_domicile');
     let hostedDep = $('#back_office_rencontre_departementale_hosted');
 
     let exemptPar = $('#back_office_rencontre_paris_exempt');
     let adversairePar = $('#back_office_rencontre_paris_adversaire');
-    let domicilePar = $('#back_office_rencontre_paris_domicile');
     let hostedPar = $('#back_office_rencontre_paris_hosted');
+
+    let lieu_rencontre = $('#lieu_rencontre');
+    let span_domicile = $('#domicile');
+    let span_exterieur = $('#exterieur');
 
     $('.modal').modal();
 
@@ -39,7 +41,7 @@ $(document).ready(function() {
     if (exemptDep.is(':checked')){
         adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
         adversaireDep.prop('disabled', true);
-        domicileDep.prop('checked', false).prop('disabled', true);
+        lieu_rencontre.prop('checked', false).prop('disabled', true);
         hostedDep.prop('checked', false).prop('disabled', true);
     }
     else adversaireDep.prop('disabled', false);
@@ -47,23 +49,17 @@ $(document).ready(function() {
     if (exemptPar.is(':checked')){
         adversairePar.val("").attr('placeholder', "Pas d'adversaire");
         adversairePar.prop('disabled', true);
-        domicilePar.prop('checked', false).prop('disabled', true);
+        lieu_rencontre.prop('checked', false).prop('disabled', true);
         hostedPar.prop('checked', false).prop('disabled', true);
     }
     else adversairePar.prop('disabled', false);
-
-    if (domicileDep.is(':checked')) hostedDep.prop('disabled', false);
-    else hostedDep.prop('disabled', true);
-
-    if (domicilePar.is(':checked')) hostedPar.prop('disabled', false);
-    else hostedPar.prop('disabled', true);
 
     /*
      * Triggers
      */
     exemptDep.change(function() {
         if(this.checked){
-            domicileDep.prop('checked', false).prop('disabled', true);
+            lieu_rencontre.prop('checked', false).prop('disabled', true);
             hostedDep.prop('checked', false).prop('disabled', true);
             adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
             adversaireDep.prop('disabled', true);
@@ -71,13 +67,13 @@ $(document).ready(function() {
         else{
             adversaireDep.attr('placeholder', "Adversaire");
             adversaireDep.prop('disabled', false);
-            domicileDep.prop('disabled', false);
+            lieu_rencontre.prop('disabled', false);
         }
     });
 
     exemptPar.change(function() {
         if(this.checked){
-            domicilePar.prop('checked', false).prop('disabled', true);
+            lieu_rencontre.prop('checked', false).prop('disabled', true);
             hostedPar.prop('checked', false).prop('disabled', true);
             adversairePar.val("").attr('placeholder', "Pas d'adversaire");
             adversairePar.prop('disabled', true);
@@ -85,18 +81,23 @@ $(document).ready(function() {
         else{
             adversairePar.attr('placeholder', "Adversaire");
             adversairePar.prop('disabled', false);
-            domicilePar.prop('disabled', false);
+            lieu_rencontre.prop('disabled', false);
         }
     });
 
-    domicileDep.change(function() {
-        if(this.checked) hostedDep.prop('disabled', false);
-        else hostedDep.prop('checked', false).prop('disabled', true);
-    });
-
-    domicilePar.change(function() {
-        if(this.checked) hostedPar.prop('disabled', false);
-        else hostedPar.prop('checked', false).prop('disabled', true);
+    lieu_rencontre.change(function() {
+        if(this.checked){
+            hostedDep.prop('checked', false).prop('disabled', true);
+            hostedPar.prop('checked', false).prop('disabled', true);
+            span_domicile.css("font-weight", "normal");
+            span_exterieur.css("font-weight", "bold");
+        }
+        else{
+            hostedPar.prop('disabled', false);
+            hostedDep.prop('disabled', false);
+            span_domicile.css("font-weight", "bold");
+            span_exterieur.css("font-weight", "normal");
+        }
     });
 
     $('li[id^="select-options"]').on('touchend', function (e) {
