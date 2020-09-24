@@ -22,7 +22,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
                 ]]
             )
             ->add('hosted', CheckboxType::class,[
-                'label' => 'Salle Albert Marquet indisponible (match à Herblay)',
+                'label' => 'A. Marquet indisponible',
                 'required' => false])
             ->add('reporte', CheckboxType::class,[
                 'label' => 'Match reporté au',
@@ -31,7 +31,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
                 'label' => false,
                 'required' => false])
             ->add('exempt', CheckboxType::class,[
-                'label' => 'Equipe exemptée',
+                'label' => 'Pas de match',
                 'required' => false]);
     }
 

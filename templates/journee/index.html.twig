@@ -34,7 +34,7 @@
 
             <div class="card-panel center-align white-text title_journee">
                 <h4>Journée {{ journee.idJournee }} - {{ journee.type }}</h4>
-                <h5>{{ journee.date|format_datetime('long', 'none', locale='fr') }}</h5>
+                <h5>{{ journee.date | format_datetime('long', 'none', locale='fr') }}</h5>
             </div>
 
             {% if (selectedPlayers|length == 16 and journee.linkType == 'departementale') or (selectedPlayers|length == 12 and journee.linkType == 'paris') %}
@@ -84,12 +84,13 @@
                 <div class="center card-panel">
                     <div class="row header_compo">
 
-                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                        {% if compo.reporte %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">update</i><b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b></span>{% endif %}
+                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 15px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
                         <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
                             <div class="col {% if not compo.exempt %}s9 m5{% else %}s12{% endif%} nom_adversaire">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 0;" class="red-text">Exemptée</h5>
+                                    <h5 style="margin-top: 0;" class="red-text">Pas de match</h5>
                                 {% else %}
                                     <h5 style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
                                 {% endif %}
@@ -131,7 +132,7 @@
 
                         <div class="col s12 m5 nom_adversaire hide-on-small-only">
                             {% if compo.exempt %}
-                                <h5 class="red-text">Exemptée</h5>
+                                <h5 class="red-text">Pas de match</h5>
                             {% else %}
                                 <h5>{{ compo.adversaire | title }}</h5>
                             {% endif %}

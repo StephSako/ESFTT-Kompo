@@ -58,12 +58,12 @@ class BackOfficeRencontreController extends AbstractController
     {
         $domicile = null;
         if ($type == 'departementale'){
-            if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
+            if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
             $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
             $domicile = ($rencontre->getDomicile() ? "D" : "E");
         }
         else if ($type == 'paris'){
-            if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Composition inexistante');
+            if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
             $domicile = ($rencontre->getDomicile() ? "D" : "E");
         }
@@ -74,6 +74,10 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
             if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDate());
+
+            /*var_dump($rencontre->getDateReport()->getTimestamp());
+            return new Response('');*/
+
             $this->em->flush();
             $this->addFlash('success', 'Rencontre modifiée avec succès !');
             return $this->redirectToRoute('back_office.rencontres');

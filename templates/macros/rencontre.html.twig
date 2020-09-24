@@ -17,9 +17,20 @@
                 <tr>
                     <td>{{ rencontre.idEquipe.idEquipe }}</td>
                     <td>{{ rencontre.idJournee.idJournee }}</td>
-                    <td>{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}</td>
                     <td>
-                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red exempt white-text" data-badge-caption=>Exempt</span>
+                        <div class="hide-on-small-only">
+                            {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr') }}</span>
+                            {% else %}{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}
+                            {% endif %}
+                        </div>
+                        <div class="hide-on-med-and-up">
+                            {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
+                            {% else %}{{ rencontre.idJournee.date | date("d/m/Y") }}
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red exempt white-text" data-badge-caption=>Pas de match</span>
                         {% else %} {{ rencontre.adversaire | title }}
                         {% endif %}
                     </td>
