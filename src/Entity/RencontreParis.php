@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -112,6 +113,18 @@ class RencontreParis
      * @ORM\Column(name="hosted", type="boolean", nullable=false)
      */
     private $hosted;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="reporte", type="boolean", nullable=false)
+     */
+    private $reporte;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="date", name="date_report", nullable=false)
+     */
+    private $dateReport;
 
     /**
      * @var String
@@ -424,6 +437,42 @@ class RencontreParis
     public function setExempt(bool $exempt): self
     {
         $this->exempt = $exempt;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReporte(): bool
+    {
+        return $this->reporte;
+    }
+
+    /**
+     * @param bool $reporte
+     * @return RencontreParis
+     */
+    public function setReporte(bool $reporte): self
+    {
+        $this->reporte = $reporte;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateReport(): DateTime
+    {
+        return $this->dateReport;
+    }
+
+    /**
+     * @param DateTime $dateReport
+     * @return RencontreParis
+     */
+    public function setDateReport(DateTime $dateReport): self
+    {
+        $this->dateReport = $dateReport;
         return $this;
     }
 }

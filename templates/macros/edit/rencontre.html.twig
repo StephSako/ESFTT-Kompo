@@ -4,6 +4,7 @@
         <h4 class="hide-on-med-and-up titre">J{{ idJournee }} - Equipe {{ idEquipe }}<br>{{ date|date("m/d/Y") }}</h4>
 
         {{ form_start(form) }}
+            <p><i>L'équipe {{ idEquipe }} jouera contre</i></p>
             <div class="row">
                 <div class="col s12">
                     {{ form_row(form.adversaire) }}
@@ -25,9 +26,21 @@
                 </div>
             </div>
 
-            <div class="exempt">
+            <div class="issue">
+                <h5>OU</h5>
+                <p><i>Il n'y a pas de rencontre pour cette équipe lors de cette journée</i></p>
                 {{ form_row(form.exempt) }}
             </div>
+
+            <div class="issue">
+                <h5>OU</h5>
+                <p><i>La rencontre est reportée à une date ultèrieure</i></p>
+                {{ form_row(form.reporte) }}
+                <div class="container">
+                    {{ form_row(form.dateReport) }}
+                </div>
+            </div>
+
 
             <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         {{ form_end(form) }}

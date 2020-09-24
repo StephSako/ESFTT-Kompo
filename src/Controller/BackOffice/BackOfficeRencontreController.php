@@ -73,6 +73,7 @@ class BackOfficeRencontreController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
+            if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDate());
             $this->em->flush();
             $this->addFlash('success', 'Rencontre modifiée avec succès !');
             return $this->redirectToRoute('back_office.rencontres');

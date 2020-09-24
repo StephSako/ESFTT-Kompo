@@ -18,13 +18,14 @@ html {
   margin-top: 20px;
 }
 
-.exempt {
+.issue {
+  margin-bottom: 20px;
   margin-top: 20px;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 2px;
   border-radius: 0;
 }
-.exempt span {
+.issue i {
   color: red;
 }
 
