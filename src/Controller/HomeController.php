@@ -117,9 +117,9 @@ class HomeController extends AbstractController
             $dispoJoueur = $this->getUser() ? $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
 
             // Joueurs ayant déclaré leur disponibilité
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findJoueursDeclaresJournee($id);
+            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findJoueursDeclares($id);
 
-            // Joueurs non déclarés
+            // Joueurs n'ayant pas déclaré leur disponibilité
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
 
             // Compositions d'équipe
@@ -139,7 +139,7 @@ class HomeController extends AbstractController
             $this->get('session')->set('type', $type);
             $journees = $this->journeeParisRepository->findAll();
             $dispoJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
-            $joueursDeclares = $this->disponibiliteParisRepository->findJoueursDeclaresJournee($id);
+            $joueursDeclares = $this->disponibiliteParisRepository->findJoueursDeclares($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
@@ -152,9 +152,9 @@ class HomeController extends AbstractController
         $classement = $apiController->getClassement($cache, $type);
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
-        {
-            return $dispo->getDisponibilite();
-        }
+            {
+                return $dispo->getDisponibilite();
+            }
         ));
 
         return $this->render('journee/index.html.twig', [

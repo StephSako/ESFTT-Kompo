@@ -24,7 +24,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
      * @param $idJournee
      * @return int|mixed|string
      */
-    public function findJoueursDeclaresJournee($idJournee)
+    public function findJoueursDeclares($idJournee)
     {
         return $this->createQueryBuilder('d')
             ->select('d')

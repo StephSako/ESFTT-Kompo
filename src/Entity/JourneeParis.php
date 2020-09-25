@@ -25,6 +25,12 @@ class JourneeParis
     private $date;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", name="undefined", nullable=false)
+     */
+    private $undefined;
+
+    /**
      * @var String
      */
     private $type = 'Paris';
@@ -83,6 +89,24 @@ class JourneeParis
     public function setDate(Datetime $date): self
     {
         $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUndefined(): bool
+    {
+        return $this->undefined;
+    }
+
+    /**
+     * @param bool $undefined
+     * @return JourneeParis
+     */
+    public function setUndefined(bool $undefined): self
+    {
+        $this->undefined = $undefined;
         return $this;
     }
 }

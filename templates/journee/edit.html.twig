@@ -43,7 +43,11 @@
                             <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
                         </div>
 
-                        <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
+                        {% if compo.idJournee.undefined %}
+                            <h5 class="col s4 m3 red-text"><b>?/?</b></h5>
+                        {% else %}
+                            <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
+                        {% endif %}
 
                         <h5 class="col s4 m2">
                             {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>

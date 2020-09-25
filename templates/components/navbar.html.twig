@@ -20,7 +20,15 @@
 
                     {% for journee in journees %}
                         <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
-                            <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}"><span style="font-family: 'Lora', serif;">J</span>{{ journee.idJournee }} - {{ journee.date|date('d/m') }}</a>
+                            <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">
+                                <span style="font-family: 'Lora', serif;">J</span>
+                                {{ journee.idJournee }} -
+                                {% if journee.undefined %}
+                                    <span class="red-text"><b>?/?</b></span>
+                                {% else %}
+                                    {{ journee.date|date('d/m') }}
+                                {% endif %}
+                            </a>
                         </li>
                     {% endfor %}
 
@@ -49,7 +57,14 @@
         <div class="first_sidenav">
             {% for journee in journees %}
                 <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
-                    <a class="white-text center-align" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">Journée {{ journee.idJournee }} - {{ journee.date|date('d/m/Y') }}</a>
+                    <a class="white-text center-align" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">
+                        Journée {{ journee.idJournee }} -
+                        {% if journee.undefined %}
+                            <span class="red-text"><b>?/?</b></span>
+                        {% else %}
+                            {{ journee.date|date('d/m/Y') }}
+                        {% endif %}
+                    </a>
                 </li>
             {% endfor %}
         </div>

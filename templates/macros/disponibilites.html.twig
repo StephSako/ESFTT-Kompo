@@ -220,7 +220,7 @@
 
         <tbody>
         {% for dispo in disponibilites %}
-            {% if "now" | date('d/m/Y') > dispo.date | date("d/m/Y") %}
+            {% if "now" | date('d/m/Y') >= dispo.date | date("d/m/Y") %}
                 <tr>
                     <td>
                         <div class="chip">

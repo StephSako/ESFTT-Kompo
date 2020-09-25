@@ -25,6 +25,12 @@ class JourneeDepartementale
     private $date;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", name="undefined", nullable=false)
+     */
+    private $undefined;
+
+    /**
      * @var String
      */
     private $type = 'Départemental';
@@ -83,6 +89,24 @@ class JourneeDepartementale
     public function setDate(Datetime $date): self
     {
         $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUndefined(): bool
+    {
+        return $this->undefined;
+    }
+
+    /**
+     * @param bool $undefined
+     * @return JourneeDepartementale
+     */
+    public function setUndefined(bool $undefined): self
+    {
+        $this->undefined = $undefined;
         return $this;
     }
 }

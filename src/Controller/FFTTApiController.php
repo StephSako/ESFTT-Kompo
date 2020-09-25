@@ -39,7 +39,6 @@ class FFTTApiController extends AbstractController
 
         if ($type == 'departementale'){
             $equipeDepartementaleRepository = $this->equipeDepartementaleRepository;
-
             return $cache->get('classementDepartementale', function(ItemInterface $item) use ($equipeDepartementaleRepository) {
                 $item->expiresAfter(60 * 60 * 12); // Expire toutes les 12h
                 try {
@@ -84,6 +83,6 @@ class FFTTApiController extends AbstractController
                 return [1 =>  [], 2 => []];
             });
         }
-        else return [1 =>  [], 2 => []];
+        else return [1 => [], 2 => [], 3 => [], 4 => []];
     }
 }
