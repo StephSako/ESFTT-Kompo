@@ -210,54 +210,56 @@
 {% macro backoffice(disponibilites, type) %}
     <table class="centered striped responsive-table">
         <thead>
-        <tr class="hide-on-small-only">
-            <th>Joueur</th>
-            <th>Journée</th>
-            <th>Date</th>
-            <th></th>
-        </tr>
+            <tr class="hide-on-small-only">
+                <th>Joueur</th>
+                <th>Journée</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
         </thead>
 
         <tbody>
         {% for dispo in disponibilites %}
-            <tr>
-                <td>
-                    <div class="chip">
-                        <img src="{{ dispo.avatar }}" alt="Avatar">
-                        <span>{{ dispo.nom }}</span>
-                    </div>
-                </td>
-                <td>J{{ dispo.id_journee }}</td>
-                <td>{{ dispo.date | date("d/m/Y") }}</td>
-                <td>
-                    {% if dispo.id_disponibilite is null %}
-                        <div class="row" style="margin-bottom: 0;">
-                            <div class="col s12 xl6" style="margin-bottom: 5px;">
-                                <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: type, dispo: 1}) }}">
-                                    <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
-                                </a>
-                            </div>
-                            <div class="col s12 xl6">
-                                <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: type, dispo: 0}) }}">
-                                    <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
-                                </a>
-                            </div>
+            {% if "now" | date('d/m/Y') > dispo.date | date("d/m/Y") %}
+                <tr>
+                    <td>
+                        <div class="chip">
+                            <img src="{{ dispo.avatar }}" alt="Avatar">
+                            <span>{{ dispo.nom }}</span>
                         </div>
-                    {% else %}
-                        {% if dispo.disponibilite == 1 %}
-                            <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="green-text"><b>disponible</b></span></i></p>
-                            <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.id_competiteur, type: type, disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
-                                <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer indisponible</button>
-                            </a>
+                    </td>
+                    <td>J{{ dispo.id_journee }}</td>
+                    <td>{{ dispo.date | date("d/m/Y") }}</td>
+                    <td>
+                        {% if dispo.id_disponibilite is null %}
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="col s12 xl6" style="margin-bottom: 5px;">
+                                    <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: type, dispo: 1}) }}">
+                                        <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
+                                    </a>
+                                </div>
+                                <div class="col s12 xl6">
+                                    <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.id_competiteur, journee: dispo.id_journee, type: type, dispo: 0}) }}">
+                                        <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
+                                    </a>
+                                </div>
+                            </div>
                         {% else %}
-                            <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="red-text"><b>indisponible</b></span></i></p>
-                            <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.id_competiteur, type: type, disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
-                                <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer disponible</button>
-                            </a>
+                            {% if dispo.disponibilite == 1 %}
+                                <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="green-text"><b>disponible</b></span></i></p>
+                                <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.id_competiteur, type: type, disposJoueur: dispo.id_disponibilite, dispo: 0}) }}">
+                                    <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer indisponible</button>
+                                </a>
+                            {% else %}
+                                <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="red-text"><b>indisponible</b></span></i></p>
+                                <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.id_competiteur, type: type, disposJoueur: dispo.id_disponibilite, dispo: 1}) }}">
+                                    <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer disponible</button>
+                                </a>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>

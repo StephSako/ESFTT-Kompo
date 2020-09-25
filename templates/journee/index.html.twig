@@ -54,29 +54,37 @@
                 {% if disponible is not null %}
                     {% if disponible == 1 %}
                         <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                        <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
-                            <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
-                        </a>
+                        {% if "now" | date('d/m/Y') > journee.date|date('d/m/Y') %}
+                            <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
+                                <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                            </a>
+                        {% endif %}
                     {% elseif disponible == 0 %}
                         <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
-                        <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 1}) }}">
-                            <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
-                        </a>
+                        {% if "now" | date('d/m/Y') > journee.date|date('d/m/Y') %}
+                            <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 1}) }}">
+                                <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 {% else %}
-                    <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
-                    <div class="row">
-                        <div class="col s6">
-                            <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
-                                <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
-                            </a>
+                    {% if "now" | date('d/m/Y') > journee.date|date('d/m/Y') %}
+                        <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
+                        <div class="row">
+                            <div class="col s6">
+                                <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
+                                    <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
+                                </a>
+                            </div>
+                            <div class="col s6">
+                                <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
+                                    <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
+                                </a>
+                            </div>
                         </div>
-                        <div class="col s6">
-                            <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
-                                <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
-                            </a>
-                        </div>
-                    </div>
+                    {% else %}
+                        <h5>{{ app.user.username | capitalize }}, vous n'avez pas déclaré votre disponibilité ...</h5>
+                    {% endif %}
                 {% endif %}
             </div>
 
@@ -174,7 +182,7 @@
                             </tbody>
                         </table>
 
-                        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+                        {% if 'ROLE_CAPITAINE' in app.token.roleNames and "now" | date('d/m/Y') > journee.date|date('d/m/Y') %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 {% if journee.linkType == 'departementale' %}
                                     {% if compo.isEmpty %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
