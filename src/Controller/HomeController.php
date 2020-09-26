@@ -296,13 +296,16 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/empty/{type}/{id}", name="composition.vider")
+     * @Route("/composition/empty/{type}/{id}/{fromTemplate}", name="composition.vider")
      * @param string $type
      * @param int id
+     * @param bool $fromTemplate // Affiche le flash uniquement s'il est activé depuis le template journee/index.html.twig
      * @return Response
      */
-    public function emptyComposition(string $type, int $id) : Response
+    public function emptyComposition(string $type, int $id, bool $fromTemplate) : Response
     {
+        if (!($type == 'departementale' || $type == 'paris')) throw $this->createNotFoundException('Championnat inexistant');
+
         $compo = null;
         if ($type == 'departementale'){
             if (!($compo = $this->rencontreDepartementaleRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
@@ -311,9 +314,6 @@ class HomeController extends AbstractController
             $compo->setIdJoueur2(null);
             $compo->setIdJoueur3(null);
             $compo->setIdJoueur4(null);
-
-            $this->em->flush();
-            $this->addFlash('success', 'Composition vidée avec succès !');
         }
         else if ($type == 'paris'){
             if (!($compo = $this->rencontreParisRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
@@ -330,11 +330,10 @@ class HomeController extends AbstractController
                 $compo->setIdJoueur8(null);
                 $compo->setIdJoueur9(null);
             }
+        }
 
-            $this->em->flush();
-            $this->addFlash('success', 'Composition vidée avec succès !');
-        } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
-
+        $this->em->flush();
+        if ($fromTemplate) $this->addFlash('success', 'Composition vidée avec succès !');
 
         return $this->redirectToRoute('journee.show', [
             'type' => $compo->getIdJournee()->getLinkType(),

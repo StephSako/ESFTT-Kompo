@@ -33,12 +33,9 @@ class InvalidSelectionController extends AbstractController
      * @param $jForm
      */
     public function checkInvalidSelection($type, $compo, $jForm){
-        if ($jForm != null) {
-            if ($type === 'departementale') {
-                if ($compo->getIdJournee()->getIdJournee() < 7) $this->deleteInvalidSelectedPlayer($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe()), 'departementale');
-            } else if ($type === 'paris') {
-                if ($compo->getIdJournee()->getIdJournee() < 7) $this->deleteInvalidSelectedPlayer($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()), 'paris');
-            }
+        if ($jForm != null && $compo->getIdJournee()->getIdJournee() < 7) {
+            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe()), 'departementale');
+            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()), 'paris');
         }
     }
 
@@ -46,7 +43,7 @@ class InvalidSelectionController extends AbstractController
      * @param $invalidCompo
      * @param $type
      */
-    public function deleteInvalidSelectedPlayer($invalidCompo, $type){
+    public function deleteInvalidSelectedPlayers($invalidCompo, $type){
         foreach ($invalidCompo as $compo){
             if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
             if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);

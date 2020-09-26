@@ -2,6 +2,8 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\HomeController;
+use App\Controller\InvalidSelectionController;
 use App\Form\BackOfficeRencontreDepartementaleType;
 use App\Form\BackOfficeRencontreParisType;
 use App\Repository\RencontreDepartementaleRepository;
@@ -48,13 +50,13 @@ class BackOfficeRencontreController extends AbstractController
 
     /**
      * @Route("/backoffice/rencontre/edit/{type}/{idRencontre}", name="backoffice.rencontre.edit")
-     * @param $idRencontre
      * @param $type
+     * @param $idRencontre
      * @param Request $request
+     * @param HomeController $homeController
      * @return Response
-     * @throws Exception
      */
-    public function editRencontre($type, $idRencontre, Request $request)
+    public function editRencontre($type, $idRencontre, Request $request, HomeController $homeController)
     {
         $domicile = null;
         if ($type == 'departementale'){
@@ -72,8 +74,14 @@ class BackOfficeRencontreController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            // On récupère la valeur du switch du template
             $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
+
+            // Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée
             if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDate());
+
+            // Si la rencontre est exemptée ou annulée, la composition est vidée
+            if ($rencontre->isExempt()) $homeController->emptyComposition($type, $rencontre->getId(), false);
 
             $this->em->flush();
             $this->addFlash('success', 'Rencontre modifiée avec succès !');
