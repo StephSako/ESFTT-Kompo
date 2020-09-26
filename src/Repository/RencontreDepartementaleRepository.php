@@ -93,4 +93,30 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
             ->getQuery()->getResult();
     }
+
+    /**
+     * Récupère la liste des joueurs devant être au plus 1 sélectionnés dans l'équipe
+     * @param $idEquipe
+     * @return int|mixed|string
+     */
+    public function getBrulesJ2($idEquipe){
+        $composJ1 = $this->createQueryBuilder('rd')
+            ->select('(rd.idJoueur1) as joueur1')
+            ->addSelect('(rd.idJoueur2) as joueur2')
+            ->addSelect('(rd.idJoueur3) as joueur3')
+            ->addSelect('(rd.idJoueur4) as joueur4')
+            ->where('rd.idEquipe < :idEquipe')
+            ->andWhere('rd.idJournee = 1')
+            ->setParameter('idEquipe', $idEquipe)
+            ->getQuery()->getResult();
+
+        $brulesJ2 = [];
+        foreach ($composJ1 as $compo){
+            foreach ($compo as $idJoueur){
+                array_push($brulesJ2, $idJoueur);
+            }
+        }
+
+        return $brulesJ2;
+    }
 }

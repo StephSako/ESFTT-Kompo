@@ -47,9 +47,9 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
     public function findJoueursSelectionnables(int $idJournee, int $idEquipe)
     {
         $query = $this->createQueryBuilder('d')
-            ->select('d')
             ->leftJoin('d.idCompetiteur', 'c')
-            ->addSelect('c')
+            ->select('c.com as nom')
+            ->addSelect('c.idCompetiteur as idCompetiteur')
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('d.disponibilite = 1')

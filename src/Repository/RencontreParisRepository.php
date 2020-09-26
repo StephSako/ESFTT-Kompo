@@ -106,4 +106,35 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->andWhere('rp.idJoueur1 = c.idCompetiteur OR rp.idJoueur2 = c.idCompetiteur OR rp.idJoueur3 = c.idCompetiteur OR rp.idJoueur4 = c.idCompetiteur OR rp.idJoueur5 = c.idCompetiteur OR rp.idJoueur6 = c.idCompetiteur OR rp.idJoueur7 = c.idCompetiteur OR rp.idJoueur8 = c.idCompetiteur OR rp.idJoueur9 = c.idCompetiteur')
             ->getQuery()->getResult();
     }
+
+    /**
+     * Récupère la liste des joueurs devant être au plus 1 sélectionnés dans l'équipe
+     * @param $idEquipe
+     * @return int|mixed|string
+     */
+    public function getBrulesJ2($idEquipe){
+        $composJ1 = $this->createQueryBuilder('rd')
+            ->select('(rd.idJoueur1) as joueur1')
+            ->addSelect('(rd.idJoueur2) as joueur2')
+            ->addSelect('(rd.idJoueur3) as joueur3')
+            ->addSelect('(rd.idJoueur4) as joueur4')
+            ->addSelect('(rd.idJoueur5) as joueur5')
+            ->addSelect('(rd.idJoueur6) as joueur6')
+            ->addSelect('(rd.idJoueur7) as joueur7')
+            ->addSelect('(rd.idJoueur8) as joueur8')
+            ->addSelect('(rd.idJoueur9) as joueur9')
+            ->where('rd.idEquipe < :idEquipe')
+            ->andWhere('rd.idJournee = 1')
+            ->setParameter('idEquipe', $idEquipe)
+            ->getQuery()->getResult();
+
+        $brulesJ2 = [];
+        foreach ($composJ1 as $compo){
+            foreach ($compo as $idJoueur){
+                array_push($brulesJ2, $idJoueur);
+            }
+        }
+
+        return $brulesJ2;
+    }
 }

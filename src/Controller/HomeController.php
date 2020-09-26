@@ -191,6 +191,7 @@ class HomeController extends AbstractController
             if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
             $selectionnables = $this->disponibiliteDepartementaleRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
         }
@@ -198,6 +199,7 @@ class HomeController extends AbstractController
             if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
 
             $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
+            $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
 
@@ -205,6 +207,10 @@ class HomeController extends AbstractController
             else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
+
+        foreach ($selectionnables as $key => $joueur){
+            $selectionnables[$key]["bruleJ2"] = (in_array($joueur["idCompetiteur"], $brulesJ2) ? true : false);
+        }
 
         $form->handleRequest($request);
 

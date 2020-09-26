@@ -14,12 +14,12 @@
 
     <table class="card-panel dispos">
         <thead>
-        <tr>
-            <th class="center">
-                <h5 class="center">Les dispos</h5>
-            </th>
-            <th></th>
-        </tr>
+            <tr>
+                <th class="center">
+                    <h5 class="center">Les dispos</h5>
+                </th>
+                <th></th>
+            </tr>
         </thead>
 
         <tbody>
@@ -72,16 +72,16 @@
     <div id="all_dispo_departementale">
         <table class="centered responsive-table striped card-panel">
             <thead>
-            <tr>
-                <th><span class="hide-on-small-only">Joueurs</span></th>
-                <th>J1</th>
-                <th>J2</th>
-                <th>J3</th>
-                <th>J4</th>
-                <th>J5</th>
-                <th>J6</th>
-                <th>J7</th>
-            </tr>
+                <tr>
+                    <th><span class="hide-on-small-only">Joueurs</span></th>
+                    <th>J1</th>
+                    <th>J2</th>
+                    <th>J3</th>
+                    <th>J4</th>
+                    <th>J5</th>
+                    <th>J6</th>
+                    <th>J7</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -104,16 +104,16 @@
     <div id="all_dispo_paris">
         <table class="centered responsive-table striped card-panel">
             <thead>
-            <tr>
-                <th><span class="hide-on-small-only">Joueurs</span></th>
-                <th>J1</th>
-                <th>J2</th>
-                <th>J3</th>
-                <th>J4</th>
-                <th>J5</th>
-                <th>J6</th>
-                <th>J7</th>
-            </tr>
+                <tr>
+                    <th><span class="hide-on-small-only">Joueurs</span></th>
+                    <th>J1</th>
+                    <th>J2</th>
+                    <th>J3</th>
+                    <th>J4</th>
+                    <th>J5</th>
+                    <th>J6</th>
+                    <th>J7</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -151,11 +151,15 @@
 {% endmacro %}
 
 {% macro selectionnables(selectionnables) %}
-    <table style="margin-top: 20px;" class="centered card-panel dispos">
+    <div class="card-panel center-align" style="margin-bottom: 0;">
+        <p class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, au maximum 1 joueur orange peux être sélectionné dans cette équipe</i></p>
+    </div>
+
+    <table style="margin-top: 10px;" class="centered card-panel dispos">
         <thead>
-        <tr>
-            <th><h5>Sélectionnables</h5></th>
-        </tr>
+            <tr>
+                <th><h5>Sélectionnables</h5></th>
+            </tr>
         </thead>
 
         <tbody>
@@ -166,8 +170,8 @@
         {% else %}
             {% for selectionnable in selectionnables %}
                 <tr>
-                    <td>
-                        {{ selectionnable.idCompetiteur.nom }}
+                    <td {% if selectionnable["bruleJ2"] %} class="orange lighten-4"{% endif %}>
+                        {{ selectionnable["nom"] }}
                     </td>
                 </tr>
             {% endfor %}
@@ -220,7 +224,7 @@
 
         <tbody>
         {% for dispo in disponibilites %}
-            {% if "now" | date('d/m/Y') >= dispo.date | date("d/m/Y") %}
+            {% if date(dispo.date) >= date() %}
                 <tr>
                     <td>
                         <div class="chip">
