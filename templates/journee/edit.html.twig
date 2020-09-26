@@ -128,7 +128,7 @@
                 {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
             </div>
             <div class="col s12 m2">
-                {{ _disponibilites.selectionnables(selectionnables) }}
+                {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
             </div>
         {% endif %}
     </div>

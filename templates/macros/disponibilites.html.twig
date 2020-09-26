@@ -150,10 +150,12 @@
     </td>
 {% endmacro %}
 
-{% macro selectionnables(selectionnables) %}
-    <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
-        <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, au maximum 1 joueur orange peux être sélectionné dans cette équipe</i></span>
-    </div>
+{% macro selectionnables(selectionnables, idEquipe, idJournee) %}
+    {% if idEquipe > 1 and idJournee == 2%}
+        <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
+            <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, au maximum 1 joueur orange peux être sélectionné dans cette équipe</i></span>
+        </div>
+    {% endif %}
 
     <table style="margin-top: 10px;" class="centered card-panel dispos">
         <thead>
@@ -170,7 +172,7 @@
         {% else %}
             {% for selectionnable in selectionnables %}
                 <tr>
-                    <td {% if selectionnable["bruleJ2"] %} class="orange lighten-4"{% endif %}>
+                    <td {% if selectionnable["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
                         {{ selectionnable["nom"] }}
                     </td>
                 </tr>
