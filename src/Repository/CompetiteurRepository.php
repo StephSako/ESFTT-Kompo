@@ -48,8 +48,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $sql = "SELECT avatar, prive_competiteur.nom,";
 
         for ($i = 1; $i <= 7; $i++){
-            $sql .= " (SELECT disponibilite FROM prive_disponibilite_" . $type
-                 .  " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = " . $i . ") AS j" . $i;
+            $sql .= " (SELECT disponibilite FROM prive_disponibilite_" . $type . " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = " . $i . ") AS j" . $i;
             if ($i < 7) $sql .= ",";
         }
 
