@@ -217,31 +217,59 @@ class HomeController extends AbstractController
 
         $form->handleRequest($request);
 
+        $joueursBrulesRegleJ2 = array_column(array_filter($selectionnables, function($joueur)
+            {
+                return ($joueur["bruleJ2"]);
+            }
+        ), 'idCompetiteur');
+
         if ($form->isSubmitted() && $form->isValid()) {
-            /** On vérifie que le joueur n'est pas brûlé et selectionné dans de futures compositions **/
-            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur1());
-            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
-            $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
+
+            /** On vérifie qu'il n'y aie pas 2 joueurs brûlés pour la règle de la J2 **/
+            $nbJoueursBruleJ2 = 0;
+
+            if ($form->getData()->getIdJoueur1()) if (in_array($form->getData()->getIdJoueur1()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+            if ($form->getData()->getIdJoueur2()) if (in_array($form->getData()->getIdJoueur2()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+            if ($form->getData()->getIdJoueur3()) if (in_array($form->getData()->getIdJoueur3()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
 
             if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
-                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
-
-                if ($type == 'paris' && $idEquipe == 1) {
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());
-                }
+                if ($form->getData()->getIdJoueur4()) if (in_array($form->getData()->getIdJoueur4()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                    if ($type == 'paris' && $idEquipe == 1) {
+                        if ($form->getData()->getIdJoueur5()) if (in_array($form->getData()->getIdJoueur5()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                        if ($form->getData()->getIdJoueur6()) if (in_array($form->getData()->getIdJoueur6()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                        if ($form->getData()->getIdJoueur7()) if (in_array($form->getData()->getIdJoueur7()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                        if ($form->getData()->getIdJoueur8()) if (in_array($form->getData()->getIdJoueur8()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                        if ($form->getData()->getIdJoueurç()) if (in_array($form->getData()->getIdJoueur9()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                    }
             }
 
-            $this->em->flush();
-            $this->addFlash('success', 'Composition modifiée avec succès !');
+            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', 'Deux joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
+            else {
+                /** On vérifie que le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur1());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
+                $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
 
-            return $this->redirectToRoute('journee.show', [
-                'type' => $compo->getIdJournee()->getLinkType(),
-                'id' => $compo->getIdJournee()->getIdJournee()
-            ]);
+                if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
+                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
+
+                    if ($type == 'paris' && $idEquipe == 1) {
+                        $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
+                        $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
+                        $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
+                        $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
+                        $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());
+                    }
+                }
+
+                $this->em->flush();
+                $this->addFlash('success', 'Composition modifiée avec succès !');
+
+                return $this->redirectToRoute('journee.show', [
+                    'type' => $compo->getIdJournee()->getLinkType(),
+                    'id' => $compo->getIdJournee()->getIdJournee()
+                ]);
+            }
         }
 
         if ($type == 'departementale'){
@@ -282,7 +310,6 @@ class HomeController extends AbstractController
                 }
             }
         }
-        else throw $this->createNotFoundException('Championnat inexistant');
 
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
