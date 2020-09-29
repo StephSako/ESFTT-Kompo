@@ -24,6 +24,7 @@ class RencontreParisBasType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'required'   => false,
+                'placeholder' => 'Définir vide',
                 'empty_data' => null,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
@@ -55,6 +56,7 @@ class RencontreParisBasType extends AbstractType
             ))
             ->add('idJoueur2', EntityType::class, array(
                 'class' => 'App\Entity\Competiteur',
+                'placeholder' => 'Définir vide',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
                 },
@@ -93,6 +95,7 @@ class RencontreParisBasType extends AbstractType
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
                 },
+                'placeholder' => 'Définir vide',
                 'required'   => false,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {

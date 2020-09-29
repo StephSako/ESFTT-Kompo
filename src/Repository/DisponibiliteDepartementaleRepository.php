@@ -48,8 +48,8 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('d')
             ->leftJoin('d.idCompetiteur', 'c')
-            ->select('c.nom as nom')
-            ->addSelect('c.idCompetiteur as idCompetiteur')
+            ->select('c.nom')
+            ->addSelect('c.idCompetiteur')
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('d.disponibilite = 1')

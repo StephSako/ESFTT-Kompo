@@ -24,6 +24,7 @@ class RencontreDepartementaleType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'required'   => false,
+                'placeholder' => 'Définir vide',
                 'empty_data' => null,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
@@ -71,6 +72,7 @@ class RencontreDepartementaleType extends AbstractType
                 },
                 'required'   => false,
                 'label' => false,
+                'placeholder' => 'Définir vide',
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
@@ -117,6 +119,7 @@ class RencontreDepartementaleType extends AbstractType
                 },
                 'required'   => false,
                 'label' => false,
+                'placeholder' => 'Définir vide',
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
@@ -162,6 +165,7 @@ class RencontreDepartementaleType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'label' => false,
+                'placeholder' => 'Définir vide',
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },

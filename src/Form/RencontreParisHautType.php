@@ -25,6 +25,7 @@ class RencontreParisHautType extends AbstractType
                 },
                 'required'   => false,
                 'empty_data' => null,
+                'placeholder' => 'Définir vide',
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
@@ -54,6 +55,7 @@ class RencontreParisHautType extends AbstractType
                 },
                 'required'   => false,
                 'label' => false,
+                'placeholder' => 'Définir vide',
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
@@ -82,6 +84,7 @@ class RencontreParisHautType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'required'   => false,
+                'placeholder' => 'Définir vide',
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
@@ -111,6 +114,7 @@ class RencontreParisHautType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'label' => false,
+                'placeholder' => 'Définir vide',
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
@@ -143,6 +147,7 @@ class RencontreParisHautType extends AbstractType
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
+                'placeholder' => 'Définir vide',
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -172,6 +177,7 @@ class RencontreParisHautType extends AbstractType
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
+                'placeholder' => 'Définir vide',
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -201,6 +207,7 @@ class RencontreParisHautType extends AbstractType
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
+                'placeholder' => 'Définir vide',
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -226,6 +233,7 @@ class RencontreParisHautType extends AbstractType
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
                 },
+                'placeholder' => 'Définir vide',
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
@@ -259,6 +267,7 @@ class RencontreParisHautType extends AbstractType
                 'choice_attr' => function ($competiteur) use($builder) {
                     return ['data-icon' => $competiteur->getAvatar()];
                 },
+                'placeholder' => 'Définir vide',
                 'required'   => false,
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {

@@ -311,6 +311,11 @@ li.error {
   }
 }
 
+.dropdown-content li:first-child>span {
+  color: gray;
+  font-style: italic;
+}
+
 @media screen and (min-width: 993px) and (max-width: 1334px) {
   .menu_navbar {
     display: block;
