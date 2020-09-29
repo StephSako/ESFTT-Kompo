@@ -17,11 +17,12 @@ class BackofficeCompetiteurType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, ['label' => ' '])
-            ->add('classementOfficiel', NumberType::class, ['label' => ' '])
+            ->add('classementOfficiel', NumberType::class, ['label' => ' ', 'required' => false])
             ->add('avatar', UrlType::class, ['label' => ' '])
             ->add('username', TextType::class, ['label' => ' '])
             ->add('role', CheckboxType::class, ['label' => 'Capitaine', 'required' => false])
-            ->add('licence', NumberType::class, ['label' => ' ']);
+            ->add('visitor', CheckboxType::class, ['label' => 'Visiteur', 'required' => false])
+            ->add('licence', NumberType::class, ['label' => ' ', 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

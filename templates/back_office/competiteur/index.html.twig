@@ -50,17 +50,32 @@
                 {% for competiteur in competiteurs %}
                     <tr>
                         <td>
-                            {% if competiteur.role %}
-                                <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                            {% if not competiteur.visitor %}
+                                {% if competiteur.role %}
+                                    <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                                {% else %}
+                                    <span class="new badge green" data-badge-caption="Joueur"></span>
+                                {% endif %}
                             {% else %}
-                                <span class="new badge green" data-badge-caption="Joueur"></span>
-                            {% endif %}</td>
-                        <td class="hide-on-small-only"><img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem"></td>
+                                <span class="new badge orange" data-badge-caption="Visiteur"></span>
+                            {% endif %}
+                        </td>
+                        <td class="hide-on-small-only">
+                            <img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem">
+                        </td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
-                        <td>{{ competiteur.licence }}</td>
+                        <td>
+                            {% if competiteur.licence %}
+                                {{ competiteur.licence }}
+                            {% else %}
+                                <i class="red-text text-lighten-2">Pas de licence</i>
+                            {% endif %}
+                        </td>
                         <td>{{ competiteur.classementOfficiel }}</td>
-                        <td><a href="{{ path('backoffice.account.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                        <td>
+                            <a href="{{ path('backoffice.account.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

@@ -24,22 +24,20 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @Assert\Length(
-     *      min = 5,
-     *      max = 8,
-     *      minMessage = "La licence doit contenir au moins {{ limit }} chiffres",
+     *      max = 9,
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
      * )
      *
-     * @ORM\Column(name="licence", type="integer", length=8, nullable=false)
+     * @ORM\Column(name="licence", type="integer", length=11, nullable=true)
      */
     private $licence;
 
     /**
-     * @Assert\GreaterThanOrEqual(500)
+     * @var int
      *
-     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=false, options={"default":500})
+     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=true)
      */
-    private $classement_officiel = 500;
+    private $classement_officiel;
 
     /**
      * @var string
@@ -89,6 +87,11 @@ class Competiteur implements UserInterface, Serializable
     private $isCapitaine = false;
 
     /**
+     * @ORM\Column(type="boolean", name="visitor", nullable=false)
+     */
+    private $visitor = false;
+
+    /**
      * @var string
      *
      * @Assert\Url(
@@ -120,18 +123,18 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLicence(): int
+    public function getLicence(): ?int
     {
         return $this->licence;
     }
 
     /**
-     * @param int $licence
+     * @param int|null $licence
      * @return $this
      */
-    public function setLicence(int $licence): self
+    public function setLicence(?int $licence): self
     {
         $this->licence = $licence;
         return $this;
@@ -203,11 +206,14 @@ class Competiteur implements UserInterface, Serializable
 
     public function getRoles()
     {
-        if ($this->getRole()) {
-            return ['ROLE_CAPITAINE', 'ROLE_JOUEUR'];
-        } else {
-            return ['ROLE_JOUEUR'];
+        if (!$this->isVisitor()){
+            if ($this->getRole()) {
+                return ['ROLE_CAPITAINE', 'ROLE_JOUEUR'];
+            } else {
+                return ['ROLE_JOUEUR'];
+            }
         }
+        else return ['ROLE_VISITEUR'];
     }
 
     public function getSalt()
@@ -260,18 +266,18 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getClassementOfficiel(): int
+    public function getClassementOfficiel(): ?int
     {
         return $this->classement_officiel;
     }
 
     /**
-     * @param int $classement_officiel
+     * @param int|null $classement_officiel
      * @return Competiteur
      */
-    public function setClassementOfficiel(int $classement_officiel): self
+    public function setClassementOfficiel(?int $classement_officiel): self
     {
         $this->classement_officiel = $classement_officiel;
         return $this;
@@ -327,5 +333,23 @@ class Competiteur implements UserInterface, Serializable
     public function getSelect(): string
     {
         return $this->nom. " - " . $this->getClassementOfficiel() . " pts";
+    }
+
+    /**
+     * @param bool $visitor
+     * @return Competiteur
+     */
+    public function setVisitor(bool $visitor): Competiteur
+    {
+        $this->visitor = $visitor;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisitor(): bool
+    {
+        return $this->visitor;
     }
 }
