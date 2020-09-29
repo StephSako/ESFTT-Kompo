@@ -88,6 +88,18 @@ Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour ch
 
 Les brûlages sont chargés dynamiquement en fonction de la journée de championnat sélectionnée. De cette manière, un joueur brûlé peut tout à fait changer d'équipe dans les journées antèrieures à son brûlage. C'est ainsi que les prévisions de brûlages sont concrètes et informatives pour la journée J+1.
 
+### Règle de la 2ème journée
+
+<p align="center"><img src="https://zupimages.net/up/20/40/5r1p.jpg"></p>
+
+Lors de la 2ème journée, une équipe doit sélectionner au maximum un joueur ayant joué dans une équipe supèrieure lors de la première journée.
+
+Par exemple, sur l'image ci-dessus où nous voulons modifier la composition de l'équipe 3 (en 2ème journée donc), nous voyons que Lucien, Rudy et Stephen (en orange) sont brûlés de la 1ère journée. Cela signifie qu'ils ont joué tous les 3 dans les équipes supèrieures ,l'équipe 1 ou 2, en 1ère journée. Seulement 1 des 3 peut être sélectionné parmi les autres joueurs.
+
+Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont sélectionnés.
+
+<p align="center"><img src="https://zupimages.net/up/20/40/0z17.jpg"></p>
+
 > Ca va ? On suit ? 😊 Alors on continue !
 
 ### Tableau des disponibilités
