@@ -5,11 +5,9 @@
 
     {% if app.user %}
 
-        {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
-            <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('account') }}">Compte</a>
-            </li>
-        {% endif %}
+        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path('account') }}">Compte</a>
+        </li>
 
         {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
             <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
@@ -38,11 +36,9 @@
 
     {% if app.user %}
 
-        {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
-            <li class="waves-light waves-effect {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('account') }}">Compte</a>
-            </li>
-        {% endif %}
+        <li class="waves-light waves-effect {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path('account') }}">Compte</a>
+        </li>
 
         {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
             <li class="waves-light waves-effect {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">

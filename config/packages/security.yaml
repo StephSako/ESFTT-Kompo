@@ -23,7 +23,7 @@ security:
 
     access_control:
         - { path: ^/journee/edit, roles: ROLE_CAPITAINE }
-        - { path: ^/compte, roles: ROLE_JOUEUR }
+        - { path: ^/compte, roles: [ROLE_JOUEUR, ROLE_VISITEUR] }
         - { path: ^/backoffice, roles: ROLE_CAPITAINE }
         - { path: ^/journee/(departementale|paris|disponibilite), roles: [ROLE_JOUEUR, ROLE_VISITEUR] }
 
