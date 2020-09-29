@@ -32,6 +32,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.nom')
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = " . $idJournee . ")")
+            ->andWhere('c.visitor <> true')
             ->addOrderBy('c.nom')
             ->getQuery()
             ->getResult();
@@ -52,7 +53,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             if ($i < 7) $sql .= ",";
         }
 
-        $sql .= " FROM prive_competiteur ORDER BY prive_competiteur.nom";
+        $sql .= " FROM prive_competiteur WHERE visitor <> true ORDER BY prive_competiteur.nom";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -70,6 +71,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = c.idCompetiteur OR p2.idJoueur2 = c.idCompetiteur OR p2.idJoueur3 = c.idCompetiteur OR p2.idJoueur4 = c.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) AS E2')
             ->addSelect('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) AS E3')
             ->addSelect('c.nom')
+            ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
             ->addOrderBy('c.nom')
             ->getQuery()
@@ -92,6 +94,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $this->createQueryBuilder('c')
             ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
             ->addSelect('c.nom')
+            ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
             ->addOrderBy('c.nom')
             ->getQuery()
@@ -107,7 +110,6 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * BACK-OFFICE
-     * Liste des compétiteurs n'ayant pas rempli toutes leurs dispos pour le championnat demandé
      * @param string $type
      * @return int|mixed|string
      * @throws DBALException
@@ -115,11 +117,12 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAllDisponibilites(string $type)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT avatar, prive_competiteur.id_competiteur, prive_competiteur.nom, prive_journee_" . $type . ".id_journee, prive_journee_" . $type . ".date,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . " WHERE prive_competiteur.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS disponibilite,"
-            .   " (SELECT id_disponibilite FROM prive_disponibilite_" . $type . " WHERE prive_competiteur.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS id_disponibilite"
-            .   " FROM prive_competiteur, prive_journee_" . $type . ""
-            .   " ORDER BY prive_competiteur.nom, prive_journee_" . $type . ".id_journee";
+        $sql = "SELECT avatar, pc.id_competiteur, pc.nom, prive_journee_" . $type . ".id_journee, prive_journee_" . $type . ".date,"
+            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . " WHERE pc.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS disponibilite,"
+            .   " (SELECT id_disponibilite FROM prive_disponibilite_" . $type . " WHERE pc.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS id_disponibilite"
+            .   " FROM prive_competiteur pc, prive_journee_" . $type
+            .   " WHERE pc.visitor <> true"
+            .   " ORDER BY pc.nom, prive_journee_" . $type . ".id_journee";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

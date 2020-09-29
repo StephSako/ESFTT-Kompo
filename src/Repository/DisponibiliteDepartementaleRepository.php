@@ -32,6 +32,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->addSelect('c')
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
+            ->andWhere('c.visitor <> true')
             ->orderBy('d.disponibilite', 'DESC')
             ->addOrderBy('c.nom')
             ->getQuery()
@@ -39,7 +40,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des joueurs sémectionables pour la composition d'une équipe (joueurs disponibles et non brûlés)
+     * Liste des joueurs sélectionables pour la composition d'une équipe (joueurs disponibles et non brûlés)
      * @param int $idJournee
      * @param int $idEquipe
      * @return int|mixed|string
@@ -52,6 +53,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur')
             ->where('d.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
+            ->andWhere('c.visitor <> true')
             ->andWhere('d.disponibilite = 1')
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1_.idJoueur1<>'NULL', p1_.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1_ WHERE p1_.idJournee = d.idJournee AND p1_.idEquipe <> :idEquipe)")
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2_.idJoueur2<>'NULL', p2_.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2_ WHERE p2_.idJournee = d.idJournee AND p2_.idEquipe <> :idEquipe)")
