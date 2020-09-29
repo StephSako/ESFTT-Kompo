@@ -1,6 +1,6 @@
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-<p align="center"><img src="https://zupimages.net/up/20/38/va13.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/40/sx43.png"></p>
 
 ## En résumé ...
 
@@ -22,7 +22,7 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 ## Page d'accueil
 
- <p align="center"><img src="https://zupimages.net/up/20/38/dgji.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
+ <p align="center"><img src="https://zupimages.net/up/20/40/e2j8.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
@@ -109,7 +109,7 @@ Pour chaque équipe, est affiché :
 - l'adversaire;
 - un bouton affichant le classement actuel de la poule (pour raisons de performances, il est actualisé toutes les 12h) :
 
-<p align="center"><img src="https://zupimages.net/up/20/39/ui2o.jpg" width="70%"></p>
+<p align="center"><img src="https://zupimages.net/up/20/40/uirl.jpg" width="70%"></p>
 
 - un bouton permettant de vider rapidement et entièrement la composition;
 - un bouton permettant de modifier la composition.
@@ -127,9 +127,10 @@ Sont sélectionnables les joueurs :
 * **signalés disponibles**;
 * non sélectionnés dans d'autres équipes de la journée.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264985-selection-min.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/40/bfe8.png"></p>
 
-Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez remettre l'emplacement d'un joueur à zéro en sélectionnant le blanc en début de liste comme ci-dessus. N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
+Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez définir un emplacement de joueur vide en cliquant sur le premier item.
+<br>N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
 
 ## Responsive
 
