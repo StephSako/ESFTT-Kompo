@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,23 +41,23 @@ class CompetiteurRepository extends ServiceEntityRepository
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
      * @param string $type
-     * @return mixed[]
-     * @throws DBALException
+     * @return int|mixed|string
      */
     public function findAllDisposRecapitulatif(string $type){
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT avatar, prive_competiteur.nom,";
+        $result = $this->createQueryBuilder('c')
+            ->select('c.avatar')
+            ->addSelect('c.nom');
 
-        for ($i = 1; $i <= 7; $i++){
-            $sql .= " (SELECT disponibilite FROM prive_disponibilite_" . $type . " WHERE prive_competiteur.id_competiteur = prive_disponibilite_" . $type . ".id_competiteur AND id_journee = " . $i . ") AS j" . $i;
-            if ($i < 7) $sql .= ",";
+        for ($i = 1; $i <= 7; $i++) {
+            $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite" . $type . " dt" . $i . " WHERE c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
         }
 
-        $sql .= " FROM prive_competiteur WHERE visitor <> true ORDER BY prive_competiteur.nom";
+        $result = $result->where('c.visitor <> true')
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $result;
     }
 
     /**
@@ -109,22 +109,28 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * BACK-OFFICE
+     * BACK-OFFICE : liste de toutes les disponibilités
      * @param string $type
      * @return int|mixed|string
-     * @throws DBALException
      */
     public function findAllDisponibilites(string $type)
     {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT avatar, pc.id_competiteur, pc.nom, prive_journee_" . $type . ".id_journee, prive_journee_" . $type . ".date,"
-            .   " (SELECT disponibilite FROM prive_disponibilite_" . $type . " WHERE pc.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS disponibilite,"
-            .   " (SELECT id_disponibilite FROM prive_disponibilite_" . $type . " WHERE pc.id_competiteur=prive_disponibilite_" . $type . ".id_competiteur AND prive_disponibilite_" . $type . ".id_journee=prive_journee_" . $type . ".id_journee) AS id_disponibilite"
-            .   " FROM prive_competiteur pc, prive_journee_" . $type
-            .   " WHERE pc.visitor <> true"
-            .   " ORDER BY pc.nom, prive_journee_" . $type . ".id_journee";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->createQueryBuilder('c')
+            ->select('c.avatar')
+            ->addSelect('c.idCompetiteur')
+            ->addSelect('c.nom')
+            ->addSelect('c.nom')
+            ->addSelect('j.idJournee')
+            ->addSelect("(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d1 WHERE c.idCompetiteur = d1.idCompetiteur AND d1.idJournee = j.idJournee) AS idDisponibilite")
+            ->addSelect("(SELECT d2.disponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d2 WHERE c.idCompetiteur = d2.idCompetiteur AND d2.idJournee = j.idJournee) AS disponibilite")
+            ->addSelect('j.date')
+            ->from('App:Journee' . ucfirst($type), 'j')
+            ->where(':date_now <= j.date')
+            ->setParameter('date_now', (new DateTime())->format('Y-m-d'))
+            ->andWhere('c.visitor <> true')
+            ->orderBy('c.nom')
+            ->addOrderBy('j.idJournee')
+            ->getQuery()
+            ->getResult();
     }
 }
