@@ -98,7 +98,7 @@ Par exemple, sur l'image ci-dessus où nous voulons modifier la composition de l
 
 Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont sélectionnés.
 
-<p align="center"><img src="https://zupimages.net/up/20/40/0z17.jpg"></p>
+<p align="center"><img src="https://zupimages.net/up/20/40/w03w.jpg"></p>
 
 > Ca va ? On suit ? 😊 Alors on continue !
 
