@@ -26,16 +26,20 @@ html {
   margin-top: 0;
 }
 
-.dispos, .brulages {
+.dispos, .brulages, .selectionables {
   border-radius: 10px;
   background-color: white;
   float: right;
   margin-top: 10px;
   font-size: 95%;
 }
-.dispos tr:first-child th, .brulages tr:first-child th {
+.dispos tr:first-child th, .brulages tr:first-child th, .selectionables tr:first-child th {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.selectionables tr:last-child td {
+  border-radius: 0 0 10px 10px;
 }
 
 .brulages td:not(:first-child) {
@@ -254,7 +258,7 @@ li.error {
   color: red;
 }
 
-#all_dispo_departementale .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_departementale .brulages > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .brulages > tbody > tr > td:not(:first-child) > span {
+#all_dispo_departementale .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_departementale .selectionables > tbody > tr > td:not(:first-child) > span, #all_dispo_departementale .brulages > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .selectionables > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .brulages > tbody > tr > td:not(:first-child) > span {
   margin-right: 0;
 }
 
