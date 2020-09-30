@@ -104,9 +104,9 @@
                         <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
                             <div class="col {% if not compo.exempt %}s9 m5{% else %}s12{% endif%} nom_adversaire">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 0;" class="red-text">Pas de match</h5>
+                                    <h5 style="margin-top: 0;" class="lobster_2 red-text">Pas de match</h5>
                                 {% else %}
-                                    <h5 style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
+                                    <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
                                 {% endif %}
                             </div>
 
@@ -128,7 +128,7 @@
                             <p class="poule" style="margin-bottom: 0;">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
                         </div>
 
-                        <h5 class="col s4 m3">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                        <h5 class="col s4 m3 lobster_2">Équipe {{ compo.idEquipe.idEquipe }}</h5>
 
                         <div class="col s4 m1">
                             <h5 class="hide-on-small-only">
@@ -146,9 +146,9 @@
 
                         <div class="col s12 m5 nom_adversaire hide-on-small-only">
                             {% if compo.exempt %}
-                                <h5 class="red-text">Pas de match</h5>
+                                <h5 class="red-text lobster_2">Pas de match</h5>
                             {% else %}
-                                <h5>{{ compo.adversaire | title }}</h5>
+                                <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
                             {% endif %}
                         </div>
 

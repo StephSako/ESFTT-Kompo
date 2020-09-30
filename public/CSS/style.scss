@@ -324,6 +324,12 @@ li.error {
   font-style: italic;
 }
 
+form[name="rencontre_paris_haut"], form[name="rencontre_paris_bas"], form[name="rencontre_departementale"] {
+  h5 {
+    font-size: 1.3rem;
+  }
+}
+
 @media screen and (min-width: 993px) and (max-width: 1334px) {
   .menu_navbar {
     display: block;

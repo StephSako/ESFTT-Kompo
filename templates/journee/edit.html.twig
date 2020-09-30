@@ -44,7 +44,7 @@
                     <div class="row header_compo">
                         {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                        <h5 class="col s12 m5 hide-on-med-and-up">{{ compo.adversaire | title  }}</h5>
+                        <h5 class="col s12 m5 hide-on-med-and-up lobster_2">{{ compo.adversaire | title  }}</h5>
 
                         <div class="col s4 m2">
                             <h5>
@@ -56,7 +56,7 @@
                         {% if compo.idJournee.undefined %}
                             <h5 class="col s4 m3 red-text"><b>?/?</b></h5>
                         {% else %}
-                            <h5 class="col s4 m3">{{ compo.idJournee.date|date('d/m') }}</h5>
+                            <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.date|date('d/m') }}</h5>
                         {% endif %}
 
                         <h5 class="col s4 m2">
@@ -65,7 +65,7 @@
                             {% endif %}
                         </h5>
 
-                        <h5 class="hide-on-small-only col s12 m5">{{ compo.adversaire | title  }}</h5>
+                        <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title  }}</h5>
                     </div>
 
                         {{ form_start(form)}}
