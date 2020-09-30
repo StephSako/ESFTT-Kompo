@@ -162,6 +162,13 @@ i {
 .li_in_line:hover {
   background-color: #1565c0;
 }
+.li_in_line.deconnexion:hover {
+  background-color: red;
+}
+
+#menu_dropdown > li.deconnexion:hover {
+  background-color: red;
+}
 
 .nav-wrapper .li_in_line {
   margin-left: 4px;

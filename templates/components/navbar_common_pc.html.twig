@@ -15,7 +15,7 @@
             </li>
         {% endif %}
 
-        <li class="waves-light waves-effect li_in_line"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
+        <li class="waves-light waves-effect li_in_line deconnexion"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
     {% endif %}
 </ul>
 
@@ -46,7 +46,7 @@
             </li>
         {% endif %}
 
-        <li class="waves-light waves-effect">
+        <li class="waves-light waves-effect deconnexion">
             <a class="white-text" href="{{ path('logout') }}">Se déconnecter</a>
         </li>
     {% endif %}

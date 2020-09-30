@@ -183,6 +183,14 @@ i {
   &:hover {
     background-color: $light_blue;
   }
+
+  &.deconnexion:hover {
+    background-color: red;
+  }
+}
+
+#menu_dropdown>li.deconnexion:hover {
+  background-color: red;
 }
 
 .li_in_line {
