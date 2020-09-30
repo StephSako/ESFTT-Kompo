@@ -186,8 +186,8 @@ p.lobster {
   margin-top: 0;
 }
 
-.paris_table > tbody > tr:nth-child(1) > .rank, .paris_table > tbody > tr:nth-child(2) > .rank, .paris_table > tbody > tr:nth-child(3) > .rank,
-.paris_table > tbody > tr:nth-child(7) > .rank, .paris_table > tbody > tr:nth-child(8) > .rank, .paris_table > tbody > tr:nth-child(9) > .rank {
+.paris_table > tbody > tr:nth-child(4) > .rank, .paris_table > tbody > tr:nth-child(5) > .rank, .paris_table > tbody > tr:nth-child(6) > .rank,
+.light_blue {
   color: #1565c0;
 }
 
