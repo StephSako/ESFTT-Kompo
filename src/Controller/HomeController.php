@@ -15,7 +15,6 @@ use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use DateTime;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,7 +82,7 @@ class HomeController extends AbstractController
         else $dates = $this->journeeDepartementaleRepository->findAllDates();
         $NJournee = 1;
 
-        while ($NJournee <= 7 && (int) (new DateTime())->diff($dates[$NJournee - 1]["date"])->format('%R%a') <= 0){
+        while ($NJournee <= 7 && (int) (new DateTime())->diff($dates[$NJournee - 1]["date"])->format('%R%a') < 0){
             $NJournee++;
         }
 
@@ -99,7 +98,6 @@ class HomeController extends AbstractController
      * @param CacheInterface $cache
      * @param FFTTApiController $apiController
      * @return Response
-     * @throws DBALException
      * @throws InvalidArgumentException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */

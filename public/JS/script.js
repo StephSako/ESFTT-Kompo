@@ -13,6 +13,8 @@ $(document).ready(function() {
 
     $('.tabs').tabs();
 
+    $('.tooltipped').tooltip();
+
     $('#competiteur_avatar').on('keyup', function () {
         $('#img_competiteur_avatar').attr("src", $('#competiteur_avatar').val());
     });

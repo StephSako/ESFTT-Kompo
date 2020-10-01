@@ -82,6 +82,52 @@ class Competiteur implements UserInterface, Serializable
     private $username;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="mail", type="string", length=255)
+     *
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     * )
+     *
+     * @Assert\Email(
+     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     * )
+     */
+    private $mail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mail2", type="string", length=255)
+     *
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     * )
+     *
+     * @Assert\Email(
+     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     * )
+     */
+    private $mail2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number", type="string", length=10)
+     *
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 10,
+     *      minMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres.",
+     *      maxMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres."
+     * )
+     */
+    private $phone_number;
+
+    /**
      * @ORM\Column(type="boolean", name="is_capitaine", nullable=false)
      */
     private $isCapitaine = false;
@@ -351,5 +397,59 @@ class Competiteur implements UserInterface, Serializable
     public function isVisitor(): bool
     {
         return $this->visitor;
+    }
+
+    /**
+     * @param string $mail
+     * @return Competiteur
+     */
+    public function setMail(string $mail): Competiteur
+    {
+        $this->mail = $mail;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMail(): string
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhoneNumber(): string
+    {
+        return $this->phone_number;
+    }
+
+    /**
+     * @param string $phone_number
+     * @return Competiteur
+     */
+    public function setPhoneNumber(string $phone_number): self
+    {
+        $this->phone_number = $phone_number;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMail2(): string
+    {
+        return $this->mail2;
+    }
+
+    /**
+     * @param string $mail2
+     * @return Competiteur
+     */
+    public function setMail2(string $mail2): self
+    {
+        $this->mail2 = $mail2;
+        return $this;
     }
 }

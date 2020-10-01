@@ -1,13 +1,15 @@
 {% macro edit_account(type, title, form, urlImage, btn_text) %}
     <div class="card-panel center-align">
-        <h4 class="h4_form">{{ title }}</h4><br>
+        <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
         {{ form_start(form) }}
-            <div class="row">
+            <div class="row section">
+                <h5 style="margin-top: 0;">Informations personnelles</h5>
+
                 <div class="col s12 m6">
-                    <span><i class="material-icons prefix">person</i>NOM Prénom</span>{{ form_row(form.nom) }}
+                    <span><i class="material-icons prefix">person</i> NOM Prénom</span>{{ form_row(form.nom) }}
                 </div>
                 <div class="col s12 m6">
-                    <span><i class="material-icons prefix">account_circle</i>Pseudo</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    <span><i class="material-icons prefix">account_circle</i> Pseudo</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
 
                 {% if type == 'backoffice' %}
@@ -20,19 +22,42 @@
                 {% endif %}
             </div>
 
-            <div class="row">
+            <div class="divider"></div>
+
+            <div class="row section">
+                <h5>Contacts</h5>
+                <div class="col s12 m4">
+                    <span><i class="material-icons prefix">mail</i> Adresse mail</span>{{ form_row(form.mail) }}
+                </div>
+                <div class="col s12 m4">
+                    <span><i class="material-icons prefix">mail</i> Adresse mail n°2 (ou parent)</span>{{ form_row(form.mail2) }}
+                </div>
+                <div class="col s12 m4">
+                    <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone</span>{{ form_row(form.phone_number) }}
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row section">
+                <h5>Informations Ping</h5>
+
                 <div class="col s12 m6">
-                    <span><i class="material-icons prefix">payment</i>Licence</span>{{ form_row(form.licence) }}
+                    <span><i class="material-icons prefix">payment</i> Licence</span>{{ form_row(form.licence) }}
                 </div>
                 <div class="col s12 m6">
-                    <span><i class="material-icons prefix">trending_up</i>Classement</span>{{ form_row(form.classementOfficiel) }}
+                    <span><i class="material-icons prefix">trending_up</i> Classement</span>{{ form_row(form.classementOfficiel) }}
                 </div>
             </div>
             <br>
 
-            <div class="row" style="margin-bottom: 0;">
+            <div class="divider"></div>
+
+            <div class="row section" style="margin-bottom: 0;">
+                <h5>Image de profil</h5>
+
                 <div class="col s12 m9">
-                    <span><i class="material-icons prefix">face</i>Avatar (URL)</span>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
+                    <br>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
                 </div>
                 <div class="col s12 m3">
                     <img id="img_competiteur_avatar" class="center-align" src="{{ urlImage }}" alt="image de profil du joueur" width="120rem" height="120rem">
@@ -46,6 +71,12 @@
             <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
+
+    <style>
+        .col {
+            margin-top: 20px;
+        }
+    </style>
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
