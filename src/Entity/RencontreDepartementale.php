@@ -336,11 +336,19 @@ class RencontreDepartementale
 
     /**
      * @param DateTime $dateReport
-     * @return RencontreParis
+     * @return RencontreDepartementale
      */
     public function setDateReport(DateTime $dateReport): self
     {
         $this->dateReport = $dateReport;
         return $this;
+    }
+
+    /**
+     * Liste des joueurs sélectionnés dans une composition d'équipe
+     * @return Competiteur[]|null[]
+     */
+    public function getListSelectedPlayers(){
+        return [$this->getIdJoueur1(), $this->getIdJoueur2(), $this->getIdJoueur3(), $this->getIdJoueur4()];
     }
 }

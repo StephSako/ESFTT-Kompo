@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Form\RencontreDepartementaleType;
 use App\Form\RencontreParisBasType;
 use App\Form\RencontreParisHautType;
+use App\Notification\ContactNotification;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
@@ -20,6 +22,7 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 
@@ -364,5 +367,41 @@ class HomeController extends AbstractController
             'type' => $compo->getIdJournee()->getLinkType(),
             'id' => $compo->getIdJournee()->getIdJournee()
         ]);
+    }
+
+    /**
+     * @Route("/notifySelectedPlayers/{type}/{idCompo}/{titre}/{message}", name="notify.selectedPlayers")
+     * @param $type
+     * @param $idCompo
+     * @param $titre
+     * @param $message
+     * @param ContactNotification $contactNotification
+     * @return Response
+     * @throws TransportExceptionInterface
+     */
+    public function notifySelectedPlayersAction($type, $idCompo, $titre, $message, ContactNotification $contactNotification)
+    {
+        $compo = null;
+        if ($type == 'departementale') {
+            $compo = $this->rencontreDepartementaleRepository->find($idCompo);
+            $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
+            $json = json_encode(['message' => 'Joueurs prévenus !']);
+        }
+        else if ($type == 'paris') {
+            $compo = $this->rencontreParisRepository->find($idCompo);
+            $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
+            $json = json_encode(['message' => 'Joueurs prévenus !']);
+        }
+        else{
+            $json = json_encode(['message' => 'Championnat inexistant ...']);
+            $response = new Response($json);
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        }
+
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }

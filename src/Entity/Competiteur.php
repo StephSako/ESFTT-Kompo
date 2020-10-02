@@ -118,14 +118,32 @@ class Competiteur implements UserInterface, Serializable
      *
      * @ORM\Column(name="phone_number", type="string", length=10)
      *
+     * @Assert\Regex(
+     *     pattern="/[0-9]{10}/"
+     * )
+     *
      * @Assert\Length(
-     *      min = 10,
      *      max = 10,
-     *      minMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres.",
      *      maxMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres."
      * )
      */
-    private $phone_number;
+    private $phoneNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number2", type="string", length=10)
+     *
+     * @Assert\Regex(
+     *     pattern="/[0-9]{10}/"
+     * )
+     *
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres."
+     * )
+     */
+    private $phoneNumber2;
 
     /**
      * @ORM\Column(type="boolean", name="is_capitaine", nullable=false)
@@ -136,6 +154,26 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="boolean", name="visitor", nullable=false)
      */
     private $visitor = false;
+
+    /**
+     * @ORM\Column(type="boolean", name="contactable_mail", nullable=false)
+     */
+    private $contactableMail = false;
+
+    /**
+     * @ORM\Column(type="boolean", name="contactable_mail2", nullable=false)
+     */
+    private $contactableMail2 = false;
+
+    /**
+     * @ORM\Column(type="boolean", name="contactable_phone_number", nullable=false)
+     */
+    private $contactablePhoneNumber = false;
+
+    /**
+     * @ORM\Column(type="boolean", name="contactable_phone_number2", nullable=false)
+     */
+    private $contactablePhoneNumber2 = false;
 
     /**
      * @var string
@@ -400,56 +438,164 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param string $mail
+     * @param string|null $mail
      * @return Competiteur
      */
-    public function setMail(string $mail): Competiteur
+    public function setMail(?string $mail): Competiteur
     {
         $this->mail = $mail;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMail(): string
+    public function getMail(): ?string
     {
         return $this->mail;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
-        return $this->phone_number;
+        return $this->phoneNumber;
     }
 
     /**
-     * @param string $phone_number
+     * @param string|null $phoneNumber
      * @return Competiteur
      */
-    public function setPhoneNumber(string $phone_number): self
+    public function setPhoneNumber(?string $phoneNumber): self
     {
-        $this->phone_number = $phone_number;
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMail2(): string
+    public function getMail2(): ?string
     {
         return $this->mail2;
     }
 
     /**
-     * @param string $mail2
+     * @param string|null $mail2
      * @return Competiteur
      */
-    public function setMail2(string $mail2): self
+    public function setMail2(?string $mail2): self
     {
         $this->mail2 = $mail2;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhoneNumber2(): ?string
+    {
+        return $this->phoneNumber2;
+    }
+
+    /**
+     * @param string|null $phoneNumber2
+     * @return Competiteur
+     */
+    public function setPhoneNumber2(?string $phoneNumber2): self
+    {
+        $this->phoneNumber2 = $phoneNumber2;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCapitaine(): bool
+    {
+        return $this->isCapitaine;
+    }
+
+    /**
+     * @param bool $isCapitaine
+     * @return Competiteur
+     */
+    public function setIsCapitaine(bool $isCapitaine): Competiteur
+    {
+        $this->isCapitaine = $isCapitaine;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactableMail(): bool
+    {
+        return $this->contactableMail;
+    }
+
+    /**
+     * @param bool $contactableMail
+     * @return Competiteur
+     */
+    public function setContactableMail(bool $contactableMail): Competiteur
+    {
+        $this->contactableMail = $contactableMail;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactableMail2(): bool
+    {
+        return $this->contactableMail2;
+    }
+
+    /**
+     * @param bool $contactableMail2
+     * @return Competiteur
+     */
+    public function setContactableMail2(bool $contactableMail2): Competiteur
+    {
+        $this->contactableMail2 = $contactableMail2;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactablePhoneNumber(): bool
+    {
+        return $this->contactablePhoneNumber;
+    }
+
+    /**
+     * @param bool $contactablePhoneNumber
+     * @return Competiteur
+     */
+    public function setContactablePhoneNumber(bool $contactablePhoneNumber): Competiteur
+    {
+        $this->contactablePhoneNumber = $contactablePhoneNumber;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactablePhoneNumber2(): bool
+    {
+        return $this->contactablePhoneNumber2;
+    }
+
+    /**
+     * @param bool $contactablePhoneNumber2
+     * @return Competiteur
+     */
+    public function setContactablePhoneNumber2(bool $contactablePhoneNumber2): Competiteur
+    {
+        $this->contactablePhoneNumber2 = $contactablePhoneNumber2;
         return $this;
     }
 }

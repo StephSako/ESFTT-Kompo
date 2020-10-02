@@ -156,6 +156,7 @@
                             <a style="padding-left: 0; padding-right: 0; margin-top: 20%;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
                         </div>
 
+
                         <div id="classement{{ compo.idEquipe.idEquipe }}" class="modal modal-fixed-footer">
                             <div class="modal-content" style="padding: 0 1%;">
                                 {{ _poule.classement(classement[compo.idEquipe.idEquipe]) }}
@@ -195,21 +196,21 @@
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                        {{ _index.btnContact(journee.linkType, compo.id) }}
+                                        {{ _index.btnContact(journee.linkType, compo) }}
                                     {% endif %}
                                 {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1%}
                                     {% if compo.isEmptyHaut %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                        {{ _index.btnContact(journee.linkType, compo.id) }}
+                                        {{ _index.btnContact(journee.linkType, compo) }}
                                     {% endif %}
                                 {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 2%}
                                     {% if compo.isEmptyBas %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                        {{ _index.btnContact(journee.linkType, compo.id) }}
+                                        {{ _index.btnContact(journee.linkType, compo) }}
                                     {% endif %}
                                 {% endif %}
                             </div>

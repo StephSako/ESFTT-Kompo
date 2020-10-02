@@ -10,8 +10,45 @@
     </a>
 {% endmacro %}
 
-{% macro btnContact(type, idCompo) %}
-    <a data-position="right" data-tooltip="Pas encore disponible ;)" class="tooltipped center-align btn waves-effect waves-light green lighten-2 white-text">
+{% macro btnContact(type, compo, form) %}
+    <a href="#alertSelectedPlayers{{ compo.idEquipe.idEquipe }}" class="modal-trigger center-align btn waves-effect waves-light green lighten-2 white-text">
         <i class="material-icons">sms_failed</i> Prévenir les joueurs
     </a>
+
+    <div id="alertSelectedPlayers{{ compo.idEquipe.idEquipe }}" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <ul class="collection">
+                {% for joueur in compo.listSelectedPlayers %}
+                    {% if joueur and joueur.idCompetiteur != app.user.idCompetiteur %}
+                        <li class="collection-item">
+                            <div class="chip" style="margin-bottom: 0;">
+                                <img src="{{ joueur.avatar }}" alt="Avatar">
+                                <span>{{ joueur.nom }}</span>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <div class="input-field">
+                <label for="titreAlertSelectedPlayers">Titre</label><input id="titreAlertSelectedPlayers" value="RDV Ping Compétition - {{ compo.idJournee.date | format_datetime('long', 'none', locale='fr') }}" type="text" class="validate">
+            </div>
+
+            <div class="input-field">
+                <label for="messageAlertSelectedPlayers">Message</label><textarea id="messageAlertSelectedPlayers" class="materialize-textarea">{{ "Salut, c'est " ~ app.user.username | capitalize ~ ".\n\n" }}{{ "Tu es sélectionné pour jouer en compétition en équipe " ~ compo.idEquipe.idEquipe ~ " le " ~ compo.idJournee.date | format_datetime('long', 'none', locale='fr') ~ ". Tu as rendez-vous à la " }}{% if compo.domicile %}{{ "salle Albert Marquet à 20h00" }}{% else %}{{ "gare de La Frette à 19h30" }}{% endif %}{{ " et nous jouerons " }}{% if compo.domicile %}{{ "à domicile" }}{% else %}{{ "à l'extérieur" }}{% endif %}{{ " contre " ~ compo.adversaire ~ ".\n\nA vendredi !" }}</textarea>
+            </div>
+
+            <a style="margin-top: 0;" id="btnSendMail" onclick="sendMail('{{ type }}', {{ compo.id }})" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons">send</i> Envoyer</a>
+            <div id="preloaderSendMail" class="progress container" type="hidden">
+                <div class="indeterminate"></div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <h6 class="valign-wrapper left"><b>Prévenir les joueurs</b></h6>
+            <a class="modal-close btn waves-effect waves-light blue lighten-2 right">Annuler</a>
+        </div>
+    </div>
+
+    <script src="{{ asset('JS/sendMail.js') }}"></script>
 {% endmacro %}

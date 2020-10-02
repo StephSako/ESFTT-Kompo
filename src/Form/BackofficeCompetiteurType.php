@@ -23,9 +23,14 @@ class BackofficeCompetiteurType extends AbstractType
             ->add('username', TextType::class, ['label' => false])
             ->add('role', CheckboxType::class, ['label' => 'Capitaine', 'required' => false])
             ->add('visitor', CheckboxType::class, ['label' => 'Visiteur', 'required' => false])
-            ->add('mail', EmailType::class, ['label' => false])
-            ->add('mail2', EmailType::class, ['label' => false])
-            ->add('phone_number', TextType::class, ['label' => false])
+            ->add('mail', EmailType::class, ['label' => false, 'required' => false])
+            ->add('mail2', EmailType::class, ['label' => false, 'required' => false])
+            ->add('contactableMail', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
+            ->add('contactableMail2', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
+            ->add('contactablePhoneNumber', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
+            ->add('contactablePhoneNumber2', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
+            ->add('phoneNumber', TextType::class, ['label' => false, 'required' => false])
+            ->add('phoneNumber2', TextType::class, ['label' => false, 'required' => false])
             ->add('licence', NumberType::class, ['label' => false, 'required' => false]);
     }
 
