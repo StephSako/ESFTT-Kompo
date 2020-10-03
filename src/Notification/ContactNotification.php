@@ -6,6 +6,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
 class ContactNotification {
@@ -40,16 +41,18 @@ class ContactNotification {
             }
         }
 
+        // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
             ->from(new Address('stephen.sakovitch@orange.fr', 'Stephen'))
             ->to(...$to)
-            //->cc('cc@example.com')
-            //->bcc('bcc@example.com')
-            //->replyTo('fabien@example.com')
-            //->priority(Email::PRIORITY_HIGH)
+            ->priority(Email::PRIORITY_HIGH)
             ->subject($contact->getTitre())
-            ->text($contact->getMessage())
-            ->htmlTemplate('macros/email.html.twig');
+            ->htmlTemplate('macros/email.html.twig')
+            ->context([
+                'title' => $contact->getTitre(),
+                'message' => $contact->getMessage()
+            ]);
+
         $this->mailer->send($email);
     }
 

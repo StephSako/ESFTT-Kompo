@@ -5,6 +5,7 @@
         "php": "^7.2.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "al37350/fftt-api": "^1.7",
         "beberlei/doctrineextensions": "^1.2",
         "scienta/doctrine-json-functions": "~4.1",
@@ -34,8 +35,7 @@
         "symfony/web-link": "5.1.*",
         "symfony/yaml": "5.1.*",
         "twig/intl-extra": "^3.0",
-        "twig/string-extra": "^3.0",
-      "ext-json": "*"
+        "twig/string-extra": "^3.0"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

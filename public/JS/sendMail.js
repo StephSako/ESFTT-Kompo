@@ -1,17 +1,19 @@
 function sendMail(type, idCompo)
 {
+    sending();
     $.getJSON('/notifySelectedPlayers/' + type + '/' + idCompo + '/' + $('#titreAlertSelectedPlayers').val().replace('/', "-") + '/' + $('#messageAlertSelectedPlayers').val().replace('/', "-"), function (data)
     {
-        sending();
         M.toast({html: data.message});
     })
     .fail(function ()
     {
         endSending();
         M.toast({html: 'Une erreur est survenue ...'});
+        $('.modal').close();
     })
     .done(function(){
         endSending();
+        $('.modal').close();
     });
 }
 

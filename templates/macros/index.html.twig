@@ -11,25 +11,12 @@
 {% endmacro %}
 
 {% macro btnContact(type, compo, form) %}
-    <a href="#alertSelectedPlayers{{ compo.idEquipe.idEquipe }}" class="modal-trigger center-align btn waves-effect waves-light green lighten-2 white-text">
+    <a href="#alertSelectedPlayers{{ compo.id }}" class="modal-trigger center-align btn waves-effect waves-light green lighten-2 white-text">
         <i class="material-icons">sms_failed</i> Prévenir les joueurs
     </a>
 
-    <div id="alertSelectedPlayers{{ compo.idEquipe.idEquipe }}" class="modal modal-fixed-footer">
+    <div id="alertSelectedPlayers{{ compo.id }}" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <ul class="collection">
-                {% for joueur in compo.listSelectedPlayers %}
-                    {% if joueur and joueur.idCompetiteur != app.user.idCompetiteur %}
-                        <li class="collection-item">
-                            <div class="chip" style="margin-bottom: 0;">
-                                <img src="{{ joueur.avatar }}" alt="Avatar">
-                                <span>{{ joueur.nom }}</span>
-                            </div>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-
             <div class="input-field">
                 <label for="titreAlertSelectedPlayers">Titre</label><input id="titreAlertSelectedPlayers" value="RDV Ping Compétition - {{ compo.idJournee.date | format_datetime('long', 'none', locale='fr') }}" type="text" class="validate">
             </div>
@@ -50,5 +37,39 @@
         </div>
     </div>
 
-    <script src="{{ asset('JS/sendMail.js') }}"></script>
+    <script>
+        function sendMail(type, idCompo)
+        {
+            sending();
+            $.getJSON('/notifySelectedPlayers/' + type + '/' + idCompo + '/' + $('#titreAlertSelectedPlayers').val().replace('/', "-") + '/' + $('#messageAlertSelectedPlayers').val().replace('/', "-"), function (data)
+            {
+                M.toast({html: data.message});
+            })
+                .fail(function ()
+                {
+                    endSending();
+                    M.toast({html: 'Une erreur est survenue ...'});
+                    $('#alertSelectedPlayers' + idCompo).modal('close');
+                })
+                .done(function(){
+                    endSending();
+                    $('#alertSelectedPlayers' + idCompo).modal('close');
+                });
+        }
+
+        function sending(){
+            $("[id='preloaderSendMail']").show();
+            $("[id='btnSendMail']").hide();
+        }
+
+        function endSending(){
+            $("[id='preloaderSendMail']").hide();
+            $("[id='btnSendMail']").show();
+        }
+
+        $(document).ready(function()
+        {
+            $("[id='preloaderSendMail']").hide();
+        });
+    </script>
 {% endmacro %}
