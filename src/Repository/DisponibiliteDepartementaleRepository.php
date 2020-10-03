@@ -47,7 +47,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
      */
     public function findJoueursSelectionnables(int $idJournee, int $idEquipe)
     {
-        $query = $this->createQueryBuilder('d')
+        return $this->createQueryBuilder('d')
             ->leftJoin('d.idCompetiteur', 'c')
             ->select('c.nom')
             ->addSelect('c.idCompetiteur')
@@ -59,30 +59,11 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2_.idJoueur2<>'NULL', p2_.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2_ WHERE p2_.idJournee = d.idJournee AND p2_.idEquipe <> :idEquipe)")
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3_.idJoueur3<>'NULL', p3_.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3_ WHERE p3_.idJournee = d.idJournee AND p3_.idEquipe <> :idEquipe)")
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4_.idJoueur4<>'NULL', p4_.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4_ WHERE p4_.idJournee = d.idJournee AND p4_.idEquipe <> :idEquipe)")
-            ->setParameter('idEquipe', $idEquipe);
-
-        switch ($idEquipe) {
-            case 2:
-                $query
-                    ->andWhere('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = d.idCompetiteur OR p1.idJoueur2 = d.idCompetiteur OR p1.idJoueur3 = d.idCompetiteur OR p1.idJoueur4 = d.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe = 1) < 2')
-                    ->setParameter('idJournee', $idJournee);
-                break;
-            case 3:
-                $query
-                    ->andWhere('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = d.idCompetiteur OR p1.idJoueur2 = d.idCompetiteur OR p1.idJoueur3 = d.idCompetiteur OR p1.idJoueur4 = d.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe = 1) < 2')
-                    ->andWhere('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = d.idCompetiteur OR p2.idJoueur2 = d.idCompetiteur OR p2.idJoueur3 = d.idCompetiteur OR p2.idJoueur4 = d.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) < 2')
-                    ->setParameter('idJournee', $idJournee);
-                break;
-            case 4:
-                $query
-                    ->andWhere('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = d.idCompetiteur OR p1.idJoueur2 = d.idCompetiteur OR p1.idJoueur3 = d.idCompetiteur OR p1.idJoueur4 = d.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe = 1) < 2')
-                    ->andWhere('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = d.idCompetiteur OR p2.idJoueur2 = d.idCompetiteur OR p2.idJoueur3 = d.idCompetiteur OR p2.idJoueur4 = d.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) < 2')
-                    ->andWhere('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = d.idCompetiteur OR p3.idJoueur2 = d.idCompetiteur OR p3.idJoueur3 = d.idCompetiteur OR p3.idJoueur4 = d.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) < 2')
-                    ->setParameter('idJournee',$idJournee);
-                break;
-        }
-
-            return $query->orderBy('c.nom')
+            ->setParameter('idEquipe', $idEquipe)
+            ->andWhere('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = d.idCompetiteur OR p1.idJoueur2 = d.idCompetiteur OR p1.idJoueur3 = d.idCompetiteur OR p1.idJoueur4 = d.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe < :idEquipe) < 2')
+            ->setParameter('idJournee',$idJournee)
+            ->setParameter('idEquipe',$idEquipe)
+            ->orderBy('c.nom')
             ->getQuery()->getResult();
     }
 }

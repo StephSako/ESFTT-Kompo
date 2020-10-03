@@ -196,6 +196,36 @@ class HomeController extends AbstractController
             $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
+
+            $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
+            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
+            foreach ($brulages as $nom => $brulage){
+                switch ($compo->getIdEquipe()->getIdEquipe()){
+                    case 1:
+                        if (in_array($nom, array_column($selectionnables, 'nom'))){
+                            $joueursPreBrules[$nom] = $brulage;
+                            $joueursPreBrules[$nom]["E1"]++;
+                        }
+                        break;
+                    case 2:
+                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $nom);
+                        else if (in_array($nom, array_column($selectionnables, 'nom'))){
+                            $joueursPreBrules[$nom] = $brulage;
+                            $joueursPreBrules[$nom]["E2"]++;
+                        }
+                        break;
+                    case 3:
+                        if (($brulage["E1"] + $brulage["E2"]) >= 2) array_push($joueursBrules, $nom);
+                        else if (in_array($nom, array_column($selectionnables, 'nom'))){
+                            $joueursPreBrules[$nom] = $brulage;
+                            $joueursPreBrules[$nom]["E3"]++;
+                        }
+                        break;
+                    case 4:
+                        if (($brulage["E1"] + $brulage["E2"] + $brulage["E3"]) >= 2) array_push($joueursBrules, $nom);
+                        break;
+                }
+            }
         }
         else if ($type == 'paris'){
             if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
@@ -208,11 +238,25 @@ class HomeController extends AbstractController
 
             if ($idEquipe == 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
             else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
+
+            $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
+
+            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
+            foreach ($brulages as $nom => $brulage) {
+                switch ($compo->getIdEquipe()->getIdEquipe()){
+                    case 1:
+                        if ($brulage["E1"] >= 3) array_push($joueursBrules, $nom);
+                        break;
+                    case 2:
+                        if ($brulage["E1"] == 2) array_push($joueursPreBrules, $nom);
+                        break;
+                }
+            }
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
         foreach ($selectionnables as $key => $joueur){
-            if ($compo->getIdJournee()->getIdJournee() == 2 && $compo->getIdEquipe()->getIdEquipe() > 1)$selectionnables[$key]["bruleJ2"] = (in_array($joueur["idCompetiteur"], $brulesJ2) ? true : false);
+            if ($compo->getIdJournee()->getIdJournee() == 2 && $compo->getIdEquipe()->getIdEquipe() > 1) $selectionnables[$key]["bruleJ2"] = (in_array($joueur["idCompetiteur"], $brulesJ2) ? true : false);
             else $selectionnables[$key]["bruleJ2"] = false;
         }
 
@@ -273,50 +317,12 @@ class HomeController extends AbstractController
             }
         }
 
-        if ($type == 'departementale'){
-            $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
-
-            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
-            foreach ($brulages as $nom => $brulage){
-                switch ($compo->getIdEquipe()->getIdEquipe()){
-                    case 1:
-                        if ($brulage["E1"] == 1) array_push($joueursPreBrules, $nom);
-                        break;
-                    case 2:
-                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $nom);
-                        else if ($brulage["E2"] == 1) array_push($joueursPreBrules, $nom);
-                        break;
-                    case 3:
-                        if (!($brulage["E1"] < 2 && $brulage["E2"] < 2)) array_push($joueursBrules, $nom);
-                        else if ($brulage["E3"] == 1) array_push($joueursPreBrules, $nom);
-                        break;
-                    case 4:
-                        if (!($brulage["E1"] < 2 && $brulage["E2"] < 2 && $brulage["E3"] < 2)) array_push($joueursBrules, $nom);
-                        break;
-                }
-            }
-        }
-        else if ($type == 'paris'){
-            $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
-
-            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
-            foreach ($brulages as $nom => $brulage) {
-                switch ($compo->getIdEquipe()->getIdEquipe()){
-                    case 1:
-                        if ($brulage["E1"] >= 3) array_push($joueursBrules, $nom);
-                        break;
-                    case 2:
-                        if ($brulage["E1"] == 2) array_push($joueursPreBrules, $nom);
-                        break;
-                }
-            }
-        }
-
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'joueursPreBrules' => $joueursPreBrules,
             'selectionnables' => $selectionnables,
             'journees' => $journees,
+            'brulages' => $brulages,
             'compo' => $compo,
             'type' => $type,
             'form' => $form->createView()

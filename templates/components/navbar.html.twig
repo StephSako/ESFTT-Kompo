@@ -8,6 +8,8 @@
     {% endif %}
 {% endif %}
 
+{% set idJourneeCompo = (compo is defined ? compo.idJournee.idJournee : -1) %}
+
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper">
@@ -19,7 +21,7 @@
                     {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
                     {% for journee in journees %}
-                        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee %}active blue darken-3{% endif %}">
+                        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ journee.idJournee }} -
