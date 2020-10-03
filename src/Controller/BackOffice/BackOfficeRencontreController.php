@@ -80,9 +80,6 @@ class BackOfficeRencontreController extends AbstractController
             // Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée
             if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDate());
 
-            // Si la rencontre est exemptée ou annulée, la composition est vidée
-            if ($rencontre->isExempt()) $homeController->emptyComposition($type, $rencontre->getId(), false);
-
             $this->em->flush();
             $this->addFlash('success', 'Rencontre modifiée avec succès !');
             return $this->redirectToRoute('back_office.rencontres');

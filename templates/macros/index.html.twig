@@ -25,7 +25,7 @@
                 <label for="messageAlertSelectedPlayers">Message</label><textarea id="messageAlertSelectedPlayers" class="materialize-textarea">{{ "Salut, c'est " ~ app.user.username | capitalize ~ ".\n\n" }}{{ "Tu es sélectionné pour jouer en compétition en équipe " ~ compo.idEquipe.idEquipe ~ " le " ~ compo.idJournee.date | format_datetime('long', 'none', locale='fr') ~ ". Tu as rendez-vous à la " }}{% if compo.domicile %}{{ "salle Albert Marquet à 20h00" }}{% else %}{{ "gare de La Frette à 19h30" }}{% endif %}{{ " et nous jouerons " }}{% if compo.domicile %}{{ "à domicile" }}{% else %}{{ "à l'extérieur" }}{% endif %}{{ " contre " ~ compo.adversaire ~ ".\n\nA vendredi !" }}</textarea>
             </div>
 
-            <a style="margin-top: 0;" id="btnSendMail" onclick="sendMail('{{ type }}', {{ compo.id }})" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons">send</i> Envoyer</a>
+            <a style="margin-top: 0;" id="btnSendMail" {# onclick="sendMail('{{ type }}', {{ compo.id }})" #} data-position="bottom" data-tooltip="Pas encore disponible :)" class="tooltipped btn waves-effect green lighten-2 waves-light"><i class="material-icons">send</i> Envoyer</a>
             <div id="preloaderSendMail" class="progress container" type="hidden">
                 <div class="indeterminate"></div>
             </div>

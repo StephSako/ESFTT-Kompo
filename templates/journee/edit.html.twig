@@ -11,124 +11,112 @@
     {% include("components/navbar.html.twig") %}
 
     <div class="row main">
-        {% if compo.exempt %}
-            <div class="container center">
-                <div class="card-panel red white-text title_journee" style="margin-top: 30px; margin-bottom: 0;">
-                    <h5>L'équipe de cette rencontre est exemptée</h5>
-                </div>
+        <div class="col l3 hide-on-small-only">
+            {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
+        </div>
 
-                <a href="{{ path('journee.show', {id: compo.idJournee.idJournee, type: compo.idJournee.linkType}) }}">
-                    <button class="btn waves-effect blue lighten-2 waves-light center">Retour à l'accueil</button>
-                </a>
-            </div>
-        {% else %}
-            <div class="col l3 hide-on-small-only">
-                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
-                {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
-            </div>
+        <div class="col s12 m2 hide-on-med-and-up">
+            {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
+        </div>
 
-            <div class="col s12 m2 hide-on-med-and-up">
-                {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
-            </div>
+        <div class="col s12 m7">
 
-            <div class="col s12 m7">
+            {% for message in app.flashes('fail') %}
+                {{ _flash.message(message, 'red') }}
+            {% endfor %}
 
-                {% for message in app.flashes('fail') %}
-                    {{ _flash.message(message, 'red') }}
-                {% endfor %}
+            <div class="center-align card-panel">
+                <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
+                <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
 
-                <div class="center-align card-panel">
-                    <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
-                    <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
+                <div class="row header_compo">
+                    {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                    <div class="row header_compo">
-                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                    <h5 class="col s12 m5 hide-on-med-and-up lobster_2">{{ compo.adversaire | title  }}</h5>
 
-                        <h5 class="col s12 m5 hide-on-med-and-up lobster_2">{{ compo.adversaire | title  }}</h5>
-
-                        <div class="col s4 m2">
-                            <h5>
-                                <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
-                            </h5>
-                            <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
-                        </div>
-
-                        {% if compo.idJournee.undefined %}
-                            <h5 class="col s4 m3 red-text"><b>?/?</b></h5>
-                        {% else %}
-                            <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.date|date('d/m') }}</h5>
-                        {% endif %}
-
-                        <h5 class="col s4 m2">
-                            {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                            {% else %} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
-                            {% endif %}
+                    <div class="col s4 m2">
+                        <h5>
+                            <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                         </h5>
-
-                        <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title  }}</h5>
+                        <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
                     </div>
 
-                        {{ form_start(form)}}
-                            <div class="form_div_list">
-                                <div class="row">
-                                    <div class="col s12 m3"><h5>Joueur 1</h5></div>
-                                    <div class="col s12 m9">{{ form_row(form.idJoueur1) }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s12 m3"><h5>Joueur 2</h5></div>
-                                    <div class="col s12 m9">{{ form_row(form.idJoueur2) }}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s12 m3"><h5>Joueur 3</h5></div>
-                                    <div class="col s12 m9">{{ form_row(form.idJoueur3) }}</div>
-                                </div>
+                    {% if compo.idJournee.undefined %}
+                        <h5 class="col s4 m3 red-text"><b>?/?</b></h5>
+                    {% else %}
+                        <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.date|date('d/m') }}</h5>
+                    {% endif %}
 
-                                {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
-                                    <div class="row">
-                                        <div class="col s12 m3{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur4) }}</div>
-                                    </div>
-                                {% endif %}
+                    <h5 class="col s4 m2">
+                        {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
+                        {% else %} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                        {% endif %}
+                    </h5>
 
-                                {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                                    <div class="row">
-                                        <div class="col s12 m3 light_blue"><h5>Joueur 5</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur5) }}</div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col s12 m3 light_blue"><h5>Joueur 6</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur6) }}</div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col s12 m3"><h5>Joueur 7</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur7) }}</div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col s12 m3"><h5>Joueur 8</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur8) }}</div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col s12 m3"><h5>Joueur 9</h5></div>
-                                        <div class="col s12 m9">{{ form_row(form.idJoueur9) }}</div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
-                    {{ form_end(form) }}
+                    <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title  }}</h5>
                 </div>
+
+                    {{ form_start(form)}}
+                        <div class="form_div_list">
+                            <div class="row">
+                                <div class="col s12 m3"><h5>Joueur 1</h5></div>
+                                <div class="col s12 m9">{{ form_row(form.idJoueur1) }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col s12 m3"><h5>Joueur 2</h5></div>
+                                <div class="col s12 m9">{{ form_row(form.idJoueur2) }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col s12 m3"><h5>Joueur 3</h5></div>
+                                <div class="col s12 m9">{{ form_row(form.idJoueur3) }}</div>
+                            </div>
+
+                            {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
+                                <div class="row">
+                                    <div class="col s12 m3{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur4) }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
+                                <div class="row">
+                                    <div class="col s12 m3 light_blue"><h5>Joueur 5</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur5) }}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12 m3 light_blue"><h5>Joueur 6</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur6) }}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12 m3"><h5>Joueur 7</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur7) }}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12 m3"><h5>Joueur 8</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur8) }}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12 m3"><h5>Joueur 9</h5></div>
+                                    <div class="col s12 m9">{{ form_row(form.idJoueur9) }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
+                {{ form_end(form) }}
             </div>
-            <div class="col s12 m2 hide-on-small-only">
-                {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
-            </div>
-            <div class="col s12 hide-on-med-and-up">
-                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
-                {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
-            </div>
-        {% endif %}
+        </div>
+        <div class="col s12 m2 hide-on-small-only">
+            {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
+        </div>
+        <div class="col s12 hide-on-med-and-up">
+            {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+            {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
+        </div>
     </div>
 
 {% endblock %}

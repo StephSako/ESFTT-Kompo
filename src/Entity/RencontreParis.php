@@ -483,4 +483,13 @@ class RencontreParis
     public function getListSelectedPlayers(){
         return [$this->getIdJoueur1(), $this->getIdJoueur2(), $this->getIdJoueur3(), $this->getIdJoueur4(), $this->getIdJoueur5(), $this->getIdJoueur6(), $this->getIdJoueur7(), $this->getIdJoueur8(), $this->getIdJoueur9()];
     }
+
+    /**
+     * Indique si la rencontre est entièrement composée
+     * @return bool
+     */
+    public function isFull() {
+        if ($this->idEquipe->getIdEquipe() == 1) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3() && $this->getIdJoueur4() && $this->getIdJoueur5() && $this->getIdJoueur6() && $this->getIdJoueur7() && $this->getIdJoueur8() && $this->getIdJoueur9());
+        else if ($this->idEquipe->getIdEquipe() == 2) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3());
+    }
 }

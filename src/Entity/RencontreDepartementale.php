@@ -351,4 +351,12 @@ class RencontreDepartementale
     public function getListSelectedPlayers(){
         return [$this->getIdJoueur1(), $this->getIdJoueur2(), $this->getIdJoueur3(), $this->getIdJoueur4()];
     }
+
+    /**
+     * Indique si la rencontre est entièrement composée
+     * @return bool
+     */
+    public function isFull() {
+        return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3() && $this->getIdJoueur4());
+    }
 }
