@@ -1,4 +1,10 @@
 {% macro edit_account(type, title, form, urlImage, btn_text) %}
+    <style>
+        .col {
+            margin-top: 20px;
+        }
+    </style>
+
     <div class="card-panel center-align">
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
         {{ form_start(form) }}
@@ -94,11 +100,11 @@
         {{ form_end(form) }}
     </div>
 
-    <style>
-        .col {
-            margin-top: 20px;
-        }
-    </style>
+    {% if type == 'backoffice' %}
+        <script src="{{ asset('JS/editAccountBackOffice.js') }}"></script>
+    {% else %}
+        <script src="{{ asset('JS/editAccount.js') }}"></script>
+    {% endif %}
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
