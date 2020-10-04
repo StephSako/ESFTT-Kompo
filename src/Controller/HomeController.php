@@ -290,7 +290,7 @@ class HomeController extends AbstractController
 
             if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
             else {
-                /** On vérifie que le joueur n'est pas brûlé et selectionné dans de futures compositions **/
+                /** On vérifie si le joueur devient brûlé dans de futures compositions **/
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur1());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());

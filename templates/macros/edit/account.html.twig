@@ -82,7 +82,7 @@
             <div class="divider"></div>
 
             <div class="row section" style="margin-bottom: 0;">
-                <h5>Image de profil</h5>
+                <h5>Image de profil (lien URL)</h5>
 
                 <div class="col s12 m9">
                     <br>{{ form_row(form.avatar, { 'id': 'competiteur_avatar'}) }}
@@ -101,10 +101,31 @@
     </div>
 
     {% if type == 'backoffice' %}
-        <script src="{{ asset('JS/editAccountBackOffice.js') }}"></script>
+        <script>
+            let it_c_m = $('#backoffice_competiteur_mail');
+            let it_c_m_2 = $('#backoffice_competiteur_mail2');
+            let it_c_pn = $('#backoffice_competiteur_phoneNumber');
+            let it_c_pn_2 = $('#backoffice_competiteur_phoneNumber2');
+
+            let cb_c_m = $('#backoffice_competiteur_contactableMail');
+            let cb_c_m_2 = $('#backoffice_competiteur_contactableMail2');
+            let cb_c_pn = $('#backoffice_competiteur_contactablePhoneNumber');
+            let cb_c_pn_2 = $('#backoffice_competiteur_contactablePhoneNumber2');
+        </script>
     {% else %}
-        <script src="{{ asset('JS/editAccount.js') }}"></script>
+        <script>
+            let it_c_m = $('#competiteur_mail');
+            let it_c_m_2 = $('#competiteur_mail2');
+            let it_c_pn = $('#competiteur_phoneNumber');
+            let it_c_pn_2 = $('#competiteur_phoneNumber2');
+
+            let cb_c_m = $('#competiteur_contactableMail');
+            let cb_c_m_2 = $('#competiteur_contactableMail2');
+            let cb_c_pn = $('#competiteur_contactablePhoneNumber');
+            let cb_c_pn_2 = $('#competiteur_contactablePhoneNumber2');
+        </script>
     {% endif %}
+    <script src="{{ asset('JS/editAccount.js') }}"></script>
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}

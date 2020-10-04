@@ -15,6 +15,10 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param DateTime $date
+     * @return bool
+     */
     public function stillEditable(DateTime $date)
     {
         return (int)(new DateTime())->diff($date)->format('%R%a') >= 0;

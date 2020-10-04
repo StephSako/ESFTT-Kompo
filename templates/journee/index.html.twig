@@ -104,7 +104,7 @@
                         <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
                             <div class="col {% if not compo.exempt %}s9 m5{% else %}s12{% endif%}">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 0;" class="lobster_2 red-text">Exemptée</h5>
+                                    <h5 style="margin-top: 0;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                                 {% else %}
                                     <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
                                 {% endif %}
@@ -129,7 +129,7 @@
                         </div>
 
                         <div class="col s4 m3">
-                            <h5 class="lobster_2{% if compo.isFull %} fulled{% endif %}">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                            <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}">Équipe {{ compo.idEquipe.idEquipe }}</h5>
                         </div>
 
                         <div class="col s4 m1">
@@ -148,7 +148,7 @@
 
                         <div class="col s12 m5 hide-on-small-only">
                             {% if compo.exempt %}
-                                <h5 class="red-text lobster_2">Exemptée</h5>
+                                <h5 class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                             {% else %}
                                 <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
                             {% endif %}

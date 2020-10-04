@@ -294,20 +294,29 @@ form[name=rencontre_paris_haut] h5, form[name=rencontre_paris_bas] h5, form[name
   font-size: 1.3rem;
 }
 
-.fulled {
+.pastille {
   border-radius: 30px;
   margin-left: 0;
   margin-right: 0;
   padding-top: 5px;
   padding-bottom: 5px;
-  background-color: #069906;
   color: white;
 }
 
+.exempt {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
 @media screen and (min-width: 1285px) {
-  .fulled {
+  .pastille {
     margin-left: 30px;
     margin-right: 30px;
+  }
+
+  .exempt {
+    margin-left: 80px;
+    margin-right: 80px;
   }
 }
 @media screen and (min-width: 993px) and (max-width: 1334px) {
