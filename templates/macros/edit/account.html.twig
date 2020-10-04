@@ -132,12 +132,7 @@
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
 
-        {% if type == 'general' %}
-            <form action="{{ path(path) }}" method="POST">
-        {% elseif type == 'backoffice' %}
-            <form action="{{ path(path, {id: options.competiteurId}) }}" method="POST">
-        {% endif %}
-
+        <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input name="new_password" id="new_password" type="password" class="validate" required>

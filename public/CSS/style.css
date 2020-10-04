@@ -285,7 +285,7 @@ li.error {
   background-color: rgba(17, 116, 184, 0.5);
 }
 
-.dropdown-content li:first-child > span {
+.form_div_list .dropdown-content li:first-child > span {
   color: gray;
   font-style: italic;
 }

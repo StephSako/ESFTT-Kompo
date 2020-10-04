@@ -41,152 +41,25 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            let exterieur = "{{ domicile }}";
-
-            let lieu_rencontre = $('#lieu_rencontre');
-            let span_domicile = $('#domicile');
-            let span_exterieur = $('#exterieur');
-
-            let exemptDep = $('#back_office_rencontre_departementale_exempt');
-            let adversaireDep = $('#back_office_rencontre_departementale_adversaire');
-            let hostedDep = $('#back_office_rencontre_departementale_hosted');
-            let reportedDep = $('#back_office_rencontre_departementale_reporte');
-
-            let exemptPar = $('#back_office_rencontre_paris_exempt');
-            let adversairePar = $('#back_office_rencontre_paris_adversaire');
-            let hostedPar = $('#back_office_rencontre_paris_hosted');
-            let reportedPar = $('#back_office_rencontre_paris_reporte');
-
-            if (exterieur === "D") {
-                span_domicile.css("font-weight", "bold");
-                span_exterieur.css("font-weight", "normal");
-            } else if (exterieur === "E") {
-                lieu_rencontre.prop('checked', true);
-                if ("{{ type }}" === "departementale") hostedDep.prop('disabled', true);
-                else if ("{{ type }}" === "paris") hostedPar.prop('disabled', true);
-                span_domicile.css("font-weight", "normal");
-                span_exterieur.css("font-weight", "bold");
-            }
-
-            if ("{{ type }}" === "departementale"){
-                if (reportedDep.is(':checked') === false) $('.select-dropdown').prop('disabled', true);
-
-                if (exemptDep.is(':checked')){
-                    reportedDep.prop('disabled', true);
-                    adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
-                    adversaireDep.prop('disabled', true);
-                    lieu_rencontre.prop('checked', false).prop('disabled', true);
-                    hostedDep.prop('checked', false).prop('disabled', true);
-                    span_domicile.css("font-weight", "normal");
-                    span_exterieur.css("font-weight", "normal");
-                    span_domicile.css("color", "#a4a2a2");
-                    span_exterieur.css("color", "#a4a2a2");
-                }
-
-                exemptDep.change(function() {
-                    $('.select-dropdown').prop('disabled', true);
-                    if(this.checked){
-                        reportedDep.prop('checked', false).prop('disabled', true);
-                        lieu_rencontre.prop('checked', false).prop('disabled', true);
-                        hostedDep.prop('checked', false).prop('disabled', true);
-                        adversaireDep.val("").attr('placeholder', "Pas d'adversaire");
-                        adversaireDep.prop('disabled', true);
-                        span_domicile.css("font-weight", "normal");
-                        span_exterieur.css("font-weight", "normal");
-                        span_domicile.css("color", "#a4a2a2");
-                        span_exterieur.css("color", "#a4a2a2");
-                        reportedDep.prop('disabled', true);
-                    }
-                    else{
-                        hostedDep.prop('checked', false).prop('disabled', false);
-                        adversaireDep.attr('placeholder', "Adversaire");
-                        adversaireDep.prop('disabled', false);
-                        lieu_rencontre.prop('disabled', false);
-                        span_domicile.css("font-weight", "bold");
-                        span_domicile.css("color", "#000000");
-                        span_exterieur.css("color", "#000000");
-                        reportedDep.prop('disabled', false);
-                    }
-                });
-
-                reportedDep.change(function() {
-                    if(this.checked){
-                        exemptDep.prop('disabled', true);
-                        $('.select-dropdown').prop('disabled', false);
-                    }
-                    else {
-                        exemptDep.prop('disabled', false);
-                        $('.select-dropdown').prop('disabled', true);
-                    }
-                });
-            }
-            else if ("{{ type }}" === "paris") {
-                if (!reportedPar.is(':checked')) $('.select-dropdown').prop('disabled', true);
-
-                if (exemptPar.is(':checked')){
-                    adversairePar.val("").attr('placeholder', "Pas d'adversaire");
-                    adversairePar.prop('disabled', true);
-                    lieu_rencontre.prop('checked', false).prop('disabled', true);
-                    hostedPar.prop('checked', false).prop('disabled', true);
-                    reportedPar.prop('disabled', true);
-                    span_domicile.css("font-weight", "normal");
-                    span_exterieur.css("font-weight", "normal");
-                    span_domicile.css("color", "#a4a2a2");
-                    span_exterieur.css("color", "#a4a2a2");
-                }
-
-                exemptPar.change(function() {
-                    $('.select-dropdown').prop('disabled', true);
-                    if(this.checked){
-                        reportedPar.prop('checked', false).prop('disabled', true);
-                        lieu_rencontre.prop('checked', false).prop('disabled', true);
-                        hostedPar.prop('checked', false).prop('disabled', true);
-                        adversairePar.val("").attr('placeholder', "Pas d'adversaire");
-                        adversairePar.prop('disabled', true);
-                        span_domicile.css("font-weight", "normal");
-                        span_exterieur.css("font-weight", "normal");
-                        span_domicile.css("color", "#a4a2a2");
-                        span_exterieur.css("color", "#a4a2a2");
-                        reportedDep.prop('disabled', true);
-                    }
-                    else{
-                        adversairePar.attr('placeholder', "Adversaire");
-                        adversairePar.prop('disabled', false);
-                        lieu_rencontre.prop('disabled', false);
-                        span_domicile.css("color", "#000000");
-                        span_exterieur.css("color", "#000000");
-                        span_domicile.css("font-weight", "bold");
-                        reportedDep.removeAttr('disabled');
-                    }
-                });
-
-                reportedPar.change(function() {
-                    if(this.checked){
-                        exemptPar.prop('disabled', true);
-                        $('.select-dropdown').prop('disabled', false);
-                    }
-                    else {
-                        exemptPar.prop('disabled', false);
-                        $('.select-dropdown').prop('disabled', true);
-                    }
-                });
-            }
-
-            lieu_rencontre.change(function() {
-                if(this.checked){
-                    if ("{{ type }}" === "departementale") hostedDep.prop('checked', false).prop('disabled', true);
-                    else if ("{{ type }}" === "paris") hostedPar.prop('checked', false).prop('disabled', true);
-                    span_domicile.css("font-weight", "normal");
-                    span_exterieur.css("font-weight", "bold");
-                }
-                else{
-                    if ("{{ type }}" === "departementale") hostedDep.prop('disabled', false);
-                    else if ("{{ type }}" === "paris") hostedPar.prop('disabled', false);
-                    span_domicile.css("font-weight", "bold");
-                    span_exterieur.css("font-weight", "normal");
-                }
-            });
-        });
+        let exterieur = "{{ domicile }}";
+        let lieu_rencontre = $('#lieu_rencontre');
+        let span_domicile = $('#domicile');
+        let span_exterieur = $('#exterieur');
     </script>
+    {% if type == 'departementale' %}
+        <script>
+            let exempt = $('#back_office_rencontre_departementale_exempt');
+            let adversaire = $('#back_office_rencontre_departementale_adversaire');
+            let hosted = $('#back_office_rencontre_departementale_hosted');
+            let reported = $('#back_office_rencontre_departementale_reporte');
+        </script>
+    {% else %}
+        <script>
+            let exempt = $('#back_office_rencontre_paris_exempt');
+            let adversaire = $('#back_office_rencontre_paris_adversaire');
+            let hosted = $('#back_office_rencontre_paris_hosted');
+            let reported = $('#back_office_rencontre_paris_reporte');
+        </script>
+    {% endif %}
+    <script src="{{ asset('JS/editRencontre.js') }}"></script>
 {% endmacro %}
