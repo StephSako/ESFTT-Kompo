@@ -352,6 +352,12 @@ form[name="rencontre_paris_haut"], form[name="rencontre_paris_bas"], form[name="
   margin-right: 50px;
 }
 
+.modal {
+  width: 90% !important ;
+  height: 85% !important ;
+  max-height: 100% !important
+}
+
 @media screen and (min-width: 1285px) {
   .pastille {
     margin-left: 30px;
