@@ -91,13 +91,13 @@
 {% endmacro %}
 
 {% macro selectionnables(type, futursSelectionnes, idEquipe, idJournee) %}
-    {% if idEquipe > 1 and idJournee == 2%}
+    {% if idEquipe > 1 and idJournee == 2 %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
             <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, au maximum 1 joueur orange peux être sélectionné dans cette équipe</i></span>
         </div>
     {% endif %}
 
-    <table style="margin-top: {% if idJournee == 2%}10px{% else %}20px{% endif %};" class="centered card-panel brulages">
+    <table style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %};" class="centered card-panel brulages">
         <thead>
             <tr>
                 <th class="center"><h6 class="lobster">Sélectionnables / brûlages J+1</h6></th>
