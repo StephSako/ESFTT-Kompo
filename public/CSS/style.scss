@@ -46,14 +46,6 @@ html {
   }
 }
 
-.selectionables {
-  @extend .dispos;
-
-  tr:last-child td {
-    border-radius: 0 0 10px 10px;
-  }
-}
-
 .brulages {
   @extend .dispos;
 
@@ -63,6 +55,10 @@ html {
     border-left-style: solid;
     border-right-color: white;
     width: 35.6px;
+  }
+
+  tr:last-child td {
+    border-radius: 0 0 0 10px;
   }
 }
 

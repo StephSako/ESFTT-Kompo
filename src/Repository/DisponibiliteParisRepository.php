@@ -50,9 +50,7 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('d')
             ->leftJoin('d.idCompetiteur', 'c')
             ->select('c.nom')
-            ->addSelect('c.idCompetiteur')
             ->where('d.idJournee = :idJournee')
-            ->setParameter('idJournee', $idJournee)
             ->andWhere('c.visitor <> true')
             ->andWhere('d.disponibilite = 1')
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1 <> 'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreParis p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> :idEquipe)")
@@ -64,15 +62,16 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p7.idJoueur7 <> 'NULL', p7.idJoueur7, 0) FROM App\Entity\RencontreParis p7 WHERE p7.idJournee = d.idJournee AND p7.idEquipe <> :idEquipe)")
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p8.idJoueur8 <> 'NULL', p8.idJoueur8, 0) FROM App\Entity\RencontreParis p8 WHERE p8.idJournee = d.idJournee AND p8.idEquipe <> :idEquipe)")
             ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> :idEquipe)")
-            ->setParameter('idEquipe', $idEquipe);;
+            ->andWhere('(SELECT COUNT(_p1.id) FROM App\Entity\RencontreParis _p1 WHERE (_p1.idJoueur1 = d.idCompetiteur OR _p1.idJoueur2 = d.idCompetiteur OR _p1.idJoueur3 = d.idCompetiteur OR _p1.idJoueur4 = d.idCompetiteur) AND _p1.idJournee < :idJournee AND _p1.idEquipe < :idEquipe) < 3')
+            ->setParameter('idEquipe', $idEquipe)
+            ->setParameter('idJournee', $idJournee)
+            ->getQuery()->getResult();
 
-        if ($idEquipe == 2) {
-            $query->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = d.idCompetiteur OR p.idJoueur2 = d.idCompetiteur OR p.idJoueur3 = d.idCompetiteur OR p.idJoueur4 = d.idCompetiteur OR p.idJoueur5 = d.idCompetiteur OR p.idJoueur5 = d.idCompetiteur OR p.idJoueur6 = d.idCompetiteur OR p.idJoueur7 = d.idCompetiteur OR p.idJoueur8 = d.idCompetiteur OR p.idJoueur9 = d.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
-                  ->setParameter('idJournee', $idJournee);
+        $selectionnables = [];
+        foreach ($query as $selectionnable){
+            array_push($selectionnables, $selectionnable["nom"]);
         }
 
-        return $query->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
+        return $selectionnables;
     }
 }

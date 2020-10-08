@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Notifier\TexterInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 
@@ -186,7 +187,7 @@ class HomeController extends AbstractController
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
         $form = $idEquipe = $selectionnables = $journees = null;
-        $joueursBrules = $joueursPreBrules = [];
+        $joueursBrules = $futursSelectionnes = [];
 
         if ($type == 'departementale'){
             if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
@@ -199,30 +200,40 @@ class HomeController extends AbstractController
 
             $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
-            foreach ($brulages as $nom => $brulage){
+            foreach ($brulages as $joueur => $brulage){
                 switch ($compo->getIdEquipe()->getIdEquipe()){
                     case 1:
-                        if (in_array($nom, array_column($selectionnables, 'nom'))){
-                            $joueursPreBrules[$nom] = $brulage;
-                            $joueursPreBrules[$nom]["E1"]++;
+                        if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                            $futursSelectionnes[$joueur]["E1"] = intval($futursSelectionnes[$joueur]["E1"]);
+                            $futursSelectionnes[$joueur]["E1"]++;
                         }
                         break;
                     case 2:
-                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $nom);
-                        else if (in_array($nom, array_column($selectionnables, 'nom'))){
-                            $joueursPreBrules[$nom] = $brulage;
-                            $joueursPreBrules[$nom]["E2"]++;
+                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $joueur);
+                        else if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                            $futursSelectionnes[$joueur]["E2"] = intval($futursSelectionnes[$joueur]["E2"]);
+                            $futursSelectionnes[$joueur]["E2"]++;
                         }
                         break;
                     case 3:
-                        if (($brulage["E1"] + $brulage["E2"]) >= 2) array_push($joueursBrules, $nom);
-                        else if (in_array($nom, array_column($selectionnables, 'nom'))){
-                            $joueursPreBrules[$nom] = $brulage;
-                            $joueursPreBrules[$nom]["E3"]++;
+                        if (($brulage["E1"] + $brulage["E2"]) >= 2) array_push($joueursBrules, $joueur);
+                        else if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                            $futursSelectionnes[$joueur]["E3"] = intval($futursSelectionnes[$joueur]["E3"]);
+                            $futursSelectionnes[$joueur]["E3"]++;
                         }
                         break;
                     case 4:
-                        if (($brulage["E1"] + $brulage["E2"] + $brulage["E3"]) >= 2) array_push($joueursBrules, $nom);
+                        if (($brulage["E1"] + $brulage["E2"] + $brulage["E3"]) >= 2) array_push($joueursBrules, $joueur);
+                        else if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                        }
                         break;
                 }
             }
@@ -240,32 +251,38 @@ class HomeController extends AbstractController
             else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
 
             $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
-
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
-            foreach ($brulages as $nom => $brulage) {
+            foreach ($brulages as $joueur => $brulage){
                 switch ($compo->getIdEquipe()->getIdEquipe()){
                     case 1:
-                        if ($brulage["E1"] >= 3) array_push($joueursBrules, $nom);
+                        if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                            $futursSelectionnes[$joueur]["E1"] = intval($futursSelectionnes[$joueur]["E1"]);
+                            $futursSelectionnes[$joueur]["E1"]++;
+                        }
                         break;
                     case 2:
-                        if ($brulage["E1"] == 2) array_push($joueursPreBrules, $nom);
+                        if ($brulage["E1"] >= 3) array_push($joueursBrules, $joueur);
+                        else if (in_array($joueur, $selectionnables)) {
+                            $futursSelectionnes[$joueur] = $brulage;
+                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
+                        }
                         break;
                 }
             }
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
-        foreach ($selectionnables as $key => $joueur){
-            if ($compo->getIdJournee()->getIdJournee() == 2 && $compo->getIdEquipe()->getIdEquipe() > 1) $selectionnables[$key]["bruleJ2"] = (in_array($joueur["idCompetiteur"], $brulesJ2) ? true : false);
-            else $selectionnables[$key]["bruleJ2"] = false;
+        foreach ($futursSelectionnes as $joueur => $fields){
+            if ($compo->getIdJournee()->getIdJournee() == 2 && $compo->getIdEquipe()->getIdEquipe() > 1) $futursSelectionnes[$joueur]["bruleJ2"] = (in_array($fields["idCompetiteur"], $brulesJ2) ? true : false);
+            else $futursSelectionnes[$joueur]["bruleJ2"] = false;
         }
 
         $form->handleRequest($request);
 
-        $joueursBrulesRegleJ2 = array_column(array_filter($selectionnables, function($joueur)
-            {
-                return ($joueur["bruleJ2"]);
-            }
+        $joueursBrulesRegleJ2 = array_column(array_filter($futursSelectionnes, function($joueur)
+            {   return ($joueur["bruleJ2"]);    }
         ), 'idCompetiteur');
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -319,8 +336,7 @@ class HomeController extends AbstractController
 
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
-            'joueursPreBrules' => $joueursPreBrules,
-            'selectionnables' => $selectionnables,
+            'futursSelectionnes' => $futursSelectionnes,
             'journees' => $journees,
             'brulages' => $brulages,
             'compo' => $compo,
@@ -410,4 +426,15 @@ class HomeController extends AbstractController
 
         return $response;
     }
+
+    /**
+     * @Route("/sendSMS", name="send.sms")
+     * @param TexterInterface $texter
+     * @throws \Symfony\Component\Notifier\Exception\TransportExceptionInterface
+     */
+    /*public function loginSuccess(TexterInterface $texter)
+    {
+        $sms = new SmsMessage('+33687697121', 'A new message have been sent!');
+        $texter->send($sms);
+    }*/
 }

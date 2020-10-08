@@ -2,7 +2,6 @@
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/brulages.html.twig' as _brulage %}
-{% import 'macros/disponibilites.html.twig' as _disponibilites %}
 
 {% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.idEquipe }}{% endblock %}
 
@@ -12,13 +11,8 @@
 
     {% if stillEditable(compo.idJournee.date) %}
         <div class="row main">
-            <div class="col l3 hide-on-small-only">
+            <div class="col l2 hide-on-small-only">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
-                {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
-            </div>
-
-            <div class="col s12 m2 hide-on-med-and-up">
-                {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
             </div>
 
             <div class="col s12 m7">
@@ -111,12 +105,12 @@
                     {{ form_end(form) }}
                 </div>
             </div>
-            <div class="col s12 m2 hide-on-small-only">
-                {{ _disponibilites.selectionnables(selectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
+            <div class="col s12 m3 hide-on-small-only">
+                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
             </div>
             <div class="col s12 hide-on-med-and-up">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
-                {{ _brulage.joueursPreBrules(type, joueursPreBrules, compo.idEquipe.idEquipe) }}
+                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
             </div>
         </div>
     {% else %}

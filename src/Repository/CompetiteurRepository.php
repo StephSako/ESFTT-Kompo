@@ -71,6 +71,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = c.idCompetiteur OR p2.idJoueur2 = c.idCompetiteur OR p2.idJoueur3 = c.idCompetiteur OR p2.idJoueur4 = c.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) AS E2')
             ->addSelect('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) AS E3')
             ->addSelect('c.nom')
+            ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
             ->addOrderBy('c.nom')
@@ -79,7 +80,7 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $allBrulage = [];
         foreach ($brulages as $brulage){
-            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "E2"=>$brulage["E2"], "E3" => $brulage["E3"]];
+            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "E2"=>$brulage["E2"], "E3" => $brulage["E3"], "idCompetiteur" => $brulage["idCompetiteur"]];
         }
 
         return $allBrulage;
@@ -94,6 +95,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $this->createQueryBuilder('c')
             ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
             ->addSelect('c.nom')
+            ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
             ->addOrderBy('c.nom')
@@ -102,7 +104,7 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $allBrulage = [];
         foreach ($brulages as $brulage){
-            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"]];
+            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "idCompetiteur" => $brulage["idCompetiteur"]];
         }
 
         return $allBrulage;
