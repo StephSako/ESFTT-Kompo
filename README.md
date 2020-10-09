@@ -1,3 +1,4 @@
+
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 <p align="center"><img src="https://zupimages.net/up/20/40/sx43.png"></p>
@@ -49,8 +50,8 @@ Sur la droite, vous pouvez accéder :
 
 Sur tablette, les items de droite sont rangés dans une liste déroulante comme illustré ci-dessous.
 
-<p align="center"><img src="https://zupimages.net/up/20/38/a9rx.png" width="12%"></p>
-<p align="center"><img src="https://zupimages.net/up/20/38/aiwd.png" width="12%"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/a9rx.png" width="20%"></p>
+<p align="center"><img src="https://zupimages.net/up/20/38/aiwd.png" width="20%"></p>
 
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
@@ -70,27 +71,26 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur. 
 
-<p align="center"><img width="35%" src="https://image.noelshack.com/fichiers/2020/38/4/1600295174-tableau-brulage-min.png"></p>
+<p align="center"><img width="35%" src="https://zupimages.net/up/20/41/kret.png"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
 
-* Un **brûlage** (croix rouge) intervient lorsqu'un joueur est sélectionné lors d'au moins 2 journées dans une même équipe au cours de la phase en championnat départemental (3 journées pour le championnat de Paris) : il ne peut donc plus jouer dans les équipes d'un numéro inférieur.
-
-	Exemple sur l'image ci-dessus :
-	- Thomas est brûlé dans les équipes 2, 3 et 4 car il a joué au moins 2 matches en équipe 1; 
-	- Rémy a joué au moins 2 matches en équipe 3, il est donc brûlé en équipe 4.<br>
-
-* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1, c'est-à-dire qu'un joueur sélectionné dans une équipe marquée d'un "!" orange sera brûlé à la prochaine journée.
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur ayant disputé deux rencontres (c'est-à-dire figurant sur la feuille de rencontre), consécutives ou non lors d’une  
+même phase, au titre d'une même équipe ou d'équipes différentes d’une même association, ne peut plus participer au championnat dans une équipe dont le numéro est supérieur à cette ou ces équipes.
 
 	Exemple sur l'image ci-dessus :
-	- Renaud a joué 1 match seulement en équipe 1. Il sera donc brûlé en équipe 2, 3 et 4 s'il joue en équipe 1 à la prochaine journée;
-	- Noël a joué 1 match en équipe 2 et en équipe 3. Si à la prochaine journée il joue en équipe 3, il sera brûlé en équipe 4 et toujours pré-brûlé pour l'équipe 2. En revanche, s'il joue le prochain match en équipe 2, il sera brûlé en équipe 3 et 4.<br>
+	- Thomas et Noël sont brûlés dans les équipes 3 et 4 car ils ont joué au moins 2 matches en équipe 2;
+	- Lucien a joué un match en équipe 1 et 3, il est donc brûlé en équipe 4.<br>
+
+* Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1. Un joueur sera brûlé dans les équipes marquées d'un "!" orange s'il est sélectionné dans une équipe d'un numéro inférieur à la prochaine journée.
+
+	Exemple sur l'image ci-dessus :
+	- Lucien a joué 1 match seulement en équipe 1 : il sera donc brûlé en équipe 2, 3 et 4  s'il rejoue en équipe 1 à la prochaine journée (déjà brûlé en équipe 4 car il a joué en équipe 2 à la J2);
+	- Rudy n'a joué qu'un match en équipe 2 à la J2. Si à la prochaine journée il joue en équipe 2, il sera brûlé en équipe 3 et 4 (s'il joue en équipe 1, il sera pré-brûlé en équipe 2 ).<br>
 
 #### Si un joueur est sélectionné dans une équipe en milieu / fin de phase, puis qu'il devient brûlé, il sera automatiquement supprimé des compositions des équipes dans lesquelles il est brûlé.
 
-Les brûlages sont chargés dynamiquement en fonction de la journée de championnat sélectionnée. De cette manière, un joueur brûlé peut tout à fait changer d'équipe dans les journées antèrieures à son brûlage. C'est ainsi que les prévisions de brûlages sont concrètes et informatives pour la journée J+1.
-
 ### Règle de la 2ème journée
 
-<p align="center"><img src="https://zupimages.net/up/20/40/5r1p.jpg"></p>
+<p align="center"><img src="https://zupimages.net/up/20/41/xizg.jpg"></p>
 
 Lors de la 2ème journée, une équipe doit sélectionner au maximum un joueur ayant joué dans une équipe supèrieure lors de la première journée.
 
@@ -98,7 +98,7 @@ Par exemple, sur l'image ci-dessus où nous voulons modifier la composition de l
 
 Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont sélectionnés.
 
-<p align="center"><img src="https://zupimages.net/up/20/40/w03w.jpg"></p>
+<p align="center"><img src="https://zupimages.net/up/20/41/6r1p.jpg"></p>
 
 > Ca va ? On suit ? 😊 Alors on continue !
 
@@ -130,16 +130,16 @@ Pour chaque équipe, est affiché :
 
 ## Composition d'équipe
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264968-composition-equipe-min.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/41/n65j.png"></p>
 
-C'est depuis cette page que les équipes sont composées. Les brûlés et pré-brûlés sont listés sur la gauche, les joueurs sélectionnables sur la droite.
+C'est depuis cette page que les équipes sont composées. Les joueurs brûlés sont listés sur la gauche, les joueurs sélectionnables accompagnés de leur brûlage à J+1 sur la droite.
 
 Sont sélectionnables les joueurs :
 * non brûlés;
 * **signalés disponibles**;
 * non sélectionnés dans d'autres équipes de la journée.
 
-<p align="center"><img src="https://zupimages.net/up/20/40/bfe8.png"></p>
+<p align="center"><img src="https://zupimages.net/up/20/41/kz69.png"></p>
 
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez définir un emplacement de joueur vide en cliquant sur le premier item.
 <br>N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
