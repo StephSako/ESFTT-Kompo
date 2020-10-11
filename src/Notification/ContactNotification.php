@@ -29,7 +29,7 @@ class ContactNotification {
     /**
      * @param Contact $contact
      * @param int $idCapitaine
-     * @throws TransportExceptionInterface
+     * @return string
      */
     public function notify(Contact $contact, int $idCapitaine) {
         $to = [];
@@ -40,6 +40,7 @@ class ContactNotification {
                 if ($player->isContactableMail2()) array_push($to, new Address($player->getMail2(), $player->getNom() . '_2'));
             }
         }
+        if (empty($to)) return 'Le mail n\'a pas été envoyé car il n\'y a que vous dans l\'équipe';
 
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
@@ -53,7 +54,13 @@ class ContactNotification {
                 'message' => $contact->getMessage()
             ]);
 
-        $this->mailer->send($email);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            return 'Le mail n\'a pas pu être envoyé';
+        }
+
+        return 'Joueurs prévenus';
     }
 
 }

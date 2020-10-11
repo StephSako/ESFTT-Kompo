@@ -392,34 +392,29 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/notifySelectedPlayers/{type}/{idCompo}/{titre}/{message}", name="notify.selectedPlayers")
+     * @Route("/notifySelectedPlayers/{type}/{idCompo}", name="notify.selectedPlayers")
      * @param $type
      * @param $idCompo
-     * @param $titre
-     * @param $message
      * @param ContactNotification $contactNotification
+     * @param Request $request
      * @return Response
-     * @throws TransportExceptionInterface
      */
-    public function notifySelectedPlayersAction($type, $idCompo, $titre, $message, ContactNotification $contactNotification)
+    public function notifySelectedPlayersAction($type, $idCompo, ContactNotification $contactNotification, Request $request)
     {
+        $titre = $request->request->get('titre');
+        $message = $request->request->get('message');
+
         $compo = null;
         if ($type == 'departementale') {
             $compo = $this->rencontreDepartementaleRepository->find($idCompo);
-            $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
-            $json = json_encode(['message' => 'Joueurs prévenus !']);
+            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur())]);
         }
         else if ($type == 'paris') {
             $compo = $this->rencontreParisRepository->find($idCompo);
             $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
-            $json = json_encode(['message' => 'Joueurs prévenus !']);
+            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur())]);
         }
-        else{
-            $json = json_encode(['message' => 'Championnat inexistant ...']);
-            $response = new Response($json);
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
-        }
+        else $json = json_encode(['message' => 'Championnat inexistant ...']);
 
         $response = new Response($json);
         $response->headers->set('Content-Type', 'application/json');
