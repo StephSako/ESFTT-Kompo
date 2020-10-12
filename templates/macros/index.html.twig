@@ -27,7 +27,8 @@
 
             <p class="center"><i>Vous pouvez modifier le titre et le message</i></p>
 
-            <a style="margin-top: 0;" id="btnSendMail" onclick="sendMail('{{ type }}', {{ compo.id }})" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons">send</i> Envoyer</a>
+            <a style="margin-top: 0;" href="sms:+33687697121&body=test" class="btn waves-effect blue lighten-2 waves-light"><i class="material-icons left">phone_android</i>Aller vers SMS</a>
+            <a style="margin-top: 0;" id="btnSendMail" onclick="sendMail('{{ type }}', {{ compo.id }})" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
             <div id="preloaderSendMail" class="progress container" type="hidden">
                 <div class="indeterminate"></div>
             </div>
