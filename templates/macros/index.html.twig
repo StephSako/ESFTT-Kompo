@@ -18,17 +18,20 @@
     <div id="alertSelectedPlayers{{ compo.id }}" class="modal modal-fixed-footer">
         <div class="modal-content">
             <div class="input-field">
-                <label for="titreAlertSelectedPlayers{{ compo.id }}">Titre</label><input id="titreAlertSelectedPlayers{{ compo.id }}" value="RDV Ping Compétition - {{ compo.idJournee.date | format_datetime('long', 'none', locale='fr') }}" type="text" class="validate">
+                <label for="titreAlertSelectedPlayers{{ compo.id }}">Titre</label>
+                <input id="titreAlertSelectedPlayers{{ compo.id }}" value="RDV Ping Compétition - {{ compo.idJournee.date | format_datetime('long', 'none', locale='fr') }}" type="text" class="validate">
             </div>
 
             <div class="input-field">
-                <label for="messageAlertSelectedPlayers">Message</label><textarea id="messageAlertSelectedPlayers" class="materialize-textarea">{{ "Salut, c'est " ~ app.user.username | capitalize ~ ".\n\n" }}{{ "Tu es sélectionné pour jouer en compétition en équipe " ~ compo.idEquipe.idEquipe ~ " le " ~ compo.idJournee.date | format_datetime('long', 'none', locale='fr') ~ ". Tu as rendez-vous à la " }}{% if compo.domicile %}{{ "salle Albert Marquet à 20h00" }}{% else %}{{ "gare de La Frette à 19h30" }}{% endif %}{{ " et nous jouerons " }}{% if compo.domicile %}{{ "à domicile" }}{% else %}{{ "à l'extérieur" }}{% endif %}{{ " contre " ~ compo.adversaire ~ ".\n\nMerci de me confirmer et à vendredi !" }}</textarea>
+                <label for="messageAlertSelectedPlayers{{ compo.id }}">Message</label>
+                <textarea id="messageAlertSelectedPlayers{{ compo.id }}" class="materialize-textarea">{{ "Salut, c'est " ~ app.user.username | capitalize ~ ".\n\n" }}{{ "Tu es sélectionné pour jouer en compétition en équipe " ~ compo.idEquipe.idEquipe ~ " le " ~ compo.idJournee.date | format_datetime('long', 'none', locale='fr') ~ ". Tu as rendez-vous à la " }}{% if compo.domicile %}{{ "salle Albert Marquet à 20h00" }}{% else %}{{ "gare de La Frette à 19h30" }}{% endif %}{{ " et nous jouerons " }}{% if compo.domicile %}{{ "à domicile" }}{% else %}{{ "à l'extérieur" }}{% endif %}{{ " contre " ~ compo.adversaire ~ ".\n\nMerci de me confirmer et à vendredi !" }}</textarea>
             </div>
 
             <p class="center"><i>Vous pouvez modifier le titre et le message</i></p>
 
-            <a style="margin: 5px;" id="btnSendSMS{{ compo.id }}" href="sms:{{ compo.listPhoneNumbersSelectedPlayers(app.user.idCompetiteur) }}" class="btn waves-effect blue lighten-2 waves-light"><i class="material-icons left">phone_android</i>Aller vers SMS</a>
+            <a style="margin: 5px;" id="btnSendSMS" href="sms:{{ compo.listPhoneNumbersSelectedPlayers(app.user.idCompetiteur) }}" class="hide-on-med-and-up btn waves-effect blue lighten-2 waves-light"><i class="material-icons left">phone_android</i>Aller vers SMS</a>
             <a style="margin: 5px;" id="btnSendMail" onclick="sendMail('{{ type }}', {{ compo.id }})" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
+
             <div id="preloaderSendMail" class="progress container" type="hidden">
                 <div class="indeterminate"></div>
             </div>
@@ -50,17 +53,17 @@
                 type : 'POST',
                 data: {
                     titre: $('#titreAlertSelectedPlayers' + idCompo).val(),
-                    message: $('#messageAlertSelectedPlayers').val()
+                    message: $('#messageAlertSelectedPlayers' + idCompo).val()
                 },
                 dataType : 'json',
                 success : function(response)
                 {
-                    M.toast({html: response.message});
                     endSending();
+                    M.toast({html: response.message});
                     $('#alertSelectedPlayers' + idCompo).modal('close');
                 },
 
-                error : function(response)
+                error : function()
                 {
                     endSending();
                     M.toast({html: 'L\'information n\'a pas pu être être transmise au contrôleur'});
@@ -71,22 +74,22 @@
 
         function sending(){
             $("[id='preloaderSendMail']").show();
+            $("[id='btnSendSMS']").hide();
             $("[id='btnSendMail']").hide();
         }
 
         function endSending(){
             $("[id='preloaderSendMail']").hide();
-            $("[id='btnSendMail']").show();
+            $("[id='btnSendSMS']").show();
+            $("[id='btnSendMail']").hide();
         }
 
         $(document).ready(function()
         {
             $("[id='preloaderSendMail']").hide();
 
-            $("#btnSendSMS{{ compo.id }}").click(function() {
-                $(this).attr("href", function(i, href) {
-                    return href + ';?&body=' + $('#messageAlertSelectedPlayers').val();
-                });
+            $("[id='btnSendSMS']").click(function() {
+                $(this).attr("href", "{{ compo.listPhoneNumbersSelectedPlayers(app.user.idCompetiteur) }}" + ';?&body=' + $('#messageAlertSelectedPlayers{{ compo.id }}').val());
             });
         });
     </script>

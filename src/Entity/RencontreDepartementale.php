@@ -370,8 +370,8 @@ class RencontreDepartementale
 
         foreach ($this->getListSelectedPlayers() as $joueur) {
             if ($joueur && $joueur->getIdCompetiteur() != $idCapitaine){
-                if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber()) array_push($phoneNumbers, $joueur->getPhoneNumber());
-                if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2()) array_push($phoneNumbers, $joueur->getPhoneNumber2());
+                if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber() && $joueur->getPhoneNumber() != "") array_push($phoneNumbers, $joueur->getPhoneNumber());
+                if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2() && $joueur->getPhoneNumber2() != "") array_push($phoneNumbers, $joueur->getPhoneNumber2());
             }
         }
 
