@@ -85,8 +85,7 @@
         }
 
         function sendSMS(phone_number_list, idCompo){
-            console.log("sms:" + phone_number_list + ";?&body=" + $('#messageAlertSelectedPlayers' + idCompo).val())
-            //$("[id='btnSendSMS']").attr("href", "sms:{{ compo.listPhoneNumbersSelectedPlayers(app.user.idCompetiteur) }}" + ';?&body=' + $('#messageAlertSelectedPlayers{{ compo.id }}').val());
+            $("[id='btnSendSMS']").attr("href", "sms:" + phone_number_list + ";?&body=" + $('#messageAlertSelectedPlayers' + idCompo).val());
         }
 
         $(document).ready(function()
