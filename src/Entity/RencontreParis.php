@@ -491,5 +491,24 @@ class RencontreParis
     public function isFull() {
         if ($this->idEquipe->getIdEquipe() == 1) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3() && $this->getIdJoueur4() && $this->getIdJoueur5() && $this->getIdJoueur6() && $this->getIdJoueur7() && $this->getIdJoueur8() && $this->getIdJoueur9());
         else if ($this->idEquipe->getIdEquipe() == 2) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3());
+        else return false;
+    }
+
+    /**
+     * Liste des numéros de téléphone des joueurs sélectionnés
+     * @param int $idCapitaine
+     * @return string
+     */
+    public function getListPhoneNumbersSelectedPlayers(int $idCapitaine){
+        $phoneNumbers = [];
+
+        foreach ($this->getListSelectedPlayers() as $joueur) {
+            if ($joueur && $joueur->getIdCompetiteur() != $idCapitaine){
+                if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber()) array_push($phoneNumbers, $joueur->getPhoneNumber());
+                if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2()) array_push($phoneNumbers, $joueur->getPhoneNumber2());
+            }
+        }
+
+        return implode(",", $phoneNumbers);
     }
 }
