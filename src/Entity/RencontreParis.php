@@ -496,14 +496,14 @@ class RencontreParis
 
     /**
      * Liste des numéros de téléphone des joueurs sélectionnés
-     * @param int $idCapitaine
+     * @param int $idRedacteur
      * @return string
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idCapitaine){
+    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur){
         $phoneNumbers = [];
 
         foreach ($this->getListSelectedPlayers() as $joueur) {
-            if ($joueur && $joueur->getIdCompetiteur() != $idCapitaine){
+            if ($joueur && $joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber() && $joueur->getPhoneNumber() != "") array_push($phoneNumbers, $joueur->getPhoneNumber());
                 if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2() && $joueur->getPhoneNumber2() != "") array_push($phoneNumbers, $joueur->getPhoneNumber2());
             }

@@ -30,19 +30,19 @@ class ContactNotification {
 
     /**
      * @param Contact $contact
-     * @param Competiteur $capitaine
+     * @param Competiteur $redacteur
      * @return string
      */
-    public function notify(Contact $contact, Competiteur $capitaine) {
+    public function notify(Contact $contact, Competiteur $redacteur) {
 
-        if ($capitaine->isContactableMail() && $capitaine->getMail() && $capitaine->getMail() != "") $from = new Address($capitaine->getMail(), $capitaine->getNom());
-        else if($capitaine->isContactableMail2() && $capitaine->getMail2() && $capitaine->getMail2() != "") $from = new Address($capitaine->getMail2(), $capitaine->getNom());
+        if ($redacteur->isContactableMail() && $redacteur->getMail() && $redacteur->getMail() != "") $from = new Address($redacteur->getMail(), $redacteur->getNom());
+        else if($redacteur->isContactableMail2() && $redacteur->getMail2() && $redacteur->getMail2() != "") $from = new Address($redacteur->getMail2(), $redacteur->getNom());
         else $from = new Address('stephen.sakovitch@orange.fr', 'SAKOVITCH Stephen');
 
         $to = [];
 
         foreach ($contact->getCompetiteurs() as $player) {
-            if ($player && $player->getIdCompetiteur() !== $capitaine->getIdCompetiteur()) {
+            if ($player && $player->getIdCompetiteur() !== $redacteur->getIdCompetiteur()) {
                 if ($player->isContactableMail() && $player->getMail() && $player->getMail() != "") array_push($to, new Address($player->getMail(), $player->getNom()));
                 if ($player->isContactableMail2() && $player->getMail2() && $player->getMail2() != "") array_push($to, new Address($player->getMail2(), $player->getNom() . '_2'));
             }
