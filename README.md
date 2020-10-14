@@ -75,8 +75,7 @@ Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour ch
 
 <p align="center"><img width="35%" src="https://zupimages.net/up/20/41/kret.png"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
 
-* Un **brûlage** (croix rouge) intervient lorsqu'un joueur ayant disputé deux rencontres (c'est-à-dire figurant sur la feuille de rencontre), consécutives ou non lors d’une  
-même phase, au titre d'une même équipe ou d'équipes différentes d’une même association, ne peut plus participer au championnat dans une équipe dont le numéro est supérieur à cette ou ces équipes.
+* Un **brûlage** (croix rouge) intervient lorsqu'un joueur ayant disputé deux rencontres (c'est-à-dire figurant sur la feuille de rencontre), consécutives ou non lors d’une même phase, au titre d'une même équipe ou d'équipes différentes d’une même association, ne peut plus participer au championnat dans une équipe dont le numéro est supérieur à cette ou ces équipes.
 
 	Exemple sur l'image ci-dessus :
 	- Thomas et Noël sont brûlés dans les équipes 3 et 4 car ils ont joué au moins 2 matches en équipe 2;
