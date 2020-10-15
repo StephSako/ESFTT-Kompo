@@ -84,8 +84,8 @@ Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour ch
 * Le **pré-brûlage** ("!" orange) permet de prévenir un brûlage à J+1. Un joueur sera brûlé dans les équipes marquées d'un "!" orange s'il est sélectionné dans une équipe d'un numéro inférieur à la prochaine journée.
 
 	Exemple sur l'image ci-dessus :
-	- Lucien a joué 1 match seulement en équipe 1 : il sera donc brûlé en équipe 2, 3 et 4  s'il rejoue en équipe 1 à la prochaine journée (déjà brûlé en équipe 4 car il a joué en équipe 2 à la J2);
-	- Rudy n'a joué qu'un match en équipe 2 à la J2. Si à la prochaine journée il joue en équipe 2, il sera brûlé en équipe 3 et 4 (s'il joue en équipe 1, il sera pré-brûlé en équipe 2 ).<br>
+	- Lucien a joué 1 match seulement en équipe 1 : il sera donc brûlé en équipe 2, 3 et 4  s'il rejoue en équipe 1 à la prochaine journée (déjà brûlé en équipe 4 car il a joué en équipe 3 à la J2);
+	- Rudy n'a joué qu'un match en équipe 2 à la J2. Si à la prochaine journée il joue en équipe 2, il sera brûlé en équipe 3 et 4; s'il joue en équipe 1, il sera pré-brûlé en équipe 2 et brûlé en équipe 3 et 4.<br>
 
 #### Si un joueur est sélectionné dans une équipe en milieu / fin de phase, puis qu'il devient brûlé, il sera automatiquement supprimé des compositions des équipes dans lesquelles il est brûlé.
 
