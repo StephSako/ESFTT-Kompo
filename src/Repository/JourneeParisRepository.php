@@ -26,6 +26,7 @@ class JourneeParisRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('jp')
             ->select('jp.date')
+            ->addSelect('jp.undefined')
             ->orderBy('jp.date')
             ->getQuery()
             ->getResult();

@@ -69,15 +69,4 @@ class ContactNotification {
 
         return 'Les joueurs sont prévenus !';
     }
-
-    /**
-     * @param TexterInterface $texter
-     * @throws \Symfony\Component\Notifier\Exception\TransportExceptionInterface
-     */
-    /*public function loginSuccess(TexterInterface $texter)
-    {
-        $sms = new SmsMessage('+33687697121', 'A new message have been sent!');
-        $texter->send($sms);
-    }*/
-
 }

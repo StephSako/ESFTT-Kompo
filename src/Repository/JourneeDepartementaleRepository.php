@@ -26,6 +26,7 @@ class JourneeDepartementaleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('jd')
             ->select('jd.date')
+            ->addSelect('jd.undefined')
             ->orderBy('jd.date')
             ->getQuery()
             ->getResult();

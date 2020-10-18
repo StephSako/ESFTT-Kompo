@@ -2,7 +2,9 @@
 
 namespace App\Twig;
 
+use App\Entity\JourneeDepartementale;
 use DateTime;
+use Proxies\__CG__\App\Entity\JourneeParis;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -16,11 +18,11 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param DateTime $date
+     * @param JourneeDepartementale|JourneeParis $journee
      * @return bool
      */
-    public function stillEditable(DateTime $date)
+    public function stillEditable($journee)
     {
-        return (int)(new DateTime())->diff($date)->format('%R%a') >= 0;
+        return ((int)(new DateTime())->diff($journee->getDate())->format('%R%a') >= 0 || $journee->getUndefined());
     }
 }

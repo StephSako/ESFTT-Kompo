@@ -84,7 +84,7 @@ class HomeController extends AbstractController
         else $dates = $this->journeeDepartementaleRepository->findAllDates();
         $NJournee = 1;
 
-        while ($NJournee <= 7 && (int) (new DateTime())->diff($dates[$NJournee - 1]["date"])->format('%R%a') < 0){
+        while ($NJournee <= 7 && !$dates[$NJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$NJournee - 1]["date"])->format('%R%a') < 0){
             $NJournee++;
         }
 
