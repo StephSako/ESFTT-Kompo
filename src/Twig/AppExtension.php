@@ -3,8 +3,8 @@
 namespace App\Twig;
 
 use App\Entity\JourneeDepartementale;
+use App\Entity\JourneeParis;
 use DateTime;
-use Proxies\__CG__\App\Entity\JourneeParis;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
