@@ -9,7 +9,7 @@
 
     {% include("components/navbar.html.twig") %}
 
-    {% if stillEditable(compo.idJournee.date) %}
+    {% if stillEditable(compo.idJournee) %}
         <div class="row main">
             <div class="col l2 hide-on-small-only">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}

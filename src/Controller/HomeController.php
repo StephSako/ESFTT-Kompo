@@ -18,12 +18,10 @@ use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Cache\CacheInterface;
 
 class HomeController extends AbstractController
 {
@@ -97,13 +95,10 @@ class HomeController extends AbstractController
     /**
      * @param string $type
      * @param int $id
-     * @param CacheInterface $cache
-     * @param FFTTApiController $apiController
      * @return Response
-     * @throws InvalidArgumentException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journee(string $type, int $id, CacheInterface $cache, FFTTApiController $apiController)
+    public function journee(string $type, int $id/*, CacheInterface $cache, FFTTApiController $apiController*/): Response
     {
         if ($type == 'departementale') {
             // On vérifie que la journée existe
@@ -149,7 +144,7 @@ class HomeController extends AbstractController
         else throw $this->createNotFoundException('Championnat inexistant');
 
         /** Génération des classements des poules grâce à l'API de la FFTT stockés dans le cache */
-        $classement = $apiController->getClassement($cache, $type);
+        // $classement = $apiController->getClassement($cache, $type);
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
             {
@@ -168,7 +163,7 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            'classement' => $classement,
+            // 'classement' => $classement,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
         ]);
@@ -397,7 +392,7 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function notifySelectedPlayersAction($type, $idCompo, ContactNotification $contactNotification, Request $request)
+    public function notifySelectedPlayersAction($type, $idCompo, ContactNotification $contactNotification, Request $request): Response
     {
         $titre = $request->request->get('titre');
         $message = $request->request->get('message');

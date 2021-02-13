@@ -101,26 +101,6 @@
                         {% if compo.reporte %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">update</i><b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b></span>{% endif %}
                         {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 15px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
 
-                        <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
-                            <div class="col {% if not compo.exempt %}s9 m5{% else %}s12{% endif%}">
-                                {% if compo.exempt %}
-                                    <h5 style="margin-top: 0;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
-                                {% else %}
-                                    <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
-                                {% endif %}
-                            </div>
-
-                            {% if not compo.exempt %}
-                                <div class="col s3">
-                                    <h5 style="margin-top: 0;">
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
-                                        {% endif %}
-                                    </h5>
-                                </div>
-                            {% endif %}
-                        </div>
-
                         <div class="col s4 m2">
                             <h5>
                                 <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
@@ -129,11 +109,21 @@
                         </div>
 
                         <div class="col s4 m3">
-                            <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                            <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}" style="margin-bottom: 0; margin-top: 20px">Équipe {{ compo.idEquipe.idEquipe }}</h5>
                         </div>
 
-                        <div class="col s4 m1">
-                            <h5 class="hide-on-small-only">
+                        {% if not compo.exempt %}
+                            <div class="col s4 hide-on-med-and-up">
+                                <h5 style="margin-top: 12px; margin-bottom: 0">
+                                    {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
+                                    {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                    {% endif %}
+                                </h5>
+                            </div>
+                        {% endif %}
+
+                        <div class="col s4 m2 hide-on-small-only">
+                            <h5>
                                 {% if not compo.exempt %}
                                     {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
                                     {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
@@ -141,9 +131,9 @@
                                 {% endif %}
                             </h5>
 
-                            <div class="hide-on-med-and-up" style="padding-left: 20px; padding-right: 20px;">
+                            {# <div class="hide-on-med-and-up" style="padding-left: 20px; padding-right: 20px;">
                                 <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
-                            </div>
+                            </div> #}
                         </div>
 
                         <div class="col s12 m5 hide-on-small-only">
@@ -154,7 +144,17 @@
                             {% endif %}
                         </div>
 
-                        <div class="hide-on-small-only col m1" style="padding-left: 0;">
+                        <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
+                            <div class="col s12 {% if not compo.exempt %}m5{% endif%}">
+                                {% if compo.exempt %}
+                                    <h5 style="margin-top: 0;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                                {% else %}
+                                    <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# <div class="hide-on-small-only col m1" style="padding-left: 0;">
                             <a style="padding-left: 0; padding-right: 0; margin-top: 20%;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
                         </div>
 
@@ -167,10 +167,10 @@
                                 {% if classement is not empty %} <h6 class="valign-wrapper left"><b>{{ compo.idEquipe.division.shortName }} - Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></b></h6> {% endif %}
                                 <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2 right">OK</a>
                             </div>
-                        </div>
+                        </div> #}
                     </div>
 
-                    <p class="center" style="margin: 0;"><b>N° club : 08951331</b></p>
+                    <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
 
                     <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                         <tbody>
