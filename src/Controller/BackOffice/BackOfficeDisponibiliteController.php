@@ -62,7 +62,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @Route("/backoffice/disponibilites", name="back_office.disponibilites")
      * @return Response
      */
-    public function indexDisponibilites()
+    public function indexDisponibilites(): Response
     {
         return $this->render('back_office/disponibilites/index.html.twig', [
             'disponibiliteDepartementales' => $this->competiteurRepository->findAllDisponibilites("departementale"),
