@@ -3,13 +3,11 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\HomeController;
-use App\Controller\InvalidSelectionController;
 use App\Form\BackOfficeRencontreDepartementaleType;
 use App\Form\BackOfficeRencontreParisType;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +38,7 @@ class BackOfficeRencontreController extends AbstractController
      * @Route("/backoffice/rencontres", name="back_office.rencontres")
      * @return Response
      */
-    public function indexRencontre()
+    public function indexRencontre(): Response
     {
         return $this->render('back_office/rencontre/index.html.twig', [
             'rencontreDepartementales' => $this->rencontreDepartementaleRepository->getOrderedRencontres(),
@@ -56,7 +54,7 @@ class BackOfficeRencontreController extends AbstractController
      * @param HomeController $homeController
      * @return Response
      */
-    public function editRencontre($type, $idRencontre, Request $request, HomeController $homeController)
+    public function editRencontre($type, $idRencontre, Request $request, HomeController $homeController): Response
     {
         $domicile = null;
         if ($type == 'departementale'){

@@ -3,7 +3,6 @@
 {% import 'macros/composition.html.twig' as _composition %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
-{% import 'macros/classement.poule.html.twig' as _poule %}
 {% import 'macros/index.html.twig' as _index %}
 
 {% block title %}J{{ journee.idJournee}} - {{ journee.type }}{% endblock %}
@@ -130,10 +129,6 @@
                                     {% endif %}
                                 {% endif %}
                             </h5>
-
-                            {# <div class="hide-on-med-and-up" style="padding-left: 20px; padding-right: 20px;">
-                                <a style="width: 100%; margin-bottom: 0; margin-top: 10px;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
-                            </div> #}
                         </div>
 
                         <div class="col s12 m5 hide-on-small-only">
@@ -153,21 +148,6 @@
                                 {% endif %}
                             </div>
                         </div>
-
-                        {# <div class="hide-on-small-only col m1" style="padding-left: 0;">
-                            <a style="padding-left: 0; padding-right: 0; margin-top: 20%;" class="card-panel modal-trigger waves-effect waves-block btn black-text blue lighten-3" href="#classement{{ compo.idEquipe.idEquipe }}"><i class="material-icons">equalizer</i></a>
-                        </div>
-
-
-                        <div id="classement{{ compo.idEquipe.idEquipe }}" class="modal modal-fixed-footer">
-                            <div class="modal-content" style="padding: 0 1%;">
-                                {{ _poule.classement(classement[compo.idEquipe.idEquipe]) }}
-                            </div>
-                            <div class="modal-footer">
-                                {% if classement is not empty %} <h6 class="valign-wrapper left"><b>{{ compo.idEquipe.division.shortName }} - Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></b></h6> {% endif %}
-                                <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2 right">OK</a>
-                            </div>
-                        </div> #}
                     </div>
 
                     <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
@@ -199,21 +179,18 @@
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                     {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {{ _index.btnContact(journee.linkType, compo) }}
                                 {% endif %}
                             {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1%}
                                 {% if compo.isEmptyHaut %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                     {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {{ _index.btnContact(journee.linkType, compo) }}
                                 {% endif %}
                             {% elseif journee.linkType == 'paris' and compo.idEquipe.idEquipe == 2%}
                                 {% if compo.isEmptyBas %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                     {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {{ _index.btnContact(journee.linkType, compo) }}
                                 {% endif %}
                             {% endif %}
                         </div>

@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
      * @param AuthenticationUtils $utils
      * @return Response
      */
-    public function loginAction(AuthenticationUtils $utils)
+    public function loginAction(AuthenticationUtils $utils): Response
     {
         if ($this->getUser() != null){
             return $this->redirectToRoute('index');

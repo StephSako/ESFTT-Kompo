@@ -13,5 +13,8 @@ class BackOfficeController extends AbstractController
      * @Route("/backoffice", name="back_office")
      * @return Response
      */
-    public function index(){ return $this->redirectToRoute('back_office.rencontres'); }
+    public function index(): Response
+    {
+        return $this->redirectToRoute('back_office.rencontres');
+    }
 }

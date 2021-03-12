@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Contact;
 use App\Form\RencontreDepartementaleType;
 use App\Form\RencontreParisBasType;
 use App\Form\RencontreParisHautType;
-use App\Notification\ContactNotification;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
@@ -74,9 +72,9 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
-        $type = ($this->get('session')->get('type') ?: 'departementale');
+        $type = ($this->get('session')->get('type') != null ? $this->get('session')->get('type') : 'departementale');
         if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
         else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
         else $dates = $this->journeeDepartementaleRepository->findAllDates();
@@ -98,7 +96,7 @@ class HomeController extends AbstractController
      * @return Response
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journee(string $type, int $id/*, CacheInterface $cache, FFTTApiController $apiController*/): Response
+    public function journee(string $type, int $id): Response
     {
         if ($type == 'departementale') {
             // On vérifie que la journée existe
@@ -143,9 +141,6 @@ class HomeController extends AbstractController
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
-        /** Génération des classements des poules grâce à l'API de la FFTT stockés dans le cache */
-        // $classement = $apiController->getClassement($cache, $type);
-
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
             {
                 return $dispo->getDisponibilite();
@@ -163,7 +158,6 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            // 'classement' => $classement,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
         ]);
@@ -382,36 +376,5 @@ class HomeController extends AbstractController
             'type' => $compo->getIdJournee()->getLinkType(),
             'id' => $compo->getIdJournee()->getIdJournee()
         ]);
-    }
-
-    /**
-     * @Route("/notifySelectedPlayers/{type}/{idCompo}", name="notify.selectedPlayers")
-     * @param $type
-     * @param $idCompo
-     * @param ContactNotification $contactNotification
-     * @param Request $request
-     * @return Response
-     */
-    public function notifySelectedPlayersAction($type, $idCompo, ContactNotification $contactNotification, Request $request): Response
-    {
-        $titre = $request->request->get('titre');
-        $message = $request->request->get('message');
-
-        $compo = null;
-        if ($type == 'departementale') {
-            $compo = $this->rencontreDepartementaleRepository->find($idCompo);
-            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser())]);
-        }
-        else if ($type == 'paris') {
-            $compo = $this->rencontreParisRepository->find($idCompo);
-            $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
-            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser())]);
-        }
-        else $json = json_encode(['message' => 'Championnat inexistant ...']);
-
-        $response = new Response($json);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 }
