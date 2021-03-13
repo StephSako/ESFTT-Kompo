@@ -288,7 +288,7 @@ class Competiteur implements UserInterface, Serializable
         return $this;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         if (!$this->isVisitor()){
             if ($this->getRole()) {
@@ -305,7 +305,7 @@ class Competiteur implements UserInterface, Serializable
         return null;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -313,7 +313,7 @@ class Competiteur implements UserInterface, Serializable
     public function eraseCredentials()
     { }
 
-    public function serialize()
+    public function serialize(): ?string
     {
         return serialize([
             $this->idCompetiteur,
@@ -370,7 +370,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int[]
      */
-    public function getDisposDepartementales()
+    public function getDisposDepartementales(): array
     {
         $disposId = [];
         foreach ($this->disposDepartementales as $dispo){
@@ -392,7 +392,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int[]
      */
-    public function getDisposParis()
+    public function getDisposParis(): array
     {
         $disposId = [];
         foreach ($this->disposParis as $dispo){

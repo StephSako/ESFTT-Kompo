@@ -30,12 +30,6 @@ class EquipeDepartementale
     private $poule;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", name="lien_division", nullable=false, length=50)
-     */
-    private $lienDivision;
-
-    /**
      * @return mixed
      */
     public function getIdEquipe()
@@ -47,7 +41,7 @@ class EquipeDepartementale
      * @param mixed $idEquipe
      * @return EquipeDepartementale
      */
-    public function setIdEquipe($idEquipe)
+    public function setIdEquipe($idEquipe): EquipeDepartementale
     {
         $this->idEquipe = $idEquipe;
         return $this;
@@ -56,7 +50,7 @@ class EquipeDepartementale
     /**
      * @return Division
      */
-    public function getDivision()
+    public function getDivision(): Division
     {
         return $this->division;
     }
@@ -65,7 +59,7 @@ class EquipeDepartementale
      * @param mixed $division
      * @return EquipeDepartementale
      */
-    public function setDivision($division)
+    public function setDivision($division): EquipeDepartementale
     {
         $this->division = $division;
         return $this;
@@ -74,7 +68,7 @@ class EquipeDepartementale
     /**
      * @return Poule
      */
-    public function getPoule()
+    public function getPoule(): Poule
     {
         return $this->poule;
     }
@@ -83,27 +77,9 @@ class EquipeDepartementale
      * @param mixed $poule
      * @return EquipeDepartementale
      */
-    public function setPoule($poule)
+    public function setPoule($poule): EquipeDepartementale
     {
         $this->poule = $poule;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLienDivision()
-    {
-        return $this->lienDivision;
-    }
-
-    /**
-     * @param mixed $lienDivision
-     * @return EquipeDepartementale
-     */
-    public function setLienDivision($lienDivision): self
-    {
-        $this->lienDivision = $lienDivision;
         return $this;
     }
 }

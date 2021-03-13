@@ -10,6 +10,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            pattern: ^/
             anonymous: true
             form_login:
                 login_path: login
@@ -19,13 +20,18 @@ security:
                 path: /logout
                 target: /login
             remember_me:
-                secret:   '%kernel.secret%'
+                secret: '%kernel.secret%'
+
+    role_hierarchy:
+        ROLE_JOUEUR: ROLE_VISITEUR
+        ROLE_CAPITAINE: [ROLE_JOUEUR, ROLE_VISITEUR]
 
     access_control:
         - { path: ^/journee/edit, roles: ROLE_CAPITAINE }
         - { path: ^/compte, roles: [ROLE_JOUEUR, ROLE_VISITEUR] }
         - { path: ^/backoffice, roles: ROLE_CAPITAINE }
-        - { path: ^/journee/(departementale|paris|disponibilite), roles: [ROLE_JOUEUR, ROLE_VISITEUR] }
+        - { path: ^/journee/(departementale|paris|disponibilite), roles: [ROLE_CAPITAINE, ROLE_JOUEUR, ROLE_VISITEUR] }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     encoders:
         App\Entity\Competiteur:

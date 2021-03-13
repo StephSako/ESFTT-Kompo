@@ -268,7 +268,8 @@ class RencontreDepartementale
     /**
      * @return bool
      */
-    public function getIsEmpty() {
+    public function getIsEmpty(): bool
+    {
         return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4());
     }
 
@@ -356,7 +357,8 @@ class RencontreDepartementale
      * Indique si la rencontre est entièrement composée
      * @return bool
      */
-    public function isFull() {
+    public function isFull(): bool
+    {
         return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3() && $this->getIdJoueur4());
     }
 
@@ -365,7 +367,8 @@ class RencontreDepartementale
      * @param int $idRedacteur
      * @return string
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur){
+    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur): string
+    {
         $phoneNumbers = [];
 
         foreach ($this->getListSelectedPlayers() as $joueur) {

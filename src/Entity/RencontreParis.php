@@ -393,14 +393,16 @@ class RencontreParis
     /**
      * @return bool
      */
-    public function getIsEmptyHaut() {
+    public function getIsEmptyHaut(): bool
+    {
         return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6() && !$this->getIdJoueur7() && !$this->getIdJoueur8() && !$this->getIdJoueur9());
     }
 
     /**
      * @return bool
      */
-    public function getIsEmptyBas() {
+    public function getIsEmptyBas(): bool
+    {
         return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3());
     }
 
@@ -499,7 +501,8 @@ class RencontreParis
      * @param int $idRedacteur
      * @return string
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur){
+    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur): string
+    {
         $phoneNumbers = [];
 
         foreach ($this->getListSelectedPlayers() as $joueur) {

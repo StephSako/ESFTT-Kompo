@@ -30,12 +30,6 @@ class EquipeParis
     private $poule;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", name="lien_division", nullable=false, length=50)
-     */
-    private $lienDivision;
-
-    /**
      * @return mixed
      */
     public function getIdEquipe()
@@ -47,7 +41,7 @@ class EquipeParis
      * @param mixed $idEquipe
      * @return EquipeParis
      */
-    public function setIdEquipe($idEquipe)
+    public function setIdEquipe($idEquipe): EquipeParis
     {
         $this->idEquipe = $idEquipe;
         return $this;
@@ -56,7 +50,7 @@ class EquipeParis
     /**
      * @return Division
      */
-    public function getDivision()
+    public function getDivision(): Division
     {
         return $this->division;
     }
@@ -65,7 +59,7 @@ class EquipeParis
      * @param mixed $division
      * @return EquipeParis
      */
-    public function setDivision($division)
+    public function setDivision($division): EquipeParis
     {
         $this->division = $division;
         return $this;
@@ -74,7 +68,7 @@ class EquipeParis
     /**
      * @return Poule
      */
-    public function getPoule()
+    public function getPoule(): Poule
     {
         return $this->poule;
     }
@@ -83,27 +77,9 @@ class EquipeParis
      * @param mixed $poule
      * @return EquipeParis
      */
-    public function setPoule($poule)
+    public function setPoule($poule): EquipeParis
     {
         $this->poule = $poule;
         return $this;
-    }
-
-    /**
-     * @param mixed $lienDivision
-     * @return EquipeParis
-     */
-    public function setLienDivision($lienDivision)
-    {
-        $this->lienDivision = $lienDivision;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLienDivision()
-    {
-        return $this->lienDivision;
     }
 }
