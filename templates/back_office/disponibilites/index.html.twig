@@ -34,11 +34,19 @@
             </ul>
 
             <div class="card-panel center" id="disponibilites_departementales">
-                {{ _disponibilites.backoffice(disponibiliteDepartementales, 'departementale') }}
+                {% if disponibiliteDepartementales|length > 0 %}
+                    {{ _disponibilites.backoffice(disponibiliteDepartementales, 'departementale') }}
+                {% else %}
+                    <p style="font-size: 20px" class="lobster_2 center">Il n'y a pas de disponibilités disponibles</p>
+                {% endif %}
             </div>
 
             <div class="card-panel center" id="disponibilites_paris">
-                {{ _disponibilites.backoffice(disponibiliteParis, 'paris') }}
+                {% if disponibiliteDepartementales|length > 0 %}
+                    {{ _disponibilites.backoffice(disponibiliteParis, 'paris') }}
+                {% else %}
+                    <p style="font-size: 20px" class="lobster_2 center">Il n'y a pas de disponibilités disponibles</p>
+                {% endif %}
             </div>
         </div>
     </div>

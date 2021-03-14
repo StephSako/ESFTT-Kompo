@@ -218,14 +218,14 @@
                         </div>
                     {% else %}
                         {% if dispo.disponibilite == 1 %}
-                            <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="green-text"><b>disponible</b></span></i></p>
+                            <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
                             <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
-                                <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer indisponible</button>
+                                <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                             </a>
                         {% else %}
-                            <p style="margin-top: 0; margin-bottom: 0;"><i>Déclaré <span class="red-text"><b>indisponible</b></span></i></p>
+                            <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
                             <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
-                                <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Le déclarer disponible</button>
+                                <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer disponible</button>
                             </a>
                         {% endif %}
                     {% endif %}

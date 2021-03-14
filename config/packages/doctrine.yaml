@@ -1,5 +1,6 @@
 doctrine:
     dbal:
+        driver: pdo_sqlite
         url: '%env(resolve:DATABASE_URL)%'
     orm:
         auto_generate_proxy_classes: true
@@ -14,4 +15,4 @@ doctrine:
                 alias: App
         dql:
             string_functions:
-                IF: DoctrineExtensions\Query\Mysql\IfElse
+                IF: DoctrineExtensions\Query\Sqlite\IfElse

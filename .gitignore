@@ -17,3 +17,4 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 .idea
+kompo.db
