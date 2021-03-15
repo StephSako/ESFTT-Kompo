@@ -98,3 +98,26 @@
         </ul>
     {%- endif -%}
 {%- endblock form_errors -%}
+
+{% block file_widget -%}
+    <{{ element|default('div') }} class="file-field input-field">
+    <div class="btn">
+        <span>{{ 'File' | trans }}</span>
+        <input name="{{ form.vars.full_name }}"
+               id="{{ form.vars.id }}"
+               accept="image/png, image/jpeg"
+               type="{{ form.vars.type }}"
+                {{ form.vars.required ? 'required' : '' }}
+        >
+    </div>
+    <div class="file-path-wrapper">
+        <input
+                class="file-path validate"
+                type="text"
+                {%- if attr.placeholder is defined and attr.placeholder is not none -%}
+                    placeholder="{{ attr.placeholder | trans }}"
+                {%- endif -%}
+        >
+    </div>
+    </{{ element|default('div') }}>
+{%- endblock %}

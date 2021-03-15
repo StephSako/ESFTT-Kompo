@@ -28,7 +28,7 @@ class RencontreParisBasType extends AbstractType
                 'empty_data' => null,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
-                    return ['data-icon' => $competiteur->getAvatar()];
+                    return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
                 },
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
                     $query = $cr->createQueryBuilder('c')
@@ -64,7 +64,7 @@ class RencontreParisBasType extends AbstractType
                 'required'   => false,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
-                    return ['data-icon' => $competiteur->getAvatar()];
+                    return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
                 },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
@@ -101,7 +101,7 @@ class RencontreParisBasType extends AbstractType
                 'required'   => false,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use($builder) {
-                    return ['data-icon' => $competiteur->getAvatar()];
+                    return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
                 },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {

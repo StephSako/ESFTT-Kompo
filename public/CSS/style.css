@@ -136,10 +136,12 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
 .chip img {
   height: 40px;
   width: 40px;
+  object-fit: cover;
 }
 
 .select-dropdown li img {
   border-radius: 50%;
+  object-fit: cover;
 }
 
 i {

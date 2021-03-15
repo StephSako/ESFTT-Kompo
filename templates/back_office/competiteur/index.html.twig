@@ -61,7 +61,7 @@
                             {% endif %}
                         </td>
                         <td class="hide-on-small-only">
-                            <img src="{{ competiteur.avatar }}" alt="image de profil du joueur" width="80rem" height="80rem">
+                            <img src="{{ asset(competiteur.avatar ? 'images/profile_pictures/' ~ competiteur.avatar : 'images/account.png') }}" alt="image de profil du joueur" width="80rem" height="80rem" style="object-fit:cover">
                         </td>
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>

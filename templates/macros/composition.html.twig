@@ -11,7 +11,7 @@
             {% if competiteur is not null %}
                 <td>
                     <div class="chip">
-                        <img src="{{ competiteur.avatar }}" alt="Avatar">
+                        <img src="{{ asset(competiteur.avatar ? 'images/profile_pictures/' ~ competiteur.avatar : 'images/account.png') }}" alt="Avatar">
                         <span>{{ competiteur.nom }}</span>
                     </div>
                 </td>

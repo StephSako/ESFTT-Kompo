@@ -87,7 +87,12 @@
             <tbody>
             {% for dispo in disponibilitesDep %}
                 <tr>
-                    <td>{{ dispo.nom }}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px;">
+                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
+                            <span>{{ dispo.nom }}</span>
+                        </div>
+                    </td>
                     {{ _self.td_recap(dispo.j1) }}
                     {{ _self.td_recap(dispo.j2) }}
                     {{ _self.td_recap(dispo.j3) }}
@@ -119,7 +124,12 @@
             <tbody>
             {% for dispo in disponibilitesParis %}
                 <tr>
-                    <td>{{ dispo.nom }}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px;">
+                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
+                            <span>{{ dispo.nom }}</span>
+                        </div>
+                    </td>
                     {{ _self.td_recap(dispo.j1) }}
                     {{ _self.td_recap(dispo.j2) }}
                     {{ _self.td_recap(dispo.j3) }}

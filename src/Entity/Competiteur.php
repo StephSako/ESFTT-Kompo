@@ -2,16 +2,21 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetiteurRepository")
  * @UniqueEntity("username")
  * @ORM\Table(name="prive_competiteur")
+ * @Vich\Uploadable()
  */
 class Competiteur implements UserInterface, Serializable
 {
@@ -176,17 +181,22 @@ class Competiteur implements UserInterface, Serializable
     private $contactablePhoneNumber2 = false;
 
     /**
-     * @var string
-     *
-     * @Assert\Url(
-     *      message = "Cet URL n'est pas valide",
-     *      protocols = {"http", "https", "ftp"},
-     *      relativeProtocol = true
-     * )
-     *
-     * @ORM\Column(type="string", length=255, name="avatar", nullable=false, options={"default":"https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png"})
+     * @var string|null
+     * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
      */
-    private $avatar = 'https://cdn1.iconfinder.com/data/icons/ui-next-2020-shopping-and-e-commerce-1/12/75_user-circle-512.png';
+    private $avatar = "account.png";
+
+    /**
+     * @var File|null
+     * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
+     */
+    private $imageFile;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime", name="updatedAt")
+     */
+    private $updatedAt;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
@@ -329,24 +339,6 @@ class Competiteur implements UserInterface, Serializable
             $this->username,
             $this->password
             ) = unserialize($serialized, ['allowed_classes' => false]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvatar(): string
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * @param $avatar
-     * @return Competiteur
-     */
-    public function setAvatar($avatar): self
-    {
-        $this->avatar = $avatar;
-        return $this;
     }
 
     /**
@@ -598,4 +590,62 @@ class Competiteur implements UserInterface, Serializable
         $this->contactablePhoneNumber2 = $contactablePhoneNumber2;
         return $this;
     }
+
+    /**
+     * @param File|null $imageFile
+     * @return Competiteur
+     */
+    public function setImageFile(?File $imageFile): Competiteur
+    {
+        $this->imageFile = $imageFile;
+        if ($this->imageFile instanceof UploadedFile) {
+            $this->setUpdatedAt(new DateTime('now'));
+        }
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     * @return Competiteur
+     */
+    public function setUpdatedAt(DateTime $updatedAt): Competiteur
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string|null $avatar
+     * @return Competiteur
+     */
+    public function setAvatar(?string $avatar): Competiteur
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
 }
