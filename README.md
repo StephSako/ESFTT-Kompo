@@ -37,11 +37,11 @@ Sur la droite, vous pouvez accéder :
 
 <p align="center"><img width="80%" src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
 
-- à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, emails et numéros de téléphone pour que les capitaines puissent vous contacter directement depuis le site pour vous prévenir de votre sélection dans une équipe, votre classement officiel, licence et avatar (sous forme d'URL, privilégiez une photo carré);
+- à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, emails et numéros de téléphone pour que les capitaines puissent vous contacter directement depuis le site pour vous prévenir de votre sélection dans une équipe, votre classement officiel, licence et avatar;
 
 <p align="center"><img src="https://zupimages.net/up/20/41/fjww.jpg"></p>
 <p align="center"><img src="https://zupimages.net/up/20/41/2zzj.jpg"></p>
-<p align="center"><img src="https://zupimages.net/up/20/41/u6r8.jpg"></p>
+<p align="center"><img src="https://i.postimg.cc/yxdBHjgT/compte-3.jpg"></p>
 <p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264877-modifier-mot-de-passe-min.png"></p>
 
 - au back-office (**accès réservé aux capitaines**) permettant de gérer :
