@@ -17,10 +17,10 @@ class BackofficeCompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, ['label' => false])
+            ->add('nom', TextType::class, ['label' => false, 'required' => true])
             ->add('classementOfficiel', NumberType::class, ['label' => false, 'required' => false])
             ->add('imageFile', FileType::class, ['label' => false, 'required' => false])
-            ->add('username', TextType::class, ['label' => false])
+            ->add('username', TextType::class, ['label' => false, 'required' => true])
             ->add('role', CheckboxType::class, ['label' => 'Capitaine', 'required' => false])
             ->add('visitor', CheckboxType::class, ['label' => 'Visiteur', 'required' => false])
             ->add('mail', EmailType::class, ['label' => false, 'required' => false])

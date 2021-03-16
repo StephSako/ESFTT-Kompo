@@ -122,6 +122,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.nom')
             ->addSelect('j.idJournee')
+            ->addSelect('j.undefined')
             ->addSelect("(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d1 WHERE c.idCompetiteur = d1.idCompetiteur AND d1.idJournee = j.idJournee) AS idDisponibilite")
             ->addSelect("(SELECT d2.disponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d2 WHERE c.idCompetiteur = d2.idCompetiteur AND d2.idJournee = j.idJournee) AS disponibilite")
             ->addSelect('j.date')

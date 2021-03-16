@@ -211,7 +211,13 @@
                     </div>
                 </td>
                 <td>J{{ dispo.idJournee }}</td>
-                <td>{{ dispo.date | date("d/m/Y") }}</td>
+                <td>
+                    {% if dispo.undefined %}
+                        <p class="red-text"><b>Indéterminée</b></p>
+                    {% else %}
+                        {{ dispo.date | date("d/m/Y") }}
+                    {% endif %}
+                </td>
                 <td>
                     {% if dispo.idDisponibilite is null %}
                         <div class="row" style="margin-bottom: 0;">

@@ -8,7 +8,7 @@
     <div class="card-panel center-align">
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
         {{ form_start(form) }}
-            <div class="row section">
+            <div class="row section" style="margin-bottom: 0;">
                 <h5 style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m6">
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="row section">
+            <div class="row section" style="margin-bottom: 0;">
                 <h5>Informations Ping</h5>
 
                 <div class="col s12 m6">
@@ -79,15 +79,15 @@
                 <h5>Image de profil</h5>
                 {{ form_row(form.imageFile) }}
                 {% if urlImage %}
-                    <img style="max-height: 10rem;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
+                    <img style="max-height: 10rem; margin-top: 8px;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
                 {% endif %}
             </div>
 
-            {% if app.request.getPathInfo == '/backoffice/competiteurs' %}
+            {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
                 <p style="margin-top: 0; margin-bottom: 0;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>esftt</b></p>
             {% endif %}
 
-            <br><button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
+            <button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
 
