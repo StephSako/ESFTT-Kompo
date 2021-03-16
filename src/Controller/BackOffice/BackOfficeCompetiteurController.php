@@ -2,9 +2,12 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\InvalidSelectionController;
 use App\Entity\Competiteur;
 use App\Form\BackofficeCompetiteurType;
 use App\Repository\CompetiteurRepository;
+use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,17 +20,25 @@ class BackOfficeCompetiteurController extends AbstractController
 {
     private $em;
     private $competiteurRepository;
+    private $rencontreDepartementaleRepository;
+    private $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
-                                EntityManagerInterface $em)
+                                EntityManagerInterface $em,
+                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
+        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
     }
 
     /**
@@ -42,11 +53,11 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/new", name="back_office.competiteur.new")
+     * @Route("/backoffice/competiteur/new", name="back_office.competiteur.new")
      * @param Request $request
      * @return Response
      */
-    public function newCompetiteurs(Request $request): Response
+    public function new(Request $request): Response
     {
         $competiteur = new Competiteur();
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
@@ -69,7 +80,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/{id}", name="backoffice.account.edit")
+     * @Route("/backoffice/competiteur/{id}", name="backoffice.competiteur.edit")
      * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
@@ -126,6 +137,28 @@ class BackOfficeCompetiteurController extends AbstractController
             'competiteur' => $competiteur,
             'path' => 'backoffice.password.edit',
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE")
+     * @param Competiteur $competiteur
+     * @param Request $request
+     * @param InvalidSelectionController $invalidSelectionController
+     * @return Response
+     */
+    public function delete(Competiteur $competiteur, Request $request, InvalidSelectionController $invalidSelectionController): Response
+    {
+        if ($this->isCsrfTokenValid('delete' .$competiteur->getIdCompetiteur(), $request->get('_token'))) {
+            $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreDepartementaleRepository->findAll(), $competiteur->getIdCompetiteur(), 'departementale');
+            $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreParisRepository->findAll(), $competiteur->getIdCompetiteur(), 'paris');
+            $this->em->remove($competiteur);
+            $this->em->flush();
+            $this->addFlash('success', 'Compétiteur supprimé avec succès !');
+        } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
+
+        return $this->render('back_office/competiteur/index.html.twig', [
+            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
         ]);
     }
 }

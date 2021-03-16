@@ -23,7 +23,8 @@ class RencontreParisRepository extends ServiceEntityRepository
      * @param $compos
      * @return array
      */
-    public function getSelectedPlayers($compos){
+    public function getSelectedPlayers($compos): array
+    {
         $selectedPlayers = [];
         foreach ($compos as $compo){
             if ($compo->getIdJoueur1() != null) array_push($selectedPlayers, $compo->getIdJoueur1()->getIdCompetiteur());

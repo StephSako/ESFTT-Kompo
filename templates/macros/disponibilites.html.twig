@@ -206,7 +206,7 @@
             <tr>
                 <td>
                     <div class="chip">
-                        <img src="{{ dispo.avatar }}" alt="Avatar">
+                        <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
                         <span>{{ dispo.nom }}</span>
                     </div>
                 </td>

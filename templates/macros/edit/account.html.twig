@@ -79,7 +79,7 @@
                 <h5>Image de profil</h5>
                 {{ form_row(form.imageFile) }}
                 {% if urlImage %}
-                    <img id="img_competiteur_avatar" class="center-align" width="15%" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
+                    <img style="max-height: 10rem;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
                 {% endif %}
             </div>
 

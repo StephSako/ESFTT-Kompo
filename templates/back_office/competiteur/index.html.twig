@@ -74,7 +74,16 @@
                         </td>
                         <td>{{ competiteur.classementOfficiel }}</td>
                         <td>
-                            <a href="{{ path('backoffice.account.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                            <a href="{{ path('backoffice.competiteur.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer le joueur ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
+                                <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}

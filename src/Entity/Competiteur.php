@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -184,7 +185,7 @@ class Competiteur implements UserInterface, Serializable
      * @var string|null
      * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
      */
-    private $avatar = "account.png";
+    private $avatar;
 
     /**
      * @var File|null
@@ -199,12 +200,12 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur")
+     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $disposDepartementales;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur")
+     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $disposParis;
 

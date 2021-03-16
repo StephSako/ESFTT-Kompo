@@ -34,30 +34,30 @@ class RencontreDepartementale
     private $idEquipe;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_joueur_1", referencedColumnName="id_competiteur")
-     * @var Competiteur
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur")
+     * @var Competiteur|null
      */
     private $idJoueur1;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_joueur_2", referencedColumnName="id_competiteur")
-     * @var Competiteur
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur")
+     * @var Competiteur|null
      */
     private $idJoueur2;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_joueur_3", referencedColumnName="id_competiteur")
-     * @var Competiteur
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur")
+     * @var Competiteur|null
      */
     private $idJoueur3;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_joueur_4", referencedColumnName="id_competiteur")
-     * @var Competiteur
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_4", nullable=true, referencedColumnName="id_competiteur")
+     * @var Competiteur|null
      */
     private $idJoueur4;
 
@@ -251,7 +251,7 @@ class RencontreDepartementale
      * @param EquipeDepartementale $idEquipe
      * @return RencontreDepartementale
      */
-    public function setIdEquipe(EquipeDepartementale $idEquipe): RencontreDepartementale
+    public function setIdEquipe(EquipeDepartementale $idEquipe): self
     {
         $this->idEquipe = $idEquipe;
         return $this;
