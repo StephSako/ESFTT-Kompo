@@ -1,6 +1,6 @@
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-🚀 💡 Retrouvez les <a href="https://github.com/StephSako/Kompo/blob/master/improvements.md">dernières mises à jour et améliorations du projet</a> !
+🚀 💡 Découvrez les <a href="https://github.com/StephSako/Kompo/blob/master/improvements.md">derniers ajouts de fonctionnalités</a> !
 
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG"></p>
 

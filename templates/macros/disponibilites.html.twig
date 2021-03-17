@@ -148,14 +148,12 @@
     <td>
         {% if dispo is not null %}
             {% if dispo == 1 %}
-                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot1 center">&nbsp;</span>
-            {% elseif dispo == 0 %}
-                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot2 center">&nbsp;</span>
+                <i style="vertical-align: middle;" class="green-text center tiny material-icons">check</i>
             {% else %}
-                <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
+                <i style="vertical-align: middle;" class="red-text center tiny material-icons">close</i>
             {% endif %}
         {% else %}
-            <span style="vertical-align: middle; width: 10px; height: 10px;" class="dot dot3 center">&nbsp;</span>
+            <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
         {% endif %}
     </td>
 {% endmacro %}
