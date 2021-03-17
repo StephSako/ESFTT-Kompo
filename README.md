@@ -79,7 +79,7 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 #### ❗ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
 #### ❗ ATTENTION BIS : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
-#### ❗ ATTENTION TER : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
+#### ❗ ATTENTION TER : si votre classement et/ou numéro de licence ne sont pas renseignés, vous ne pourrez pas déclarer vos disponibilités !
 
 ### Les brûlages
 
