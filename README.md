@@ -2,11 +2,11 @@
 
 🚀 💡 Retrouvez les <a href="https://github.com/StephSako/Kompo/blob/master/improvements.md">dernières mises à jour et améliorations du projet</a> !
 
-<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG"></p>
 
 ## En résumé ...
 
-<p align="center"><img src="https://www.esftt.com/images/logo-new.png" width="30%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/logo_esftt.png" width="30%"></p>
 
 **Kompo** permet aux membres compétiteurs du club de **l'ESFTT** (Etoile Sportive Frettoise de Tennis de Table) de déclarer leurs disponibilités et aux capitaines de composer leur équipe et ce, pour chaque journée du championnat départemental et du championnat de Paris. Il permet également pour chacune des journées de visualiser les brûlages des joueurs et prévisions de brûlages à J+1, ainsi que le classement de la poule de chaque équipe.
 
@@ -16,7 +16,7 @@ Enfin, **Kompo** étant entièrement adapté aux versions mobiles, il leur perme
 Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 ## Page de connexion
-<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login-min.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login.PNG"></p>
 Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
 <br><br>
 
@@ -24,7 +24,7 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 ## Page d'accueil
 
- <p align="center"><img src="https://zupimages.net/up/20/40/e2j8.png"><br><i><legend>Journée du championnat de Paris</legend></i></p>
+ <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG"><br><i><legend>Journée du championnat de Paris</legend></i></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
@@ -36,14 +36,14 @@ Le dernier item permet de <i>switcher</i> de championnat entre départemental et
 Sur la droite, vous pouvez accéder :
 - au forum sur le <a href="https://www.esftt.com/">site officiel du club</a>;
 
-<p align="center"><img width="80%" src="https://image.noelshack.com/fichiers/2020/38/3/1600264800-forum-min.png"></p>
+<p align="center"><img width="80%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/forum.PNG"></p>
 
 - à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, emails et numéros de téléphone pour que les capitaines puissent vous contacter directement depuis le site pour vous prévenir de votre sélection dans une équipe, votre classement officiel, licence et avatar;
 
-<p align="center"><img src="https://zupimages.net/up/20/41/fjww.jpg"></p>
-<p align="center"><img src="https://zupimages.net/up/20/41/2zzj.jpg"></p>
-<p align="center"><img src="https://i.postimg.cc/yxdBHjgT/compte-3.jpg"></p>
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264877-modifier-mot-de-passe-min.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/modifier_password.PNG"></p>
 
 - au back-office (**accès réservé aux capitaines**) permettant de gérer :
 	* les rencontres (l'adversaire sinon un bouton pour signaler si l'équipe est exemptée, le lieu de la rencontre (domicile ou extérieur), et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
@@ -53,18 +53,18 @@ Sur la droite, vous pouvez accéder :
 
 Sur tablette, les items de droite sont rangés dans une liste déroulante comme illustré ci-dessous.
 
-<p align="center"><img src="https://zupimages.net/up/20/38/a9rx.png" width="20%"></p>
-<p align="center"><img src="https://zupimages.net/up/20/38/aiwd.png" width="20%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dropdown_closed.PNG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dropdown_open.PNG" width="20%"></p>
 
 ### Signaler sa disponibilité
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
- <p align="center"><img src="https://zupimages.net/up/20/38/2tpc.png"></p>
+ <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_non_renseignée.PNG"></p>
   <p align="center"><i>Click sur</i> DISPONIBLE</p>
   
-  <p align="center"><img width="8%" src="https://i.skyrock.net/1888/98201888/pics/3297173862_1_3_rWb2O1aM.png"></p>
+  <p align="center"><img width="8%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/arrow_down.png"></p>
   
-   <p align="center"><img src="https://zupimages.net/up/20/38/qcoz.png"></p>
+   <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_renseignée.PNG"></p>
 Vous pouvez modifier vos disponibilités n'importe quand.
 
 #### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
@@ -74,7 +74,7 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur. 
 
-<p align="center"><img width="35%" src="https://zupimages.net/up/20/41/kret.png"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
+<p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/tableau_brulage.PNG"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
 
 * Un **brûlage** (croix rouge) intervient lorsqu'un joueur ayant disputé deux rencontres (c'est-à-dire figurant sur la feuille de rencontre), consécutives ou non lors d’une même phase, au titre d'une même équipe ou d'équipes différentes d’une même association, ne peut plus participer au championnat dans une équipe dont le numéro est supérieur à cette ou ces équipes.
 
@@ -92,7 +92,7 @@ Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour ch
 
 ### Règle de la 2ème journée
 
-<p align="center"><img src="https://zupimages.net/up/20/41/xizg.jpg"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/brulage_J2.JPG"></p>
 
 Lors de la 2ème journée, une équipe doit sélectionner au maximum un joueur ayant joué dans une équipe supèrieure lors de la première journée.
 
@@ -100,7 +100,7 @@ Par exemple, sur l'image ci-dessus où nous voulons modifier la composition de l
 
 Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont sélectionnés.
 
-<p align="center"><img src="https://zupimages.net/up/20/41/6r1p.jpg"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/brulés_J2_erreur.JPG"></p>
 
 > Ca va ? On suit ? 😊 Alors on continue !
 
@@ -110,21 +110,17 @@ Le tableau sur la droite de la page liste toutes les disponibilités de chaque c
 
 Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant toutes les disponibilités de la phase entière pour chacun des championnats.
 
-<p align="center"><img src="https://zupimages.net/up/20/38/ptc8.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/toutes_les_dispos.PNG"></p>
 
 ### Composition d'équipe
 
-<p align="center"><img src="https://zupimages.net/up/20/39/62wo.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition.jpg"></p>
 
 Pour chaque équipe, est affiché :
 - la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
 - la division et la poule;
 - le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
 - l'adversaire;
-- un bouton affichant le classement actuel de la poule (pour raisons de performances, il est actualisé toutes les 12h) :
-
-<p align="center"><img src="https://zupimages.net/up/20/40/uirl.jpg" width="70%"></p>
-
 - un bouton permettant de vider rapidement et entièrement la composition;
 - un bouton permettant de modifier la composition.
 
@@ -132,7 +128,7 @@ Pour chaque équipe, est affiché :
 
 ## Composition d'équipe
 
-<p align="center"><img src="https://zupimages.net/up/20/41/n65j.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition_equipe.PNG"></p>
 
 C'est depuis cette page que les équipes sont composées. Les joueurs brûlés sont listés sur la gauche, les joueurs sélectionnables accompagnés de leur brûlage à J+1 sur la droite.
 
@@ -141,7 +137,7 @@ Sont sélectionnables les joueurs :
 * **signalés disponibles**;
 * non sélectionnés dans d'autres équipes de la journée.
 
-<p align="center"><img src="https://zupimages.net/up/20/41/kz69.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_compo.png"></p>
 
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez définir un emplacement de joueur vide en cliquant sur le premier item.
 <br>N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
@@ -150,21 +146,21 @@ Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez défini
 
 **Kompo** est entièrement adapté aux versions mobiles et tablettes. Voici quelques captures d'écran :
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-login-min.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_login.jpg" width="35%"><br><i><legend>Ecran de connexion</legend></i></p><br>
 
-<p align="center"><img src="https://zupimages.net/up/20/38/khg3.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_accueil.jpg" width="35%"><br><i><legend>Accueil</legend></i></p><br>
 
 Le menu déroulant apparaît en cliquant sur le hamburger (les 3 bâtons en haut à gauche).
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-navbar-min.jpg" width="35%"><br></p><br>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_navbar.jpg" width="35%"><br></p><br>
 
 Sur mobile, la liste des joueurs se déroule de gauche à droite.
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-compo-min.jpg" width="35%"><br></p><br>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_compo.jpg" width="35%"><br></p><br>
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-edit-compte-min.jpg" width="35%"><br><i><legend>Modifier son compte</legend></i></p><br>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_edit_compte.jpg" width="35%"><br><i><legend>Modifier son compte</legend></i></p><br>
 
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264441-res-edit-compo-min.jpg" width="35%"><br><i><legend>Modifier une compo</legend></i></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_edit_compo.jpg" width="35%"><br><i><legend>Modifier une compo</legend></i></p>
 
 ## 
 
