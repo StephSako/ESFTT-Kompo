@@ -20,7 +20,7 @@ class RencontreParis
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * @var JourneeParis
      */
@@ -33,63 +33,63 @@ class RencontreParis
     private $exempt;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur1;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur2;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur3;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_4", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur4;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_5", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur5;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_6", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur6;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_7", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur7;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_8", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
     private $idJoueur8;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_9", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
      */
@@ -97,7 +97,7 @@ class RencontreParis
 
     /**
      * @var EquipeParis
-     * @ORM\OneToOne(targetEntity="App\Entity\EquipeParis")
+     * @ORM\ManyToOne(targetEntity="App\Entity\EquipeParis", inversedBy="rencontresParis")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
      */
     private $idEquipe;

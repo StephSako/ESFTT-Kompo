@@ -37,7 +37,7 @@ class BackOfficeEquipeController extends AbstractController
      * @Route("/backoffice/equipes", name="back_office.equipes")
      * @return Response
      */
-    public function indexEquipes()
+    public function indexEquipes(): Response
     {
         return $this->render('back_office/equipes/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
@@ -52,7 +52,7 @@ class BackOfficeEquipeController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function update($type, $idEquipe, Request $request)
+    public function update($type, $idEquipe, Request $request): Response
     {
         $form = null;
         if ($type == 'departementale'){
@@ -76,6 +76,31 @@ class BackOfficeEquipeController extends AbstractController
         return $this->render('back_office/equipes/edit.html.twig', [
             'equipe' => $equipe,
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/equipe/delete/{type}/{id}", name="backoffice.equipe.delete", methods="DELETE")
+     * @param int $id
+     * @param string $type
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(int $id, string $type, Request $request): Response
+    {
+        if ($type == 'departementale') $equipe = $this->equipeDepartementaleRepository->find($id);
+        else if ($type == 'paris') $equipe = $this->equipeParisRepository->find($id);
+        else throw $this->createNotFoundException('Championnat inexistant');
+
+        if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
+            $this->em->remove($equipe);
+            $this->em->flush();
+            $this->addFlash('success', 'Équipe supprimée avec succès !');
+        } else $this->addFlash('error', 'Léquipe n\'a pas pu être supprimée');
+
+        return $this->render('back_office/equipes/index.html.twig', [
+            'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
+            'equipesParis' => $this->equipeParisRepository->findAll(),
         ]);
     }
 }

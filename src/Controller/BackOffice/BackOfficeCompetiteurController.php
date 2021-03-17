@@ -149,7 +149,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function delete(Competiteur $competiteur, Request $request, InvalidSelectionController $invalidSelectionController): Response
     {
-        if ($this->isCsrfTokenValid('delete' .$competiteur->getIdCompetiteur(), $request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
             $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreDepartementaleRepository->findAll(), $competiteur->getIdCompetiteur(), 'departementale');
             $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreParisRepository->findAll(), $competiteur->getIdCompetiteur(), 'paris');
             $this->em->remove($competiteur);

@@ -30,6 +30,12 @@ class EquipeParis
     private $poule;
 
     /**
+     * Liste des rencontres de l'équipe
+     * @ORM\OneToMany(targetEntity="App\Entity\RencontreParis", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $rencontresParis;
+
+    /**
      * @return mixed
      */
     public function getIdEquipe()
@@ -80,6 +86,24 @@ class EquipeParis
     public function setPoule($poule): EquipeParis
     {
         $this->poule = $poule;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontresParis()
+    {
+        return $this->rencontresParis;
+    }
+
+    /**
+     * @param mixed $rencontresParis
+     * @return EquipeParis
+     */
+    public function setRencontresParis($rencontresParis)
+    {
+        $this->rencontresParis = $rencontresParis;
         return $this;
     }
 }

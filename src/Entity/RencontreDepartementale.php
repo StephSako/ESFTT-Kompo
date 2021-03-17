@@ -20,7 +20,7 @@ class RencontreDepartementale
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * @var JourneeDepartementale
      */
@@ -28,10 +28,11 @@ class RencontreDepartementale
 
     /**
      * @var EquipeDepartementale
-     * @ORM\OneToOne(targetEntity="App\Entity\EquipeDepartementale")
+     * @ORM\ManyToOne(targetEntity="App\Entity\EquipeDepartementale", inversedBy="rencontresDepartementales")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
      */
     private $idEquipe;
+
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")

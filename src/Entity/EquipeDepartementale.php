@@ -30,6 +30,12 @@ class EquipeDepartementale
     private $poule;
 
     /**
+     * Liste des rencontres de l'équipe
+     * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $rencontresDepartementales;
+
+    /**
      * @return mixed
      */
     public function getIdEquipe()
@@ -80,6 +86,24 @@ class EquipeDepartementale
     public function setPoule($poule): EquipeDepartementale
     {
         $this->poule = $poule;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontresDepartementales()
+    {
+        return $this->rencontresDepartementales;
+    }
+
+    /**
+     * @param mixed $rencontresDepartementales
+     * @return EquipeDepartementale
+     */
+    public function setRencontresDepartementales($rencontresDepartementales)
+    {
+        $this->rencontresDepartementales = $rencontresDepartementales;
         return $this;
     }
 }
