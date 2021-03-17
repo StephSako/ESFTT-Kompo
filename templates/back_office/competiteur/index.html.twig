@@ -66,13 +66,27 @@
                         <td>{{ competiteur.nom }}</td>
                         <td>{{ competiteur.username }}</td>
                         <td>
-                            {% if competiteur.licence %}
-                                {{ competiteur.licence }}
+                            {% if competiteur.visitor %}
+                                <i>Sans licence</i>
                             {% else %}
-                                <i class="red-text text-lighten-2">Pas de licence</i>
+                                {% if competiteur.licence %}
+                                    {{ competiteur.licence }}
+                                {% else %}
+                                    <p class="red-text lighten-2">Non renseignée</p>
+                                {% endif %}
                             {% endif %}
                         </td>
-                        <td>{{ competiteur.classementOfficiel }}</td>
+                        <td>
+                            {% if competiteur.visitor %}
+                                <i>Sans classement</i>
+                            {% else %}
+                                {% if competiteur.classementOfficiel %}
+                                    {{ competiteur.classementOfficiel }}
+                                {% else %}
+                                    <p class="red-text lighten-2">Non renseigné</p>
+                                {% endif %}
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{{ path('backoffice.competiteur.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                         </td>

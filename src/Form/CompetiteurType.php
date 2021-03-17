@@ -18,7 +18,7 @@ class CompetiteurType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, ['label' => false, 'required' => true])
-            ->add('classementOfficiel', NumberType::class, ['label' => false])
+            ->add('classementOfficiel', NumberType::class, ['label' => false, 'required' => false])
             ->add('imageFile', FileType::class, ['label' => false, 'required' => false])
             ->add('mail', EmailType::class, ['label' => false, 'required' => false])
             ->add('mail2', EmailType::class, ['label' => false, 'required' => false])
@@ -29,7 +29,7 @@ class CompetiteurType extends AbstractType
             ->add('contactablePhoneNumber', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
             ->add('contactablePhoneNumber2', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
             ->add('username', TextType::class, ['label' => false, 'required' => true])
-            ->add('licence', NumberType::class, ['label' => false]);
+            ->add('licence', NumberType::class, ['label' => false, 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

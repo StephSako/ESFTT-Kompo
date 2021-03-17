@@ -98,6 +98,7 @@ class HomeController extends AbstractController
      */
     public function journee(string $type, int $id): Response
     {
+        $dispoJoueur = null;
         if ($type == 'departementale') {
             // On vérifie que la journée existe
             if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
@@ -123,9 +124,6 @@ class HomeController extends AbstractController
 
             // Brûlages des joueurs
             $brulages = $this->competiteurRepository->getBrulagesDepartemental($journee->getIdJournee());
-
-            // Disponibilité du joueur
-            $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
         }
         else if ($type == 'paris') {
             if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
@@ -137,7 +135,6 @@ class HomeController extends AbstractController
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
             $brulages = $this->competiteurRepository->getBrulagesParis($journee->getIdJournee());
-            $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
@@ -153,7 +150,7 @@ class HomeController extends AbstractController
             'compos' => $compos,
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,
-            'disponible' => $disponible,
+            'disponible' => ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null),
             'joueursNonDeclares' => $joueursNonDeclares,
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,

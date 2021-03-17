@@ -64,7 +64,6 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function indexDisponibilites(): Response
     {
-        dump($this->competiteurRepository->findAllDisponibilites("departementale"));
         return $this->render('back_office/disponibilites/index.html.twig', [
             'disponibiliteDepartementales' => $this->competiteurRepository->findAllDisponibilites("departementale"),
             'disponibiliteParis' => $this->competiteurRepository->findAllDisponibilites("paris")

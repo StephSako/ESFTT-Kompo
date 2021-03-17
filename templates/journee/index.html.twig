@@ -52,27 +52,23 @@
                 </div>
             {% endif %}
 
-            {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
+            {% if 'ROLE_VISITEUR' not in app.token.roleNames and stillEditable(journee) %}
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
 
-                    {% if disponible is not null %}
-                        {% if disponible == 1 %}
-                            <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                            {% if stillEditable(journee) %}
+                    {% if app.user.licence and app.user.classementOfficiel %}
+                        {% if disponible is not null %}
+                            {% if disponible == 1 %}
+                                <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                                 <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
                                     <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                                 </a>
-                            {% endif %}
-                        {% elseif disponible == 0 %}
-                            <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
-                            {% if stillEditable(journee) %}
+                            {% elseif disponible == 0 %}
+                                <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                                 <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 1}) }}">
                                     <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                                 </a>
                             {% endif %}
-                        {% endif %}
-                    {% else %}
-                        {% if stillEditable(journee) %}
+                        {% else %}
                             <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
                             <div class="row">
                                 <div class="col s6">
@@ -86,10 +82,20 @@
                                     </a>
                                 </div>
                             </div>
-                        {% else %}
-                            <h5>{{ app.user.username | capitalize }}, vous n'avez pas déclaré votre disponibilité ...</h5>
+                        {% endif %}
+                    {% else %}
+                        {% if app.user.licence and not app.user.classementOfficiel %}
+                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                        {% elseif not app.user.licence and app.user.classementOfficiel %}
+                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                        {% elseif not app.user.licence and not app.user.classementOfficiel %}
+                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence et classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
                         {% endif %}
                     {% endif %}
+                </div>
+            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not stillEditable(journee) and app.user.licence and app.user.classementOfficiel and disponible is null %}
+                <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
+                    <h5>{{ app.user.username | capitalize }}, vous n'avez pas déclaré votre disponibilité ...</h5>
                 </div>
             {% endif %}
 

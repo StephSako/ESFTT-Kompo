@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\OneToOne;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -29,6 +28,8 @@ class Competiteur implements UserInterface, Serializable
     private $idCompetiteur;
 
     /**
+     * @var int
+     *
      * @Assert\Length(
      *      max = 9,
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
