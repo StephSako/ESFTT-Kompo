@@ -1,7 +1,8 @@
-
 # Bienvenue sur <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-<p align="center"><img src="https://zupimages.net/up/20/40/sx43.png"></p>
+🚀 💡 Retrouvez les <a href="https://github.com/StephSako/Kompo/blob/master/improvements.md">dernières mises à jour et améliorations du projet</a> !
+
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.png"></p>
 
 ## En résumé ...
 
@@ -15,7 +16,7 @@ Enfin, **Kompo** étant entièrement adapté aux versions mobiles, il leur perme
 Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 ## Page de connexion
-<p align="center"><img src="https://image.noelshack.com/fichiers/2020/38/3/1600264780-login-min.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login-min.png"></p>
 Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
 <br><br>
 
