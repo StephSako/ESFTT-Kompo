@@ -41,15 +41,25 @@ Sur la droite, vous pouvez accéder :
 - à votre espace personnel où vous pouvez modifier votre nom, pseudo, mot de passe, emails et numéros de téléphone pour que les capitaines puissent vous contacter directement depuis le site pour vous prévenir de votre sélection dans une équipe, votre classement officiel, licence et avatar;
 
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_1.JPG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_2.JPG"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/compte_3.JPG"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/modifier_password.PNG"></p>
 
 - au back-office (**accès réservé aux capitaines**) permettant de gérer :
-	* les rencontres (l'adversaire sinon un bouton pour signaler si l'équipe est exemptée, le lieu de la rencontre (domicile ou extérieur), et dans le cas d'une rencontre à domicile, avertir si notre salle est inaccessible);
-	* les dates;
-	* les équipes (divisions et poules);
-	* les compétiteurs (modification et création).
+	* les rencontres :
+  <p align="center"><img style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_rencontres.PNG"></p>
+	  
+	* les dates :
+  <p align="center"><img style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_dates.PNG"></p>
+
+	* les équipes (divisions et poules) :
+  <p align="center"><img style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_equipes.PNG"></p>
+
+	* les disponibilités :
+  <p align="center"><img style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_dispos.PNG"></p>
+
+	* les compétiteurs :
+  <p align="center"><img style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_joueurs.PNG"></p>
 
 Sur tablette, les items de droite sont rangés dans une liste déroulante comme illustré ci-dessous.
 
@@ -57,7 +67,7 @@ Sur tablette, les items de droite sont rangés dans une liste déroulante comme 
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dropdown_open.PNG" width="20%"></p>
 
 ### Signaler sa disponibilité
-Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
+Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez/devriez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
  <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_non_renseignée.PNG"></p>
   <p align="center"><i>Click sur</i> DISPONIBLE</p>
@@ -67,8 +77,9 @@ Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux bou
    <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_renseignée.PNG"></p>
 Vous pouvez modifier vos disponibilités n'importe quand.
 
-#### /!\ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
-#### /!\ ATTENTION BIS : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
+#### ❗ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !
+#### ❗ ATTENTION BIS : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
+#### ❗ ATTENTION TER : si vous vous déclarez disponible, que vous êtes sélectionné dans une équipe, puis que vous vous déclarez finalement indisponible, vous serez automatiquement supprimé de la composition de l'équipe !
 
 ### Les brûlages
 
@@ -117,6 +128,7 @@ Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant t
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition.jpg"></p>
 
 Pour chaque équipe, est affiché :
+- l'identifiant du club (N° ESFTT);
 - la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
 - la division et la poule;
 - le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
