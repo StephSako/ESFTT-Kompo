@@ -63,7 +63,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=100, nullable=false, options={"default":"$2y$12$sOKw0xGfJpYyRRamBiT8kO5qZx7SllVHQ6DEas0S48JbGUxSW7nqC"} )
+     * @ORM\Column(name="password", type="string", length=100, nullable=false)
      *
      * @Assert\Length(
      *      min = 3,

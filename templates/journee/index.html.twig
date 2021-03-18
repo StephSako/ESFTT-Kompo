@@ -141,16 +141,24 @@
                             {% if compo.exempt %}
                                 <h5 class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                             {% else %}
-                                <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
+                                {% if compo.adversaire is null %}
+                                    <h5 class="lobster_2 red-text">Adversaire indéfini</h5>
+                                {% else %}
+                                    <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
+                                {% endif %}
                             {% endif %}
                         </div>
 
                         <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
-                            <div class="col s12 {% if not compo.exempt %}m5{% endif%}">
+                            <div class="col s12{% if not compo.exempt %} m5{% endif%}">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 0;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                                 {% else %}
-                                    <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
+                                    {% if compo.adversaire is null %}
+                                        <h5 class="lobster_2 red-text">Adversaire indéfini</h5>
+                                    {% else %}
+                                        <h5 class="lobster_2" style="margin-top: 0;">{{ compo.adversaire | title }}</h5>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -160,22 +168,26 @@
                         <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                     {% endif %}
 
-                    <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
+                    <table class="{% if compo.idEquipe.division.nbJoueursChampParis >= 4 and compo.idEquipe.division.nbJoueursChampParis <= 9 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                         <tbody>
                         {{ _composition.tr("1", compo.idJoueur1) }}
                         {{ _composition.tr("2", compo.idJoueur2) }}
                         {{ _composition.tr("3", compo.idJoueur3) }}
 
-                        {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1) %}
+                        {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.division.nbJoueursChampParis > 3) %}
                             {{ _composition.tr("4", compo.idJoueur4) }}
                         {% endif %}
 
-                        {% if journee.linkType == 'paris' and compo.idEquipe.idEquipe == 1 %}
-                            {{ _composition.tr("5", compo.idJoueur5) }}
-                            {{ _composition.tr("6", compo.idJoueur6) }}
-                            {{ _composition.tr("7", compo.idJoueur7) }}
-                            {{ _composition.tr("8", compo.idJoueur8) }}
-                            {{ _composition.tr("9", compo.idJoueur9) }}
+                        {% if journee.linkType == 'paris' %}
+                            {% if compo.idEquipe.division.nbJoueursChampParis > 3 %}
+                                {{ _composition.tr("5", compo.idJoueur5) }}
+                                {{ _composition.tr("6", compo.idJoueur6) }}
+                            {% endif %}
+                            {% if compo.idEquipe.division.nbJoueursChampParis > 6 %}
+                                {{ _composition.tr("7", compo.idJoueur7) }}
+                                {{ _composition.tr("8", compo.idJoueur8) }}
+                                {{ _composition.tr("9", compo.idJoueur9) }}
+                            {% endif %}
                         {% endif %}
                         </tbody>
                     </table>

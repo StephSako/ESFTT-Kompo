@@ -100,7 +100,7 @@ class HomeController extends AbstractController
      */
     public function journee(string $type, int $id): Response
     {
-        $dispoJoueur = null;
+        $nbJournees = $nbEquipes = null;
         if ($type == 'departementale') {
             // On vérifie que la journée existe
             if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
@@ -126,6 +126,12 @@ class HomeController extends AbstractController
 
             // Brûlages des joueurs
             $brulages = $this->competiteurRepository->getBrulagesDepartemental($journee->getIdJournee());
+
+            // Nombre d'équipes
+            $nbEquipes = count($compos);
+
+            // Nombre de journées
+            $nbJournees = count($journees);
         }
         else if ($type == 'paris') {
             if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
@@ -137,6 +143,8 @@ class HomeController extends AbstractController
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
             $brulages = $this->competiteurRepository->getBrulagesParis($journee->getIdJournee());
+            $nbEquipes = count($compos);
+            $nbJournees = count($journees);
         }
         else throw $this->createNotFoundException('Championnat inexistant');
 
@@ -145,19 +153,20 @@ class HomeController extends AbstractController
                 return $dispo->getDisponibilite();
             }
         ));
+        $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
             'compos' => $compos,
-            'nbEquipes' => count($compos),
+            'nbEquipes' => $nbEquipes,
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,
-            'disponible' => ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null),
+            'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
-            'nbJournees' => count($journees),
+            'nbJournees' => $nbJournees,
             'brulages' => $brulages,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")

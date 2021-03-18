@@ -19,6 +19,8 @@ class Division
     private $idDivision;
 
     /**
+     * @var string
+     *
      * @Assert\Length(
      *      min = 1,
      *      max = 2,
@@ -31,6 +33,8 @@ class Division
     private $shortName;
 
     /**
+     * @var string
+     *
      * @Assert\Length(
      *      min = 5,
      *      max = 25,
@@ -41,6 +45,23 @@ class Division
      * @ORM\Column(type="string", name="long_name", nullable=false)
      */
     private $longName;
+
+    /**
+     * @var int|null
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 3,
+     *     message = "Le nombre minimal de joueurs est {{ limit }} (en D2)",
+     * )
+     *
+     * @Assert\LessThanOrEqual(
+     *     value = 9,
+     *     message = "Le nombre maximal de joueurs est {{ limit }} (en Honneur)"
+     * )
+     *
+     * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=true)
+     */
+    private $nbJoueursChampParis;
 
     /**
      * @return mixed
@@ -57,6 +78,24 @@ class Division
     public function setIdDivision($idDivision): self
     {
         $this->idDivision = $idDivision;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNbJoueursChampParis(): ?int
+    {
+        return $this->nbJoueursChampParis;
+    }
+
+    /**
+     * @param int|null $nbJoueursChampParis
+     * @return Division
+     */
+    public function setNbJoueursChampParis(?int $nbJoueursChampParis): Division
+    {
+        $this->nbJoueursChampParis = $nbJoueursChampParis;
         return $this;
     }
 
