@@ -4,14 +4,14 @@
 
         {{ form_start(form) }}
         <div class="row">
-            <div class="col s12 m6">
-                {{ form_row(form.shortName) }}
+            <div class="col s12 m4">
+                <span><i class="material-icons prefix">short_text</i> Nom court</span>{{ form_row(form.shortName) }}
             </div>
-            <div class="col s12 m6">
-                {{ form_row(form.longName) }}
+            <div class="col s12 m4">
+                <span><i class="material-icons prefix">subject</i> Nom long</span>{{ form_row(form.longName) }}
             </div>
-            <div class="col s12 m6">
-                {{ form_row(form.nbJoueursChampParis) }}
+            <div class="col s12 m4">
+                <span><i class="material-icons prefix">people</i> Nombre de joueurs en champ. de Paris</span>{{ form_row(form.nbJoueursChampParis) }}
             </div>
         </div>
 

@@ -18,7 +18,7 @@ class BackOfficeRencontreParisType extends AbstractType
             ->add('adversaire', TextType::class,[
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Adversaire'
+                    'placeholder' => 'Adversaire + n° équipe'
                 ]]
             )
             ->add('hosted', CheckboxType::class,[

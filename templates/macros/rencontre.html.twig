@@ -31,7 +31,10 @@
                     </td>
                     <td>
                         {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Pas de match</span>
-                        {% else %} {{ rencontre.adversaire | title }}
+                        {% else %}
+                            {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
+                            {% else %} <p class="red-text"><b>Indéterminé</b></p>
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td style="height: 59px;">
