@@ -156,7 +156,9 @@
                         </div>
                     </div>
 
-                    <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
+                    {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (stillEditable(journee)) %}
+                        <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
+                    {% endif %}
 
                     <table class="{% if compo.idEquipe.idEquipe == 1 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                         <tbody>
