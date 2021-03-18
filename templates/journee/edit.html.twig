@@ -106,14 +106,14 @@
                 </div>
             </div>
             <div class="col s12 m3 hide-on-small-only">
-                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
+                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee, nbEquipes) }}
             </div>
             <div class="col s12 hide-on-med-and-up">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
             </div>
 
             <div class="col s12 hide-on-med-and-up">
-                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee) }}
+                {{ _brulage.selectionnables(type, futursSelectionnes, compo.idEquipe.idEquipe, compo.idJournee.idJournee, nbEquipes) }}
             </div>
             
         </div>

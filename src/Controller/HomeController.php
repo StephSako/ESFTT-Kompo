@@ -16,6 +16,8 @@ use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -148,12 +150,14 @@ class HomeController extends AbstractController
             'journee' => $journee,
             'journees' => $journees,
             'compos' => $compos,
+            'nbEquipes' => count($compos),
             'selectedPlayers' => $selectedPlayers,
             'dispos' => $joueursDeclares,
             'disponible' => ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null),
             'joueursNonDeclares' => $joueursNonDeclares,
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
+            'nbJournees' => count($journees),
             'brulages' => $brulages,
             'allDisponibilitesDepartementales' => $this->competiteurRepository->findAllDisposRecapitulatif("departementale"),
             'allDisponibiliteParis' => $this->competiteurRepository->findAllDisposRecapitulatif("paris")
@@ -170,7 +174,7 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $form = $idEquipe = $selectionnables = $journees = null;
+        $form = $idEquipe = $selectionnables = $journees = $nbEquipes = null;
         $joueursBrules = $futursSelectionnes = [];
 
         if ($type == 'departementale'){
@@ -181,6 +185,11 @@ class HomeController extends AbstractController
             $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $form = $this->createForm(RencontreDepartementaleType::class, $compo);
             $journees = $this->journeeDepartementaleRepository->findAll();
+            try {
+                $nbEquipes = $this->equipeDepartementalRepository->getNbEquipesDepartementales();
+            } catch (NoResultException | NonUniqueResultException $e) {
+                $nbEquipes = 0;
+            }
 
             $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
@@ -230,6 +239,11 @@ class HomeController extends AbstractController
             $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
             $idEquipe = $compo->getIdEquipe()->getIdEquipe();
             $journees = $this->journeeParisRepository->findAll();
+            try {
+                $nbEquipes = $this->equipeParisRepository->getNbEquipesParis();
+            } catch (NoResultException | NonUniqueResultException $e) {
+                $nbEquipes = 0;
+            }
 
             if ($idEquipe == 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
             else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
@@ -323,6 +337,7 @@ class HomeController extends AbstractController
             'futursSelectionnes' => $futursSelectionnes,
             'journees' => $journees,
             'brulages' => $brulages,
+            'nbEquipes' => $nbEquipes,
             'compo' => $compo,
             'type' => $type,
             'form' => $form->createView()

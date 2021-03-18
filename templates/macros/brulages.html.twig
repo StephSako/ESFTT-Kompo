@@ -1,4 +1,4 @@
-{% macro table(type, brulages) %}
+{% macro table(type, brulages, nbEquipes) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
@@ -15,11 +15,9 @@
         <thead>
             <tr>
                 <th class="center"><h5>Brûlages</h5></th>
-                <th class="center"><h5>2</h5></th>
-                {% if type == 'departementale' %}
-                    <th class="center"><h5>3</h5></th>
-                    <th class="center"><h5>4</h5></th>
-                {% endif %}
+                {% for i in 2..nbEquipes %}
+                    <th class="center"><h5>{{ i }}</h5></th>
+                {% endfor %}
             </tr>
         </thead>
 
@@ -36,24 +34,24 @@
                         {% endif %}
                     </td>
                     <td class="center">
-                        {% if (brulage["E1"] + brulage["E2"]) >= 2 %}
+                        {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] == 1 %}
+                        {% elseif brulage["E1"] + brulage["E2"] == limite_pre_brulage_dep %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
                     <td class="center">
-                        {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= 2 %}
+                        {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == 1 %}
+                        {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_pre_brulage_dep %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
                 {% elseif type == 'paris' %}
                     <td class="center">
-                        {% if (brulage["E1"] >= 3) %}
+                        {% if (brulage["E1"] >= limite_brulage_paris) %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] == 2 %}
+                        {% elseif brulage["E1"] == limite_pre_brulage_paris %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
@@ -90,7 +88,7 @@
     </table>
 {% endmacro %}
 
-{% macro selectionnables(type, futursSelectionnes, idEquipe, idJournee) %}
+{% macro selectionnables(type, futursSelectionnes, idEquipe, idJournee, nbEquipes) %}
     {% if idEquipe > 1 and idJournee == 2 %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
             <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 joueur orange maximum peux être sélectionné dans cette équipe</i></span>
@@ -101,11 +99,9 @@
         <thead>
             <tr>
                 <th class="center"><h6 class="lobster">Joueurs sélectionnables et brûlages à J+1</h6></th>
-                <th class="center"><h5>2</h5></th>
-                {% if type == 'departementale' %}
-                    <th class="center"><h5>3</h5></th>
-                    <th class="center"><h5>4</h5></th>
-                {% endif %}
+                {% for i in 2..nbEquipes %}
+                    <th class="center"><h5>{{ i }}</h5></th>
+                {% endfor %}
             </tr>
         </thead>
 
@@ -116,34 +112,34 @@
                 </tr>
             {% else %}
                 {% for joueur, brulage in futursSelectionnes %}
-                        <tr>
-                            <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
-                                {{ joueur }}
-                            </td>
+                    <tr>
+                        <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
+                            {{ joueur }}
+                        </td>
+                        <td class="center">
+                            {% if (type == 'departementale' and brulage["E1"] >= limite_brulage_dep) or (type == 'paris' and brulage["E1"] >= limite_brulage_paris) %}
+                                <i class="red-text material-icons">highlight_off</i>
+                            {% elseif (type=='departementale' and brulage["E1"] == limite_pre_brulage_dep) or (type=='paris' and brulage["E1"] == limite_pre_brulage_paris) %}
+                                <i class="orange-text material-icons">error_outline</i>
+                            {% endif %}
+                        </td>
+                        {% if type == 'departementale' %}
                             <td class="center">
-                                {% if (type == 'departementale' and brulage["E1"] >= 2) or (type == 'paris' and brulage["E1"] >= 3) %}
+                                {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif (type=='departementale' and brulage["E1"] == 1) or (type=='paris' and brulage["E1"] == 2) %}
+                                {% elseif brulage["E1"] + brulage["E2"] == limite_pre_brulage_dep %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>
-                            {% if type == 'departementale' %}
-                                <td class="center">
-                                    {% if (brulage["E1"] + brulage["E2"]) >= 2 %}
-                                        <i class="red-text material-icons">highlight_off</i>
-                                    {% elseif brulage["E1"] + brulage["E2"] == 1 %}
-                                        <i class="orange-text material-icons">error_outline</i>
-                                    {% endif %}
-                                </td>
-                                <td class="center">
-                                    {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= 2 %}
-                                        <i class="red-text material-icons">highlight_off</i>
-                                    {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == 1 %}
-                                        <i class="orange-text material-icons">error_outline</i>
-                                    {% endif %}
-                                </td>
-                            {% endif %}
-                        </tr>
+                            <td class="center">
+                                {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
+                                    <i class="red-text material-icons">highlight_off</i>
+                                {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_pre_brulage_dep %}
+                                    <i class="orange-text material-icons">error_outline</i>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
                 {% endfor %}
             {% endif %}
         </tbody>

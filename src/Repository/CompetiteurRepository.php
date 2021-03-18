@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +24,7 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param string $type
      * @return mixed[]
      */
-    public function findJoueursNonDeclares($idJournee, string $type)
+    public function findJoueursNonDeclares($idJournee, string $type): array
     {
         return $this->createQueryBuilder('c')
             ->select('c.nom')
@@ -91,7 +90,8 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $idJournee
      * @return array
      */
-    public function getBrulagesParis(int $idJournee){
+    public function getBrulagesParis(int $idJournee): array
+    {
         $brulages = $this->createQueryBuilder('c')
             ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
             ->addSelect('c.nom')

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\EquipeParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,5 +19,18 @@ class EquipeParisRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EquipeParis::class);
+    }
+
+    /**
+     * @return int|mixed|string
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function getNbEquipesParis()
+    {
+        return $this->createQueryBuilder('ep')
+            ->select('count(ep.idEquipe)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

@@ -15,7 +15,7 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            {{ _brulage.table(journee.linkType, brulages) }}
+            {{ _brulage.table(journee.linkType, brulages, nbEquipes) }}
         </div>
 
         <div class="col s12 m7">
@@ -40,7 +40,7 @@
                 {% endif %}
             </div>
 
-            {% if (selectedPlayers|length == 16 and journee.linkType == 'departementale') or (selectedPlayers|length == 12 and journee.linkType == 'paris') %}
+            {% if (selectedPlayers|length == (nbEquipes * nb_joueurs_compo_dep) and journee.linkType == 'departementale') or (selectedPlayers|length == (nb_joueurs_compo_paris_haut + nb_joueurs_compo_paris_bas) and journee.linkType == 'paris') %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee">
                     <div class="white-text">
                         <h5><i class="material-icons">check_circle</i> Kompositions complètes</h5>
@@ -48,7 +48,7 @@
                 </div>
             {% else %}
                 <div class="hide-on-med-and-up">
-                    {{ _disponibilites.labelDispoSelec(selectedPlayers, journee.linkType, nbDispos) }}
+                    {{ _disponibilites.labelDispoSelec((selectedPlayers|length), journee.linkType, nbDispos, nbEquipes) }}
                 </div>
             {% endif %}
 
@@ -208,11 +208,11 @@
         </div>
 
         <div class="col s12 m2">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbEquipes) }}
         </div>
 
         <div class="col s12 hide-on-med-and-up">
-            {{ _brulage.table(journee.linkType, brulages) }}
+            {{ _brulage.table(journee.linkType, brulages, nbEquipes) }}
         </div>
     </div>
 
