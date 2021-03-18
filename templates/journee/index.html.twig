@@ -43,7 +43,7 @@
             {% if (selectedPlayers|length == 16 and journee.linkType == 'departementale') or (selectedPlayers|length == 12 and journee.linkType == 'paris') %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee">
                     <div class="white-text">
-                        <h5><i class="material-icons">check_circle</i> Kompositions komplètes</h5>
+                        <h5><i class="material-icons">check_circle</i> Kompositions complètes</h5>
                     </div>
                 </div>
             {% else %}
@@ -114,12 +114,12 @@
                         </div>
 
                         <div class="col s4 m3">
-                            <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}" style="margin-bottom: 0; margin-top: 14px;">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                            <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}" style="margin-bottom: 0; margin-top: {% if compo.isFull %}11px{% else %}14px{% endif %};">Équipe {{ compo.idEquipe.idEquipe }}</h5>
                         </div>
 
                         {% if not compo.exempt %}
                             <div class="col s4 hide-on-med-and-up">
-                                <h5 style="margin-top: 14px; margin-bottom: 0;">
+                                <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
                                     {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
                                     {% endif %}
@@ -128,7 +128,7 @@
                         {% endif %}
 
                         <div class="col s4 m2 hide-on-small-only">
-                            <h5 style="margin-top: 14px; margin-bottom: 0;">
+                            <h5 style="margin-top: 12px; margin-bottom: 0;">
                                 {% if not compo.exempt %}
                                     {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
                                     {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
