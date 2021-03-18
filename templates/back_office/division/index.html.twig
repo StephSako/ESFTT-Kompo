@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back office - Les divisions{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+
+{% block body %}
+
+    {{ include("components/navbar_backoffice.html.twig") }}
+
+    <div class="container">
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les divisions</h4>
+        </div>
+
+        <div class="card-panel center">
+
+            <a style="margin-bottom: 20px;" href="{{ path('back_office.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">person_add</i> Créer un compétiteur</a>
+
+            <table class="striped centered responsive-table table_competiteur_backoffice">
+                <thead>
+                    <tr>
+                        <th>Diminutif</th>
+                        <th>Nom long</th>
+                        <th class="hide-on-small-only">Nombre joueurs en champ. de Paris</th>
+                        <th class="hide-on-med-and-up">Nb joueurs champ. Paris</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for division in divisions %}
+                    <tr>
+                        <td>{{ division.shortName }}</td>
+                        <td>{{ division.longName }}</td>
+                        <td style="height: 59px; padding-top: 8px;">
+                            {% if division.nbJoueursChampParis %} {{ division.nbJoueursChampParis }}
+                            {% else %} <i class="grey-text material-icons">block</i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer la division ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                                <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RencontreParisHautType extends AbstractType
+class RencontreParisNeufJoueursType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

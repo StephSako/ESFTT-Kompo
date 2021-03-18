@@ -393,7 +393,7 @@ class RencontreParis
     /**
      * @return bool
      */
-    public function getIsEmptyHaut(): bool
+    public function getIsEmptyNeufJoueurs(): bool
     {
         return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6() && !$this->getIdJoueur7() && !$this->getIdJoueur8() && !$this->getIdJoueur9());
     }
@@ -401,7 +401,15 @@ class RencontreParis
     /**
      * @return bool
      */
-    public function getIsEmptyBas(): bool
+    public function getIsEmptySixJoueurs(): bool
+    {
+        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6());
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEmptyTroisJoueurs(): bool
     {
         return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3());
     }

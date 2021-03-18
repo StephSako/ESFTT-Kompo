@@ -5,8 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     nb_joueurs_compo_dep: 4
-    nb_joueurs_compo_paris_haut: 9
-    nb_joueurs_compo_paris_bas: 3
+    nb_joueurs_compo_paris_neuf_joueurs: 9
+    nb_joueurs_compo_paris_six_joueurs: 6
+    nb_joueurs_compo_paris_trois_joueurs: 3
     limite_brulage_dep: 2
     limite_brulage_paris: 3
     limite_pre_brulage_dep: 1

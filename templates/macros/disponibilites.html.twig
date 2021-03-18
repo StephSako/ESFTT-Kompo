@@ -147,7 +147,7 @@
         <div class="row bottom_0">
             <div class="col s7 offset-s1">Disponibles</div>
             <div style="font-size: 100%" class="col s4 lobster
-                {% if (nbDispos >= (nbEquipes * nb_joueurs_compo_dep) and type == 'departementale') or (nbDispos >= (nb_joueurs_compo_paris_haut + nb_joueurs_compo_paris_bas) and type == 'paris') %}
+                {% if (nbDispos >= (nbEquipes * nb_joueurs_compo_dep) and type == 'departementale') or (nbDispos >= (nb_joueurs_compo_paris_neuf_joueurs + nb_joueurs_compo_paris_trois_joueurs) and type == 'paris') %}
                     green-text
                 {% elseif (nbDispos >= (nbEquipes * (nb_joueurs_compo_dep - 1)) and type == 'departementale') or (nbDispos >= 8 and type == 'paris') %}
                     orange-text text-darken-1
@@ -158,7 +158,7 @@
                 {% if type == 'departementale' %}
                     {{ (nbEquipes * nb_joueurs_compo_dep) }}
                 {% elseif type == 'paris' %}
-                    {{ (nb_joueurs_compo_paris_haut + nb_joueurs_compo_paris_bas) }}
+                    {{ (nb_joueurs_compo_paris_neuf_joueurs + nb_joueurs_compo_paris_trois_joueurs) }}
                 {% endif %}
             </div>
         </div>
@@ -166,7 +166,7 @@
         <div class="row bottom_0">
             <div class="col s7 offset-s1">Sélectionnés</div>
             <div style="font-size: 100%" class="col s4 lobster
-                {% if (nbSelectedPlayers >= (nbEquipes * nb_joueurs_compo_dep) and type == 'departementale') or (nbSelectedPlayers >= (nb_joueurs_compo_paris_haut + nb_joueurs_compo_paris_bas) and type == 'paris') %}
+                {% if (nbSelectedPlayers >= (nbEquipes * nb_joueurs_compo_dep) and type == 'departementale') or (nbSelectedPlayers >= (nb_joueurs_compo_paris_neuf_joueurs + nb_joueurs_compo_paris_trois_joueurs) and type == 'paris') %}
                     green-text
                 {% elseif (nbSelectedPlayers >= (nbEquipes * (nb_joueurs_compo_dep - 1)) and type == 'departementale') or (nbSelectedPlayers >= 8 and type == 'paris') %}
                     orange-text text-darken-1
@@ -177,7 +177,7 @@
                 {% if type == 'departementale' %}
                     {{ (nbEquipes * nb_joueurs_compo_dep) }}
                 {% elseif type == 'paris' %}
-                    {{ nb_joueurs_compo_paris_haut + nb_joueurs_compo_paris_bas }}
+                    {{ nb_joueurs_compo_paris_neuf_joueurs + nb_joueurs_compo_paris_trois_joueurs }}
                 {% endif %}
             </div>
         </div>

@@ -38,7 +38,7 @@ class BackOfficeJourneeController extends AbstractController
      * @Route("/backoffice/phase", name="back_office.phase")
      * @return Response
      */
-    public function indexJournee()
+    public function indexJournee(): Response
     {
         return $this->render('back_office/journee/index.html.twig', [
             'journeeDepartementales' => $this->journeeDepartementaleRepository->findAll(),
@@ -54,7 +54,7 @@ class BackOfficeJourneeController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function editJournee($type, $idJournee, Request $request)
+    public function editJournee($type, $idJournee, Request $request): Response
     {
         $form = null;
         if ($type == 'departementale'){

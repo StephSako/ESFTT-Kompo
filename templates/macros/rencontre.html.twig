@@ -36,15 +36,15 @@
                     </td>
                     <td style="height: 59px;">
                         {% if not rencontre.exempt %}
-                            {% if rencontre.domicile%} <i class="material-icons">home</i>
-                            {% else%} <i class="material-icons">directions_car</i>
+                            {% if rencontre.domicile %} <i class="material-icons">home</i>
+                            {% else %} <i class="material-icons">directions_car</i>
                             {% endif %}
                         {% endif %}
                     </td>
                     <td style="height: 59px; padding-top: 8px;">
-                        {% if not rencontre.exempt and rencontre.domicile%}
-                            {% if not rencontre.hosted%} <i class="green-text material-icons">check</i>
-                            {% else%} <i class="red-text material-icons">clear</i>
+                        {% if not rencontre.exempt and rencontre.domicile %}
+                            {% if not rencontre.hosted %} <i class="green-text material-icons">check</i>
+                            {% else %} <i class="red-text material-icons">clear</i>
                             {% endif %}
                         {% endif %}
                     </td>

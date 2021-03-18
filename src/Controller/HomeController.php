@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Form\RencontreDepartementaleType;
-use App\Form\RencontreParisBasType;
-use App\Form\RencontreParisHautType;
+use App\Form\RencontreParisSixJoueursType;
+use App\Form\RencontreParisTroisJoueursType;
+use App\Form\RencontreParisNeufJoueursType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
@@ -183,7 +184,7 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $form = $idEquipe = $selectionnables = $journees = $nbEquipes = null;
+        $form = $divisionNbJoueursChampParis = $selectionnables = $journees = $nbEquipes = null;
         $joueursBrules = $futursSelectionnes = [];
 
         if ($type == 'departementale'){
@@ -246,7 +247,7 @@ class HomeController extends AbstractController
             $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
 
             $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
-            $idEquipe = $compo->getIdEquipe()->getIdEquipe();
+            $divisionNbJoueursChampParis = $compo->getIdEquipe()->getDivision()->getNbJoueursChampParis();
             $journees = $this->journeeParisRepository->findAll();
             try {
                 $nbEquipes = $this->equipeParisRepository->getNbEquipesParis();
@@ -254,8 +255,9 @@ class HomeController extends AbstractController
                 $nbEquipes = 0;
             }
 
-            if ($idEquipe == 1) $form = $this->createForm(RencontreParisHautType::class, $compo);
-            else if ($idEquipe == 2) $form = $this->createForm(RencontreParisBasType::class, $compo);
+            if ($divisionNbJoueursChampParis == 3) $form = $this->createForm(RencontreParisTroisJoueursType::class, $compo);
+            else if ($divisionNbJoueursChampParis == 6) $form = $this->createForm(RencontreParisSixJoueursType::class, $compo);
+            else if ($divisionNbJoueursChampParis == 9) $form = $this->createForm(RencontreParisNeufJoueursType::class, $compo);
 
             $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
@@ -301,15 +303,18 @@ class HomeController extends AbstractController
             if ($form->getData()->getIdJoueur2()) if (in_array($form->getData()->getIdJoueur2()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
             if ($form->getData()->getIdJoueur3()) if (in_array($form->getData()->getIdJoueur3()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
 
-            if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
+            if ($type == 'departementale' || ($type == 'paris' && $divisionNbJoueursChampParis > 3)) {
                 if ($form->getData()->getIdJoueur4()) if (in_array($form->getData()->getIdJoueur4()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                    if ($type == 'paris' && $idEquipe == 1) {
-                        if ($form->getData()->getIdJoueur5()) if (in_array($form->getData()->getIdJoueur5()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                        if ($form->getData()->getIdJoueur6()) if (in_array($form->getData()->getIdJoueur6()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                        if ($form->getData()->getIdJoueur7()) if (in_array($form->getData()->getIdJoueur7()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                        if ($form->getData()->getIdJoueur8()) if (in_array($form->getData()->getIdJoueur8()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                        if ($form->getData()->getIdJoueur9()) if (in_array($form->getData()->getIdJoueur9()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
-                    }
+                if ($type == 'paris' && $divisionNbJoueursChampParis == 6) {
+                    if ($form->getData()->getIdJoueur5()) if (in_array($form->getData()->getIdJoueur5()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                    if ($form->getData()->getIdJoueur6()) if (in_array($form->getData()->getIdJoueur6()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                }
+
+                if ($type == 'paris' && $divisionNbJoueursChampParis == 9) {
+                    if ($form->getData()->getIdJoueur7()) if (in_array($form->getData()->getIdJoueur7()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                    if ($form->getData()->getIdJoueur8()) if (in_array($form->getData()->getIdJoueur8()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                    if ($form->getData()->getIdJoueur9()) if (in_array($form->getData()->getIdJoueur9()->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                }
             }
 
             if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
@@ -319,12 +324,13 @@ class HomeController extends AbstractController
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur2());
                 $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur3());
 
-                if ($type == 'departementale' || ($type == 'paris' && $idEquipe == 1)) {
+                if ($type == 'departementale' || ($type == 'paris' && $divisionNbJoueursChampParis > 3)) {
                     $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur4());
-
-                    if ($type == 'paris' && $idEquipe == 1) {
+                    if ($type == 'paris' && $divisionNbJoueursChampParis == 6) {
                         $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur5());
                         $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur6());
+                    }
+                    if ($type == 'paris' && $divisionNbJoueursChampParis == 9) {
                         $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur7());
                         $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur8());
                         $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueur9());

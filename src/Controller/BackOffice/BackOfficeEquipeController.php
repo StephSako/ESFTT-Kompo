@@ -34,14 +34,14 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipes", name="back_office.equipes")
+     * @Route("/backoffice/equipe", name="back_office.equipes")
      * @return Response
      */
     public function indexEquipes(): Response
     {
-        return $this->render('back_office/equipes/index.html.twig', [
+        return $this->render('back_office/equipe/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
-            'equipesParis' => $this->equipeParisRepository->findAll(),
+            'equipesParis' => $this->equipeParisRepository->findAll()
         ]);
     }
 
@@ -70,37 +70,37 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();
             $this->addFlash('success', 'Equipe modifiée avec succès !');
-            return $this->redirectToRoute('back_office.equipes');
+            return $this->redirectToRoute('back_office.equipe');
         }
 
-        return $this->render('back_office/equipes/edit.html.twig', [
+        return $this->render('back_office/equipe/edit.html.twig', [
             'equipe' => $equipe,
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/delete/{type}/{id}", name="backoffice.equipe.delete", methods="DELETE")
-     * @param int $id
+     * @Route("/backoffice/equipe/delete/{type}/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE")
+     * @param int $idEquipe
      * @param string $type
      * @param Request $request
      * @return Response
      */
-    public function delete(int $id, string $type, Request $request): Response
+    public function delete(int $idEquipe, string $type, Request $request): Response
     {
-        if ($type == 'departementale') $equipe = $this->equipeDepartementaleRepository->find($id);
-        else if ($type == 'paris') $equipe = $this->equipeParisRepository->find($id);
+        if ($type == 'departementale') $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
+        else if ($type == 'paris') $equipe = $this->equipeParisRepository->find($idEquipe);
         else throw $this->createNotFoundException('Championnat inexistant');
 
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
             $this->em->remove($equipe);
             $this->em->flush();
             $this->addFlash('success', 'Équipe supprimée avec succès !');
-        } else $this->addFlash('error', 'Léquipe n\'a pas pu être supprimée');
+        } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
-        return $this->render('back_office/equipes/index.html.twig', [
+        return $this->render('back_office/equipe/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
-            'equipesParis' => $this->equipeParisRepository->findAll(),
+            'equipesParis' => $this->equipeParisRepository->findAll()
         ]);
     }
 }

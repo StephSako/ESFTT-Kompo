@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RencontreParisBasType extends AbstractType
+class RencontreParisTroisJoueursType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -31,7 +31,7 @@ class RencontreParisBasType extends AbstractType
                     return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
                 },
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c')
+                    return $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
@@ -46,13 +46,10 @@ class RencontreParisBasType extends AbstractType
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p7.idJoueur7 <> 'NULL', p7.idJoueur7, 0) FROM App\Entity\RencontreParis p7 WHERE p7.idJournee = d.idJournee AND p7.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p8.idJoueur8 <> 'NULL', p8.idJoueur8, 0) FROM App\Entity\RencontreParis p8 WHERE p8.idJournee = d.idJournee AND p8.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> :idEquipe)")
-                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe());
-
-                    if ($builder->getData()->getIdEquipe()->getIdEquipe() == 2) {
-                            $query->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
-                                  ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee());
-                    }
-                    return $query->orderBy('c.nom');
+                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
+                        ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur2', EntityType::class, array(
@@ -68,7 +65,7 @@ class RencontreParisBasType extends AbstractType
                 },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c')
+                    return $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
@@ -83,13 +80,10 @@ class RencontreParisBasType extends AbstractType
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p7.idJoueur7 <> 'NULL', p7.idJoueur7, 0) FROM App\Entity\RencontreParis p7 WHERE p7.idJournee = d.idJournee AND p7.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p8.idJoueur8 <> 'NULL', p8.idJoueur8, 0) FROM App\Entity\RencontreParis p8 WHERE p8.idJournee = d.idJournee AND p8.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> :idEquipe)")
-                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe());
-
-                    if ($builder->getData()->getIdEquipe()->getIdEquipe() == 2) {
-                        $query->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
-                              ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee());
-                    }
-                    return $query->orderBy('c.nom');
+                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
+                        ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->orderBy('c.nom');
                 }
             ))
             ->add('idJoueur3', EntityType::class, array(
@@ -105,7 +99,7 @@ class RencontreParisBasType extends AbstractType
                 },
                 'empty_data' => null,
                 'query_builder' => function (CompetiteurRepository $cr) use($builder) {
-                    $query = $cr->createQueryBuilder('c')
+                    return $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
@@ -120,13 +114,10 @@ class RencontreParisBasType extends AbstractType
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p7.idJoueur7 <> 'NULL', p7.idJoueur7, 0) FROM App\Entity\RencontreParis p7 WHERE p7.idJournee = d.idJournee AND p7.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p8.idJoueur8 <> 'NULL', p8.idJoueur8, 0) FROM App\Entity\RencontreParis p8 WHERE p8.idJournee = d.idJournee AND p8.idEquipe <> :idEquipe)")
                         ->andWhere("c.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> :idEquipe)")
-                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe());
-
-                    if ($builder->getData()->getIdEquipe()->getIdEquipe() == 2) {
-                        $query->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
-                              ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee());
-                    }
-                    return $query->orderBy('c.nom');
+                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
+                        ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) < 3")
+                        ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
+                        ->orderBy('c.nom');
                 }
             ));
     }

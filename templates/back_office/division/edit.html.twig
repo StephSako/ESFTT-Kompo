@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/edit/division.html.twig' as edit %}
+
+{% block title %}Modifier la division{% endblock %}
+
+{% block body %}
+
+    {% include("components/navbar_backoffice.html.twig") %}
+
+    <div class="container">
+
+        {% for message in app.flashes('success') %}
+        {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+        {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        {{ edit.division(form) }}
+    </div>
+
+{% endblock %}

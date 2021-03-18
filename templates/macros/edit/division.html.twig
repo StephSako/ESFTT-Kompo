@@ -1,0 +1,21 @@
+{% macro division(form) %}
+    <div class="card-panel center-align">
+        <h4 class="h4_form">Modifier la division</h4>
+
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col s12 m6">
+                {{ form_row(form.shortName) }}
+            </div>
+            <div class="col s12 m6">
+                {{ form_row(form.longName) }}
+            </div>
+            <div class="col s12 m6">
+                {{ form_row(form.nbJoueursChampParis) }}
+            </div>
+        </div>
+
+        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+{% endmacro %}

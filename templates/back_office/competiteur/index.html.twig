@@ -18,7 +18,7 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4>Les Compétiteurs</h4>
+            <h4>Les compétiteurs</h4>
         </div>
 
         <div class="card-panel center">
@@ -27,21 +27,15 @@
 
             <table class="striped centered responsive-table table_competiteur_backoffice">
                 <thead>
-                    <tr class="hide-on-small-only">
+                    <tr>
                         <th></th>
                         <th class="avatar hide-on-small-only">Avatar</th>
                         <th>Nom</th>
                         <th>Pseudo</th>
-                        <th>Licence</th>
-                        <th>Classement</th>
-                        <th></th>
-                    </tr>
-                    <tr class="hide-on-med-and-up">
-                        <th></th>
-                        <th>Nom</th>
-                        <th>Pseudo</th>
-                        <th>Lic.</th>
-                        <th>Class.</th>
+                        <th class="hide-on-small-only">Licence</th>
+                        <th class="hide-on-med-and-up">Lic.</th>
+                        <th class="hide-on-small-only">Classement</th>
+                        <th class="hide-on-med-and-up">Class.</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -104,7 +98,5 @@
                 </tbody>
             </table>
         </div>
-
     </div>
-
 {% endblock %}
