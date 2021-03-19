@@ -29,12 +29,12 @@ class BackOfficeDivisionController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/divisions", name="back_office.divisions")
+     * @Route("/backoffice/divisions", name="backoffice.divisions")
      * @return Response
      */
     public function indexDivisions(): Response
     {
-        return $this->render('back_office/division/index.html.twig', [
+        return $this->render('backoffice/division/index.html.twig', [
             'divisions' => $this->divisionRepository->findAll()
         ]);
     }
@@ -54,17 +54,17 @@ class BackOfficeDivisionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();
             $this->addFlash('success', 'Division modifiée avec succès !');
-            return $this->redirectToRoute('back_office.divisions');
+            return $this->redirectToRoute('backoffice.divisions');
         }
 
-        return $this->render('back_office/division/edit.html.twig', [
+        return $this->render('backoffice/division/edit.html.twig', [
             'division' => $division,
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/backoffice/division/new", name="back_office.division.new")
+     * @Route("/backoffice/division/new", name="backoffice.division.new")
      * @param Request $request
      * @return Response
      */
@@ -79,13 +79,13 @@ class BackOfficeDivisionController extends AbstractController
                 $this->em->persist($division);
                 $this->em->flush();
                 $this->addFlash('success', 'Division créée avec succès !');
-                return $this->redirectToRoute('back_office.divisions');
+                return $this->redirectToRoute('backoffice.divisions');
             } else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
         }
 
-        return $this->render('back_office/division/new.html.twig', [
+        return $this->render('backoffice/division/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -106,7 +106,7 @@ class BackOfficeDivisionController extends AbstractController
             $this->addFlash('success', 'Division supprimée avec succès !');
         } else $this->addFlash('error', 'La division n\'a pas pu être supprimée');
 
-        return $this->render('back_office/division/index.html.twig', [
+        return $this->render('backoffice/division/index.html.twig', [
             'divisions' => $this->divisionRepository->findAll()
         ]);
     }

@@ -59,12 +59,12 @@ class BackOfficeDisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/disponibilites", name="back_office.disponibilites")
+     * @Route("/backoffice/disponibilites", name="backoffice.disponibilites")
      * @return Response
      */
     public function indexDisponibilites(): Response
     {
-        return $this->render('back_office/disponibilites/index.html.twig', [
+        return $this->render('backoffice/disponibilites/index.html.twig', [
             'disponibiliteDepartementales' => $this->competiteurRepository->findAllDisponibilites("departementale"),
             'disponibiliteParis' => $this->competiteurRepository->findAllDisponibilites("paris")
         ]);
@@ -104,7 +104,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
         } else $this->addFlash('fail', 'Compétition non renseignée !');
 
-        return $this->redirectToRoute('back_office.disponibilites');
+        return $this->redirectToRoute('backoffice.disponibilites');
     }
 
     /**
@@ -142,6 +142,6 @@ class BackOfficeDisponibiliteController extends AbstractController
             } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
         } else $this->addFlash('fail', 'Compétition non renseignée !');
 
-        return $this->redirectToRoute('back_office.disponibilites');
+        return $this->redirectToRoute('backoffice.disponibilites');
     }
 }

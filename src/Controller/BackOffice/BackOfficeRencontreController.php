@@ -35,12 +35,12 @@ class BackOfficeRencontreController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/rencontres", name="back_office.rencontres")
+     * @Route("/backoffice/rencontres", name="backoffice.rencontres")
      * @return Response
      */
     public function indexRencontre(): Response
     {
-        return $this->render('back_office/rencontre/index.html.twig', [
+        return $this->render('backoffice/rencontre/index.html.twig', [
             'rencontreDepartementales' => $this->rencontreDepartementaleRepository->getOrderedRencontres(),
             'rencontreParis' => $this->rencontreParisRepository->getOrderedRencontres()
         ]);
@@ -80,10 +80,10 @@ class BackOfficeRencontreController extends AbstractController
 
             $this->em->flush();
             $this->addFlash('success', 'Rencontre modifiée avec succès !');
-            return $this->redirectToRoute('back_office.rencontres');
+            return $this->redirectToRoute('backoffice.rencontres');
         }
 
-        return $this->render('back_office/rencontre/edit.html.twig', [
+        return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
             'domicile' => $domicile,

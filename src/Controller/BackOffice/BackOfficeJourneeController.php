@@ -35,19 +35,19 @@ class BackOfficeJourneeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/phase", name="back_office.phase")
+     * @Route("/backoffice/journees", name="backoffice.journees")
      * @return Response
      */
     public function indexJournee(): Response
     {
-        return $this->render('back_office/journee/index.html.twig', [
+        return $this->render('backoffice/journee/index.html.twig', [
             'journeeDepartementales' => $this->journeeDepartementaleRepository->findAll(),
             'journeeParis' => $this->journeeParisRepository->findAll()
         ]);
     }
 
     /**
-     * @Route("/backoffice/phase/edit/{type}/journee/{idJournee}", name="backoffice.phase.edit")
+     * @Route("/backoffice/journee/edit/{type}/journee/{idJournee}", name="backoffice.journee.edit")
      * @param $idJournee
      * @param $type
      * @param Request $request
@@ -71,11 +71,11 @@ class BackOfficeJourneeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->flush();
-            $this->addFlash('success', 'Journée de la phase modifiée avec succès !');
-            return $this->redirectToRoute('back_office.phase');
+            $this->addFlash('success', 'Journée modifiée avec succès !');
+            return $this->redirectToRoute('backoffice.journees');
         }
 
-        return $this->render('back_office/journee/edit.html.twig', [
+        return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
             'idJournee' => $idJournee

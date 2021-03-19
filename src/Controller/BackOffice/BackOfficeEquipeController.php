@@ -53,19 +53,19 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe", name="back_office.equipes")
+     * @Route("/backoffice/equipes", name="backoffice.equipes")
      * @return Response
      */
     public function indexEquipes(): Response
     {
-        return $this->render('back_office/equipe/index.html.twig', [
+        return $this->render('backoffice/equipe/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
             'equipesParis' => $this->equipeParisRepository->findAll()
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/{type}/new", name="back_office.equipe.new")
+     * @Route("/backoffice/equipe/{type}/new", name="backoffice.equipe.new")
      * @param string $type
      * @param Request $request
      * @return Response
@@ -131,13 +131,13 @@ class BackOfficeEquipeController extends AbstractController
                 $this->em->flush();
 
                 $this->addFlash('success', 'Equipe créée avec succès !');
-                return $this->redirectToRoute('back_office.equipes');
+                return $this->redirectToRoute('backoffice.equipes');
             } else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
         }
 
-        return $this->render('back_office/equipe/new.html.twig', [
+        return $this->render('backoffice/equipe/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -187,10 +187,10 @@ class BackOfficeEquipeController extends AbstractController
 
             $this->em->flush();
             $this->addFlash('success', 'Equipe modifiée avec succès !');
-            return $this->redirectToRoute('back_office.equipes');
+            return $this->redirectToRoute('backoffice.equipes');
         }
 
-        return $this->render('back_office/equipe/edit.html.twig', [
+        return $this->render('backoffice/equipe/edit.html.twig', [
             'equipe' => $equipe,
             'form' => $form->createView()
         ]);
@@ -215,7 +215,7 @@ class BackOfficeEquipeController extends AbstractController
             $this->addFlash('success', 'Équipe supprimée avec succès !');
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
-        return $this->render('back_office/equipe/index.html.twig', [
+        return $this->render('backoffice/equipe/index.html.twig', [
             'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
             'equipesParis' => $this->equipeParisRepository->findAll()
         ]);

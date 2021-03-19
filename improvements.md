@@ -5,8 +5,9 @@
 
 ### 📅 Mars 2021
 * Back-office : Supprimer un joueur
-* Back-office : Supprimer une équipe
+* Back-office : Créer et supprimer une équipe de chaque championnat
 * Back-office : Lister, supprimer et créer les divisions d'équipes
 * Mon compte : Ajouter une image de profil grâce à l'explorateur de fichier
 * Un compte sans classement et/ou licence renseignés ne peut déclarer ses disponibilités
-* Gestion dynamique des équipes de Paris et leurs compositions selon la division sélectionnée
+* Back-office : gestion dynamique des équipes de Paris et leurs compositions selon la division sélectionnée
+* Back-office : uniquement les divisions avec une règle du nombre de joueurs sont sélectionnables pour la création/modification d'une équipe du championnat de Paris

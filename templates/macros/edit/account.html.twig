@@ -87,7 +87,8 @@
                 <p style="margin-top: 0; margin-bottom: 0;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>esftt</b></p>
             {% endif %}
 
-            <button class="btn waves-effect waves-light light-blue darken-1">{{ btn_text }}</button>
+            <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+            <button class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ btn_text }}</button>
         {{ form_end(form) }}
     </div>
 

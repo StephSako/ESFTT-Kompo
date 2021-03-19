@@ -28,13 +28,13 @@
         </ul>
 
         <div class="card-panel center" id="equipes_departementales">
-            <a style="margin-bottom: 20px;" href="{{ path('back_office.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-small-only">Créer une équipe départementale</a>
-            <a style="margin-bottom: 20px; font-size: 85%;" href="{{ path('back_office.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-med-and-up">Créer une équipe départementale</a>
+            <a style="margin-bottom: 20px;" href="{{ path('backoffice.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-small-only">Créer une équipe départementale</a>
+            <a style="margin-bottom: 20px; font-size: 85%;" href="{{ path('backoffice.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-med-and-up">Créer une équipe départementale</a>
             {{ _equipe.table(equipesDepartementales, 'departementale') }}
         </div>
 
         <div class="card-panel center" id="equipes_paris">
-            <a style="margin-bottom: 20px;" href="{{ path('back_office.equipe.new', {type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer une équipe Paris</a>
+            <a style="margin-bottom: 20px;" href="{{ path('backoffice.equipe.new', {type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer une équipe Paris</a>
             {{ _equipe.table(equipesParis, 'paris') }}
         </div>
     </div>

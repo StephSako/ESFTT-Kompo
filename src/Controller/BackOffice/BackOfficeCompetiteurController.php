@@ -42,18 +42,18 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs", name="back_office.competiteurs")
+     * @Route("/backoffice/competiteurs", name="backoffice.competiteurs")
      * @return Response
      */
     public function indexCompetiteurs(): Response
     {
-        return $this->render('back_office/competiteur/index.html.twig', [
+        return $this->render('backoffice/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
         ]);
     }
 
     /**
-     * @Route("/backoffice/competiteur/new", name="back_office.competiteur.new")
+     * @Route("/backoffice/competiteur/new", name="backoffice.competiteur.new")
      * @param Request $request
      * @return Response
      */
@@ -68,13 +68,13 @@ class BackOfficeCompetiteurController extends AbstractController
                 $this->em->persist($competiteur);
                 $this->em->flush();
                 $this->addFlash('success', 'Compétiteur créé avec succès !');
-                return $this->redirectToRoute('back_office.competiteurs');
+                return $this->redirectToRoute('backoffice.competiteurs');
             } else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
         }
 
-        return $this->render('back_office/competiteur/new.html.twig', [
+        return $this->render('backoffice/competiteur/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -95,7 +95,7 @@ class BackOfficeCompetiteurController extends AbstractController
             if ($form->isValid()){
                 $this->em->flush();
                 $this->addFlash('success', 'Compétiteur modifié avec succès !');
-                return $this->redirectToRoute('back_office.competiteurs');
+                return $this->redirectToRoute('backoffice.competiteurs');
             }
             else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
@@ -128,7 +128,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->em->flush();
             $this->addFlash('success', 'Mot de passe de l\'utilisateur modifié !');
-            return $this->redirectToRoute('back_office.competiteurs');
+            return $this->redirectToRoute('backoffice.competiteurs');
         }
         else {
             $this->addFlash('fail', 'Les mots de passe ne correspond pas');
@@ -158,7 +158,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('success', 'Compétiteur supprimé avec succès !');
         } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
 
-        return $this->render('back_office/competiteur/index.html.twig', [
+        return $this->render('backoffice/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
         ]);
     }

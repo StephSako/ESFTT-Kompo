@@ -4,15 +4,17 @@
 
         {{ form_start(form) }}
             <div class="row form_div_list">
-                <div class="col s12 m6">
+                <div class="col s12 m6 row">
                     {{ form_row(form.division) }}
                 </div>
-                <div class="col s12 m6">
+                <div class="col s12 m6 row">
                     {{ form_row(form.poule) }}
                 </div>
             </div>
 
-            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
+            <br>
+            <a href="{{ path('backoffice.equipes') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+            <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}
