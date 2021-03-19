@@ -89,9 +89,9 @@ class Competiteur implements UserInterface, Serializable
     private $username;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="mail", type="string", length=255)
+     * @ORM\Column(name="mail", type="string", length=255, nullable=true)
      *
      * @Assert\Length(
      *      max = 255,
@@ -105,9 +105,9 @@ class Competiteur implements UserInterface, Serializable
     private $mail;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="mail2", type="string", length=255)
+     * @ORM\Column(name="mail2", type="string", length=255, nullable=true)
      *
      * @Assert\Length(
      *      max = 255,
@@ -121,9 +121,9 @@ class Competiteur implements UserInterface, Serializable
     private $mail2;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="phone_number", type="string", length=10)
+     * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
      *     pattern="/[0-9]{10}/"
@@ -137,9 +137,9 @@ class Competiteur implements UserInterface, Serializable
     private $phoneNumber;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="phone_number2", type="string", length=10)
+     * @ORM\Column(name="phone_number2", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
      *     pattern="/[0-9]{10}/"
@@ -208,8 +208,8 @@ class Competiteur implements UserInterface, Serializable
     private $imageFile;
 
     /**
-     * @var DateTime
-     * @ORM\Column(type="datetime", name="updatedAt")
+     * @var DateTime|null
+     * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
      */
     private $updatedAt;
 
@@ -445,7 +445,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $visitor
      * @return Competiteur
      */
-    public function setVisitor(bool $visitor): Competiteur
+    public function setVisitor(bool $visitor): self
     {
         $this->visitor = $visitor;
         return $this;
@@ -460,16 +460,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param string|null $mail
-     * @return Competiteur
-     */
-    public function setMail(?string $mail): Competiteur
-    {
-        $this->mail = $mail;
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getMail(): ?string
@@ -478,20 +468,12 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string|null
-     */
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
-    }
-
-    /**
-     * @param string|null $phoneNumber
+     * @param string|null $mail
      * @return Competiteur
      */
-    public function setPhoneNumber(?string $phoneNumber): self
+    public function setMail(?string $mail): self
     {
-        $this->phoneNumber = $phoneNumber;
+        $this->mail = $mail;
         return $this;
     }
 
@@ -510,6 +492,24 @@ class Competiteur implements UserInterface, Serializable
     public function setMail2(?string $mail2): self
     {
         $this->mail2 = $mail2;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * @param string|null $phoneNumber
+     * @return Competiteur
+     */
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
 
@@ -543,7 +543,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $isCapitaine
      * @return Competiteur
      */
-    public function setIsCapitaine(bool $isCapitaine): Competiteur
+    public function setIsCapitaine(bool $isCapitaine): self
     {
         $this->isCapitaine = $isCapitaine;
         return $this;
@@ -561,7 +561,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $contactableMail
      * @return Competiteur
      */
-    public function setContactableMail(bool $contactableMail): Competiteur
+    public function setContactableMail(bool $contactableMail): self
     {
         $this->contactableMail = $contactableMail;
         return $this;
@@ -579,7 +579,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $contactableMail2
      * @return Competiteur
      */
-    public function setContactableMail2(bool $contactableMail2): Competiteur
+    public function setContactableMail2(bool $contactableMail2): self
     {
         $this->contactableMail2 = $contactableMail2;
         return $this;
@@ -597,7 +597,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $contactablePhoneNumber
      * @return Competiteur
      */
-    public function setContactablePhoneNumber(bool $contactablePhoneNumber): Competiteur
+    public function setContactablePhoneNumber(bool $contactablePhoneNumber): self
     {
         $this->contactablePhoneNumber = $contactablePhoneNumber;
         return $this;
@@ -615,7 +615,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $contactablePhoneNumber2
      * @return Competiteur
      */
-    public function setContactablePhoneNumber2(bool $contactablePhoneNumber2): Competiteur
+    public function setContactablePhoneNumber2(bool $contactablePhoneNumber2): self
     {
         $this->contactablePhoneNumber2 = $contactablePhoneNumber2;
         return $this;
@@ -625,7 +625,7 @@ class Competiteur implements UserInterface, Serializable
      * @param File|null $imageFile
      * @return Competiteur
      */
-    public function setImageFile(?File $imageFile): Competiteur
+    public function setImageFile(?File $imageFile): self
     {
         $this->imageFile = $imageFile;
         if ($this->imageFile instanceof UploadedFile) {
@@ -643,21 +643,21 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param DateTime $updatedAt
-     * @return Competiteur
+     * @return DateTime|null
      */
-    public function setUpdatedAt(DateTime $updatedAt): Competiteur
+    public function getUpdatedAt(): ?DateTime
     {
-        $this->updatedAt = $updatedAt;
-        return $this;
+        return $this->updatedAt;
     }
 
     /**
-     * @return DateTime
+     * @param DateTime|null $updatedAt
+     * @return Competiteur
      */
-    public function getUpdatedAt(): DateTime
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
-        return $this->updatedAt;
+        $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     /**
@@ -672,7 +672,7 @@ class Competiteur implements UserInterface, Serializable
      * @param string|null $avatar
      * @return Competiteur
      */
-    public function setAvatar(?string $avatar): Competiteur
+    public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
         return $this;

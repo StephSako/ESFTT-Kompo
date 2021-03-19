@@ -36,9 +36,9 @@
 
                         <div class="col s4 m2">
                             <h5>
-                                <span class="white-text bulle">{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.division.shortName }}{% if compo.idEquipe.division.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
+                                <span class="white-text bulle">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                             </h5>
-                            <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.poule.poule }}</span></p>
+                            <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span></p>
                         </div>
 
                         {% if compo.idJournee.undefined %}
@@ -75,15 +75,15 @@
                                     <div class="col s12 m9">{{ form_row(form.idJoueur3) }}</div>
                                 </div>
 
-                                {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.division.nbJoueursChampParis > 3) %}
+                                {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis > 3) %}
                                     <div class="row">
-                                        <div class="col s12 m3{% if compo.idEquipe.division.nbJoueursChampParis > 3 and compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
+                                        <div class="col s12 m3{% if compo.idEquipe.idDivision.nbJoueursChampParis > 3 and compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
                                         <div class="col s12 m9">{{ form_row(form.idJoueur4) }}</div>
                                     </div>
                                 {% endif %}
 
                                 {% if compo.idJournee.linkType == 'paris' %}
-                                    {% if compo.idEquipe.division.nbJoueursChampParis > 3 %}
+                                    {% if compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
                                         <div class="row">
                                             <div class="col s12 m3 light_blue"><h5>Joueur 5</h5></div>
                                             <div class="col s12 m9">{{ form_row(form.idJoueur5) }}</div>
@@ -112,7 +112,9 @@
                                     {% endif %}
                                 {% endif %}
                             </div>
-                        <br><button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
+                        <br>
+                        <a href="{{ path("journee.show", {type: type, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+                        <button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
                     {{ form_end(form) }}
                 </div>
             </div>

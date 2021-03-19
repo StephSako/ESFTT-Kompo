@@ -14,7 +14,7 @@ class EquipeParisType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('division', EntityType::class, array(
+            ->add('idDivision', EntityType::class, array(
                 'class' => 'App\Entity\Division',
                 'empty_data' => null,
                 'placeholder' => 'Définir vide',
@@ -26,7 +26,7 @@ class EquipeParisType extends AbstractType
                         ->orderBy('d.idDivision');
                 }
             ))
-            ->add('poule', EntityType::class, array(
+            ->add('idPoule', EntityType::class, array(
                 'class' => 'App\Entity\Poule',
                 'empty_data' => null,
                 'placeholder' => 'Définir vide',

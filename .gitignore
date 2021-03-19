@@ -9,6 +9,7 @@
 /vendor/
 /.env
 /public/.htaccess
+/src/Migrations
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

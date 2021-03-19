@@ -15,15 +15,15 @@
                 <tr>
                     <td>{{ equipe.idEquipe }}</td>
                     <td>
-                        {% if equipe.division %}
-                            {{ equipe.division.longName }}
+                        {% if equipe.idDivision %}
+                            {{ equipe.idDivision.longName }}
                         {% else %}
                             <span class="red-text lighten-2">Indéfinie</span>
                         {% endif %}
                     </td>
                     <td>
-                        {% if equipe.poule %}
-                            {{ equipe.poule.poule }}
+                        {% if equipe.idPoule %}
+                            {{ equipe.idPoule.poule }}
                         {% else %}
                             <span class="red-text lighten-2">Indéfinie</span>
                         {% endif %}

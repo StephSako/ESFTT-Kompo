@@ -3,10 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteParisRepository")
- * @ORM\Table(name="prive_disponibilite_paris")
+ * @ORM\Table(
+ *     name="prive_disponibilite_paris",
+ *     indexes={
+ *         @Index(name="IDX_A343DC8A28A339D", columns={"id_journee"}),
+ *         @Index(name="IDX_A343DC8A2EBEB6", columns={"id_competiteur"})
+ * })
  */
 class DisponibiliteParis
 {
@@ -27,18 +33,19 @@ class DisponibiliteParis
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposParis")
-     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis",)
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      * @var JourneeParis
      */
     private $idJournee;
 
     /**
+     * @var boolean
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;

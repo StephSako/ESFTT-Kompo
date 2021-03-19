@@ -14,7 +14,7 @@ class Poule
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id", nullable=false)
+     * @ORM\Column(type="integer", name="id_poule", nullable=false)
      */
     private $idPoule;
 
@@ -26,7 +26,7 @@ class Poule
      *      maxMessage = "La poule doit contenir exactement {{ limit }} lettre"
      * )
      *
-     * @ORM\Column(type="string", name="poule", nullable=false)
+     * @ORM\Column(type="string", name="poule", nullable=false, length=1)
      */
     private $poule;
 

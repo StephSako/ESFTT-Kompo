@@ -247,7 +247,7 @@ class HomeController extends AbstractController
             $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
 
             $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
-            $divisionNbJoueursChampParis = $compo->getIdEquipe()->getDivision()->getNbJoueursChampParis();
+            $divisionNbJoueursChampParis = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
             $journees = $this->journeeParisRepository->findAll();
             try {
                 $nbEquipes = $this->equipeParisRepository->getNbEquipesParis();

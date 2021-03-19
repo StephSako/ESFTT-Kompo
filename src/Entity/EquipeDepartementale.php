@@ -3,10 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeDepartementaleRepository")
- * @ORM\Table(name="prive_equipe_departementale")
+ * @ORM\Table(
+ *     name="prive_equipe_departementale",
+ *     indexes={
+ *         @Index(name="IDX_C1F64C55149AAA70", columns={"id_poule"}),
+ *         @Index(name="IDX_C1F64C5540CCAB81", columns={"id_division"})
+ * })
  */
 class EquipeDepartementale
 {
@@ -20,18 +26,18 @@ class EquipeDepartementale
     /**
      * @var Division|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Division", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Division", inversedBy="equipesDepartementales")
+     * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id_division", onDelete="SET NULL")
      */
-    private $division;
+    private $idDivision;
 
     /**
      * @var Poule|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id_poule")
      */
-    private $poule;
+    private $idPoule;
 
     /**
      * Liste des rencontres de l'équipe
@@ -60,36 +66,36 @@ class EquipeDepartementale
     /**
      * @return Division|null
      */
-    public function getDivision(): ?Division
+    public function getIdDivision(): ?Division
     {
-        return $this->division;
+        return $this->idDivision;
     }
 
     /**
-     * @param Division|null $division
+     * @param Division|null $idDivision
      * @return EquipeDepartementale
      */
-    public function setDivision(?Division $division): self
+    public function setIdDivision(?Division $idDivision): self
     {
-        $this->division = $division;
+        $this->idDivision = $idDivision;
         return $this;
     }
 
     /**
      * @return Poule|null
      */
-    public function getPoule(): ?Poule
+    public function getIdPoule(): ?Poule
     {
-        return $this->poule;
+        return $this->idPoule;
     }
 
     /**
-     * @param Poule|null $poule
+     * @param Poule|null $idPoule
      * @return EquipeDepartementale
      */
-    public function setPoule(?Poule $poule): self
+    public function setIdPoule(?Poule $idPoule): self
     {
-        $this->poule = $poule;
+        $this->idPoule = $idPoule;
         return $this;
     }
 

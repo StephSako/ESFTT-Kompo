@@ -14,7 +14,7 @@ class Division
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id", nullable=false)
+     * @ORM\Column(type="integer", name="id_division", nullable=false)
      */
     private $idDivision;
 
@@ -28,7 +28,7 @@ class Division
      *      maxMessage = "Le diminitif de la division doit contenir au maximum {{ limit }} lettres"
      * )
      *
-     * @ORM\Column(type="string", name="short_name", nullable=false)
+     * @ORM\Column(type="string", name="short_name", nullable=false, length=2)
      */
     private $shortName;
 
@@ -42,7 +42,7 @@ class Division
      *      maxMessage = "Le nom de la division doit contenir au maximum {{ limit }} lettres"
      * )
      *
-     * @ORM\Column(type="string", name="long_name", nullable=false)
+     * @ORM\Column(type="string", name="long_name", nullable=false, length=25)
      */
     private $longName;
 
@@ -64,6 +64,16 @@ class Division
     private $nbJoueursChampParis;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipeDepartementale", mappedBy="division")
+     */
+    protected $equipesDepartementales;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipeParis", mappedBy="division")
+     */
+    protected $equipesParis;
+
+    /**
      * @return mixed
      */
     public function getIdDivision()
@@ -82,6 +92,42 @@ class Division
     }
 
     /**
+     * @return string
+     */
+    public function getShortName(): string
+    {
+        return $this->shortName;
+    }
+
+    /**
+     * @param string $shortName
+     * @return Division
+     */
+    public function setShortName(string $shortName): self
+    {
+        $this->shortName = $shortName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLongName(): string
+    {
+        return $this->longName;
+    }
+
+    /**
+     * @param string $longName
+     * @return Division
+     */
+    public function setLongName(string $longName): self
+    {
+        $this->longName = $longName;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getNbJoueursChampParis(): ?int
@@ -93,7 +139,7 @@ class Division
      * @param int|null $nbJoueursChampParis
      * @return Division
      */
-    public function setNbJoueursChampParis(?int $nbJoueursChampParis): Division
+    public function setNbJoueursChampParis(?int $nbJoueursChampParis): self
     {
         $this->nbJoueursChampParis = $nbJoueursChampParis;
         return $this;
@@ -102,36 +148,36 @@ class Division
     /**
      * @return mixed
      */
-    public function getShortName()
+    public function getEquipesDepartementales()
     {
-        return $this->shortName;
+        return $this->equipesDepartementales;
     }
 
     /**
-     * @param mixed $shortName
+     * @param mixed $equipesDepartementales
      * @return Division
      */
-    public function setShortName($shortName): self
+    public function setEquipesDepartementales($equipesDepartementales): self
     {
-        $this->shortName = $shortName;
+        $this->equipesDepartementales = $equipesDepartementales;
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getLongName()
+    public function getEquipesParis()
     {
-        return $this->longName;
+        return $this->equipesParis;
     }
 
     /**
-     * @param mixed $longName
+     * @param mixed $equipesParis
      * @return Division
      */
-    public function setLongName($longName): self
+    public function setEquipesParis($equipesParis): self
     {
-        $this->longName = $longName;
+        $this->equipesParis = $equipesParis;
         return $this;
     }
 }

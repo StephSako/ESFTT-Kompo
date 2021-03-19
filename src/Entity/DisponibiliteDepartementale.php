@@ -3,10 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteDepartementaleRepository")
- * @ORM\Table(name="prive_disponibilite_departementale")
+ * @ORM\Table(
+ *     name="prive_disponibilite_departementale",
+ *     indexes={
+ *         @Index(name="IDX_50F05DCB28A339D", columns={"id_journee"}),
+ *         @Index(name="IDX_50F05DCB2EBEB6", columns={"id_competiteur"})
+ * })
  */
 class DisponibiliteDepartementale
 {
@@ -21,23 +27,24 @@ class DisponibiliteDepartementale
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id_disponibilite", nullable=false)
+     * @ORM\Column(type="integer", name="id_disponibilite")
      */
     private $idDisponibilite;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementales")
-     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale")
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
     private $idJournee;
 
     /**
+     * @var boolean
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;

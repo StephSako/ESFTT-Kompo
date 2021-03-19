@@ -4,11 +4,26 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RencontreParisRepository")
- * @ORM\Table(name="prive_rencontre_paris")
+ * @ORM\Table(
+ *     name="prive_rencontre_paris",
+ *     indexes={
+ *         @Index(name="IDX_E9FBFCF314128E72", columns={"id_joueur_4"}),
+ *         @Index(name="IDX_E9FBFCF31DA4C259", columns={"id_joueur_8"}),
+ *         @Index(name="IDX_E9FBFCF327E0FF8", columns={"id_equipe"}),
+ *         @Index(name="IDX_E9FBFCF328A339D", columns={"id_journee"}),
+ *         @Index(name="IDX_E9FBFCF36315BEE4", columns={"id_joueur_5"}),
+ *         @Index(name="IDX_E9FBFCF364787AFD", columns={"id_joueur_1"}),
+ *         @Index(name="IDX_E9FBFCF36AA3F2CF", columns={"id_joueur_9"}),
+ *         @Index(name="IDX_E9FBFCF38A761BD1", columns={"id_joueur_3"}),
+ *         @Index(name="IDX_E9FBFCF38D1BDFC8", columns={"id_joueur_7"}),
+ *         @Index(name="IDX_E9FBFCF3FA1CEF5E", columns={"id_joueur_6"}),
+ *         @Index(name="IDX_E9FBFCF3FD712B47", columns={"id_joueur_2"})
+ * })
  */
 class RencontreParis
 {
@@ -20,86 +35,85 @@ class RencontreParis
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis")
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee")
      * @var JourneeParis
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis")
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
     private $idJournee;
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="exempt", type="boolean", nullable=false)
      */
     private $exempt;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur1;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur2;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur3;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_4", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_4", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur4;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_5", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_5", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur5;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_6", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_6", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur6;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_7", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_7", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur7;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_8", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_8", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur8;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_9", nullable=true, referencedColumnName="id_competiteur")
      * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_9", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
     private $idJoueur9;
 
     /**
      * @var EquipeParis
      * @ORM\ManyToOne(targetEntity="App\Entity\EquipeParis", inversedBy="rencontresParis")
-     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
+     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
      */
     private $idEquipe;
 
