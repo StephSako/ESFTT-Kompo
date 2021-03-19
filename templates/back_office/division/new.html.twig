@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back office - Les divisions{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/edit/division.html.twig' as edit_division %}
+
+{% block body %}
+
+    {{ include("components/navbar_backoffice.html.twig") }}
+
+    <div class="container">
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        {{ form_errors(form) }}
+
+        {{ edit_division.division(form, 'Créer') }}
+    </div>
+
+{% endblock %}

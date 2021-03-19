@@ -18,6 +18,9 @@ class EquipeDepartementaleType extends AbstractType
         $builder
             ->add('division', EntityType::class, array(
                 'class' => 'App\Entity\Division',
+                'empty_data' => null,
+                'placeholder' => 'Définir vide',
+                'required' => false,
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
@@ -27,6 +30,9 @@ class EquipeDepartementaleType extends AbstractType
             ->add('poule', EntityType::class, array(
                 'class' => 'App\Entity\Poule',
                 'choice_label' => 'poule',
+                'empty_data' => null,
+                'placeholder' => 'Définir vide',
+                'required' => false,
                 'query_builder' => function (EntityRepository $pr) {
                     return $pr->createQueryBuilder('p')
                         ->orderBy('p.poule');

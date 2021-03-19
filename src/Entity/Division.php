@@ -36,7 +36,7 @@ class Division
      * @var string
      *
      * @Assert\Length(
-     *      min = 5,
+     *      min = 2,
      *      max = 25,
      *      minMessage = "Le nom de la division doit contenir au moins {{ limit }} lettres",
      *      maxMessage = "Le nom de la division doit contenir au maximum {{ limit }} lettres"

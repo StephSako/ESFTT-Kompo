@@ -19,13 +19,13 @@ class EquipeDepartementale
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Division", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_division", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id")
      */
     private $division;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_poule", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id")
      */
     private $poule;
 

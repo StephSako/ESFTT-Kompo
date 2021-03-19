@@ -153,37 +153,50 @@ class Competiteur implements UserInterface, Serializable
     private $phoneNumber2;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="is_capitaine", nullable=false)
      */
     private $isCapitaine = false;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="visitor", nullable=false)
      */
     private $visitor = false;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="contactable_mail", nullable=false)
      */
     private $contactableMail = false;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="contactable_mail2", nullable=false)
      */
     private $contactableMail2 = false;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="contactable_phone_number", nullable=false)
      */
     private $contactablePhoneNumber = false;
 
     /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="contactable_phone_number2", nullable=false)
      */
     private $contactablePhoneNumber2 = false;
 
     /**
      * @var string|null
+     *
      * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
      */
     private $avatar;
@@ -300,6 +313,9 @@ class Competiteur implements UserInterface, Serializable
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getRoles(): array
     {
         if (!$this->isVisitor()){
@@ -312,11 +328,17 @@ class Competiteur implements UserInterface, Serializable
         else return ['ROLE_VISITEUR'];
     }
 
+    /**
+     * @return null
+     */
     public function getSalt()
     {
         return null;
     }
 
+    /**
+     * @return string
+     */
     public function getUsername(): string
     {
         return $this->username;
@@ -325,6 +347,9 @@ class Competiteur implements UserInterface, Serializable
     public function eraseCredentials()
     { }
 
+    /**
+     * @return string|null
+     */
     public function serialize(): ?string
     {
         return serialize([
@@ -334,6 +359,9 @@ class Competiteur implements UserInterface, Serializable
         ]);
     }
 
+    /**
+     * @param $serialized
+     */
     public function unserialize($serialized)
     {
         list(

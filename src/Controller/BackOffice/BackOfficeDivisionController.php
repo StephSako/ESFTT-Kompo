@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Entity\Division;
 use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,6 +59,33 @@ class BackOfficeDivisionController extends AbstractController
 
         return $this->render('back_office/division/edit.html.twig', [
             'division' => $division,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/division/new", name="back_office.division.new")
+     * @param Request $request
+     * @return Response
+     */
+    public function new(Request $request): Response
+    {
+        $division = new Division();
+        $form = $this->createForm(DivisionFormType::class, $division);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()){
+            if ($form->isValid()){
+                $this->em->persist($division);
+                $this->em->flush();
+                $this->addFlash('success', 'Division créée avec succès !');
+                return $this->redirectToRoute('back_office.divisions');
+            } else {
+                $this->addFlash('fail', 'Une erreur est survenue ...');
+            }
+        }
+
+        return $this->render('back_office/division/new.html.twig', [
             'form' => $form->createView()
         ]);
     }

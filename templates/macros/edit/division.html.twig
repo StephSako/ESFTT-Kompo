@@ -1,6 +1,6 @@
-{% macro division(form) %}
+{% macro division(form, btnText) %}
     <div class="card-panel center-align">
-        <h4 class="h4_form">Modifier la division</h4>
+        <h4 class="h4_form">{{ btnText }} une division</h4>
 
         {{ form_start(form) }}
         <div class="row">
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+        <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}
