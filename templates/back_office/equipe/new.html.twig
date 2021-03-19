@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/equipe.html.twig' as edit %}
+{% import 'macros/edit/equipe.html.twig' as edit_equipe %}
 
-{% block title %}Modifier l'équipe{% endblock %}
+{% block title %}Back office - Les équipes{% endblock %}
 
 {% block body %}
 
-    {% include("components/navbar_backoffice.html.twig") %}
+    {{ include("components/navbar_backoffice.html.twig") }}
 
     <div class="container">
-
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
         {% endfor %}
@@ -18,7 +17,9 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ edit.equipe(form, 'Modifier') }}
+        {{ form_errors(form) }}
+
+        {{ edit_equipe.equipe(form, 'Créer') }}
     </div>
 
 {% endblock %}

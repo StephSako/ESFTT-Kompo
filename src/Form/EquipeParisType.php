@@ -22,6 +22,7 @@ class EquipeParisType extends AbstractType
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
+                        ->where('d.nbJoueursChampParis IS NOT NULL')
                         ->orderBy('d.idDivision');
                 }
             ))

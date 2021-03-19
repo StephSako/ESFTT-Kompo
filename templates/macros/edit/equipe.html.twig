@@ -1,6 +1,6 @@
-{% macro equipe(form) %}
+{% macro equipe(form, btnText) %}
     <div class="card-panel center-align">
-        <h4 class="h4_form">Modifier l'équipe</h4>
+        <h4 class="h4_form">{{ btnText }} une équipe</h4>
 
         {{ form_start(form) }}
             <div class="row form_div_list">
@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
         {{ form_end(form) }}
     </div>
 {% endmacro %}

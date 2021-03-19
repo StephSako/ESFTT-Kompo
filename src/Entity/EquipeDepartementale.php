@@ -18,12 +18,16 @@ class EquipeDepartementale
     private $idEquipe;
 
     /**
+     * @var Division|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Division", cascade={"persist"})
      * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id")
      */
     private $division;
 
     /**
+     * @var Poule|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
      * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id")
      */
@@ -47,43 +51,43 @@ class EquipeDepartementale
      * @param mixed $idEquipe
      * @return EquipeDepartementale
      */
-    public function setIdEquipe($idEquipe): EquipeDepartementale
+    public function setIdEquipe($idEquipe): self
     {
         $this->idEquipe = $idEquipe;
         return $this;
     }
 
     /**
-     * @return Division
+     * @return Division|null
      */
-    public function getDivision(): Division
+    public function getDivision(): ?Division
     {
         return $this->division;
     }
 
     /**
-     * @param mixed $division
+     * @param Division|null $division
      * @return EquipeDepartementale
      */
-    public function setDivision($division): EquipeDepartementale
+    public function setDivision(?Division $division): self
     {
         $this->division = $division;
         return $this;
     }
 
     /**
-     * @return Poule
+     * @return Poule|null
      */
-    public function getPoule(): Poule
+    public function getPoule(): ?Poule
     {
         return $this->poule;
     }
 
     /**
-     * @param mixed $poule
+     * @param Poule|null $poule
      * @return EquipeDepartementale
      */
-    public function setPoule($poule): EquipeDepartementale
+    public function setPoule(?Poule $poule): self
     {
         $this->poule = $poule;
         return $this;
@@ -101,7 +105,7 @@ class EquipeDepartementale
      * @param mixed $rencontresDepartementales
      * @return EquipeDepartementale
      */
-    public function setRencontresDepartementales($rencontresDepartementales)
+    public function setRencontresDepartementales($rencontresDepartementales): self
     {
         $this->rencontresDepartementales = $rencontresDepartementales;
         return $this;

@@ -41,11 +41,11 @@ class BackOfficeDivisionController extends AbstractController
 
     /**
      * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit")
-     * @param $idDivision
+     * @param int $idDivision
      * @param Request $request
      * @return Response
      */
-    public function update($idDivision, Request $request): Response
+    public function edit(int $idDivision, Request $request): Response
     {
         if (!($division = $this->divisionRepository->find($idDivision))) throw $this->createNotFoundException('Division inexistante');
         $form = $this->createForm(DivisionFormType::class, $division);

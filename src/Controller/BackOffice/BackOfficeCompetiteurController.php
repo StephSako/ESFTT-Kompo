@@ -80,13 +80,14 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/{id}", name="backoffice.competiteur.edit")
-     * @param Competiteur $competiteur
+     * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit")
+     * @param int $idCompetiteur
      * @param Request $request
      * @return Response
      */
-    public function edit(Competiteur $competiteur, Request $request): Response
+    public function edit(int $idCompetiteur, Request $request): Response
     {
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
         $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
         $form->handleRequest($request);
 

@@ -17,6 +17,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
         $builder
             ->add('adversaire', TextType::class,[
                 'label' => false,
+                'required' => false,
                 'attr' => [
                     'placeholder' => 'Adversaire + n° équipe'
                 ]]

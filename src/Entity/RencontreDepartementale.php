@@ -87,14 +87,14 @@ class RencontreDepartementale
     private $dateReport;
 
     /**
-     * @var String
+     * @var String|null
      *
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "L'adversaire doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(name="adversaire", type="string", length=100)
+     * @ORM\Column(name="adversaire", nullable=true, type="string", length=100)
      */
     private $adversaire;
 

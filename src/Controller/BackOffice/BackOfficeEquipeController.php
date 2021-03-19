@@ -2,10 +2,17 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Entity\EquipeDepartementale;
+use App\Entity\EquipeParis;
+use App\Entity\RencontreDepartementale;
+use App\Entity\RencontreParis;
 use App\Form\EquipeDepartementaleType;
 use App\Form\EquipeParisType;
 use App\Repository\EquipeDepartementaleRepository;
 use App\Repository\EquipeParisRepository;
+use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeParisRepository;
+use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,20 +24,32 @@ class BackOfficeEquipeController extends AbstractController
     private $em;
     private $equipeDepartementaleRepository;
     private $equipeParisRepository;
+    private $journeeDepartementaleRepository;
+    private $journeeParisRepository;
+    private $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
      * @param EquipeParisRepository $equipeParisRepository
+     * @param JourneeDepartementaleRepository $journeesDepartementaleRepository
+     * @param JourneeParisRepository $journeesParisRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository,
                                 EquipeParisRepository $equipeParisRepository,
+                                JourneeDepartementaleRepository $journeesDepartementaleRepository,
+                                JourneeParisRepository $journeesParisRepository,
+                                RencontreParisRepository $rencontreParisRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
         $this->equipeParisRepository = $equipeParisRepository;
+        $this->journeeDepartementaleRepository = $journeesDepartementaleRepository;
+        $this->journeeParisRepository = $journeesParisRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
     }
 
     /**
@@ -46,13 +65,91 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
-     * @param $idEquipe
-     * @param $type
+     * @Route("/backoffice/equipe/{type}/new", name="back_office.equipe.new")
+     * @param string $type
      * @param Request $request
      * @return Response
      */
-    public function update($type, $idEquipe, Request $request): Response
+    public function new(string $type, Request $request): Response
+    {
+        if ($type != 'departementale' && $type != 'paris') throw $this->createNotFoundException('Championnat inexistant');
+        $equipe = ($type == 'departementale' ? new EquipeDepartementale() : new EquipeParis());
+        $form = $this->createForm(($type == 'departementale' ? EquipeDepartementaleType::class : EquipeParisType::class), $equipe);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()){
+            if ($form->isValid()){
+                $this->em->persist($equipe);
+                $this->em->flush();
+
+                // Créer les rencontres de l'équipe créée
+                if ($type == 'departementale'){
+                    $journees = $this->journeeDepartementaleRepository->findAll();
+                    foreach ($journees as $journee){
+                        $rencontre = new RencontreDepartementale();
+                        $rencontre
+                            ->setIdJournee($journee)
+                            ->setIdEquipe($equipe)
+                            ->setIdJoueur1(null)
+                            ->setIdJoueur2(null)
+                            ->setIdJoueur3(null)
+                            ->setIdJoueur4(null)
+                            ->setDomicile(true)
+                            ->setHosted(false)
+                            ->setDateReport($journee->getDate())
+                            ->setReporte(false)
+                            ->setAdversaire(null)
+                            ->setExempt(false);
+                        $this->em->persist($rencontre);
+                    }
+                }
+                else if ($type == 'paris'){
+                    $journees = $this->journeeParisRepository->findAll();
+                    foreach ($journees as $journee){
+                        $rencontre = new RencontreParis();
+                        $rencontre
+                            ->setIdJournee($journee)
+                            ->setIdEquipe($equipe)
+                            ->setIdJoueur1(null)
+                            ->setIdJoueur2(null)
+                            ->setIdJoueur3(null)
+                            ->setIdJoueur4(null)
+                            ->setIdJoueur5(null)
+                            ->setIdJoueur6(null)
+                            ->setIdJoueur7(null)
+                            ->setIdJoueur8(null)
+                            ->setIdJoueur9(null)
+                            ->setDomicile(true)
+                            ->setHosted(false)
+                            ->setDateReport($journee->getDate())
+                            ->setReporte(false)
+                            ->setAdversaire(null)
+                            ->setExempt(false);
+                        $this->em->persist($rencontre);
+                    }
+                }
+                $this->em->flush();
+
+                $this->addFlash('success', 'Equipe créée avec succès !');
+                return $this->redirectToRoute('back_office.equipes');
+            } else {
+                $this->addFlash('fail', 'Une erreur est survenue ...');
+            }
+        }
+
+        return $this->render('back_office/equipe/new.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
+     * @param int $idEquipe
+     * @param string $type
+     * @param Request $request
+     * @return Response
+     */
+    public function edit(string $type, int $idEquipe, Request $request): Response
     {
         $form = null;
         if ($type == 'departementale'){
@@ -68,9 +165,29 @@ class BackOfficeEquipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            // Désinscrire les joueurs superflus en cas de changement de division pour une équipe du championnat de Paris
+            if ($type == 'paris') {
+                $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+                foreach ($rencontres as $rencontre){
+                    if ($equipe->getDivision()->getNbJoueursChampParis() <= 3) {
+                        $rencontre
+                            ->setIdJoueur4(null)
+                            ->setIdJoueur5(null)
+                            ->setIdJoueur6(null);
+                    }
+                    if ($equipe->getDivision()->getNbJoueursChampParis() <= 6) {
+                        $rencontre
+                            ->setIdJoueur7(null)
+                            ->setIdJoueur8(null)
+                            ->setIdJoueur9(null);
+                    }
+                    $this->em->persist($rencontre);
+                }
+            }
+
             $this->em->flush();
             $this->addFlash('success', 'Equipe modifiée avec succès !');
-            return $this->redirectToRoute('back_office.equipe');
+            return $this->redirectToRoute('back_office.equipes');
         }
 
         return $this->render('back_office/equipe/edit.html.twig', [

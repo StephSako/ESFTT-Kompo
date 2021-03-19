@@ -14,8 +14,20 @@
             {% for equipe in equipes %}
                 <tr>
                     <td>{{ equipe.idEquipe }}</td>
-                    <td>{{ equipe.division.longName }}</td>
-                    <td>{{ equipe.poule.poule }}</td>
+                    <td>
+                        {% if equipe.division %}
+                            {{ equipe.division.longName }}
+                        {% else %}
+                            <span class="red-text lighten-2">Indéfinie</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if equipe.poule %}
+                            {{ equipe.poule.poule }}
+                        {% else %}
+                            <span class="red-text lighten-2">Indéfinie</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{{ path('backoffice.equipe.edit', {type: type, idEquipe: equipe.idEquipe}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">
                             <i class="material-icons">edit</i>

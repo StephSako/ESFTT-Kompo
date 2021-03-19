@@ -242,11 +242,11 @@
                         {% endif %}
                     {% else %}
                         {% if not dispo.licence and dispo.classement_officiel %}
-                            <p class="red-text lighten-2">Licence non renseignée<br>
+                            <p class="red-text lighten-2">Licence indéfinie<br>
                         {% elseif dispo.licence and not dispo.classement_officiel %}
-                            <p class="red-text lighten-2">Classement non renseigné<br>
+                            <p class="red-text lighten-2">Classement indéfini<br>
                         {% elseif not dispo.licence and not dispo.classement_officiel %}
-                            <p class="red-text lighten-2">Licence et classement non renseignés<br>
+                            <p class="red-text lighten-2">Licence et classement indéfinis<br>
                         {% endif %}
                         <a href="{{ path('backoffice.competiteur.edit', {id: dispo.idCompetiteur}) }}">Corriger</a></p>
                     {% endif %}

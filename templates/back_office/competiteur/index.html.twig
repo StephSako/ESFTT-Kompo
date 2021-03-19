@@ -23,7 +23,7 @@
 
         <div class="card-panel center">
 
-            <a style="margin-bottom: 20px;" href="{{ path('back_office.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">person_add</i> Créer un compétiteur</a>
+            <a style="margin-bottom: 20px;" href="{{ path('back_office.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer un compétiteur</a>
 
             <table class="striped centered responsive-table table_competiteur_backoffice">
                 <thead>
@@ -66,7 +66,7 @@
                                 {% if competiteur.licence %}
                                     {{ competiteur.licence }}
                                 {% else %}
-                                    <span class="red-text lighten-2">Non renseignée</span>
+                                    <span class="red-text lighten-2">Indéfinie</span>
                                 {% endif %}
                             {% endif %}
                         </td>
@@ -82,7 +82,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ path('backoffice.competiteur.edit', {id: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                            <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                         </td>
                         <td>
                             <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer le joueur ?')">

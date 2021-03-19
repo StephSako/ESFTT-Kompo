@@ -18,12 +18,16 @@ class EquipeParis
     private $idEquipe;
 
     /**
+     * @var Division|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Division", cascade={"persist"})
      * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id")
      */
     private $division;
 
     /**
+     * @var Poule|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
      * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id")
      */
@@ -47,45 +51,9 @@ class EquipeParis
      * @param mixed $idEquipe
      * @return EquipeParis
      */
-    public function setIdEquipe($idEquipe): EquipeParis
+    public function setIdEquipe($idEquipe): self
     {
         $this->idEquipe = $idEquipe;
-        return $this;
-    }
-
-    /**
-     * @return Division
-     */
-    public function getDivision(): Division
-    {
-        return $this->division;
-    }
-
-    /**
-     * @param mixed $division
-     * @return EquipeParis
-     */
-    public function setDivision($division): EquipeParis
-    {
-        $this->division = $division;
-        return $this;
-    }
-
-    /**
-     * @return Poule
-     */
-    public function getPoule(): Poule
-    {
-        return $this->poule;
-    }
-
-    /**
-     * @param mixed $poule
-     * @return EquipeParis
-     */
-    public function setPoule($poule): EquipeParis
-    {
-        $this->poule = $poule;
         return $this;
     }
 
@@ -101,9 +69,45 @@ class EquipeParis
      * @param mixed $rencontresParis
      * @return EquipeParis
      */
-    public function setRencontresParis($rencontresParis)
+    public function setRencontresParis($rencontresParis): self
     {
         $this->rencontresParis = $rencontresParis;
+        return $this;
+    }
+
+    /**
+     * @return Division|null
+     */
+    public function getDivision(): ?Division
+    {
+        return $this->division;
+    }
+
+    /**
+     * @param Division|null $division
+     * @return EquipeParis
+     */
+    public function setDivision(?Division $division): self
+    {
+        $this->division = $division;
+        return $this;
+    }
+
+    /**
+     * @return Poule|null
+     */
+    public function getPoule(): ?Poule
+    {
+        return $this->poule;
+    }
+
+    /**
+     * @param Poule|null $poule
+     * @return EquipeParis
+     */
+    public function setPoule(?Poule $poule): self
+    {
+        $this->poule = $poule;
         return $this;
     }
 }
