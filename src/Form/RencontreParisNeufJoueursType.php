@@ -18,7 +18,7 @@ class RencontreParisNeufJoueursType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('idJoueur1', EntityType::class, array(
+            ->add('idJoueur1', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -48,8 +48,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur2', EntityType::class, array(
+            ])
+            ->add('idJoueur2', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -79,8 +79,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur3', EntityType::class, array(
+            ])
+            ->add('idJoueur3', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -110,8 +110,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur4', EntityType::class, array(
+            ])
+            ->add('idJoueur4', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -141,8 +141,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur5', EntityType::class, array(
+            ])
+            ->add('idJoueur5', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -172,8 +172,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur6', EntityType::class, array(
+            ])
+            ->add('idJoueur6', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -203,8 +203,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur7', EntityType::class, array(
+            ])
+            ->add('idJoueur7', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -234,8 +234,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur8', EntityType::class, array(
+            ])
+            ->add('idJoueur8', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -265,8 +265,8 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur9', EntityType::class, array(
+            ])
+            ->add('idJoueur9', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -296,7 +296,7 @@ class RencontreParisNeufJoueursType extends AbstractType
                         ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> " . $builder->getData()->getIdEquipe()->getIdEquipe() . ")")
                         ->orderBy('c.nom');
                 }
-            ));
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -22,27 +22,45 @@
                 {% endfor %}
 
                 <div class="center-align card-panel">
+
+                    {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
+                        <p class="orange-text text-darken-4" style="margin-top: 0;">
+                            Le nombre correct de joueurs sera mis à jour lorsque la division de l'équipe sera renseignée <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: compo.idJournee.linkType}) }}">ici</a>
+                        </p>
+                    {% endif %}
+
                     <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
                     <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
 
                     <div class="row header_compo">
-                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i>Salle indisponible : rencontre à Herblay</span>{% endif %}
 
                         {% if compo.adversaire is null %}
-                            <h5 class="col s12 m5 hide-on-med-and-up lobster_2 red-text"><b>Adversaire indéfini</b></h5>
+                            <h5 class="col s12 m5 hide-on-med-and-up lobster_2 red-text">Adversaire indéfini</h5>
                         {% else %}
                             <h5 class="col s12 m5 hide-on-med-and-up lobster_2">{{ compo.adversaire | title }}</h5>
                         {% endif %}
 
                         <div class="col s4 m2">
                             <h5>
-                                <span class="white-text bulle">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
+                                {% if compo.idEquipe.idDivision %}
+                                    <span class="white-text bulle">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
+                                {% else %}
+                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
+                                {% endif %}
                             </h5>
-                            <p class="poule">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span></p>
+                            <p class="poule" style="margin-bottom: 0;">
+                                Poule
+                                {% if compo.idEquipe.idPoule %}
+                                    <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span>
+                                {% else %}
+                                    <span class="red-text" style="font-size: 95%; font-family: 'Lora', serif;">?</span>
+                                {% endif %}
+                            </p>
                         </div>
 
                         {% if compo.idJournee.undefined %}
-                            <h5 class="col s4 m3 red-text"><b>?/?</b></h5>
+                            <h5 class="col s4 m3 red-text">?/?</h5>
                         {% else %}
                             <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.date|date('d/m') }}</h5>
                         {% endif %}
@@ -54,7 +72,7 @@
                         </h5>
 
                         {% if compo.adversaire is null %}
-                            <h5 class="hide-on-small-only col s12 m5 red-text"><b>Adversaire indéfini</b></h5>
+                            <h5 class="hide-on-small-only col s12 m5 red-text">Adversaire indéfini</h5>
                         {% else %}
                             <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title }}</h5>
                         {% endif %}
@@ -75,15 +93,15 @@
                                     <div class="col s12 m9">{{ form_row(form.idJoueur3) }}</div>
                                 </div>
 
-                                {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis > 3) %}
+                                {% if (compo.idJournee.linkType == 'departementale') or (compo.idJournee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3)) %}
                                     <div class="row">
-                                        <div class="col s12 m3{% if compo.idEquipe.idDivision.nbJoueursChampParis > 3 and compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
+                                        <div class="col s12 m3{% if compo.idJournee.linkType == 'paris' %} light_blue{% endif %}"><h5>Joueur 4</h5></div>
                                         <div class="col s12 m9">{{ form_row(form.idJoueur4) }}</div>
                                     </div>
                                 {% endif %}
 
                                 {% if compo.idJournee.linkType == 'paris' %}
-                                    {% if compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
+                                    {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
                                         <div class="row">
                                             <div class="col s12 m3 light_blue"><h5>Joueur 5</h5></div>
                                             <div class="col s12 m9">{{ form_row(form.idJoueur5) }}</div>
@@ -94,7 +112,7 @@
                                             <div class="col s12 m9">{{ form_row(form.idJoueur6) }}</div>
                                         </div>
                                     {% endif %}
-                                    {% if compo.idEquipe.division.nbJoueursChampParis > 6 %}
+                                    {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 6 %}
                                         <div class="row">
                                             <div class="col s12 m3"><h5>Joueur 7</h5></div>
                                             <div class="col s12 m9">{{ form_row(form.idJoueur7) }}</div>

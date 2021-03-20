@@ -16,20 +16,22 @@ class EquipeDepartementaleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('idDivision', EntityType::class, array(
+            ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
                 'empty_data' => null,
                 'placeholder' => 'Définir vide',
                 'required' => false,
+                'label' => false,
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
                         ->orderBy('d.idDivision');
                 }
-            ))
-            ->add('idPoule', EntityType::class, array(
+            ])
+            ->add('idPoule', EntityType::class, [
                 'class' => 'App\Entity\Poule',
                 'choice_label' => 'poule',
+                'label' => false,
                 'empty_data' => null,
                 'placeholder' => 'Définir vide',
                 'required' => false,
@@ -37,7 +39,7 @@ class EquipeDepartementaleType extends AbstractType
                     return $pr->createQueryBuilder('p')
                         ->orderBy('p.poule');
                 }
-            ));
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

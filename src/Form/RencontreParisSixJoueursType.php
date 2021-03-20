@@ -18,7 +18,7 @@ class RencontreParisSixJoueursType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('idJoueur1', EntityType::class, array(
+            ->add('idJoueur1', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -50,8 +50,8 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur2', EntityType::class, array(
+            ])
+            ->add('idJoueur2', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -83,8 +83,8 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur3', EntityType::class, array(
+            ])
+            ->add('idJoueur3', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -116,8 +116,8 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur4', EntityType::class, array(
+            ])
+            ->add('idJoueur4', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -149,8 +149,8 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur5', EntityType::class, array(
+            ])
+            ->add('idJoueur5', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -182,8 +182,8 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur6', EntityType::class, array(
+            ])
+            ->add('idJoueur6', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -215,7 +215,7 @@ class RencontreParisSixJoueursType extends AbstractType
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->orderBy('c.nom');
                 }
-            ));
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -102,16 +102,34 @@
             {% if compos|length > 0 %}
                 {% for compo in compos %}
                     <div class="center card-panel">
+
+                        {% if journee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
+                            <p class="orange-text text-darken-4" style="margin-top: 0;">
+                                Le nombre correct de joueurs sera mis à jour lorsque la division de l'équipe sera renseignée <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: journee.linkType}) }}">ici</a>
+                            </p>
+                        {% endif %}
+
                         <div class="row header_compo">
 
                             {% if compo.reporte %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">update</i><b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b></span>{% endif %}
-                            {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 15px;" class="col s12 orange-text"><i class="material-icons">error_outline</i><b>Salle indisponible : rencontre à Herblay</b></span>{% endif %}
+                            {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 15px;" class="col s12 orange-text"><i class="material-icons">error_outline</i>Salle indisponible : rencontre à Herblay</span>{% endif %}
 
                             <div class="col s4 m2">
                                 <h5>
+                                {% if compo.idEquipe.idDivision %}
                                     <span class="white-text bulle">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
+                                {% else %}
+                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
+                                {% endif %}
                                 </h5>
-                                <p class="poule" style="margin-bottom: 0;">Poule <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span></p>
+                                <p class="poule" style="margin-bottom: 0;">
+                                    Poule
+                                    {% if compo.idEquipe.idPoule %}
+                                        <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span>
+                                    {% else %}
+                                        <span class="red-text" style="font-size: 95%; font-family: 'Lora', serif;">?</span>
+                                    {% endif %}
+                                </p>
                             </div>
 
                             <div class="col s4 m3">
@@ -169,22 +187,22 @@
                             <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idEquipe.idDivision.nbJoueursChampParis >= 4 and compo.idEquipe.idDivision.nbJoueursChampParis <= 9 and compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
+                        <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                             <tbody>
                             {{ _composition.tr("1", compo.idJoueur1) }}
                             {{ _composition.tr("2", compo.idJoueur2) }}
                             {{ _composition.tr("3", compo.idJoueur3) }}
 
-                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis > 3) %}
+                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3)) %}
                                 {{ _composition.tr("4", compo.idJoueur4) }}
                             {% endif %}
 
                             {% if journee.linkType == 'paris' %}
-                                {% if compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
+                                {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
                                     {{ _composition.tr("5", compo.idJoueur5) }}
                                     {{ _composition.tr("6", compo.idJoueur6) }}
                                 {% endif %}
-                                {% if compo.idEquipe.idDivision.nbJoueursChampParis > 6 %}
+                                {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 6 %}
                                     {{ _composition.tr("7", compo.idJoueur7) }}
                                     {{ _composition.tr("8", compo.idJoueur8) }}
                                     {{ _composition.tr("9", compo.idJoueur9) }}
@@ -201,19 +219,19 @@
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
                                     {% endif %}
-                                {% elseif journee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis == 3 %}
+                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 3) %}
                                     {% if compo.isEmptyTroisJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
                                     {% endif %}
-                                {% elseif journee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis == 6 %}
+                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 6) %}
                                     {% if compo.isEmptySixJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
                                         {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
                                     {% endif %}
-                                {% elseif journee.linkType == 'paris' and compo.idEquipe.idDivision.nbJoueursChampParis == 9 %}
+                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 9) %}
                                     {% if compo.isEmptyNeufJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                     {% else %}
                                         {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}

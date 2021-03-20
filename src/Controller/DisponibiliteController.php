@@ -85,10 +85,10 @@ class DisponibiliteController extends AbstractController
         } else $this->addFlash('fail', 'Compétition non renseignée !');
 
         return $this->redirectToRoute('journee.show',
-            array(
+            [
                 'type' => $type,
                 'id' => $journee->getIdJournee()
-            )
+            ]
         );
     }
 
@@ -126,10 +126,10 @@ class DisponibiliteController extends AbstractController
         } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
 
         return $this->redirectToRoute('journee.show',
-            array(
+            [
                 'type' => $type,
                 'id' => $journee
-            )
+            ]
         );
     }
 }

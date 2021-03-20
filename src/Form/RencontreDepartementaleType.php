@@ -18,7 +18,7 @@ class RencontreDepartementaleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('idJoueur1', EntityType::class, array(
+            ->add('idJoueur1', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -45,8 +45,8 @@ class RencontreDepartementaleType extends AbstractType
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur2', EntityType::class, array(
+            ])
+            ->add('idJoueur2', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -73,8 +73,8 @@ class RencontreDepartementaleType extends AbstractType
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur3', EntityType::class, array(
+            ])
+            ->add('idJoueur3', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -101,8 +101,8 @@ class RencontreDepartementaleType extends AbstractType
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
                         ->orderBy('c.nom');
                 }
-            ))
-            ->add('idJoueur4', EntityType::class, array(
+            ])
+            ->add('idJoueur4', EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use($builder) {
                     return $competiteur->getSelect();
@@ -129,7 +129,7 @@ class RencontreDepartementaleType extends AbstractType
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
                         ->orderBy('c.nom');
                 }
-            ));
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

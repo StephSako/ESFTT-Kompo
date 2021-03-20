@@ -169,19 +169,21 @@ class BackOfficeEquipeController extends AbstractController
             if ($type == 'paris') {
                 $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
                 foreach ($rencontres as $rencontre){
-                    if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 3) {
-                        $rencontre
-                            ->setIdJoueur4(null)
-                            ->setIdJoueur5(null)
-                            ->setIdJoueur6(null);
+                    if ($equipe->getIdDivision()){
+                        if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 3) {
+                            $rencontre
+                                ->setIdJoueur4(null)
+                                ->setIdJoueur5(null)
+                                ->setIdJoueur6(null);
+                        }
+                        if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 6) {
+                            $rencontre
+                                ->setIdJoueur7(null)
+                                ->setIdJoueur8(null)
+                                ->setIdJoueur9(null);
+                        }
+                        $this->em->persist($rencontre);
                     }
-                    if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 6) {
-                        $rencontre
-                            ->setIdJoueur7(null)
-                            ->setIdJoueur8(null)
-                            ->setIdJoueur9(null);
-                    }
-                    $this->em->persist($rencontre);
                 }
             }
 
