@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, btn_text) %}
+{% macro edit_account(type, title, form, urlImage, btn_text, options) %}
     <style>
         .col {
             margin-top: 20px;
@@ -18,9 +18,9 @@
                     <span><i class="material-icons prefix">account_circle</i> Pseudo</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
 
-                {% if type == 'backoffice' %}
+                {% if 'ROLE_ADMIN' in app.token.roleNames %}
                     <div class="col s12 m6">
-                        {{ form_row(form.role) }}
+                        {{ form_row(form.isCapitaine) }}
                     </div>
                     <div class="col s12 m6">
                         {{ form_row(form.visitor) }}
@@ -28,40 +28,42 @@
                 {% endif %}
             </div>
 
-            <div class="row section">
-                <h5>Contacts</h5>
+            {% if type == 'general' or (('ROLE_ADMIN' in app.token.roleNames or ('ROLE_CAPITAINE' in app.token.roleNames and options.idActualUser == options.competiteurId)) and type == 'backoffice') %}
+                <div class="row section">
+                    <h5>Contacts</h5>
 
-                <div class="col s12 m6 offset-m1">
-                    <span><i class="material-icons prefix">mail</i> Adresse mail</span>{{ form_row(form.mail) }}
+                    <div class="col s12 m6 offset-m1">
+                        <span><i class="material-icons prefix">mail</i> Adresse mail</span>{{ form_row(form.mail) }}
+                    </div>
+                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                        {{ form_row(form.contactableMail) }}
+                    </div>
                 </div>
-                <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                    {{ form_row(form.contactableMail) }}
+                <div class="row">
+                    <div class="col s12 m6 offset-m1">
+                        <span><i class="material-icons prefix">mail</i> Adresse mail bis</span>{{ form_row(form.mail2) }}
+                    </div>
+                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                        {{ form_row(form.contactableMail2) }}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 offset-m1">
-                    <span><i class="material-icons prefix">mail</i> Adresse mail bis</span>{{ form_row(form.mail2) }}
+                <div class="row">
+                    <div class="col s12 m6 offset-m1">
+                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone</span>{{ form_row(form.phoneNumber) }}
+                    </div>
+                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                        {{ form_row(form.contactablePhoneNumber) }}
+                    </div>
                 </div>
-                <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                    {{ form_row(form.contactableMail2) }}
+                <div class="row">
+                    <div class="col s12 m6 offset-m1">
+                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone bis</span>{{ form_row(form.phoneNumber2) }}
+                    </div>
+                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                        {{ form_row(form.contactablePhoneNumber2) }}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 offset-m1">
-                    <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone</span>{{ form_row(form.phoneNumber) }}
-                </div>
-                <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                    {{ form_row(form.contactablePhoneNumber) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m6 offset-m1">
-                    <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone bis</span>{{ form_row(form.phoneNumber2) }}
-                </div>
-                <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                    {{ form_row(form.contactablePhoneNumber2) }}
-                </div>
-            </div>
+            {% endif %}
 
             <div class="row section" style="margin-bottom: 0;">
                 <h5>Informations Ping</h5>

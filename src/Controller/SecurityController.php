@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\BackofficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
@@ -40,7 +41,7 @@ class SecurityController extends AbstractController
      * @param AuthenticationUtils $utils
      * @return Response
      */
-    public function loginAction(AuthenticationUtils $utils): Response
+    public function login(AuthenticationUtils $utils): Response
     {
         if ($this->getUser() != null){
             return $this->redirectToRoute('index');
@@ -57,18 +58,19 @@ class SecurityController extends AbstractController
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function home(Request $request){
+    public function edit(Request $request){
         $journees = [];
         if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
         else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
 
         $user = $this->getUser();
 
-        $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
-        $formCompetiteur->handleRequest($request);
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackofficeCompetiteurAdminType::class, $user);
+        else $form = $this->createForm(CompetiteurType::class, $user);
+        $form->handleRequest($request);
 
-        if ($formCompetiteur->isSubmitted()) {
-            if ($formCompetiteur->isValid()){
+        if ($form->isSubmitted()) {
+            if ($form->isValid()){
                 $this->em->flush();
                 $this->addFlash('success', 'Informations modifiées !');
                 return $this->redirectToRoute('account');
@@ -84,7 +86,7 @@ class SecurityController extends AbstractController
             'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
             'journees' => $journees,
-            'form' => $formCompetiteur->createView()
+            'form' => $form->createView()
         ]);
     }
 

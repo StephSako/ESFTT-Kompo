@@ -38,6 +38,9 @@
                             <th class="hide-on-small-only">Classement</th>
                             <th class="hide-on-med-and-up">Class.</th>
                             <th></th>
+                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                <th></th>
+                            {% endif %}
                         </tr>
                     </thead>
 
@@ -46,7 +49,9 @@
                         <tr>
                             <td>
                                 {% if not competiteur.visitor %}
-                                    {% if competiteur.role %}
+                                    {% if competiteur.isAdmin %}
+                                        <span class="new badge red" data-badge-caption="Administrateur"></span>
+                                    {% elseif competiteur.isCapitaine %}
                                         <span class="new badge blue" data-badge-caption="Capitaine"></span>
                                     {% else %}
                                         <span class="new badge green" data-badge-caption="Joueur"></span>
@@ -85,15 +90,17 @@
                             <td>
                                 <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                             </td>
-                            <td>
-                                <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer le joueur ?')">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
-                                    <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </form>
-                            </td>
+                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                <td>
+                                    <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer le joueur ?')">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
+                                        <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </form>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

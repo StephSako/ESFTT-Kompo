@@ -4,7 +4,9 @@ namespace App\Controller\BackOffice;
 
 use App\Controller\InvalidSelectionController;
 use App\Entity\Competiteur;
-use App\Form\BackofficeCompetiteurType;
+use App\Form\BackofficeCompetiteurAdminType;
+use App\Form\BackofficeCompetiteurCapitaineType;
+use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
@@ -60,7 +62,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function new(Request $request): Response
     {
         $competiteur = new Competiteur();
-        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
+        $form = $this->createForm(BackofficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -88,7 +90,11 @@ class BackOfficeCompetiteurController extends AbstractController
     public function edit(int $idCompetiteur, Request $request): Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
-        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackofficeCompetiteurAdminType::class, $competiteur);
+        else{
+            if ($this->getUser()->getIdCompetiteur() != $competiteur->getIdCompetiteur()) $form = $this->createForm(BackofficeCompetiteurCapitaineType::class, $competiteur);
+            else $form = $this->createForm(CompetiteurType::class, $competiteur);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -107,6 +113,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'urlImage' => $competiteur->getAvatar(),
             'path' => 'backoffice.password.edit',
             'competiteur' => $competiteur,
+            'idActualUser' => $this->getUser()->getIdCompetiteur(),
             'form' => $form->createView()
         ]);
     }
@@ -119,7 +126,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updateCompetiteurPassword(Competiteur $competiteur, Request $request, UserPasswordEncoderInterface $encoder){
-        $form = $this->createForm(BackofficeCompetiteurType::class, $competiteur);
+        $form = $this->createForm(BackofficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {

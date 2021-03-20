@@ -27,7 +27,7 @@
         </td>
         <td>
             {% if competiteur is not null %}
-                {% if competiteur.role %}
+                {% if competiteur.isCapitaine %}
                     <span class="new badge blue" data-badge-caption="Capitaine"></span>
                 {% endif %}
             {% else %}

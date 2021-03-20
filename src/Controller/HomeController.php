@@ -138,7 +138,7 @@ class HomeController extends AbstractController
             if ((!$journee = $this->journeeParisRepository->find($id))) throw $this->createNotFoundException('Journée inexistante');
             $this->get('session')->set('type', $type);
             $journees = $this->journeeParisRepository->findAll();
-            $dispoJoueur = $this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null;
+            $dispoJoueur = ($this->getUser() ? $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]) : null);
             $joueursDeclares = $this->disponibiliteParisRepository->findJoueursDeclares($id);
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
             $compos = $this->rencontreParisRepository->findBy(['idJournee' => $id]);

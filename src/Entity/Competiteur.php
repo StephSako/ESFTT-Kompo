@@ -162,6 +162,13 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_admin", nullable=false)
+     */
+    private $isAdmin = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="visitor", nullable=false)
      */
     private $visitor = false;
@@ -250,6 +257,24 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    /**
+     * @param bool $isAdmin
+     * @return Competiteur
+     */
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getNom(): string
@@ -264,24 +289,6 @@ class Competiteur implements UserInterface, Serializable
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getRole(): bool
-    {
-        return $this->isCapitaine;
-    }
-
-    /**
-     * @param bool $isCapitaine
-     * @return $this
-     */
-    public function setRole(bool $isCapitaine): self
-    {
-        $this->isCapitaine = $isCapitaine;
         return $this;
     }
 
@@ -319,7 +326,9 @@ class Competiteur implements UserInterface, Serializable
     public function getRoles(): array
     {
         if (!$this->isVisitor()){
-            if ($this->getRole()) {
+            if ($this->isAdmin()) {
+                return ['ROLE_ADMIN', 'ROLE_CAPITAINE', 'ROLE_JOUEUR'];
+            } else if ($this->isCapitaine()) {
                 return ['ROLE_CAPITAINE', 'ROLE_JOUEUR'];
             } else {
                 return ['ROLE_JOUEUR'];
