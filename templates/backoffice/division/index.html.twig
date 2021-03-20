@@ -25,44 +25,48 @@
 
             <a style="margin-bottom: 20px;" href="{{ path('backoffice.division.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer une division</a>
 
-            <table class="striped centered responsive-table">
-                <thead>
-                    <tr>
-                        <th>Diminutif</th>
-                        <th>Nom long</th>
-                        <th class="hide-on-small-only">Nombre joueurs en championnat de Paris</th>
-                        <th class="hide-on-med-and-up">Nb joueurs Paris</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
+            {% if divisions|length > 0 %}
+                <table class="striped centered responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Diminutif</th>
+                            <th>Nom long</th>
+                            <th class="hide-on-small-only">Nombre joueurs en championnat de Paris</th>
+                            <th class="hide-on-med-and-up">Nb joueurs Paris</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                {% for division in divisions %}
-                    <tr>
-                        <td>{{ division.shortName }}</td>
-                        <td>{{ division.longName }}</td>
-                        <td>
-                            {% if division.nbJoueursChampParis %} {{ division.nbJoueursChampParis }}
-                            {% else %} <i class="grey-text material-icons">block</i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                        </td>
-                        <td>
-                            <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer la division ?')">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
-                                <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                    <i class="material-icons">delete</i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    <tbody>
+                    {% for division in divisions %}
+                        <tr>
+                            <td>{{ division.shortName }}</td>
+                            <td>{{ division.longName }}</td>
+                            <td>
+                                {% if division.nbJoueursChampParis %} {{ division.nbJoueursChampParis }}
+                                {% else %} <i class="grey-text material-icons">block</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer la division ?')">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                                    <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de divisions enregistrées.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

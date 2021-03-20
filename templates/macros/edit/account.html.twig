@@ -84,7 +84,7 @@
             </div>
 
             {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
-                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>esftt</b></p>
+                <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>esftt</b></p>
             {% endif %}
 
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>

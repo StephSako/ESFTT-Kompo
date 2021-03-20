@@ -1,49 +1,53 @@
 {% macro table(equipes, type) %}
-    <table class="striped centered">
-        <thead>
-            <tr>
-                <th>Equipe</th>
-                <th>Division</th>
-                <th>Poule</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for equipe in equipes %}
+    {% if equipes|length > 0 %}
+        <table class="striped centered">
+            <thead>
                 <tr>
-                    <td>{{ equipe.idEquipe }}</td>
-                    <td>
-                        {% if equipe.idDivision %}
-                            {{ equipe.idDivision.longName }}
-                        {% else %}
-                            <span class="red-text lighten-2">Indéfinie</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if equipe.idPoule %}
-                            {{ equipe.idPoule.poule }}
-                        {% else %}
-                            <span class="red-text lighten-2">Indéfinie</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ path('backoffice.equipe.edit', {type: type, idEquipe: equipe.idEquipe}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">
-                            <i class="material-icons">edit</i>
-                        </a>
-                    </td>
-                    <td>
-                        <form method="post" action="{{ path('backoffice.equipe.delete', {type: type, idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer l\'équipe ?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
-                            <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                <i class="material-icons">delete</i>
-                            </button>
-                        </form>
-                    </td>
+                    <th>Equipe</th>
+                    <th>Division</th>
+                    <th>Poule</th>
+                    <th></th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+                {% for equipe in equipes %}
+                    <tr>
+                        <td>{{ equipe.idEquipe }}</td>
+                        <td>
+                            {% if equipe.idDivision %}
+                                {{ equipe.idDivision.longName }}
+                            {% else %}
+                                <span class="red-text lighten-2">Indéfinie</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if equipe.idPoule %}
+                                {{ equipe.idPoule.poule }}
+                            {% else %}
+                                <span class="red-text lighten-2">Indéfinie</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('backoffice.equipe.edit', {type: type, idEquipe: equipe.idEquipe}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">
+                                <i class="material-icons">edit</i>
+                            </a>
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('backoffice.equipe.delete', {type: type, idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer l\'équipe ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
+                                <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas d'équipes enregistrées.</p>
+    {% endif %}
 {% endmacro %}

@@ -49,14 +49,9 @@ class Division
     /**
      * @var int|null
      *
-     * @Assert\GreaterThanOrEqual(
-     *     value = 3,
-     *     message = "Le nombre minimal de joueurs est {{ limit }} (en D2)",
-     * )
-     *
      * @Assert\LessThanOrEqual(
      *     value = 9,
-     *     message = "Le nombre maximal de joueurs est {{ limit }} (en Honneur)"
+     *     message = "Le nombre maximal de joueurs est {{ value }} (en Honneur)"
      * )
      *
      * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=true)
@@ -64,12 +59,12 @@ class Division
     private $nbJoueursChampParis;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EquipeDepartementale", mappedBy="division")
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipeDepartementale", mappedBy="idDivision")
      */
     protected $equipesDepartementales;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EquipeParis", mappedBy="division")
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipeParis", mappedBy="idDivision")
      */
     protected $equipesParis;
 
