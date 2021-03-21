@@ -289,11 +289,16 @@ class RencontreDepartementale
     }
 
     /**
+     * @param int $nbJoueurs
      * @return bool
      */
-    public function getIsEmpty(): bool
+    public function getIsEmpty(int $nbJoueurs): bool
     {
-        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4());
+        $isEmpty = array();
+        for ($i = 1; $i <= $nbJoueurs; $i++){
+            array_push($isEmpty, $this->getIdJoueurN($i));
+        }
+        return !in_array(true, $isEmpty);
     }
 
     /**

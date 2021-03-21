@@ -200,8 +200,7 @@
 
                         <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                             <tbody>
-                                {% set nbJoueursDivision = (compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
-                                {% for i in 1..nbJoueursDivision %}
+                                {% for i in 1..(compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
                                     {{ _composition.tr(i, compo.idJoueurN(i)) }}
                                 {% endfor %}
                             </tbody>
@@ -209,30 +208,11 @@
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                {% if journee.linkType == 'departementale' %}
-                                    {% if compo.isEmpty %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
-                                    {% else %}
-                                        {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                        {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {% endif %}
-                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 3) %}
-                                    {% if compo.isEmptyTroisJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
-                                    {% else %}
-                                        {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                        {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {% endif %}
-                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 6) %}
-                                    {% if compo.isEmptySixJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
-                                    {% else %}
-                                        {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                        {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {% endif %}
-                                {% elseif journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis == 9) %}
-                                    {% if compo.isEmptyNeufJoueurs %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
-                                    {% else %}
-                                        {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                        {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
-                                    {% endif %}
+                                {% if compo.isEmpty((compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision)) %}
+                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
+                                {% else %}
+                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
+                                    {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
                                 {% endif %}
                             </div>
                         {% endif %}

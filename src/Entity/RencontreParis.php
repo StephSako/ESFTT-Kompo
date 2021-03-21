@@ -423,27 +423,16 @@ class RencontreParis
     }
 
     /**
+     * @param int $nbJoueurs
      * @return bool
      */
-    public function getIsEmptyNeufJoueurs(): bool
+    public function getIsEmpty(int $nbJoueurs): bool
     {
-        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6() && !$this->getIdJoueur7() && !$this->getIdJoueur8() && !$this->getIdJoueur9());
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsEmptySixJoueurs(): bool
-    {
-        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3() && !$this->getIdJoueur4() && !$this->getIdJoueur5() && !$this->getIdJoueur6());
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsEmptyTroisJoueurs(): bool
-    {
-        return (!$this->getIdJoueur1() && !$this->getIdJoueur2() && !$this->getIdJoueur3());
+        $isEmpty = array();
+        for ($i = 1; $i <= $nbJoueurs; $i++){
+            array_push($isEmpty, $this->getIdJoueurN($i));
+        }
+        return !in_array(true, $isEmpty);
     }
 
     /**
