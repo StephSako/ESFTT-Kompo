@@ -36,7 +36,7 @@ class RencontreParis
 
     /**
      * @var JourneeParis
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis")
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", inversedBy="rencontres")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
     private $idJournee;

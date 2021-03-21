@@ -30,7 +30,7 @@ class RencontreDepartementale
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale")
+     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale", inversedBy="rencontres")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      * @var JourneeDepartementale
      */

@@ -9,7 +9,7 @@
 
     {% include("components/navbar.html.twig") %}
 
-    {% if stillEditable(compo.idJournee) %}
+    {% if rencontreStillEditable(compo) %}
         <div class="row main">
             <div class="col l2 hide-on-small-only">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
@@ -23,6 +23,20 @@
 
                 <div class="center-align card-panel">
 
+                    {% if compo.reporte %}
+                        <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                            <i class="material-icons">update</i>
+                            <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b>
+                        </span>
+                    {% endif %}
+
+                    {% if compo.hosted %}
+                        <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                                <i class="material-icons">error_outline</i>
+                                <b>Salle indisponible : rencontre à Herblay</b>
+                            </span>
+                    {% endif %}
+
                     {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
                         <p class="orange-text text-darken-4" style="margin-top: 0;">
                             Le nombre correct de joueurs sera mis à jour lorsque la division de l'équipe sera renseignée <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: compo.idJournee.linkType}) }}">ici</a>
@@ -33,8 +47,6 @@
                     <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
 
                     <div class="row header_compo">
-                        {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">error_outline</i>Salle indisponible : rencontre à Herblay</span>{% endif %}
-
                         {% if compo.adversaire is null %}
                             <h5 class="col s12 m5 hide-on-med-and-up lobster_2 red-text">Adversaire indéfini</h5>
                         {% else %}
@@ -151,7 +163,7 @@
     {% else %}
         <div class="container center">
             <div class="card-panel red white-text title_journee" style="margin-top: 30px; margin-bottom: 0;">
-                <h5>Cette rencontre n'est pas modifiable</h5>
+                <h5 style="margin-top: 10px; margin-bottom: 10px;">Cette rencontre n'est pas modifiable</h5>
             </div>
 
             <a href="{{ path('journee.show', {id: compo.idJournee.idJournee, type: compo.idJournee.linkType}) }}">

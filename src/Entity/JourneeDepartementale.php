@@ -36,6 +36,11 @@ class JourneeDepartementale
     private $type = 'Départemental';
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idJournee")
+     */
+    protected $rencontres;
+
+    /**
      * @return String
      */
     public function getType(): string
@@ -54,6 +59,24 @@ class JourneeDepartementale
     public function getLinkType(): string
     {
         return $this->linkType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param $rencontres
+     * @return $this
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
     }
 
     /**

@@ -4,25 +4,45 @@ namespace App\Twig;
 
 use App\Entity\JourneeDepartementale;
 use App\Entity\JourneeParis;
+use App\Entity\RencontreDepartementale;
+use App\Entity\RencontreParis;
 use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('stillEditable', [$this, 'stillEditable']),
+            new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
+            new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable'])
         ];
     }
 
     /**
      * @param JourneeDepartementale|JourneeParis $journee
+     * @param RencontreDepartementale[]|RencontreParis[] $rencontres
      * @return bool
      */
-    public function stillEditable($journee)
+    public function journeeStillEditable($journee, array $rencontres): bool
     {
-        return ((int)(new DateTime())->diff($journee->getDate())->format('%R%a') >= 0 || $journee->getUndefined());
+        $nbRencontresReportees = count(array_filter($rencontres, function ($rencontre)
+            {
+                return ($rencontre->isReporte() && intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0 ? $rencontre : null);
+            }));
+        $dateDepassee = intval((new DateTime())->diff($journee->getDate())->format('%R%a')) >= 0;
+        return (($dateDepassee || $nbRencontresReportees > 0) || $journee->getUndefined());
+    }
+
+    /**
+     * @param RencontreDepartementale|RencontreParis $rencontre
+     * @return bool
+     */
+    public function rencontreStillEditable($rencontre): bool
+    {
+        $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDate())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;
+        return (($dateDepassee && !$rencontre->isReporte()) || ($dateReporteeDepassee && $rencontre->isReporte()) || $rencontre->getIdJournee()->getUndefined());
     }
 }

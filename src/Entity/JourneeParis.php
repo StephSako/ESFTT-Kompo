@@ -36,11 +36,34 @@ class JourneeParis
     private $type = 'Paris';
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RencontreParis", mappedBy="idJournee")
+     */
+    protected $rencontres;
+
+    /**
      * @return String
      */
     public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param mixed $rencontres
+     * @return JourneeParis
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
     }
 
     /**

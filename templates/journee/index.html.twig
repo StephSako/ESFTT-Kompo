@@ -52,7 +52,7 @@
                 </div>
             {% endif %}
 
-            {% if 'ROLE_VISITEUR' not in app.token.roleNames and stillEditable(journee) %}
+            {% if 'ROLE_VISITEUR' not in app.token.roleNames and journeeStillEditable(journee, compos) %}
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
 
                     {% if app.user.licence and app.user.classementOfficiel %}
@@ -93,7 +93,7 @@
                         {% endif %}
                     {% endif %}
                 </div>
-            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not stillEditable(journee) and app.user.licence and app.user.classementOfficiel and disponible is null %}
+            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible is null %}
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
                     <h5>{{ app.user.username | capitalize }}, vous n'avez pas déclaré votre disponibilité ...</h5>
                 </div>
@@ -111,8 +111,19 @@
 
                         <div class="row header_compo">
 
-                            {% if compo.reporte %}<span style="margin-top: 0; margin-bottom: 4px;" class="col s12 orange-text"><i class="material-icons">update</i><b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b></span>{% endif %}
-                            {% if compo.hosted %}<span style="margin-top: 0; margin-bottom: 15px;" class="col s12 orange-text"><i class="material-icons">error_outline</i>Salle indisponible : rencontre à Herblay</span>{% endif %}
+                            {% if compo.reporte %}
+                                <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                                <i class="material-icons">update</i>
+                                <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b>
+                                </span>
+                            {% endif %}
+
+                            {% if compo.hosted %}
+                                <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                                    <i class="material-icons">error_outline</i>
+                                    <b>Salle indisponible : rencontre à Herblay</b>
+                                </span>
+                            {% endif %}
 
                             <div class="col s4 m2">
                                 <h5>
@@ -183,7 +194,7 @@
                             </div>
                         </div>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (stillEditable(journee)) %}
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                         {% endif %}
 
@@ -211,7 +222,7 @@
                             </tbody>
                         </table>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (stillEditable(journee)) %}
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 {% if journee.linkType == 'departementale' %}
                                     {% if compo.isEmpty %} {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
