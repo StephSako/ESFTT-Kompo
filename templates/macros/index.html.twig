@@ -4,8 +4,8 @@
     </a>
 {% endmacro %}
 
-{% macro btnEmptyCompo(type, idCompo) %}
-    <a onclick="return confirm('Etes-vous sûr de vider la compo ?')" class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {type: type, id: idCompo, fromTemplate: true}) }}">
+{% macro btnEmptyCompo(type, idRencontre, nbJoueurs) %}
+    <a onclick="return confirm('Etes-vous sûr de vider la compo ?')" class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {type: type, nbJoueurs: nbJoueurs, idRencontre: idRencontre, fromTemplate: true}) }}">
         <i class="material-icons">delete</i>Vider
     </a>
 {% endmacro %}

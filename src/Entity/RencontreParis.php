@@ -154,6 +154,43 @@ class RencontreParis
     private $adversaire;
 
     /**
+     * @param int $n
+     * @return Competiteur|null
+     */
+    public function getIdJoueurN(int $n): ?Competiteur
+    {
+        if ($n == 1) return $this->getIdJoueur1();
+        else if ($n == 2) return $this->getIdJoueur2();
+        else if ($n == 3) return $this->getIdJoueur3();
+        else if ($n == 4) return $this->getIdJoueur4();
+        else if ($n == 5) return $this->getIdJoueur5();
+        else if ($n == 6) return $this->getIdJoueur6();
+        else if ($n == 7) return $this->getIdJoueur7();
+        else if ($n == 8) return $this->getIdJoueur8();
+        else if ($n == 9) return $this->getIdJoueur9();
+        else return null;
+    }
+
+    /**
+     * @param int $n
+     * @param $val
+     * @return RencontreParis
+     */
+    public function setIdJoueurN(int $n, $val): self
+    {
+        if ($n == 1) return $this->setIdJoueur1($val);
+        else if ($n == 2) return $this->setIdJoueur2($val);
+        else if ($n == 3) return $this->setIdJoueur3($val);
+        else if ($n == 4) return $this->setIdJoueur4($val);
+        else if ($n == 5) return $this->setIdJoueur5($val);
+        else if ($n == 6) return $this->setIdJoueur6($val);
+        else if ($n == 7) return $this->setIdJoueur7($val);
+        else if ($n == 8) return $this->setIdJoueur8($val);
+        else if ($n == 9) return $this->setIdJoueur9($val);
+        else return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getDomicile(): bool
@@ -331,23 +368,6 @@ class RencontreParis
     {
         $this->idJoueur9 = $idJoueur9;
         return $this;
-    }
-
-    /**
-     * @param int $n
-     * @return Competiteur|null
-     */
-    public function getIdJoueurN(int $n): ?Competiteur
-    {
-        if ($n == 1) return $this->getIdJoueur1();
-        else if ($n == 2) return $this->getIdJoueur2();
-        else if ($n == 3) return $this->getIdJoueur3();
-        else if ($n == 4) return $this->getIdJoueur4();
-        else if ($n == 5) return $this->getIdJoueur5();
-        else if ($n == 6) return $this->getIdJoueur6();
-        else if ($n == 7) return $this->getIdJoueur7();
-        else if ($n == 8) return $this->getIdJoueur8();
-        else if ($n == 9) return $this->getIdJoueur9();
     }
 
     /**

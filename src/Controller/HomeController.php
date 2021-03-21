@@ -351,40 +351,27 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/empty/{type}/{id}/{fromTemplate}", name="composition.vider")
+     * @Route("/composition/empty/{type}/{idRencontre}/{fromTemplate}/{nbJoueurs}", name="composition.vider")
      * @param string $type
-     * @param int id
+     * @param int $idRencontre
      * @param bool $fromTemplate // Affiche le flash uniquement s'il est activé depuis le template journee/index.html.twig
+     * @param int $nbJoueurs
      * @return Response
      */
-    public function emptyComposition(string $type, int $id, bool $fromTemplate) : Response
+    public function emptyComposition(string $type, int $idRencontre, bool $fromTemplate, int $nbJoueurs) : Response
     {
         $compo = null;
         if ($type == 'departementale'){
-            if (!($compo = $this->rencontreDepartementaleRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
-
-            $compo->setIdJoueur1(null);
-            $compo->setIdJoueur2(null);
-            $compo->setIdJoueur3(null);
-            $compo->setIdJoueur4(null);
+            if (!($compo = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
         }
         else if ($type == 'paris'){
-            if (!($compo = $this->rencontreParisRepository->find($id))) throw $this->createNotFoundException('Rencontre inexistante');
-
-            $compo->setIdJoueur1(null);
-            $compo->setIdJoueur2(null);
-            $compo->setIdJoueur3(null);
-
-            if ($compo->getIdEquipe()->getIdEquipe() == 1){
-                $compo->setIdJoueur4(null);
-                $compo->setIdJoueur5(null);
-                $compo->setIdJoueur6(null);
-                $compo->setIdJoueur7(null);
-                $compo->setIdJoueur8(null);
-                $compo->setIdJoueur9(null);
-            }
+            if (!($compo = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
         }
         else throw $this->createNotFoundException('Championnat inexistant');
+
+        for ($i = 1; $i <= $nbJoueurs; $i++){
+            $compo->setIdJoueurN($i, null);
+        }
 
         $this->em->flush();
         if ($fromTemplate) $this->addFlash('success', 'Composition vidée avec succès !');

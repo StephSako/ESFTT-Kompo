@@ -114,6 +114,34 @@ class RencontreDepartementale
     private $exempt;
 
     /**
+     * Récupère le getter du joueur au placement dans la compo passé en paramètre
+     * @param int $n
+     * @return Competiteur|null
+     */
+    public function getIdJoueurN(int $n): ?Competiteur
+    {
+        if ($n == 1) return $this->getIdJoueur1();
+        else if ($n == 2) return $this->getIdJoueur2();
+        else if ($n == 3) return $this->getIdJoueur3();
+        else if ($n == 4) return $this->getIdJoueur4();
+        else return null;
+    }
+
+    /**
+     * @param int $n
+     * @param $val
+     * @return RencontreDepartementale
+     */
+    public function setIdJoueurN(int $n, $val): self
+    {
+        if ($n == 1) return $this->setIdJoueur1($val);
+        else if ($n == 2) return $this->setIdJoueur2($val);
+        else if ($n == 3) return $this->setIdJoueur3($val);
+        else if ($n == 4) return $this->setIdJoueur4($val);
+        else return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getDomicile(): bool
@@ -201,19 +229,6 @@ class RencontreDepartementale
     {
         $this->idJoueur4 = $idJoueur4;
         return $this;
-    }
-
-    /**
-     * Récupère le getter du joueur au placement dans la compo passé en paramètre
-     * @param int $n
-     * @return Competiteur|null
-     */
-    public function getIdJoueurN(int $n): ?Competiteur
-    {
-        if ($n == 1) return $this->getIdJoueur1();
-        else if ($n == 2) return $this->getIdJoueur2();
-        else if ($n == 3) return $this->getIdJoueur3();
-        else if ($n == 4) return $this->getIdJoueur4();
     }
 
     /**

@@ -101,6 +101,7 @@
 
             {% if compos|length > 0 %}
                 {% for compo in compos %}
+                    {% set nbJoueurs = (compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
                     <div class="center card-panel">
 
                         {% if journee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
@@ -200,7 +201,7 @@
 
                         <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                             <tbody>
-                                {% for i in 1..(compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
+                                {% for i in 1..nbJoueurs %}
                                     {{ _composition.tr(i, compo.idJoueurN(i)) }}
                                 {% endfor %}
                             </tbody>
@@ -208,11 +209,11 @@
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                {% if compo.isEmpty((compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision)) %}
+                                {% if compo.isEmpty(nbJoueurs) %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                    {{ _index.btnEmptyCompo(journee.linkType, compo.id) }}<br>
+                                    {{ _index.btnEmptyCompo(journee.linkType, compo.id, nbJoueurs) }}<br>
                                 {% endif %}
                             </div>
                         {% endif %}
