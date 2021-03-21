@@ -24,25 +24,25 @@ class RencontreParisType extends AbstractType
                     return $competiteur->getSelect();
                 },
                 'required' => false,
-                'empty_data' => null,
                 'placeholder' => 'Définir vide',
+                'empty_data' => null,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use ($builder) {
                     return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
                 },
-                'query_builder' => function (CompetiteurRepository $cr) use ($builder) {
+                'query_builder' => function (CompetiteurRepository $cr) use ($options, $builder) {
                     $request = $cr->createQueryBuilder('c')
                         ->leftJoin('c.disposParis', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->andWhere('d.disponibilite = 1')
                         ->andWhere('c.visitor <> true');
                     $str = '';
-                    for($i = 1; $i <= $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++) {
+                    for ($i = 1; $i <= intval($options['nbMaxJoueursUsed']); $i++) {
                         $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
-                        if ($i < $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueursChampParis()) $str .= ' OR ';
+                        if ($i < intval($options['nbMaxJoueursUsed'])) $str .= ' OR ';
                         $request->andWhere("c.idCompetiteur NOT IN (SELECT IF(p" . $i . ".idJoueur" . $i . " <> 'NULL', p" . $i . ".idJoueur" . $i . ", 0) FROM App\Entity\RencontreParis p" . $i . " WHERE p" . $i . ".idJournee = d.idJournee AND p" . $i . ".idEquipe <> :idEquipe)");
                     }
-                    $request->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (" . $str . ") AND p.idJournee < :idJournee AND p.idEquipe = :idEquipe) < 3")
+                    $request->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (" . $str . ") AND p.idJournee < :idJournee AND p.idEquipe = :idEquipe) < " . $options['limiteBrulage'])
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
                         ->orderBy('c.nom');
@@ -56,7 +56,9 @@ class RencontreParisType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RencontreParis::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'nbMaxJoueursUsed' => null,
+            'limiteBrulage' => null
         ]);
     }
 }

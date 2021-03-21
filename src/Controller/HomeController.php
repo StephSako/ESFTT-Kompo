@@ -222,7 +222,10 @@ class HomeController extends AbstractController
             $selectionnables = $this->disponibiliteDepartementaleRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $nbJoueursDivision = ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() : $this->divisionRepository->getMaxNbJoueursChamp($type));
-            $form = $this->createForm(RencontreDepartementaleType::class, $compo);
+            $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
+                'nbMaxJoueursUsed' => $this->equipeDepartementalRepository->getMaxNbJoueursChampDepartementalUsed(),
+                'limiteBrulage' => $this->getParameter('limite_brulage_dep')
+            ]);
             $journees = $this->journeeDepartementaleRepository->findAll();
 
             try { $nbEquipes = $this->equipeDepartementalRepository->getNbEquipesDepartementales(); }
@@ -274,10 +277,14 @@ class HomeController extends AbstractController
             $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
             $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
             $nbJoueursDivision = ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() : $this->divisionRepository->getMaxNbJoueursChamp($type));
-            $form = $this->createForm(RencontreParisType::class, $compo);
+            $form = $this->createForm(RencontreParisType::class, $compo, [
+                'nbMaxJoueursUsed' => $this->equipeParisRepository->getMaxNbJoueursChampParisUsed(),
+                'limiteBrulage' => $this->getParameter('limite_brulage_paris')
+            ]);
             $journees = $this->journeeParisRepository->findAll();
 
-            try { $nbEquipes = $this->equipeParisRepository->getNbEquipesParis(); } catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
+            try { $nbEquipes = $this->equipeParisRepository->getNbEquipesParis(); }
+            catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
 
             $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/

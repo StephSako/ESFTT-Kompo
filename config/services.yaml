@@ -6,8 +6,6 @@
 parameters:
     limite_brulage_dep: 2
     limite_brulage_paris: 3
-    limite_pre_brulage_dep: 1
-    limite_pre_brulage_paris: 2
 
 services:
     # default configuration for services in *this* file

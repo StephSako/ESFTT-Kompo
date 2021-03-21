@@ -36,14 +36,14 @@
                     <td class="center">
                         {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] == limite_pre_brulage_dep %}
+                        {% elseif brulage["E1"] + brulage["E2"] == limite_brulage_dep - 1 %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
                     <td class="center">
                         {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_pre_brulage_dep %}
+                        {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_brulage_dep - 1 %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
@@ -51,7 +51,7 @@
                     <td class="center">
                         {% if (brulage["E1"] >= limite_brulage_paris) %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] == limite_pre_brulage_paris %}
+                        {% elseif brulage["E1"] == limite_brulage_paris - 1 %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
@@ -119,7 +119,7 @@
                         <td class="center">
                             {% if (type == 'departementale' and brulage["E1"] >= limite_brulage_dep) or (type == 'paris' and brulage["E1"] >= limite_brulage_paris) %}
                                 <i class="red-text material-icons">highlight_off</i>
-                            {% elseif (type=='departementale' and brulage["E1"] == limite_pre_brulage_dep) or (type=='paris' and brulage["E1"] == limite_pre_brulage_paris) %}
+                            {% elseif (type=='departementale' and brulage["E1"] == limite_brulage_dep - 1) or (type=='paris' and brulage["E1"] == limite_brulage_paris - 1) %}
                                 <i class="orange-text material-icons">error_outline</i>
                             {% endif %}
                         </td>
@@ -127,14 +127,14 @@
                             <td class="center">
                                 {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulage["E1"] + brulage["E2"] == limite_pre_brulage_dep %}
+                                {% elseif brulage["E1"] + brulage["E2"] == limite_brulage_dep - 1 %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>
                             <td class="center">
                                 {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_pre_brulage_dep %}
+                                {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_brulage_dep - 1 %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>

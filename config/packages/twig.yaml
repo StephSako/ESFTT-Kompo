@@ -3,5 +3,3 @@ twig:
     globals:
       limite_brulage_dep: "%limite_brulage_dep%"
       limite_brulage_paris: "%limite_brulage_paris%"
-      limite_pre_brulage_dep: "%limite_pre_brulage_dep%"
-      limite_pre_brulage_paris: "%limite_pre_brulage_paris%"
