@@ -44,11 +44,11 @@ class RencontreParisRepository extends ServiceEntityRepository
      * @return int|mixed|string
      */
     public function getOrderedRencontres(){
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.idJournee', 'j')
+        return $this->createQueryBuilder('rp')
+            ->leftJoin('rp.idJournee', 'j')
             ->orderBy('j.date')
-            ->addOrderBy('c.idJournee')
-            ->addOrderBy('c.idEquipe')
+            ->addOrderBy('rp.idJournee')
+            ->addOrderBy('rp.idEquipe')
             ->getQuery()
             ->getResult();
     }

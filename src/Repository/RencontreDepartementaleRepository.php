@@ -39,11 +39,11 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
      * @return int|mixed|string
      */
     public function getOrderedRencontres(){
-        return $this->createQueryBuilder('c')
-            ->leftJoin('c.idJournee', 'j')
+        return $this->createQueryBuilder('rd')
+            ->leftJoin('rd.idJournee', 'j')
             ->orderBy('j.date')
-            ->addOrderBy('c.idJournee')
-            ->addOrderBy('c.idEquipe')
+            ->addOrderBy('rd.idJournee')
+            ->addOrderBy('rd.idEquipe')
             ->getQuery()
             ->getResult();
     }

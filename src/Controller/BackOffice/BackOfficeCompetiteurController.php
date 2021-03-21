@@ -2,12 +2,12 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Controller\InvalidSelectionController;
 use App\Entity\Competiteur;
 use App\Form\BackofficeCompetiteurAdminType;
 use App\Form\BackofficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
+use App\Repository\EquipeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,23 +24,27 @@ class BackOfficeCompetiteurController extends AbstractController
     private $competiteurRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
+    private $equipeParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
      * @param RencontreParisRepository $rencontreParisRepository
+     * @param EquipeParisRepository $equipeParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                EquipeParisRepository $equipeParisRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->equipeParisRepository = $equipeParisRepository;
     }
 
     /**
@@ -153,13 +157,20 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE")
      * @param Competiteur $competiteur
      * @param Request $request
-     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      */
-    public function delete(Competiteur $competiteur, Request $request, InvalidSelectionController $invalidSelectionController): Response
+    public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
-            $this->disengageDeletedPlayer($this->rencontreParisRepository->findAll(), $competiteur->getIdCompetiteur());
+
+            for ($i = 1; $i <= $this->getParameter('nb_joueurs_compo_dep'); $i+=1) {
+                $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+            }
+
+            for ($i = 1; $i <= intval($this->equipeParisRepository->getMaxNbJoueursChampParisUsed()); $i+=1) {
+                $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+            }
+
             $this->em->remove($competiteur);
             $this->em->flush();
             $this->addFlash('success', 'Compétiteur supprimé avec succès !');
@@ -168,21 +179,5 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->render('backoffice/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
         ]);
-    }
-
-    /**
-     * @param $compositionsParis
-     * @param int $idCompetiteur
-     */
-    public function disengageDeletedPlayer($compositionsParis, int $idCompetiteur){
-        for ($i = 1; $i <= $this->getParameter('nb_joueurs_compo_dep'); $i+=1) {
-            $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($idCompetiteur, $i);
-        }
-
-        foreach ($compositionsParis as $composition) {
-            for ($i = 1; $i <= $composition->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i+=1) {
-                $this->rencontreParisRepository->setDeletedCompetiteurToNull($idCompetiteur, $i);
-            }
-        }
     }
 }
