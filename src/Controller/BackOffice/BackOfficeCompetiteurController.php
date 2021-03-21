@@ -7,10 +7,13 @@ use App\Form\BackofficeCompetiteurAdminType;
 use App\Form\BackofficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
+use App\Repository\EquipeDepartementaleRepository;
 use App\Repository\EquipeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,19 +27,22 @@ class BackOfficeCompetiteurController extends AbstractController
     private $competiteurRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
+    private $equipeDepartementalRepository;
     private $equipeParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
-     * @param EquipeParisRepository $equipeParisRepository
      * @param EntityManagerInterface $em
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param EquipeDepartementaleRepository $equipeDepartementalRepository
+     * @param EquipeParisRepository $equipeParisRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                EquipeDepartementaleRepository $equipeDepartementalRepository,
                                 EquipeParisRepository $equipeParisRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
@@ -45,6 +51,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
         $this->equipeParisRepository = $equipeParisRepository;
+        $this->equipeDepartementalRepository = $equipeDepartementalRepository;
     }
 
     /**
@@ -158,12 +165,14 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
 
-            for ($i = 1; $i <= $this->getParameter('nb_joueurs_compo_dep'); $i+=1) {
+            for ($i = 1; $i <= intval($this->equipeDepartementalRepository->getMaxNbJoueursChampDepartementalUsed()); $i+=1) {
                 $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 

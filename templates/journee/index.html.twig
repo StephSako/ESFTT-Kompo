@@ -40,7 +40,7 @@
                 {% endif %}
             </div>
 
-            {% if (selectedPlayers|length == (nbEquipes * nb_joueurs_compo_dep) and journee.linkType == 'departementale') or (selectedPlayers|length == (300) and journee.linkType == 'paris') %}
+            {% if selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee">
                     <div class="white-text">
                         <h5><i class="material-icons">check_circle</i> Kompositions complètes</h5>
@@ -200,25 +200,10 @@
 
                         <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                             <tbody>
-                            {{ _composition.tr("1", compo.idJoueur1) }}
-                            {{ _composition.tr("2", compo.idJoueur2) }}
-                            {{ _composition.tr("3", compo.idJoueur3) }}
-
-                            {% if (journee.linkType == 'departementale') or (journee.linkType == 'paris' and (compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3)) %}
-                                {{ _composition.tr("4", compo.idJoueur4) }}
-                            {% endif %}
-
-                            {% if journee.linkType == 'paris' %}
-                                {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 3 %}
-                                    {{ _composition.tr("5", compo.idJoueur5) }}
-                                    {{ _composition.tr("6", compo.idJoueur6) }}
-                                {% endif %}
-                                {% if compo.idEquipe.idDivision is null or compo.idEquipe.idDivision.nbJoueursChampParis > 6 %}
-                                    {{ _composition.tr("7", compo.idJoueur7) }}
-                                    {{ _composition.tr("8", compo.idJoueur8) }}
-                                    {{ _composition.tr("9", compo.idJoueur9) }}
-                                {% endif %}
-                            {% endif %}
+                                {% set nbJoueursDivision = (compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
+                                {% for i in 1..nbJoueursDivision %}
+                                    {{ _composition.tr(i, compo.idJoueurN(i)) }}
+                                {% endfor %}
                             </tbody>
                         </table>
 
@@ -261,7 +246,7 @@
         </div>
 
         <div class="col s12 m2">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbEquipes) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
         </div>
 
         <div class="col s12 hide-on-med-and-up">

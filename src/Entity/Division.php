@@ -50,8 +50,20 @@ class Division
      * @var int|null
      *
      * @Assert\LessThanOrEqual(
+     *     value = 4,
+     *     message = "Le nombre maximal de joueurs est {{ value }}"
+     * )
+     *
+     * @ORM\Column(type="integer", name="nb_joueurs_champ_departementale", nullable=true)
+     */
+    private $nbJoueursChampDepartementale;
+
+    /**
+     * @var int|null
+     *
+     * @Assert\LessThanOrEqual(
      *     value = 9,
-     *     message = "Le nombre maximal de joueurs est {{ value }} (en Honneur)"
+     *     message = "Le nombre maximal de joueurs est {{ value }}"
      * )
      *
      * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=true)
@@ -74,6 +86,29 @@ class Division
     public function getIdDivision()
     {
         return $this->idDivision;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNbJoueursChampDepartementale(): ?int
+    {
+        return $this->nbJoueursChampDepartementale;
+    }
+
+    /**
+     * @param int|null $nbJoueursChampDepartementale
+     * @return Division
+     */
+    public function setNbJoueursChampDepartementale(?int $nbJoueursChampDepartementale): self
+    {
+        $this->nbJoueursChampDepartementale = $nbJoueursChampDepartementale;
+        return $this;
+    }
+
+    public function getNbJoueursChamp(string $type): ?int
+    {
+        return ($type == 'departementale' ? $this->nbJoueursChampDepartementale : $this->nbJoueursChampParis);
     }
 
     /**

@@ -16,7 +16,8 @@ class DivisionFormType extends AbstractType
         $builder
             ->add('shortName', TextType::class, ['label' => false, 'required' => true])
             ->add('longName', TextType::class, ['label' => false, 'required' => true])
-            ->add('nbJoueursChampParis', NumberType::class, ['label' => false, 'required' => false]);
+            ->add('nbJoueursChampParis', NumberType::class, ['label' => false, 'required' => false])
+            ->add('nbJoueursChampDepartemental', NumberType::class, ['label' => false, 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

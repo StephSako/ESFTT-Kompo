@@ -1,7 +1,6 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
-      nb_joueurs_compo_dep: "%nb_joueurs_compo_dep%"
       limite_brulage_dep: "%limite_brulage_dep%"
       limite_brulage_paris: "%limite_brulage_paris%"
       limite_pre_brulage_dep: "%limite_pre_brulage_dep%"

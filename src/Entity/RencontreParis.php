@@ -334,6 +334,23 @@ class RencontreParis
     }
 
     /**
+     * @param int $n
+     * @return Competiteur|null
+     */
+    public function getIdJoueurN(int $n): ?Competiteur
+    {
+        if ($n == 1) return $this->getIdJoueur1();
+        else if ($n == 2) return $this->getIdJoueur2();
+        else if ($n == 3) return $this->getIdJoueur3();
+        else if ($n == 4) return $this->getIdJoueur4();
+        else if ($n == 5) return $this->getIdJoueur5();
+        else if ($n == 6) return $this->getIdJoueur6();
+        else if ($n == 7) return $this->getIdJoueur7();
+        else if ($n == 8) return $this->getIdJoueur8();
+        else if ($n == 9) return $this->getIdJoueur9();
+    }
+
+    /**
      * @return int
      */
     public function getId(): int

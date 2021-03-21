@@ -31,6 +31,8 @@
                         <tr>
                             <th>Diminutif</th>
                             <th>Nom long</th>
+                            <th class="hide-on-small-only">Nombre joueurs en championnat départemental</th>
+                            <th class="hide-on-med-and-up">Nb joueurs départemental</th>
                             <th class="hide-on-small-only">Nombre joueurs en championnat de Paris</th>
                             <th class="hide-on-med-and-up">Nb joueurs Paris</th>
                             <th></th>
@@ -43,6 +45,11 @@
                         <tr>
                             <td>{{ division.shortName }}</td>
                             <td>{{ division.longName }}</td>
+                            <td>
+                                {% if division.nbJoueursChampDepartemental %} {{ division.nbJoueursChampDepartemental }}
+                                {% else %} <i class="grey-text material-icons">block</i>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if division.nbJoueursChampParis %} {{ division.nbJoueursChampParis }}
                                 {% else %} <i class="grey-text material-icons">block</i>
