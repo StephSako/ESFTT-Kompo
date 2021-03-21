@@ -40,7 +40,7 @@
                 {% endif %}
             </div>
 
-            {% if (selectedPlayers|length == (nbEquipes * nb_joueurs_compo_dep) and journee.linkType == 'departementale') or (selectedPlayers|length == (nb_joueurs_compo_paris_neuf_joueurs + nb_joueurs_compo_paris_trois_joueurs) and journee.linkType == 'paris') %}
+            {% if (selectedPlayers|length == (nbEquipes * nb_joueurs_compo_dep) and journee.linkType == 'departementale') or (selectedPlayers|length == (300) and journee.linkType == 'paris') %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee">
                     <div class="white-text">
                         <h5><i class="material-icons">check_circle</i> Kompositions complètes</h5>
@@ -59,7 +59,7 @@
                         {% if disponible is not null %}
                             {% if disponible == 1 %}
                                 <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                                <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
+                                <a {% if selected %}onclick="return confirm('Vous risquez d\'être désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
                                     <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                                 </a>
                             {% elseif disponible == 0 %}

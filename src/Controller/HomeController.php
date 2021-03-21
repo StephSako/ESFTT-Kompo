@@ -159,6 +159,7 @@ class HomeController extends AbstractController
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,
+            'selected' => in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers),
             'compos' => $compos,
             'nbEquipes' => $nbEquipes,
             'selectedPlayers' => $selectedPlayers,
