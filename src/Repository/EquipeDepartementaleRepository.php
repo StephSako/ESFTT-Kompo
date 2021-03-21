@@ -33,4 +33,19 @@ class EquipeDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @param int $idDeletedDivision
+     * @return int|mixed|string
+     */
+    public function setDeletedDivisionToNull(int $idDeletedDivision)
+    {
+        return $this->createQueryBuilder('ed')
+            ->update('App\Entity\EquipeDepartementale', 'ed')
+            ->set('ed.idDivision', 'NULL')
+            ->where('ed.idDivision = :idDeletedDivision')
+            ->setParameter('idDeletedDivision', $idDeletedDivision)
+            ->getQuery()
+            ->execute();
+    }
 }

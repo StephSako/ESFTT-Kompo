@@ -5,6 +5,8 @@ namespace App\Controller\BackOffice;
 use App\Entity\Division;
 use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
+use App\Repository\EquipeDepartementaleRepository;
+use App\Repository\EquipeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,17 +17,25 @@ class BackOfficeDivisionController extends AbstractController
 {
     private $em;
     private $divisionRepository;
+    private $equipeDepartementaleRepository;
+    private $equipeParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
+     * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
+     * @param EquipeParisRepository $equipeParisRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
-                                EntityManagerInterface $em)
+                                EntityManagerInterface $em,
+                                EquipeDepartementaleRepository $equipeDepartementaleRepository,
+                                EquipeParisRepository $equipeParisRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
+        $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
+        $this->equipeParisRepository = $equipeParisRepository;
     }
 
     /**
@@ -35,7 +45,7 @@ class BackOfficeDivisionController extends AbstractController
     public function indexDivisions(): Response
     {
         return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->divisionRepository->findAll()
+            'divisions' => $this->divisionRepository->findBy([], ['nbJoueursChampParis' => 'DESC', 'shortName' => 'ASC'])
         ]);
     }
 
@@ -101,6 +111,8 @@ class BackOfficeDivisionController extends AbstractController
         if (!($division = $this->divisionRepository->find($idDivision))) throw $this->createNotFoundException('Division inexistante');
 
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
+            $this->equipeDepartementaleRepository->setDeletedDivisionToNull($idDivision);
+            $this->equipeParisRepository->setDeletedDivisionToNull($idDivision);
             $this->em->remove($division);
             $this->em->flush();
             $this->addFlash('success', 'Division supprimée avec succès !');

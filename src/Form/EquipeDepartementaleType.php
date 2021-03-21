@@ -25,7 +25,8 @@ class EquipeDepartementaleType extends AbstractType
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
-                        ->orderBy('d.idDivision');
+                        ->orderBy('d.nbJoueursChampParis', 'DESC')
+                        ->addOrderBy('d.shortName', 'ASC');
                 }
             ])
             ->add('idPoule', EntityType::class, [

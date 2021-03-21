@@ -59,26 +59,4 @@ class InvalidSelectionController extends AbstractController
             }
         }
     }
-
-    /**
-     * @param $compositions
-     * @param $competiteur
-     * @param $type
-     */
-    public function disengageDeletedPlayerInComposition($compositions, $competiteur, $type){
-        foreach ($compositions as $composition) {
-            if ($composition->getIdJoueur1() && $composition->getIdJoueur1()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur1(NULL);
-            if ($composition->getIdJoueur2() && $composition->getIdJoueur2()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur2(NULL);
-            if ($composition->getIdJoueur3() && $composition->getIdJoueur3()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur3(NULL);
-            if ($composition->getIdJoueur4() && $composition->getIdJoueur4()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur4(NULL);
-
-            if ($type == 'paris') {
-                if ($composition->getIdJoueur5() && $composition->getIdJoueur5()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur5(NULL);
-                if ($composition->getIdJoueur6() && $composition->getIdJoueur6()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur6(NULL);
-                if ($composition->getIdJoueur7() && $composition->getIdJoueur7()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur7(NULL);
-                if ($composition->getIdJoueur8() && $composition->getIdJoueur8()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur8(NULL);
-                if ($composition->getIdJoueur9() && $composition->getIdJoueur9()->getIdCompetiteur() == $competiteur) $composition->setIdJoueur9(NULL);
-            }
-        }
-    }
 }

@@ -62,7 +62,8 @@ class BackOfficeCompetiteurController extends AbstractController
     public function new(Request $request): Response
     {
         $competiteur = new Competiteur();
-        $form = $this->createForm(BackofficeCompetiteurCapitaineType::class, $competiteur);
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackofficeCompetiteurAdminType::class, $competiteur);
+        else $form = $this->createForm(BackofficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -158,8 +159,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function delete(Competiteur $competiteur, Request $request, InvalidSelectionController $invalidSelectionController): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
-            $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreDepartementaleRepository->findAll(), $competiteur->getIdCompetiteur(), 'departementale');
-            $invalidSelectionController->disengageDeletedPlayerInComposition($this->rencontreParisRepository->findAll(), $competiteur->getIdCompetiteur(), 'paris');
+            $this->disengageDeletedPlayer($this->rencontreParisRepository->findAll(), $competiteur->getIdCompetiteur());
             $this->em->remove($competiteur);
             $this->em->flush();
             $this->addFlash('success', 'Compétiteur supprimé avec succès !');
@@ -168,5 +168,21 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->render('backoffice/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
         ]);
+    }
+
+    /**
+     * @param $compositionsParis
+     * @param int $idCompetiteur
+     */
+    public function disengageDeletedPlayer($compositionsParis, int $idCompetiteur){
+        for ($i = 1; $i <= $this->getParameter('nb_joueurs_compo_dep'); $i+=1) {
+            $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($idCompetiteur, $i);
+        }
+
+        foreach ($compositionsParis as $composition) {
+            for ($i = 1; $i <= $composition->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i+=1) {
+                $this->rencontreParisRepository->setDeletedCompetiteurToNull($idCompetiteur, $i);
+            }
+        }
     }
 }

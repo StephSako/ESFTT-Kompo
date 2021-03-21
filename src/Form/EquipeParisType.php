@@ -24,7 +24,8 @@ class EquipeParisType extends AbstractType
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
                         ->where('d.nbJoueursChampParis IS NOT NULL')
-                        ->orderBy('d.idDivision');
+                        ->orderBy('d.nbJoueursChampParis', 'DESC')
+                        ->addOrderBy('d.shortName', 'ASC');
                 }
             ])
             ->add('idPoule', EntityType::class, [

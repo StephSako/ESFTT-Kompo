@@ -120,4 +120,20 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
 
         return $brulesJ2;
     }
+
+    /**
+     * @param int $idDeletedCompetiteur
+     * @param int $idJoueurColumn
+     * @return int|mixed|string
+     */
+    public function setDeletedCompetiteurToNull(int $idDeletedCompetiteur, int $idJoueurColumn)
+    {
+        return $this->createQueryBuilder('rd')
+            ->update('App\Entity\RencontreDepartementale', 'rd')
+            ->set('rd.idJoueur' . $idJoueurColumn, 'NULL')
+            ->where('rd.idJoueur' . $idJoueurColumn . ' = :idDeletedCompetiteur')
+            ->setParameter('idDeletedCompetiteur', $idDeletedCompetiteur)
+            ->getQuery()
+            ->execute();
+    }
 }

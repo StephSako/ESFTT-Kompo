@@ -33,4 +33,19 @@ class EquipeParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @param int $idDeletedDivision
+     * @return int|mixed|string
+     */
+    public function setDeletedDivisionToNull(int $idDeletedDivision)
+    {
+        return $this->createQueryBuilder('ed')
+            ->update('App\Entity\EquipeParis', 'ep')
+            ->set('ep.idDivision', 'NULL')
+            ->where('ep.idDivision = :idDeletedDivision')
+            ->setParameter('idDeletedDivision', $idDeletedDivision)
+            ->getQuery()
+            ->execute();
+    }
 }
