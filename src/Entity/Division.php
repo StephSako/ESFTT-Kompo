@@ -47,26 +47,36 @@ class Division
     private $longName;
 
     /**
-     * @var int|null
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 0,
+     *     message = "Indiquez {{value }} s'il n'y a pas de division dans ce championnat }}"
+     * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 4,
      *     message = "Le nombre maximal de joueurs est {{ value }}"
      * )
      *
-     * @ORM\Column(type="integer", name="nb_joueurs_champ_departementale", nullable=true)
+     * @ORM\Column(type="integer", name="nb_joueurs_champ_departementale", nullable=false)
      */
     private $nbJoueursChampDepartementale;
 
     /**
-     * @var int|null
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 0,
+     *     message = "Indiquez {{value }} s'il n'y a pas de division dans ce championnat }}"
+     * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 9,
      *     message = "Le nombre maximal de joueurs est {{ value }}"
      * )
      *
-     * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=true)
+     * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=false)
      */
     private $nbJoueursChampParis;
 
@@ -86,24 +96,6 @@ class Division
     public function getIdDivision()
     {
         return $this->idDivision;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getNbJoueursChampDepartementale(): ?int
-    {
-        return $this->nbJoueursChampDepartementale;
-    }
-
-    /**
-     * @param int|null $nbJoueursChampDepartementale
-     * @return Division
-     */
-    public function setNbJoueursChampDepartementale(?int $nbJoueursChampDepartementale): self
-    {
-        $this->nbJoueursChampDepartementale = $nbJoueursChampDepartementale;
-        return $this;
     }
 
     public function getNbJoueursChamp(string $type): ?int
@@ -158,24 +150,6 @@ class Division
     }
 
     /**
-     * @return int|null
-     */
-    public function getNbJoueursChampParis(): ?int
-    {
-        return $this->nbJoueursChampParis;
-    }
-
-    /**
-     * @param int|null $nbJoueursChampParis
-     * @return Division
-     */
-    public function setNbJoueursChampParis(?int $nbJoueursChampParis): self
-    {
-        $this->nbJoueursChampParis = $nbJoueursChampParis;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getEquipesDepartementales()
@@ -208,6 +182,42 @@ class Division
     public function setEquipesParis($equipesParis): self
     {
         $this->equipesParis = $equipesParis;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbJoueursChampDepartementale(): int
+    {
+        return $this->nbJoueursChampDepartementale;
+    }
+
+    /**
+     * @param int $nbJoueursChampDepartementale
+     * @return Division
+     */
+    public function setNbJoueursChampDepartementale(int $nbJoueursChampDepartementale): self
+    {
+        $this->nbJoueursChampDepartementale = $nbJoueursChampDepartementale;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbJoueursChampParis(): int
+    {
+        return $this->nbJoueursChampParis;
+    }
+
+    /**
+     * @param int $nbJoueursChampParis
+     * @return Division
+     */
+    public function setNbJoueursChampParis(int $nbJoueursChampParis): self
+    {
+        $this->nbJoueursChampParis = $nbJoueursChampParis;
         return $this;
     }
 }

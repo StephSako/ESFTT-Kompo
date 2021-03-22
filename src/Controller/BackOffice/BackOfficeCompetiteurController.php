@@ -7,8 +7,7 @@ use App\Form\BackofficeCompetiteurAdminType;
 use App\Form\BackofficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
-use App\Repository\EquipeDepartementaleRepository;
-use App\Repository\EquipeParisRepository;
+use App\Repository\DivisionRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,31 +26,27 @@ class BackOfficeCompetiteurController extends AbstractController
     private $competiteurRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
-    private $equipeDepartementalRepository;
-    private $equipeParisRepository;
+    private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param EquipeDepartementaleRepository $equipeDepartementalRepository
-     * @param EquipeParisRepository $equipeParisRepository
+     * @param DivisionRepository $divisionRepository
      * @param RencontreParisRepository $rencontreParisRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                EquipeDepartementaleRepository $equipeDepartementalRepository,
-                                EquipeParisRepository $equipeParisRepository,
+                                DivisionRepository $divisionRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
-        $this->equipeParisRepository = $equipeParisRepository;
-        $this->equipeDepartementalRepository = $equipeDepartementalRepository;
+        $this->divisionRepository = $divisionRepository;
     }
 
     /**
@@ -172,11 +167,11 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
 
-            for ($i = 1; $i <= intval($this->equipeDepartementalRepository->getMaxNbJoueursChampDepartementalUsed()); $i+=1) {
+            for ($i = 1; $i <= intval($this->divisionRepository->getMaxNbJoueursChamp('departementale')); $i+=1) {
                 $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 
-            for ($i = 1; $i <= intval($this->equipeParisRepository->getMaxNbJoueursChampParisUsed()); $i+=1) {
+            for ($i = 1; $i <= intval($this->divisionRepository->getMaxNbJoueursChamp('paris')); $i+=1) {
                 $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 

@@ -48,18 +48,4 @@ class EquipeDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-
-    /**
-     * @return int|mixed|string
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function getMaxNbJoueursChampDepartementalUsed()
-    {
-        return $this->createQueryBuilder('rd')
-            ->select('MAX(d.nbJoueursChampDepartementale) as max')
-            ->leftJoin('rd.idDivision', 'd')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
 }

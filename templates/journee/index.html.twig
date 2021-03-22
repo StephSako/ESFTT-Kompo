@@ -48,7 +48,7 @@
                 </div>
             {% else %}
                 <div class="hide-on-med-and-up">
-                    {{ _disponibilites.labelDispoSelec((selectedPlayers|length), journee.linkType, nbDispos, nbEquipes) }}
+                    {{ _disponibilites.labelDispoSelec((selectedPlayers|length), journee.linkType, nbDispos, nbMinJoueurs, nbTotalJoueurs) }}
                 </div>
             {% endif %}
 
@@ -104,9 +104,9 @@
                     {% set nbJoueurs = (compo.idEquipe.idDivision ? compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) : nbMaxJoueursDivision) %}
                     <div class="center card-panel">
 
-                        {% if journee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
+                        {% if compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
                             <p class="orange-text text-darken-4" style="margin-top: 0;">
-                                Le nombre correct de joueurs sera mis à jour lorsque la division de l'équipe sera renseignée <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: journee.linkType}) }}">ici</a>
+                                <b>Renseignez la division de l'équipe <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: journee.linkType}) }}">ici</a> pour une utilisation optimale</b>
                             </p>
                         {% endif %}
 

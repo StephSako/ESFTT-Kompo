@@ -100,6 +100,8 @@ class HomeController extends AbstractController
      * @param string $type
      * @param int $id
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
     public function journee(string $type, int $id): Response
@@ -138,13 +140,13 @@ class HomeController extends AbstractController
             $nbJournees = count($journees);
 
             // Nombre maximal de joueurs pour les compos du championnat départemental
-            $nbTotalJoueurs = array_sum(array_map(function($compo) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale();
+            $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
+                return ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() : $this->divisionRepository->getMaxNbJoueursChamp($type));
             }, $compos));
 
             // Nombre minimal critique de joueurs pour les compos du championnat départemental
-            $nbMinJoueurs = array_sum(array_map(function($compo) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1;
+            $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
+                return ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1 : $this->divisionRepository->getMaxNbJoueursChamp($type) - 1);
             }, $compos));
         }
         else if ($type == 'paris') {
@@ -159,11 +161,11 @@ class HomeController extends AbstractController
             $brulages = $this->competiteurRepository->getBrulagesParis($journee->getIdJournee());
             $nbEquipes = count($compos);
             $nbJournees = count($journees);
-            $nbTotalJoueurs = array_sum(array_map(function($compo) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
+            $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
+                return ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() : $this->divisionRepository->getMaxNbJoueursChamp($type));
             }, $compos));
-            $nbMinJoueurs = array_sum(array_map(function($compo) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() - 1;
+            $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
+                return ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() -1 : $this->divisionRepository->getMaxNbJoueursChamp($type) - 1);
             }, $compos));
         }
         else throw $this->createNotFoundException('Championnat inexistant');
@@ -223,7 +225,7 @@ class HomeController extends AbstractController
             $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
             $nbJoueursDivision = ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() : $this->divisionRepository->getMaxNbJoueursChamp($type));
             $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
-                'nbMaxJoueursUsed' => $this->equipeDepartementalRepository->getMaxNbJoueursChampDepartementalUsed(),
+                'nbMaxJoueursUsed' => $this->divisionRepository->getMaxNbJoueursChamp($type),
                 'limiteBrulage' => $this->getParameter('limite_brulage_dep')
             ]);
             $journees = $this->journeeDepartementaleRepository->findAll();
@@ -278,7 +280,7 @@ class HomeController extends AbstractController
             $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
             $nbJoueursDivision = ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() : $this->divisionRepository->getMaxNbJoueursChamp($type));
             $form = $this->createForm(RencontreParisType::class, $compo, [
-                'nbMaxJoueursUsed' => $this->equipeParisRepository->getMaxNbJoueursChampParisUsed(),
+                'nbMaxJoueursUsed' => $this->divisionRepository->getMaxNbJoueursChamp($type),
                 'limiteBrulage' => $this->getParameter('limite_brulage_paris')
             ]);
             $journees = $this->journeeParisRepository->findAll();

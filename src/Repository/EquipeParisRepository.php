@@ -48,18 +48,4 @@ class EquipeParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-
-    /**
-     * @return int|mixed|string
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function getMaxNbJoueursChampParisUsed()
-    {
-        return $this->createQueryBuilder('rp')
-            ->select('MAX(d.nbJoueursChampParis) as max')
-            ->leftJoin('rp.idDivision', 'd')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
 }
