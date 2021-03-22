@@ -8,12 +8,16 @@ use App\Entity\RencontreDepartementale;
 use App\Entity\RencontreParis;
 use App\Form\EquipeDepartementaleType;
 use App\Form\EquipeParisType;
+use App\Repository\DivisionRepository;
 use App\Repository\EquipeDepartementaleRepository;
 use App\Repository\EquipeParisRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
+use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +30,9 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeParisRepository;
     private $journeeDepartementaleRepository;
     private $journeeParisRepository;
+    private $rencontreDepartementalRepository;
     private $rencontreParisRepository;
+    private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
@@ -35,6 +41,8 @@ class BackOfficeEquipeController extends AbstractController
      * @param JourneeDepartementaleRepository $journeesDepartementaleRepository
      * @param JourneeParisRepository $journeesParisRepository
      * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreDepartementaleRepository $rencontreDepartementalRepository
+     * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository,
@@ -42,6 +50,8 @@ class BackOfficeEquipeController extends AbstractController
                                 JourneeDepartementaleRepository $journeesDepartementaleRepository,
                                 JourneeParisRepository $journeesParisRepository,
                                 RencontreParisRepository $rencontreParisRepository,
+                                RencontreDepartementaleRepository $rencontreDepartementalRepository,
+                                DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -50,6 +60,8 @@ class BackOfficeEquipeController extends AbstractController
         $this->journeeDepartementaleRepository = $journeesDepartementaleRepository;
         $this->journeeParisRepository = $journeesParisRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->divisionRepository = $divisionRepository;
+        $this->rencontreDepartementalRepository = $rencontreDepartementalRepository;
     }
 
     /**
@@ -69,6 +81,8 @@ class BackOfficeEquipeController extends AbstractController
      * @param string $type
      * @param Request $request
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function new(string $type, Request $request): Response
     {
@@ -83,53 +97,38 @@ class BackOfficeEquipeController extends AbstractController
                 $this->em->flush();
 
                 // Créer les rencontres de l'équipe créée
-                if ($type == 'departementale'){
-                    $journees = $this->journeeDepartementaleRepository->findAll();
-                    foreach ($journees as $journee){
+                if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
+                else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
+                else throw $this->createNotFoundException('Championnat inexistant');
+                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+
+                foreach ($journees as $journee){
+                    if ($type == 'departementale'){
                         $rencontre = new RencontreDepartementale();
-                        $rencontre
-                            ->setIdJournee($journee)
-                            ->setIdEquipe($equipe)
-                            ->setIdJoueur1(null)
-                            ->setIdJoueur2(null)
-                            ->setIdJoueur3(null)
-                            ->setIdJoueur4(null)
-                            ->setDomicile(true)
-                            ->setHosted(false)
-                            ->setDateReport($journee->getDate())
-                            ->setReporte(false)
-                            ->setAdversaire(null)
-                            ->setExempt(false);
-                        $this->em->persist($rencontre);
+                        $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampDepartementale() : $nbMaxJoueurs);
                     }
-                }
-                else if ($type == 'paris'){
-                    $journees = $this->journeeParisRepository->findAll();
-                    foreach ($journees as $journee){
+                    else if ($type == 'paris'){
                         $rencontre = new RencontreParis();
-                        $rencontre
-                            ->setIdJournee($journee)
-                            ->setIdEquipe($equipe)
-                            ->setIdJoueur1(null)
-                            ->setIdJoueur2(null)
-                            ->setIdJoueur3(null)
-                            ->setIdJoueur4(null)
-                            ->setIdJoueur5(null)
-                            ->setIdJoueur6(null)
-                            ->setIdJoueur7(null)
-                            ->setIdJoueur8(null)
-                            ->setIdJoueur9(null)
-                            ->setDomicile(true)
-                            ->setHosted(false)
-                            ->setDateReport($journee->getDate())
-                            ->setReporte(false)
-                            ->setAdversaire(null)
-                            ->setExempt(false);
-                        $this->em->persist($rencontre);
+                        $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
                     }
+                    else throw $this->createNotFoundException('Championnat inexistant');
+
+                    $rencontre
+                        ->setIdJournee($journee)
+                        ->setIdEquipe($equipe)
+                        ->setDomicile(true)
+                        ->setHosted(false)
+                        ->setDateReport($journee->getDate())
+                        ->setReporte(false)
+                        ->setAdversaire(null)
+                        ->setExempt(false);
+
+                    for ($i = 1; $i <= $nbJoueurs; $i++){
+                        $rencontre->setIdJoueurN($i, null);
+                    }
+                    $this->em->persist($rencontre);
                 }
                 $this->em->flush();
-
                 $this->addFlash('success', 'Equipe créée avec succès !');
                 return $this->redirectToRoute('backoffice.equipes');
             } else {
@@ -144,10 +143,12 @@ class BackOfficeEquipeController extends AbstractController
 
     /**
      * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
-     * @param int $idEquipe
      * @param string $type
+     * @param int $idEquipe
      * @param Request $request
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function edit(string $type, int $idEquipe, Request $request): Response
     {
@@ -165,25 +166,18 @@ class BackOfficeEquipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            // Désinscrire les joueurs superflus en cas de changement de division pour une équipe du championnat de Paris
-            if ($type == 'paris') {
-                $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+            // Désinscrire les joueurs superflus en cas de changement de division
+            if ($type == 'departementale') $rencontres = $this->rencontreDepartementalRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+            else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+            else throw $this->createNotFoundException('Championnat inexistant');
+
+            if ($equipe->getIdDivision()){
+                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
                 foreach ($rencontres as $rencontre){
-                    if ($equipe->getIdDivision()){
-                        if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 3) {
-                            $rencontre
-                                ->setIdJoueur4(null)
-                                ->setIdJoueur5(null)
-                                ->setIdJoueur6(null);
-                        }
-                        if ($equipe->getIdDivision()->getNbJoueursChampParis() <= 6) {
-                            $rencontre
-                                ->setIdJoueur7(null)
-                                ->setIdJoueur8(null)
-                                ->setIdJoueur9(null);
-                        }
-                        $this->em->persist($rencontre);
+                    for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
+                        $rencontre->setIdJoueurN($i, null);
                     }
+                    $this->em->persist($rencontre);
                 }
             }
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EquipeParisRepository")
@@ -22,6 +23,18 @@ class EquipeParis
      * @ORM\Column(type="integer", name="id_equipe")
      */
     private $idEquipe;
+
+    /**
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 1,
+     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     * )
+     *
+     * @ORM\Column(type="integer", name="numero", nullable=false, unique=true)
+     */
+    private $numero;
 
     /**
      * @var Division|null
@@ -114,6 +127,24 @@ class EquipeParis
     public function setIdPoule(?Poule $idPoule): self
     {
         $this->idPoule = $idPoule;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumero(): int
+    {
+        return $this->numero;
+    }
+
+    /**
+     * @param int $numero
+     * @return EquipeParis
+     */
+    public function setNumero(int $numero): self
+    {
+        $this->numero = $numero;
         return $this;
     }
 }

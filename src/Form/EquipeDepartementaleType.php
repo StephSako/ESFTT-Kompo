@@ -8,6 +8,7 @@ use App\Entity\Poule;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,6 +17,7 @@ class EquipeDepartementaleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('numero', NumberType::class, ['label' => false, 'required' => true])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
                 'empty_data' => null,
@@ -25,6 +27,7 @@ class EquipeDepartementaleType extends AbstractType
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
+                        ->where('d.nbJoueursChampDepartementale <> 0')
                         ->orderBy('d.nbJoueursChampParis', 'DESC')
                         ->addOrderBy('d.shortName', 'ASC');
                 }

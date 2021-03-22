@@ -3,7 +3,7 @@
         <table class="striped centered">
             <thead>
                 <tr>
-                    <th>Equipe</th>
+                    <th>N°</th>
                     <th>Division</th>
                     <th>Poule</th>
                     <th></th>
@@ -14,7 +14,7 @@
             <tbody>
                 {% for equipe in equipes %}
                     <tr>
-                        <td>{{ equipe.idEquipe }}</td>
+                        <td>{{ equipe.numero }}</td>
                         <td>
                             {% if equipe.idDivision %}
                                 {{ equipe.idDivision.longName }}
