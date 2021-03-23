@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,7 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     indexes={
  *         @Index(name="IDX_4F1610B1149AAA70", columns={"id_poule"}),
  *         @Index(name="IDX_4F1610B140CCAB81", columns={"id_division"})
- * })
+ *     },
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_4F1610B1F55AE19E", columns={"numero"})
+ *     })
  */
 class EquipeParis
 {

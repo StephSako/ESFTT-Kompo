@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Division;
 use App\Entity\EquipeDepartementale;
-use App\Entity\Poule;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -28,7 +26,7 @@ class EquipeDepartementaleType extends AbstractType
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
                         ->where('d.nbJoueursChampDepartementale <> 0')
-                        ->orderBy('d.nbJoueursChampParis', 'DESC')
+                        ->orderBy('d.nbJoueursChampDepartementale', 'DESC')
                         ->addOrderBy('d.shortName', 'ASC');
                 }
             ])

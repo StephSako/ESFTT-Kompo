@@ -15,9 +15,11 @@ use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,8 +95,17 @@ class BackOfficeEquipeController extends AbstractController
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
-                $this->em->persist($equipe);
-                $this->em->flush();
+                try {
+                    $this->em->persist($equipe);
+                    $this->em->flush();
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('backoffice/equipe/new.html.twig', [
+                        'equipe' => $equipe,
+                        'form' => $form->createView()
+                    ]);
+                }
 
                 // Créer les rencontres de l'équipe créée
                 if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
@@ -147,8 +158,6 @@ class BackOfficeEquipeController extends AbstractController
      * @param int $idEquipe
      * @param Request $request
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
     public function edit(string $type, int $idEquipe, Request $request): Response
     {
@@ -171,17 +180,25 @@ class BackOfficeEquipeController extends AbstractController
             else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
             else throw $this->createNotFoundException('Championnat inexistant');
 
-            if ($equipe->getIdDivision()){
-                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-                foreach ($rencontres as $rencontre){
-                    for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
-                        $rencontre->setIdJoueurN($i, null);
+            try {
+                $this->em->flush();
+                if ($equipe->getIdDivision()){
+                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                    foreach ($rencontres as $rencontre){
+                        for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
+                            $rencontre->setIdJoueurN($i, null);
+                        }
                     }
-                    $this->em->persist($rencontre);
+                    $this->em->flush();
                 }
+            } catch(Exception $e){
+                if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                else $this->addFlash('fail', 'Une erreur est survenue');
+                return $this->render('backoffice/equipe/edit.html.twig', [
+                    'equipe' => $equipe,
+                    'form' => $form->createView()
+                ]);
             }
-
-            $this->em->flush();
             $this->addFlash('success', 'Equipe modifiée avec succès !');
             return $this->redirectToRoute('backoffice.equipes');
         }
