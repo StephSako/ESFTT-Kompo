@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\JourneeParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -30,5 +32,18 @@ class JourneeParisRepository extends ServiceEntityRepository
             ->orderBy('jp.date')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return int
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function getNbJourneeParis(): int
+    {
+        return intval($this->createQueryBuilder('jp')
+            ->select('COUNT(jp.idJournee)')
+            ->getQuery()
+            ->getSingleScalarResult());
     }
 }

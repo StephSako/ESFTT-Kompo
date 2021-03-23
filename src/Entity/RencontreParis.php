@@ -443,16 +443,27 @@ class RencontreParis
     }
 
     /**
-     * @param int $nbJoueurs
      * @return bool
      */
-    public function getIsEmpty(int $nbJoueurs): bool
+    public function getIsEmpty(): bool
     {
         $isEmpty = array();
-        for ($i = 0; $i < $nbJoueurs; $i++){
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
             array_push($isEmpty, $this->getIdJoueurN($i));
         }
         return !in_array(true, $isEmpty);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsFull(): bool
+    {
+        $nbJoueursSelected = 0;
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+            if($this->getIdJoueurN($i)) $nbJoueursSelected++;
+        }
+        return $nbJoueursSelected == $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
     }
 
     /**
@@ -529,42 +540,26 @@ class RencontreParis
 
     /**
      * Liste des joueurs sélectionnés dans une composition d'équipe
-     * @param int $nbJoueurs
      * @return Competiteur[]|null[]
      */
-    public function getListSelectedPlayers(int $nbJoueurs): array
+    public function getListSelectedPlayers(): array
     {
         $joueurs = array();
-        for ($i = 0; $i < $nbJoueurs; $i++){
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
             if ($this->getIdJoueurN($i))array_push($joueurs, $this->getIdJoueurN($i));
         }
         return $joueurs;
     }
 
     /**
-     * Indique si la rencontre est entièrement composée
-     * @param int $nbJoueurs
-     * @return bool
-     */
-    public function isFull(int $nbJoueurs): bool
-    {
-        $nbJoueursSelected = 0;
-        for ($i = 0; $i < $nbJoueurs; $i++){
-            if($this->getIdJoueurN($i)) $nbJoueursSelected++;
-        }
-        return $nbJoueursSelected == $nbJoueurs;
-    }
-
-    /**
      * Liste des numéros de téléphone des joueurs sélectionnés
      * @param int $idRedacteur
-     * @param int $nbJoueurs
      * @return string
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur, int $nbJoueurs): string
+    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur): string
     {
         $phoneNumbers = [];
-        foreach ($this->getListSelectedPlayers($nbJoueurs) as $joueur) {
+        foreach ($this->getListSelectedPlayers() as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber() && $joueur->getPhoneNumber() != "") array_push($phoneNumbers, $joueur->getPhoneNumber());
                 if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2() && $joueur->getPhoneNumber2() != "") array_push($phoneNumbers, $joueur->getPhoneNumber2());

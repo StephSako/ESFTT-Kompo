@@ -100,6 +100,8 @@ class HomeController extends AbstractController
      * @param string $type
      * @param int $id
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
     public function journee(string $type, int $id): Response
@@ -129,7 +131,7 @@ class HomeController extends AbstractController
             $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
 
             // Brûlages des joueurs
-            $brulages = $this->competiteurRepository->getBrulagesDepartemental($journee->getIdJournee());
+            $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $this->equipeDepartementalRepository->findAll(), $this->divisionRepository->getMaxNbJoueursChamp($type));
 
             // Nombre d'équipes
             $nbEquipes = count($compos);
@@ -156,7 +158,7 @@ class HomeController extends AbstractController
             $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
             $compos = $this->rencontreParisRepository->getRencontresParis($id);
             $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
-            $brulages = $this->competiteurRepository->getBrulagesParis($journee->getIdJournee());
+            $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $this->equipeParisRepository->findAll(), $this->divisionRepository->getMaxNbJoueursChamp($type));
             $nbEquipes = count($compos);
             $nbJournees = count($journees);
             $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
@@ -175,8 +177,8 @@ class HomeController extends AbstractController
         ));
         $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
-        $allDisponibilitesDepartementales = $this->competiteurRepository->findAllDisposRecapitulatif("departementale");
-        $allDisponibiliteParis = $this->competiteurRepository->findAllDisposRecapitulatif("paris");
+        $allDisponibilitesDepartementales = $this->competiteurRepository->findAllDisposRecapitulatif('departementale', $this->journeeDepartementaleRepository->getNbJourneeDepartementale());
+        $allDisponibiliteParis = $this->competiteurRepository->findAllDisposRecapitulatif('paris', $this->journeeParisRepository->getNbJourneeParis());
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,

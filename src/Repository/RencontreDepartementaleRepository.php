@@ -27,9 +27,9 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     {
         $selectedPlayers = [];
         foreach ($compos as $compo){
-            if ($compo->getIdEquipe()->getIdDivision()) array_merge($selectedPlayers, $compo->getListSelectedPlayers($compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale()));
+            if ($compo->getIdEquipe()->getIdDivision()) $selectedPlayers = array_merge($selectedPlayers, $compo->getListSelectedPlayers());
         }
-        return $selectedPlayers;
+        return array_map(function($joueur){ return $joueur->getIdCompetiteur(); }, $selectedPlayers);
     }
 
     /**
@@ -78,8 +78,8 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
             $strRD .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs) $strP .= ' OR ';
-            if ($i < $nbJoueurs) $strRD .= ' OR ';
+            if ($i < $nbJoueurs - 1) $strP .= ' OR ';
+            if ($i < $nbJoueurs - 1) $strRD .= ' OR ';
             $query->addSelect("IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '");
         }
         $query
@@ -109,7 +109,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         $str = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs) $str .= ' OR ';
+            if ($i < $nbJoueurs - 1) $str .= ' OR ';
             $query->addSelect('IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '"');
         }
         $query

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\JourneeDepartementale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -30,5 +32,18 @@ class JourneeDepartementaleRepository extends ServiceEntityRepository
             ->orderBy('jd.date')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return int
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function getNbJourneeDepartementale(): int
+    {
+        return intval($this->createQueryBuilder('jd')
+            ->select('COUNT(jd.idJournee)')
+            ->getQuery()
+            ->getSingleScalarResult());
     }
 }

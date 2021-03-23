@@ -66,20 +66,20 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Brûlages en championnat départemental
      * @param string $type
      * @param int $idJournee
-     * @param EquipeDepartementale|EquipeParis $equipes
+     * @param EquipeDepartementale[]|EquipeParis[] $equipes
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulagesDepartemental(string $type, int $idJournee, $equipes, int $nbJoueurs){
+    public function getBrulages(string $type, int $idJournee, array $equipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom');
         foreach ($equipes as $equipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
-                $str .= 'p' . $equipe->getNumero() . '.idJoueur1 = c.idCompetiteur';
-                if ($i < $nbJoueurs) $str .= ' OR ';
+                $str .= 'p' . $equipe->getNumero() . '.idJoueur' . $i . ' = c.idCompetiteur';
+                if ($i < $nbJoueurs - 1) $str .= ' OR ';
             }
-            $brulages->addSelect('(SELECT COUNT(p' . $equipe->getNumero() . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $equipe->getNumero() . ' WHERE (' . $str . ') AND p' . $equipe->getNumero() . '.idJournee < :idJournee AND p' . $equipe->getNumero() . '.idEquipe = 1) AS E' . $equipe->getNumero() . '');
+            $brulages->addSelect('(SELECT COUNT(p' . $equipe->getNumero() . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $equipe->getNumero() . ' WHERE (' . $str . ') AND p' . $equipe->getNumero() . '.idJournee < :idJournee AND p' . $equipe->getNumero() . '.idEquipe = ' . $equipe->getNumero() . ') AS E' . $equipe->getNumero());
         }
         $brulages
             ->addSelect('c.idCompetiteur')

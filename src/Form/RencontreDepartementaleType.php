@@ -39,7 +39,7 @@ class RencontreDepartementaleType extends AbstractType
                     $str = '';
                     for ($i = 0; $i < $options['nbMaxJoueurs']; $i++) {
                         $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
-                        if ($i < $options['nbMaxJoueurs']) $str .= ' OR ';
+                        if ($i < $options['nbMaxJoueurs'] - 1) $str .= ' OR ';
                         $request->andWhere("c.idCompetiteur NOT IN (SELECT IF(p" . $i . ".idJoueur" . $i . " <> 'NULL', p" . $i . ".idJoueur" . $i . ", 0) FROM App\Entity\RencontreDepartementale p" . $i . " WHERE p" . $i . ".idJournee = d.idJournee AND p" . $i . ".idEquipe <> :idEquipe)");
                     }
                     $request->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p WHERE (' .$str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $options['limiteBrulage'])

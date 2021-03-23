@@ -58,7 +58,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
         $str = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'p.idJoueur' . $i . ' = d.idCompetiteur';
-            if ($i < $nbJoueurs) $str .= ' OR ';
+            if ($i < $nbJoueurs - 1) $str .= ' OR ';
             $selectionnablesDQL->andWhere("d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' <> 'NULL', p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreDepartementale ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)");
         }
         $selectionnablesDQL

@@ -138,7 +138,7 @@
                             </div>
 
                             <div class="col s4 m3">
-                                <h5 class="lobster_2{% if compo.isFull(compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType)) %} pastille green{% endif %}" style="margin-bottom: 0; margin-top: {% if compo.isFull %}11px{% else %}14px{% endif %};">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                                <h5 class="lobster_2{% if compo.isFull %} pastille green{% endif %}" style="margin-bottom: 0; margin-top: {% if compo.isFull %}11px{% else %}14px{% endif %};">Équipe {{ compo.idEquipe.idEquipe }}</h5>
                             </div>
 
                             {% if not compo.exempt %}
@@ -202,7 +202,7 @@
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                {% if compo.isEmpty(compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType)) %}
+                                {% if compo.isEmpty %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
