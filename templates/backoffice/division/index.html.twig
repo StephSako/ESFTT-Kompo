@@ -31,9 +31,9 @@
                         <tr>
                             <th>Diminutif</th>
                             <th>Nom long</th>
-                            <th class="hide-on-small-only">Nombre joueurs en championnat départemental</th>
+                            <th class="hide-on-small-only">Nombre de joueurs en championnat départemental</th>
                             <th class="hide-on-med-and-up">Nb joueurs départ.</th>
-                            <th class="hide-on-small-only">Nombre joueurs en championnat de Paris</th>
+                            <th class="hide-on-small-only">Nombre de joueurs en championnat de Paris</th>
                             <th class="hide-on-med-and-up">Nb joueurs Paris</th>
                             <th></th>
                             <th></th>
@@ -45,8 +45,8 @@
                         <tr>
                             <td>{{ division.shortName }}</td>
                             <td>{{ division.longName }}</td>
-                            <td>{{ division.nbJoueursChampDepartementale ?: "<i class='grey-text material-icons'>block</i>" }}</td>
-                            <td>{{ division.nbJoueursChampParis ?: "<i class='grey-text material-icons'>block</i>" }}</td>
+                            <td>{{ division.nbJoueursChampDepartementale != -1 ? division.nbJoueursChampDepartementale : "<i class='grey-text material-icons'>block</i>" }}</td>
+                            <td>{{ division.nbJoueursChampParis != -1 ? division.nbJoueursChampParis : "<i class='grey-text material-icons'>block</i>" }}</td>
                             <td>
                                 <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                             </td>

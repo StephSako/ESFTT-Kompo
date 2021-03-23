@@ -20,19 +20,32 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $compos
+     * @param RencontreDepartementale[] $compos
      * @return array
      */
-    public function getSelectedPlayers($compos): array
+    public function getSelectedPlayers(array $compos): array
     {
         $selectedPlayers = [];
         foreach ($compos as $compo){
-            if ($compo->getIdJoueur1() != null) array_push($selectedPlayers, $compo->getIdJoueur1()->getIdCompetiteur());
-            if ($compo->getIdJoueur2() != null) array_push($selectedPlayers, $compo->getIdJoueur2()->getIdCompetiteur());
-            if ($compo->getIdJoueur3() != null) array_push($selectedPlayers, $compo->getIdJoueur3()->getIdCompetiteur());
-            if ($compo->getIdJoueur4() != null) array_push($selectedPlayers, $compo->getIdJoueur4()->getIdCompetiteur());
+            if ($compo->getIdEquipe()->getIdDivision()) array_merge($selectedPlayers, $compo->getListSelectedPlayers($compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale()));
         }
         return $selectedPlayers;
+    }
+
+    /**
+     * Récupère la liste des rencontres
+     * @param int $idJournee
+     * @return int|mixed|string
+     */
+    public function getRencontresDepartementales(int $idJournee){
+        return $this->createQueryBuilder('rd')
+            ->leftJoin('rd.idEquipe', 'e')
+            ->where('e.idDivision IS NOT NULL')
+            ->andWhere('rd.idJournee = :idJournee')
+            ->setParameter('idJournee', $idJournee)
+            ->orderBy('e.numero')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -49,19 +62,27 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des joueurs devenant brûlés dans les compositions futures après une sélection dans une journée antérieure
-     * @param $idCompetiteur
-     * @param $idJournee
-     * @param $idEquipe
+     * Liste des joueurs sélectionnés alors que brûlés
+     * @param int $idCompetiteur
+     * @param int $idJournee
+     * @param int $idEquipe
+     * @param int $limitePreBrulage
+     * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt($idCompetiteur, $idJournee, $idEquipe){
-        return $this->createQueryBuilder('rd')
-            ->select('rd as compo')
-            ->addSelect("IF(rd.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
-            ->addSelect("IF(rd.idJoueur2=:idCompetiteur, 1, 0) as isPlayer2")
-            ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
-            ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limitePreBrulage, int $nbJoueurs){
+        $query = $this->createQueryBuilder('rd')
+            ->select('rd as compo');
+        $strP = '';
+        $strRD = '';
+        for ($i = 0; $i < $nbJoueurs; $i++) {
+            $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
+            $strRD .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
+            if ($i < $nbJoueurs) $strP .= ' OR ';
+            if ($i < $nbJoueurs) $strRD .= ' OR ';
+            $query->addSelect("IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '");
+        }
+        $query
             ->from('App:Competiteur', 'c')
             ->where('rd.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
@@ -69,47 +90,57 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->setParameter('idEquipe', $idEquipe)
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
-            ->andWhere("(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = c.idCompetiteur OR p1.idJoueur2 = c.idCompetiteur OR p1.idJoueur3 = c.idCompetiteur OR p1.idJoueur4 = c.idCompetiteur) AND p1.idEquipe < 4) >= 1")
+            ->andWhere($strRD)
+            ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p WHERE (' . $strP . ') AND p.idEquipe < (SELECT MAX(e.numero) FROM App\Entity\PriveEquipeDepartementale e)) >= " . $limitePreBrulage)
             ->getQuery()->getResult();
+        return $query;
     }
 
     /**
-     * @param $idCompetiteur
-     * @param $idJournee
+     * Récupère la liste des joueurs sélectionnés alors que déclarés indisponibles
+     * @param int $idCompetiteur
+     * @param int $idJournee
+     * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getSelectedWhenIndispo($idCompetiteur, $idJournee){
-        return $this->createQueryBuilder('rd')
-            ->select('rd as compo')
-            ->addSelect("IF(rd.idJoueur1=:idCompetiteur, 1, 0) as isPlayer1")
-            ->addSelect("IF(rd.idJoueur2=:idCompetiteur, 1, 0) as isPlayer2")
-            ->addSelect("IF(rd.idJoueur3=:idCompetiteur, 1, 0) as isPlayer3")
-            ->addSelect("IF(rd.idJoueur4=:idCompetiteur, 1, 0) as isPlayer4")
+    public function getSelectedWhenIndispo(int $idCompetiteur, int $idJournee, int $nbJoueurs){
+        $query = $this->createQueryBuilder('rd')
+            ->select('rd as compo');
+        $str = '';
+        for ($i = 0; $i < $nbJoueurs; $i++) {
+            $str .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
+            if ($i < $nbJoueurs) $str .= ' OR ';
+            $query->addSelect('IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '"');
+        }
+        $query
             ->from('App:Competiteur', 'c')
             ->where('rd.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
-            ->andWhere('c.idCompetiteur = :idCompetiteur')
+            ->andWhere('c.idCompetiteur = c.idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->andWhere('rd.idJoueur1 = c.idCompetiteur OR rd.idJoueur2 = c.idCompetiteur OR rd.idJoueur3 = c.idCompetiteur OR rd.idJoueur4 = c.idCompetiteur')
+            ->andWhere($str)
             ->getQuery()->getResult();
+        return $query;
     }
 
     /**
-     * Récupère la liste des joueurs devant être au plus 1 fois sélectionnés dans l'équipe
-     * @param $idEquipe
+     * Récupère la liste des joueurs ayant été sélectionnés en J1
+     * @param int $idEquipe
+     * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulesJ2($idEquipe){
+    public function getBrulesJ2(int $idEquipe, int $nbJoueurs){
         $composJ1 = $this->createQueryBuilder('rd')
-            ->select('(rd.idJoueur1) as joueur1')
-            ->addSelect('(rd.idJoueur2) as joueur2')
-            ->addSelect('(rd.idJoueur3) as joueur3')
-            ->addSelect('(rd.idJoueur4) as joueur4')
+            ->select('rd.id');
+        for ($i = 0; $i < $nbJoueurs; $i++) {
+            $composJ1->addSelect('(rd.idJoueur' . $i . ') as joueur' . $i);
+        }
+        $composJ1
             ->where('rd.idEquipe < :idEquipe')
             ->andWhere('rd.idJournee = 1')
             ->setParameter('idEquipe', $idEquipe)
-            ->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
 
         $brulesJ2 = [];
         foreach ($composJ1 as $compo){

@@ -18,14 +18,12 @@ class EquipeDepartementaleType extends AbstractType
             ->add('numero', NumberType::class, ['label' => false, 'required' => true])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
-                'empty_data' => null,
-                'placeholder' => 'Définir vide',
-                'required' => false,
+                'required' => true,
                 'label' => false,
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
-                        ->where('d.nbJoueursChampDepartementale <> 0')
+                        ->where('d.nbJoueursChampDepartementale <> -1')
                         ->orderBy('d.nbJoueursChampDepartementale', 'DESC')
                         ->addOrderBy('d.shortName', 'ASC');
                 }

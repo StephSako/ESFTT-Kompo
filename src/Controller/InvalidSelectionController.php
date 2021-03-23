@@ -34,8 +34,8 @@ class InvalidSelectionController extends AbstractController
      */
     public function checkInvalidSelection($type, $compo, $jForm){
         if ($jForm != null && $compo->getIdJournee()->getIdJournee() < 7) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe()), 'departementale');
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()), 'paris');
+            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe(), $this->getParameter('limite_brulage_dep') - 1), 'departementale');
+            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe(), $this->getParameter('limite_brulage_dep') - 1), 'paris');
         }
     }
 

@@ -50,8 +50,13 @@ class Division
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
+     *     value = -1,
+     *     message = "Indiquez {{ value }} si division absente en champ. depart. }}"
+     * )
+     *
+     * @Assert\NotEqualTo(
      *     value = 0,
-     *     message = "Indiquez {{value }} s'il n'y a pas de division dans ce championnat }}"
+     *     message = "Indiquez -1 si division absente en champ. depart."
      * )
      *
      * @Assert\LessThanOrEqual(
@@ -67,8 +72,13 @@ class Division
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
+     *     value = -1,
+     *     message = "Indiquez {{ value }} si division absente en champ. de Paris }}"
+     * )
+     *
+     * @Assert\NotEqualTo(
      *     value = 0,
-     *     message = "Indiquez {{value }} s'il n'y a pas de division dans ce championnat }}"
+     *     message = "Indiquez -1 si division absente en champ. de Paris."
      * )
      *
      * @Assert\LessThanOrEqual(

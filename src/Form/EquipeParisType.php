@@ -18,14 +18,12 @@ class EquipeParisType extends AbstractType
             ->add('numero', NumberType::class, ['label' => false, 'required' => true])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
-                'empty_data' => null,
-                'placeholder' => 'Définir vide',
-                'required' => false,
+                'required' => true,
                 'label' => false,
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')
-                        ->where('d.nbJoueursChampParis <> 0')
+                        ->where('d.nbJoueursChampParis <> -1')
                         ->orderBy('d.nbJoueursChampParis', 'DESC')
                         ->addOrderBy('d.shortName', 'ASC');
                 }

@@ -15,7 +15,6 @@ use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -134,7 +133,7 @@ class BackOfficeEquipeController extends AbstractController
                         ->setAdversaire(null)
                         ->setExempt(false);
 
-                    for ($i = 1; $i <= $nbJoueurs; $i++){
+                    for ($i = 0; $i < $nbJoueurs; $i++){
                         $rencontre->setIdJoueurN($i, null);
                     }
                     $this->em->persist($rencontre);

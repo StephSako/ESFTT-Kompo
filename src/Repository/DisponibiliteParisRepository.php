@@ -39,36 +39,29 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Liste des joueurs sémectionables pour la composition d'une équipe (joueurs disponibles et non brûlés)
-     * @param int $idJournee
-     * @param int $idEquipe
-     * @return int|mixed|string
-     */
-    public function findJoueursSelectionnables(int $idJournee, int $idEquipe)
+    public function findJoueursSelectionnables(int $idJournee, int $idEquipe, int $nbJoueurs, int $limiteBrulage): array
     {
-        $query = $this->createQueryBuilder('d')
+        $selectionnablesDQL = $this->createQueryBuilder('d')
             ->leftJoin('d.idCompetiteur', 'c')
             ->select('c.nom')
             ->where('d.idJournee = :idJournee')
             ->andWhere('c.visitor <> true')
-            ->andWhere('d.disponibilite = 1')
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1.idJoueur1 <> 'NULL', p1.idJoueur1, 0) FROM App\Entity\RencontreParis p1 WHERE p1.idJournee = d.idJournee AND p1.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2.idJoueur2 <> 'NULL', p2.idJoueur2, 0) FROM App\Entity\RencontreParis p2 WHERE p2.idJournee = d.idJournee AND p2.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3.idJoueur3 <> 'NULL', p3.idJoueur3, 0) FROM App\Entity\RencontreParis p3 WHERE p3.idJournee = d.idJournee AND p3.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4.idJoueur4 <> 'NULL', p4.idJoueur4, 0) FROM App\Entity\RencontreParis p4 WHERE p4.idJournee = d.idJournee AND p4.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p5.idJoueur5 <> 'NULL', p5.idJoueur5, 0) FROM App\Entity\RencontreParis p5 WHERE p5.idJournee = d.idJournee AND p5.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p6.idJoueur6 <> 'NULL', p6.idJoueur6, 0) FROM App\Entity\RencontreParis p6 WHERE p6.idJournee = d.idJournee AND p6.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p7.idJoueur7 <> 'NULL', p7.idJoueur7, 0) FROM App\Entity\RencontreParis p7 WHERE p7.idJournee = d.idJournee AND p7.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p8.idJoueur8 <> 'NULL', p8.idJoueur8, 0) FROM App\Entity\RencontreParis p8 WHERE p8.idJournee = d.idJournee AND p8.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p9.idJoueur9 <> 'NULL', p9.idJoueur9, 0) FROM App\Entity\RencontreParis p9 WHERE p9.idJournee = d.idJournee AND p9.idEquipe <> :idEquipe)")
-            ->andWhere('(SELECT COUNT(_p1.id) FROM App\Entity\RencontreParis _p1 WHERE (_p1.idJoueur1 = d.idCompetiteur OR _p1.idJoueur2 = d.idCompetiteur OR _p1.idJoueur3 = d.idCompetiteur OR _p1.idJoueur4 = d.idCompetiteur) AND _p1.idJournee < :idJournee AND _p1.idEquipe < :idEquipe) < 3')
-            ->setParameter('idEquipe', $idEquipe)
-            ->setParameter('idJournee', $idJournee)
-            ->getQuery()->getResult();
+            ->andWhere('d.disponibilite = 1');
+        $str = '';
+        for ($i = 0; $i < $nbJoueurs; $i++) {
+            $str .= 'p.idJoueur' . $i . ' = d.idCompetiteur';
+            if ($i < $nbJoueurs) $str .= ' OR ';
+            $selectionnablesDQL->andWhere("d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' <> 'NULL', p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreParis ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)");
+        }
+        $selectionnablesDQL
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (' . $str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
+            ->setParameter('idJournee',$idJournee)
+            ->setParameter('idEquipe',$idEquipe)
+            ->getQuery()
+            ->getResult();
 
         $selectionnables = [];
-        foreach ($query as $selectionnable){
+        foreach ($selectionnablesDQL as $selectionnable){
             array_push($selectionnables, $selectionnable["nom"]);
         }
 

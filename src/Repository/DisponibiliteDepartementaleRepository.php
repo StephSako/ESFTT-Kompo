@@ -43,24 +43,30 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
      * Liste des joueurs sélectionables pour la composition d'une équipe (joueurs disponibles et non brûlés)
      * @param int $idJournee
      * @param int $idEquipe
+     * @param int $nbJoueurs
+     * @param int $limiteBrulage
      * @return array
      */
-    public function findJoueursSelectionnables(int $idJournee, int $idEquipe)
+    public function findJoueursSelectionnables(int $idJournee, int $idEquipe, int $nbJoueurs, int $limiteBrulage): array
     {
         $selectionnablesDQL = $this->createQueryBuilder('d')
             ->leftJoin('d.idCompetiteur', 'c')
             ->select('c.nom')
             ->where('d.idJournee = :idJournee')
             ->andWhere('c.visitor <> true')
-            ->andWhere('d.disponibilite = 1')
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p1_.idJoueur1<>'NULL', p1_.idJoueur1, 0) FROM App\Entity\RencontreDepartementale p1_ WHERE p1_.idJournee = d.idJournee AND p1_.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p2_.idJoueur2<>'NULL', p2_.idJoueur2, 0) FROM App\Entity\RencontreDepartementale p2_ WHERE p2_.idJournee = d.idJournee AND p2_.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p3_.idJoueur3<>'NULL', p3_.idJoueur3, 0) FROM App\Entity\RencontreDepartementale p3_ WHERE p3_.idJournee = d.idJournee AND p3_.idEquipe <> :idEquipe)")
-            ->andWhere("d.idCompetiteur NOT IN (SELECT IF(p4_.idJoueur4<>'NULL', p4_.idJoueur4, 0) FROM App\Entity\RencontreDepartementale p4_ WHERE p4_.idJournee = d.idJournee AND p4_.idEquipe <> :idEquipe)")
-            ->andWhere('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = d.idCompetiteur OR p1.idJoueur2 = d.idCompetiteur OR p1.idJoueur3 = d.idCompetiteur OR p1.idJoueur4 = d.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe < :idEquipe) < 2')
+            ->andWhere('d.disponibilite = 1');
+        $str = '';
+        for ($i = 0; $i < $nbJoueurs; $i++) {
+            $str .= 'p.idJoueur' . $i . ' = d.idCompetiteur';
+            if ($i < $nbJoueurs) $str .= ' OR ';
+            $selectionnablesDQL->andWhere("d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' <> 'NULL', p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreDepartementale ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)");
+        }
+        $selectionnablesDQL
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p WHERE (' . $str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
             ->setParameter('idJournee',$idJournee)
             ->setParameter('idEquipe',$idEquipe)
-            ->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
 
         $selectionnables = [];
         foreach ($selectionnablesDQL as $selectionnable){

@@ -167,11 +167,11 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
 
-            for ($i = 1; $i <= intval($this->divisionRepository->getMaxNbJoueursChamp('departementale')); $i+=1) {
+            for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('departementale'); $i+=1) {
                 $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 
-            for ($i = 1; $i <= intval($this->divisionRepository->getMaxNbJoueursChamp('paris')); $i+=1) {
+            for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('paris'); $i+=1) {
                 $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 

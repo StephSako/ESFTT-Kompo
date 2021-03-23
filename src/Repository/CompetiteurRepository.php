@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
+use App\Entity\EquipeDepartementale;
+use App\Entity\EquipeParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,11 +22,11 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $idJournee
+     * @param int $idJournee
      * @param string $type
      * @return mixed[]
      */
-    public function findJoueursNonDeclares($idJournee, string $type): array
+    public function findJoueursNonDeclares(int $idJournee, string $type): array
     {
         return $this->createQueryBuilder('c')
             ->select('c.nom')
@@ -40,14 +42,15 @@ class CompetiteurRepository extends ServiceEntityRepository
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
      * @param string $type
+     * @param int $nbJournees
      * @return int|mixed|string
      */
-    public function findAllDisposRecapitulatif(string $type){
+    public function findAllDisposRecapitulatif(string $type, int $nbJournees){
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
             ->addSelect('c.nom');
 
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = 1; $i <= $nbJournees; $i++) {
             $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite" . $type . " dt" . $i . " WHERE c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
         }
 
@@ -61,15 +64,24 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Brûlages en championnat départemental
+     * @param string $type
      * @param int $idJournee
+     * @param EquipeDepartementale|EquipeParis $equipes
+     * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulagesDepartemental(int $idJournee){
+    public function getBrulagesDepartemental(string $type, int $idJournee, $equipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
-            ->select('(SELECT COUNT(p1.id) FROM App\Entity\RencontreDepartementale p1 WHERE (p1.idJoueur1 = c.idCompetiteur OR p1.idJoueur2 = c.idCompetiteur OR p1.idJoueur3 = c.idCompetiteur OR p1.idJoueur4 = c.idCompetiteur) AND p1.idJournee < :idJournee AND p1.idEquipe = 1) AS E1')
-            ->addSelect('(SELECT COUNT(p2.id) FROM App\Entity\RencontreDepartementale p2 WHERE (p2.idJoueur1 = c.idCompetiteur OR p2.idJoueur2 = c.idCompetiteur OR p2.idJoueur3 = c.idCompetiteur OR p2.idJoueur4 = c.idCompetiteur) AND p2.idJournee < :idJournee AND p2.idEquipe = 2) AS E2')
-            ->addSelect('(SELECT COUNT(p3.id) FROM App\Entity\RencontreDepartementale p3 WHERE (p3.idJoueur1 = c.idCompetiteur OR p3.idJoueur2 = c.idCompetiteur OR p3.idJoueur3 = c.idCompetiteur OR p3.idJoueur4 = c.idCompetiteur) AND p3.idJournee < :idJournee AND p3.idEquipe = 3) AS E3')
-            ->addSelect('c.nom')
+            ->select('c.nom');
+        foreach ($equipes as $equipe) {
+            $str = '';
+            for ($i = 0; $i < $nbJoueurs; $i++) {
+                $str .= 'p' . $equipe->getNumero() . '.idJoueur1 = c.idCompetiteur';
+                if ($i < $nbJoueurs) $str .= ' OR ';
+            }
+            $brulages->addSelect('(SELECT COUNT(p' . $equipe->getNumero() . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $equipe->getNumero() . ' WHERE (' . $str . ') AND p' . $equipe->getNumero() . '.idJournee < :idJournee AND p' . $equipe->getNumero() . '.idEquipe = 1) AS E' . $equipe->getNumero() . '');
+        }
+        $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
@@ -86,32 +98,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Brûlages en championnat de Paris
-     * @param int $idJournee
-     * @return array
-     */
-    public function getBrulagesParis(int $idJournee): array
-    {
-        $brulages = $this->createQueryBuilder('c')
-            ->select('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (p.idJoueur1 = c.idCompetiteur OR p.idJoueur2 = c.idCompetiteur OR p.idJoueur3 = c.idCompetiteur OR p.idJoueur4 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur5 = c.idCompetiteur OR p.idJoueur6 = c.idCompetiteur OR p.idJoueur7 = c.idCompetiteur OR p.idJoueur8 = c.idCompetiteur OR p.idJoueur9 = c.idCompetiteur) AND p.idJournee < :idJournee AND p.idEquipe = 1) AS E1')
-            ->addSelect('c.nom')
-            ->addSelect('c.idCompetiteur')
-            ->where('c.visitor <> true')
-            ->setParameter('idJournee', $idJournee)
-            ->addOrderBy('c.nom')
-            ->getQuery()
-            ->getResult();
-
-        $allBrulage = [];
-        foreach ($brulages as $brulage){
-            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "idCompetiteur" => $brulage["idCompetiteur"]];
-        }
-
-        return $allBrulage;
-    }
-
-    /**
-     * BACK-OFFICE : liste de toutes les disponibilités
+     * Liste de toutes les disponibilités
      * @param string $type
      * @return int|mixed|string
      */

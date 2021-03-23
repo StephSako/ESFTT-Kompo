@@ -12,17 +12,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(
  *     name="prive_rencontre_paris",
  *     indexes={
- *         @Index(name="IDX_E9FBFCF314128E72", columns={"id_joueur_4"}),
- *         @Index(name="IDX_E9FBFCF31DA4C259", columns={"id_joueur_8"}),
+ *         @Index(name="IDX_E9FBFCF314128E72", columns={"id_joueur_3"}),
+ *         @Index(name="IDX_E9FBFCF31DA4C259", columns={"id_joueur_7"}),
  *         @Index(name="IDX_E9FBFCF327E0FF8", columns={"id_equipe"}),
  *         @Index(name="IDX_E9FBFCF328A339D", columns={"id_journee"}),
- *         @Index(name="IDX_E9FBFCF36315BEE4", columns={"id_joueur_5"}),
- *         @Index(name="IDX_E9FBFCF364787AFD", columns={"id_joueur_1"}),
- *         @Index(name="IDX_E9FBFCF36AA3F2CF", columns={"id_joueur_9"}),
- *         @Index(name="IDX_E9FBFCF38A761BD1", columns={"id_joueur_3"}),
- *         @Index(name="IDX_E9FBFCF38D1BDFC8", columns={"id_joueur_7"}),
- *         @Index(name="IDX_E9FBFCF3FA1CEF5E", columns={"id_joueur_6"}),
- *         @Index(name="IDX_E9FBFCF3FD712B47", columns={"id_joueur_2"})
+ *         @Index(name="IDX_E9FBFCF36315BEE4", columns={"id_joueur_4"}),
+ *         @Index(name="IDX_E9FBFCF364787AFD", columns={"id_joueur_0"}),
+ *         @Index(name="IDX_E9FBFCF36AA3F2CF", columns={"id_joueur_8"}),
+ *         @Index(name="IDX_E9FBFCF38A761BD1", columns={"id_joueur_2"}),
+ *         @Index(name="IDX_E9FBFCF38D1BDFC8", columns={"id_joueur_6"}),
+ *         @Index(name="IDX_E9FBFCF3FA1CEF5E", columns={"id_joueur_5"}),
+ *         @Index(name="IDX_E9FBFCF3FD712B47", columns={"id_joueur_1"})
  * })
  */
 class RencontreParis
@@ -46,6 +46,13 @@ class RencontreParis
      * @ORM\Column(name="exempt", type="boolean", nullable=false)
      */
     private $exempt;
+
+    /**
+     * @var Competiteur|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
+     * @ORM\JoinColumn(name="id_joueur_0", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
+     */
+    private $idJoueur0;
 
     /**
      * @var Competiteur|null
@@ -104,13 +111,6 @@ class RencontreParis
     private $idJoueur8;
 
     /**
-     * @var Competiteur|null
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_9", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
-     */
-    private $idJoueur9;
-
-    /**
      * @var EquipeParis
      * @ORM\ManyToOne(targetEntity="App\Entity\EquipeParis", inversedBy="rencontresParis")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
@@ -159,7 +159,8 @@ class RencontreParis
      */
     public function getIdJoueurN(int $n): ?Competiteur
     {
-        if ($n == 1) return $this->getIdJoueur1();
+        if ($n == 0) return $this->getIdJoueur0();
+        else if ($n == 1) return $this->getIdJoueur1();
         else if ($n == 2) return $this->getIdJoueur2();
         else if ($n == 3) return $this->getIdJoueur3();
         else if ($n == 4) return $this->getIdJoueur4();
@@ -167,7 +168,6 @@ class RencontreParis
         else if ($n == 6) return $this->getIdJoueur6();
         else if ($n == 7) return $this->getIdJoueur7();
         else if ($n == 8) return $this->getIdJoueur8();
-        else if ($n == 9) return $this->getIdJoueur9();
         else return null;
     }
 
@@ -178,7 +178,8 @@ class RencontreParis
      */
     public function setIdJoueurN(int $n, $val): self
     {
-        if ($n == 1) return $this->setIdJoueur1($val);
+        if ($n == 0) return $this->setIdJoueur0($val);
+        else if ($n == 1) return $this->setIdJoueur1($val);
         else if ($n == 2) return $this->setIdJoueur2($val);
         else if ($n == 3) return $this->setIdJoueur3($val);
         else if ($n == 4) return $this->setIdJoueur4($val);
@@ -186,25 +187,24 @@ class RencontreParis
         else if ($n == 6) return $this->setIdJoueur6($val);
         else if ($n == 7) return $this->setIdJoueur7($val);
         else if ($n == 8) return $this->setIdJoueur8($val);
-        else if ($n == 9) return $this->setIdJoueur9($val);
         else return $this;
     }
 
     /**
-     * @return bool
+     * @return Competiteur|null
      */
-    public function getDomicile(): bool
+    public function getIdJoueur0(): ?Competiteur
     {
-        return $this->domicile;
+        return $this->idJoueur0;
     }
 
     /**
-     * @param bool $domicile
+     * @param Competiteur|null $idJoueur0
      * @return RencontreParis
      */
-    public function setDomicile(bool $domicile): self
+    public function setIdJoueur0(?Competiteur $idJoueur0): RencontreParis
     {
-        $this->domicile = $domicile;
+        $this->idJoueur0 = $idJoueur0;
         return $this;
     }
 
@@ -220,7 +220,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur1
      * @return RencontreParis
      */
-    public function setIdJoueur1(?Competiteur $idJoueur1): self
+    public function setIdJoueur1(?Competiteur $idJoueur1): RencontreParis
     {
         $this->idJoueur1 = $idJoueur1;
         return $this;
@@ -238,7 +238,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur2
      * @return RencontreParis
      */
-    public function setIdJoueur2(?Competiteur $idJoueur2): self
+    public function setIdJoueur2(?Competiteur $idJoueur2): RencontreParis
     {
         $this->idJoueur2 = $idJoueur2;
         return $this;
@@ -256,7 +256,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur3
      * @return RencontreParis
      */
-    public function setIdJoueur3(?Competiteur $idJoueur3): self
+    public function setIdJoueur3(?Competiteur $idJoueur3): RencontreParis
     {
         $this->idJoueur3 = $idJoueur3;
         return $this;
@@ -274,7 +274,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur4
      * @return RencontreParis
      */
-    public function setIdJoueur4(?Competiteur $idJoueur4): self
+    public function setIdJoueur4(?Competiteur $idJoueur4): RencontreParis
     {
         $this->idJoueur4 = $idJoueur4;
         return $this;
@@ -292,7 +292,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur5
      * @return RencontreParis
      */
-    public function setIdJoueur5(?Competiteur $idJoueur5): self
+    public function setIdJoueur5(?Competiteur $idJoueur5): RencontreParis
     {
         $this->idJoueur5 = $idJoueur5;
         return $this;
@@ -310,7 +310,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur6
      * @return RencontreParis
      */
-    public function setIdJoueur6(?Competiteur $idJoueur6): self
+    public function setIdJoueur6(?Competiteur $idJoueur6): RencontreParis
     {
         $this->idJoueur6 = $idJoueur6;
         return $this;
@@ -328,7 +328,7 @@ class RencontreParis
      * @param Competiteur|null $idJoueur7
      * @return RencontreParis
      */
-    public function setIdJoueur7(?Competiteur $idJoueur7): self
+    public function setIdJoueur7(?Competiteur $idJoueur7): RencontreParis
     {
         $this->idJoueur7 = $idJoueur7;
         return $this;
@@ -346,27 +346,27 @@ class RencontreParis
      * @param Competiteur|null $idJoueur8
      * @return RencontreParis
      */
-    public function setIdJoueur8(?Competiteur $idJoueur8): self
+    public function setIdJoueur8(?Competiteur $idJoueur8): RencontreParis
     {
         $this->idJoueur8 = $idJoueur8;
         return $this;
     }
 
     /**
-     * @return Competiteur|null
+     * @return bool
      */
-    public function getIdJoueur9(): ?Competiteur
+    public function getDomicile(): bool
     {
-        return $this->idJoueur9;
+        return $this->domicile;
     }
 
     /**
-     * @param Competiteur|null $idJoueur9
+     * @param bool $domicile
      * @return RencontreParis
      */
-    public function setIdJoueur9(?Competiteur $idJoueur9): self
+    public function setDomicile(bool $domicile): self
     {
-        $this->idJoueur9 = $idJoueur9;
+        $this->domicile = $domicile;
         return $this;
     }
 
@@ -449,7 +449,7 @@ class RencontreParis
     public function getIsEmpty(int $nbJoueurs): bool
     {
         $isEmpty = array();
-        for ($i = 1; $i <= $nbJoueurs; $i++){
+        for ($i = 0; $i < $nbJoueurs; $i++){
             array_push($isEmpty, $this->getIdJoueurN($i));
         }
         return !in_array(true, $isEmpty);
@@ -529,33 +529,43 @@ class RencontreParis
 
     /**
      * Liste des joueurs sélectionnés dans une composition d'équipe
+     * @param int $nbJoueurs
      * @return Competiteur[]|null[]
      */
-    public function getListSelectedPlayers(){
-        return [$this->getIdJoueur1(), $this->getIdJoueur2(), $this->getIdJoueur3(), $this->getIdJoueur4(), $this->getIdJoueur5(), $this->getIdJoueur6(), $this->getIdJoueur7(), $this->getIdJoueur8(), $this->getIdJoueur9()];
+    public function getListSelectedPlayers(int $nbJoueurs): array
+    {
+        $joueurs = array();
+        for ($i = 0; $i < $nbJoueurs; $i++){
+            if ($this->getIdJoueurN($i))array_push($joueurs, $this->getIdJoueurN($i));
+        }
+        return $joueurs;
     }
 
     /**
      * Indique si la rencontre est entièrement composée
+     * @param int $nbJoueurs
      * @return bool
      */
-    public function isFull() {
-        if ($this->idEquipe->getIdEquipe() == 1) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3() && $this->getIdJoueur4() && $this->getIdJoueur5() && $this->getIdJoueur6() && $this->getIdJoueur7() && $this->getIdJoueur8() && $this->getIdJoueur9());
-        else if ($this->idEquipe->getIdEquipe() == 2) return ($this->getIdJoueur1() && $this->getIdJoueur2() && $this->getIdJoueur3());
-        else return false;
+    public function isFull(int $nbJoueurs): bool
+    {
+        $nbJoueursSelected = 0;
+        for ($i = 0; $i < $nbJoueurs; $i++){
+            if($this->getIdJoueurN($i)) $nbJoueursSelected++;
+        }
+        return $nbJoueursSelected == $nbJoueurs;
     }
 
     /**
      * Liste des numéros de téléphone des joueurs sélectionnés
      * @param int $idRedacteur
+     * @param int $nbJoueurs
      * @return string
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur): string
+    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur, int $nbJoueurs): string
     {
         $phoneNumbers = [];
-
-        foreach ($this->getListSelectedPlayers() as $joueur) {
-            if ($joueur && $joueur->getIdCompetiteur() != $idRedacteur){
+        foreach ($this->getListSelectedPlayers($nbJoueurs) as $joueur) {
+            if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber() && $joueur->getPhoneNumber() != "") array_push($phoneNumbers, $joueur->getPhoneNumber());
                 if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2() && $joueur->getPhoneNumber2() != "") array_push($phoneNumbers, $joueur->getPhoneNumber2());
             }

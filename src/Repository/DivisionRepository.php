@@ -23,15 +23,16 @@ class DivisionRepository extends ServiceEntityRepository
 
     /**
      * @param string $type
-     * @return int|mixed|string
+     * @return int
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getMaxNbJoueursChamp(string $type)
+    public function getMaxNbJoueursChamp(string $type): int
     {
-        return $this->createQueryBuilder('d')
+        return (intval($this->createQueryBuilder('d')
             ->select('MAX(d.nbJoueursChamp' . ucfirst($type) . ') as max')
+            ->from('App\Entity\Equipe' . $type, 'e')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()) ?: 0);
     }
 }

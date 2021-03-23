@@ -17,7 +17,7 @@ class RencontreDepartementaleType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        for($j = 1; $j <= $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale(); $j++) {
+        for($j = 0; $j < $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale(); $j++) {
             $builder->add('idJoueur' . $j, EntityType::class, [
                 'class' => 'App\Entity\Competiteur',
                 'choice_label' => function ($competiteur) use ($builder) {
@@ -37,9 +37,9 @@ class RencontreDepartementaleType extends AbstractType
                         ->andWhere('d.disponibilite = 1')
                         ->andWhere('c.visitor <> true');
                     $str = '';
-                    for ($i = 1; $i <= intval($options['nbMaxJoueursUsed']); $i++) {
+                    for ($i = 0; $i < $options['nbMaxJoueurs']; $i++) {
                         $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
-                        if ($i < intval($options['nbMaxJoueursUsed'])) $str .= ' OR ';
+                        if ($i < $options['nbMaxJoueurs']) $str .= ' OR ';
                         $request->andWhere("c.idCompetiteur NOT IN (SELECT IF(p" . $i . ".idJoueur" . $i . " <> 'NULL', p" . $i . ".idJoueur" . $i . ", 0) FROM App\Entity\RencontreDepartementale p" . $i . " WHERE p" . $i . ".idJournee = d.idJournee AND p" . $i . ".idEquipe <> :idEquipe)");
                     }
                     $request->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p WHERE (' .$str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $options['limiteBrulage'])
@@ -57,7 +57,7 @@ class RencontreDepartementaleType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RencontreDepartementale::class,
             'translation_domain' => 'forms',
-            'nbMaxJoueursUsed' => null,
+            'nbMaxJoueurs' => null,
             'limiteBrulage' => null
         ]);
     }
