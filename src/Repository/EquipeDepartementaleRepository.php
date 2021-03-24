@@ -30,6 +30,7 @@ class EquipeDepartementaleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('ed')
             ->select('count(ed.idEquipe)')
+            ->where('ed.idDivision IS NOT NULL')
             ->getQuery()
             ->getSingleScalarResult();
     }

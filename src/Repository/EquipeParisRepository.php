@@ -30,6 +30,7 @@ class EquipeParisRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('ep')
             ->select('count(ep.idEquipe)')
+            ->where('ep.idDivision IS NOT NULL')
             ->getQuery()
             ->getSingleScalarResult();
     }

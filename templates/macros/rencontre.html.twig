@@ -16,7 +16,12 @@
             <tbody>
                 {% for rencontre in rencontres %}
                     <tr>
-                        <td>{{ rencontre.idEquipe.idEquipe }}</td>
+                        <td>
+                            {{ rencontre.idEquipe.idEquipe }}
+                            {% if rencontre.idEquipe.idDivision is null %}
+                                <i class="material-icons tooltipped red-text" data-tooltip="Renseignez la division de l'équipe">help_outline</i>
+                            {% endif %}
+                        </td>
                         <td>{{ rencontre.idJournee.idJournee }}</td>
                         <td>
                             <div class="hide-on-small-only">

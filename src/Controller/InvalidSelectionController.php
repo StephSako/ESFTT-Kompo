@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\RencontreDepartementale;
+use App\Entity\RencontreParis;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,13 +31,13 @@ class InvalidSelectionController extends AbstractController
 
     /**
      * @param $type
-     * @param $compo
+     * @param RencontreDepartementale|RencontreParis $compo
      * @param $jForm
      */
     public function checkInvalidSelection($type, $compo, $jForm){
         if ($jForm != null && $compo->getIdJournee()->getIdJournee() < 7) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe(), $this->getParameter('limite_brulage_dep') - 1), 'departementale');
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee(), $compo->getIdEquipe(), $this->getParameter('limite_brulage_dep') - 1), 'paris');
+            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1), 'departementale');
+            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1), 'paris');
         }
     }
 

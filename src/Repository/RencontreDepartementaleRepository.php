@@ -20,6 +20,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des joueurs sélectionnés lors d'une journée
      * @param RencontreDepartementale[] $compos
      * @return array
      */
@@ -33,7 +34,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère la liste des rencontres
+     * Liste des rencontres
      * @param int $idJournee
      * @return int|mixed|string
      */
@@ -49,14 +50,16 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des rencontres dans le backoffice
      * @return int|mixed|string
      */
     public function getOrderedRencontres(){
         return $this->createQueryBuilder('rd')
             ->leftJoin('rd.idJournee', 'j')
+            ->leftJoin('rd.idEquipe', 'e')
             ->orderBy('j.date')
             ->addOrderBy('rd.idJournee')
-            ->addOrderBy('rd.idEquipe')
+            ->addOrderBy('e.numero')
             ->getQuery()
             ->getResult();
     }
@@ -84,20 +87,23 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
+            ->leftJoin('rd.idEquipeDepartementale', 'e')
             ->where('rd.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
-            ->andWhere('rd.idEquipe > :idEquipe')
+            ->andWhere('e.numero > :idEquipe')
             ->setParameter('idEquipe', $idEquipe)
+            ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere($strRD)
-            ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p WHERE (' . $strP . ') AND p.idEquipe < (SELECT MAX(e.numero) FROM App\Entity\PriveEquipeDepartementale e)) >= " . $limitePreBrulage)
-            ->getQuery()->getResult();
+            ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p NATURAL JOIN App\Entity\RencontreDepartementale e WHERE (' . $strP . ') AND e.numero < (SELECT MAX(e.numero) FROM App\Entity\PriveEquipeDepartementale e)) >= " . $limitePreBrulage)
+            ->getQuery()
+            ->getResult();
         return $query;
     }
 
     /**
-     * Récupère la liste des joueurs sélectionnés alors que déclarés indisponibles
+     * Liste des joueurs sélectionnés alors que déclarés indisponibles
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $nbJoueurs
@@ -114,7 +120,9 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
-            ->where('rd.idJournee = :idJournee')
+            ->leftJoin('rd.idEquipeDepartementale', 'e')
+            ->where('e.idDivision IS NOT NULL')
+            ->andWhere('rd.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('c.idCompetiteur = c.idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
@@ -124,7 +132,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère la liste des joueurs ayant été sélectionnés en J1
+     * Liste des joueurs ayant été sélectionnés en J1
      * @param int $idEquipe
      * @param int $nbJoueurs
      * @return int|mixed|string
@@ -136,7 +144,9 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             $composJ1->addSelect('(rd.idJoueur' . $i . ') as joueur' . $i);
         }
         $composJ1
-            ->where('rd.idEquipe < :idEquipe')
+            ->leftJoin('rd.idEquipeDepartementale', 'e')
+            ->where('e.idDivision IS NOT NULL')
+            ->andWhere('e.numero < :idEquipe')
             ->andWhere('rd.idJournee = 1')
             ->setParameter('idEquipe', $idEquipe)
             ->getQuery()

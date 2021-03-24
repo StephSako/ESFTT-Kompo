@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Competiteur;
-use App\Entity\EquipeDepartementale;
-use App\Entity\EquipeParis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -32,7 +30,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->select('c.nom')
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.nom')
-            ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = " . $idJournee . ")")
+            ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = :idJournee)")
+            ->setParameter('idJournee', $idJournee)
             ->andWhere('c.visitor <> true')
             ->addOrderBy('c.nom')
             ->getQuery()
@@ -66,22 +65,22 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Brûlages en championnat départemental
      * @param string $type
      * @param int $idJournee
-     * @param EquipeDepartementale[]|EquipeParis[] $equipes
+     * @param int[] $idEquipes
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulages(string $type, int $idJournee, array $equipes, int $nbJoueurs){
+    public function getBrulages(string $type, int $idJournee, array $idEquipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom');
-        foreach ($equipes as $equipe) {
+        foreach ($idEquipes as $idEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
-                $str .= 'p' . $equipe->getNumero() . '.idJoueur' . $i . ' = c.idCompetiteur';
+                $str .= 'p' . $idEquipe . '.idJoueur' . $i . ' = c.idCompetiteur';
                 if ($i < $nbJoueurs - 1) $str .= ' OR ';
             }
-            $brulages->addSelect('(SELECT COUNT(p' . $equipe->getNumero() . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $equipe->getNumero() . ' WHERE (' . $str . ') AND p' . $equipe->getNumero() . '.idJournee < :idJournee AND p' . $equipe->getNumero() . '.idEquipe = ' . $equipe->getNumero() . ') AS E' . $equipe->getNumero());
+            $brulages = $brulages->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $idEquipe . ', App\Entity\Equipe' . ucfirst($type) . ' e' . $idEquipe . ' WHERE (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe AND e' . $idEquipe . '.numero = ' . $idEquipe . ' AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe);
         }
-        $brulages
+        $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
@@ -89,10 +88,17 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+        // TODO Gérer dynamiquement
         $allBrulage = [];
         foreach ($brulages as $brulage){
-            $allBrulage[$brulage["nom"]] = ["E1" => $brulage["E1"], "E2"=>$brulage["E2"], "E3" => $brulage["E3"], "idCompetiteur" => $brulage["idCompetiteur"]];
+            $brulageJoueur = [];
+            foreach ($idEquipes as $idEquipe) {
+                $brulageJoueur['E'.$idEquipe] = $brulage['E'.$idEquipe];
+            }
+            $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
+            $allBrulage[$brulage['nom']] = $brulageJoueur;
         }
+        dump($allBrulage);
 
         return $allBrulage;
     }

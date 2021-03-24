@@ -1,4 +1,4 @@
-{% macro table(type, brulages, nbEquipes) %}
+{% macro table(type, brulages, idEquipes) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
@@ -15,8 +15,8 @@
         <thead>
             <tr>
                 <th class="center"><h5>Brûlages</h5></th>
-                {% for i in 2..nbEquipes %}
-                    <th class="center"><h5>{{ i }}</h5></th>
+                {% for idEquipe in idEquipes %}
+                    <th class="center"><h5>{{ idEquipe }}</h5></th>
                 {% endfor %}
             </tr>
         </thead>
