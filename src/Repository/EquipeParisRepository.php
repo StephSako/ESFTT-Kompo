@@ -36,6 +36,20 @@ class EquipeParisRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $fonction
+     * @return int|mixed|string
+     */
+    public function getIdEquipesBrulees(string $fonction)
+    {
+        return $this->createQueryBuilder('ep')
+            ->select('ep.idEquipe')
+            ->where('ep.idDivision IS NOT NULL')
+            ->andWhere('ep.idEquipe <> (SELECT ' . $fonction . '(e.idEquipe) from App\Entity\EquipeParis e WHERE e.idDivision IS NOT NULL)')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param int $idDeletedDivision
      * @return int|mixed|string
      */

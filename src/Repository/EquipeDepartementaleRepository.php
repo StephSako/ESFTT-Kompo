@@ -36,6 +36,21 @@ class EquipeDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des IDs des équipes soumises au brûlage
+     * @param string $fonction
+     * @return int|mixed|string
+     */
+    public function getIdEquipesBrulees(string $fonction)
+    {
+        return array_column($this->createQueryBuilder('ed')
+            ->select('ed.idEquipe')
+            ->where('ed.idDivision IS NOT NULL')
+            ->andWhere('ed.idEquipe <> (SELECT ' . $fonction . '(e.idEquipe) from App\Entity\EquipeDepartementale e WHERE e.idDivision IS NOT NULL)')
+            ->getQuery()
+            ->getResult(), 'idEquipe');
+    }
+
+    /**
      * @param int $idDeletedDivision
      * @return int|mixed|string
      */

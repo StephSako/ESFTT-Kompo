@@ -65,11 +65,11 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Brûlages en championnat départemental
      * @param string $type
      * @param int $idJournee
-     * @param int[] $idEquipes
+     * @param $idEquipes
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulages(string $type, int $idJournee, array $idEquipes, int $nbJoueurs){
+    public function getBrulages(string $type, int $idJournee, $idEquipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom');
         foreach ($idEquipes as $idEquipe) {
@@ -88,7 +88,6 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        // TODO Gérer dynamiquement
         $allBrulage = [];
         foreach ($brulages as $brulage){
             $brulageJoueur = [];
@@ -98,7 +97,6 @@ class CompetiteurRepository extends ServiceEntityRepository
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom']] = $brulageJoueur;
         }
-        dump($allBrulage);
 
         return $allBrulage;
     }

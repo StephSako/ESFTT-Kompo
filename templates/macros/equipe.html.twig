@@ -17,7 +17,7 @@
                         <td>{{ equipe.numero }}</td>
                         <td>
                             {% if equipe.idDivision %}
-                                {{ equipe.idDivision.longName }}
+                                {{ equipe.idDivision.longName }} - <i>{{ equipe.idDivision.nbJoueurschamp(type) }} joueurs</i>
                             {% else %}
                                 <span class="red-text lighten-2">Indéfinie</span>
                             {% endif %}
