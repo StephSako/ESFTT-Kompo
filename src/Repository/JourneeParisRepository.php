@@ -39,10 +39,10 @@ class JourneeParisRepository extends ServiceEntityRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getNbJourneeParis(): int
+    public function getNbJournee(): int
     {
-        return intval($this->createQueryBuilder('jp')
-            ->select('COUNT(jp.idJournee)')
+        return intval($this->createQueryBuilder('j')
+            ->select('COUNT(j.idJournee)')
             ->getQuery()
             ->getSingleScalarResult());
     }

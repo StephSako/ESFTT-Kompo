@@ -336,7 +336,7 @@ class HomeController extends AbstractController
             else {
                 /** On vérifie si le joueur devient brûlé dans de futures compositions **/
                 for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                    $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueurN($i));
+                    if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), count($journees), $nbMaxJoueurs);
                 }
                 $this->em->flush();
                 $this->addFlash('success', 'Composition modifiée avec succès !');

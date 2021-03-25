@@ -32,32 +32,25 @@ class InvalidSelectionController extends AbstractController
     /**
      * @param $type
      * @param RencontreDepartementale|RencontreParis $compo
-     * @param $jForm
+     * @param int $idJoueur
+     * @param int $nbJournees
+     * @param int $nbJoueurs
      */
-    public function checkInvalidSelection($type, $compo, $jForm){
-        if ($jForm != null && $compo->getIdJournee()->getIdJournee() < 7) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1), 'departementale');
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($jForm, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1), 'paris');
+    public function checkInvalidSelection($type, $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
+        if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $nbJournees) {
+            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1, $nbJoueurs), $nbJoueurs);
+            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1, $nbJoueurs), $nbJoueurs);
         }
     }
 
     /**
      * @param $invalidCompo
-     * @param $type
+     * @param int $nbJoueurs
      */
-    public function deleteInvalidSelectedPlayers($invalidCompo, $type){
+    public function deleteInvalidSelectedPlayers($invalidCompo, int $nbJoueurs){
         foreach ($invalidCompo as $compo){
-            if ($compo["isPlayer1"]) $compo["compo"]->setIdJoueur1(NULL);
-            if ($compo["isPlayer2"]) $compo["compo"]->setIdJoueur2(NULL);
-            if ($compo["isPlayer3"]) $compo["compo"]->setIdJoueur3(NULL);
-            if ($compo["isPlayer4"]) $compo["compo"]->setIdJoueur4(NULL);
-
-            if ($type == 'paris') {
-                if ($compo["isPlayer5"]) $compo["compo"]->setIdJoueur5(NULL);
-                if ($compo["isPlayer6"]) $compo["compo"]->setIdJoueur6(NULL);
-                if ($compo["isPlayer7"]) $compo["compo"]->setIdJoueur7(NULL);
-                if ($compo["isPlayer8"]) $compo["compo"]->setIdJoueur8(NULL);
-                if ($compo["isPlayer9"]) $compo["compo"]->setIdJoueur9(NULL);
+            for ($i = 0; $i < $nbJoueurs; $i++){
+                if (boolval($compo['isPlayer' . $i])) $compo['compo']->setIdJoueurN($i, NULL);
             }
         }
     }

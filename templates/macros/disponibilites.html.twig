@@ -144,15 +144,15 @@
 
 {% macro labelDispoSelec(nbSelectedPlayers, type, nbDispos, nbMinJoueurs, nbTotalJoueurs) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0; margin-top: 10px;">
-        <div class="row bottom_0">
+        <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7 offset-s1">Disponibles</div>
-            <div style="font-size: 100%" class="col s4 lobster
+            <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
                 {% if nbDispos >= nbTotalJoueurs %}
-                    green-text
+                    green
                 {% elseif nbDispos >= nbMinJoueurs %}
-                    orange-text text-darken-1
+                    orange darken-1
                 {% else %}
-                    red-text
+                    red
                 {% endif %}">
                 {{ nbDispos }}/{{ nbTotalJoueurs }}
             </div>
@@ -160,13 +160,13 @@
 
         <div class="row bottom_0">
             <div class="col s7 offset-s1">Sélectionnés</div>
-            <div style="font-size: 100%" class="col s4 lobster
-                {% if nbSelectedPlayers >= nbTotalJoueurs %}
-                    green-text
+            <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
+                {% if nbSelectedPlayers == nbTotalJoueurs %}
+                    green
                 {% elseif nbSelectedPlayers >= nbMinJoueurs %}
-                    orange-text text-darken-1
+                    orange darken-1
                 {% else %}
-                    red-text
+                    red
                 {% endif %}">
                 {{ nbSelectedPlayers }}/{{ nbTotalJoueurs }}
             </div>

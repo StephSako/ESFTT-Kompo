@@ -39,10 +39,10 @@ class JourneeDepartementaleRepository extends ServiceEntityRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getNbJourneeDepartementale(): int
+    public function getNbJournee(): int
     {
-        return intval($this->createQueryBuilder('jd')
-            ->select('COUNT(jd.idJournee)')
+        return intval($this->createQueryBuilder('j')
+            ->select('COUNT(j.idJournee)')
             ->getQuery()
             ->getSingleScalarResult());
     }

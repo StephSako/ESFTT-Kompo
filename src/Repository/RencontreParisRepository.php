@@ -65,7 +65,7 @@ class RencontreParisRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des joueurs sélectionnés alors que brûlés
+     * Liste des compositions où le joueur est brûlés et sélectionnés
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $idEquipe
@@ -81,11 +81,13 @@ class RencontreParisRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
             $strRP .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs - 1) $strP .= ' OR ';
-            if ($i < $nbJoueurs - 1) $strRP .= ' OR ';
-            $query->addSelect("IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '");
+            if ($i < $nbJoueurs - 1){
+                $strP .= ' OR ';
+                $strRP .= ' OR ';
+            }
+            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
-        $query
+        $query = $query
             ->from('App:Competiteur', 'c')
             ->leftJoin('rp.idEquipe', 'e')
             ->where('rp.idJournee > :idJournee')
@@ -96,14 +98,14 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere($strRP)
-            ->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p LEFT JOIN App\Entity\RencontreParis e ON p.idEquipe = e.idEquipe WHERE (' . $strP . ') AND e.numero < (SELECT MAX(e.numero) FROM App\Entity\PriveParis e)) >= " . $limitePreBrulage)
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p, App\Entity\EquipeParis e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeParis e2)) >= ' . $limitePreBrulage)
             ->getQuery()
             ->getResult();
         return $query;
     }
 
     /**
-     * Liste des joueurs sélectionnés alors que déclarés indisponibles
+     * Liste des sélections où le joueur est sélectionné alors que déclaré indisponible
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $nbJoueurs
@@ -116,7 +118,7 @@ class RencontreParisRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i . '"');
+            $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
         $query
             ->from('App:Competiteur', 'c')
@@ -163,17 +165,17 @@ class RencontreParisRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $idDeletedCompetiteur
+     * @param int $idCompetiteur
      * @param int $idJoueurColumn
      * @return int|mixed|string
      */
-    public function setDeletedCompetiteurToNull(int $idDeletedCompetiteur, int $idJoueurColumn)
+    public function setDeletedCompetiteurToNull(int $idCompetiteur, int $idJoueurColumn)
     {
         return $this->createQueryBuilder('rp')
             ->update('App\Entity\RencontreParis', 'rp')
             ->set('rp.idJoueur' . $idJoueurColumn, 'NULL')
             ->where('rp.idJoueur' . $idJoueurColumn . ' = :idDeletedCompetiteur')
-            ->setParameter('idDeletedCompetiteur', $idDeletedCompetiteur)
+            ->setParameter('idDeletedCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();
     }
