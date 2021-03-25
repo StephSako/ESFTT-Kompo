@@ -16,7 +16,8 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
-            new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable'])
+            new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
+            new TwigFunction('brulageCumule', [$this, 'brulageCumule'])
         ];
     }
 
@@ -44,5 +45,15 @@ class AppExtension extends AbstractExtension
         $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDate())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;
         return (($dateDepassee && !$rencontre->isReporte()) || ($dateReporteeDepassee && $rencontre->isReporte()) || $rencontre->getIdJournee()->getUndefined());
+    }
+
+    /**
+     * @param $brulages
+     * @param int $limite
+     * @return int
+     */
+    public function brulageCumule($brulages, int $limite): int
+    {
+        return array_sum(array_slice($brulages, 0, $limite));
     }
 }

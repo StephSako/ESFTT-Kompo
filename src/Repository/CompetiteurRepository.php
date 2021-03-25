@@ -69,7 +69,7 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getBrulages(string $type, int $idJournee, $idEquipes, int $nbJoueurs){
+    public function getBrulages(string $type, int $idJournee, array $idEquipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom');
         foreach ($idEquipes as $idEquipe) {
@@ -91,9 +91,11 @@ class CompetiteurRepository extends ServiceEntityRepository
         $allBrulage = [];
         foreach ($brulages as $brulage){
             $brulageJoueur = [];
+            $brulageInt = [];
             foreach ($idEquipes as $idEquipe) {
-                $brulageJoueur['E'.$idEquipe] = $brulage['E'.$idEquipe];
+                array_push($brulageInt, intval($brulage['E'.$idEquipe]));
             }
+            $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom']] = $brulageJoueur;
         }

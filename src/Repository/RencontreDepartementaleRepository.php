@@ -87,7 +87,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rd.idEquipeDepartementale', 'e')
+            ->leftJoin('rd.idEquipe', 'e')
             ->where('rd.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('e.numero > :idEquipe')
@@ -120,7 +120,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rd.idEquipeDepartementale', 'e')
+            ->leftJoin('rd.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
             ->andWhere('rd.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
@@ -144,7 +144,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             $composJ1->addSelect('(rd.idJoueur' . $i . ') as joueur' . $i);
         }
         $composJ1
-            ->leftJoin('rd.idEquipeDepartementale', 'e')
+            ->leftJoin('rd.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
             ->andWhere('e.numero < :idEquipe')
             ->andWhere('rd.idJournee = 1')

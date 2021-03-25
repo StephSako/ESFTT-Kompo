@@ -179,9 +179,6 @@ class HomeController extends AbstractController
         $allDisponibiliteParis = $this->competiteurRepository->findAllDisposRecapitulatif('paris', count($journees));
         $nbJournees = count($journees);
 
-        dump($idEquipesVisuel);
-        dump($idEquipesBrulage);
-
         // Brûlages des joueurs
         $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->divisionRepository->getMaxNbJoueursChamp($type));
 
@@ -223,12 +220,12 @@ class HomeController extends AbstractController
 
         if ($type == 'departementale'){
             if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
-
-            $selectionnables = $this->disponibiliteDepartementaleRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
-            $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe());
+            $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+            $selectionnables = $this->disponibiliteDepartementaleRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $nbMaxJoueurs, $this->getParameter('limite_brulage_dep'));
+            $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe()->getNumero(), $nbMaxJoueurs);
             $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale();
             $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
-                'nbMaxJoueurs' => $this->divisionRepository->getMaxNbJoueursChamp($type),
+                'nbMaxJoueurs' => $nbMaxJoueurs,
                 'limiteBrulage' => $this->getParameter('limite_brulage_dep')
             ]);
             $journees = $this->journeeDepartementaleRepository->findAll();
@@ -236,38 +233,39 @@ class HomeController extends AbstractController
             try { $nbEquipes = $this->equipeDepartementalRepository->getNbEquipesDepartementales(); }
             catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
 
-            $brulages = $this->competiteurRepository->getBrulagesDepartemental($compo->getIdJournee()->getIdJournee());
-            /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat départemental **/
+            $idEquipesBrulage = $this->equipeDepartementalRepository->getIdEquipesBrulees('MAX');
+            $brulages = $this->competiteurRepository->getBrulages($type, $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs);
+            /** Formation du brûlage des joueurs sélectionnables **/
             foreach ($brulages as $joueur => $brulage){
-                switch ($compo->getIdEquipe()->getIdEquipe()){
+                switch ($compo->getIdEquipe()->getNumero()){
                     case 1:
                         if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
-                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
-                            $futursSelectionnes[$joueur]["E1"] = intval($futursSelectionnes[$joueur]["E1"]);
-                            $futursSelectionnes[$joueur]["E1"]++;
+                            $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
+                            $futursSelectionnes[$joueur]['brulage'][0] = intval($futursSelectionnes[$joueur][0]);
+                            $futursSelectionnes[$joueur]['brulage'][0]++;
                         }
                         break;
                     case 2:
-                        if ($brulage["E1"] >= 2) array_push($joueursBrules, $joueur);
+                        if ($brulage['brulage'][0] >= 2) array_push($joueursBrules, $joueur);
                         else if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
-                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
-                            $futursSelectionnes[$joueur]["E2"] = intval($futursSelectionnes[$joueur]["E2"]);
-                            $futursSelectionnes[$joueur]["E2"]++;
+                            $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
+                            $futursSelectionnes[$joueur]['brulage'][1] = intval($futursSelectionnes[$joueur][1]);
+                            $futursSelectionnes[$joueur]['brulage'][1]++;
                         }
                         break;
                     case 3:
-                        if (($brulage["E1"] + $brulage["E2"]) >= 2) array_push($joueursBrules, $joueur);
+                        if (($brulage['brulage'][0] + $brulage['brulage'][1]) >= 2) array_push($joueursBrules, $joueur);
                         else if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
-                            $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
-                            $futursSelectionnes[$joueur]["E3"] = intval($futursSelectionnes[$joueur]["E3"]);
-                            $futursSelectionnes[$joueur]["E3"]++;
+                            $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
+                            $futursSelectionnes[$joueur]['brulage'][2] = intval($futursSelectionnes[$joueur][2]);
+                            $futursSelectionnes[$joueur]['brulage'][2]++;
                         }
                         break;
                     case 4:
-                        if (($brulage["E1"] + $brulage["E2"] + $brulage["E3"]) >= 2) array_push($joueursBrules, $joueur);
+                        if (($brulage['brulage'][0] + $brulage['brulage'][1] + $brulage['brulage'][2]) >= 2) array_push($joueursBrules, $joueur);
                         else if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
                             $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
@@ -278,12 +276,12 @@ class HomeController extends AbstractController
         }
         else if ($type == 'paris'){
             if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
-
-            $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe());
-            $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe());
-            $nbJoueursDivision = ($compo->getIdEquipe()->getIdDivision() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() : $this->divisionRepository->getMaxNbJoueursChamp($type));
+            $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+            $selectionnables = $this->disponibiliteParisRepository->findJoueursSelectionnables($compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getIdEquipe(), $nbMaxJoueurs, $this->getParameter('limite_brulage_paris'));
+            $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe()->getNumero(), $nbMaxJoueurs);
+            $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
             $form = $this->createForm(RencontreParisType::class, $compo, [
-                'nbMaxJoueurs' => $this->divisionRepository->getMaxNbJoueursChamp($type),
+                'nbMaxJoueurs' => $nbMaxJoueurs,
                 'limiteBrulage' => $this->getParameter('limite_brulage_paris')
             ]);
             $journees = $this->journeeParisRepository->findAll();
@@ -291,10 +289,11 @@ class HomeController extends AbstractController
             try { $nbEquipes = $this->equipeParisRepository->getNbEquipesParis(); }
             catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
 
-            $brulages = $this->competiteurRepository->getBrulagesParis($compo->getIdJournee()->getIdJournee());
+            $idEquipesBrulage = $this->equipeParisRepository->getIdEquipesBrulees('MAX');
+            $brulages = $this->competiteurRepository->getBrulages($type, $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs);
             /** Formation de la liste des joueurs brûlés et pré-brûlés en championnat de Paris **/
             foreach ($brulages as $joueur => $brulage){
-                switch ($compo->getIdEquipe()->getIdEquipe()){
+                switch ($compo->getIdEquipe()->getNumero()){
                     case 1:
                         if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;

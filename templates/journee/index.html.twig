@@ -194,7 +194,7 @@
 
                         <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
                             <tbody>
-                                {% for i in 1..compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) %}
+                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) - 1) %}
                                     {{ _composition.tr(i, compo.idJoueurN(i)) }}
                                 {% endfor %}
                             </tbody>

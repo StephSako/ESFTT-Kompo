@@ -51,7 +51,7 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'p.idJoueur' . $i . ' = d.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $selectionnablesDQL->andWhere("d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' <> 'NULL', p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreParis ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)");
+            $selectionnablesDQL->andWhere('d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreParis ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)');
         }
         $selectionnablesDQL
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (' . $str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)

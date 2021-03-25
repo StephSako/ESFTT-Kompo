@@ -87,7 +87,7 @@ class RencontreParisRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rp.idEquipeParis', 'e')
+            ->leftJoin('rp.idEquipe', 'e')
             ->where('rp.idJournee > :idJournee')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('e.numero > :idEquipe')
@@ -120,7 +120,7 @@ class RencontreParisRepository extends ServiceEntityRepository
         }
         $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rp.idEquipeParis', 'e')
+            ->leftJoin('rp.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
             ->andWhere('rp.idJournee = :idJournee')
             ->setParameter('idJournee', $idJournee)
@@ -144,7 +144,7 @@ class RencontreParisRepository extends ServiceEntityRepository
             $composJ1->addSelect('(rp.idJoueur' . $i . ') as joueur' . $i);
         }
         $composJ1
-            ->leftJoin('rp.idEquipeParis', 'e')
+            ->leftJoin('rp.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
             ->andWhere('e.numero < :idEquipe')
             ->andWhere('rp.idJournee = 1')

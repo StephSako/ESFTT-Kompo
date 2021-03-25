@@ -41,12 +41,12 @@ class EquipeParisRepository extends ServiceEntityRepository
      */
     public function getIdEquipesBrulees(string $fonction)
     {
-        return $this->createQueryBuilder('ep')
+        return array_column($this->createQueryBuilder('ep')
             ->select('ep.idEquipe')
             ->where('ep.idDivision IS NOT NULL')
             ->andWhere('ep.idEquipe <> (SELECT ' . $fonction . '(e.idEquipe) from App\Entity\EquipeParis e WHERE e.idDivision IS NOT NULL)')
             ->getQuery()
-            ->getResult();
+            ->getResult(), 'idEquipe');
     }
 
     /**

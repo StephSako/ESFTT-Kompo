@@ -25,37 +25,15 @@
         {% for nom, brulage in brulages %}
             <tr>
                 <td class="left">{{ nom }}</td>
-                {% if type == 'departementale' %}
+                {% for brulageJournee in brulage['brulage'] %}
                     <td class="center">
-                        {% if (brulage["E1"] >= 2) %}
+                        {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_dep : limite_brulage_paris) %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] == 1 %}
+                        {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_dep - 1) : (limite_brulage_paris - 1)) %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
-                    <td class="center">
-                        {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
-                            <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] == limite_brulage_dep - 1 %}
-                            <i class="orange-text material-icons">error_outline</i>
-                        {% endif %}
-                    </td>
-                    <td class="center">
-                        {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
-                            <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_brulage_dep - 1 %}
-                            <i class="orange-text material-icons">error_outline</i>
-                        {% endif %}
-                    </td>
-                {% elseif type == 'paris' %}
-                    <td class="center">
-                        {% if (brulage["E1"] >= limite_brulage_paris) %}
-                            <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulage["E1"] == limite_brulage_paris - 1 %}
-                            <i class="orange-text material-icons">error_outline</i>
-                        {% endif %}
-                    </td>
-                {% endif %}
+                {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
@@ -111,34 +89,20 @@
                     <td class="center">Aucun joueur sélectionnable</td>
                 </tr>
             {% else %}
-                {% for joueur, brulage in futursSelectionnes %}
+                {% for nom, brulage in futursSelectionnes %}
                     <tr>
                         <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
-                            {{ joueur }}
+                            {{ nom }}
                         </td>
-                        <td class="center">
-                            {% if (type == 'departementale' and brulage["E1"] >= limite_brulage_dep) or (type == 'paris' and brulage["E1"] >= limite_brulage_paris) %}
-                                <i class="red-text material-icons">highlight_off</i>
-                            {% elseif (type=='departementale' and brulage["E1"] == limite_brulage_dep - 1) or (type=='paris' and brulage["E1"] == limite_brulage_paris - 1) %}
-                                <i class="orange-text material-icons">error_outline</i>
-                            {% endif %}
-                        </td>
-                        {% if type == 'departementale' %}
+                        {% for brulageJournee in brulage['brulage'] %}
                             <td class="center">
-                                {% if (brulage["E1"] + brulage["E2"]) >= limite_brulage_dep %}
+                                {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_dep : limite_brulage_paris) %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulage["E1"] + brulage["E2"] == limite_brulage_dep - 1 %}
+                                {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_dep - 1) : (limite_brulage_paris - 1)) %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>
-                            <td class="center">
-                                {% if (brulage["E1"] + brulage["E2"] + brulage["E3"]) >= limite_brulage_dep %}
-                                    <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulage["E1"] + brulage["E2"] + brulage["E3"] == limite_brulage_dep - 1 %}
-                                    <i class="orange-text material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
-                        {% endif %}
+                        {% endfor %}
                     </tr>
                 {% endfor %}
             {% endif %}
