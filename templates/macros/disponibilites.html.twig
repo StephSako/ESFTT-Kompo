@@ -148,9 +148,9 @@
             <div class="col s7 offset-s1">Disponibles</div>
             <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
                 {% if nbDispos >= nbTotalJoueurs %}
-                    green
+                    rainbow
                 {% elseif nbDispos >= nbMinJoueurs %}
-                    orange darken-1
+                    orange darken-2
                 {% else %}
                     red
                 {% endif %}">
@@ -162,9 +162,9 @@
             <div class="col s7 offset-s1">Sélectionnés</div>
             <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
                 {% if nbSelectedPlayers == nbTotalJoueurs %}
-                    green
+                    rainbow
                 {% elseif nbSelectedPlayers >= nbMinJoueurs %}
-                    orange darken-1
+                    orange darken-2
                 {% else %}
                     red
                 {% endif %}">

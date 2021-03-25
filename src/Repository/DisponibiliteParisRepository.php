@@ -39,6 +39,13 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param int $idJournee
+     * @param int $idEquipe
+     * @param int $nbJoueurs
+     * @param int $limiteBrulage
+     * @return array
+     */
     public function findJoueursSelectionnables(int $idJournee, int $idEquipe, int $nbJoueurs, int $limiteBrulage): array
     {
         $selectionnablesDQL = $this->createQueryBuilder('d')
@@ -51,9 +58,9 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'p.idJoueur' . $i . ' = d.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $selectionnablesDQL->andWhere('d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreParis ' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)');
+            $selectionnablesDQL = $selectionnablesDQL->andWhere('d.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) FROM App\Entity\RencontreParis p' . $i . ' WHERE p' . $i . '.idJournee = d.idJournee AND p' . $i . '.idEquipe <> :idEquipe)');
         }
-        $selectionnablesDQL
+        $selectionnablesDQL = $selectionnablesDQL
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (' . $str . ') AND p.idJournee < :idJournee AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
             ->setParameter('idJournee',$idJournee)
             ->setParameter('idEquipe',$idEquipe)

@@ -242,7 +242,7 @@ class HomeController extends AbstractController
                         if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
                             $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
-                            $futursSelectionnes[$joueur]['brulage'][0] = intval($futursSelectionnes[$joueur][0]);
+                            $futursSelectionnes[$joueur]['brulage'][0] = intval($futursSelectionnes[$joueur]['brulage'][0]);
                             $futursSelectionnes[$joueur]['brulage'][0]++;
                         }
                         break;
@@ -251,7 +251,7 @@ class HomeController extends AbstractController
                         else if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
                             $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
-                            $futursSelectionnes[$joueur]['brulage'][1] = intval($futursSelectionnes[$joueur][1]);
+                            $futursSelectionnes[$joueur]['brulage'][1] = intval($futursSelectionnes[$joueur]['brulage'][1]);
                             $futursSelectionnes[$joueur]['brulage'][1]++;
                         }
                         break;
@@ -260,7 +260,7 @@ class HomeController extends AbstractController
                         else if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
                             $futursSelectionnes[$joueur]['idCompetiteur'] = $brulage['idCompetiteur'];
-                            $futursSelectionnes[$joueur]['brulage'][2] = intval($futursSelectionnes[$joueur][2]);
+                            $futursSelectionnes[$joueur]['brulage'][2] = intval($futursSelectionnes[$joueur]['brulage'][2]);
                             $futursSelectionnes[$joueur]['brulage'][2]++;
                         }
                         break;
@@ -298,8 +298,8 @@ class HomeController extends AbstractController
                         if (in_array($joueur, $selectionnables)) {
                             $futursSelectionnes[$joueur] = $brulage;
                             $futursSelectionnes[$joueur]["idCompetiteur"] = $brulage["idCompetiteur"];
-                            $futursSelectionnes[$joueur]["E1"] = intval($futursSelectionnes[$joueur]["E1"]);
-                            $futursSelectionnes[$joueur]["E1"]++;
+                            $futursSelectionnes[$joueur]['brulage'][0] = intval($futursSelectionnes[$joueur]['brulage'][0]);
+                            $futursSelectionnes[$joueur]['brulage'][0]++;
                         }
                         break;
                     case 2:
@@ -350,10 +350,10 @@ class HomeController extends AbstractController
 
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
-            'futursSelectionnes' => $futursSelectionnes,
+            'futursSelectionnes' => $futursSelectionnes, // TODO A revoir
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
-            'brulages' => $brulages,
+            'brulages' => $brulages, // TODO To delete
             'nbEquipes' => $nbEquipes,
             'compo' => $compo,
             'type' => $type,
