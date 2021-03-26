@@ -216,20 +216,18 @@ class HomeController extends AbstractController
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
         $journees = $form = null;
-        $nbJoueursDivision = $nbMaxJoueurs = 0;
-        // TODO Fix $joueursBrules
-        $joueursBrules = $brulageSelectionnables = $idEquipes = [];
+        $nbMaxJoueurs = 0;
+        $brulageSelectionnables = $idEquipes = [];
         if ($type != ('departementale' || 'paris')) throw $this->createNotFoundException('Championnat inexistant');
 
         if ($type == 'departementale'){
             if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
-            $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChamp($type);
             $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
             $idEquipesBrulage = $this->equipeDepartementalRepository->getIdEquipesBrulees('MAX');
-            $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_dep'));
+            $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_departementale'));
             $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
                 'nbMaxJoueurs' => $nbMaxJoueurs,
-                'limiteBrulage' => $this->getParameter('limite_brulage_dep')
+                'limiteBrulage' => $this->getParameter('limite_brulage_departementale')
             ]);
             $journees = $this->journeeDepartementaleRepository->findAll();
             $idEquipes = $this->equipeDepartementalRepository->getIdEquipesBrulees('MIN');
@@ -244,9 +242,10 @@ class HomeController extends AbstractController
                 'limiteBrulage' => $this->getParameter('limite_brulage_paris')
             ]);
             $journees = $this->journeeParisRepository->findAll();
-            $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChamp($type);
             $idEquipes = $this->equipeParisRepository->getIdEquipesBrulees('MIN');
         }
+        $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $this->getParameter('limite_brulage_' . $type));
+        $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChamp($type);
 
         $form->handleRequest($request);
 

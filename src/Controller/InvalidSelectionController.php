@@ -38,8 +38,8 @@ class InvalidSelectionController extends AbstractController
      */
     public function checkInvalidSelection($type, $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
         if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $nbJournees) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1, $nbJoueurs), $nbJoueurs);
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_dep') - 1, $nbJoueurs), $nbJoueurs);
+            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_departementale') - 1, $nbJoueurs), $nbJoueurs);
+            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_departementale') - 1, $nbJoueurs), $nbJoueurs);
         }
     }
 

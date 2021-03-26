@@ -27,9 +27,9 @@
                 <td class="left">{{ nom }}</td>
                 {% for brulageJournee in brulage['brulage'] %}
                     <td class="center">
-                        {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_dep : limite_brulage_paris) %}
+                        {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_dep - 1) : (limite_brulage_paris - 1)) %}
+                        {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>
@@ -96,9 +96,9 @@
                         </td>
                         {% for brulageJournee in brulage['brulage'] %}
                             <td class="center">
-                                {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_dep : limite_brulage_paris) %}
+                                {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_dep - 1) : (limite_brulage_paris - 1)) %}
+                                {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>

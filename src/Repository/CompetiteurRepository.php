@@ -33,12 +33,13 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = :idJournee)")
             ->setParameter('idJournee', $idJournee)
             ->andWhere('c.visitor <> true')
-            ->addOrderBy('c.nom')
+            ->orderBy('c.nom')
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * TODO A mettre dans DisponibiliteXxx
      * Récapitulatif de toutes les disponibilités dans la modale
      * @param string $type
      * @param int $nbJournees
@@ -190,6 +191,46 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
+     * Joueurs brûlés pour une rencontre
+     * @param int $idEquipe
+     * @param int $idJournee
+     * @param string $type
+     * @param int $nbJoueurs
+     * @param int $limiteBrulage
+     * @return array
+     */
+    public function getBrulesDansEquipe(int $idEquipe, int $idJournee, string $type, int $nbJoueurs, int $limiteBrulage): array
+    {
+        $str = '';
+        for ($j = 0; $j < $nbJoueurs; $j++) {
+            $str .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($j < $nbJoueurs - 1) $str .= ' OR ';
+        }
+        $query = $this->createQueryBuilder('c')
+            ->select('c.nom')
+            ->where('c.visitor <> true')
+            ->andWhere('(SELECT COUNT(rd.id)' .
+                       ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
+                       ' WHERE e.idDivision IS NOT NULL' .
+                       ' AND e.numero < :idEquipe' .
+                       ' AND rd.idJournee < :idJournee' .
+	                   ' AND rd.idEquipe = e.idEquipe' .
+                       ' AND (' . $str . ')) >= ' . $limiteBrulage)
+            ->setParameter('idJournee', $idJournee)
+            ->setParameter('idEquipe', $idEquipe)
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+
+        $joueursBrules = [];
+        foreach ($query as $joueur){
+            array_push($joueursBrules, $joueur['nom']);
+        }
+        return $joueursBrules;
+    }
+
+    /**
+     * TODO A mettre dans DisponibiliteXxx
      * Liste de toutes les disponibilités
      * @param string $type
      * @return int|mixed|string
@@ -204,8 +245,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.licence')
             ->addSelect('j.idJournee')
             ->addSelect('j.undefined')
-            ->addSelect("(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d1 WHERE c.idCompetiteur = d1.idCompetiteur AND d1.idJournee = j.idJournee) AS idDisponibilite")
-            ->addSelect("(SELECT d2.disponibilite FROM App\Entity\Disponibilite" . ucfirst($type) . " d2 WHERE c.idCompetiteur = d2.idCompetiteur AND d2.idJournee = j.idJournee) AS disponibilite")
+            ->addSelect('(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite' . ucfirst($type) . ' d1 WHERE c.idCompetiteur = d1.idCompetiteur AND d1.idJournee = j.idJournee) AS idDisponibilite')
+            ->addSelect('(SELECT d2.disponibilite FROM App\Entity\Disponibilite' . ucfirst($type) . ' d2 WHERE c.idCompetiteur = d2.idCompetiteur AND d2.idJournee = j.idJournee) AS disponibilite')
             ->addSelect('j.date')
             ->from('App:Journee' . ucfirst($type), 'j')
             ->where('c.visitor <> true')
