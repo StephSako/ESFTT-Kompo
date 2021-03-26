@@ -104,6 +104,75 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
+     * // TODO à faire
+     * Brûlage des joueurs sélectionnables dans une compo
+     * @param string $type
+     * @param int $idEquipe
+     * @param int $idJournee
+     * @param array $idEquipes
+     * @param int $nbJoueurs
+     * @param int $limiteBrulage
+     * @return array
+     */
+    public function getBrulagesSelectionnables(string $type, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
+    {
+        $brulages = $this->createQueryBuilder('c')
+            ->select('c.nom')
+            ->addSelect('c.idCompetiteur')
+            ->leftJoin('c.dispos' . ucfirst($type) . 's', 'd');
+        foreach ($idEquipes as $equipe) {
+            $strB = '';
+            for ($i = 0; $i < $nbJoueurs; $i++) {
+                $strB .= 'r' . $equipe . '.idJoueur' . $i . ' = c.idCompetiteur';
+                if ($i < $nbJoueurs - 1) $strB .= ' OR ';
+            }
+            $brulages = $brulages->addSelect('(SELECT COUNT(r' . $equipe . '.id)' .
+                                                   ' FROM App\Entity\Rencontre' . ucfirst($type) . ' r' . $equipe . ', App\Entity\Equipe' . ucfirst($type) . ' e' . $equipe .
+                                                   ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
+                                                   ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
+                                                   ' AND e' . $equipe . '.numero = ' . $equipe .
+                                                   ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
+        }
+        $brulages = $brulages
+            ->where('c.visitor <> true');
+        $strD = '';
+        for ($j = 0; $j < $nbJoueurs; $j++) {
+            $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($j < $nbJoueurs - 1) $strD .= ' OR ';
+            $brulages = $brulages->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
+                                                                   ' FROM App\Entity\RencontreDepartementale p' . $j .
+                                                                   ' WHERE p' . $j . '.idJournee = d.idJournee' .
+                                                                   ' AND p' . $j . '.idEquipe <> :idEquipe)');
+        }
+        $brulages = $brulages
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p' .
+                       ' WHERE (' . $strD . ')' .
+                       ' AND p.idJournee < :idJournee' .
+                       ' AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
+            ->andWhere('d.idJournee = :idJournee')
+            ->andWhere('d.disponibilite = 1')
+            ->setParameter('idJournee', $idJournee)
+            ->setParameter('idEquipe', $idEquipe)
+            ->addOrderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+
+        $allBrulage = [];
+        foreach ($brulages as $brulage){
+            $brulageJoueur = [];
+            $brulageInt = [];
+            foreach ($idEquipes as $equipe) {
+                array_push($brulageInt, intval($brulage['E'.$equipe]));
+            }
+            $brulageJoueur['brulage'] = $brulageInt;
+            $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
+            $allBrulage[$brulage['nom']] = $brulageJoueur;
+        }
+
+        return $allBrulage;
+    }
+
+    /**
      * Liste de toutes les disponibilités
      * @param string $type
      * @return int|mixed|string
