@@ -104,7 +104,6 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * // TODO à faire
      * Brûlage des joueurs sélectionnables dans une compo
      * @param string $type
      * @param int $idEquipe
@@ -116,10 +115,26 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function getBrulagesSelectionnables(string $type, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
     {
+        $strJ2 = $strD = '';
+        for ($j = 0; $j < $nbJoueurs; $j++) {
+            $strJ2 .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
+            $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($j < $nbJoueurs - 1){
+                $strD .= ' OR ';
+                $strJ2 .= ' OR ';
+            }
+        }
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.idCompetiteur')
-            ->leftJoin('c.dispos' . ucfirst($type) . 's', 'd');
+            ->addSelect('(SELECT COUNT(rd.id)' .
+	                          ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
+                              ' WHERE e.idDivision IS NOT NULL' .
+	                          ' AND e.numero < :idEquipe' .
+	                          ' AND rd.idJournee = 1' .
+	                          ' AND rd.idEquipe = e.idEquipe' .
+                              ' AND (' . $strJ2 . ')) AS bruleJ2')
+            ->leftJoin('c.dispos' . ucfirst($type), 'd');
         foreach ($idEquipes as $equipe) {
             $strB = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
@@ -133,19 +148,15 @@ class CompetiteurRepository extends ServiceEntityRepository
                                                    ' AND e' . $equipe . '.numero = ' . $equipe .
                                                    ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
         }
-        $brulages = $brulages
-            ->where('c.visitor <> true');
-        $strD = '';
+        $brulages = $brulages->where('c.visitor <> true');
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
-            if ($j < $nbJoueurs - 1) $strD .= ' OR ';
             $brulages = $brulages->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
-                                                                   ' FROM App\Entity\RencontreDepartementale p' . $j .
+                                                                   ' FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $j .
                                                                    ' WHERE p' . $j . '.idJournee = d.idJournee' .
                                                                    ' AND p' . $j . '.idEquipe <> :idEquipe)');
         }
         $brulages = $brulages
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p' .
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' .
                        ' WHERE (' . $strD . ')' .
                        ' AND p.idJournee < :idJournee' .
                        ' AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
@@ -158,15 +169,21 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $allBrulage = [];
-        foreach ($brulages as $brulage){
+        foreach ($brulages as $joueur => $brulage){
+            /** On formate en associant le joueur à son brûlage par équipe */
             $brulageJoueur = [];
             $brulageInt = [];
             foreach ($idEquipes as $equipe) {
-                array_push($brulageInt, intval($brulage['E'.$equipe]));
+                array_push($brulageInt, intval($brulages[$joueur]['E'.$equipe]));
             }
             $brulageJoueur['brulage'] = $brulageInt;
-            $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
-            $allBrulage[$brulage['nom']] = $brulageJoueur;
+            $brulageJoueur['idCompetiteur'] = $brulages[$joueur]['idCompetiteur'];
+            $allBrulage[$brulages[$joueur]['nom']] = $brulageJoueur;
+            $allBrulage[$brulages[$joueur]['nom']]['bruleJ2'] = boolval($brulage['bruleJ2']);
+
+            /** On effectue le brûlage prévisionnel **/
+            if (in_array($idEquipe - 1, array_keys($allBrulage[$brulages[$joueur]['nom']]['brulage'])))
+                $allBrulage[$brulages[$joueur]['nom']]['brulage'][$idEquipe - 1]++;
         }
 
         return $allBrulage;

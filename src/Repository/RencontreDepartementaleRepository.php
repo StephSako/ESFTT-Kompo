@@ -134,37 +134,6 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des joueurs ayant été sélectionnés en J1
-     * @param int $idEquipe
-     * @param int $nbJoueurs
-     * @return int|mixed|string
-     */
-    public function getBrulesJ2(int $idEquipe, int $nbJoueurs){
-        $composJ1 = $this->createQueryBuilder('rd')
-            ->select('rd.id');
-        for ($i = 0; $i < $nbJoueurs; $i++) {
-            $composJ1->addSelect('(rd.idJoueur' . $i . ') as joueur' . $i);
-        }
-        $composJ1
-            ->leftJoin('rd.idEquipe', 'e')
-            ->where('e.idDivision IS NOT NULL')
-            ->andWhere('e.numero < :idEquipe')
-            ->andWhere('rd.idJournee = 1')
-            ->setParameter('idEquipe', $idEquipe)
-            ->getQuery()
-            ->getResult();
-
-        $brulesJ2 = [];
-        foreach ($composJ1 as $compo){
-            foreach ($compo as $idJoueur){
-                array_push($brulesJ2, $idJoueur);
-            }
-        }
-
-        return $brulesJ2;
-    }
-
-    /**
      * @param int $idCompetiteur
      * @param int $idJoueurColumn
      * @return int|mixed|string

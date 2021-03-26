@@ -223,7 +223,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
-    private $disposDepartementales;
+    private $disposDepartementale;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
@@ -401,10 +401,10 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int[]
      */
-    public function getDisposDepartementales(): array
+    public function getDisposDepartementale(): array
     {
         $disposId = [];
-        foreach ($this->disposDepartementales as $dispo){
+        foreach ($this->disposDepartementale as $dispo){
             $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
         }
         return $disposId;
@@ -416,7 +416,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setDisposDepartemental($dispos): self
     {
-        $this->disposDepartementales = $dispos;
+        $this->disposDepartementale = $dispos;
         return $this;
     }
 

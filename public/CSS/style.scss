@@ -355,14 +355,14 @@ form[name="rencontre_paris_haut"], form[name="rencontre_paris_bas"], form[name="
 }
 
 .rainbow {
-  background: linear-gradient(124deg, #1cb137, #1ddde8, #1f12be, #af02c1,
-          #d9361f, #e3e81d);
+  background: linear-gradient(124deg, #1cb137, #075d17, #1cb137, #075d17,
+          #1cb137, #075d17);
   background-size: 1800% 1800%;
 
-  -webkit-animation: rainbow 5s ease infinite;
-  -z-animation: rainbow 5s ease infinite;
-  -o-animation: rainbow 5s ease infinite;
-  animation: rainbow 5s ease infinite;
+  -webkit-animation: rainbow 8s ease infinite;
+  -z-animation: rainbow 8s ease infinite;
+  -o-animation: rainbow 8s ease infinite;
+  animation: rainbow 8s ease infinite;
 }
 
 @-webkit-keyframes rainbow {

@@ -66,10 +66,10 @@
     </table>
 {% endmacro %}
 
-{% macro selectionnables(type, futursSelectionnes, idEquipe, idJournee, nbEquipes) %}
-    {% if idEquipe > 1 and idJournee == 2 %}
+{% macro selectionnables(type, selectionnables, idEquipe, idJournee, idEquipes) %}
+    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
-            <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 joueur orange maximum peux être sélectionné dans cette équipe</i></span>
+            <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 joueur orange maximum doit être sélectionné dans cette équipe</i></span>
         </div>
     {% endif %}
 
@@ -77,19 +77,19 @@
         <thead>
             <tr>
                 <th class="center"><h6 class="lobster">Joueurs sélectionnables et brûlages à J+1</h6></th>
-                {% for i in 2..nbEquipes %}
-                    <th class="center"><h5>{{ i }}</h5></th>
+                {% for idEquipe in idEquipes %}
+                    <th class="center"><h5>{{ idEquipe }}</h5></th>
                 {% endfor %}
             </tr>
         </thead>
 
         <tbody>
-            {% if futursSelectionnes|length == 0 %}
+            {% if selectionnables|length == 0 %}
                 <tr>
                     <td class="center">Aucun joueur sélectionnable</td>
                 </tr>
             {% else %}
-                {% for nom, brulage in futursSelectionnes %}
+                {% for nom, brulage in selectionnables %}
                     <tr>
                         <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
                             {{ nom }}

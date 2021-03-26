@@ -32,7 +32,7 @@ class RencontreDepartementaleType extends AbstractType
                 },
                 'query_builder' => function (CompetiteurRepository $cr) use ($options, $builder) {
                     $request = $cr->createQueryBuilder('c')
-                        ->leftJoin('c.disposDepartementales', 'd')
+                        ->leftJoin('c.disposDepartementale', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->andWhere('d.disponibilite = 1')
                         ->andWhere('c.visitor <> true');

@@ -215,9 +215,10 @@ class HomeController extends AbstractController
      */
     public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $nbEquipes = $journees = $form = null;
+        $journees = $form = null;
         $nbJoueursDivision = $nbMaxJoueurs = 0;
-        $joueursBrules = $brulageSelectionnables = $brulesJ2 = [];
+        // TODO Fix $joueursBrules
+        $joueursBrules = $brulageSelectionnables = $idEquipes = [];
         if ($type != ('departementale' || 'paris')) throw $this->createNotFoundException('Championnat inexistant');
 
         if ($type == 'departementale'){
@@ -226,46 +227,36 @@ class HomeController extends AbstractController
             $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
             $idEquipesBrulage = $this->equipeDepartementalRepository->getIdEquipesBrulees('MAX');
             $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_dep'));
-            $brulesJ2 = $this->rencontreDepartementaleRepository->getBrulesJ2($compo->getIdEquipe()->getNumero(), $nbMaxJoueurs);
             $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
                 'nbMaxJoueurs' => $nbMaxJoueurs,
                 'limiteBrulage' => $this->getParameter('limite_brulage_dep')
             ]);
             $journees = $this->journeeDepartementaleRepository->findAll();
-
-            try { $nbEquipes = $this->equipeDepartementalRepository->getNbEquipesDepartementales(); }
-            catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
+            $idEquipes = $this->equipeDepartementalRepository->getIdEquipesBrulees('MIN');
         }
         else if ($type == 'paris'){
             if (!($compo = $this->rencontreParisRepository->find($compo))) throw $this->createNotFoundException('Journée inexistante');
             $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
             $idEquipesBrulage = $this->equipeParisRepository->getIdEquipesBrulees('MAX');
             $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_paris'));
-            $brulesJ2 = $this->rencontreParisRepository->getBrulesJ2($compo->getIdEquipe()->getNumero(), $nbMaxJoueurs);
             $form = $this->createForm(RencontreParisType::class, $compo, [
                 'nbMaxJoueurs' => $nbMaxJoueurs,
                 'limiteBrulage' => $this->getParameter('limite_brulage_paris')
             ]);
             $journees = $this->journeeParisRepository->findAll();
             $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChamp($type);
-
-            try { $nbEquipes = $this->equipeParisRepository->getNbEquipesParis(); }
-            catch (NoResultException | NonUniqueResultException $e) { $nbEquipes = 0; }
-        }
-
-        foreach ($brulageSelectionnables as $joueur => $fields){
-            if ($compo->getIdJournee()->getIdJournee() == 2 && $compo->getIdEquipe()->getIdEquipe() > 1) $brulageSelectionnables[$joueur]["bruleJ2"] = in_array($fields["idCompetiteur"], $brulesJ2);
-            else $brulageSelectionnables[$joueur]["bruleJ2"] = false;
+            $idEquipes = $this->equipeParisRepository->getIdEquipesBrulees('MIN');
         }
 
         $form->handleRequest($request);
 
-        $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
-            {   return ($joueur["bruleJ2"]);    }
-        ), 'idCompetiteur');
-
         if ($form->isSubmitted() && $form->isValid()) {
-            /** On vérifie qu'il n'y aie pas 2 joueurs brûlés pour la règle de la J2 **/
+            /** Liste des joueurs brûlés en J2 */
+            $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
+                {   return ($joueur["bruleJ2"]);    }
+            ), 'idCompetiteur');
+
+            /** On vérifie qu'il n'y aie pas 2 joueurs brûlés ou + sélectionnés pour respecter la règle de la J2 **/
             $nbJoueursBruleJ2 = 0;
             for ($i = 0; $i < $nbJoueursDivision; $i++) {
                 if ($form->getData()->getIdJoueurN($i) && in_array($form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
@@ -292,7 +283,7 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
             'brulageSelectionnables' => $brulageSelectionnables,
-            'nbEquipes' => $nbEquipes,
+            'idEquipes' => $idEquipes,
             'compo' => $compo,
             'type' => $type,
             'form' => $form->createView()

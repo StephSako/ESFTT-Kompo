@@ -32,7 +32,7 @@ class DisponibiliteDepartementale
     private $idDisponibilite;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementales")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementale")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
