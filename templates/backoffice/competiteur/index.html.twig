@@ -61,7 +61,11 @@
                                 {% endif %}
                             </td>
                             <td class="hide-on-med-and-down">
-                                <img src="{{ asset(competiteur.avatar ? 'images/profile_pictures/' ~ competiteur.avatar : 'images/account.png') }}" alt="image de profil du joueur" width="80rem" height="80rem" style="object-fit:cover">
+                                {% if competiteur.avatar %}
+                                    <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                {% else %}
+                                    <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                {% endif %}
                             </td>
                             <td>{{ competiteur.nom }}</td>
                             <td>{{ competiteur.username }}</td>

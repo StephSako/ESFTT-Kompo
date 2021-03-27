@@ -11,7 +11,11 @@
             {% if competiteur is not null %}
                 <td>
                     <div class="chip">
-                        <img src="{{ asset(competiteur.avatar ? 'images/profile_pictures/' ~ competiteur.avatar : 'images/account.png') }}" alt="Avatar">
+                        {% if competiteur.avatar %}
+                            <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar">
+                        {% else %}
+                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                        {% endif %}
                         <span>{{ competiteur.nom }}</span>
                     </div>
                 </td>

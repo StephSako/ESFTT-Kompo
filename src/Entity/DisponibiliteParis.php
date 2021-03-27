@@ -32,12 +32,16 @@ class DisponibiliteParis
     private $idDisponibilite;
 
     /**
+     * @var Competiteur
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposParis")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
 
     /**
+     * @var JourneeParis
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis",)
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      * @var JourneeParis
@@ -46,6 +50,7 @@ class DisponibiliteParis
 
     /**
      * @var boolean
+     *
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;

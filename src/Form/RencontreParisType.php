@@ -28,7 +28,7 @@ class RencontreParisType extends AbstractType
                 'empty_data' => null,
                 'label' => false,
                 'choice_attr' => function ($competiteur) use ($builder) {
-                    return ['data-icon' => '/images/profile_pictures/' . $competiteur->getAvatar()];
+                    return ['data-icon' => $competiteur->getAvatar() ? '/images/profile_pictures/' . $competiteur->getAvatar() : '/images/account.png'];
                 },
                 'query_builder' => function (CompetiteurRepository $cr) use ($options, $builder) {
                     $request = $cr->createQueryBuilder('c')

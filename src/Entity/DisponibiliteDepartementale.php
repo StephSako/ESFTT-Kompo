@@ -32,12 +32,16 @@ class DisponibiliteDepartementale
     private $idDisponibilite;
 
     /**
+     * @var Competiteur
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementale")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
 
     /**
+     * @var JourneeDepartementale
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeDepartementale")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
@@ -45,6 +49,7 @@ class DisponibiliteDepartementale
 
     /**
      * @var boolean
+     *
      * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
      */
     private $disponibilite;
