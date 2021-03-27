@@ -77,8 +77,9 @@
             </div>
             <br>
 
-            <div class="section" style="margin-bottom: 0;">
+            <div class="section profile_pic" style="margin-bottom: 0;">
                 <h5>Image de profil</h5>
+                <p><i>Formats acceptés : .jpeg, .png et .gif</i></p>
                 {{ form_row(form.imageFile) }}
                 {% if urlImage %}
                     <img style="max-height: 10rem; margin-top: 8px;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">

@@ -300,6 +300,11 @@ form[name=rencontre_paris_haut] h5, form[name=rencontre_paris_bas] h5, form[name
   text-transform: uppercase;
 }
 
+div .profile_pic .file-field.input-field {
+  margin-left: 18%;
+  margin-right: 18%;
+}
+
 .pastille {
   padding-top: 5px;
   padding-bottom: 5px;
