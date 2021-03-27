@@ -182,7 +182,6 @@ class HomeController extends AbstractController
         // Brûlages des joueurs
         $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->divisionRepository->getMaxNbJoueursChamp($type));
 
-        dump($brulages);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'journees' => $journees,

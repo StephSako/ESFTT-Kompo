@@ -190,6 +190,8 @@ class BackOfficeEquipeController extends AbstractController
                     }
                     $this->em->flush();
                 }
+                $this->addFlash('success', 'Equipe modifiée avec succès !');
+                return $this->redirectToRoute('backoffice.equipes');
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
                 else $this->addFlash('fail', 'Une erreur est survenue');
@@ -198,8 +200,6 @@ class BackOfficeEquipeController extends AbstractController
                     'form' => $form->createView()
                 ]);
             }
-            $this->addFlash('success', 'Equipe modifiée avec succès !');
-            return $this->redirectToRoute('backoffice.equipes');
         }
 
         return $this->render('backoffice/equipe/edit.html.twig', [
