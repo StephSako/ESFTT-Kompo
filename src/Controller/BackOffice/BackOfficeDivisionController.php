@@ -62,6 +62,8 @@ class BackOfficeDivisionController extends AbstractController
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
+                $division->setLongName(ucwords(strtolower($division->getLongName())));
+                $division->setShortName(strtoupper($division->getShortName()));
                 $this->em->persist($division);
                 $this->em->flush();
                 $this->addFlash('success', 'Division créée avec succès !');
@@ -89,6 +91,8 @@ class BackOfficeDivisionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $division->setLongName(ucwords(strtolower($division->getLongName())));
+            $division->setShortName(strtoupper($division->getShortName()));
             $this->em->flush();
             $this->addFlash('success', 'Division modifiée avec succès !');
             return $this->redirectToRoute('backoffice.divisions');
