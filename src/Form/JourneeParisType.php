@@ -18,7 +18,7 @@ class JourneeParisType extends AbstractType
                 'label' => false
             ])
             ->add('undefined', CheckboxType::class, [
-                'label' => 'Date indéterminée',
+                'label' => 'Date indéfinie',
                 'required' => false
             ]);
     }

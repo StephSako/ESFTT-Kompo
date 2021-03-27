@@ -34,7 +34,7 @@
                         {% else %}
                             <span class="dot dot3 center">&nbsp;</span>
                         {% endif %}
-                        <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }}</span>
+                        <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
                     </div>
                 </td>
                 <td>
@@ -49,7 +49,7 @@
                 <td>
                     <div class="valign-wrapper">
                         <span class="dot dot3 center">&nbsp;</span>
-                        <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }}</span>
+                        <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
                     </div>
                 </td>
                 <td class="left">
@@ -86,7 +86,7 @@
                     <td style="padding-top: 5px; padding-bottom: 5px;">
                         <div class="chip" style="margin-right: 0; margin-bottom: 0;">
                             <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }}</span>
+                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
                         </div>
                     </td>
                     {% for i in 1..nbJournees %}
@@ -115,7 +115,7 @@
                     <td style="padding-top: 5px; padding-bottom: 5px;">
                         <div class="chip" style="margin-right: 0; margin-bottom: 0;">
                             <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }}</span>
+                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
                         </div>
                     </td>
                     {% for i in 1..nbJournees %}
@@ -192,13 +192,13 @@
                     <td>
                         <div class="chip">
                             <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }}</span>
+                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
                         </div>
                     </td>
                     <td>J{{ dispo.idJournee }}</td>
                     <td>
                         {% if dispo.undefined %}
-                            <p class="red-text">Indéterminée</p>
+                            <span class="red-text">Date indéfinie</span>
                         {% else %}
                             <p>{{ dispo.date | date("d/m/Y") }}</p>
                         {% endif %}
@@ -233,13 +233,13 @@
                             {% endif %}
                         {% else %}
                             {% if not dispo.licence and dispo.classement_officiel %}
-                                <p class="red-text lighten-2">Licence indéfinie<br>
+                                <span class="red-text lighten-2">Licence indéfinie<br>
                             {% elseif dispo.licence and not dispo.classement_officiel %}
-                                <p class="red-text lighten-2">Classement indéfini<br>
+                                <span class="red-text lighten-2">Classement indéfini<br>
                             {% elseif not dispo.licence and not dispo.classement_officiel %}
-                                <p class="red-text lighten-2">Licence et classement indéfinis<br>
+                                <span class="red-text lighten-2">Licence et classement indéfinis<br>
                             {% endif %}
-                            <a href="{{ path('backoffice.competiteur.edit', {id: dispo.idCompetiteur}) }}">Corriger</a></p>
+                            <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a></span>
                         {% endif %}
                     </td>
                 </tr>

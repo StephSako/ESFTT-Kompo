@@ -14,7 +14,7 @@
                     <tr>
                         <td>{{ journee.idJournee }}</td>
                         <td>
-                            {% if journee.undefined %} <span class="red-text">Indéterminée</span>
+                            {% if journee.undefined %} <span class="red-text">Date indéfinie</span>
                             {% else %} {{ journee.date|format_datetime('long', 'none', locale='fr') }}
                             {% endif %}
                         </td>

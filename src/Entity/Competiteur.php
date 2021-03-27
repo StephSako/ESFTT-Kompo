@@ -63,6 +63,20 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Le nom doit contenir au moins {{ limit }} caractères",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=100, name="prenom", nullable=false)
+     */
+    private $prenom;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="password", type="string", length=100, nullable=false)
      *
      * @Assert\Length(
@@ -454,7 +468,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function getSelect(): string
     {
-        return $this->nom. " - " . $this->getClassementOfficiel() . " pts";
+        return $this->getNom() . ' ' . $this->getPrenom() . ' - ' . $this->getClassementOfficiel() . ' pts';
     }
 
     /**
@@ -694,4 +708,21 @@ class Competiteur implements UserInterface, Serializable
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getPrenom(): string
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * @param string $prenom
+     * @return Competiteur
+     */
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+        return $this;
+    }
 }

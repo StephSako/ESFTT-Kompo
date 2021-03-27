@@ -21,6 +21,14 @@ class CompetiteurType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'uppercase',
+                    'maxlength' => 50
+                ]
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
                     'maxlength' => 50
                 ]
             ])
@@ -28,7 +36,23 @@ class CompetiteurType extends AbstractType
                 'label' => false,
                 'required' => false
             ])
-            ->add('imageFile', FileType::class, ['label' => false, 'required' => false])
+            ->add('username', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'maxlength' => 50
+                ]
+            ])
+            ->add('licence', NumberType::class, [
+                'label' => false,
+                'required' => false
+                ]
+            )
+            ->add('imageFile', FileType::class, [
+                'label' => false,
+                'required' => false
+                ]
+            )
             ->add('mail', EmailType::class, [
                 'label' => false,
                 'required' => false,
@@ -57,18 +81,22 @@ class CompetiteurType extends AbstractType
                     'maxlength' => 10
                 ]
             ])
-            ->add('contactableMail', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
-            ->add('contactableMail2', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
-            ->add('contactablePhoneNumber', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
-            ->add('contactablePhoneNumber2', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
-            ->add('username', TextType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'maxlength' => 50
-                ]
+            ->add('contactableMail', CheckboxType::class, [
+                'label' => 'Contactable à cette adresse mail',
+                'required' => false
             ])
-            ->add('licence', NumberType::class, ['label' => false, 'required' => false]);
+            ->add('contactableMail2', CheckboxType::class, [
+                'label' => 'Contactable à cette adresse mail',
+                'required' => false
+            ])
+            ->add('contactablePhoneNumber', CheckboxType::class, [
+                'label' => 'Contactable à ce numéro',
+                'required' => false
+            ])
+            ->add('contactablePhoneNumber2', CheckboxType::class, [
+                'label' => 'Contactable à ce numéro',
+                'required' => false
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

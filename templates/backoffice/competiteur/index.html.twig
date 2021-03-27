@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Back office - Les compétiteurs{% endblock %}
+{% block title %}Back-office - Les compétiteurs{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
 
 {% block body %}
@@ -31,7 +31,7 @@
                         <tr>
                             <th></th>
                             <th class="avatar hide-on-small-only">Avatar</th>
-                            <th>Nom</th>
+                            <th>NOM Prénom</th>
                             <th>Pseudo</th>
                             <th class="hide-on-small-only">Licence</th>
                             <th class="hide-on-med-and-up">Lic.</th>
@@ -67,7 +67,7 @@
                                     <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
                                 {% endif %}
                             </td>
-                            <td>{{ competiteur.nom }}</td>
+                            <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                             <td>{{ competiteur.username }}</td>
                             <td>
                                 {% if competiteur.visitor %}
@@ -76,7 +76,7 @@
                                     {% if competiteur.licence %}
                                         {{ competiteur.licence }}
                                     {% else %}
-                                        <span class="red-text lighten-2">Indéfinie</span>
+                                        <span class="red-text lighten-2">License indéfinie</span>
                                     {% endif %}
                                 {% endif %}
                             </td>

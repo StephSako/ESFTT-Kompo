@@ -34,7 +34,7 @@
             <div class="card-panel center-align white-text title_journee">
                 <h4>Journée {{ journee.idJournee }} - {{ journee.type }}</h4>
                 {% if journee.undefined %}
-                    <h5 class="red-text"><b>Date indéterminée</b></h5>
+                    <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
                     <h5>{{ journee.date | format_datetime('long', 'none', locale='fr') }}</h5>
                 {% endif %}

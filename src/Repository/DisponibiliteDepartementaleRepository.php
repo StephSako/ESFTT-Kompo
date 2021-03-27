@@ -35,6 +35,7 @@ class DisponibiliteDepartementaleRepository extends ServiceEntityRepository
             ->andWhere('c.visitor <> true')
             ->orderBy('d.disponibilite', 'DESC')
             ->addOrderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
     }

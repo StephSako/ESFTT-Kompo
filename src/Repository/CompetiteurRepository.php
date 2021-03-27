@@ -29,11 +29,12 @@ class CompetiteurRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.idCompetiteur')
-            ->addSelect('c.nom')
+            ->addSelect('c.prenom')
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = :idJournee)")
             ->setParameter('idJournee', $idJournee)
             ->andWhere('c.visitor <> true')
             ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
     }
@@ -48,7 +49,8 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAllDisposRecapitulatif(string $type, int $nbJournees){
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
-            ->addSelect('c.nom');
+            ->addSelect('c.nom')
+            ->addSelect('c.prenom');
 
         for ($i = 1; $i <= $nbJournees; $i++) {
             $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite" . $type . " dt" . $i . " WHERE c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
@@ -56,6 +58,7 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $result = $result->where('c.visitor <> true')
             ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
@@ -72,7 +75,8 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function getBrulages(string $type, int $idJournee, array $idEquipes, int $nbJoueurs){
         $brulages = $this->createQueryBuilder('c')
-            ->select('c.nom');
+            ->select('c.nom')
+            ->addSelect('c.prenom');
         foreach ($idEquipes as $idEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
@@ -85,7 +89,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
             ->setParameter('idJournee', $idJournee)
-            ->addOrderBy('c.nom')
+            ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
@@ -98,7 +103,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
-            $allBrulage[$brulage['nom']] = $brulageJoueur;
+            $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
         return $allBrulage;
@@ -127,6 +132,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
+            ->addSelect('c.prenom')
             ->addSelect('c.idCompetiteur')
             ->addSelect('(SELECT COUNT(rd.id)' .
 	                          ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
@@ -165,7 +171,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('d.disponibilite = 1')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idEquipe', $idEquipe)
-            ->addOrderBy('c.nom')
+            ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
@@ -179,12 +186,14 @@ class CompetiteurRepository extends ServiceEntityRepository
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['idCompetiteur'] = $brulages[$joueur]['idCompetiteur'];
-            $allBrulage[$brulages[$joueur]['nom']] = $brulageJoueur;
-            $allBrulage[$brulages[$joueur]['nom']]['bruleJ2'] = boolval($brulage['bruleJ2']);
+            $nom = $brulages[$joueur]['nom'] . ' ' . $brulages[$joueur]['prenom'];
+
+            $allBrulage[$nom] = $brulageJoueur;
+            $allBrulage[$nom]['bruleJ2'] = boolval($brulage['bruleJ2']);
 
             /** On effectue le brûlage prévisionnel **/
-            if (in_array($idEquipe - 1, array_keys($allBrulage[$brulages[$joueur]['nom']]['brulage'])))
-                $allBrulage[$brulages[$joueur]['nom']]['brulage'][$idEquipe - 1]++;
+            if (in_array($idEquipe - 1, array_keys($allBrulage[$nom]['brulage'])))
+                $allBrulage[$nom]['brulage'][$idEquipe - 1]++;
         }
 
         return $allBrulage;
@@ -208,6 +217,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
         $query = $this->createQueryBuilder('c')
             ->select('c.nom')
+            ->addSelect('c.prenom')
             ->where('c.visitor <> true')
             ->andWhere('(SELECT COUNT(rd.id)' .
                        ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
@@ -219,12 +229,13 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idEquipe', $idEquipe)
             ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
         $joueursBrules = [];
         foreach ($query as $joueur){
-            array_push($joueursBrules, $joueur['nom']);
+            array_push($joueursBrules, $joueur['nom'] . ' ' . $joueur['prenom']);
         }
         return $joueursBrules;
     }
@@ -241,6 +252,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->select('c.avatar')
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.nom')
+            ->addSelect('c.prenom')
             ->addSelect('c.classement_officiel')
             ->addSelect('c.licence')
             ->addSelect('j.idJournee')
@@ -251,6 +263,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->from('App:Journee' . ucfirst($type), 'j')
             ->where('c.visitor <> true')
             ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
             ->addOrderBy('j.idJournee')
             ->getQuery()
             ->getResult();

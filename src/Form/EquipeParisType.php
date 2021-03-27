@@ -15,7 +15,10 @@ class EquipeParisType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numero', NumberType::class, ['label' => false, 'required' => true])
+            ->add('numero', NumberType::class, [
+                'label' => false,
+                'required' => true
+            ])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
                 'required' => true,

@@ -25,16 +25,20 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
             )
             ->add('hosted', CheckboxType::class,[
                 'label' => 'A. Marquet indisponible',
-                'required' => false])
+                'required' => false
+            ])
             ->add('reporte', CheckboxType::class,[
                 'label' => 'Match reporté au',
-                'required' => false])
+                'required' => false
+            ])
             ->add('dateReport', DateType::class,[
                 'label' => false,
-                'required' => false])
+                'required' => false
+            ])
             ->add('exempt', CheckboxType::class,[
                 'label' => 'Pas de match',
-                'required' => false]);
+                'required' => false
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

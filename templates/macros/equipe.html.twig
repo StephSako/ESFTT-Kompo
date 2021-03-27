@@ -19,14 +19,14 @@
                             {% if equipe.idDivision %}
                                 {{ equipe.idDivision.longName }} - <i>{{ equipe.idDivision.nbJoueurschamp(type) }} joueurs</i>
                             {% else %}
-                                <span class="red-text lighten-2">Indéfinie</span>
+                                <span class="red-text lighten-2">Division indéfinie</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if equipe.idPoule %}
                                 {{ equipe.idPoule.poule }}
                             {% else %}
-                                <span class="red-text lighten-2">Indéfinie</span>
+                                <span class="red-text lighten-2">Poule indéfinie</span>
                             {% endif %}
                         </td>
                         <td>

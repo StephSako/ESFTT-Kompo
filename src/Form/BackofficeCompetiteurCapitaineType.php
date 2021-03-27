@@ -16,11 +16,43 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, ['label' => false, 'required' => true])
-            ->add('classementOfficiel', NumberType::class, ['label' => false, 'required' => false])
-            ->add('imageFile', FileType::class, ['label' => false, 'required' => false])
-            ->add('username', TextType::class, ['label' => false, 'required' => true])
-            ->add('licence', NumberType::class, ['label' => false, 'required' => false]);
+            ->add('nom', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'class' => 'uppercase',
+                    'maxlength' => 50
+                ]
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'maxlength' => 50
+                ]
+            ])
+            ->add('classementOfficiel', NumberType::class, [
+                'label' => false,
+                'required' => false
+                ]
+            )
+            ->add('imageFile', FileType::class, [
+                'label' => false,
+                'required' => false
+                ]
+            )
+            ->add('username', TextType::class, [
+                'label' => false,
+                'required' => true,
+                    'attr' => [
+                        'maxlength' => 50
+                    ]
+                ]
+            )
+            ->add('licence', NumberType::class, [
+                'label' => false,
+                'required' => false
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

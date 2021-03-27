@@ -65,7 +65,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des compositions où le joueur est brûlés et sélectionnés
+     * Liste des compositions où le joueur est brûlé et sélectionné
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $idEquipe

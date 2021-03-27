@@ -74,6 +74,8 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
+                $competiteur->setNom(strtoupper($competiteur->getNom()));
+                $competiteur->setPrenom(ucwords($competiteur->getPrenom()));
                 $this->em->persist($competiteur);
                 $this->em->flush();
                 $this->addFlash('success', 'Compétiteur créé avec succès !');
@@ -106,6 +108,8 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
+                $competiteur->setNom(strtoupper($competiteur->getNom()));
+                $competiteur->setPrenom(ucwords($competiteur->getPrenom()));
                 $this->em->flush();
                 $this->addFlash('success', 'Compétiteur modifié avec succès !');
                 return $this->redirectToRoute('backoffice.competiteurs');

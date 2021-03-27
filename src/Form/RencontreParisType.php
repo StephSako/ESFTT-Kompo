@@ -45,7 +45,8 @@ class RencontreParisType extends AbstractType
                     $request->andWhere("(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p WHERE (" . $str . ") AND p.idJournee < :idJournee AND p.idEquipe = :idEquipe) < " . $options['limiteBrulage'])
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
-                        ->orderBy('c.nom');
+                        ->orderBy('c.nom')
+                        ->addOrderBy('c.prenom');
                     return $request;
                 }
             ]);
