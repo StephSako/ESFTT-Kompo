@@ -296,6 +296,10 @@ form[name=rencontre_paris_haut] h5, form[name=rencontre_paris_bas] h5, form[name
   font-size: 1.3rem;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .pastille {
   padding-top: 5px;
   padding-bottom: 5px;

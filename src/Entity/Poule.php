@@ -19,14 +19,15 @@ class Poule
     private $idPoule;
 
     /**
+     * @var string
+     *
      * @Assert\Length(
-     *      min = 1,
-     *      max = 1,
-     *      minMessage = "La poule doit contenir exactement {{ limit }} lettre",
-     *      maxMessage = "La poule doit contenir exactement {{ limit }} lettre"
+     *      min  = 1,
+     *      max  = 1,
+     *      exactMessage = "La poule doit contenir exactement {{ limit }} lettre"
      * )
      *
-     * @ORM\Column(type="string", name="poule", nullable=false, length=1)
+     * @ORM\Column(type="string", name="poule", nullable=false, length=1, unique=true)
      */
     private $poule;
 
@@ -49,18 +50,18 @@ class Poule
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPoule()
+    public function getPoule(): string
     {
         return $this->poule;
     }
 
     /**
-     * @param mixed $poule
+     * @param string $poule
      * @return Poule
      */
-    public function setPoule($poule): self
+    public function setPoule(string $poule): self
     {
         $this->poule = $poule;
         return $this;

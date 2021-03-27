@@ -20,20 +20,27 @@ class JourneeDepartementale
 
     /**
      * @var DateTime
-     * @ORM\Column(type="date", name="date", nullable=false)
+     *
+     * @ORM\Column(type="date", name="date", nullable=false, unique=true)
      */
     private $date;
 
     /**
      * @var bool
+     *
      * @ORM\Column(type="boolean", name="undefined", nullable=false)
      */
     private $undefined;
 
     /**
-     * @var String
+     * @var string
      */
     private $type = 'Départemental';
+
+    /**
+     * @var string
+     */
+    private $linkType = 'departementale';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idJournee")
@@ -41,7 +48,7 @@ class JourneeDepartementale
     protected $rencontres;
 
     /**
-     * @return String
+     * @return string
      */
     public function getType(): string
     {
@@ -49,12 +56,7 @@ class JourneeDepartementale
     }
 
     /**
-     * @var String
-     */
-    private $linkType = 'departementale';
-
-    /**
-     * @return String
+     * @return string
      */
     public function getLinkType(): string
     {

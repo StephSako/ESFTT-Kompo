@@ -50,30 +50,6 @@ class BackOfficeDivisionController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit")
-     * @param int $idDivision
-     * @param Request $request
-     * @return Response
-     */
-    public function edit(int $idDivision, Request $request): Response
-    {
-        if (!($division = $this->divisionRepository->find($idDivision))) throw $this->createNotFoundException('Division inexistante');
-        $form = $this->createForm(DivisionFormType::class, $division);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()){
-            $this->em->flush();
-            $this->addFlash('success', 'Division modifiée avec succès !');
-            return $this->redirectToRoute('backoffice.divisions');
-        }
-
-        return $this->render('backoffice/division/edit.html.twig', [
-            'division' => $division,
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
      * @Route("/backoffice/division/new", name="backoffice.division.new")
      * @param Request $request
      * @return Response
@@ -96,6 +72,30 @@ class BackOfficeDivisionController extends AbstractController
         }
 
         return $this->render('backoffice/division/new.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit")
+     * @param int $idDivision
+     * @param Request $request
+     * @return Response
+     */
+    public function edit(int $idDivision, Request $request): Response
+    {
+        if (!($division = $this->divisionRepository->find($idDivision))) throw $this->createNotFoundException('Division inexistante');
+        $form = $this->createForm(DivisionFormType::class, $division);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->em->flush();
+            $this->addFlash('success', 'Division modifiée avec succès !');
+            return $this->redirectToRoute('backoffice.divisions');
+        }
+
+        return $this->render('backoffice/division/edit.html.twig', [
+            'division' => $division,
             'form' => $form->createView()
         ]);
     }

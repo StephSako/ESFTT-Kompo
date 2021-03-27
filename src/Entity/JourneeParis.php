@@ -20,20 +20,27 @@ class JourneeParis
 
     /**
      * @var DateTime
-     * @ORM\Column(type="date", name="date", nullable=false)
+     *
+     * @ORM\Column(type="date", name="date", nullable=false, unique=true)
      */
     private $date;
 
     /**
      * @var bool
+     *
      * @ORM\Column(type="boolean", name="undefined", nullable=false)
      */
     private $undefined;
 
     /**
-     * @var String
+     * @var string
      */
-    private $type = 'Paris';
+    private $type = 'Départemental';
+
+    /**
+     * @var string
+     */
+    private $linkType = 'paris';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\RencontreParis", mappedBy="idJournee")
@@ -41,19 +48,19 @@ class JourneeParis
     protected $rencontres;
 
     /**
-     * @return String
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
      * @return mixed
      */
     public function getRencontres()
     {
         return $this->rencontres;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     /**
@@ -67,12 +74,7 @@ class JourneeParis
     }
 
     /**
-     * @var String
-     */
-    private $linkType = 'paris';
-
-    /**
-     * @return String
+     * @return string
      */
     public function getLinkType(): string
     {

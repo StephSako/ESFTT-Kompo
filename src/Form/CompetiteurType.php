@@ -17,18 +17,57 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, ['label' => false, 'required' => true])
-            ->add('classementOfficiel', NumberType::class, ['label' => false, 'required' => false])
+            ->add('nom', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'maxlength' => 50
+                ]
+            ])
+            ->add('classementOfficiel', NumberType::class, [
+                'label' => false,
+                'required' => false
+            ])
             ->add('imageFile', FileType::class, ['label' => false, 'required' => false])
-            ->add('mail', EmailType::class, ['label' => false, 'required' => false])
-            ->add('mail2', EmailType::class, ['label' => false, 'required' => false])
-            ->add('phoneNumber', TextType::class, ['label' => false, 'required' => false])
-            ->add('phoneNumber2', TextType::class, ['label' => false, 'required' => false])
+            ->add('mail', EmailType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 100
+                ]
+            ])
+            ->add('mail2', EmailType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 100
+                ]
+            ])
+            ->add('phoneNumber', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 10
+                ]
+            ])
+            ->add('phoneNumber2', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 10
+                ]
+            ])
             ->add('contactableMail', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
             ->add('contactableMail2', CheckboxType::class, ['label' => 'Contactable à cette adresse mail', 'required' => false])
             ->add('contactablePhoneNumber', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
             ->add('contactablePhoneNumber2', CheckboxType::class, ['label' => 'Contactable à ce numéro', 'required' => false])
-            ->add('username', TextType::class, ['label' => false, 'required' => true])
+            ->add('username', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'maxlength' => 50
+                ]
+            ])
             ->add('licence', NumberType::class, ['label' => false, 'required' => false]);
     }
 

@@ -35,7 +35,7 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
      * )
      *
-     * @ORM\Column(name="licence", type="integer", length=11, nullable=true)
+     * @ORM\Column(name="licence", type="integer", length=11, nullable=true, unique=true)
      */
     private $licence;
 
@@ -51,7 +51,7 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      min = 2,
-     *      max = 100,
+     *      max = 50,
      *      minMessage = "Le nom doit contenir au moins {{ limit }} caractères",
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
      * )
@@ -77,7 +77,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=50, nullable=false)
+     * @ORM\Column(name="username", type="string", length=50, nullable=false, unique=true)
      *
      * @Assert\Length(
      *      min = 2,
@@ -94,7 +94,7 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="mail", type="string", length=255, nullable=true)
      *
      * @Assert\Length(
-     *      max = 255,
+     *      max = 100,
      *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
      * )
      *
@@ -110,7 +110,7 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="mail2", type="string", length=255, nullable=true)
      *
      * @Assert\Length(
-     *      max = 255,
+     *      max = 100,
      *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
      * )
      *
@@ -210,12 +210,19 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @var File|null
+     *
+     * @Assert\Image(
+     *      mimeTypes = {"image/jpeg", "image/png", "image/gif"},
+     *      mimeTypesMessage = "L'image doit être au format .jpeg, .png ou .gif."
+     * )
+     *
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
      */
     private $imageFile;
 
     /**
      * @var DateTime|null
+     *
      * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
      */
     private $updatedAt;

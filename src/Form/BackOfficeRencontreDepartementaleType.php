@@ -19,6 +19,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
+                    'maxlength' => 50,
                     'placeholder' => 'Adversaire + n° équipe'
                 ]]
             )

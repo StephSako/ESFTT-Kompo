@@ -36,6 +36,7 @@ class RencontreParis
 
     /**
      * @var JourneeParis
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", inversedBy="rencontres")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
@@ -43,12 +44,14 @@ class RencontreParis
 
     /**
      * @var boolean
+     *
      * @ORM\Column(name="exempt", type="boolean", nullable=false)
      */
     private $exempt;
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_0", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -56,6 +59,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -63,6 +67,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -70,6 +75,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -77,6 +83,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_4", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -84,6 +91,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_5", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -91,6 +99,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_6", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -98,6 +107,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_7", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -105,6 +115,7 @@ class RencontreParis
 
     /**
      * @var Competiteur|null
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
      * @ORM\JoinColumn(name="id_joueur_8", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
      */
@@ -112,6 +123,7 @@ class RencontreParis
 
     /**
      * @var EquipeParis
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\EquipeParis", inversedBy="rencontresParis")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
      */
@@ -119,37 +131,41 @@ class RencontreParis
 
     /**
      * @var boolean
+     *
      * @ORM\Column(name="domicile", type="boolean", nullable=false)
      */
     private $domicile;
 
     /**
      * @var boolean
+     *
      * @ORM\Column(name="hosted", type="boolean", nullable=false)
      */
     private $hosted;
 
     /**
      * @var boolean
+     *
      * @ORM\Column(name="reporte", type="boolean", nullable=false)
      */
     private $reporte;
 
     /**
      * @var DateTime
+     *
      * @ORM\Column(type="date", name="date_report", nullable=false)
      */
     private $dateReport;
 
     /**
-     * @var String|null
+     * @var string|null
      *
      * @Assert\Length(
-     *      max = 100,
+     *      max = 50,
      *      maxMessage = "L'adversaire doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(name="adversaire", nullable=true, type="string", length=100)
+     * @ORM\Column(name="adversaire", nullable=true, type="string", length=50, unique=true)
      */
     private $adversaire;
 
@@ -407,7 +423,7 @@ class RencontreParis
     }
 
     /**
-     * @return String|null
+     * @return string|null
      */
     public function getAdversaire(): ?string
     {
@@ -415,7 +431,7 @@ class RencontreParis
     }
 
     /**
-     * @param String|null $adversaire
+     * @param string|null $adversaire
      * @return RencontreParis
      */
     public function setAdversaire(?string $adversaire): self

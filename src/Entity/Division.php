@@ -23,9 +23,9 @@ class Division
      *
      * @Assert\Length(
      *      min = 1,
-     *      max = 2,
-     *      minMessage = "Le diminitif de la division doit contenir au moins {{ limit }} lettres",
-     *      maxMessage = "Le diminitif de la division doit contenir au maximum {{ limit }} lettres"
+     *      max = 5,
+     *      minMessage = "Le diminitif doit contenir au moins {{ limit }} lettres",
+     *      maxMessage = "Le diminitif doit contenir au maximum {{ limit }} lettres"
      * )
      *
      * @ORM\Column(type="string", name="short_name", nullable=false, length=2)
@@ -38,8 +38,8 @@ class Division
      * @Assert\Length(
      *      min = 2,
      *      max = 25,
-     *      minMessage = "Le nom de la division doit contenir au moins {{ limit }} lettres",
-     *      maxMessage = "Le nom de la division doit contenir au maximum {{ limit }} lettres"
+     *      minMessage = "Le nom doit contenir au moins {{ limit }} lettres",
+     *      maxMessage = "Le nom doit contenir au maximum {{ limit }} lettres"
      * )
      *
      * @ORM\Column(type="string", name="long_name", nullable=false, length=25)
