@@ -13,6 +13,7 @@ use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,12 +75,23 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
-                $competiteur->setNom(strtoupper($competiteur->getNom()));
-                $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
-                $this->em->persist($competiteur);
-                $this->em->flush();
-                $this->addFlash('success', 'Compétiteur créé avec succès !');
-                return $this->redirectToRoute('backoffice.competiteurs');
+                try {
+                    $competiteur->setNom(strtoupper($competiteur->getNom()));
+                    $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
+                    $this->em->persist($competiteur);
+                    $this->em->flush();
+                    $this->addFlash('success', 'Compétiteur créé avec succès !');
+                    return $this->redirectToRoute('backoffice.competiteurs');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
+                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+                    }
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('backoffice/competiteur/new.html.twig', [
+                        'form' => $form->createView()
+                    ]);
+                }
             } else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
@@ -108,11 +120,27 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
-                $competiteur->setNom(strtoupper($competiteur->getNom()));
-                $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
-                $this->em->flush();
-                $this->addFlash('success', 'Compétiteur modifié avec succès !');
-                return $this->redirectToRoute('backoffice.competiteurs');
+                try {
+                    $competiteur->setNom(strtoupper($competiteur->getNom()));
+                    $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Compétiteur modifié avec succès !');
+                    return $this->redirectToRoute('backoffice.competiteurs');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
+                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+                    }
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('account/edit.html.twig', [
+                        'type' => 'backoffice',
+                        'urlImage' => $competiteur->getAvatar(),
+                        'path' => 'backoffice.password.edit',
+                        'competiteur' => $competiteur,
+                        'idActualUser' => $this->getUser()->getIdCompetiteur(),
+                        'form' => $form->createView()
+                    ]);
+                }
             }
             else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');

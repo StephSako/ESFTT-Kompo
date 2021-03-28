@@ -7,6 +7,7 @@ use App\Form\CompetiteurType;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,11 +72,27 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
-                $user->setNom(strtoupper($user->getNom()));
-                $user->setPrenom(ucwords(strtolower($user->getPrenom())));
-                $this->em->flush();
-                $this->addFlash('success', 'Informations modifiées !');
-                return $this->redirectToRoute('account');
+                try {
+                    $user->setNom(strtoupper($user->getNom()));
+                    $user->setPrenom(ucwords(strtolower($user->getPrenom())));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Informations modifiées !');
+                    return $this->redirectToRoute('account');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $user->getLicence() . '\' est déjà attribuée');
+                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
+                    }
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('account/edit.html.twig', [
+                        'type' => 'general',
+                        'user' => $user,
+                        'urlImage' => $user->getAvatar(),
+                        'path' => 'account.update.password',
+                        'journees' => $journees,
+                        'form' => $form->createView()
+                    ]);
+                }
             }
             else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');

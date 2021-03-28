@@ -80,8 +80,7 @@ class BackOfficeRencontreController extends AbstractController
                 $this->em->flush();
                 $this->addFlash('success', 'Rencontre modifiée avec succès !');
                 return $this->redirectToRoute('backoffice.rencontres');
-            }
-            catch(Exception $e){
+            } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
                 else $this->addFlash('fail', 'Une erreur est survenue');
                 return $this->render('backoffice/rencontre/edit.html.twig', [
