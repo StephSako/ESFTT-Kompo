@@ -48,7 +48,6 @@ class InvalidSelectionController extends AbstractController
      * @param int $nbJoueurs
      */
     public function deleteInvalidSelectedPlayers($invalidCompo, int $nbJoueurs){
-        dump($invalidCompo);
         foreach ($invalidCompo as $compo){
             for ($i = 0; $i < $nbJoueurs; $i++){
                 if (boolval($compo['isPlayer' . $i])) $compo['compo']->setIdJoueurN($i, NULL);

@@ -36,7 +36,7 @@
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
-                    <h5>{{ journee.date | format_datetime('long', 'none', locale='fr') }}</h5>
+                    <h5>{{ journee.dateJournee | format_datetime('long', 'none', locale='fr') }}</h5>
                 {% endif %}
             </div>
 

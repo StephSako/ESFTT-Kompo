@@ -87,7 +87,7 @@ class HomeController extends AbstractController
         else $dates = $this->journeeDepartementaleRepository->findAllDates();
         $NJournee = 1;
 
-        while ($NJournee <= 7 && !$dates[$NJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$NJournee - 1]["date"])->format('%R%a') < 0){
+        while ($NJournee <= 7 && !$dates[$NJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$NJournee - 1]["dateJournee"])->format('%R%a') < 0){
             $NJournee++;
         }
 
@@ -188,7 +188,6 @@ class HomeController extends AbstractController
         // Brûlages des joueurs
         $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->divisionRepository->getMaxNbJoueursChamp($type));
 
-        dump($equipesSansDivision);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'equipesSansDivision' => $equipesSansDivision,

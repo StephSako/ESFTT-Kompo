@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -17,7 +18,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     uniqueConstraints={
  *          @UniqueConstraint(name="UNIQ_eq_par_num", columns={"numero"})
- *     })
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"numero"}
+ * )
  */
 class EquipeParis
 {

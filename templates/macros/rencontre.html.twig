@@ -26,12 +26,12 @@
                         <td>
                             <div class="hide-on-small-only">
                                 {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr') }}</span>
-                                {% else %}{{ rencontre.idJournee.date|format_datetime('long', 'none', locale='fr') }}
+                                {% else %}{{ rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}
                                 {% endif %}
                             </div>
                             <div class="hide-on-med-and-up">
                                 {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
-                                {% else %}{{ rencontre.idJournee.date | date("d/m/Y") }}
+                                {% else %}{{ rencontre.idJournee.dateJournee | date("d/m/Y") }}
                                 {% endif %}
                             </div>
                         </td>

@@ -12,11 +12,11 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @ORM\Table(
  *     name="prive_journee_departementale",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_jour_dep_date", columns={"date"})
+ *          @UniqueConstraint(name="UNIQ_jour_dep_date", columns={"date_journee"})
  *     }
  * )
  * @UniqueEntity(
- *     fields={"date"}
+ *     fields={"dateJournee"}
  * )
  */
 class JourneeDepartementale
@@ -31,9 +31,9 @@ class JourneeDepartementale
     /**
      * @var DateTime
      *
-     * @ORM\Column(type="date", name="date", nullable=false)
+     * @ORM\Column(type="date", name="date_journee", nullable=false)
      */
-    private $date;
+    private $dateJournee;
 
     /**
      * @var bool
@@ -112,18 +112,18 @@ class JourneeDepartementale
     /**
      * @return DateTime
      */
-    public function getDate(): DateTime
+    public function getDateJournee(): DateTime
     {
-        return $this->date;
+        return $this->dateJournee;
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTime $dateJournee
      * @return JourneeDepartementale
      */
-    public function setDate(Datetime $date): self
+    public function setDateJournee(Datetime $dateJournee): self
     {
-        $this->date = $date;
+        $this->dateJournee = $dateJournee;
         return $this;
     }
 

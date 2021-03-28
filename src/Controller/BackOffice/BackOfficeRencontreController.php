@@ -75,7 +75,7 @@ class BackOfficeRencontreController extends AbstractController
                 $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
 
                 /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
-                if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDate());
+                if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
 
                 $rencontre->setAdversaire(ucwords(strtolower($rencontre->getAdversaire())));
                 $this->em->flush();
@@ -88,7 +88,7 @@ class BackOfficeRencontreController extends AbstractController
                     'form' => $form->createView(),
                     'type' => $type,
                     'domicile' => $domicile,
-                    'date' => $rencontre->getIdJournee()->getDate(),
+                    'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
                     'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
                     'idEquipe' => $rencontre->getIdEquipe()->getIdEquipe()
                 ]);
@@ -99,7 +99,7 @@ class BackOfficeRencontreController extends AbstractController
             'form' => $form->createView(),
             'type' => $type,
             'domicile' => $domicile,
-            'date' => $rencontre->getIdJournee()->getDate(),
+            'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
             'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
             'idEquipe' => $rencontre->getIdEquipe()->getIdEquipe()
         ]);

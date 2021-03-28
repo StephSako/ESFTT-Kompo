@@ -57,7 +57,7 @@ class RencontreParisRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rp')
             ->leftJoin('rp.idJournee', 'j')
             ->leftJoin('rp.idEquipe', 'e')
-            ->orderBy('j.date')
+            ->orderBy('j.dateJournee')
             ->addOrderBy('rp.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()

@@ -28,7 +28,7 @@
                                 {% if journee.undefined %}
                                     <span class="red-text"><b>?/?</b></span>
                                 {% else %}
-                                    {{ journee.date|date('d/m') }}
+                                    {{ journee.dateJournee|date('d/m') }}
                                 {% endif %}
                             </a>
                         </li>
@@ -64,7 +64,7 @@
                         {% if journee.undefined %}
                             <span class="red-text"><b>?/?</b></span>
                         {% else %}
-                            {{ journee.date|date('d/m/Y') }}
+                            {{ journee.dateJournee|date('d/m/Y') }}
                         {% endif %}
                     </a>
                 </li>

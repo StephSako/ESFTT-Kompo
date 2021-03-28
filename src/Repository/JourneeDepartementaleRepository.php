@@ -27,9 +27,9 @@ class JourneeDepartementaleRepository extends ServiceEntityRepository
     public function findAllDates()
     {
         return $this->createQueryBuilder('jd')
-            ->select('jd.date')
+            ->select('jd.dateJournee')
             ->addSelect('jd.undefined')
-            ->orderBy('jd.date')
+            ->orderBy('jd.dateJournee')
             ->getQuery()
             ->getResult();
     }

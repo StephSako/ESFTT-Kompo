@@ -14,7 +14,7 @@ class JourneeDepartementaleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date', DateType::class, [
+            ->add('dateJournee', DateType::class, [
                 'label' => false
             ])
             ->add('undefined', CheckboxType::class, [

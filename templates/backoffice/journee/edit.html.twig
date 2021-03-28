@@ -10,6 +10,11 @@
     {% include("components/navbar_backoffice.html.twig") %}
 
     <div class="container">
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
         {{ edit.journee(type, idJournee, form) }}
     </div>
 

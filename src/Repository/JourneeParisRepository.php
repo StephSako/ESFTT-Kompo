@@ -27,9 +27,9 @@ class JourneeParisRepository extends ServiceEntityRepository
     public function findAllDates()
     {
         return $this->createQueryBuilder('jp')
-            ->select('jp.date')
+            ->select('jp.dateJournee')
             ->addSelect('jp.undefined')
-            ->orderBy('jp.date')
+            ->orderBy('jp.dateJournee')
             ->getQuery()
             ->getResult();
     }

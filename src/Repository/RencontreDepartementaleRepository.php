@@ -57,7 +57,7 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rd')
             ->leftJoin('rd.idJournee', 'j')
             ->leftJoin('rd.idEquipe', 'e')
-            ->orderBy('j.date')
+            ->orderBy('j.dateJournee')
             ->addOrderBy('rd.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()

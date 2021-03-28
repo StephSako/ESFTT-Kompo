@@ -119,7 +119,7 @@ class BackOfficeEquipeController extends AbstractController
                             ->setIdEquipe($equipe)
                             ->setDomicile(true)
                             ->setHosted(false)
-                            ->setDateReport($journee->getDate())
+                            ->setDateReport($journee->getDateJournee())
                             ->setReporte(false)
                             ->setAdversaire(null)
                             ->setExempt(false);

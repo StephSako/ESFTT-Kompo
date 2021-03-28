@@ -40,7 +40,7 @@ class AppExtension extends AbstractExtension
             {
                 return ($rencontre->isReporte() && intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0 ? $rencontre : null);
             }));
-        $dateDepassee = intval((new DateTime())->diff($journee->getDate())->format('%R%a')) >= 0;
+        $dateDepassee = intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) >= 0;
         return (($dateDepassee || $nbRencontresReportees > 0) || $journee->getUndefined());
     }
 
@@ -50,7 +50,7 @@ class AppExtension extends AbstractExtension
      */
     public function rencontreStillEditable($rencontre): bool
     {
-        $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDate())->format('%R%a')) >= 0;
+        $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;
         return (($dateDepassee && !$rencontre->isReporte()) || ($dateReporteeDepassee && $rencontre->isReporte()) || $rencontre->getIdJournee()->getUndefined());
     }
