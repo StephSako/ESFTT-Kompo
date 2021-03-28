@@ -97,50 +97,49 @@ class BackOfficeEquipeController extends AbstractController
                 try {
                     $this->em->persist($equipe);
                     $this->em->flush();
+
+                    // Créer les rencontres de l'équipe créée
+                    if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
+                    else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
+                    else throw $this->createNotFoundException('Championnat inexistant');
+                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+
+                    foreach ($journees as $journee){
+                        if ($type == 'departementale'){
+                            $rencontre = new RencontreDepartementale();
+                            $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampDepartementale() : $nbMaxJoueurs);
+                        }
+                        else if ($type == 'paris'){
+                            $rencontre = new RencontreParis();
+                            $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
+                        }
+                        else throw $this->createNotFoundException('Championnat inexistant');
+
+                        $rencontre
+                            ->setIdJournee($journee)
+                            ->setIdEquipe($equipe)
+                            ->setDomicile(true)
+                            ->setHosted(false)
+                            ->setDateReport($journee->getDate())
+                            ->setReporte(false)
+                            ->setAdversaire(null)
+                            ->setExempt(false);
+
+                        for ($i = 0; $i < $nbJoueurs; $i++){
+                            $rencontre->setIdJoueurN($i, null);
+                        }
+                        $this->em->persist($rencontre);
+                    }
+                    $this->em->flush();
+                    $this->addFlash('success', 'Equipe créée avec succès !');
+                    return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Une erreur est survenue');
                     return $this->render('backoffice/equipe/new.html.twig', [
-                        'equipe' => $equipe,
                         'form' => $form->createView()
                     ]);
                 }
-
-                // Créer les rencontres de l'équipe créée
-                if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-                else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
-                else throw $this->createNotFoundException('Championnat inexistant');
-                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-
-                foreach ($journees as $journee){
-                    if ($type == 'departementale'){
-                        $rencontre = new RencontreDepartementale();
-                        $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampDepartementale() : $nbMaxJoueurs);
-                    }
-                    else if ($type == 'paris'){
-                        $rencontre = new RencontreParis();
-                        $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
-                    }
-                    else throw $this->createNotFoundException('Championnat inexistant');
-
-                    $rencontre
-                        ->setIdJournee($journee)
-                        ->setIdEquipe($equipe)
-                        ->setDomicile(true)
-                        ->setHosted(false)
-                        ->setDateReport($journee->getDate())
-                        ->setReporte(false)
-                        ->setAdversaire(null)
-                        ->setExempt(false);
-
-                    for ($i = 0; $i < $nbJoueurs; $i++){
-                        $rencontre->setIdJoueurN($i, null);
-                    }
-                    $this->em->persist($rencontre);
-                }
-                $this->em->flush();
-                $this->addFlash('success', 'Equipe créée avec succès !');
-                return $this->redirectToRoute('backoffice.equipes');
             } else {
                 $this->addFlash('fail', 'Une erreur est survenue ...');
             }
@@ -193,7 +192,7 @@ class BackOfficeEquipeController extends AbstractController
                 $this->addFlash('success', 'Equipe modifiée avec succès !');
                 return $this->redirectToRoute('backoffice.equipes');
             } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                 else $this->addFlash('fail', 'Une erreur est survenue');
                 return $this->render('backoffice/equipe/edit.html.twig', [
                     'equipe' => $equipe,
