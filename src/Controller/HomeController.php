@@ -144,6 +144,9 @@ class HomeController extends AbstractController
             $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
                 return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1;
             }, $compos));
+
+            // Equipes sans divisions affiliées
+            $equipesSansDivision = $this->equipeDepartementalRepository->getEquipesSansDivision();
         }
         else if ($type == 'paris') {
             if ((!$journee = $this->journeeParisRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
@@ -162,6 +165,7 @@ class HomeController extends AbstractController
             $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
                 return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() - 1;
             }, $compos));
+            $equipesSansDivision = $this->equipeParisRepository->getEquipesSansDivision();
         }
         else throw new Exception('Ce championnat est inexistant', 500);
 
@@ -184,8 +188,10 @@ class HomeController extends AbstractController
         // Brûlages des joueurs
         $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->divisionRepository->getMaxNbJoueursChamp($type));
 
+        dump($equipesSansDivision);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
+            'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'nbTotalJoueurs' => $nbTotalJoueurs,
             'nbMinJoueurs' => $nbMinJoueurs,

@@ -50,6 +50,20 @@ class EquipeParisRepository extends ServiceEntityRepository
     }
 
     /**
+     * Equipes sans affiliation à une division
+     * @return int|mixed|string
+     */
+    public function getEquipesSansDivision()
+    {
+        return array_column($this->createQueryBuilder('ep')
+            ->select('ep.numero')
+            ->where('ep.idDivision IS NULL')
+            ->orderBy('ep.numero')
+            ->getQuery()
+            ->getResult(), 'numero');
+    }
+
+    /**
      * @param int $idDeletedDivision
      * @return int|mixed|string
      */

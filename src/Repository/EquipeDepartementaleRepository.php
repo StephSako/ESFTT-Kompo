@@ -36,6 +36,20 @@ class EquipeDepartementaleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Equipes sans affiliation à une division
+     * @return int|mixed|string
+     */
+    public function getEquipesSansDivision()
+    {
+        return array_column($this->createQueryBuilder('ed')
+            ->select('ed.numero')
+            ->where('ed.idDivision IS NULL')
+            ->orderBy('ed.numero')
+            ->getQuery()
+            ->getResult(), 'numero');
+    }
+
+    /**
      * Liste des IDs des équipes soumises au brûlage
      * @param string $fonction
      * @return int|mixed|string

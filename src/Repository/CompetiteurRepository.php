@@ -83,12 +83,13 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $str .= 'p' . $idEquipe . '.idJoueur' . $i . ' = c.idCompetiteur';
                 if ($i < $nbJoueurs - 1) $str .= ' OR ';
             }
-            $brulages = $brulages->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $idEquipe . ', App\Entity\Equipe' . ucfirst($type) . ' e' . $idEquipe . ' WHERE (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe AND e' . $idEquipe . '.numero = ' . $idEquipe . ' AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe);
+            $brulages = $brulages
+                ->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $idEquipe . ', App\Entity\Equipe' . ucfirst($type) . ' e' . $idEquipe . ' WHERE (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe AND e' . $idEquipe . '.numero = ' . $idEquipe . ' AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
+                ->setParameter('idJournee', $idJournee);
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.visitor <> true')
-            ->setParameter('idJournee', $idJournee)
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()

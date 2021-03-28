@@ -97,6 +97,13 @@
                 </div>
             {% endif %}
 
+            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length > 0 %}
+                <div class="card-panel center">
+                    <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
+                    <a href="{{ path('backoffice.equipes') }}">Corriger</a>
+                </div>
+            {% endif %}
+
             {% if compos|length > 0 %}
                 {% for compo in compos %}
                     <div class="center card-panel">
