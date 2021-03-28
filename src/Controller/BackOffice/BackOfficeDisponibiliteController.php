@@ -8,11 +8,14 @@ use App\Entity\DisponibiliteParis;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
+use App\Repository\DivisionRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,6 +30,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $journeeParisRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
+    private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
@@ -36,6 +40,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
      * @param EntityManagerInterface $em
+     * @param DivisionRepository $divisionRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
      * @param RencontreParisRepository $rencontreParisRepository
      */
@@ -45,6 +50,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                                 JourneeDepartementaleRepository $journeeDepartementaleRepository,
                                 JourneeParisRepository $journeeParisRepository,
                                 EntityManagerInterface $em,
+                                DivisionRepository $divisionRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
@@ -56,6 +62,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->journeeParisRepository = $journeeParisRepository;
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->divisionRepository = $divisionRepository;
     }
 
     /**
@@ -110,13 +117,15 @@ class BackOfficeDisponibiliteController extends AbstractController
     /**
      * @Route("/backoffice/disponibilites/update/{idCompetiteur}/{type}/{disposJoueur}/{dispo}", name="backoffice.disponibilite.update")
      * @param string $type
-     * @param $idCompetiteur
-     * @param $disposJoueur
+     * @param int $idCompetiteur
+     * @param int $disposJoueur
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function update(string $type, $idCompetiteur, $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(string $type, int $idCompetiteur, int $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
 
@@ -126,7 +135,10 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
 
                 /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($competiteur, $disposJoueur->getIdJournee()), 'departementale');
+                if (!$dispo){
+                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                    $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $disposJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs), $nbMaxJoueurs);
+                }
 
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
@@ -135,7 +147,10 @@ class BackOfficeDisponibiliteController extends AbstractController
                 if (!($disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur))) throw $this->createNotFoundException('Disponibilité inexistant');
                 $disposJoueur->setDisponibiliteParis($dispo);
 
-                if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenIndispo($competiteur, $disposJoueur->getIdJournee()), 'paris');
+                if (!$dispo){
+                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                    $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $disposJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs), $nbMaxJoueurs);
+                }
 
                 $this->em->flush();
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');

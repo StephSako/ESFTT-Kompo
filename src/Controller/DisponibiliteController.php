@@ -6,11 +6,14 @@ use App\Entity\DisponibiliteDepartementale;
 use App\Entity\DisponibiliteParis;
 use App\Repository\DisponibiliteDepartementaleRepository;
 use App\Repository\DisponibiliteParisRepository;
+use App\Repository\DivisionRepository;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,6 +27,7 @@ class DisponibiliteController extends AbstractController
     private $disponibiliteParisRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
+    private $divisionRepository;
 
     /**
      * @param EntityManagerInterface $em
@@ -32,6 +36,7 @@ class DisponibiliteController extends AbstractController
      * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
      * @param DisponibiliteParisRepository $disponibiliteParisRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param DivisionRepository $divisionRepository
      * @param RencontreParisRepository $rencontreParisRepository
      */
     public function __construct(EntityManagerInterface $em,
@@ -40,6 +45,7 @@ class DisponibiliteController extends AbstractController
                                 DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                DivisionRepository $divisionRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
@@ -49,16 +55,17 @@ class DisponibiliteController extends AbstractController
         $this->disponibiliteParisRepository = $disponibiliteParisRepository;
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->divisionRepository = $divisionRepository;
     }
 
     /**
      * @Route("/journee/disponibilite/new/{journee}/{type}/{dispo}", name="journee.disponibilite.new")
-     * @param $journee
+     * @param int $journee
      * @param string $type
      * @param int $dispo
      * @return Response
      */
-    public function new($journee, string $type, int $dispo):Response
+    public function new(int $journee, string $type, int $dispo):Response
     {
         $competiteur = $this->getUser();
 
@@ -95,12 +102,14 @@ class DisponibiliteController extends AbstractController
     /**
      * @Route("/journee/disponibilite/update/{type}/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param string $type
-     * @param $dispoJoueur
+     * @param int $dispoJoueur
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function update(string $type, $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(string $type, int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
         $journee = 1;
         if ($type == 'departementale'){
@@ -109,7 +118,10 @@ class DisponibiliteController extends AbstractController
             $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
             /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-            if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'departementale');
+            if (!$dispo){
+                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs), $nbMaxJoueurs);
+            }
 
             $this->em->flush();
             $this->addFlash('success', 'Disponibilité modifiée avec succès !');
@@ -119,7 +131,10 @@ class DisponibiliteController extends AbstractController
             $disposJoueur->setDisponibiliteParis($dispo);
             $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
-            if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser(), $journee), 'paris');
+            if (!$dispo){
+                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs), $nbMaxJoueurs);
+            }
 
             $this->em->flush();
             $this->addFlash('success', 'Disponibilité modifiée avec succès !');

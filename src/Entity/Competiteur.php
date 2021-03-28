@@ -61,7 +61,7 @@ class Competiteur implements UserInterface, Serializable
      *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
      * )
      *
-     * @ORM\Column(name="classement_officiel", type="integer", length=5, nullable=true)
+     * @ORM\Column(name="classement_officiel", type="integer", nullable=true)
      */
     private $classement_officiel;
 
@@ -75,7 +75,7 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(type="string", length=100, name="nom", nullable=false)
+     * @ORM\Column(type="string", length=50, name="nom", nullable=false)
      */
     private $nom;
 
@@ -89,7 +89,7 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(type="string", length=100, name="prenom", nullable=false)
+     * @ORM\Column(type="string", length=50, name="prenom", nullable=false)
      */
     private $prenom;
 
@@ -124,7 +124,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string|null
      *
-     * @ORM\Column(name="mail", type="string", length=255, nullable=true)
+     * @ORM\Column(name="mail", type="string", length=100, nullable=true)
      *
      * @Assert\Length(
      *      max = 100,
@@ -140,7 +140,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string|null
      *
-     * @ORM\Column(name="mail2", type="string", length=255, nullable=true)
+     * @ORM\Column(name="mail2", type="string", length=100, nullable=true)
      *
      * @Assert\Length(
      *      max = 100,
