@@ -118,9 +118,9 @@ class RencontreParisRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
-        $query
+        $query = $query
             ->from('App:Competiteur', 'c')
             ->leftJoin('rp.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
@@ -129,7 +129,8 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->andWhere('c.idCompetiteur = c.idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere($str)
-            ->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
         return $query;
     }
 
