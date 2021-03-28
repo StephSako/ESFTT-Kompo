@@ -16,6 +16,7 @@ use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,15 +85,16 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param int $dispo
      * @param $idCompetiteur
      * @return Response
+     * @throws Exception
      */
     public function new($journee, string $type, int $dispo, $idCompetiteur):Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistant', 500);
 
         if ($type) {
             if ($type == 'departementale') {
                 if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
+                    if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
                     $disponibilite = new DisponibiliteDepartementale($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
@@ -101,7 +103,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
             } else if ($type == 'paris') {
                 if (sizeof($this->disponibiliteParisRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    if (!($journee = $this->journeeParisRepository->find($journee))) throw $this->createNotFoundException('Journée inexistante');
+                    if (!($journee = $this->journeeParisRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
                     $disponibilite = new DisponibiliteParis($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
@@ -124,14 +126,15 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @return Response
      * @throws NoResultException
      * @throws NonUniqueResultException
+     * @throws Exception
      */
     public function update(string $type, int $idCompetiteur, int $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw $this->createNotFoundException('Compétiteur inexistant');
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
 
         if ($type || $type != 'departementale' || $type != 'paris') {
             if ($type == 'departementale') {
-                if (!($disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur))) throw $this->createNotFoundException('Disponibilité inexistant');
+                if (!($disposJoueur = $this->disponibiliteDepartementaleRepository->find($disposJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
                 $disposJoueur->setDisponibiliteDepartementale($dispo);
 
                 /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
@@ -144,7 +147,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $this->addFlash('success', 'Disponibilité modifiée avec succès !');
             }
             else if ($type == 'paris') {
-                if (!($disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur))) throw $this->createNotFoundException('Disponibilité inexistant');
+                if (!($disposJoueur = $this->disponibiliteParisRepository->find($disposJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
                 $disposJoueur->setDisponibiliteParis($dispo);
 
                 if (!$dispo){

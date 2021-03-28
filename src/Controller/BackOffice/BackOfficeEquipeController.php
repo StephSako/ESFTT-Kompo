@@ -82,12 +82,11 @@ class BackOfficeEquipeController extends AbstractController
      * @param string $type
      * @param Request $request
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
+     * @throws Exception
      */
     public function new(string $type, Request $request): Response
     {
-        if ($type != 'departementale' && $type != 'paris') throw $this->createNotFoundException('Championnat inexistant');
+        if ($type != 'departementale' && $type != 'paris') throw new Exception('Ce championnat est inexistant', 500);
         $equipe = ($type == 'departementale' ? new EquipeDepartementale() : new EquipeParis());
         $form = $this->createForm(($type == 'departementale' ? EquipeDepartementaleType::class : EquipeParisType::class), $equipe);
         $form->handleRequest($request);
@@ -101,7 +100,7 @@ class BackOfficeEquipeController extends AbstractController
                     // Créer les rencontres de l'équipe créée
                     if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
                     else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
-                    else throw $this->createNotFoundException('Championnat inexistant');
+                    else throw new Exception('Ce championnat est inexistant', 500);
                     $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
 
                     foreach ($journees as $journee){
@@ -113,7 +112,7 @@ class BackOfficeEquipeController extends AbstractController
                             $rencontre = new RencontreParis();
                             $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
                         }
-                        else throw $this->createNotFoundException('Championnat inexistant');
+                        else throw new Exception('Ce championnat est inexistant', 500);
 
                         $rencontre
                             ->setIdJournee($journee)
@@ -156,19 +155,20 @@ class BackOfficeEquipeController extends AbstractController
      * @param int $idEquipe
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function edit(string $type, int $idEquipe, Request $request): Response
     {
         $form = null;
         if ($type == 'departementale'){
-            if (!($equipe = $this->equipeDepartementaleRepository->find($idEquipe))) throw $this->createNotFoundException('Equipe inexistante');
+            if (!($equipe = $this->equipeDepartementaleRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
             $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
         }
         else if ($type == 'paris'){
-            if (!($equipe = $this->equipeParisRepository->find($idEquipe))) throw $this->createNotFoundException('Equipe inexistante');
+            if (!($equipe = $this->equipeParisRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
             $form = $this->createForm(EquipeParisType::class, $equipe);
         }
-        else throw $this->createNotFoundException('Championnat inexistant');
+        else throw new Exception('Ce championnat est inexistant', 500);
 
         $form->handleRequest($request);
 
@@ -176,7 +176,7 @@ class BackOfficeEquipeController extends AbstractController
             // Désinscrire les joueurs superflus en cas de changement de division
             if ($type == 'departementale') $rencontres = $this->rencontreDepartementalRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
             else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
-            else throw $this->createNotFoundException('Championnat inexistant');
+            else throw new Exception('Ce championnat est inexistant', 500);
 
             try {
                 $this->em->flush();
@@ -218,7 +218,7 @@ class BackOfficeEquipeController extends AbstractController
     {
         if ($type == 'departementale') $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
         else if ($type == 'paris') $equipe = $this->equipeParisRepository->find($idEquipe);
-        else throw $this->createNotFoundException('Championnat inexistant');
+        else throw new Exception('Ce championnat est inexistant', 500);
 
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
             $this->em->remove($equipe);

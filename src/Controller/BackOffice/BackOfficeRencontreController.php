@@ -52,18 +52,19 @@ class BackOfficeRencontreController extends AbstractController
      * @param $idRencontre
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function editRencontre($type, $idRencontre, Request $request): Response
     {
         if ($type == 'departementale'){
-            if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
+            if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
             $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
         }
         else if ($type == 'paris'){
-            if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw $this->createNotFoundException('Rencontre inexistante');
+            if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
             $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
         }
-        else throw $this->createNotFoundException('Championnat inexistant');
+        else throw new Exception('Ce championnat est inexistant', 500);
 
         $form->handleRequest($request);
         $domicile = ($rencontre->getDomicile() ? "D" : "E");
