@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping\Index;
  * @ORM\Table(
  *     name="prive_disponibilite_paris",
  *     indexes={
- *         @Index(name="IDX_A343DC8A28A339D", columns={"id_journee"}),
- *         @Index(name="IDX_A343DC8A2EBEB6", columns={"id_competiteur"})
+ *         @Index(name="IDX_dispo_par_id_j", columns={"id_journee"}),
+ *         @Index(name="IDX_dispo_par_id_c", columns={"id_competiteur"})
  * })
  */
 class DisponibiliteParis

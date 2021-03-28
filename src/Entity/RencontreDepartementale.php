@@ -5,20 +5,29 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RencontreDepartementaleRepository")
  * @ORM\Table(
  *     name="prive_rencontre_departementale",
  *     indexes={
- *         @Index(name="IDX_48DF62DE14128E72", columns={"id_joueur_3"}),
- *         @Index(name="IDX_48DF62DE27E0FF8", columns={"id_equipe"}),
- *         @Index(name="IDX_48DF62DE28A339D", columns={"id_journee"}),
- *         @Index(name="IDX_48DF62DE64787AFD", columns={"id_joueur_0"}),
- *         @Index(name="IDX_48DF62DE8A761BD1", columns={"id_joueur_2"}),
- *         @Index(name="IDX_48DF62DEFD712B47", columns={"id_joueur_1"})
- * })
+ *         @Index(name="IDX_renc_dep_id_j3", columns={"id_joueur_3"}),
+ *         @Index(name="IDX_renc_dep_id_e", columns={"id_equipe"}),
+ *         @Index(name="IDX_renc_dep_id_j", columns={"id_journee"}),
+ *         @Index(name="IDX_renc_dep_id_j0", columns={"id_joueur_0"}),
+ *         @Index(name="IDX_renc_dep_id_j2", columns={"id_joueur_2"}),
+ *         @Index(name="IDX_renc_dep_id_j1", columns={"id_joueur_1"})
+ *     },
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_renc_dep", columns={"adversaire"})
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"adversaire"}
+ * )
  */
 class RencontreDepartementale
 {
@@ -49,7 +58,7 @@ class RencontreDepartementale
      * @var Competiteur|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_0", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="id_joueur_0", nullable=true, referencedColumnName="id_competiteur", onDelete="SET NULL")
      */
     private $idJoueur0;
 
@@ -57,7 +66,7 @@ class RencontreDepartementale
      * @var Competiteur|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="id_joueur_1", nullable=true, referencedColumnName="id_competiteur", onDelete="SET NULL")
      */
     private $idJoueur1;
 
@@ -65,7 +74,7 @@ class RencontreDepartementale
      * @var Competiteur|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="id_joueur_2", nullable=true, referencedColumnName="id_competiteur", onDelete="SET NULL")
      */
     private $idJoueur2;
 
@@ -73,7 +82,7 @@ class RencontreDepartementale
      * @var Competiteur|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur")
-     * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur", unique=false, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="id_joueur_3", nullable=true, referencedColumnName="id_competiteur", onDelete="SET NULL")
      */
     private $idJoueur3;
 
@@ -113,7 +122,7 @@ class RencontreDepartementale
      *      maxMessage = "L'adversaire doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(name="adversaire", nullable=true, type="string", length=50, unique=true)
+     * @ORM\Column(name="adversaire", nullable=true, type="string", length=50)
      */
     private $adversaire;
 

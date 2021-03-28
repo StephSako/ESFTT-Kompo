@@ -4,10 +4,20 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JourneeParisRepository")
- * @ORM\Table(name="prive_journee_paris")
+ * @ORM\Table(
+ *     name="prive_journee_paris",
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_jour_par_date", columns={"date"})
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"date"}
+ * )
  */
 class JourneeParis
 {
@@ -21,7 +31,7 @@ class JourneeParis
     /**
      * @var DateTime
      *
-     * @ORM\Column(type="date", name="date", nullable=false, unique=true)
+     * @ORM\Column(type="date", name="date", nullable=false)
      */
     private $date;
 

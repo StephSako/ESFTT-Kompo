@@ -108,7 +108,7 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
-                    'maxlength' => 10
+                    'maxlength' => 11
                 ]
             ]);
     }

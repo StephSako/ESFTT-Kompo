@@ -12,11 +12,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(
  *     name="prive_equipe_departementale",
  *     indexes={
- *         @Index(name="IDX_C1F64C55149AAA70", columns={"id_poule"}),
- *         @Index(name="IDX_C1F64C5540CCAB81", columns={"id_division"})
+ *         @Index(name="IDX_eq_dep_id_p", columns={"id_poule"}),
+ *         @Index(name="IDX_eq_dep_id_d", columns={"id_division"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_C1F64C55F55AE19E", columns={"numero"})
+ *          @UniqueConstraint(name="UNIQ_eq_dep_num", columns={"numero"})
  *     })
  */
 class EquipeDepartementale
@@ -41,7 +41,7 @@ class EquipeDepartementale
      *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
      * )
      *
-     * @ORM\Column(type="integer", name="numero", nullable=false, unique=true)
+     * @ORM\Column(type="integer", name="numero", nullable=false)
      */
     private $numero;
 

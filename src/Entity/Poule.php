@@ -3,11 +3,21 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PouleRepository")
- * @ORM\Table(name="prive_poule")
+ * @ORM\Table(
+ *     name="prive_poule",
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_poule_poule", columns={"poule"})
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"poule"}
+ * )
  */
 class Poule
 {
@@ -27,7 +37,7 @@ class Poule
      *      exactMessage = "La poule doit contenir exactement {{ limit }} lettre"
      * )
      *
-     * @ORM\Column(type="string", name="poule", nullable=false, length=1, unique=true)
+     * @ORM\Column(type="string", name="poule", nullable=false, length=1)
      */
     private $poule;
 

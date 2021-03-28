@@ -3,11 +3,22 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DivisionRepository")
- * @ORM\Table(name="prive_division")
+ * @ORM\Table(
+ *     name="prive_division",
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_div_short_name", columns={"short_name"}),
+ *          @UniqueConstraint(name="UNIQ_div_long_name", columns={"long_name"})
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"shortName", "longName"}
+ * )
  */
 class Division
 {

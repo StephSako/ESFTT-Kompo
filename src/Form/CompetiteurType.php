@@ -52,7 +52,7 @@ class CompetiteurType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
-                    'maxlength' => 10
+                    'maxlength' => 11
                 ]
             ])
             ->add('imageFile', FileType::class, [

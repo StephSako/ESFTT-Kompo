@@ -11,11 +11,20 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetiteurRepository")
- * @UniqueEntity("username")
- * @ORM\Table(name="prive_competiteur")
+ * @ORM\Table(
+ *     name="prive_competiteur",
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_comp_licence", columns={"licence"}),
+ *          @UniqueConstraint(name="UNIQ_comp_username", columns={"username"})
+ *     }
+ * )
+ * @UniqueEntity(
+ *     fields={"licence", "username"}
+ * )
  * @Vich\Uploadable()
  */
 class Competiteur implements UserInterface, Serializable
@@ -31,11 +40,11 @@ class Competiteur implements UserInterface, Serializable
      * @var int
      *
      * @Assert\Length(
-     *      max = 10,
+     *      max = 11,
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
      * )
      *
-     * @ORM\Column(name="licence", type="integer", length=11, nullable=true, unique=true)
+     * @ORM\Column(name="licence", type="integer", length=11, nullable=true)
      */
     private $licence;
 
@@ -52,7 +61,7 @@ class Competiteur implements UserInterface, Serializable
      *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
      * )
      *
-     * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=true)
+     * @ORM\Column(name="classement_officiel", type="integer", length=5, nullable=true)
      */
     private $classement_officiel;
 
@@ -101,7 +110,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=50, nullable=false, unique=true)
+     * @ORM\Column(name="username", type="string", length=50, nullable=false)
      *
      * @Assert\Length(
      *      min = 2,
