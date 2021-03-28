@@ -6,7 +6,7 @@ use App\Entity\EquipeParis;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,9 +15,13 @@ class EquipeParisType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numero', NumberType::class, [
+            ->add('numero', IntegerType::class, [
                 'label' => false,
-                'required' => true
+                'required' => true,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 100
+                ]
             ])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',

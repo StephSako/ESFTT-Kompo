@@ -7,7 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,9 +33,13 @@ class BackofficeCompetiteurAdminType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
-            ->add('classementOfficiel', NumberType::class, [
+            ->add('classementOfficiel', IntegerType::class, [
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'min' => 500,
+                    'max' => 20000
+                ]
             ])
             ->add('imageFile', FileType::class, [
                 'label' => false,
@@ -85,23 +90,26 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => 'Contactable à ce numéro',
                 'required' => false
             ])
-            ->add('phoneNumber', TextType::class, [
+            ->add('phoneNumber', TelType::class, [
                 'label' => false,
                 'required' => false,
                 'attr' => [
                     'maxlength' => 10
                 ]
             ])
-            ->add('phoneNumber2', TextType::class, [
+            ->add('phoneNumber2', TelType::class, [
                 'label' => false,
                 'required' => false,
                 'attr' => [
                     'maxlength' => 10
                 ]
             ])
-            ->add('licence', NumberType::class, [
+            ->add('licence', IntegerType::class, [
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 10
+                ]
             ]);
     }
 

@@ -4,9 +4,8 @@ namespace App\Form;
 
 use App\Entity\Competiteur;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,9 +30,13 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
-            ->add('classementOfficiel', NumberType::class, [
+            ->add('classementOfficiel', IntegerType::class, [
                 'label' => false,
-                'required' => false
+                'required' => false,
+                    'attr' => [
+                        'min' => 500,
+                        'max' => 20000
+                    ]
                 ]
             )
             ->add('imageFile', FileType::class, [
@@ -49,9 +52,12 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                     ]
                 ]
             )
-            ->add('licence', NumberType::class, [
+            ->add('licence', IntegerType::class, [
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 10
+                ]
             ]);
     }
 

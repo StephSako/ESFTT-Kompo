@@ -31,7 +31,7 @@ class Competiteur implements UserInterface, Serializable
      * @var int
      *
      * @Assert\Length(
-     *      max = 9,
+     *      max = 10,
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
      * )
      *
@@ -41,6 +41,16 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 500,
+     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     * )
+     *
+     * @Assert\LessThanOrEqual(
+     *     value = 20000,
+     *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
+     * )
      *
      * @ORM\Column(name="classement_officiel", type="integer", length=4, nullable=true)
      */

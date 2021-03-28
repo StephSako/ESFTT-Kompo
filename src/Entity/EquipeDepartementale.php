@@ -36,6 +36,11 @@ class EquipeDepartementale
      *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
      * )
      *
+     * @Assert\LessThanOrEqual(
+     *     value = 100,
+     *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
+     * )
+     *
      * @ORM\Column(type="integer", name="numero", nullable=false, unique=true)
      */
     private $numero;

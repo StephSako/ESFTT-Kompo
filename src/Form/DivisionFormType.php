@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Division;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,17 +29,25 @@ class DivisionFormType extends AbstractType
                     'maxlength' => 25
                 ]
             ])
-            ->add('nbJoueursChampParis', NumberType::class, [
+            ->add('nbJoueursChampParis', IntegerType::class, [
                 'invalid_message' => 'Indiquez -1 si division absente en champ. de Paris',
                 'empty_data' => 0,
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'min' => -1,
+                    'max' => 9
+                ]
             ])
-            ->add('nbJoueursChampDepartementale', NumberType::class, [
+            ->add('nbJoueursChampDepartementale', IntegerType::class, [
                 'invalid_message' => 'Indiquez -1 si division absente en champ. depart.',
                 'empty_data' => 0,
                 'label' => false,
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'min' => -1,
+                    'max' => 4
+                ]
             ]);
     }
 
