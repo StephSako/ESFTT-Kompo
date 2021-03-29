@@ -61,7 +61,7 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'required' => false
             ])
             ->add('visitor', CheckboxType::class, [
-                'label' => 'Visiteur',
+                'label' => 'Compte visiteur (accès restreints)',
                 'required' => false
             ])
             ->add('mail', EmailType::class, [

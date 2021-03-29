@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Competiteur;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,6 +30,10 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                 'attr' => [
                     'maxlength' => 50
                 ]
+            ])
+            ->add('visitor', CheckboxType::class, [
+                'label' => 'Compte visiteur (accès restreints)',
+                'required' => false
             ])
             ->add('classementOfficiel', IntegerType::class, [
                 'label' => false,

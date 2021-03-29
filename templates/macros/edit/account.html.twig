@@ -28,10 +28,10 @@
                     <div class="col s12 m4">
                         {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
                     </div>
-                    <div class="col s12 m4">
-                        {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
-                    </div>
                 {% endif %}
+                <div class="col s12{% if 'ROLE_ADMIN' in app.token.roleNames %} m4{% endif %}">
+                    {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
+                </div>
             </div>
 
             {% if type == 'general' or (('ROLE_ADMIN' in app.token.roleNames or ('ROLE_CAPITAINE' in app.token.roleNames and options is not null and options.idActualUser == options.competiteurId)) and type == 'backoffice') %}
