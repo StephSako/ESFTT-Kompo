@@ -6,7 +6,7 @@
         {{ form_start(form) }}
             <div class="row" style="margin-top: 50px;">
                 <div class="col s12 m6">
-                    {{ form_row(form.adversaire) }}
+                    {{ form_row(form.adversaire, {'id': 'adversaire'}) }}
                     <div class="row">
                         <div class="col s12 m6" style="margin-top: 20px; margin-bottom: 10px;">
                             <div class="switch">
@@ -19,20 +19,20 @@
                             </div>
                         </div>
                         <div class="col s12 m6" style="margin-top: 20px;">
-                            {{ form_row(form.hosted) }}
+                            {{ form_row(form.hosted, {'id': 'hosted'}) }}
                         </div>
                     </div>
                 </div>
                 <div class="col s12 m4">
                     <div class="issue" style="margin-top: 0; padding-top: 0;">
-                        {{ form_row(form.reporte) }}
+                        {{ form_row(form.reporte, {'id': 'reporte'}) }}
                         <div class="container">
                             {{ form_row(form.dateReport) }}
                         </div>
                     </div>
                 </div>
                 <div class="col s12 m2" style="margin-top: 20px;">
-                    {{ form_row(form.exempt) }}
+                    {{ form_row(form.exempt, {'id': 'exempt'}) }}
                 </div>
             </div>
 
@@ -47,21 +47,10 @@
         let lieu_rencontre = $('#lieu_rencontre');
         let span_domicile = $('#domicile');
         let span_exterieur = $('#exterieur');
+        let exempt = $('#exempt');
+        let adversaire = $('#adversaire');
+        let hosted = $('#hosted');
+        let reported = $('#reporte');
     </script>
-    {% if type == 'departementale' %}
-        <script>
-            let exempt = $('#back_office_rencontre_departementale_exempt');
-            let adversaire = $('#back_office_rencontre_departementale_adversaire');
-            let hosted = $('#back_office_rencontre_departementale_hosted');
-            let reported = $('#back_office_rencontre_departementale_reporte');
-        </script>
-    {% else %}
-        <script>
-            let exempt = $('#back_office_rencontre_paris_exempt');
-            let adversaire = $('#back_office_rencontre_paris_adversaire');
-            let hosted = $('#back_office_rencontre_paris_hosted');
-            let reported = $('#back_office_rencontre_paris_reporte');
-        </script>
-    {% endif %}
     <script src="{{ asset('JS/editRencontre.js') }}"></script>
 {% endmacro %}

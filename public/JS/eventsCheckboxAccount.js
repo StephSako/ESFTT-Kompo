@@ -1,28 +1,28 @@
 $(document).ready(function () {
 
     /** Evènements liés aux emails et numéros de téléphone **/
-    if (!it_c_m.val()) cb_c_m.prop('checked', false).prop('disabled', true);
-    if (!it_c_m_2.val()) cb_c_m_2.prop('checked', false).prop('disabled', true);
-    if (!it_c_pn.val()) cb_c_pn.prop('checked', false).prop('disabled', true);
-    if (!it_c_pn_2.val()) cb_c_pn_2.prop('checked', false).prop('disabled', true);
+    if (!i_mail.val()) cb_c_mail.prop('checked', false).prop('disabled', true);
+    if (!i_mail2.val()) cb_c_mail2.prop('checked', false).prop('disabled', true);
+    if (!i_num.val()) cb_c_num.prop('checked', false).prop('disabled', true);
+    if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
 
-    it_c_m.on('keyup', function () {
-        if (!it_c_m.val()) cb_c_m.prop('checked', false).prop('disabled', true);
-        else cb_c_m.prop('disabled', false);
+    i_mail.on('keyup', function () {
+        if (!i_mail.val()) cb_c_mail.prop('checked', false).prop('disabled', true);
+        else cb_c_mail.prop('disabled', false);
     });
 
-    it_c_m_2.on('keyup', function () {
-        if (!it_c_m_2.val()) cb_c_m_2.prop('checked', false).prop('disabled', true);
-        else  cb_c_m_2.prop('disabled', false);
+    i_mail2.on('keyup', function () {
+        if (!i_mail2.val()) cb_c_mail2.prop('checked', false).prop('disabled', true);
+        else  cb_c_mail2.prop('disabled', false);
     });
 
-    it_c_pn.on('keyup', function () {
-        if (!it_c_pn.val()) cb_c_pn.prop('checked', false).prop('disabled', true);
-        else cb_c_pn.prop('disabled', false);
+    i_num.on('keyup', function () {
+        if (!i_num.val()) cb_c_num.prop('checked', false).prop('disabled', true);
+        else cb_c_num.prop('disabled', false);
     });
 
-    it_c_pn_2.on('keyup', function () {
-        if (!it_c_pn_2.val()) cb_c_pn_2.prop('checked', false).prop('disabled', true);
-        else cb_c_pn_2.prop('disabled', false);
+    i_num2.on('keyup', function () {
+        if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
+        else cb_c_num2.prop('disabled', false);
     });
 });

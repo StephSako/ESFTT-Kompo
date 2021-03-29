@@ -12,7 +12,7 @@
                 <h5 style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m4">
-                    <span><i class="material-icons prefix">person</i> NOM</span>{{ form_row(form.nom) }}
+                    <span><i class="material-icons prefix">person</i> NOM</span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
                 <div class="col s12 m4">
                     <span><i class="material-icons prefix">person</i> Prénom</span>{{ form_row(form.prenom) }}
@@ -23,13 +23,13 @@
 
                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
                     <div class="col s12 m4">
-                        {{ form_row(form.isAdmin) }}
+                        {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
                     </div>
                     <div class="col s12 m4">
-                        {{ form_row(form.isCapitaine) }}
+                        {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
                     </div>
                     <div class="col s12 m4">
-                        {{ form_row(form.visitor) }}
+                        {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
                     </div>
                 {% endif %}
             </div>
@@ -39,34 +39,34 @@
                     <h5>Contacts</h5>
 
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">mail</i> Adresse mail</span>{{ form_row(form.mail) }}
+                        <span><i class="material-icons prefix">mail</i> Adresse mail</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                     </div>
                     <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                        {{ form_row(form.contactableMail) }}
+                        {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">mail</i> Adresse mail bis</span>{{ form_row(form.mail2) }}
+                        <span><i class="material-icons prefix">mail</i> Adresse mail bis</span>{{ form_row(form.mail2, {'id': 'i_mail2'}) }}
                     </div>
                     <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                        {{ form_row(form.contactableMail2) }}
+                        {{ form_row(form.contactableMail2, {'id': 'cb_c_mail2'}) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone</span>{{ form_row(form.phoneNumber) }}
+                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone</span>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                     </div>
                     <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                        {{ form_row(form.contactablePhoneNumber) }}
+                        {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone bis</span>{{ form_row(form.phoneNumber2) }}
+                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone bis</span>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                     </div>
                     <div class="col s12 m5 left-align" style="margin-top: 40px;">
-                        {{ form_row(form.contactablePhoneNumber2) }}
+                        {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num2'}) }}
                     </div>
                 </div>
             {% endif %}
@@ -87,9 +87,7 @@
                 <h5>Image de profil</h5>
                 <p><i>Formats acceptés : JPEG, PNG et GIF</i></p>
                 {{ form_row(form.imageFile) }}
-                {% if urlImage %}
-                    <img style="max-height: 10rem; margin-top: 8px;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
-                {% endif %}
+                <img style="max-height: 10rem; margin-top: 8px;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
             </div>
 
             {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
@@ -99,44 +97,28 @@
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
             <button class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ btn_text }}</button>
         {{ form_end(form) }}
-
-        {{ ('ROLE_ADMIN' in app.token.roleNames ? 'true' : 'false') }}
     </div>
 
     {% if 'ROLE_ADMIN' in app.token.roleNames %}
         <script>
-            let cb_admin = $('#backoffice_competiteur_admin_isAdmin');
-            let cb_capitaine = $('#backoffice_competiteur_admin_isCapitaine');
-            let cb_visiteur = $('#backoffice_competiteur_admin_visitor');
+            let cb_admin = $('#cb_admin');
+            let cb_capitaine = $('#cb_capitaine');
+            let cb_visiteur = $('#cb_visiteur');
         </script>
         <script src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}"></script>
     {% endif %}
 
-    {% if type == 'backoffice' %}
-        <script>
-            let it_c_m = $('#backoffice_competiteur_admin_mail');
-            let it_c_m_2 = $('#backoffice_competiteur_admin_mail2');
-            let it_c_pn = $('#backoffice_competiteur_admin_phoneNumber');
-            let it_c_pn_2 = $('#backoffice_competiteur_admin_phoneNumber2');
+    <script>
+        let i_mail = $('#i_mail');
+        let i_mail2 = $('#i_mail2');
+        let i_num = $('#i_num');
+        let i_num2 = $('#i_num2');
 
-            let cb_c_m = $('#backoffice_competiteur_admin_contactableMail');
-            let cb_c_m_2 = $('#backoffice_competiteur_admin_contactableMail2');
-            let cb_c_pn = $('#backoffice_competiteur_admin_contactablePhoneNumber');
-            let cb_c_pn_2 = $('#backoffice_competiteur_admin_contactablePhoneNumber2');
-        </script>
-    {% else %}
-        <script>
-            let it_c_m = $('#competiteur_mail');
-            let it_c_m_2 = $('#competiteur_mail2');
-            let it_c_pn = $('#competiteur_phoneNumber');
-            let it_c_pn_2 = $('#competiteur_phoneNumber2');
-
-            let cb_c_m = $('#competiteur_contactableMail');
-            let cb_c_m_2 = $('#competiteur_contactableMail2');
-            let cb_c_pn = $('#competiteur_contactablePhoneNumber');
-            let cb_c_pn_2 = $('#competiteur_contactablePhoneNumber2');
-        </script>
-    {% endif %}
+        let cb_c_mail = $('#cb_c_mail');
+        let cb_c_mail2 = $('#cb_c_mail2');
+        let cb_c_num = $('#cb_c_num');
+        let cb_c_num2 = $('#cb_c_num2');
+    </script>
     <script src="{{ asset('JS/eventsCheckboxAccount.js') }}"></script>
 {% endmacro %}
 
