@@ -297,11 +297,33 @@ class HomeController extends AbstractController
 
             if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
             else {
-                /** On vérifie si le joueur devient brûlé dans de futures compositions **/
-                for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                    if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), count($journees), $nbMaxJoueurs);
+                /** On sauvegarde la composition d'équipe */
+                try {
+                    $this->em->flush();
+
+                    /** On vérifie que chaque joueur qui devient brûlé pour de futures compositions y soit désélectionné **/
+                    for ($i = 0; $i < $nbJoueursDivision; $i++) {
+                        if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), count($journees), $nbMaxJoueurs);
+                    }
+                    $this->em->flush();
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getMessage(), 'CHK_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
+                    }
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+
+                    return $this->render('journee/edit.html.twig', [
+                        'joueursBrules' => $joueursBrules,
+                        'journees' => $journees,
+                        'nbJoueursDivision' => $nbJoueursDivision,
+                        'brulageSelectionnables' => $brulageSelectionnables,
+                        'idEquipes' => $idEquipes,
+                        'compo' => $compo,
+                        'type' => $type,
+                        'form' => $form->createView()
+                    ]);
                 }
-                $this->em->flush();
+
                 $this->addFlash('success', 'Composition modifiée avec succès !');
 
                 return $this->redirectToRoute('journee.show', [

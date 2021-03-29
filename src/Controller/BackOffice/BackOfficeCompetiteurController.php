@@ -86,6 +86,8 @@ class BackOfficeCompetiteurController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
                         if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
+                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                     }
                     else $this->addFlash('fail', 'Une erreur est survenue');
                     return $this->render('backoffice/competiteur/new.html.twig', [
@@ -131,6 +133,8 @@ class BackOfficeCompetiteurController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
                         if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
+                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                     }
                     else $this->addFlash('fail', 'Une erreur est survenue');
                     return $this->render('account/edit.html.twig', [
