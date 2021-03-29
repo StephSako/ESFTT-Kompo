@@ -99,9 +99,20 @@
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
             <button class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ btn_text }}</button>
         {{ form_end(form) }}
+
+        {{ ('ROLE_ADMIN' in app.token.roleNames ? 'true' : 'false') }}
     </div>
 
-    {% if type == 'backoffice' or 'ROLE_ADMIN' in app.token.roleNames %}
+    {% if 'ROLE_ADMIN' in app.token.roleNames %}
+        <script>
+            let cb_admin = $('#backoffice_competiteur_admin_isAdmin');
+            let cb_capitaine = $('#backoffice_competiteur_admin_isCapitaine');
+            let cb_visiteur = $('#backoffice_competiteur_admin_visitor');
+        </script>
+        <script src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}"></script>
+    {% endif %}
+
+    {% if type == 'backoffice' %}
         <script>
             let it_c_m = $('#backoffice_competiteur_admin_mail');
             let it_c_m_2 = $('#backoffice_competiteur_admin_mail2');
@@ -112,10 +123,6 @@
             let cb_c_m_2 = $('#backoffice_competiteur_admin_contactableMail2');
             let cb_c_pn = $('#backoffice_competiteur_admin_contactablePhoneNumber');
             let cb_c_pn_2 = $('#backoffice_competiteur_admin_contactablePhoneNumber2');
-
-            let cb_admin = $('#backoffice_competiteur_admin_isAdmin');
-            let cb_capitaine = $('#backoffice_competiteur_admin_isCapitaine');
-            let cb_visiteur = $('#backoffice_competiteur_admin_visitor');
         </script>
     {% else %}
         <script>
@@ -130,7 +137,7 @@
             let cb_c_pn_2 = $('#competiteur_contactablePhoneNumber2');
         </script>
     {% endif %}
-    <script src="{{ asset('JS/editAccount.js') }}"></script>
+    <script src="{{ asset('JS/eventsCheckboxAccount.js') }}"></script>
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
