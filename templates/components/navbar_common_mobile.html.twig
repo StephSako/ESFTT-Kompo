@@ -5,7 +5,16 @@
 {% if app.user %}
     {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
         <li class="li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('account') }}"><i class="white-text material-icons left">account_circle</i>Mon compte</a>
+            <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
+                <div class="chip chip-menu chip-mobile left">
+                    {% if app.user.avatar %}
+                        <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
+                    {% else %}
+                        <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                    {% endif %}
+                </div>
+                Mon compte
+            </a>
         </li>
     {% endif %}
 

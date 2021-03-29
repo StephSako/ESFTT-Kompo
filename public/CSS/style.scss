@@ -158,6 +158,27 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
   }
 }
 
+.chip-menu {
+  vertical-align: middle !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0;
+
+  img {
+    height: 35px;
+    width: 35px;
+    object-fit:cover;
+    background-color: white;
+  }
+}
+
+.chip-mobile {
+  img {
+    margin-top: 6px!important;
+    margin-right: 25px!important;
+  }
+}
+
 .select-dropdown li img {
   border-radius: 50%;
   object-fit:cover;
