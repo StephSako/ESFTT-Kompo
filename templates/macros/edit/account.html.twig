@@ -22,10 +22,13 @@
                 </div>
 
                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                    <div class="col s12 m6">
+                    <div class="col s12 m4">
+                        {{ form_row(form.isAdmin) }}
+                    </div>
+                    <div class="col s12 m4">
                         {{ form_row(form.isCapitaine) }}
                     </div>
-                    <div class="col s12 m6">
+                    <div class="col s12 m4">
                         {{ form_row(form.visitor) }}
                     </div>
                 {% endif %}
@@ -98,17 +101,21 @@
         {{ form_end(form) }}
     </div>
 
-    {% if type == 'backoffice' %}
+    {% if type == 'backoffice' or 'ROLE_ADMIN' in app.token.roleNames %}
         <script>
-            let it_c_m = $('#backoffice_competiteur_mail');
-            let it_c_m_2 = $('#backoffice_competiteur_mail2');
-            let it_c_pn = $('#backoffice_competiteur_phoneNumber');
-            let it_c_pn_2 = $('#backoffice_competiteur_phoneNumber2');
+            let it_c_m = $('#backoffice_competiteur_admin_mail');
+            let it_c_m_2 = $('#backoffice_competiteur_admin_mail2');
+            let it_c_pn = $('#backoffice_competiteur_admin_phoneNumber');
+            let it_c_pn_2 = $('#backoffice_competiteur_admin_phoneNumber2');
 
-            let cb_c_m = $('#backoffice_competiteur_contactableMail');
-            let cb_c_m_2 = $('#backoffice_competiteur_contactableMail2');
-            let cb_c_pn = $('#backoffice_competiteur_contactablePhoneNumber');
-            let cb_c_pn_2 = $('#backoffice_competiteur_contactablePhoneNumber2');
+            let cb_c_m = $('#backoffice_competiteur_admin_contactableMail');
+            let cb_c_m_2 = $('#backoffice_competiteur_admin_contactableMail2');
+            let cb_c_pn = $('#backoffice_competiteur_admin_contactablePhoneNumber');
+            let cb_c_pn_2 = $('#backoffice_competiteur_admin_contactablePhoneNumber2');
+
+            let cb_admin = $('#backoffice_competiteur_admin_isAdmin');
+            let cb_capitaine = $('#backoffice_competiteur_admin_isCapitaine');
+            let cb_visiteur = $('#backoffice_competiteur_admin_visitor');
         </script>
     {% else %}
         <script>

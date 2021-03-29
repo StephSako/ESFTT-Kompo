@@ -56,6 +56,10 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => 'Capitaine',
                 'required' => false
             ])
+            ->add('isAdmin', CheckboxType::class, [
+                'label' => 'Administrateur',
+                'required' => false
+            ])
             ->add('visitor', CheckboxType::class, [
                 'label' => 'Visiteur',
                 'required' => false
