@@ -35,7 +35,7 @@
                     {% endfor %}
 
                     <li class="waves-light waves-effect li_in_line">
-                        <a class="white-text" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
+                        <a class="white-text" href="{{ path("index.type", {type: (type == 'paris' ? 'departementale' : 'paris')}) }}">
                             <i class="material-icons left green-text">swap_horiz</i>
                             {% if type == 'paris' %}
                                 Champ. départemental

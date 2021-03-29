@@ -78,22 +78,46 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="index")
+     * @throws Exception
      */
     public function indexAction(): Response
     {
         $type = ($this->get('session')->get('type') != null ? $this->get('session')->get('type') : 'departementale');
         if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
         else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
-        else $dates = $this->journeeDepartementaleRepository->findAllDates();
-        $NJournee = 1;
+        else throw new Exception('Ce championnat est inexistant', 500);
+        $idJournee = 1;
 
-        while ($NJournee <= 7 && !$dates[$NJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$NJournee - 1]["dateJournee"])->format('%R%a') < 0){
-            $NJournee++;
+        while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
+            $idJournee++;
         }
 
         return $this->redirectToRoute('journee.show', [
             'type' => $type,
-            'id' => $NJournee
+            'id' => $idJournee
+        ]);
+    }
+
+    /**
+     * @Route("/journee/{type}", name="index.type")
+     * @param string $type
+     * @return Response
+     * @throws Exception
+     */
+    public function indexTypeAction(string $type): Response
+    {
+        if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
+        else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
+        else throw new Exception('Ce championnat est inexistant', 500);
+        $idJournee = 1;
+
+        while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
+            $idJournee++;
+        }
+
+        return $this->redirectToRoute('journee.show', [
+            'type' => $type,
+            'id' => $idJournee
         ]);
     }
 
