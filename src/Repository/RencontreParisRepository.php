@@ -73,32 +73,31 @@ class RencontreParisRepository extends ServiceEntityRepository
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limitePreBrulage, int $nbJoueurs){
-        $query = $this->createQueryBuilder('rp')
-            ->select('rp as compo');
-        $strP = '';
-        $strRP = '';
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs){
+        $query = $this->createQueryBuilder('rd')
+            ->select('rd as compo');
+        $strP = $strRD = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
-            $strRP .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
+            $strRD .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1){
                 $strP .= ' OR ';
-                $strRP .= ' OR ';
+                $strRD .= ' OR ';
             }
-            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
         $query = $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rp.idEquipe', 'e')
-            ->where('rp.idJournee > :idJournee')
-            ->setParameter('idJournee', $idJournee)
+            ->leftJoin('rd.idEquipe', 'e')
+            ->where('rd.idJournee > :idJournee')
             ->andWhere('e.numero > :idEquipe')
             ->setParameter('idEquipe', $idEquipe)
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->andWhere($strRP)
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p, App\Entity\EquipeParis e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeParis e2)) >= ' . $limitePreBrulage)
+            ->andWhere($strRD)
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p, App\Entity\EquipeParis e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND p.idJournee <= :idJournee AND e1.idDivision IS NOT NULL AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeParis e2 WHERE e2.idDivision IS NOT NULL)) >= ' . $limiteBrulage)
+            ->setParameter('idJournee', $idJournee)
             ->getQuery()
             ->getResult();
         return $query;

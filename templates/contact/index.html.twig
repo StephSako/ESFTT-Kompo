@@ -64,12 +64,12 @@
                             {% if competiteur.mail or competiteur.mail2 %}
                                 {% if competiteur.mail %}
                                     <a class="btn blue" href="mailto:{{ competiteur.mail }}">
-                                        <i class="material-icons">mail</i> {{ competiteur.mail }}
+                                        <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
                                     </a><br>
                                 {% endif %}
                                 {% if competiteur.mail2 %}
                                     <a class="btn blue" href="mailto:{{ competiteur.mail2 }}">
-                                        <i class="material-icons">mail</i> {{ competiteur.mail2 }}
+                                        <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
                                     </a>
                                 {% endif %}
                             {% else %}
@@ -80,12 +80,12 @@
                             {% if competiteur.phoneNumber or competiteur.phoneNumber2 %}
                                 {% if competiteur.phoneNumber %}
                                     <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
-                                        <i class="material-icons">phone_android</i> {{ competiteur.phoneNumber | split('', 2) | join('.') }}
+                                        <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
                                     </a><br>
                                 {% endif %}
                                 {% if competiteur.phoneNumber2 %}
                                     <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
-                                        <i class="material-icons">phone_android</i> {{ competiteur.phoneNumber2 | split('', 2) | join('.') }}
+                                        <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
                                     </a>
                                 {% endif %}
                             {% else %}

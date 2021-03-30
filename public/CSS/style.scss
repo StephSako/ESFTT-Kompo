@@ -389,6 +389,11 @@ div .profile_pic .file-field.input-field{
     text-transform: none;
     margin-top: 2px;
     margin-bottom: 2px;
+
+    //span {
+      //filter: blur(4px);
+      //-webkit-filter: blur(4px);
+    //}
   }
 
   td {

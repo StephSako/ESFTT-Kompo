@@ -69,15 +69,14 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $idEquipe
-     * @param int $limitePreBrulage
+     * @param int $limiteBrulage
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limitePreBrulage, int $nbJoueurs){
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs){
         $query = $this->createQueryBuilder('rd')
             ->select('rd as compo');
-        $strP = '';
-        $strRD = '';
+        $strP = $strRD = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
             $strRD .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
@@ -91,14 +90,14 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->from('App:Competiteur', 'c')
             ->leftJoin('rd.idEquipe', 'e')
             ->where('rd.idJournee > :idJournee')
-            ->setParameter('idJournee', $idJournee)
             ->andWhere('e.numero > :idEquipe')
             ->setParameter('idEquipe', $idEquipe)
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere($strRD)
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p, App\Entity\EquipeDepartementale e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeDepartementale e2)) >= ' . $limitePreBrulage)
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreDepartementale p, App\Entity\EquipeDepartementale e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND p.idJournee <= :idJournee AND e1.idDivision IS NOT NULL AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeDepartementale e2 WHERE e2.idDivision IS NOT NULL)) >= ' . $limiteBrulage)
+            ->setParameter('idJournee', $idJournee)
             ->getQuery()
             ->getResult();
         return $query;
