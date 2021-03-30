@@ -10,95 +10,184 @@
     </header>
 
     <div class="container">
-    <div class="card-panel center-align white-text title_journee">
-        <h4>Page de contact</h4>
-    </div>
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Page de contact</h4>
+        </div>
 
-    <div class="card-panel">
+        <div class="card-panel center">
+            {% if not app.user.mail and not app.user.mail2 %}
+                Vous n'avez pas renseigné aucune adresse e-mail. Ajouter au moins une adresse e-mail dans
+                <a href="{{ path('account') }}">votre espace</a> afin de pouvoir envoyer des e-mails directement depuis Kompo.<br>
+                Sinon, vous pouvez choisir de rédiger un e-mail depuis une application installée sur votre machine.
+            {% else %}
+                {% if app.user.mail %}
+                    Vos e-mails seront envoyés avec l'adresse <b>{{ app.user.mail }}</b>. Vous pouvez modifier l'e-mail par défaut dans <a href="{{ path('account') }}">votre espace.</a>
+                {% else %}
+                    Vos e-mails seront envoyés avec l'adresse <b>{{ app.user.mail2 }}</b>. Vous pouvez modifier l'e-mail par défaut dans <a href="{{ path('account') }}">votre espace.</a>
+                {% endif %}
+            {% endif %}
+        </div>
 
-        {% for message in app.flashes('success') %}
-            {{ _flash.message(message, 'green') }}
-        {% endfor %}
+        <div class="card-panel">
 
-        {% for message in app.flashes('fail') %}
-            {{ _flash.message(message, 'red') }}
-        {% endfor %}
+            {% for message in app.flashes('success') %}
+                {{ _flash.message(message, 'green') }}
+            {% endfor %}
 
-        {% if competiteurs|length > 0 %}
-            <table class="striped centered responsive-table table_contact">
-                <thead>
-                <tr class="hide-on-small-only">
-                    <th></th>
-                    <th></th>
-                    <th>Nom</th>
-                    <th>Adresses e-mail</th>
-                    <th>Numéros de téléphone</th>
-                </tr>
-                </thead>
+            {% for message in app.flashes('fail') %}
+                {{ _flash.message(message, 'red') }}
+            {% endfor %}
 
-                <tbody>
-                {% for competiteur in competiteurs %}
-                    <tr>
-                        <td>
-                            {% if not competiteur.visitor %}
-                                {% if competiteur.isAdmin %}
-                                    <span class="new badge red" data-badge-caption="Administrateur"></span>
-                                {% elseif competiteur.isCapitaine %}
-                                    <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                {% else %}
-                                    <span class="new badge green" data-badge-caption="Joueur"></span>
-                                {% endif %}
-                            {% else %}
-                                <span class="new badge orange" data-badge-caption="Visiteur"></span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if competiteur.avatar %}
-                                <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                            {% else %}
-                                <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                            {% endif %}
-                        </td>
-                        <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                        <td>
-                            {% if competiteur.mail or competiteur.mail2 %}
-                                {% if competiteur.mail %}
-                                    <a class="btn blue" href="mailto:{{ competiteur.mail }}">
-                                        <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
-                                    </a><br>
-                                {% endif %}
-                                {% if competiteur.mail2 %}
-                                    <a class="btn blue" href="mailto:{{ competiteur.mail2 }}">
-                                        <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
-                                    </a>
-                                {% endif %}
-                            {% else %}
-                                <i class="material-icons grey-text">highlight_off</i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if competiteur.phoneNumber or competiteur.phoneNumber2 %}
-                                {% if competiteur.phoneNumber %}
-                                    <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
-                                        <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
-                                    </a><br>
-                                {% endif %}
-                                {% if competiteur.phoneNumber2 %}
-                                    <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
-                                        <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
-                                    </a>
-                                {% endif %}
-                            {% else %}
-                                <i class="material-icons grey-text">highlight_off</i>
-                            {% endif %}
-                        </td>
+            {% if competiteurs|length > 0 %}
+                <table class="striped centered responsive-table table_contact">
+                    <thead>
+                    <tr class="hide-on-small-only">
+                        <th></th>
+                        <th></th>
+                        <th>Nom</th>
+                        <th>Adresses e-mail</th>
+                        <th>Numéros de téléphone</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
-        {% endif %}
+                    </thead>
+
+                    <tbody>
+                    {% for competiteur in competiteurs %}
+                        {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
+                            <tr>
+                                <td>
+                                    {% if not competiteur.visitor %}
+                                        {% if competiteur.isAdmin %}
+                                            <span class="new badge red" data-badge-caption="Administrateur"></span>
+                                        {% elseif competiteur.isCapitaine %}
+                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                                        {% else %}
+                                            <span class="new badge green" data-badge-caption="Joueur"></span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="new badge orange" data-badge-caption="Visiteur"></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if competiteur.avatar %}
+                                        <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                    {% else %}
+                                        <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                    {% endif %}
+                                </td>
+                                <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                <td>
+                                    {% if competiteur.mail or competiteur.mail2 %}
+                                        {% if competiteur.mail %}
+                                            <a class="btn blue modal-trigger" href="#contactMail{{ competiteur.idCompetiteur }}">
+                                                <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
+                                            </a><br>
+
+                                            {# Modale d'envoi de mail de contact #}
+                                            <div id="contactMail{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
+                                                <div class="modal-content">
+
+                                                    <p class="left" style="padding-left: 0;">À : <span class="grey-text">{{ competiteur.mail }}</span></p><br>
+
+                                                    <div class="input-field">
+                                                        <input id="sujetMail{{ competiteur.idCompetiteur }}" type="text" class="validate" placeholder="Sujet" required>
+                                                    </div>
+
+                                                    <div class="input-field">
+                                                        <textarea id="messageMail{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
+                                                    </div>
+
+                                                    <a style="margin: 5px;" id="btnSendMail{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '{{ competiteur.mail }}', '')" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
+
+                                                    <div id="preloaderSendMail" class="progress container" type="hidden">
+                                                        <div class="indeterminate"></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
+                                                    <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
+                                                </div>
+                                            </div>
+
+                                            <script>
+                                                $('#btnSendMail' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+
+                                                $('#sujetMail' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                    if ($('#sujetMail' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail' + '{{ competiteur.idCompetiteur }}').val())
+                                                        $('#btnSendMail' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                    else $('#btnSendMail' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                });
+
+                                                $('#messageMail' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                    if ($('#sujetMail' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail' + '{{ competiteur.idCompetiteur }}').val())
+                                                        $('#btnSendMail' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                    else $('#btnSendMail' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                });
+                                            </script>
+
+                                        {% endif %}
+                                        {% if competiteur.mail2 %}
+                                            <a class="btn blue modal-trigger" href="#contactMail2{{ competiteur.idCompetiteur }}">
+                                                <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
+                                            </a>
+
+                                            {# Modale d'envoi de mail de contact #}
+                                            <div id="contactMail2{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
+                                                <div class="modal-content">
+
+                                                    <p class="left" style="padding-left: 0;">À : <span class="grey-text">{{ competiteur.mail2 }}</span></p><br>
+
+                                                    <div class="input-field">
+                                                        <input id="sujetMail2{{ competiteur.idCompetiteur }}" placeholder="Sujet" type="text" class="validate" required>
+                                                    </div>
+
+                                                    <div class="input-field">
+                                                        <textarea id="messageMail2{{ competiteur.idCompetiteur }}" placeholder="Message" class="materialize-textarea validate" required></textarea>
+                                                    </div>
+
+                                                    <a style="margin: 5px;" id="btnSendMail" onclick="contact('{{ competiteur.idCompetiteur}}', '{{ competiteur.mail2 }}', '2')" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
+
+                                                    <div id="preloaderSendMail" class="progress container" type="hidden">
+                                                        <div class="indeterminate"></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail2 }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
+                                                    <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="material-icons grey-text">highlight_off</i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if competiteur.phoneNumber or competiteur.phoneNumber2 %}
+                                        {% if competiteur.phoneNumber %}
+                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
+                                                <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
+                                            </a><br>
+                                        {% endif %}
+                                        {% if competiteur.phoneNumber2 %}
+                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
+                                                <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="material-icons grey-text">highlight_off</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
+            {% endif %}
+        </div>
     </div>
-    </div>
+
+    <script src="{{ asset('JS/sendMail.js') }}"></script>
 {% endblock %}
