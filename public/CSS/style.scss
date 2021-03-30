@@ -384,6 +384,22 @@ div .profile_pic .file-field.input-field{
   max-height: 100% !important
 }
 
+.table_contact {
+  .btn {
+    text-transform: none;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  td {
+    min-height: 74px;
+  }
+
+  td > i {
+    padding-top: 10px;
+  }
+}
+
 .rainbow {
   background: linear-gradient(124deg, #1cb137, #075d17, #1cb137, #075d17,
           #1cb137, #075d17);

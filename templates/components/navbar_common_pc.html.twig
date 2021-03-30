@@ -5,6 +5,12 @@
 
     {% if app.user %}
 
+        {% if 'ROLE_JOUEUR' in app.token.roleNames %}
+            <li class="li_in_line waves-light waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
+                <a class="white-text" href="{{ path('contact') }}">Contact</a>
+            </li>
+        {% endif %}
+
         {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
             <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
                 <a class="white-text" href="{{ path('account') }}">
@@ -46,6 +52,12 @@
     </li>
 
     {% if app.user %}
+
+        {% if 'ROLE_JOUEUR' in app.token.roleNames %}
+            <li class="waves-light waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
+                <a class="white-text" href="{{ path('contact') }}">Contact</a>
+            </li>
+        {% endif %}
 
         <li class="waves-light waves-effect {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
             <a class="white-text" href="{{ path('account') }}">

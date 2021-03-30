@@ -30,8 +30,8 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th class="avatar hide-on-small-only">Avatar</th>
-                            <th>NOM Prénom</th>
+                            <th class="hide-on-small-only">Avatar</th>
+                            <th>Nom</th>
                             <th>Pseudo</th>
                             <th class="hide-on-small-only">Licence</th>
                             <th class="hide-on-med-and-up">Lic.</th>
@@ -60,7 +60,7 @@
                                     <span class="new badge orange" data-badge-caption="Visiteur"></span>
                                 {% endif %}
                             </td>
-                            <td class="hide-on-med-and-down">
+                            <td class="hide-on-small-only">
                                 {% if competiteur.avatar %}
                                     <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
                                 {% else %}

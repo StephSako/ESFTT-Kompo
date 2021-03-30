@@ -79,7 +79,6 @@ class SecurityController extends AbstractController
                     $this->addFlash('success', 'Informations modifiées !');
                     return $this->redirectToRoute('account');
                 } catch(Exception $e){
-                    dump($e);
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $user->getLicence() . '\' est déjà attribuée');
                         if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');

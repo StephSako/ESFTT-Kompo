@@ -102,6 +102,8 @@ class Division
     private $nbJoueursChampParis;
 
     /**
+     * @var EquipeDepartementale[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\EquipeDepartementale", mappedBy="idDivision")
      */
     protected $equipesDepartementales;
@@ -171,18 +173,18 @@ class Division
     }
 
     /**
-     * @return mixed
+     * @return EquipeDepartementale[]
      */
-    public function getEquipesDepartementales()
+    public function getEquipesDepartementales(): array
     {
         return $this->equipesDepartementales;
     }
 
     /**
-     * @param mixed $equipesDepartementales
+     * @param EquipeDepartementale[] $equipesDepartementales
      * @return Division
      */
-    public function setEquipesDepartementales($equipesDepartementales): self
+    public function setEquipesDepartementales(array $equipesDepartementales): self
     {
         $this->equipesDepartementales = $equipesDepartementales;
         return $this;
