@@ -14,20 +14,6 @@
             <h4>Page de contact</h4>
         </div>
 
-        <div class="card-panel center">
-            {% if not app.user.mail and not app.user.mail2 %}
-                Vous n'avez pas renseigné aucune adresse e-mail. Ajouter au moins une adresse e-mail dans
-                <a href="{{ path('account') }}">votre espace</a> afin de pouvoir envoyer des e-mails directement depuis Kompo.<br>
-                Sinon, vous pouvez choisir de rédiger un e-mail depuis une application installée sur votre machine.
-            {% else %}
-                {% if app.user.mail %}
-                    Vos e-mails seront envoyés avec l'adresse <b>{{ app.user.mail }}</b>. Vous pouvez modifier l'e-mail par défaut dans <a href="{{ path('account') }}">votre espace.</a>
-                {% else %}
-                    Vos e-mails seront envoyés avec l'adresse <b>{{ app.user.mail2 }}</b>. Vous pouvez modifier l'e-mail par défaut dans <a href="{{ path('account') }}">votre espace.</a>
-                {% endif %}
-            {% endif %}
-        </div>
-
         <div class="card-panel">
 
             {% for message in app.flashes('success') %}
@@ -86,6 +72,18 @@
                                                 <div id="contactMail1{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
                                                     <div class="modal-content">
 
+                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>De</b> :
+                                                            {% if (app.user.mail and app.user.contactableMail) or (app.user.mail2 and app.user.contactableMail2) %}
+                                                                {% if app.user.mail and app.user.contactableMail %}
+                                                                    <span class="grey-text">{{ app.user.mail }}</span>
+                                                                {% elseif app.user.mail2 and app.user.contactableMail2 %}
+                                                                    <span class="grey-text">{{ app.user.mail2 }}</span>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <span class="red-text">Renseignez vos coordonnées</span>
+                                                            {% endif %}
+                                                        </p><br><br>
+
                                                         <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail }}</span></p><br>
 
                                                         <p class="left" style="padding-left: 0; margin-top: 20px; margin-bottom: 0;">
@@ -133,39 +131,50 @@
                                                         else $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
                                                     });
                                                 </script>
-
                                             {% endif %}
                                             {% if competiteur.mail2 and competiteur.contactableMail2 %}
                                                 <a class="btn blue modal-trigger" href="#contactMail2{{ competiteur.idCompetiteur }}">
                                                     <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
-                                                </a>
+                                                </a><br>
 
                                                 {# Modale d'envoi de mail de contact #}
                                                 <div id="contactMail2{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
                                                     <div class="modal-content">
 
+                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>De</b> :
+                                                            {% if (app.user.mail and app.user.contactableMail) or (app.user.mail2 and app.user.contactableMail2) %}
+                                                                {% if app.user.mail and app.user.contactableMail %}
+                                                                    <span class="grey-text">{{ app.user.mail }}</span>
+                                                                {% elseif app.user.mail2 and app.user.contactableMail2 %}
+                                                                    <span class="grey-text">{{ app.user.mail2 }}</span>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <span class="red-text">Renseignez vos coordonnées</span>
+                                                            {% endif %}
+                                                        </p><br><br>
+
                                                         <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail2 }}</span></p><br>
 
                                                         <p class="left" style="padding-left: 0; margin-top: 20px; margin-bottom: 0;">
                                                             <label style="padding-left: 0;">
-                                                                <input type="checkbox" />
+                                                                <input type="checkbox" id="importance2{{ competiteur.idCompetiteur }}" />
                                                                 <span>Haute importance</span>
                                                             </label>
                                                         </p><br><br><br>
 
                                                         <div class="input-field" style="margin-top: 0;">
-                                                            <input id="sujetMail2{{ competiteur.idCompetiteur }}" placeholder="Sujet" type="text" class="validate" required>
+                                                            <input id="sujetMail2{{ competiteur.idCompetiteur }}" type="text" class="validate" placeholder="Sujet" required>
                                                         </div>
 
                                                         <div class="input-field">
-                                                            <textarea id="messageMail2{{ competiteur.idCompetiteur }}" placeholder="Message" type="text" class="materialize-textarea validate" required></textarea>
+                                                            <textarea id="messageMail2{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
                                                         </div>
 
                                                         <a style="margin: 5px;" id="btnSendMail2{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '2')" class="btn waves-effect green lighten-2 waves-light">
                                                             <i class="material-icons left">email</i>Envoyer par mail
                                                         </a>
 
-                                                        <div id="preloaderSendMail" class="progress container">
+                                                        <div id="preloaderSendMail" class="preloaderSendMail progress container">
                                                             <div class="indeterminate"></div>
                                                         </div>
 
@@ -174,23 +183,23 @@
                                                         <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail2 }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
                                                         <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
                                                     </div>
-
-                                                    <script>
-                                                        $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-
-                                                        $('#sujetMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                            if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
-                                                                $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                            else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                        });
-
-                                                        $('#messageMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                            if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
-                                                                $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                            else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                        });
-                                                    </script>
                                                 </div>
+
+                                                <script>
+                                                    $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+
+                                                    $('#sujetMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
+                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                    });
+
+                                                    $('#messageMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
+                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                    });
+                                                </script>
                                             {% endif %}
                                         {% else %}
                                             <i class="material-icons grey-text">highlight_off</i>
