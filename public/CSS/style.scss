@@ -384,6 +384,10 @@ div .profile_pic .file-field.input-field{
   max-height: 100% !important
 }
 
+.preloaderSendMail {
+  margin-top: 25px;
+}
+
 .table_contact {
   .btn {
     text-transform: none;
@@ -391,17 +395,13 @@ div .profile_pic .file-field.input-field{
     margin-bottom: 2px;
 
     //span {
-      //filter: blur(4px);
-      //-webkit-filter: blur(4px);
+    //filter: blur(4px);
+    //-webkit-filter: blur(4px);
     //}
   }
 
-  td {
+  td:nth-last-child(2) {
     min-height: 74px;
-  }
-
-  td > i {
-    padding-top: 10px;
   }
 }
 

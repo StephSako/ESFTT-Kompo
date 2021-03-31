@@ -1,11 +1,16 @@
+<style>
+    .divider_custom {
+        margin-top: 25px;
+        height: 2px;
+        width: 350px;
+        background: grey;
+    }
+</style>
+
 <div class="container">
-    <h4 class="center-align">{{ title }}</h4>
+    <p>{{ message }}</p>
 
-    <p class="center-align">{{ message }}</p>
+    <div class="divider_custom" style="margin-top: 20px;"></div>
 
-    <div class="divider"></div>
-
-    <p><b><i>Vous pouvez configurer les notifications dans "Compte" sur Kompo (https://www.prive.esftt.com).<br>
-                Vous pouvez définir jusqu'à 2 adresses mail et 2 numéros de téléphone.<br><br>
-                Vos données personnelles ne sont pas publiquement visibles sur le site. Vous n'êtes contacté uniquement lorsque l'un des capitaines souhaite vous prévenir de votre sélection dans une équipe.</i></b></p>
+    <p class="center" style="color: grey">Modifier vos paramètres de contact <a href="{{ path('account') }}">ici</a></p>
 </div> 

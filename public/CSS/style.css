@@ -341,16 +341,17 @@ div .profile_pic .file-field.input-field {
   max-height: 100% !important;
 }
 
+.preloaderSendMail {
+  margin-top: 25px;
+}
+
 .table_contact .btn {
   text-transform: none;
   margin-top: 2px;
   margin-bottom: 2px;
 }
-.table_contact td {
+.table_contact td:nth-last-child(2) {
   min-height: 74px;
-}
-.table_contact td > i {
-  padding-top: 10px;
 }
 
 .rainbow {

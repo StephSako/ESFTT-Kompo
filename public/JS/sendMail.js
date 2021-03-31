@@ -1,43 +1,29 @@
-function contact(idCompetiteur, mail, idMail)
+function contact(idCompetiteur, idMail)
 {
     if (!$('#sujetMail' + idMail + idCompetiteur).val() || !$('#messageMail' + idMail + idCompetiteur).val()) {
         M.toast({html: 'Renseignez un sujet et un message'});
     } else {
         sending();
-        $.getJSON('/contact/' + $('#sujet').val().replace('/', "-") + '/' + $('#message').val().replace('/', "-"), function (data)
-        {
-            M.toast({html: data.message});
-        })
-        .fail(function ()
-        {
-            endSending();
-            M.toast({html: 'Une erreur est survenue ...'});
-            $('.modal').close();
-        })
-        .done(function(){
-            endSending();
-            $('.modal').close();
+
+        $.ajax({
+            url : '/contact/' + idCompetiteur + '/' + idMail,
+            type : 'POST',
+            data: {
+                sujet: $('#sujetMail' + idMail + idCompetiteur).val(),
+                message: $('#messageMail' + idMail + idCompetiteur).val(),
+                importance: $('#importance' + idMail + idCompetiteur).is(":checked")
+            },
+            dataType : 'json',
+            success : function(response)
+            {
+                endSending(response.message);
+            },
+            error : function()
+            {
+                endSending('Une erreur est survenue !');
+            }
         });
     }
-}
-
-function notifySelectedPlayers(type, idCompo)
-{
-    sending();
-    $.getJSON('/notifySelectedPlayers/' + type + '/' + idCompo + '/' + $('#titreAlertSelectedPlayers').val().replace('/', "-") + '/' + $('#messageAlertSelectedPlayers').val().replace('/', "-"), function (data)
-    {
-        M.toast({html: data.message});
-    })
-    .fail(function ()
-    {
-        endSending();
-        M.toast({html: 'Une erreur est survenue ...'});
-        $('.modal').close();
-    })
-    .done(function(){
-        endSending();
-        $('.modal').close();
-    });
 }
 
 function sending(){
@@ -45,9 +31,10 @@ function sending(){
     $("[id='btnSendMail']").hide();
 }
 
-function endSending(){
+function endSending(message){
     $("[id='preloaderSendMail']").hide();
     $("[id='btnSendMail']").show();
+    M.toast({html: message});
 }
 
 $(document).ready(function()
