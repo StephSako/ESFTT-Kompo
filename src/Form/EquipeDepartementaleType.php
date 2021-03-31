@@ -19,6 +19,7 @@ class EquipeDepartementaleType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'min' => 1,
                     'max' => 100
                 ]
@@ -26,6 +27,9 @@ class EquipeDepartementaleType extends AbstractType
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
                 'required' => true,
+                'attr' => [
+                    'class' => 'validate'
+                ],
                 'label' => false,
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {

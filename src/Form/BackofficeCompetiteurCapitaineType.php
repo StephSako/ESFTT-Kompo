@@ -20,7 +20,7 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
-                    'class' => 'uppercase',
+                    'class' => 'validate uppercase',
                     'maxlength' => 50
                 ]
             ])
@@ -28,6 +28,7 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'maxlength' => 50
                 ]
             ])
@@ -53,6 +54,7 @@ class BackofficeCompetiteurCapitaineType extends AbstractType
                 'label' => false,
                 'required' => true,
                     'attr' => [
+                        'class' => 'validate',
                         'maxlength' => 50
                     ]
                 ]

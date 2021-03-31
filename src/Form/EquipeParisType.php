@@ -19,6 +19,7 @@ class EquipeParisType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'min' => 1,
                     'max' => 100
                 ]
@@ -27,6 +28,9 @@ class EquipeParisType extends AbstractType
                 'class' => 'App\Entity\Division',
                 'required' => true,
                 'label' => false,
+                'attr' => [
+                    'class' => 'validate',
+                ],
                 'choice_label' => 'longName',
                 'query_builder' => function (EntityRepository $dr) {
                     return $dr->createQueryBuilder('d')

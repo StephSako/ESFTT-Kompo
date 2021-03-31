@@ -12,13 +12,13 @@
                 <h5 style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m4">
-                    <span><i class="material-icons prefix">person</i> NOM</span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                    <span><i class="material-icons prefix">person</i> NOM *</span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
                 <div class="col s12 m4">
-                    <span><i class="material-icons prefix">person</i> Prénom</span>{{ form_row(form.prenom) }}
+                    <span><i class="material-icons prefix">person</i> Prénom *</span>{{ form_row(form.prenom) }}
                 </div>
                 <div class="col s12 m4">
-                    <span><i class="material-icons prefix">account_circle</i> Pseudo</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    <span><i class="material-icons prefix">account_circle</i> Pseudo *</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
 
                 {% if 'ROLE_ADMIN' in app.token.roleNames %}

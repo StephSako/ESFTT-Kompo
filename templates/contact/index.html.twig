@@ -76,8 +76,8 @@
                                 </td>
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                                 <td>
-                                    {% if competiteur.mail or competiteur.mail2 %}
-                                        {% if competiteur.mail %}
+                                    {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
+                                        {% if competiteur.mail and competiteur.contactableMail %}
                                             <a class="btn blue modal-trigger" href="#contactMail{{ competiteur.idCompetiteur }}">
                                                 <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
                                             </a><br>
@@ -86,7 +86,7 @@
                                             <div id="contactMail{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
                                                 <div class="modal-content">
 
-                                                    <p class="left" style="padding-left: 0;">À : <span class="grey-text">{{ competiteur.mail }}</span></p><br>
+                                                    <p class="left" style="padding-left: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail }}</span></p><br><br>
 
                                                     <div class="input-field">
                                                         <input id="sujetMail{{ competiteur.idCompetiteur }}" type="text" class="validate" placeholder="Sujet" required>
@@ -126,7 +126,7 @@
                                             </script>
 
                                         {% endif %}
-                                        {% if competiteur.mail2 %}
+                                        {% if competiteur.mail2 and competiteur.contactableMail2 %}
                                             <a class="btn blue modal-trigger" href="#contactMail2{{ competiteur.idCompetiteur }}">
                                                 <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
                                             </a>
@@ -135,17 +135,17 @@
                                             <div id="contactMail2{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
                                                 <div class="modal-content">
 
-                                                    <p class="left" style="padding-left: 0;">À : <span class="grey-text">{{ competiteur.mail2 }}</span></p><br>
+                                                    <p class="left" style="padding-left: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail2 }}</span></p><br><br>
 
                                                     <div class="input-field">
                                                         <input id="sujetMail2{{ competiteur.idCompetiteur }}" placeholder="Sujet" type="text" class="validate" required>
                                                     </div>
 
                                                     <div class="input-field">
-                                                        <textarea id="messageMail2{{ competiteur.idCompetiteur }}" placeholder="Message" class="materialize-textarea validate" required></textarea>
+                                                        <textarea id="messageMail2{{ competiteur.idCompetiteur }}" placeholder="Message" type="text" class="materialize-textarea validate" required></textarea>
                                                     </div>
 
-                                                    <a style="margin: 5px;" id="btnSendMail" onclick="contact('{{ competiteur.idCompetiteur}}', '{{ competiteur.mail2 }}', '2')" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
+                                                    <a style="margin: 5px;" id="btnSendMail2{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '{{ competiteur.mail2 }}', '2')" class="btn waves-effect green lighten-2 waves-light"><i class="material-icons left">email</i>Envoyer par mail</a>
 
                                                     <div id="preloaderSendMail" class="progress container" type="hidden">
                                                         <div class="indeterminate"></div>
@@ -156,6 +156,22 @@
                                                     <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail2 }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
                                                     <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
                                                 </div>
+
+                                                <script>
+                                                    $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+
+                                                    $('#sujetMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
+                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                    });
+
+                                                    $('#messageMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
+                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
+                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
+                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
+                                                    });
+                                                </script>
                                             </div>
                                         {% endif %}
                                     {% else %}
@@ -163,13 +179,13 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if competiteur.phoneNumber or competiteur.phoneNumber2 %}
-                                        {% if competiteur.phoneNumber %}
+                                    {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
+                                        {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
                                             <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
                                                 <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
                                             </a><br>
                                         {% endif %}
-                                        {% if competiteur.phoneNumber2 %}
+                                        {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                             <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
                                                 <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
                                             </a>

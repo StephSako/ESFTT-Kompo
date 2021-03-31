@@ -18,7 +18,7 @@ class DivisionFormType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
-                    'class' => 'uppercase',
+                    'class' => 'validate uppercase',
                     'maxlength' => 5
                 ]
             ])
@@ -26,6 +26,7 @@ class DivisionFormType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'maxlength' => 25
                 ]
             ])

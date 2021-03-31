@@ -22,7 +22,7 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
-                    'class' => 'uppercase',
+                    'class' => 'uppercase validate',
                     'maxlength' => 50
                 ]
             ])
@@ -30,6 +30,7 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'maxlength' => 50
                 ]
             ])
@@ -49,6 +50,7 @@ class BackofficeCompetiteurAdminType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'maxlength' => 50
                 ]
             ])
