@@ -124,7 +124,6 @@ class ContactController extends AbstractController
             $this->mailer->send($email);
             $json = json_encode(['message' => 'Votre mail a été envoyé !']);
         } catch (TransportExceptionInterface $e) {
-            dump($e);
             $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !']);
         }
 
@@ -132,37 +131,6 @@ class ContactController extends AbstractController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
-        /*
-
-        $to = [];
-
-        foreach ($contact->getCompetiteurs() as $player) {
-            if ($player && $player->getIdCompetiteur() !== $redacteur->getIdCompetiteur()) {
-                if ($player->isContactableMail() && $player->getMail() && $player->getMail() != "") array_push($to, new Address($player->getMail(), $player->getNom()));
-                if ($player->isContactableMail2() && $player->getMail2() && $player->getMail2() != "") array_push($to, new Address($player->getMail2(), $player->getNom() . '_2'));
-            }
-        }
-        if (empty($to)) return 'Le mail n\'a pas été envoyé car il n\'y a que vous dans l\'équipe';
-
-
-        $email = (new TemplatedEmail())
-            ->from($from)
-            ->cc(...$to)
-            ->priority(Email::PRIORITY_HIGH)
-            ->subject($contact->getTitre())
-            ->htmlTemplate('macros/email.html.twig')
-            ->context([
-                'title' => $contact->getTitre(),
-                'message' => $contact->getMessage()
-            ]);
-
-        try {
-            $this->mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
-            return 'Le mail n\'a pas pu être envoyé';
-        }
-
-        return 'Les joueurs sont prévenus !';*/
     }
 
 
@@ -174,6 +142,7 @@ class ContactController extends AbstractController
 
 
 
+    // TODO Alerter les joueurs de leur sélection depuis journee.index
     /*
      * @Route("/notifySelectedPlayers/{type}/{idCompo}", name="notify.selectedPlayers")
      * @param $type

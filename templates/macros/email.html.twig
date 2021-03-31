@@ -1,16 +1,16 @@
 <style>
     .divider_custom {
         margin-top: 25px;
-        height: 2px;
+        height: 1px;
         width: 350px;
         background: grey;
     }
 </style>
 
 <div class="container">
-    <p>{{ message }}</p>
+    <p>{{ message | nl2br }}</p>
 
     <div class="divider_custom" style="margin-top: 20px;"></div>
 
-    <p class="center" style="color: grey">Modifier vos paramètres de contact <a href="{{ path('account') }}">ici</a></p>
+    <p class="center" style="color: grey">Modifier vos paramètres de contact <a href="{{ url('account') }}">ici</a></p>
 </div> 

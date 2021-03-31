@@ -35,6 +35,7 @@ function endSending(message){
     $("[id='preloaderSendMail']").hide();
     $("[id='btnSendMail']").show();
     M.toast({html: message});
+    $('.modal').modal('close');
 }
 
 $(document).ready(function()
