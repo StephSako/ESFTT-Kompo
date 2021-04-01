@@ -3,6 +3,24 @@ html {
   font-family: "Lato", sans-serif;
   background: linear-gradient(135deg, #1174b8 1%, #001317 100%) fixed;
   background-size: cover;
+  height: 100%;
+  display: block;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  position: relative;
+}
+
+#wrap {
+  min-height: 100%;
+  position: relative;
+}
+
+#main {
+  position: relative;
+  padding-bottom: 40px;
 }
 
 .card-panel {
@@ -361,6 +379,9 @@ div .profile_pic .file-field.input-field {
 .page-footer {
   padding-top: 0;
   background-color: #012242;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .footer-copyright {
