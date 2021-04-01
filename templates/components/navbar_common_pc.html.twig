@@ -1,8 +1,4 @@
 <ul class="right_items_navbar right hide-on-med-and-down">
-    <li class="waves-light waves-effect li_in_line">
-        <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
-    </li>
-
     {% if app.user %}
 
         {% if 'ROLE_JOUEUR' in app.token.roleNames %}
@@ -34,6 +30,10 @@
 
         <li class="waves-light waves-effect li_in_line deconnexion"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
     {% endif %}
+
+    <li class="waves-light waves-effect li_in_line">
+        <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
+    </li>
 </ul>
 
 <ul class="right">
@@ -47,10 +47,6 @@
 
 <!-- Dropdown Structure -->
 <ul id="menu_dropdown" class="dropdown-content">
-    <li class="waves-light waves-effect" style="margin-left: 0;">
-        <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
-    </li>
-
     {% if app.user %}
 
         {% if 'ROLE_JOUEUR' in app.token.roleNames %}
@@ -82,4 +78,8 @@
             <a class="white-text" href="{{ path('logout') }}">Se déconnecter</a>
         </li>
     {% endif %}
+
+    <li class="waves-light waves-effect" style="margin-left: 0;">
+        <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
+    </li>
 </ul>

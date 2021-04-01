@@ -53,27 +53,25 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                                    <td>
+                                    <td class="buttons" style="padding-top: 10px !important; padding-bottom: 10px !important; height: 100px !important;">
                                         {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                             {% if competiteur.mail and competiteur.contactableMail %}
                                                 <a class="btn blue modal-trigger" href="#contactMail1{{ competiteur.idCompetiteur }}">
                                                     <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
                                                 </a><br>
-
                                                 {{ _modal.contact(competiteur, competiteur.mail, '1') }}
                                             {% endif %}
                                             {% if competiteur.mail2 and competiteur.contactableMail2 %}
                                                 <a class="btn blue modal-trigger" href="#contactMail2{{ competiteur.idCompetiteur }}">
                                                     <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
                                                 </a><br>
-
                                                 {{ _modal.contact(competiteur, competiteur.mail2, '2') }}
                                             {% endif %}
                                         {% else %}
-                                            <i class="material-icons grey-text">highlight_off</i>
+                                            <p class="grey-text"><i>Non renseigné</i></p>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="buttons" style="padding-top: 10px !important; padding-bottom: 10px !important; height: 100px !important;">
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                             {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
                                                 <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
@@ -86,7 +84,7 @@
                                                 </a>
                                             {% endif %}
                                         {% else %}
-                                            <i class="material-icons grey-text">highlight_off</i>
+                                            <p class="grey-text"><i>Non renseigné</i></p>
                                         {% endif %}
                                     </td>
                                 </tr>

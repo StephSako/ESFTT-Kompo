@@ -110,8 +110,8 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
 }
 
 .nav-extended {
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   font-size: 120%;
 }
 
@@ -215,8 +215,8 @@ i {
 
 .li_in_line {
   .nav-wrapper & {
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 2px;
+    margin-right: 2px;
   }
   .sidenav & {
     margin: 4px;
@@ -407,6 +407,16 @@ div .profile_pic .file-field.input-field{
   td:nth-last-child(2) {
     min-height: 74px;
   }
+}
+
+.page-footer{
+  padding-top: 0;
+  background-color: $dark_blue;
+}
+
+.footer-copyright{
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .rainbow {
