@@ -20,7 +20,7 @@ body {
 
 #main {
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 75px;
 }
 
 .card-panel {
@@ -396,6 +396,12 @@ div .profile_pic .file-field.input-field {
   -z-animation: rainbow 8s ease infinite;
   -o-animation: rainbow 8s ease infinite;
   animation: rainbow 8s ease infinite;
+}
+
+#span_passwords_matching, #span_passwords_not_matching {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 22px;
 }
 
 @-webkit-keyframes rainbow {

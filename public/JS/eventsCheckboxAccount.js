@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     i_mail2.on('keyup', function () {
         if (!i_mail2.val()) cb_c_mail2.prop('checked', false).prop('disabled', true);
-        else  cb_c_mail2.prop('disabled', false);
+        else cb_c_mail2.prop('disabled', false);
     });
 
     i_num.on('keyup', function () {

@@ -221,7 +221,7 @@
                             {% else %}
                                 {% if dispo.disponibilite == 1 %}
                                     <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
-                                    <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
+                                    <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')" href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
                                         <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                     </a>
                                 {% else %}

@@ -108,6 +108,16 @@
             let cb_admin = $('#cb_admin');
             let cb_capitaine = $('#cb_capitaine');
             let cb_visiteur = $('#cb_visiteur');
+
+            function alertBecomingVisitor(){
+
+                if (cb_visiteur.is(":checked")){
+                    let r = confirm('Les disponiblités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
+                    if (r !== true) {
+                        event.preventDefault();
+                    }
+                } else return false;
+            }
         </script>
         <script src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}"></script>
     {% endif %}
@@ -122,16 +132,6 @@
         let cb_c_mail2 = $('#cb_c_mail2');
         let cb_c_num = $('#cb_c_num');
         let cb_c_num2 = $('#cb_c_num2');
-
-        function alertBecomingVisitor(){
-
-            if (cb_visiteur.is(":checked")){
-                let r = confirm('Les disponiblités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
-                if (r !== true) {
-                    event.preventDefault();
-                }
-            } else return false;
-        }
     </script>
     <script src="{{ asset('JS/eventsCheckboxAccount.js') }}"></script>
 {% endmacro %}
@@ -139,6 +139,11 @@
 {% macro edit_password(title, path, type, options) %}
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
+
+        <div style="height: 22px; margin-bottom: 10px;">
+            <p hidden id="span_passwords_not_matching" class="red-text"><b>Les mots de passe ne correspondent pas</b></p>
+            <p hidden id="span_passwords_matching" class="green-text"><b>Les mots de passe correspondent</b></p>
+        </div>
 
         <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
             <div class="row">
@@ -151,7 +156,56 @@
                     <label for="new_password_validate">Ressaisissez le nouveau mot de passe</label>
                 </div>
             </div>
-            <br><button class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+            <br><button id="btnEditPassword" class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
         </form>
     </div>
+
+    <script>
+        let i_new_password = $('#new_password');
+        let i_new_password_repeat = $('#new_password_validate');
+        let btn_edit_password = $('#btnEditPassword');
+
+        let span_passwords_not_matching = $('#span_passwords_not_matching');
+        let span_passwords_matching = $('#span_passwords_matching');
+
+        btn_edit_password.prop('disabled', true);
+
+        i_new_password.on('keyup', function () {
+            if (i_new_password.val() && i_new_password_repeat.val()){
+                btn_edit_password.prop('disabled', false);
+                console.log(i_new_password.val() === i_new_password_repeat.val())
+                if (i_new_password.val() === i_new_password_repeat.val()){
+                    span_passwords_matching.removeAttr('hidden');
+                    span_passwords_not_matching.attr('hidden', true);
+                } else {
+                    span_passwords_not_matching.removeAttr('hidden');
+                    span_passwords_matching.attr('hidden', true);
+                }
+            }
+            else{
+                span_passwords_matching.attr('hidden', true);
+                span_passwords_not_matching.attr('hidden', true);
+                btn_edit_password.prop('disabled', true);
+            }
+        });
+
+        i_new_password_repeat.on('keyup', function () {
+            if (i_new_password.val() && i_new_password_repeat.val()){
+                btn_edit_password.prop('disabled', false);
+                console.log(i_new_password.val() === i_new_password_repeat.val())
+                if (i_new_password.val() === i_new_password_repeat.val()){
+                    span_passwords_matching.removeAttr('hidden');
+                    span_passwords_not_matching.attr('hidden', true);
+                } else {
+                    span_passwords_not_matching.removeAttr('hidden');
+                    span_passwords_matching.attr('hidden', true);
+                }
+            }
+            else{
+                span_passwords_matching.attr('hidden', true);
+                span_passwords_not_matching.attr('hidden', true);
+                btn_edit_password.prop('disabled', true);
+            }
+        });
+    </script>
 {% endmacro %}
