@@ -34,10 +34,6 @@ class CompetiteurType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
-            ->add('visitor', CheckboxType::class, [
-                'label' => 'Compte visiteur (accès restreints)',
-                'required' => false
-            ])
             ->add('classementOfficiel', IntegerType::class, [
                 'label' => false,
                 'required' => false,

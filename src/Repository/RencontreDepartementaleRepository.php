@@ -143,8 +143,8 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rd')
             ->update('App\Entity\RencontreDepartementale', 'rd')
             ->set('rd.idJoueur' . $idJoueurColumn, 'NULL')
-            ->where('rd.idJoueur' . $idJoueurColumn . ' = :idDeletedCompetiteur')
-            ->setParameter('idDeletedCompetiteur', $idCompetiteur)
+            ->where('rd.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();
     }

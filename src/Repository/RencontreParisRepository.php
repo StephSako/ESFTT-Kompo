@@ -143,8 +143,8 @@ class RencontreParisRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('rp')
             ->update('App\Entity\RencontreParis', 'rp')
             ->set('rp.idJoueur' . $idJoueurColumn, 'NULL')
-            ->where('rp.idJoueur' . $idJoueurColumn . ' = :idDeletedCompetiteur')
-            ->setParameter('idDeletedCompetiteur', $idCompetiteur)
+            ->where('rp.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();
     }

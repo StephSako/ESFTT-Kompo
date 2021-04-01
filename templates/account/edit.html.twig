@@ -30,10 +30,10 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, 'Modifier') }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, true) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, 'Modifier', {competiteurId: competiteur.idCompetiteur, idActualUser: idActualUser}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, {competiteurId: competiteur.idCompetiteur, idActualUser: idActualUser}) }}
             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                 {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}
             {% endif %}

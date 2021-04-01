@@ -39,4 +39,19 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Supprime toutes les disponibilités d'un joueur (cas d'un joueur devenant visiteur)
+     * @param int $idCompetiteur
+     * @return int|mixed|string
+     */
+    public function setDeleteDisposVisiteur(int $idCompetiteur)
+    {
+        return $this->createQueryBuilder('dp')
+            ->delete('App\Entity\DisponibiliteParis', 'dp')
+            ->where('dp.idCompetiteur = :idCompetiteur')
+            ->setParameter('idCompetiteur', $idCompetiteur)
+            ->getQuery()
+            ->execute();
+    }
 }

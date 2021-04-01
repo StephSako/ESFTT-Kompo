@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, btn_text, options) %}
+{% macro edit_account(type, title, form, urlImage, editMode, options) %}
     <style>
         .col {
             margin-top: 20px;
@@ -28,10 +28,10 @@
                     <div class="col s12 m4">
                         {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
                     </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
+                    </div>
                 {% endif %}
-                <div class="col s12{% if 'ROLE_ADMIN' in app.token.roleNames %} m4{% endif %}">
-                    {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
-                </div>
             </div>
 
             {% if type == 'general' or (('ROLE_ADMIN' in app.token.roleNames or ('ROLE_CAPITAINE' in app.token.roleNames and options is not null and options.idActualUser == options.competiteurId)) and type == 'backoffice') %}
@@ -95,7 +95,11 @@
             {% endif %}
 
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
-            <button class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ btn_text }}</button>
+            <button
+                {% if editMode %}
+                    onclick="alertBecomingVisitor()"
+                {% endif %}
+                class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ editMode ? 'Modifier' : 'Créer' }}</button>
         {{ form_end(form) }}
     </div>
 
@@ -118,6 +122,16 @@
         let cb_c_mail2 = $('#cb_c_mail2');
         let cb_c_num = $('#cb_c_num');
         let cb_c_num2 = $('#cb_c_num2');
+
+        function alertBecomingVisitor(){
+
+            if (cb_visiteur.is(":checked")){
+                let r = confirm('Les disponiblités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
+                if (r !== true) {
+                    event.preventDefault();
+                }
+            } else return false;
+        }
     </script>
     <script src="{{ asset('JS/eventsCheckboxAccount.js') }}"></script>
 {% endmacro %}

@@ -96,7 +96,7 @@
                             </td>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <td>
-                                    <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer le joueur ?')">
+                                    <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
                                         <button class="btn waves-effect waves-light red lighten-2 btn_gestion">

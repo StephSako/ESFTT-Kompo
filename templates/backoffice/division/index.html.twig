@@ -49,7 +49,7 @@
                                 <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                             </td>
                             <td>
-                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Etes-vous sûr de supprimer la division ?')">
+                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
                                     <button class="btn waves-effect waves-light red lighten-2 btn_gestion">

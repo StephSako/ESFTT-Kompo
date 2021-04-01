@@ -7,6 +7,8 @@ use App\Form\BackofficeCompetiteurAdminType;
 use App\Form\BackofficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
+use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
@@ -27,6 +29,8 @@ class BackOfficeCompetiteurController extends AbstractController
     private $competiteurRepository;
     private $rencontreDepartementaleRepository;
     private $rencontreParisRepository;
+    private $disponibiliteDepartementaleRepository;
+    private $disponibiliteParisRepository;
     private $divisionRepository;
 
     /**
@@ -35,12 +39,16 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param EntityManagerInterface $em
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
      * @param DivisionRepository $divisionRepository
+     * @param DisponibiliteDepartementaleRepository $disponibiliteParisRepository
+     * @param DisponibiliteParisRepository $disponibiliteDepartementaleRepository
      * @param RencontreParisRepository $rencontreParisRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 DivisionRepository $divisionRepository,
+                                DisponibiliteDepartementaleRepository $disponibiliteParisRepository,
+                                DisponibiliteParisRepository $disponibiliteDepartementaleRepository,
                                 RencontreParisRepository $rencontreParisRepository)
     {
         $this->em = $em;
@@ -48,6 +56,8 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
         $this->rencontreParisRepository = $rencontreParisRepository;
         $this->divisionRepository = $divisionRepository;
+        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
+        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
     }
 
     /**
@@ -124,12 +134,29 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
+
+                    /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions d'équipe ... **/
+                    if ($competiteur->isVisitor()){
+                        for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('departementale'); $i+=1) {
+                            $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+                        }
+
+                        for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('paris'); $i+=1) {
+                            $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+                        }
+
+                        /** ... et ses disponiblités sont supprimées */
+                        $this->disponibiliteDepartementaleRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
+                        $this->disponibiliteParisRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
+                    }
+
                     $competiteur->setNom(strtoupper($competiteur->getNom()));
                     $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
                     $this->em->flush();
                     $this->addFlash('success', 'Compétiteur modifié avec succès !');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
+                    dump($e);
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
                         if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
