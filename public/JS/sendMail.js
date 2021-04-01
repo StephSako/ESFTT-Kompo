@@ -1,40 +1,49 @@
-function contact(idCompetiteur, idMail)
+function contact(idReceiver, idMail, mailReceiver, nomReceiver)
 {
-    if (!$('#sujetMail' + idMail + idCompetiteur).val() || !$('#messageMail' + idMail + idCompetiteur).val()) {
+    console.log($('#selectMailSender' + idMail + idReceiver).val())
+    /*if (!$('#sujetMail' + idMail + idReceiver).val() || !$('#messageMail' + idMail + idReceiver).val()) {
         M.toast({html: 'Renseignez un sujet et un message'});
     } else {
-        sending();
+        sending(idMail, idReceiver, '#sujetMail' + idMail + idReceiver, '#messageMail' + idMail + idReceiver, '#importance' + idMail + idReceiver);
 
         $.ajax({
-            url : '/contact/' + idCompetiteur + '/' + idMail,
+            url : '/contact/message',
             type : 'POST',
             data: {
-                sujet: $('#sujetMail' + idMail + idCompetiteur).val(),
-                message: $('#messageMail' + idMail + idCompetiteur).val(),
-                importance: $('#importance' + idMail + idCompetiteur).is(":checked")
+                nomReceiver: nomReceiver,
+                mailReceiver: mailReceiver,
+                sujet: $('#sujetMail' + idMail + idReceiver).val(),
+                message: $('#messageMail' + idMail + idReceiver).val(),
+                importance: $('#importance' + idMail + idReceiver).is(":checked")
             },
             dataType : 'json',
             success : function(response)
             {
-                endSending(response.message);
+                endSending(idMail, idReceiver, response.message, '#sujetMail' + idMail + idReceiver, '#messageMail' + idMail + idReceiver, '#importance' + idMail + idReceiver);
             },
             error : function()
             {
-                endSending('Une erreur est survenue !');
+                endSending(idMail, idReceiver, 'Une erreur est survenue !', '#sujetMail' + idMail + idReceiver, '#messageMail' + idMail + idReceiver, '#importance' + idMail + idReceiver);
             }
         });
-    }
+    }*/
 }
 
-function sending(){
+function sending(idMail, idReceiver, sujetInput, messageInput, importanceInput){
     $("[id='preloaderSendMail']").show();
-    $("[id='btnSendMail']").hide();
+    $('#btnSendMail' + idMail + idReceiver).hide();
+    $(sujetInput).prop('disabled', true);
+    $(messageInput).prop('disabled', true);
+    $(importanceInput).prop('disabled', true);
 }
 
-function endSending(message){
+function endSending(idMail, idReceiver, message, sujetInput, messageInput, importanceInput){
     $("[id='preloaderSendMail']").hide();
-    $("[id='btnSendMail']").show();
+    $('#btnSendMail' + idMail + idReceiver).show().addClass('disabled');
     M.toast({html: message});
+    $(sujetInput).val('').prop('disabled', false);
+    $(messageInput).val('').prop('disabled', false);
+    $(importanceInput).prop('checked', false).prop('disabled', false);
     $('.modal').modal('close');
 }
 

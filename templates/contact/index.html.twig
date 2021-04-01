@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/modal.html.twig' as _modal %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}Page de contact{% endblock %}
 
 {% block body %}
 
@@ -16,24 +16,16 @@
 
         <div class="card-panel">
 
-            {% for message in app.flashes('success') %}
-                {{ _flash.message(message, 'green') }}
-            {% endfor %}
-
-            {% for message in app.flashes('fail') %}
-                {{ _flash.message(message, 'red') }}
-            {% endfor %}
-
             {% if competiteurs|length > 0 %}
                 <table class="striped centered responsive-table table_contact">
                     <thead>
-                    <tr class="hide-on-small-only">
-                        <th></th>
-                        <th></th>
-                        <th>Nom</th>
-                        <th>Adresses e-mail</th>
-                        <th>Numéros de téléphone</th>
-                    </tr>
+                        <tr class="hide-on-small-only">
+                            <th></th>
+                            <th></th>
+                            <th>Nom</th>
+                            <th>Adresses e-mail</th>
+                            <th>Numéros de téléphone</th>
+                        </tr>
                     </thead>
 
                     <tbody class="center">
@@ -68,138 +60,14 @@
                                                     <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
                                                 </a><br>
 
-                                                {# Modale d'envoi de mail de contact #}
-                                                <div id="contactMail1{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
-                                                    <div class="modal-content">
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>De</b> :
-                                                            {% if (app.user.mail and app.user.contactableMail) or (app.user.mail2 and app.user.contactableMail2) %}
-                                                                {% if app.user.mail and app.user.contactableMail %}
-                                                                    <span class="grey-text">{{ app.user.mail }}</span>
-                                                                {% elseif app.user.mail2 and app.user.contactableMail2 %}
-                                                                    <span class="grey-text">{{ app.user.mail2 }}</span>
-                                                                {% endif %}
-                                                            {% else %}
-                                                                <span class="red-text">Renseignez vos coordonnées</span>
-                                                            {% endif %}
-                                                        </p><br><br>
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail }}</span></p><br>
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 20px; margin-bottom: 0;">
-                                                            <label style="padding-left: 0;">
-                                                                <input type="checkbox" id="importance1{{ competiteur.idCompetiteur }}" />
-                                                                <span>Haute importance</span>
-                                                            </label>
-                                                        </p><br><br><br>
-
-                                                        <div class="input-field" style="margin-top: 0;">
-                                                            <input id="sujetMail1{{ competiteur.idCompetiteur }}" type="text" class="validate" placeholder="Sujet" required>
-                                                        </div>
-
-                                                        <div class="input-field">
-                                                            <textarea id="messageMail1{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
-                                                        </div>
-
-                                                        <a style="margin: 5px;" id="btnSendMail1{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '1')" class="btn waves-effect green lighten-2 waves-light">
-                                                            <i class="material-icons left">email</i>Envoyer par mail
-                                                        </a>
-
-                                                        <div id="preloaderSendMail" class="preloaderSendMail progress container">
-                                                            <div class="indeterminate"></div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
-                                                        <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
-                                                    </div>
-                                                </div>
-
-                                                <script>
-                                                    $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-
-                                                    $('#sujetMail1' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                        if ($('#sujetMail1' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail1' + '{{ competiteur.idCompetiteur }}').val())
-                                                            $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                        else $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                    });
-
-                                                    $('#messageMail1' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                        if ($('#sujetMail1' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail1' + '{{ competiteur.idCompetiteur }}').val())
-                                                            $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                        else $('#btnSendMail1' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                    });
-                                                </script>
+                                                {{ _modal.contact(competiteur, competiteur.mail, '1') }}
                                             {% endif %}
                                             {% if competiteur.mail2 and competiteur.contactableMail2 %}
                                                 <a class="btn blue modal-trigger" href="#contactMail2{{ competiteur.idCompetiteur }}">
                                                     <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
                                                 </a><br>
 
-                                                {# Modale d'envoi de mail de contact #}
-                                                <div id="contactMail2{{ competiteur.idCompetiteur }}" class="modal modal-fixed-footer">
-                                                    <div class="modal-content">
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>De</b> :
-                                                            {% if (app.user.mail and app.user.contactableMail) or (app.user.mail2 and app.user.contactableMail2) %}
-                                                                {% if app.user.mail and app.user.contactableMail %}
-                                                                    <span class="grey-text">{{ app.user.mail }}</span>
-                                                                {% elseif app.user.mail2 and app.user.contactableMail2 %}
-                                                                    <span class="grey-text">{{ app.user.mail2 }}</span>
-                                                                {% endif %}
-                                                            {% else %}
-                                                                <span class="red-text">Renseignez vos coordonnées</span>
-                                                            {% endif %}
-                                                        </p><br><br>
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>À</b> : <span class="grey-text">{{ competiteur.mail2 }}</span></p><br>
-
-                                                        <p class="left" style="padding-left: 0; margin-top: 20px; margin-bottom: 0;">
-                                                            <label style="padding-left: 0;">
-                                                                <input type="checkbox" id="importance2{{ competiteur.idCompetiteur }}" />
-                                                                <span>Haute importance</span>
-                                                            </label>
-                                                        </p><br><br><br>
-
-                                                        <div class="input-field" style="margin-top: 0;">
-                                                            <input id="sujetMail2{{ competiteur.idCompetiteur }}" type="text" class="validate" placeholder="Sujet" required>
-                                                        </div>
-
-                                                        <div class="input-field">
-                                                            <textarea id="messageMail2{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
-                                                        </div>
-
-                                                        <a style="margin: 5px;" id="btnSendMail2{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '2')" class="btn waves-effect green lighten-2 waves-light">
-                                                            <i class="material-icons left">email</i>Envoyer par mail
-                                                        </a>
-
-                                                        <div id="preloaderSendMail" class="preloaderSendMail progress container">
-                                                            <div class="indeterminate"></div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a style="margin-right: 3%;" href="mailto:{{ competiteur.mail2 }}" class="modal-close btn waves-effect waves-light blue"><i class="material-icons">exit_to_app</i> Application externe</a>
-                                                        <a class="modal-close btn waves-effect waves-light grey right">Annuler</a>
-                                                    </div>
-                                                </div>
-
-                                                <script>
-                                                    $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-
-                                                    $('#sujetMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
-                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                    });
-
-                                                    $('#messageMail2' + '{{ competiteur.idCompetiteur }}').on('keyup', function () {
-                                                        if ($('#sujetMail2' + '{{ competiteur.idCompetiteur }}').val() && $('#messageMail2' + '{{ competiteur.idCompetiteur }}').val())
-                                                            $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').removeClass('disabled');
-                                                        else $('#btnSendMail2' + '{{ competiteur.idCompetiteur }}').addClass('disabled');
-                                                    });
-                                                </script>
+                                                {{ _modal.contact(competiteur, competiteur.mail2, '2') }}
                                             {% endif %}
                                         {% else %}
                                             <i class="material-icons grey-text">highlight_off</i>

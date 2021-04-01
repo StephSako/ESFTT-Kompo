@@ -2289,7 +2289,7 @@ samp {
 }
 
 /**
- * Add the correct font CSS in Android 4.3-.
+ * Add the correct font style in Android 4.3-.
  */
 dfn {
   font-style: italic;
@@ -2406,7 +2406,7 @@ select {
 /**
  * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
  *    controls in Android 4.
- * 2. Correct the inability to CSS clickable types in iOS and Safari.
+ * 2. Correct the inability to style clickable types in iOS and Safari.
  */
 button,
 html [type="button"],
@@ -2498,7 +2498,7 @@ textarea {
 }
 
 /**
- * Correct the cursor CSS of increment and decrement buttons in Chrome.
+ * Correct the cursor style of increment and decrement buttons in Chrome.
  */
 [type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
@@ -2507,7 +2507,7 @@ textarea {
 
 /**
  * 1. Correct the odd appearance in Chrome and Safari.
- * 2. Correct the outline CSS in Safari.
+ * 2. Correct the outline style in Safari.
  */
 [type="search"] {
   -webkit-appearance: textfield;
@@ -2525,7 +2525,7 @@ textarea {
 }
 
 /**
- * 1. Correct the inability to CSS clickable types in iOS and Safari.
+ * 1. Correct the inability to style clickable types in iOS and Safari.
  * 2. Change font properties to `inherit` in Safari.
  */
 ::-webkit-file-upload-button {
@@ -6817,7 +6817,7 @@ textarea.materialize-textarea {
   background-color: rgba(0, 0, 0, 0.42);
 }
 
-/* Disabled CSS */
+/* Disabled style */
 [type="radio"]:disabled:not(:checked) + span:before,
 [type="radio"]:disabled:checked + span:before {
   background-color: transparent;
@@ -7425,7 +7425,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 input[type=range] {
-  /* fix for FF unable to apply focus CSS bug  */
+  /* fix for FF unable to apply focus style bug  */
   border: 1px solid white;
   /*required for proper track sizing in FF*/
 }
@@ -7755,7 +7755,7 @@ input[type=range]::-ms-thumb {
 /*
     @license
     Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-    This code may only be used under the BSD CSS license found at http://polymer.github.io/LICENSE.txt
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
     The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
     The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
     Code distributed by Google as part of the polymer project is also
@@ -8486,19 +8486,10 @@ input[type=range]::-ms-thumb {
   visibility: visible;
   -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
           animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-  -webkit-transition: opacity .3s,
- visibility 0s 1s,
- -webkit-transform .3s;
-  transition: opacity .3s,
- visibility 0s 1s,
- -webkit-transform .3s;
-  transition: opacity .3s,
- transform .3s,
- visibility 0s 1s;
-  transition: opacity .3s,
- transform .3s,
- visibility 0s 1s,
- -webkit-transform .3s;
+  -webkit-transition: opacity .3s, visibility 0s 1s, -webkit-transform .3s;
+  transition: opacity .3s, visibility 0s 1s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s, visibility 0s 1s;
+  transition: opacity .3s, transform .3s, visibility 0s 1s, -webkit-transform .3s;
 }
 
 .tap-target {
@@ -8551,19 +8542,10 @@ input[type=range]::-ms-thumb {
 
 .tap-target-wave::after {
   visibility: hidden;
-  -webkit-transition: opacity .3s,
- visibility 0s,
- -webkit-transform .3s;
-  transition: opacity .3s,
- visibility 0s,
- -webkit-transform .3s;
-  transition: opacity .3s,
- transform .3s,
- visibility 0s;
-  transition: opacity .3s,
- transform .3s,
- visibility 0s,
- -webkit-transform .3s;
+  -webkit-transition: opacity .3s, visibility 0s, -webkit-transform .3s;
+  transition: opacity .3s, visibility 0s, -webkit-transform .3s;
+  transition: opacity .3s, transform .3s, visibility 0s;
+  transition: opacity .3s, transform .3s, visibility 0s, -webkit-transform .3s;
   z-index: -1;
 }
 

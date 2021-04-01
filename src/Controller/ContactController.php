@@ -74,18 +74,17 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/contact/{idReceiver}/{idMail}", name="contact.email")
-     * @param string $idReceiver
-     * @param string $idMail
+     * @Route("/contact/message", name="contact.email")
      * @param Request $request
      * @return Response
      */
-    public function contact(string $idReceiver, string $idMail, Request $request): Response
+    public function contact(Request $request): Response
     {
-        if ((!$competiteur = $this->competiteurRepository->find($idReceiver))){
-            $response = new Response(json_encode(['message' => 'Cet adhérent n\'existe pas']));
-            $response->headers->set('Content-Type', 'application/json');
-        }
+        dump($request->request);
+        $addressReceiver = new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver'));
+        $sujet = $request->request->get('sujet');
+        $message = $request->request->get('message');
+        $importance = $request->request->get('importance');
 
         if ($this->getUser()->getMail() && $this->getUser()->isContactableMail()) {
             $addressSender = new Address($this->getUser()->getMail(), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
@@ -97,17 +96,6 @@ class ContactController extends AbstractController
             $response = new Response(json_encode(['message' => 'Cet adhérent n\'existe pas']));
             $response->headers->set('Content-Type', 'application/json');
         }
-
-        if ($idMail == "1") $addressReceiver = new Address($competiteur->getMail(), $competiteur->getNom() . ' ' . $competiteur->getPrenom());
-        else if ($idMail == "2") $addressReceiver = new Address($competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom());
-        else {
-            $response = new Response(json_encode(['message' => 'Renseignez une adresse mail contactable']));
-            $response->headers->set('Content-Type', 'application/json');
-        }
-
-        $sujet = $request->request->get('sujet');
-        $message = $request->request->get('message');
-        $importance = $request->request->get('importance');
 
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())

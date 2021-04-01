@@ -1003,7 +1003,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   return cash;
 });
-
+;
 var Component = function () {
   /**
    * Generic constructor for all components
@@ -1466,7 +1466,7 @@ M.throttle = function (func, wait, options) {
     return result;
   };
 };
- /*
+; /*
   v2.2.0
   2017 Julian Garnier
   Released under the MIT license
@@ -4771,7 +4771,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Tooltip, 'tooltip', 'M_Tooltip');
   }
 })(cash, M.anime);
- /*!
+; /*!
   * Waves v0.6.4
   * http://fian.my.id/Waves
   *
@@ -4964,7 +4964,7 @@ $jscomp.polyfill = function (e, r, p, m) {
             continue;
           }
 
-          // Put element class and CSS to the specified parent
+          // Put element class and style to the specified parent
           var wrapper = document.createElement('i');
           wrapper.className = el.className + ' waves-input-wrapper';
 
@@ -7119,7 +7119,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         $this.one('blur', function (e) {
           $(this).removeClass('tabbed');
         });
-
+        return;
       }
     });
 
@@ -9640,7 +9640,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     return Datepicker;
   }(Component);
 
-  Datepicker._template = ['<div class= "modal datepicker-modal">', '<div class="modal-content datepicker-container">', '<div class="datepicker-date-display">', '<span class="year-text"></span>', '<span class="date-text"></span>', '</div>', '<div class="datepicker-calendar-container">', '<div class="datepicker-calendar"></div>', '<div class="datepicker-footer">', '<button class="btn-flat datepicker-clear waves-effect" CSS="visibility: hidden;" type="button"></button>', '<div class="confirmation-btns">', '<button class="btn-flat datepicker-cancel waves-effect" type="button"></button>', '<button class="btn-flat datepicker-done waves-effect" type="button"></button>', '</div>', '</div>', '</div>', '</div>', '</div>'].join('');
+  Datepicker._template = ['<div class= "modal datepicker-modal">', '<div class="modal-content datepicker-container">', '<div class="datepicker-date-display">', '<span class="year-text"></span>', '<span class="date-text"></span>', '</div>', '<div class="datepicker-calendar-container">', '<div class="datepicker-calendar"></div>', '<div class="datepicker-footer">', '<button class="btn-flat datepicker-clear waves-effect" style="visibility: hidden;" type="button"></button>', '<div class="confirmation-btns">', '<button class="btn-flat datepicker-cancel waves-effect" type="button"></button>', '<button class="btn-flat datepicker-done waves-effect" type="button"></button>', '</div>', '</div>', '</div>', '</div>', '</div>'].join('');
 
   M.Datepicker = Datepicker;
 
@@ -9882,7 +9882,7 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "_pickerSetup",
       value: function _pickerSetup() {
-        var $clearBtn = $("<button class=\"btn-flat timepicker-clear waves-effect\" CSS=\"visibility: hidden;\" type=\"button\" tabindex=\"" + (this.options.twelveHour ? '3' : '1') + "\">" + this.options.i18n.clear + "</button>").appendTo(this.footer).on('click', this.clear.bind(this));
+        var $clearBtn = $("<button class=\"btn-flat timepicker-clear waves-effect\" style=\"visibility: hidden;\" type=\"button\" tabindex=\"" + (this.options.twelveHour ? '3' : '1') + "\">" + this.options.i18n.clear + "</button>").appendTo(this.footer).on('click', this.clear.bind(this));
         if (this.options.showClearBtn) {
           $clearBtn.css({ visibility: '' });
         }
