@@ -1,11 +1,5 @@
 {% if app.user %}
 
-    {% if 'ROLE_JOUEUR' in app.token.roleNames %}
-        <li class="li_in_line{% if app.request.getPathInfo starts with '/contact' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contact</a>
-        </li>
-    {% endif %}
-
     {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
         <li class="li_in_line{% if app.request.getPathInfo == '/compte' %} active blue darken-3{% endif %}">
             <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
@@ -18,6 +12,12 @@
                 </div>
                 Mon compte
             </a>
+        </li>
+    {% endif %}
+
+    {% if 'ROLE_JOUEUR' in app.token.roleNames %}
+        <li class="li_in_line{% if app.request.getPathInfo starts with '/contact' %} active blue darken-3{% endif %}">
+            <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contact</a>
         </li>
     {% endif %}
 
