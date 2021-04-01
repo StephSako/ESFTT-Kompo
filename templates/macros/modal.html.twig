@@ -16,9 +16,9 @@
                 {% else %}
                     <p class="left" style="padding-left: 0; margin-top: 0; margin-bottom: 0;"><b>De</b> :
                         {% if app.user.mail and app.user.contactableMail %}
-                            <span class="grey-text">{{ app.user.mail }}</span>
+                            <span id="spanMail{{ idMail }}{{ competiteur.idCompetiteur }}" class="grey-text">{{ app.user.mail }}</span>
                         {% elseif app.user.mail2 and app.user.contactableMail2 %}
-                            <span class="grey-text">{{ app.user.mail2 }}</span>
+                            <span id="spanMail{{ idMail }}{{ competiteur.idCompetiteur }}" class="grey-text">{{ app.user.mail2 }}</span>
                         {% endif %}
                     </p><br><br>
                 {% endif %}

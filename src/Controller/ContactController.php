@@ -80,22 +80,11 @@ class ContactController extends AbstractController
      */
     public function contact(Request $request): Response
     {
-        dump($request->request);
         $addressReceiver = new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver'));
+        $addressSender = new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
         $sujet = $request->request->get('sujet');
         $message = $request->request->get('message');
         $importance = $request->request->get('importance');
-
-        if ($this->getUser()->getMail() && $this->getUser()->isContactableMail()) {
-            $addressSender = new Address($this->getUser()->getMail(), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
-        }
-        else if ($this->getUser()->getMail2() && $this->getUser()->isContactableMail2()) {
-            $addressSender = new Address($this->getUser()->getMail2(), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
-        }
-        else {
-            $response = new Response(json_encode(['message' => 'Cet adhérent n\'existe pas']));
-            $response->headers->set('Content-Type', 'application/json');
-        }
 
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())

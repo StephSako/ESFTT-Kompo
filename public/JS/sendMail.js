@@ -1,9 +1,15 @@
 function contact(idReceiver, idMail, mailReceiver, nomReceiver)
 {
-    console.log($('#selectMailSender' + idMail + idReceiver).val())
-    /*if (!$('#sujetMail' + idMail + idReceiver).val() || !$('#messageMail' + idMail + idReceiver).val()) {
+    if (!$('#sujetMail' + idMail + idReceiver).val() || !$('#messageMail' + idMail + idReceiver).val()) {
         M.toast({html: 'Renseignez un sujet et un message'});
     } else {
+        let emailSender = '';
+        if ($('select#selectMailSender' + idMail + idReceiver).val()) emailSender = $('select#selectMailSender' + idMail + idReceiver).val()
+        else {
+            if ($('#spanMail1' + idReceiver)[0].innerText) emailSender = $('#spanMail1' + idReceiver)[0].innerText;
+            else emailSender = $('#spanMail2' + idReceiver)[0].innerText;
+        }
+
         sending(idMail, idReceiver, '#sujetMail' + idMail + idReceiver, '#messageMail' + idMail + idReceiver, '#importance' + idMail + idReceiver);
 
         $.ajax({
@@ -12,6 +18,7 @@ function contact(idReceiver, idMail, mailReceiver, nomReceiver)
             data: {
                 nomReceiver: nomReceiver,
                 mailReceiver: mailReceiver,
+                mailSender: emailSender,
                 sujet: $('#sujetMail' + idMail + idReceiver).val(),
                 message: $('#messageMail' + idMail + idReceiver).val(),
                 importance: $('#importance' + idMail + idReceiver).is(":checked")
@@ -26,7 +33,7 @@ function contact(idReceiver, idMail, mailReceiver, nomReceiver)
                 endSending(idMail, idReceiver, 'Une erreur est survenue !', '#sujetMail' + idMail + idReceiver, '#messageMail' + idMail + idReceiver, '#importance' + idMail + idReceiver);
             }
         });
-    }*/
+    }
 }
 
 function sending(idMail, idReceiver, sujetInput, messageInput, importanceInput){
