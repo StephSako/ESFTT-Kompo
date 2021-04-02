@@ -18,4 +18,8 @@ $(document).ready(function() {
     $('li[id^="select-options"]').on('touchend', function (e) {
         e.stopPropagation();
     });
+
+    $('.collapsible').collapsible({
+        accordion : false
+    });
 });

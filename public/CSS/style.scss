@@ -265,7 +265,7 @@ a {
   }
 }
 
-.header_compo, .form_div_list div:last-child, .brulage_edit, .bottom_0 {
+.header_compo, .form_div_list div:last-child, .bottom_0 {
   margin-bottom: 0;
 }
 
@@ -284,6 +284,16 @@ p.lobster {
 .divider_custom {
   height: 0.15em;
   background: $light_blue;
+}
+
+.collapsible {
+  border: none;
+  box-shadow: none!important;
+
+  .collapsible-body {
+    border: none;
+    padding: 0 5px;
+  }
 }
 
 .tabs {

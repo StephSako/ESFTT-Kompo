@@ -223,12 +223,23 @@
             {% endif %}
         </div>
 
-        <div class="col s12 m2">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
-        </div>
+        <ul class="collapsible hide-on-med-and-up">
+            <li>
+                <div class="collapsible-header"><i class="blue-text material-icons">feedback</i>Disponibilités</div>
+                <div class="collapsible-body">
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="red-text material-icons">whatshot</i>Brûlages</div>
+                <div class="collapsible-body">
+                    {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+                </div>
+            </li>
+        </ul>
 
-        <div class="col s12 hide-on-med-and-up">
-            {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+        <div class="col s12 m2 hide-on-small-only">
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
         </div>
     </div>
 

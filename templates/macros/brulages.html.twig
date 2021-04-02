@@ -76,7 +76,10 @@
     <table style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %};" class="centered card-panel brulages">
         <thead>
             <tr>
-                <th class="center"><h6 class="lobster">Joueurs sélectionnables et brûlages à J+1</h6></th>
+                <th class="center">
+                    <h6 class="lobster hide-on-small-only">Joueurs sélectionnables et brûlages à J+1</h6>
+                    <h6 class="lobster hide-on-med-and-up">Joueurs</h6>
+                </th>
                 {% for idEquipe in idEquipes %}
                     <th class="center"><h5>{{ idEquipe }}</h5></th>
                 {% endfor %}

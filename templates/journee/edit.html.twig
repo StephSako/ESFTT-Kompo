@@ -11,6 +11,21 @@
 
     {% if rencontreStillEditable(compo) %}
         <div class="row main">
+            <ul class="collapsible hide-on-med-and-up" style="margin-top: 20px; margin-bottom: 0;">
+                <li>
+                    <div class="collapsible-header"><i class="red-text material-icons">whatshot</i>Joueurs brûlés</div>
+                    <div class="collapsible-body">
+                        {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="blue-text material-icons">fast_forward</i>Joueurs sélectionnables et brûlages à J+1</div>
+                    <div class="collapsible-body">
+                        {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
+                    </div>
+                </li>
+            </ul>
+
             <div class="col l2 hide-on-small-only">
                 {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
             </div>
@@ -108,14 +123,6 @@
             <div class="col s12 m3 hide-on-small-only">
                 {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
             </div>
-            <div class="col s12 hide-on-med-and-up">
-                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
-            </div>
-
-            <div class="col s12 hide-on-med-and-up">
-                {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
-            </div>
-            
         </div>
     {% else %}
         <div class="container center">
