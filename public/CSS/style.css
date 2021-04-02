@@ -202,8 +202,8 @@ i {
 }
 .li_in_line.deconnexion > a {
   color: red;
-  -webkit-transition: color 0.4s;
-  transition: color 0.4s;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
 }
 .li_in_line.deconnexion > a:hover {
   background-color: red;
@@ -262,6 +262,22 @@ p.lobster {
 .collapsible .collapsible-body {
   border: none;
   padding: 0 5px;
+}
+.collapsible.backoffice_disponibilites .collapsible-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.collapsible.backoffice_disponibilites .collapsible-header .chip {
+  margin: 0;
+}
+.collapsible.backoffice_disponibilites .collapsible-body {
+  background-color: white;
+}
+.collapsible.backoffice_disponibilites .collapsible-body .row {
+  margin: 0 10px 0 0;
+}
+.collapsible.backoffice_disponibilites .collapsible-body .row:first-child {
+  margin-top: 0;
 }
 
 .tabs .tab a {

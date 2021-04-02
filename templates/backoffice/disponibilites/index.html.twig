@@ -33,7 +33,7 @@
                 <li class="tab"><a href="#disponibilites_paris">Paris</a></li>
             </ul>
 
-            <div class="card-panel center" id="disponibilites_departementales">
+            <div id="disponibilites_departementales">
                 {% if disponibiliteDepartementales|length > 0 %}
                     {{ _disponibilites.backoffice(disponibiliteDepartementales, 'departementale') }}
                 {% else %}
@@ -41,7 +41,7 @@
                 {% endif %}
             </div>
 
-            <div class="card-panel center" id="disponibilites_paris">
+            <div id="disponibilites_paris">
                 {% if disponibiliteDepartementales|length > 0 %}
                     {{ _disponibilites.backoffice(disponibiliteParis, 'paris') }}
                 {% else %}

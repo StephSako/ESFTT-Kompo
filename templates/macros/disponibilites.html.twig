@@ -176,81 +176,95 @@
 
 {% macro backoffice(disponibilites, type) %}
     {% if disponibilites|length > 0 %}
-        <table class="centered striped responsive-table">
-            <thead>
-                <tr class="hide-on-small-only">
-                    <th>Joueur</th>
-                    <th>Journée</th>
-                    <th>Date</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody>
-            {% for dispo in disponibilites %}
-                <tr>
-                    <td>
+        {% for nom, dispos in disponibilites %}
+            <ul class="collapsible backoffice_disponibilites">
+                <li>
+                    <div class="collapsible-header">
                         <div class="chip">
-                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
+                            <img src="{{ asset((disponibilites[nom]|first)['avatar'] ? 'images/profile_pictures/' ~ (disponibilites[nom]|first)['avatar'] : 'images/account.png') }}" alt="Avatar">
+                            <span>{{ nom }}</span>
                         </div>
-                    </td>
-                    <td>J{{ dispo.idJournee }}</td>
-                    <td>
-                        {% if dispo.undefined %}
-                            <span class="red-text">Date indéfinie</span>
-                        {% else %}
-                            <p>{{ dispo.dateJournee | date("d/m/Y") }}</p>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if dispo.classement_officiel and dispo.licence %}
-                            {% if dispo.idDisponibilite is null %}
-                                <div class="row" style="margin-bottom: 0;">
-                                    <div class="col s12 xl6" style="margin-bottom: 5px;">
-                                        <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 1}) }}">
-                                            <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
-                                        </a>
-                                    </div>
-                                    <div class="col s12 xl6">
-                                        <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 0}) }}">
-                                            <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
-                                        </a>
-                                    </div>
-                                </div>
-                            {% else %}
-                                {% if dispo.disponibilite == 1 %}
-                                    <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
-                                    <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')" href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
-                                        <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
-                                    </a>
-                                {% else %}
-                                    <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
-                                    <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
-                                        <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer disponible</button>
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        {% else %}
-                            {% if not dispo.licence and dispo.classement_officiel %}
-                                <span class="red-text lighten-2">Licence indéfinie<br>
-                                    <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
-                                </span>
-                            {% elseif dispo.licence and not dispo.classement_officiel %}
-                                <span class="red-text lighten-2">Classement indéfini<br>
-                                    <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
-                                </span>
-                            {% elseif not dispo.licence and not dispo.classement_officiel %}
-                                <span class="red-text lighten-2">Licence et classement indéfinis<br>
-                                    <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
-                                </span>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                    <div class="collapsible-body">
+                        <table class="centered striped responsive-table">
+                            <thead>
+                                <tr class="hide-on-med-and-down">
+                                    <th></th>
+                                    <th>Journée</th>
+                                    <th>Date</th>
+                                    <th>Disponibilités</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for dispo in dispos %}
+                                    <tr>
+                                        <td class="hide-on-med-and-down">
+                                            <div class="chip">
+                                                <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
+                                                <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
+                                            </div>
+                                        </td>
+                                        <td>J{{ dispo.idJournee }}</td>
+                                        <td>
+                                            {% if dispo.undefined %}
+                                                <span class="red-text">Date indéfinie</span>
+                                            {% else %}
+                                                {{ dispo.dateJournee | date("d/m/Y") }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if dispo.classement_officiel and dispo.licence %}
+                                                {% if dispo.idDisponibilite is null %}
+                                                    <div class="row" style="margin-bottom: 0;">
+                                                        <div class="col s12 xl6">
+                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 1}) }}">
+                                                                <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col s12 xl6">
+                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 0}) }}">
+                                                                <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    {% if dispo.disponibilite == 1 %}
+                                                        <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
+                                                        <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')" href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
+                                                            <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
+                                                        </a>
+                                                    {% else %}
+                                                        <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
+                                                        <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
+                                                            <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer disponible</button>
+                                                        </a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if not dispo.licence and dispo.classement_officiel %}
+                                                    <span class="red-text lighten-2">Licence indéfinie<br>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                    </span>
+                                                {% elseif dispo.licence and not dispo.classement_officiel %}
+                                                    <span class="red-text lighten-2">Classement indéfini<br>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                    </span>
+                                                {% elseif not dispo.licence and not dispo.classement_officiel %}
+                                                    <span class="red-text lighten-2">Licence et classement indéfinis<br>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                    </span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        {% endfor %}
     {% else %}
         <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de disponibilités enregistrées.</p>
     {% endif %}

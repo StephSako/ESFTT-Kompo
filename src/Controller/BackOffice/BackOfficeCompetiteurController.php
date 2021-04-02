@@ -67,7 +67,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function indexCompetiteurs(): Response
     {
         return $this->render('backoffice/competiteur/index.html.twig', [
-            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
+            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC'])
         ]);
     }
 

@@ -224,8 +224,8 @@ i {
 
   &.deconnexion > a{
     color: red;
-    -webkit-transition: color 0.4s;
-    transition: color 0.4s;
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
 
     &:hover {
       background-color: red;
@@ -293,6 +293,29 @@ p.lobster {
   .collapsible-body {
     border: none;
     padding: 0 5px;
+  }
+
+  &.backoffice_disponibilites {
+
+    .collapsible-header {
+      padding-top: 6px;
+      padding-bottom: 6px;
+
+      .chip {
+        margin: 0;
+      }
+    }
+    .collapsible-body {
+      background-color: white;
+
+      .row {
+        margin: 0 10px 0 0;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
   }
 }
 

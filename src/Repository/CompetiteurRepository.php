@@ -40,7 +40,6 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * TODO A mettre dans DisponibiliteXxx
      * Récapitulatif de toutes les disponibilités dans la modale
      * @param string $type
      * @param int $nbJournees
@@ -247,14 +246,13 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * TODO A mettre dans DisponibiliteXxx
-     * Liste de toutes les disponibilités
+     * Liste des disponibilités de tous les joueurs
      * @param string $type
      * @return int|mixed|string
      */
     public function findAllDisponibilites(string $type)
     {
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->select('c.avatar')
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.nom')
@@ -268,10 +266,17 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('j.dateJournee')
             ->from('App:Journee' . ucfirst($type), 'j')
             ->where('c.visitor <> true')
-            ->orderBy('c.nom')
-            ->addOrderBy('c.prenom')
-            ->addOrderBy('j.idJournee')
+            ->orderBy('c.nom', 'ASC')
+            ->addOrderBy('c.prenom', 'ASC')
+            ->addOrderBy('j.idJournee', 'ASC')
             ->getQuery()
             ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[$item['nom'] . ' ' . $item['prenom']][$key] = $item;
+        }
+
+        return $querySorted;
     }
 }
