@@ -14,10 +14,8 @@
             <h4>Page de contact</h4>
         </div>
 
-        <div class="card-panel">
-
             {% if competiteurs|length > 0 %}
-                <table class="striped centered responsive-table table_contact">
+                <table class="card-panel striped centered responsive-table table_contact">
                     <thead>
                         <tr class="hide-on-small-only">
                             <th></th>
@@ -53,7 +51,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                                    <td class="buttons" style="padding-top: 10px !important; padding-bottom: 10px !important; height: 100px !important;">
+                                    <td class="td_buttons_contact">
                                         {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                             {% if competiteur.mail and competiteur.contactableMail %}
                                                 <a class="btn blue modal-trigger" href="#contactMail1{{ competiteur.idCompetiteur }}">
@@ -71,7 +69,7 @@
                                             <p class="grey-text"><i>Non renseigné</i></p>
                                         {% endif %}
                                     </td>
-                                    <td class="buttons" style="padding-top: 10px !important; padding-bottom: 10px !important; height: 100px !important;">
+                                    <td class="td_buttons_contact">
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                             {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
                                                 <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
@@ -96,7 +94,6 @@
                 <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
             {% endif %}
         </div>
-    </div>
 
     <script src="{{ asset('JS/sendMail.js') }}"></script>
 {% endblock %}

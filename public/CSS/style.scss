@@ -222,13 +222,27 @@ i {
     background-color: $light_blue;
   }
 
-  &.deconnexion:hover {
-    background-color: red;
+  &.deconnexion > a{
+    color: red;
+    -webkit-transition: color 0.4s;
+    transition: color 0.4s;
+
+    &:hover {
+      background-color: red;
+      color: white;
+    }
   }
 }
 
-#menu_dropdown>li.deconnexion:hover {
-  background-color: red;
+#menu_dropdown>li {
+  &.deconnexion > a{
+    color: red;
+
+    &:hover {
+      background-color: red;
+      color: white;
+    }
+  }
 }
 
 .li_in_line {
@@ -420,6 +434,12 @@ div .profile_pic .file-field.input-field{
     //filter: blur(4px);
     //-webkit-filter: blur(4px);
     //}
+  }
+
+  td.td_buttons_contact {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    height: 100px !important;
   }
 
   td:nth-last-child(2) {

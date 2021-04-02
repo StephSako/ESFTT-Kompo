@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="input-field">
-                    <textarea id="messageMail{{ idMail }}{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
+                    <textarea style="min-height: 100px !important;" id="messageMail{{ idMail }}{{ competiteur.idCompetiteur }}" class="materialize-textarea validate" placeholder="Message" required></textarea>
                 </div>
 
                 <a style="margin: 5px;" id="btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}" onclick="contact('{{ competiteur.idCompetiteur}}', '{{ idMail }}', '{{ mail }}', '{{ competiteur.nom }} {{ competiteur.prenom }}')" class="btn waves-effect green lighten-2 waves-light">

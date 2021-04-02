@@ -27,13 +27,15 @@
                 <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
             </li>
         {% endif %}
-
-        <li class="waves-light waves-effect li_in_line deconnexion"><a class="white-text" href="{{ path('logout') }}">Se déconnecter</a></li>
     {% endif %}
 
     <li class="waves-light waves-effect li_in_line">
         <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
     </li>
+
+    {% if app.user %}
+        <li class="waves-light waves-effect li_in_line deconnexion"><a href="{{ path('logout') }}"><i class="material-icons">exit_to_app</i></a></li>
+    {% endif %}
 </ul>
 
 <ul class="right">
@@ -75,13 +77,15 @@
                 <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
             </li>
         {% endif %}
-
-        <li class="waves-light waves-effect deconnexion">
-            <a class="white-text" href="{{ path('logout') }}">Se déconnecter</a>
-        </li>
     {% endif %}
 
     <li class="waves-light waves-effect" style="margin-left: 0;">
         <a class="white-text" href="https://www.esftt.com/forum">Forum</a>
     </li>
+
+    {% if app.user %}
+        <li class="waves-light waves-effect deconnexion">
+            <a href="{{ path('logout') }}"><i class="material-icons">exit_to_app</i></a>
+        </li>
+    {% endif %}
 </ul>

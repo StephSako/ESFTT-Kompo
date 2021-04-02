@@ -200,12 +200,22 @@ i {
 .li_in_line:hover {
   background-color: #1565c0;
 }
-.li_in_line.deconnexion:hover {
+.li_in_line.deconnexion > a {
+  color: red;
+  -webkit-transition: color 0.4s;
+  transition: color 0.4s;
+}
+.li_in_line.deconnexion > a:hover {
   background-color: red;
+  color: white;
 }
 
-#menu_dropdown > li.deconnexion:hover {
+#menu_dropdown > li.deconnexion > a {
+  color: red;
+}
+#menu_dropdown > li.deconnexion > a:hover {
   background-color: red;
+  color: white;
 }
 
 .nav-wrapper .li_in_line {
@@ -371,6 +381,11 @@ div .profile_pic .file-field.input-field {
   text-transform: none;
   margin-top: 2px;
   margin-bottom: 2px;
+}
+.table_contact td.td_buttons_contact {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  height: 100px !important;
 }
 .table_contact td:nth-last-child(2) {
   min-height: 74px;
