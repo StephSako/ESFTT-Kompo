@@ -45,7 +45,7 @@ class JourneeParis
     /**
      * @var string
      */
-    private $type = 'Départemental';
+    private $type = 'Paris';
 
     /**
      * @var string
