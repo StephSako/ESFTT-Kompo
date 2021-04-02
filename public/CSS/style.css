@@ -31,6 +31,13 @@ body {
   border-radius: 10px;
   margin-top: 20px;
 }
+.card-panel.bottom_0 {
+  padding-top: 10px;
+  padding-bottom: 6px;
+}
+.card-panel.backoffice-panel {
+  padding: 4px 0;
+}
 
 .btn {
   margin-top: 20px;
@@ -138,11 +145,6 @@ li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
 
 .sidenav li a {
   font-size: 17px;
-}
-
-.card-panel.bottom_0 {
-  padding-top: 10px;
-  padding-bottom: 6px;
 }
 
 .chip {
@@ -262,6 +264,10 @@ p.lobster {
 .collapsible .collapsible-body {
   border: none;
   padding: 0 5px;
+}
+.collapsible.backoffice_disponibilites {
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 .collapsible.backoffice_disponibilites .collapsible-header {
   padding-top: 6px;

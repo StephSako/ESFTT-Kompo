@@ -121,21 +121,23 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function getBrulagesSelectionnables(string $type, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
     {
-        if ($idJournee == 2) $strJ2 = '';
+        if ($idJournee == 2 && $type == 'departementale') $strJ2 = '';
         $strD = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            if ($idJournee == 2) $strJ2 .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($idJournee == 2 && $type == 'departementale') $strJ2 .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
             $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
             if ($j < $nbJoueurs - 1){
                 $strD .= ' OR ';
-                if ($idJournee == 2) $strJ2 .= ' OR ';
+                if ($idJournee == 2 && $type == 'departementale') $strJ2 .= ' OR ';
             }
         }
+
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom')
             ->addSelect('c.idCompetiteur');
-        if ($idJournee == 2){
+
+        if ($idJournee == 2 && $type == 'departementale'){
             $brulages = $brulages->addSelect('(SELECT COUNT(rd.id)' .
                 ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
                 ' WHERE e.idDivision IS NOT NULL' .

@@ -67,7 +67,7 @@
 {% endmacro %}
 
 {% macro selectionnables(type, selectionnables, idEquipe, idJournee, idEquipes) %}
-    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 %}
+    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 and type == 'departementale' %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
             <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 joueur orange maximum doit être sélectionné dans cette équipe</i></span>
         </div>

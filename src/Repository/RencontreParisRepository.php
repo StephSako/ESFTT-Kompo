@@ -54,48 +54,68 @@ class RencontreParisRepository extends ServiceEntityRepository
      * @return int|mixed|string
      */
     public function getOrderedRencontres(){
-        return $this->createQueryBuilder('rp')
+        $query = $this->createQueryBuilder('rp')
+            ->select('e.numero')
+            ->addSelect('j.idJournee')
+            ->addSelect('j.dateJournee')
+            ->addSelect('j.undefined')
+            ->addSelect('rp.adversaire')
+            ->addSelect('rp.domicile')
+            ->addSelect('rp.hosted')
+            ->addSelect('d.idDivision')
+            ->addSelect('rp.reporte')
+            ->addSelect('rp.exempt')
+            ->addSelect('rp.dateReport')
+            ->addSelect('rp.id')
             ->leftJoin('rp.idJournee', 'j')
             ->leftJoin('rp.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
             ->orderBy('j.dateJournee')
             ->addOrderBy('rp.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()
             ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[($item['dateJournee'])->format('d/m/Y')][$key] = $item;
+        }
+
+        return $querySorted;
     }
 
     /**
-     * Liste des compositions où le joueur est brûlés et sélectionnés
+     * Liste des compositions où le joueur est brûlé et sélectionné
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $idEquipe
-     * @param int $limitePreBrulage
+     * @param int $limiteBrulage
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
     public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs){
-        $query = $this->createQueryBuilder('rd')
-            ->select('rd as compo');
-        $strP = $strRD = '';
+        $query = $this->createQueryBuilder('rp')
+            ->select('rp as compo');
+        $strP = $strRP = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
-            $strRD .= 'rd.idJoueur' .$i . ' = c.idCompetiteur';
+            $strRP .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1){
                 $strP .= ' OR ';
-                $strRD .= ' OR ';
+                $strRP .= ' OR ';
             }
-            $query = $query->addSelect('IF(rd.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
         $query = $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rd.idEquipe', 'e')
-            ->where('rd.idJournee > :idJournee')
+            ->leftJoin('rp.idEquipe', 'e')
+            ->where('rp.idJournee > :idJournee')
             ->andWhere('e.numero > :idEquipe')
             ->setParameter('idEquipe', $idEquipe)
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->andWhere($strRD)
+            ->andWhere($strRP)
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p, App\Entity\EquipeParis e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND p.idJournee <= :idJournee AND e1.idDivision IS NOT NULL AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeParis e2 WHERE e2.idDivision IS NOT NULL)) >= ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
             ->getQuery()

@@ -1,69 +1,87 @@
 {% macro table(rencontres, type) %}
     {% if rencontres|length > 0 %}
-        <table class="striped centered responsive-table">
-            <thead>
-                <tr>
-                    <th>Equipe</th>
-                    <th>Journée</th>
-                    <th>Date</th>
-                    <th>Adversaire</th>
-                    <th>Lieu</th>
-                    <th>Salle dispo</th>
-                    <th></th>
-                </tr>
-            </thead>
+        {% for date, matches in rencontres %}
+            <ul class="collapsible backoffice_disponibilites">
+                <li>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="material-icons" style="vertical-align: text-top;">today</i>J{{ (rencontres[date]|first)['idJournee'] }}
+                            - {{ (rencontres[date]|first)['dateJournee']|format_datetime('long', 'none', locale='fr')|title }}
+                        </div>
+                    </div>
+                    <div class="collapsible-body">
+                        <table class="striped centered responsive-table">
+                            <thead>
+                            <tr>
+                                <th>Equipe</th>
+                                <th>Journée</th>
+                                <th>Date</th>
+                                <th>Adversaire</th>
+                                <th>Lieu</th>
+                                <th>Salle dispo</th>
+                                <th></th>
+                            </tr>
+                            </thead>
 
-            <tbody>
-                {% for rencontre in rencontres %}
-                    <tr>
-                        <td>
-                            {{ rencontre.idEquipe.idEquipe }}
-                            {% if rencontre.idEquipe.idDivision is null %}
-                                <i class="material-icons tooltipped red-text" data-tooltip="Renseignez la division de l'équipe">help_outline</i>
-                            {% endif %}
-                        </td>
-                        <td>{{ rencontre.idJournee.idJournee }}</td>
-                        <td>
-                            <div class="hide-on-small-only">
-                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr') }}</span>
-                                {% else %}{{ rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}
-                                {% endif %}
-                            </div>
-                            <div class="hide-on-med-and-up">
-                                {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
-                                {% else %}{{ rencontre.idJournee.dateJournee | date("d/m/Y") }}
-                                {% endif %}
-                            </div>
-                        </td>
-                        <td>
-                            {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Pas de match</span>
-                            {% else %}
-                                {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
-                                {% else %} <span class="red-text">Adversaire indéfini</span>
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td style="height: 59px;">
-                            {% if not rencontre.exempt %}
-                                {% if rencontre.domicile %} <i class="material-icons">home</i>
-                                {% else %} <i class="material-icons">directions_car</i>
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td style="height: 59px; padding-top: 8px;">
-                            {% if not rencontre.exempt and rencontre.domicile %}
-                                {% if not rencontre.hosted %} <i class="green-text material-icons">check</i>
-                                {% else %} <i class="red-text material-icons">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                            <tbody>
+                            {% for rencontre in matches %}
+                                <tr>
+                                    <td>
+                                        {{ rencontre.numero }}
+                                        {% if rencontre.idDivision is null %}
+                                            <i class="material-icons tooltipped red-text" data-tooltip="Renseignez la division de l'équipe">help_outline</i>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ rencontre.idJournee }}</td>
+                                    <td>
+                                        {% if rencontre.undefined %}
+                                            <span class="red-text">Date indéfinie</span>
+                                        {% else %}
+                                            <div class="hide-on-small-only">
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr') }}</span>
+                                                {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr') }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="hide-on-med-and-up">
+                                                {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
+                                                {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Pas de match</span>
+                                        {% else %}
+                                            {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
+                                            {% else %} <span class="red-text">Adversaire indéfini</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td style="height: 59px;">
+                                        {% if not rencontre.exempt %}
+                                            {% if rencontre.domicile %} <i class="material-icons">home</i>
+                                            {% else %} <i class="material-icons">directions_car</i>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td style="height: 59px; padding-top: 8px;">
+                                        {% if not rencontre.exempt and rencontre.domicile %}
+                                            {% if not rencontre.hosted %} <i class="green-text material-icons">check</i>
+                                            {% else %} <i class="red-text material-icons">clear</i>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        {% endfor %}
     {% else %}
         <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de rencontres enregistrées.</p>
     {% endif %}

@@ -54,14 +54,34 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
      * @return int|mixed|string
      */
     public function getOrderedRencontres(){
-        return $this->createQueryBuilder('rd')
+        $query = $this->createQueryBuilder('rd')
+            ->select('e.numero')
+            ->addSelect('j.idJournee')
+            ->addSelect('j.dateJournee')
+            ->addSelect('j.undefined')
+            ->addSelect('rd.adversaire')
+            ->addSelect('rd.domicile')
+            ->addSelect('rd.hosted')
+            ->addSelect('d.idDivision')
+            ->addSelect('rd.reporte')
+            ->addSelect('rd.exempt')
+            ->addSelect('rd.dateReport')
+            ->addSelect('rd.id')
             ->leftJoin('rd.idJournee', 'j')
             ->leftJoin('rd.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
             ->orderBy('j.dateJournee')
             ->addOrderBy('rd.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()
             ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[($item['dateJournee'])->format('d/m/Y')][$key] = $item;
+        }
+
+        return $querySorted;
     }
 
     /**

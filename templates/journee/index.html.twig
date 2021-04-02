@@ -36,7 +36,7 @@
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
-                    <h5>{{ journee.dateJournee | format_datetime('long', 'none', locale='fr') }}</h5>
+                    <h5>{{ journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h5>
                 {% endif %}
             </div>
 
@@ -142,7 +142,7 @@
                             </div>
 
                             <div class="col s4 m3">
-                                <h5 class="lobster_2" style="margin-bottom: 0; margin-top: 14px;">Équipe {{ compo.idEquipe.idEquipe }}</h5>
+                                <h5 class="lobster_2" style="margin-bottom: 0; margin-top: 14px;">Équipe {{ compo.idEquipe.numero }}</h5>
                             </div>
 
                             {% if not compo.exempt %}

@@ -3,7 +3,7 @@
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 
-{% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.idEquipe }}{% endblock %}
+{% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.numero }}{% endblock %}
 
 {% block body %}
 
@@ -15,7 +15,7 @@
                 <li>
                     <div class="collapsible-header"><i class="red-text material-icons">whatshot</i>Joueurs brûlés</div>
                     <div class="collapsible-body">
-                        {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+                        {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.numero) }}
                     </div>
                 </li>
                 <li>
@@ -27,7 +27,7 @@
             </ul>
 
             <div class="col l2 hide-on-small-only">
-                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.idEquipe) }}
+                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.numero) }}
             </div>
 
             <div class="col s12 m7">
@@ -52,14 +52,8 @@
                             </span>
                     {% endif %}
 
-                    {% if compo.idJournee.linkType == 'paris' and compo.idEquipe.idDivision is null and 'ROLE_CAPITAINE' in app.token.roleNames %}
-                        <p class="orange-text text-darken-4" style="margin-top: 0;">
-                            Le nombre correct de joueurs sera mis à jour lorsque la division de l'équipe sera renseignée <a href="{{ path('backoffice.equipe.edit', {idEquipe: compo.idEquipe.idEquipe, type: compo.idJournee.linkType}) }}">ici</a>
-                        </p>
-                    {% endif %}
-
-                    <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
-                    <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.idEquipe }}</h4>
+                    <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
+                    <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
 
                     <div class="row header_compo">
                         {% if compo.adversaire is null %}

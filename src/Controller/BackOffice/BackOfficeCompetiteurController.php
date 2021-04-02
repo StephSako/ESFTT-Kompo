@@ -156,7 +156,6 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->addFlash('success', 'Compétiteur modifié avec succès !');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
-                    dump($e);
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
                         if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');

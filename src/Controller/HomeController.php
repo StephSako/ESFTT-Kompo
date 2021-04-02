@@ -249,7 +249,7 @@ class HomeController extends AbstractController
     {
         $journees = $form = null;
         $nbMaxJoueurs = 0;
-        $brulageSelectionnables = $idEquipes = [];
+        $brulageSelectionnables = $idEquipes = $joueursBrules = [];
         if ($type != ('departementale' || 'paris')) throw new Exception('Ce championnat est inexistant', 500);
 
         if ($type == 'departementale'){
@@ -284,15 +284,18 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** Liste des joueurs brûlés en J2 */
-            $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
-                {   return ($joueur["bruleJ2"]);    }
-            ), 'idCompetiteur');
 
-            /** On vérifie qu'il n'y aie pas 2 joueurs brûlés ou + sélectionnés pour respecter la règle de la J2 **/
             $nbJoueursBruleJ2 = 0;
-            for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                if ($form->getData()->getIdJoueurN($i) && in_array($form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+            if ($type == 'departementale'){
+                /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
+                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
+                {   return ($joueur["bruleJ2"]);    }
+                ), 'idCompetiteur');
+
+                /** On vérifie qu'il n'y aie pas 2 joueurs brûlés ou + sélectionnés pour respecter la règle de la J2 **/
+                for ($i = 0; $i < $nbJoueursDivision; $i++) {
+                    if ($form->getData()->getIdJoueurN($i) && in_array($form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
+                }
             }
 
             if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
