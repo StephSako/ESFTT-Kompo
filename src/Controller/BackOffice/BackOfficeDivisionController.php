@@ -7,6 +7,8 @@ use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeDepartementaleRepository;
 use App\Repository\EquipeParisRepository;
+use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,23 +22,31 @@ class BackOfficeDivisionController extends AbstractController
     private $divisionRepository;
     private $equipeDepartementaleRepository;
     private $equipeParisRepository;
+    private $rencontreDepartementaleRepository;
+    private $rencontreParisRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
+     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
+     * @param RencontreParisRepository $rencontreParisRepository
      * @param EquipeParisRepository $equipeParisRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
                                 EquipeDepartementaleRepository $equipeDepartementaleRepository,
+                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+                                RencontreParisRepository $rencontreParisRepository,
                                 EquipeParisRepository $equipeParisRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
         $this->equipeParisRepository = $equipeParisRepository;
+        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
+        $this->rencontreParisRepository = $rencontreParisRepository;
     }
 
     /**
@@ -141,8 +151,26 @@ class BackOfficeDivisionController extends AbstractController
         if (!($division = $this->divisionRepository->find($idDivision))) throw new Exception('Cette division est inexistante', 500);
 
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
+
+            /** On vide les compos des équipes affiliées à la division qui va être supprimée **/
+            $compos = $this->rencontreDepartementaleRepository->getRencontresForDivision($idDivision);
+            foreach ($compos as $compo){
+                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale(); $i++){
+                    $compo->setIdJoueurN($i, null);
+                }
+            }
+
+            $compos = $this->rencontreParisRepository->getRencontresForDivision($idDivision);
+            foreach ($compos as $compo){
+                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+                    $compo->setIdJoueurN($i, null);
+                }
+            }
+
+            /** On met la division des équipes affiliées à NULL **/
             $this->equipeDepartementaleRepository->setDeletedDivisionToNull($idDivision);
             $this->equipeParisRepository->setDeletedDivisionToNull($idDivision);
+
             $this->em->remove($division);
             $this->em->flush();
             $this->addFlash('success', 'Division supprimée avec succès !');

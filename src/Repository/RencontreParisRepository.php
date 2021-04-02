@@ -148,4 +148,23 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param int $idDivision
+     * @return int|mixed|string
+     */
+    public function getRencontresForDivision(int $idDivision)
+    {
+        return $this->createQueryBuilder('rp')
+            ->select('rp')
+            ->addSelect('e')
+            ->addSelect('d')
+            ->leftJoin('rp.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
+            ->where('e.idDivision = :idDivision')
+            ->andWhere('rp.idEquipe = e.idEquipe')
+            ->setParameter('idDivision', $idDivision)
+            ->getQuery()
+            ->getResult();
+    }
 }

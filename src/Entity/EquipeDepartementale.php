@@ -54,7 +54,7 @@ class EquipeDepartementale
      * @var Division|null
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Division", inversedBy="equipesDepartementales")
-     * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id_division", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id_division")
      */
     private $idDivision;
 

@@ -148,4 +148,23 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param int $idDivision
+     * @return int|mixed|string
+     */
+    public function getRencontresForDivision(int $idDivision)
+    {
+        return $this->createQueryBuilder('rd')
+            ->select('rd')
+            ->addSelect('e')
+            ->addSelect('d')
+            ->leftJoin('rd.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
+            ->where('e.idDivision = :idDivision')
+            ->andWhere('rd.idEquipe = e.idEquipe')
+            ->setParameter('idDivision', $idDivision)
+            ->getQuery()
+            ->getResult();
+    }
 }
