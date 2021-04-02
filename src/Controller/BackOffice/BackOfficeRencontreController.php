@@ -90,7 +90,7 @@ class BackOfficeRencontreController extends AbstractController
                     'domicile' => $domicile,
                     'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
                     'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
-                    'idEquipe' => $rencontre->getIdEquipe()->getIdEquipe()
+                    'idEquipe' => $rencontre->getIdEquipe()->getNumero()
                 ]);
             }
         }
@@ -101,7 +101,7 @@ class BackOfficeRencontreController extends AbstractController
             'domicile' => $domicile,
             'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
             'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
-            'idEquipe' => $rencontre->getIdEquipe()->getIdEquipe()
+            'idEquipe' => $rencontre->getIdEquipe()->getNumero()
         ]);
     }
 }
