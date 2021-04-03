@@ -85,7 +85,7 @@ class SecurityController extends AbstractController
                         if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
                         if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                     }
-                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     return $this->render('account/edit.html.twig', [
                         'type' => 'general',
                         'user' => $user,

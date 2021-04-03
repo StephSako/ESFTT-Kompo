@@ -1,19 +1,24 @@
 {% macro table(rencontres, type) %}
     {% if rencontres|length > 0 %}
-        {% for date, matches in rencontres %}
+        {% for numero, matches in rencontres %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
-                            <i class="material-icons" style="vertical-align: text-top;">today</i>J{{ (rencontres[date]|first)['idJournee'] }}
-                            - {{ (rencontres[date]|first)['dateJournee']|format_datetime('long', 'none', locale='fr')|title }}
+                            <i class="material-icons" style="vertical-align: middle;">people</i>Équipe {{ numero }}
                         </div>
                     </div>
                     <div class="collapsible-body">
+
+                        {% if(rencontres[numero]|first)['idDivision'] is null %}
+                            <p class="center red-text" style="background-color: rgba(241,35,35, 0.2); border-radius: 5px; padding: 5px 0;">
+                                <b>Division non renseignée</b>
+                            </p>
+                        {% endif %}
+
                         <table class="striped centered responsive-table">
                             <thead>
                             <tr>
-                                <th>Equipe</th>
                                 <th>Journée</th>
                                 <th>Date</th>
                                 <th>Adversaire</th>
@@ -26,12 +31,6 @@
                             <tbody>
                             {% for rencontre in matches %}
                                 <tr>
-                                    <td>
-                                        {{ rencontre.numero }}
-                                        {% if rencontre.idDivision is null %}
-                                            <i class="material-icons tooltipped red-text" data-tooltip="Renseignez la division de l'équipe">help_outline</i>
-                                        {% endif %}
-                                    </td>
                                     <td>{{ rencontre.idJournee }}</td>
                                     <td>
                                         {% if rencontre.undefined %}

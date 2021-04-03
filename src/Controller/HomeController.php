@@ -313,7 +313,7 @@ class HomeController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'CHK_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                     }
-                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
 
                     return $this->render('journee/edit.html.twig', [
                         'joueursBrules' => $joueursBrules,

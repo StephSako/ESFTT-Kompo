@@ -78,7 +78,7 @@ class RencontreParisRepository extends ServiceEntityRepository
 
         $querySorted = [];
         foreach ($query as $key => $item) {
-            $querySorted[($item['dateJournee'])->format('d/m/Y')][$key] = $item;
+            $querySorted[$item['numero']][$key] = $item;
         }
 
         return $querySorted;
