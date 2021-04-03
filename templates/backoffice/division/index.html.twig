@@ -43,8 +43,8 @@
                         <tr>
                             <td>{{ division.shortName }}</td>
                             <td>{{ division.longName }}</td>
-                            <td>{{ division.nbJoueursChamp('departementale') != -1 ? division.nbJoueursChampDepartementale : "<i class='grey-text material-icons'>block</i>" }} joueurs</td>
-                            <td>{{ division.nbJoueursChamp('paris') != -1 ? division.nbJoueursChampParis : "<i class='grey-text material-icons'>block</i>" }} joueurs</td>
+                            <td>{{ division.nbJoueursChamp('departementale') != -1 ? division.nbJoueursChampDepartementale ~ ' joueurs' : "<i class='grey-text material-icons'>block</i>" }}</td>
+                            <td>{{ division.nbJoueursChamp('paris') != -1 ? division.nbJoueursChampParis ~ ' joueurs' : "<i class='grey-text material-icons'>block</i>" }}</td>
                             <td>
                                 <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                             </td>

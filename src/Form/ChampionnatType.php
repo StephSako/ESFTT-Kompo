@@ -23,7 +23,7 @@ class ChampionnatType extends AbstractType
                 ]
             ])
             ->add('j2Rule', CheckboxType::class,[
-                'label' => 'Règle de la J2 appliquée',
+                'label' => ' ',
                 'required' => false
             ]);
     }

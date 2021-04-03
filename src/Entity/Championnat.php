@@ -6,18 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Cocur\Slugify\Slugify;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionnatRepository")
  * @ORM\Table(
  *     name="prive_championnat",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_champ_nom", columns={"nom"}),
- *          @UniqueConstraint(name="UNIQ_champ_slug", columns={"slug"})
+ *          @UniqueConstraint(name="UNIQ_champ_nom", columns={"nom"})
  *     }
  * )
  * @UniqueEntity(
- *     fields={"nom", "slug"}
+ *     fields={"nom"}
  * )
  */
 class Championnat
@@ -81,6 +81,14 @@ class Championnat
     }
 
     /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return (new Slugify())->slugify($this->nom);
+    }
+
+    /**
      * @param string|null $nom
      * @return Championnat
      */
@@ -95,16 +103,16 @@ class Championnat
      */
     public function isJ2Rule(): bool
     {
-        return $this->j2_rule;
+        return $this->j2Rule;
     }
 
     /**
-     * @param bool $j2_rule
+     * @param bool $j2Rule
      * @return Championnat
      */
-    public function setJ2Rule(bool $j2_rule): self
+    public function setJ2Rule(bool $j2Rule): self
     {
-        $this->j2_rule = $j2_rule;
+        $this->j2Rule = $j2Rule;
         return $this;
     }
 }

@@ -26,7 +26,7 @@ class BackOfficeChampionnatController extends AbstractController
     }
 
     /**
-     * @Route("/back/office/championnat", name="back_office.championnats")
+     * @Route("/backoffice/championnats", name="back_office.championnats")
      */
     public function index(): Response
     {

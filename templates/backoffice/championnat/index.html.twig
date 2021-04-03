@@ -43,10 +43,8 @@
                             <td>{{ championnat.nom }}</td>
                             <td>{{ championnat.slug }}</td>
                             <td>
-                                {% if not rencontre.exempt %}
-                                    {% if rencontre.domicile %} <i class="material-icons">home</i>
-                                    {% else %} <i class="material-icons">directions_car</i>
-                                    {% endif %}
+                                {% if championnat.j2Rule %} <i class="material-icons green-text">check</i>
+                                {% else %} <i class="material-icons red-text">block</i>
                                 {% endif %}
                             </td>
                             <td>
