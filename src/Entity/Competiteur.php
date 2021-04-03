@@ -68,6 +68,10 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var string
      *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
      * @Assert\Length(
      *      min = 2,
      *      max = 50,
@@ -89,6 +93,10 @@ class Competiteur implements UserInterface, Serializable
      *      maxMessage = "Le nom doit contenir au maximum {{ limit }} caractères"
      * )
      *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
      * @ORM\Column(type="string", length=50, name="prenom", nullable=false)
      */
     private $prenom;
@@ -104,6 +112,10 @@ class Competiteur implements UserInterface, Serializable
      *      minMessage = "Le mot de passe doit contenir au moins {{ limit }} caractères",
      *      maxMessage = "Le mot de passe doit contenir au maximum {{ limit }} caractères"
      * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
      */
     private $password = '$2y$12$sOKw0xGfJpYyRRamBiT8kO5qZx7SllVHQ6DEas0S48JbGUxSW7nqC';
 
@@ -111,6 +123,10 @@ class Competiteur implements UserInterface, Serializable
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=50, nullable=false)
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
      *
      * @Assert\Length(
      *      min = 2,
@@ -323,10 +339,10 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param string $nom
+     * @param string|null $nom
      * @return $this
      */
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
         return $this;
@@ -347,16 +363,6 @@ class Competiteur implements UserInterface, Serializable
     public function setPassword(string $password): self
     {
         $this->password = $password;
-        return $this;
-    }
-
-    /**
-     * @param string $username
-     * @return Competiteur
-     */
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
         return $this;
     }
 
@@ -391,6 +397,16 @@ class Competiteur implements UserInterface, Serializable
     public function getUsername(): string
     {
         return $this->username;
+    }
+
+    /**
+     * @param string|null $username
+     * @return Competiteur
+     */
+    public function setUsername(?string $username): self
+    {
+        $this->username = ($username ?: 'username');
+        return $this;
     }
 
     public function eraseCredentials()
@@ -736,10 +752,10 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param string $prenom
+     * @param string|null $prenom
      * @return Competiteur
      */
-    public function setPrenom(string $prenom): self
+    public function setPrenom(?string $prenom): self
     {
         $this->prenom = $prenom;
         return $this;

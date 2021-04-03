@@ -67,7 +67,7 @@
                                 </a>
                             {% endif %}
                         {% else %}
-                            <h5>{{ app.user.username | capitalize }}, êtes-vous disponible pour cette journée ?</h5>
+                            <h5>Êtes-vous disponible pour cette journée ?</h5>
                             <div class="row">
                                 <div class="col s6">
                                     <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
@@ -93,7 +93,7 @@
                 </div>
             {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible is null %}
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-                    <h5>{{ app.user.username | capitalize }}, vous n'avez pas déclaré votre disponibilité ...</h5>
+                    <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
                 </div>
             {% endif %}
 

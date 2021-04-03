@@ -37,6 +37,10 @@ class Poule
      *      exactMessage = "La poule doit contenir exactement {{ limit }} lettre"
      * )
      *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
      * @ORM\Column(type="string", name="poule", nullable=false, length=1)
      */
     private $poule;
@@ -68,10 +72,10 @@ class Poule
     }
 
     /**
-     * @param string $poule
+     * @param string|null $poule
      * @return Poule
      */
-    public function setPoule(string $poule): self
+    public function setPoule(?string $poule): self
     {
         $this->poule = $poule;
         return $this;

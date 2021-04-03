@@ -97,7 +97,7 @@ class SecurityController extends AbstractController
                 }
             }
             else {
-                $this->addFlash('fail', 'Une erreur est survenue ...');
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
@@ -112,6 +112,7 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * // TODO Refaire
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder

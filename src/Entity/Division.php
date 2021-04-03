@@ -39,12 +39,20 @@ class Division
      *      maxMessage = "Le diminitif doit contenir au maximum {{ limit }} lettres"
      * )
      *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
      * @ORM\Column(type="string", name="short_name", nullable=false, length=2)
      */
     private $shortName;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
      *
      * @Assert\Length(
      *      min = 2,
@@ -75,6 +83,10 @@ class Division
      *     message = "Le nombre maximal de joueurs est {{ value }}"
      * )
      *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
      * @ORM\Column(type="integer", name="nb_joueurs_champ_departementale", nullable=false)
      */
     private $nbJoueursChampDepartementale;
@@ -96,6 +108,10 @@ class Division
      *     value = 9,
      *     message = "Le nombre maximal de joueurs est {{ value }}"
      * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
      *
      * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=false)
      */
@@ -145,10 +161,10 @@ class Division
     }
 
     /**
-     * @param string $shortName
+     * @param string|null $shortName
      * @return Division
      */
-    public function setShortName(string $shortName): self
+    public function setShortName(?string $shortName): self
     {
         $this->shortName = $shortName;
         return $this;
@@ -163,10 +179,10 @@ class Division
     }
 
     /**
-     * @param string $longName
+     * @param string|null $longName
      * @return Division
      */
-    public function setLongName(string $longName): self
+    public function setLongName(?string $longName): self
     {
         $this->longName = $longName;
         return $this;

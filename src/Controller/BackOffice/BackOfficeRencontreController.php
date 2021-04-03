@@ -69,29 +69,33 @@ class BackOfficeRencontreController extends AbstractController
         $form->handleRequest($request);
         $domicile = ($rencontre->getDomicile() ? "D" : "E");
 
-        if ($form->isSubmitted() && $form->isValid()){
-            try {
-                /** On récupère la valeur du switch du template **/
-                $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
+        if ($form->isSubmitted()){
+            if ($form->isValid()){
+                try {
+                    /** On récupère la valeur du switch du template **/
+                    $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
 
-                /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
-                if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
+                    /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
+                    if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
 
-                $rencontre->setAdversaire(ucwords(strtolower($rencontre->getAdversaire())));
-                $this->em->flush();
-                $this->addFlash('success', 'Rencontre modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.rencontres');
-            } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
-                else $this->addFlash('fail', 'Une erreur est survenue');
-                return $this->render('backoffice/rencontre/edit.html.twig', [
-                    'form' => $form->createView(),
-                    'type' => $type,
-                    'domicile' => $domicile,
-                    'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
-                    'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
-                    'idEquipe' => $rencontre->getIdEquipe()->getNumero()
-                ]);
+                    $rencontre->setAdversaire(ucwords(strtolower($rencontre->getAdversaire())));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Rencontre modifiée avec succès !');
+                    return $this->redirectToRoute('backoffice.rencontres');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('backoffice/rencontre/edit.html.twig', [
+                        'form' => $form->createView(),
+                        'type' => $type,
+                        'domicile' => $domicile,
+                        'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
+                        'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
+                        'idEquipe' => $rencontre->getIdEquipe()->getNumero()
+                    ]);
+                }
+            } else {
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 

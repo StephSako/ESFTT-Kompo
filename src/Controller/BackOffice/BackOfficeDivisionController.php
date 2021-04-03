@@ -91,7 +91,7 @@ class BackOfficeDivisionController extends AbstractController
                     ]);
                 }
             } else {
-                $this->addFlash('fail', 'Une erreur est survenue ...');
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
@@ -113,23 +113,27 @@ class BackOfficeDivisionController extends AbstractController
         $form = $this->createForm(DivisionFormType::class, $division);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            try {
-                $division->setLongName(ucwords(strtolower($division->getLongName())));
-                $division->setShortName(strtoupper($division->getShortName()));
-                $this->em->flush();
-                $this->addFlash('success', 'Division modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.divisions');
-            } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000"){
-                    if (str_contains($e->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
-                    if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    $division->setLongName(ucwords(strtolower($division->getLongName())));
+                    $division->setShortName(strtoupper($division->getShortName()));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Division modifiée avec succès !');
+                    return $this->redirectToRoute('backoffice.divisions');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
+                        if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+                    }
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('backoffice/division/edit.html.twig', [
+                        'division' => $division,
+                        'form' => $form->createView()
+                    ]);
                 }
-                else $this->addFlash('fail', 'Une erreur est survenue');
-                return $this->render('backoffice/division/edit.html.twig', [
-                    'division' => $division,
-                    'form' => $form->createView()
-                ]);
+            } else {
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 

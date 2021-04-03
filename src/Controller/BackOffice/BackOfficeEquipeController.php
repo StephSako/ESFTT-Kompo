@@ -16,8 +16,6 @@ use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -172,32 +170,36 @@ class BackOfficeEquipeController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            // Désinscrire les joueurs superflus en cas de changement de division
-            if ($type == 'departementale') $rencontres = $this->rencontreDepartementalRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
-            else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
-            else throw new Exception('Ce championnat est inexistant', 500);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                // Désinscrire les joueurs superflus en cas de changement de division
+                if ($type == 'departementale') $rencontres = $this->rencontreDepartementalRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+                else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
+                else throw new Exception('Ce championnat est inexistant', 500);
 
-            try {
-                $this->em->flush();
-                if ($equipe->getIdDivision()){
-                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-                    foreach ($rencontres as $rencontre){
-                        for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
-                            $rencontre->setIdJoueurN($i, null);
-                        }
-                    }
+                try {
                     $this->em->flush();
+                    if ($equipe->getIdDivision()){
+                        $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+                        foreach ($rencontres as $rencontre){
+                            for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
+                                $rencontre->setIdJoueurN($i, null);
+                            }
+                        }
+                        $this->em->flush();
+                    }
+                    $this->addFlash('success', 'Equipe modifiée avec succès !');
+                    return $this->redirectToRoute('backoffice.equipes');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                    else $this->addFlash('fail', 'Une erreur est survenue');
+                    return $this->render('backoffice/equipe/edit.html.twig', [
+                        'equipe' => $equipe,
+                        'form' => $form->createView()
+                    ]);
                 }
-                $this->addFlash('success', 'Equipe modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.equipes');
-            } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
-                else $this->addFlash('fail', 'Une erreur est survenue');
-                return $this->render('backoffice/equipe/edit.html.twig', [
-                    'equipe' => $equipe,
-                    'form' => $form->createView()
-                ]);
+            } else {
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
@@ -213,6 +215,7 @@ class BackOfficeEquipeController extends AbstractController
      * @param string $type
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function delete(int $idEquipe, string $type, Request $request): Response
     {

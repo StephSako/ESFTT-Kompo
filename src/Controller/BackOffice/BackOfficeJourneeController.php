@@ -69,10 +69,14 @@ class BackOfficeJourneeController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
-            $this->em->flush();
-            $this->addFlash('success', 'Journée modifiée avec succès !');
-            return $this->redirectToRoute('backoffice.journees');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $this->em->flush();
+                $this->addFlash('success', 'Journée modifiée avec succès !');
+                return $this->redirectToRoute('backoffice.journees');
+            } else {
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            }
         }
 
         return $this->render('backoffice/journee/edit.html.twig', [
