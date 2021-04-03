@@ -187,4 +187,31 @@ class RencontreParisRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * // TODO Tester
+     * Réinitialise les rencontres pour une nouvelle phase
+     * @param int $nbJoueurs
+     * @return int|mixed|string
+     */
+    public function reset(int $nbJoueurs)
+    {
+        $query = $this->createQueryBuilder('rp')
+            ->update('App\Entity\RencontreParis', 'rp');
+        for ($i = 0; $i < $nbJoueurs; $i++){
+            $query = $query->set('rp.idJoueur' . $i, null);
+        }
+        $query = $query
+            ->set('rp.reporte', false)
+            ->set('rp.dateReport', 'j.dateJournee')
+            ->set('rp.domicile', true)
+            ->set('rp.hosted', false)
+            ->set('rp.exempt', false)
+            ->set('rp.adversaire', null)
+            ->leftJoin('rp.idJournee', 'j')
+            ->getQuery()
+            ->execute();
+
+        return $query;
+    }
 }

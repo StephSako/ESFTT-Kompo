@@ -1,5 +1,4 @@
 {% if app.user %}
-
     {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
         <li class="li_in_line{% if app.request.getPathInfo == '/compte' %} active blue darken-3{% endif %}">
             <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
@@ -29,7 +28,3 @@
 
     <li class="li_in_line deconnexion"><a class="white-text center-align" href="{{ path('logout') }}"><i class="white-text material-icons left">power_settings_new</i>Se déconnecter</a></li>
 {% endif %}
-
-<li class="li_in_line">
-    <a class="white-text center-align" href="https://www.esftt.com/forum"><i class="white-text material-icons left">chat</i>Forum</a>
-</li>

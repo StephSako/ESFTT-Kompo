@@ -187,4 +187,31 @@ class RencontreDepartementaleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * // TODO Tester
+     * Réinitialise les rencontres pour une nouvelle phase
+     * @param int $nbJoueurs
+     * @return int|mixed|string
+     */
+    public function reset(int $nbJoueurs)
+    {
+        $query = $this->createQueryBuilder('rd')
+            ->update('App\Entity\RencontreDepartementale', 'rd');
+        for ($i = 0; $i < $nbJoueurs; $i++){
+            $query = $query->set('rd.idJoueur' . $i, null);
+        }
+        $query = $query
+            ->set('rd.reporte', false)
+            ->set('rd.dateReport', 'j.dateJournee')
+            ->set('rd.domicile', true)
+            ->set('rd.hosted', false)
+            ->set('rd.exempt', false)
+            ->set('rd.adversaire', null)
+            ->leftJoin('rd.idJournee', 'j')
+            ->getQuery()
+            ->execute();
+
+        return $query;
+    }
 }
