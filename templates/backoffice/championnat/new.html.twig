@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/division.html.twig' as new %}
+{% import 'macros/edit/championnat.html.twig' as edit %}
 
-{% block title %}Back-office - Les divisions{% endblock %}
+{% block title %}Back-office - Les championnats{% endblock %}
 
 {% block body %}
 
@@ -19,7 +19,7 @@
 
         {{ form_errors(form) }}
 
-        {{ new.division(form, 'Créer') }}
+        {{ edit.championnat(form, 'Créer') }}
     </div>
 
 {% endblock %}

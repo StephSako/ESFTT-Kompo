@@ -25,7 +25,7 @@
 
             <a style="margin-bottom: 20px;" href="{{ path('backoffice.championnat.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer un championnat</a>
 
-            {% if divisions|length > 0 %}
+            {% if championnats|length > 0 %}
                 <table class="striped centered responsive-table">
                     <thead>
                     <tr>
@@ -38,18 +38,24 @@
                     </thead>
 
                     <tbody>
-                    {% for division in divisions %}
+                    {% for championnat in championnats %}
                         <tr>
-                            <td>{{ division.shortName }}</td>
-                            <td>{{ division.longName }}</td>
-                            <td><i class="material_icons">check</i></td>
+                            <td>{{ championnat.nom }}</td>
+                            <td>{{ championnat.slug }}</td>
                             <td>
-                                <a href="{{ path('backoffice.championnat.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                                {% if not rencontre.exempt %}
+                                    {% if rencontre.domicile %} <i class="material-icons">home</i>
+                                    {% else %} <i class="material-icons">directions_car</i>
+                                    {% endif %}
+                                {% endif %}
                             </td>
                             <td>
-                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
+                                <a href="{{ path('backoffice.championnat.edit', {idChampionnat: championnat.idChampionnat}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('backoffice.championnat.delete', {idChampionnat: championnat.idChampionnat}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer le championnat ?')">
                                     <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ championnat.idChampionnat) }}">
                                     <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
                                         <i class="material-icons">delete</i>
                                     </button>
@@ -60,7 +66,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de divisions enregistrées.</p>
+                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de championnats enregistrés.</p>
             {% endif %}
         </div>
     </div>

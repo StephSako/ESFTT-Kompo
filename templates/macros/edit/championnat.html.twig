@@ -1,0 +1,26 @@
+{% macro championnat(form, btnText) %}
+    <style>
+        li {
+            color: red;
+        }
+    </style>
+
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ btnText }} un championnat</h4>
+
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col s12 m6 row">
+                    <span><i class="material-icons prefix">short_text</i> Nom</span>{{ form_row(form.nom) }}
+                </div>
+                <div class="col s12 m6 row">
+                    <span><i class="material-icons prefix">looks_two</i></span>{{ form_row(form.j2Rule) }}
+                </div>
+            </div>
+
+            <br>
+            <a href="{{ path('back_office.championnats') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+            <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
+        {{ form_end(form) }}
+    </div>
+{% endmacro %}

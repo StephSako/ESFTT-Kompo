@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Form\BackofficeCompetiteurAdminType;
+use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
 use App\Repository\JourneeDepartementaleRepository;
 use App\Repository\JourneeParisRepository;
@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
 
         $user = $this->getUser();
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackofficeCompetiteurAdminType::class, $user);
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
         else $form = $this->createForm(CompetiteurType::class, $user);
         $form->handleRequest($request);
 

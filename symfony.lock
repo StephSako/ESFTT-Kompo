@@ -44,6 +44,9 @@
     "beberlei/doctrineextensions": {
         "version": "v1.2.7"
     },
+    "cocur/slugify": {
+        "version": "v4.0.0"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99"
     },
