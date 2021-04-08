@@ -225,13 +225,25 @@
 
         <ul class="collapsible hide-on-med-and-up">
             <li>
-                <div class="collapsible-header"><i class="blue-text material-icons">feedback</i>Disponibilités</div>
+                <div class="collapsible-header">
+                    <div class="chip">
+                        <i class="blue-text material-icons" style="vertical-align: middle;">people</i>
+                        Disponibilités
+                    </div>
+                    <i class="caret material-icons">keyboard_arrow_down</i>
+                </div>
                 <div class="collapsible-body">
                     {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
                 </div>
             </li>
             <li>
-                <div class="collapsible-header"><i class="red-text material-icons">whatshot</i>Brûlages</div>
+                <div class="collapsible-header">
+                    <div class="chip">
+                        <i class="red-text material-icons" style="vertical-align: middle;">whatshot</i>
+                        Brûlage
+                    </div>
+                    <i class="caret material-icons">keyboard_arrow_down</i>
+                </div>
                 <div class="collapsible-body">
                     {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
                 </div>

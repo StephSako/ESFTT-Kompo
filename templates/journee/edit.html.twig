@@ -13,13 +13,25 @@
         <div class="row main">
             <ul class="collapsible hide-on-med-and-up" style="margin-top: 20px; margin-bottom: 0;">
                 <li>
-                    <div class="collapsible-header"><i class="red-text material-icons">whatshot</i>Joueurs brûlés</div>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="red-text material-icons" style="vertical-align: middle;">whatshot</i>
+                            Joueurs brûlés
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
+                    </div>
                     <div class="collapsible-body">
                         {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.numero) }}
                     </div>
                 </li>
                 <li>
-                    <div class="collapsible-header"><i class="blue-text material-icons">fast_forward</i>Joueurs sélectionnables et brûlages à J+1</div>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="blue-text material-icons" style="vertical-align: middle;">fast_forward</i>
+                            Sélectionnables & brûlage J+1
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
+                    </div>
                     <div class="collapsible-body">
                         {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
                     </div>
