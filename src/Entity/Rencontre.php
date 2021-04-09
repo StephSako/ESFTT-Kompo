@@ -5,33 +5,31 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="RencontreRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\RencontreRepository")
  * @ORM\Table(
- *     name="prive_rencontre_paris",
+ *     name="prive_rencontre",
  *     indexes={
- *         @Index(name="IDX_renc_par_id_j3", columns={"id_joueur_3"}),
- *         @Index(name="IDX_renc_par_id_j7", columns={"id_joueur_7"}),
- *         @Index(name="IDX_renc_par_id_e", columns={"id_equipe"}),
- *         @Index(name="IDX_renc_par_id_j", columns={"id_journee"}),
- *         @Index(name="IDX_renc_par_id_j4", columns={"id_joueur_4"}),
- *         @Index(name="IDX_renc_par_id_j0", columns={"id_joueur_0"}),
- *         @Index(name="IDX_renc_par_id_j8", columns={"id_joueur_8"}),
- *         @Index(name="IDX_renc_par_id_j2", columns={"id_joueur_2"}),
- *         @Index(name="IDX_renc_par_id_j6", columns={"id_joueur_6"}),
- *         @Index(name="IDX_renc_par_id_j5", columns={"id_joueur_5"}),
- *         @Index(name="IDX_renc_par_id_j1", columns={"id_joueur_1"})
+ *         @Index(name="IDX_renc_j0", columns={"id_joueur_0"}),
+ *         @Index(name="IDX_renc_j1", columns={"id_joueur_1"}),
+ *         @Index(name="IDX_renc_j2", columns={"id_joueur_2"}),
+ *         @Index(name="IDX_renc_j3", columns={"id_joueur_3"}),
+ *         @Index(name="IDX_renc_j4", columns={"id_joueur_4"}),
+ *         @Index(name="IDX_renc_j5", columns={"id_joueur_5"}),
+ *         @Index(name="IDX_renc_j6", columns={"id_joueur_6"}),
+ *         @Index(name="IDX_renc_j7", columns={"id_joueur_7"}),
+ *         @Index(name="IDX_renc_j8", columns={"id_joueur_8"}),
+ *         @Index(name="IDX_renc_eq", columns={"id_equipe"}),
+ *         @Index(name="IDX_renc_champ", columns={"id_championnat"}),
+ *         @Index(name="IDX_renc_j", columns={"id_journee"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_renc_par", columns={"adversaire"})
+ *          @UniqueConstraint(name="UNIQ_renc_adv", columns={"adversaire", "id_championnat"}),
+ *          @UniqueConstraint(name="UNIQ_renc", columns={"id_equipe", "id_journee", "id_championnat"})
  *     }
- * )
- * @UniqueEntity(
- *     fields={"adversaire"}
  * )
  */
 class Rencontre
@@ -44,12 +42,20 @@ class Rencontre
     private $id;
 
     /**
-     * @var JourneeParis
+     * @var Journee
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis", inversedBy="rencontres")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journee", inversedBy="rencontres")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
     private $idJournee;
+
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="rencontres")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
 
     /**
      * @var boolean
@@ -131,9 +137,9 @@ class Rencontre
     private $idJoueur8;
 
     /**
-     * @var EquipeParis
+     * @var Equipe
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\EquipeParis", inversedBy="rencontresParis")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="rencontres")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
      */
     private $idEquipe;
@@ -414,18 +420,18 @@ class Rencontre
     }
 
     /**
-     * @return JourneeParis
+     * @return Journee
      */
-    public function getIdJournee(): JourneeParis
+    public function getIdJournee(): Journee
     {
         return $this->idJournee;
     }
 
     /**
-     * @param JourneeParis $idJournee
+     * @param Journee $idJournee
      * @return Rencontre
      */
-    public function setIdJournee(JourneeParis $idJournee): self
+    public function setIdJournee(Journee $idJournee): self
     {
         $this->idJournee = $idJournee;
         return $this;
@@ -450,19 +456,19 @@ class Rencontre
     }
 
     /**
-     * @param EquipeParis $idEquipe
+     * @param Equipe $idEquipe
      * @return Rencontre
      */
-    public function setIdEquipe(EquipeParis $idEquipe): self
+    public function setIdEquipe(Equipe $idEquipe): self
     {
         $this->idEquipe = $idEquipe;
         return $this;
     }
 
     /**
-     * @return EquipeParis
+     * @return Equipe
      */
-    public function getIdEquipe(): EquipeParis
+    public function getIdEquipe(): Equipe
     {
         return $this->idEquipe;
     }
@@ -473,7 +479,7 @@ class Rencontre
     public function getIsEmpty(): bool
     {
         $isEmpty = array();
-        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
             array_push($isEmpty, $this->getIdJoueurN($i));
         }
         return !in_array(true, $isEmpty);
@@ -485,10 +491,10 @@ class Rencontre
     public function getIsFull(): bool
     {
         $nbJoueursSelected = 0;
-        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
             if($this->getIdJoueurN($i)) $nbJoueursSelected++;
         }
-        return $nbJoueursSelected == $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
+        return $nbJoueursSelected == $this->getIdEquipe()->getIdDivision()->getNbJoueurs();
     }
 
     /**
@@ -564,13 +570,31 @@ class Rencontre
     }
 
     /**
+     * @return Championnat
+     */
+    public function getIdChampionnat(): Championnat
+    {
+        return $this->idChampionnat;
+    }
+
+    /**
+     * @param Championnat $idChampionnat
+     * @return Rencontre
+     */
+    public function setIdChampionnat(Championnat $idChampionnat): self
+    {
+        $this->idChampionnat = $idChampionnat;
+        return $this;
+    }
+
+    /**
      * Liste des joueurs sélectionnés dans une composition d'équipe
      * @return Competiteur[]|null[]
      */
     public function getListSelectedPlayers(): array
     {
         $joueurs = array();
-        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
             if ($this->getIdJoueurN($i))array_push($joueurs, $this->getIdJoueurN($i));
         }
         return $joueurs;

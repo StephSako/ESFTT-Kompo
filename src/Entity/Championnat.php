@@ -13,7 +13,7 @@ use Cocur\Slugify\Slugify;
  * @ORM\Table(
  *     name="prive_championnat",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_champ_nom", columns={"nom"})
+ *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"})
  *     }
  * )
  * @UniqueEntity(
@@ -53,6 +53,121 @@ class Championnat
      * @ORM\Column(type="boolean", name="j2rule", nullable=false)
      */
     private $j2Rule;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $rencontres;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Division", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $divisions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $dispos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $equipes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $journees;
+
+    /**
+     * @return mixed
+     */
+    public function getJournees()
+    {
+        return $this->journees;
+    }
+
+    /**
+     * @param mixed $journees
+     * @return Championnat
+     */
+    public function setJournees($journees): self
+    {
+        $this->journees = $journees;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDispos()
+    {
+        return $this->dispos;
+    }
+
+    /**
+     * @param mixed $dispos
+     * @return Championnat
+     */
+    public function setDispos($dispos): self
+    {
+        $this->dispos = $dispos;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEquipes()
+    {
+        return $this->equipes;
+    }
+
+    /**
+     * @param mixed $equipes
+     * @return Championnat
+     */
+    public function setEquipes($equipes): self
+    {
+        $this->equipes = $equipes;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDivisions()
+    {
+        return $this->divisions;
+    }
+
+    /**
+     * @param mixed $divisions
+     * @return Championnat
+     */
+    public function setDivisions($divisions): self
+    {
+        $this->divisions = $divisions;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param mixed $rencontres
+     * @return Championnat
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
+    }
 
     /**
      * @return mixed

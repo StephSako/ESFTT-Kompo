@@ -48,7 +48,7 @@ class DisponibiliteRepository extends ServiceEntityRepository
     public function setDeleteDisposVisiteur(int $idCompetiteur)
     {
         return $this->createQueryBuilder('dd')
-            ->delete('Disponibilite.php', 'dd')
+            ->delete('App\Entity\Disponibilite.php', 'dd')
             ->where('dd.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()

@@ -6,13 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
 /**
- * @ORM\Entity(repositoryClass="DisponibiliteRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteRepository")
  * @ORM\Table(
- *     name="prive_disponibilite_departementale",
+ *     name="prive_disponibilite",
  *     indexes={
- *         @Index(name="IDX_dispo_dep_id_j", columns={"id_journee"}),
- *         @Index(name="IDX_dispo_dep_id_c", columns={"id_competiteur"})
- * })
+ *         @Index(name="IDX_dispo_champ", columns={"id_championnat"}),
+ *         @Index(name="IDX_dispo_c", columns={"id_journee"}),
+ *         @Index(name="IDX_dispo_j", columns={"id_competiteur"})
+ *     },
+ *     uniqueConstraints={
+ *          @UniqueConstraint(name="UNIQ_dispo", columns={"id_competiteur", "id_championnat", "id_journee"})
+ *     }
+ * )
  */
 class Disponibilite
 {
@@ -20,7 +25,7 @@ class Disponibilite
     {
         $this
             ->setIdCompetiteur($competiteur)
-            ->setDisponibiliteDepartementale($disponibilite)
+            ->setDisponibilite($disponibilite)
             ->setIdJournee($idJournee);
     }
 
@@ -34,10 +39,18 @@ class Disponibilite
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementale")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
+
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="dispos")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
 
     /**
      * @var Journee
@@ -91,6 +104,24 @@ class Disponibilite
     }
 
     /**
+     * @return Championnat
+     */
+    public function getIdChampionnat(): Championnat
+    {
+        return $this->idChampionnat;
+    }
+
+    /**
+     * @param Championnat $idChampionnat
+     * @return Disponibilite
+     */
+    public function setIdChampionnat(Championnat $idChampionnat): self
+    {
+        $this->idChampionnat = $idChampionnat;
+        return $this;
+    }
+
+    /**
      * @return Journee
      */
     public function getIdJournee(): Journee
@@ -120,7 +151,7 @@ class Disponibilite
      * @param bool $disponibilite
      * @return $this
      */
-    public function setDisponibiliteDepartementale(bool $disponibilite): self
+    public function setDisponibilite(bool $disponibilite): self
     {
         $this->disponibilite = $disponibilite;
         return $this;

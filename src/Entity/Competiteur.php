@@ -22,9 +22,11 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *          @UniqueConstraint(name="UNIQ_comp_username", columns={"username"})
  *     }
  * )
+ *
  * @UniqueEntity(
  *     fields={"licence", "username"}
  * )
+ *
  * @Vich\Uploadable()
  */
 class Competiteur implements UserInterface, Serializable
@@ -277,14 +279,9 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="Disponibilite.php", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
-    private $disposDepartementale;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteParis", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
-     */
-    private $disposParis;
+    private $dispos;
 
     /**
      * @return int
@@ -457,10 +454,10 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return int[]
      */
-    public function getDisposDepartementale(): array
+    public function getDispos(): array
     {
         $disposId = [];
-        foreach ($this->disposDepartementale as $dispo){
+        foreach ($this->dispos as $dispo){
             $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
         }
         return $disposId;
@@ -472,29 +469,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setDisposDepartemental($dispos): self
     {
-        $this->disposDepartementale = $dispos;
-        return $this;
-    }
-
-    /**
-     * @return int[]
-     */
-    public function getDisposParis(): array
-    {
-        $disposId = [];
-        foreach ($this->disposParis as $dispo){
-            $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
-        }
-        return $disposId;
-    }
-
-    /**
-     * @param mixed|null $dispos
-     * @return Competiteur
-     */
-    public function setDisposParis($dispos): self
-    {
-        $this->disposParis = $dispos;
+        $this->dispos = $dispos;
         return $this;
     }
 

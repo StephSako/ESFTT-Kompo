@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @ORM\Table(
  *     name="prive_poule",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_poule_poule", columns={"poule"})
+ *          @UniqueConstraint(name="UNIQ_poule", columns={"poule"})
  *     }
  * )
  * @UniqueEntity(

@@ -5,23 +5,20 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="EquipeRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EquipeRepository")
  * @ORM\Table(
- *     name="prive_equipe_departementale",
+ *     name="prive_equipe",
  *     indexes={
- *         @Index(name="IDX_eq_dep_id_p", columns={"id_poule"}),
- *         @Index(name="IDX_eq_dep_id_d", columns={"id_division"})
+ *         @Index(name="IDX_eq_div", columns={"id_division"}),
+ *         @Index(name="IDX_eq_p", columns={"id_poule"}),
+ *         @Index(name="IDX_eq_champ", columns={"id_championnat"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_eq_dep_num", columns={"numero"})
+ *          @UniqueConstraint(name="UNIQ_equipe", columns={"id_championnat", "numero"})
  *     }
- * )
- * @UniqueEntity(
- *     fields={"numero"}
  * )
  */
 class Equipe
@@ -53,10 +50,18 @@ class Equipe
     /**
      * @var Division|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Division", inversedBy="equipesDepartementales")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Division", inversedBy="equipes")
      * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id_division")
      */
     private $idDivision;
+
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="equipes")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
 
     /**
      * @var Poule|null
@@ -68,9 +73,27 @@ class Equipe
 
     /**
      * Liste des rencontres de l'équipe
-     * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
      */
-    private $rencontresDepartementales;
+    private $rencontres;
+
+    /**
+     * @return Championnat
+     */
+    public function getIdChampionnat(): Championnat
+    {
+        return $this->idChampionnat;
+    }
+
+    /**
+     * @param Championnat $idChampionnat
+     * @return Equipe
+     */
+    public function setIdChampionnat(Championnat $idChampionnat): self
+    {
+        $this->idChampionnat = $idChampionnat;
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -129,18 +152,18 @@ class Equipe
     /**
      * @return mixed
      */
-    public function getRencontresDepartementales()
+    public function getRencontres()
     {
-        return $this->rencontresDepartementales;
+        return $this->rencontres;
     }
 
     /**
-     * @param mixed $rencontresDepartementales
+     * @param mixed $rencontres
      * @return Equipe
      */
-    public function setRencontresDepartementales($rencontresDepartementales): self
+    public function setRencontres($rencontres): self
     {
-        $this->rencontresDepartementales = $rencontresDepartementales;
+        $this->rencontres = $rencontres;
         return $this;
     }
 

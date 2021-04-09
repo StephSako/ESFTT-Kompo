@@ -4,19 +4,18 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="JourneeRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\JourneeRepository")
  * @ORM\Table(
- *     name="prive_journee_departementale",
+ *     name="prive_journee",
+ *     indexes={
+ *         @Index(name="IDX_j_champ", columns={"id_championnat"}),
+ *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_jour_dep_date", columns={"date_journee"})
+ *          @UniqueConstraint(name="UNIQ_journee", columns={"date_journee", "id_championnat"})
  *     }
- * )
- * @UniqueEntity(
- *     fields={"dateJournee"}
  * )
  */
 class Journee
@@ -34,6 +33,14 @@ class Journee
      * @ORM\Column(type="date", name="date_journee", nullable=false)
      */
     private $dateJournee;
+
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="journees")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
 
     /**
      * @var bool
@@ -56,6 +63,24 @@ class Journee
      * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idJournee")
      */
     protected $rencontres;
+
+    /**
+     * @return Championnat
+     */
+    public function getIdChampionnat(): Championnat
+    {
+        return $this->idChampionnat;
+    }
+
+    /**
+     * @param Championnat $idChampionnat
+     * @return Journee
+     */
+    public function setIdChampionnat(Championnat $idChampionnat): self
+    {
+        $this->idChampionnat = $idChampionnat;
+        return $this;
+    }
 
     /**
      * @return string
