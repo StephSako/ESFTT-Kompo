@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
-use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -24,11 +24,11 @@ class SecurityController extends AbstractController
 
     /**
      * SecurityController constructor.
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
+    public function __construct(JourneeRepository $journeeDepartementaleRepository,
                                 JourneeParisRepository $journeeParisRepository,
                                 EntityManagerInterface $em)
     {
@@ -116,9 +116,10 @@ class SecurityController extends AbstractController
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
-     * @return RedirectResponse|Response
+     * @return Response
      */
-    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
+    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    {
         $journees = [];
         if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
         else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();

@@ -6,21 +6,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteParisRepository")
+ * @ORM\Entity(repositoryClass="DisponibiliteRepository")
  * @ORM\Table(
- *     name="prive_disponibilite_paris",
+ *     name="prive_disponibilite_departementale",
  *     indexes={
- *         @Index(name="IDX_dispo_par_id_j", columns={"id_journee"}),
- *         @Index(name="IDX_dispo_par_id_c", columns={"id_competiteur"})
+ *         @Index(name="IDX_dispo_dep_id_j", columns={"id_journee"}),
+ *         @Index(name="IDX_dispo_dep_id_c", columns={"id_competiteur"})
  * })
  */
-class DisponibiliteParis
+class Disponibilite
 {
-    public function __construct(Competiteur $competiteur, JourneeParis $idJournee, bool $disponibilite)
+    public function __construct(Competiteur $competiteur, $idJournee, bool $disponibilite)
     {
         $this
             ->setIdCompetiteur($competiteur)
-            ->setDisponibiliteParis($disponibilite)
+            ->setDisponibiliteDepartementale($disponibilite)
             ->setIdJournee($idJournee);
     }
 
@@ -34,17 +34,16 @@ class DisponibiliteParis
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposParis")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="disposDepartementale")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
 
     /**
-     * @var JourneeParis
+     * @var Journee
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\JourneeParis",)
+     * @ORM\ManyToOne(targetEntity="Journee.php")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
-     * @var JourneeParis
      */
     private $idJournee;
 
@@ -65,7 +64,7 @@ class DisponibiliteParis
 
     /**
      * @param mixed $idDisponibilite
-     * @return DisponibiliteParis
+     * @return Disponibilite
      */
     public function setIdDisponibilite($idDisponibilite): self
     {
@@ -83,7 +82,7 @@ class DisponibiliteParis
 
     /**
      * @param Competiteur $idCompetiteur
-     * @return DisponibiliteParis
+     * @return Disponibilite
      */
     public function setIdCompetiteur(Competiteur $idCompetiteur): self
     {
@@ -92,18 +91,18 @@ class DisponibiliteParis
     }
 
     /**
-     * @return JourneeParis
+     * @return Journee
      */
-    public function getIdJournee(): JourneeParis
+    public function getIdJournee(): Journee
     {
         return $this->idJournee;
     }
 
     /**
-     * @param JourneeParis $idJournee
-     * @return DisponibiliteParis
+     * @param Journee $idJournee
+     * @return Disponibilite
      */
-    public function setIdJournee(JourneeParis $idJournee): self
+    public function setIdJournee(Journee $idJournee): self
     {
         $this->idJournee = $idJournee;
         return $this;
@@ -121,7 +120,7 @@ class DisponibiliteParis
      * @param bool $disponibilite
      * @return $this
      */
-    public function setDisponibiliteParis(bool $disponibilite): self
+    public function setDisponibiliteDepartementale(bool $disponibilite): self
     {
         $this->disponibilite = $disponibilite;
         return $this;

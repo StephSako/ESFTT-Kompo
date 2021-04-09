@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\DisponibiliteParis;
+use App\Entity\Disponibilite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method DisponibiliteParis|null find($id, $lockMode = null, $lockVersion = null)
- * @method DisponibiliteParis|null findOneBy(array $criteria, array $orderBy = null)
- * @method DisponibiliteParis[]    findAll()
- * @method DisponibiliteParis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Disponibilite|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Disponibilite|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Disponibilite[]    findAll()
+ * @method Disponibilite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DisponibiliteParisRepository extends ServiceEntityRepository
+class DisponibiliteRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DisponibiliteParis::class);
+        parent::__construct($registry, Disponibilite::class);
     }
 
     /**
@@ -47,9 +47,9 @@ class DisponibiliteParisRepository extends ServiceEntityRepository
      */
     public function setDeleteDisposVisiteur(int $idCompetiteur)
     {
-        return $this->createQueryBuilder('dp')
-            ->delete('App\Entity\DisponibiliteParis', 'dp')
-            ->where('dp.idCompetiteur = :idCompetiteur')
+        return $this->createQueryBuilder('dd')
+            ->delete('Disponibilite.php', 'dd')
+            ->where('dd.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();

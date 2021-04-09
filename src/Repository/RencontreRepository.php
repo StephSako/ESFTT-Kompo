@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\RencontreParis;
+use App\Entity\Rencontre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method RencontreParis|null find($id, $lockMode = null, $lockVersion = null)
- * @method RencontreParis|null findOneBy(array $criteria, array $orderBy = null)
- * @method RencontreParis[]    findAll()
- * @method RencontreParis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Rencontre|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Rencontre|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Rencontre[]    findAll()
+ * @method Rencontre[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RencontreParisRepository extends ServiceEntityRepository
+class RencontreRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, RencontreParis::class);
+        parent::__construct($registry, Rencontre::class);
     }
 
     /**
      * Liste des joueurs sélectionnés lors d'une journée
-     * @param RencontreParis[] $compos
+     * @param Rencontre[] $compos
      * @return array
      */
     public function getSelectedPlayers(array $compos): array
@@ -161,7 +161,7 @@ class RencontreParisRepository extends ServiceEntityRepository
     public function setDeletedCompetiteurToNull(int $idCompetiteur, int $idJoueurColumn)
     {
         return $this->createQueryBuilder('rp')
-            ->update('App\Entity\RencontreParis', 'rp')
+            ->update('Rencontre.php', 'rp')
             ->set('rp.idJoueur' . $idJoueurColumn, 'NULL')
             ->where('rp.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
@@ -197,7 +197,7 @@ class RencontreParisRepository extends ServiceEntityRepository
     public function reset(int $nbJoueurs)
     {
         $query = $this->createQueryBuilder('rp')
-            ->update('App\Entity\RencontreParis', 'rp');
+            ->update('Rencontre.php', 'rp');
         for ($i = 0; $i < $nbJoueurs; $i++){
             $query = $query->set('rp.idJoueur' . $i, null);
         }

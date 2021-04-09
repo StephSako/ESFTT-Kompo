@@ -8,18 +8,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\JourneeParisRepository")
+ * @ORM\Entity(repositoryClass="JourneeRepository")
  * @ORM\Table(
- *     name="prive_journee_paris",
+ *     name="prive_journee_departementale",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_jour_par_date", columns={"date_journee"})
+ *          @UniqueConstraint(name="UNIQ_jour_dep_date", columns={"date_journee"})
  *     }
  * )
  * @UniqueEntity(
  *     fields={"dateJournee"}
  * )
  */
-class JourneeParis
+class Journee
 {
     /**
      * @ORM\Id()
@@ -45,25 +45,17 @@ class JourneeParis
     /**
      * @var string
      */
-    private $type = 'Paris';
+    private $type = 'Départemental';
 
     /**
      * @var string
      */
-    private $linkType = 'paris';
+    private $linkType = 'departementale';
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\RencontreParis", mappedBy="idJournee")
+     * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idJournee")
      */
     protected $rencontres;
-
-    /**
-     * @return mixed
-     */
-    public function getRencontres()
-    {
-        return $this->rencontres;
-    }
 
     /**
      * @return string
@@ -71,16 +63,6 @@ class JourneeParis
     public function getType(): string
     {
         return $this->type;
-    }
-
-    /**
-     * @param mixed $rencontres
-     * @return JourneeParis
-     */
-    public function setRencontres($rencontres): self
-    {
-        $this->rencontres = $rencontres;
-        return $this;
     }
 
     /**
@@ -94,6 +76,24 @@ class JourneeParis
     /**
      * @return mixed
      */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param $rencontres
+     * @return $this
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getIdJournee()
     {
         return $this->idJournee;
@@ -101,7 +101,7 @@ class JourneeParis
 
     /**
      * @param mixed $idJournee
-     * @return JourneeParis
+     * @return Journee
      */
     public function setIdJournee($idJournee): self
     {
@@ -119,7 +119,7 @@ class JourneeParis
 
     /**
      * @param DateTime $dateJournee
-     * @return JourneeParis
+     * @return Journee
      */
     public function setDateJournee(Datetime $dateJournee): self
     {
@@ -137,7 +137,7 @@ class JourneeParis
 
     /**
      * @param bool $undefined
-     * @return JourneeParis
+     * @return Journee
      */
     public function setUndefined(bool $undefined): self
     {

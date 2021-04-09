@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CompetiteurRepository;
-use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -32,14 +32,14 @@ class ContactController extends AbstractController
 
     /**
      * ContactController constructor.
-     * @param JourneeDepartementaleRepository $journeeParisRepository
+     * @param JourneeRepository $journeeParisRepository
      * @param JourneeParisRepository $journeeDepartementaleRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      * @param MailerInterface $mailer
      * @param Environment $environment
      */
-    public function __construct(JourneeDepartementaleRepository $journeeParisRepository,
+    public function __construct(JourneeRepository $journeeParisRepository,
                                 JourneeParisRepository $journeeDepartementaleRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,

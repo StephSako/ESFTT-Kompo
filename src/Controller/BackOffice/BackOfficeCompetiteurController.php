@@ -7,11 +7,11 @@ use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\BackOfficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
-use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteRepository;
 use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -39,17 +39,17 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param EntityManagerInterface $em
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
      * @param DivisionRepository $divisionRepository
-     * @param DisponibiliteDepartementaleRepository $disponibiliteParisRepository
+     * @param DisponibiliteRepository $disponibiliteParisRepository
      * @param DisponibiliteParisRepository $disponibiliteDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 DivisionRepository $divisionRepository,
-                                DisponibiliteDepartementaleRepository $disponibiliteParisRepository,
+                                DisponibiliteRepository $disponibiliteParisRepository,
                                 DisponibiliteParisRepository $disponibiliteDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository)
+                                RencontreRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;

@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\RencontreParis;
+use App\Entity\Rencontre;
 use App\Repository\CompetiteurRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RencontreParisType extends AbstractType
+class RencontreType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -56,7 +56,7 @@ class RencontreParisType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => RencontreParis::class,
+            'data_class' => Rencontre::class,
             'translation_domain' => 'forms',
             'nbMaxJoueurs' => null,
             'limiteBrulage' => null

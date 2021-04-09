@@ -2,9 +2,9 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Form\JourneeDepartementaleType;
+use App\Form\JourneeType;
 use App\Form\JourneeParisType;
-use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -22,11 +22,11 @@ class BackOfficeJourneeController extends AbstractController
     /**
      * BackOfficeController constructor.
      * @param JourneeParisRepository $journeeParisRepository
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeDepartementaleRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeParisRepository $journeeParisRepository,
-                                JourneeDepartementaleRepository $journeeDepartementaleRepository,
+                                JourneeRepository $journeeDepartementaleRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -59,7 +59,7 @@ class BackOfficeJourneeController extends AbstractController
         $form = null;
         if ($type == 'departementale'){
             if (!($journee = $this->journeeDepartementaleRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
-            $form = $this->createForm(JourneeDepartementaleType::class, $journee);
+            $form = $this->createForm(JourneeType::class, $journee);
         }
         else if ($type == 'paris'){
             if (!($journee = $this->journeeParisRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);

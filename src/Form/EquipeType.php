@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\EquipeDepartementale;
+use App\Entity\Equipe;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EquipeDepartementaleType extends AbstractType
+class EquipeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -56,7 +56,7 @@ class EquipeDepartementaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => EquipeDepartementale::class,
+            'data_class' => Equipe::class,
             'translation_domain' => 'forms'
         ]);
     }

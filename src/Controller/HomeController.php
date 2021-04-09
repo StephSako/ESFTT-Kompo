@@ -3,17 +3,17 @@
 namespace App\Controller;
 
 use App\Form\RencontreDepartementaleType;
-use App\Form\RencontreParisType;
+use App\Form\RencontreType;
 use App\Repository\CompetiteurRepository;
-use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteRepository;
 use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
-use App\Repository\EquipeDepartementaleRepository;
+use App\Repository\EquipeRepository;
 use App\Repository\EquipeParisRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\JourneeRepository;
+use App\Repository\RencontreRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -39,26 +39,26 @@ class HomeController extends AbstractController
     private $divisionRepository;
 
     /**
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
-     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
+     * @param DisponibiliteRepository $disponibiliteDepartementaleRepository
      * @param DisponibiliteParisRepository $disponibiliteParisRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
-     * @param EquipeDepartementaleRepository $equipeDepartementalRepository
+     * @param RencontreRepository $rencontreParisRepository
+     * @param EquipeRepository $equipeDepartementalRepository
      * @param EquipeParisRepository $equipeParisRepository
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
+    public function __construct(JourneeRepository $journeeDepartementaleRepository,
                                 JourneeParisRepository $journeeParisRepository,
-                                DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
+                                DisponibiliteRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository,
-                                EquipeDepartementaleRepository $equipeDepartementalRepository,
+                                RencontreRepository $rencontreParisRepository,
+                                EquipeRepository $equipeDepartementalRepository,
                                 EquipeParisRepository $equipeParisRepository,
                                 DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
@@ -271,7 +271,7 @@ class HomeController extends AbstractController
             $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
             $idEquipesBrulage = $this->equipeParisRepository->getIdEquipesBrulees('MAX');
             $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_paris'));
-            $form = $this->createForm(RencontreParisType::class, $compo, [
+            $form = $this->createForm(RencontreType::class, $compo, [
                 'nbMaxJoueurs' => $nbMaxJoueurs,
                 'limiteBrulage' => $this->getParameter('limite_brulage_paris')
             ]);

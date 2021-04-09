@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\RencontreParisRepository")
+ * @ORM\Entity(repositoryClass="RencontreRepository")
  * @ORM\Table(
  *     name="prive_rencontre_paris",
  *     indexes={
@@ -34,7 +34,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *     fields={"adversaire"}
  * )
  */
-class RencontreParis
+class Rencontre
 {
     /**
      * @ORM\Id()
@@ -199,7 +199,7 @@ class RencontreParis
     /**
      * @param int $n
      * @param $val
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setIdJoueurN(int $n, $val): self
     {
@@ -225,9 +225,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur0
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur0(?Competiteur $idJoueur0): RencontreParis
+    public function setIdJoueur0(?Competiteur $idJoueur0): Rencontre
     {
         $this->idJoueur0 = $idJoueur0;
         return $this;
@@ -243,9 +243,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur1
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur1(?Competiteur $idJoueur1): RencontreParis
+    public function setIdJoueur1(?Competiteur $idJoueur1): Rencontre
     {
         $this->idJoueur1 = $idJoueur1;
         return $this;
@@ -261,9 +261,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur2
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur2(?Competiteur $idJoueur2): RencontreParis
+    public function setIdJoueur2(?Competiteur $idJoueur2): Rencontre
     {
         $this->idJoueur2 = $idJoueur2;
         return $this;
@@ -279,9 +279,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur3
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur3(?Competiteur $idJoueur3): RencontreParis
+    public function setIdJoueur3(?Competiteur $idJoueur3): Rencontre
     {
         $this->idJoueur3 = $idJoueur3;
         return $this;
@@ -297,9 +297,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur4
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur4(?Competiteur $idJoueur4): RencontreParis
+    public function setIdJoueur4(?Competiteur $idJoueur4): Rencontre
     {
         $this->idJoueur4 = $idJoueur4;
         return $this;
@@ -315,9 +315,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur5
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur5(?Competiteur $idJoueur5): RencontreParis
+    public function setIdJoueur5(?Competiteur $idJoueur5): Rencontre
     {
         $this->idJoueur5 = $idJoueur5;
         return $this;
@@ -333,9 +333,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur6
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur6(?Competiteur $idJoueur6): RencontreParis
+    public function setIdJoueur6(?Competiteur $idJoueur6): Rencontre
     {
         $this->idJoueur6 = $idJoueur6;
         return $this;
@@ -351,9 +351,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur7
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur7(?Competiteur $idJoueur7): RencontreParis
+    public function setIdJoueur7(?Competiteur $idJoueur7): Rencontre
     {
         $this->idJoueur7 = $idJoueur7;
         return $this;
@@ -369,9 +369,9 @@ class RencontreParis
 
     /**
      * @param Competiteur|null $idJoueur8
-     * @return RencontreParis
+     * @return Rencontre
      */
-    public function setIdJoueur8(?Competiteur $idJoueur8): RencontreParis
+    public function setIdJoueur8(?Competiteur $idJoueur8): Rencontre
     {
         $this->idJoueur8 = $idJoueur8;
         return $this;
@@ -387,7 +387,7 @@ class RencontreParis
 
     /**
      * @param bool $domicile
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setDomicile(bool $domicile): self
     {
@@ -405,7 +405,7 @@ class RencontreParis
 
     /**
      * @param $id
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setId($id): self
     {
@@ -423,7 +423,7 @@ class RencontreParis
 
     /**
      * @param JourneeParis $idJournee
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setIdJournee(JourneeParis $idJournee): self
     {
@@ -441,7 +441,7 @@ class RencontreParis
 
     /**
      * @param string|null $adversaire
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setAdversaire(?string $adversaire): self
     {
@@ -451,7 +451,7 @@ class RencontreParis
 
     /**
      * @param EquipeParis $idEquipe
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setIdEquipe(EquipeParis $idEquipe): self
     {
@@ -501,7 +501,7 @@ class RencontreParis
 
     /**
      * @param bool $hosted
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setHosted(bool $hosted): self
     {
@@ -519,7 +519,7 @@ class RencontreParis
 
     /**
      * @param bool $exempt
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setExempt(bool $exempt): self
     {
@@ -537,7 +537,7 @@ class RencontreParis
 
     /**
      * @param bool $reporte
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setReporte(bool $reporte): self
     {
@@ -555,7 +555,7 @@ class RencontreParis
 
     /**
      * @param DateTime $dateReport
-     * @return RencontreParis
+     * @return Rencontre
      */
     public function setDateReport(DateTime $dateReport): self
     {

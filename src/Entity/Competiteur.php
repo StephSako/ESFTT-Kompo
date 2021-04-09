@@ -277,7 +277,7 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DisponibiliteDepartementale", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Disponibilite.php", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $disposDepartementale;
 

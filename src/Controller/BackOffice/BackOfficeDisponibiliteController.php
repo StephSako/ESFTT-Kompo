@@ -3,16 +3,16 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\InvalidSelectionController;
-use App\Entity\DisponibiliteDepartementale;
+use App\Entity\Disponibilite;
 use App\Entity\DisponibiliteParis;
 use App\Repository\CompetiteurRepository;
-use App\Repository\DisponibiliteDepartementaleRepository;
+use App\Repository\DisponibiliteRepository;
 use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
-use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -35,25 +35,25 @@ class BackOfficeDisponibiliteController extends AbstractController
 
     /**
      * BackOfficeController constructor.
-     * @param DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository
+     * @param DisponibiliteRepository $disponibiliteDepartementaleRepository
      * @param DisponibiliteParisRepository $disponibiliteParisRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeDepartementaleRepository
      * @param JourneeParisRepository $journeeParisRepository
      * @param EntityManagerInterface $em
      * @param DivisionRepository $divisionRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      */
-    public function __construct(DisponibiliteDepartementaleRepository $disponibiliteDepartementaleRepository,
+    public function __construct(DisponibiliteRepository $disponibiliteDepartementaleRepository,
                                 DisponibiliteParisRepository $disponibiliteParisRepository,
                                 CompetiteurRepository $competiteurRepository,
-                                JourneeDepartementaleRepository $journeeDepartementaleRepository,
+                                JourneeRepository $journeeDepartementaleRepository,
                                 JourneeParisRepository $journeeParisRepository,
                                 EntityManagerInterface $em,
                                 DivisionRepository $divisionRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository)
+                                RencontreRepository $rencontreParisRepository)
     {
         $this->em = $em;
         $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
@@ -95,7 +95,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             if ($type == 'departementale') {
                 if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
                     if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
-                    $disponibilite = new DisponibiliteDepartementale($competiteur, $journee, $dispo);
+                    $disponibilite = new Disponibilite($competiteur, $journee, $dispo);
 
                     $this->em->persist($disponibilite);
                     $this->em->flush();

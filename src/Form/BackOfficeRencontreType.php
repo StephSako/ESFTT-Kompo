@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\RencontreDepartementale;
+use App\Entity\Rencontre;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BackOfficeRencontreDepartementaleType extends AbstractType
+class BackOfficeRencontreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -44,7 +44,7 @@ class BackOfficeRencontreDepartementaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => RencontreDepartementale::class,
+            'data_class' => Rencontre::class,
             'translation_domain' => 'forms'
         ]);
     }

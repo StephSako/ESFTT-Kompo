@@ -2,19 +2,19 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Entity\EquipeDepartementale;
+use App\Entity\Equipe;
 use App\Entity\EquipeParis;
 use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
-use App\Form\EquipeDepartementaleType;
+use App\Entity\Rencontre;
+use App\Form\EquipeType;
 use App\Form\EquipeParisType;
 use App\Repository\DivisionRepository;
-use App\Repository\EquipeDepartementaleRepository;
+use App\Repository\EquipeRepository;
 use App\Repository\EquipeParisRepository;
-use App\Repository\JourneeDepartementaleRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\JourneeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,20 +35,20 @@ class BackOfficeEquipeController extends AbstractController
 
     /**
      * BackOfficeController constructor.
-     * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
+     * @param EquipeRepository $equipeDepartementaleRepository
      * @param EquipeParisRepository $equipeParisRepository
-     * @param JourneeDepartementaleRepository $journeesDepartementaleRepository
+     * @param JourneeRepository $journeesDepartementaleRepository
      * @param JourneeParisRepository $journeesParisRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementalRepository
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository,
+    public function __construct(EquipeRepository $equipeDepartementaleRepository,
                                 EquipeParisRepository $equipeParisRepository,
-                                JourneeDepartementaleRepository $journeesDepartementaleRepository,
+                                JourneeRepository $journeesDepartementaleRepository,
                                 JourneeParisRepository $journeesParisRepository,
-                                RencontreParisRepository $rencontreParisRepository,
+                                RencontreRepository $rencontreParisRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementalRepository,
                                 DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
@@ -85,8 +85,8 @@ class BackOfficeEquipeController extends AbstractController
     public function new(string $type, Request $request): Response
     {
         if ($type != 'departementale' && $type != 'paris') throw new Exception('Ce championnat est inexistant', 500);
-        $equipe = ($type == 'departementale' ? new EquipeDepartementale() : new EquipeParis());
-        $form = $this->createForm(($type == 'departementale' ? EquipeDepartementaleType::class : EquipeParisType::class), $equipe);
+        $equipe = ($type == 'departementale' ? new Equipe() : new EquipeParis());
+        $form = $this->createForm(($type == 'departementale' ? EquipeType::class : EquipeParisType::class), $equipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -107,7 +107,7 @@ class BackOfficeEquipeController extends AbstractController
                             $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampDepartementale() : $nbMaxJoueurs);
                         }
                         else if ($type == 'paris'){
-                            $rencontre = new RencontreParis();
+                            $rencontre = new Rencontre();
                             $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
                         }
                         else throw new Exception('Ce championnat est inexistant', 500);
@@ -160,7 +160,7 @@ class BackOfficeEquipeController extends AbstractController
         $form = null;
         if ($type == 'departementale'){
             if (!($equipe = $this->equipeDepartementaleRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-            $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
+            $form = $this->createForm(EquipeType::class, $equipe);
         }
         else if ($type == 'paris'){
             if (!($equipe = $this->equipeParisRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);

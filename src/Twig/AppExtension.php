@@ -2,10 +2,10 @@
 
 namespace App\Twig;
 
-use App\Entity\JourneeDepartementale;
+use App\Entity\Journee;
 use App\Entity\JourneeParis;
 use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
+use App\Entity\Rencontre;
 use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -30,8 +30,8 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param JourneeDepartementale|JourneeParis $journee
-     * @param RencontreDepartementale[]|RencontreParis[] $rencontres
+     * @param Journee|JourneeParis $journee
+     * @param RencontreDepartementale[]|Rencontre[] $rencontres
      * @return bool
      */
     public function journeeStillEditable($journee, array $rencontres): bool
@@ -45,7 +45,7 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param RencontreDepartementale|RencontreParis $rencontre
+     * @param RencontreDepartementale|Rencontre $rencontre
      * @return bool
      */
     public function rencontreStillEditable($rencontre): bool

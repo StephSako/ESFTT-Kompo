@@ -3,9 +3,9 @@
 namespace App\Controller\BackOffice;
 
 use App\Form\BackOfficeRencontreDepartementaleType;
-use App\Form\BackOfficeRencontreParisType;
+use App\Form\BackOfficeRencontreType;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,10 +22,10 @@ class BackOfficeRencontreController extends AbstractController
     /**
      * BackOfficeController constructor.
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(RencontreParisRepository $rencontreParisRepository,
+    public function __construct(RencontreRepository $rencontreParisRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
                                 EntityManagerInterface $em)
     {
@@ -62,7 +62,7 @@ class BackOfficeRencontreController extends AbstractController
         }
         else if ($type == 'paris'){
             if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
-            $form = $this->createForm(BackOfficeRencontreParisType::class, $rencontre);
+            $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);
         }
         else throw new Exception('Ce championnat est inexistant', 500);
 

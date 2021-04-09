@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\EquipeDepartementaleRepository")
+ * @ORM\Entity(repositoryClass="EquipeRepository")
  * @ORM\Table(
  *     name="prive_equipe_departementale",
  *     indexes={
@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     fields={"numero"}
  * )
  */
-class EquipeDepartementale
+class Equipe
 {
     /**
      * @ORM\Id()
@@ -82,7 +82,7 @@ class EquipeDepartementale
 
     /**
      * @param mixed $idEquipe
-     * @return EquipeDepartementale
+     * @return Equipe
      */
     public function setIdEquipe($idEquipe): self
     {
@@ -100,7 +100,7 @@ class EquipeDepartementale
 
     /**
      * @param Division|null $idDivision
-     * @return EquipeDepartementale
+     * @return Equipe
      */
     public function setIdDivision(?Division $idDivision): self
     {
@@ -118,7 +118,7 @@ class EquipeDepartementale
 
     /**
      * @param Poule|null $idPoule
-     * @return EquipeDepartementale
+     * @return Equipe
      */
     public function setIdPoule(?Poule $idPoule): self
     {
@@ -136,7 +136,7 @@ class EquipeDepartementale
 
     /**
      * @param mixed $rencontresDepartementales
-     * @return EquipeDepartementale
+     * @return Equipe
      */
     public function setRencontresDepartementales($rencontresDepartementales): self
     {
@@ -154,7 +154,7 @@ class EquipeDepartementale
 
     /**
      * @param int $numero
-     * @return EquipeDepartementale
+     * @return Equipe
      */
     public function setNumero(int $numero): self
     {

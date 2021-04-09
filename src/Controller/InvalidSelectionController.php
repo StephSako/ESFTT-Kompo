@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
+use App\Entity\Rencontre;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -17,11 +17,11 @@ class InvalidSelectionController extends AbstractController
 
     /**
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository,
+                                RencontreRepository $rencontreParisRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -31,7 +31,7 @@ class InvalidSelectionController extends AbstractController
 
     /**
      * @param $type
-     * @param RencontreDepartementale|RencontreParis $compo
+     * @param RencontreDepartementale|Rencontre $compo
      * @param int $idJoueur
      * @param int $nbJournees
      * @param int $nbJoueurs

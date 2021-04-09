@@ -5,10 +5,10 @@ namespace App\Controller\BackOffice;
 use App\Entity\Division;
 use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
-use App\Repository\EquipeDepartementaleRepository;
+use App\Repository\EquipeRepository;
 use App\Repository\EquipeParisRepository;
 use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,16 +29,16 @@ class BackOfficeDivisionController extends AbstractController
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
-     * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
+     * @param EquipeRepository $equipeDepartementaleRepository
      * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreParisRepository
      * @param EquipeParisRepository $equipeParisRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
-                                EquipeDepartementaleRepository $equipeDepartementaleRepository,
+                                EquipeRepository $equipeDepartementaleRepository,
                                 RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository,
+                                RencontreRepository $rencontreParisRepository,
                                 EquipeParisRepository $equipeParisRepository)
     {
         $this->em = $em;
