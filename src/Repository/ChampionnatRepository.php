@@ -18,4 +18,17 @@ class ChampionnatRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Championnat::class);
     }
+
+    /**
+     * Retourne le premier
+     * @return int|mixed|string
+     */
+    public function getFirstChamp()
+    {
+        return $this->createQueryBuilder('c')
+            ->setMaxResults(1)
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
 }

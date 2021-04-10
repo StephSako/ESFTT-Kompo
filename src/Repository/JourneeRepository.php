@@ -22,14 +22,17 @@ class JourneeRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int $type
      * @return int|mixed|string
      */
-    public function findAllDates()
+    public function findAllDates(int $type)
     {
-        return $this->createQueryBuilder('jd')
-            ->select('jd.dateJournee')
-            ->addSelect('jd.undefined')
-            ->orderBy('jd.dateJournee')
+        return $this->createQueryBuilder('j')
+            ->select('j.dateJournee')
+            ->addSelect('j.undefined')
+            ->where('j.idChampionnat = :type')
+            ->setParameter('type', $type)
+            ->orderBy('j.dateJournee')
             ->getQuery()
             ->getResult();
     }

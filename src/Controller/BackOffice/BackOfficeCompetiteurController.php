@@ -8,13 +8,8 @@ use App\Form\BackOfficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DisponibiliteParisRepository;
-use App\Repository\DivisionRepository;
-use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,37 +22,25 @@ class BackOfficeCompetiteurController extends AbstractController
 {
     private $em;
     private $competiteurRepository;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
-    private $disponibiliteDepartementaleRepository;
-    private $disponibiliteParisRepository;
-    private $divisionRepository;
+    private $rencontreRepository;
+    private $disponibiliteRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param DivisionRepository $divisionRepository
-     * @param DisponibiliteRepository $disponibiliteParisRepository
-     * @param DisponibiliteParisRepository $disponibiliteDepartementaleRepository
-     * @param RencontreRepository $rencontreParisRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
+     * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
-                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                DivisionRepository $divisionRepository,
-                                DisponibiliteRepository $disponibiliteParisRepository,
-                                DisponibiliteParisRepository $disponibiliteDepartementaleRepository,
-                                RencontreRepository $rencontreParisRepository)
+                                DisponibiliteRepository $disponibiliteRepository,
+                                RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
-        $this->divisionRepository = $divisionRepository;
-        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
-        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
+        $this->rencontreRepository = $rencontreRepository;
+        $this->disponibiliteRepository = $disponibiliteRepository;
     }
 
     /**
@@ -137,17 +120,12 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions d'équipe ... **/
                     if ($competiteur->isVisitor()){
-                        for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('departementale'); $i+=1) {
-                            $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
-                        }
-
-                        for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('paris'); $i+=1) {
-                            $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+                        for ($i = 0; $i < $this->getParameter('nb_max_joueurs'); $i++) {
+                            $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                         }
 
                         /** ... et ses disponiblités sont supprimées */
-                        $this->disponibiliteDepartementaleRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
-                        $this->disponibiliteParisRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
+                        $this->disponibiliteRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
                     }
 
                     $competiteur->setNom(strtoupper($competiteur->getNom()));
@@ -222,19 +200,14 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      */
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
 
-            for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('departementale'); $i+=1) {
-                $this->rencontreDepartementaleRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
-            }
-
-            for ($i = 0; $i < $this->divisionRepository->getMaxNbJoueursChamp('paris'); $i+=1) {
-                $this->rencontreParisRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+            /** On set à NULL ses sélections dans les compositions d'équipe */
+            for ($i = 0; $i < $this->getParameter('nb_max_joueurs'); $i+=1) {
+                $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 
             $this->em->remove($competiteur);

@@ -34,6 +34,16 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Rencontre
 {
+
+    /**
+     * Rencontre constructor.
+     * @param Championnat $type
+     */
+    public function __construct(Championnat $type)
+    {
+        $this->setIdChampionnat($type);
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

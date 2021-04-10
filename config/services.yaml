@@ -6,6 +6,7 @@
 parameters:
     limite_brulage_departementale: 2
     limite_brulage_paris: 3
+    nb_max_joueurs: 9
 
 services:
     # default configuration for services in *this* file

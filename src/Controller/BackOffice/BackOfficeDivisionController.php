@@ -6,8 +6,6 @@ use App\Entity\Division;
 use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
-use App\Repository\EquipeParisRepository;
-use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -20,33 +18,25 @@ class BackOfficeDivisionController extends AbstractController
 {
     private $em;
     private $divisionRepository;
-    private $equipeDepartementaleRepository;
-    private $equipeParisRepository;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
+    private $equipeRepository;
+    private $rencontreRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
-     * @param EquipeRepository $equipeDepartementaleRepository
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreRepository $rencontreParisRepository
-     * @param EquipeParisRepository $equipeParisRepository
+     * @param EquipeRepository $equipeRepository
+     * @param RencontreRepository $rencontreRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
-                                EquipeRepository $equipeDepartementaleRepository,
-                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreRepository $rencontreParisRepository,
-                                EquipeParisRepository $equipeParisRepository)
+                                EquipeRepository $equipeRepository,
+                                RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
-        $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
-        $this->equipeParisRepository = $equipeParisRepository;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->equipeRepository = $equipeRepository;
+        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**

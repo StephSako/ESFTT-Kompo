@@ -21,12 +21,21 @@ use Doctrine\ORM\Mapping\Index;
  */
 class Disponibilite
 {
-    public function __construct(Competiteur $competiteur, $idJournee, bool $disponibilite)
+
+    /**
+     * Disponibilite constructor.
+     * @param Competiteur $competiteur
+     * @param Journee $journee
+     * @param bool $disponibilite
+     * @param Championnat$type
+     */
+    public function __construct(Competiteur $competiteur, Journee $journee, bool $disponibilite, Championnat $type)
     {
         $this
             ->setIdCompetiteur($competiteur)
             ->setDisponibilite($disponibilite)
-            ->setIdJournee($idJournee);
+            ->setIdChampionnat($type)
+            ->setIdJournee($journee);
     }
 
     /**

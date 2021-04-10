@@ -36,14 +36,17 @@ class RencontreRepository extends ServiceEntityRepository
     /**
      * Liste des rencontres
      * @param int $idJournee
+     * @param int $type
      * @return int|mixed|string
      */
-    public function getRencontresParis(int $idJournee){
-        return $this->createQueryBuilder('rp')
-            ->leftJoin('rp.idEquipe', 'e')
+    public function getRencontres(int $idJournee, int $type){
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
-            ->andWhere('rp.idJournee = :idJournee')
+            ->andWhere('r.idJournee = :idJournee')
+            ->andWhere('r.idChampionnat = :type')
             ->setParameter('idJournee', $idJournee)
+            ->setParameter('type', $type)
             ->orderBy('e.numero')
             ->getQuery()
             ->getResult();
@@ -51,10 +54,12 @@ class RencontreRepository extends ServiceEntityRepository
 
     /**
      * Liste des rencontres dans le backoffice
-     * @return int|mixed|string
+     * @param int $type
+     * @return array
      */
-    public function getOrderedRencontres(){
-        $query = $this->createQueryBuilder('rp')
+    public function getOrderedRencontres(int $type): array
+    {
+        $query = $this->createQueryBuilder('r')
             ->select('e.numero')
             ->addSelect('j.idJournee')
             ->addSelect('j.dateJournee')
@@ -63,15 +68,17 @@ class RencontreRepository extends ServiceEntityRepository
             ->addSelect('rp.domicile')
             ->addSelect('rp.hosted')
             ->addSelect('d.idDivision')
-            ->addSelect('rp.reporte')
-            ->addSelect('rp.exempt')
-            ->addSelect('rp.dateReport')
-            ->addSelect('rp.id')
-            ->leftJoin('rp.idJournee', 'j')
-            ->leftJoin('rp.idEquipe', 'e')
+            ->addSelect('r.reporte')
+            ->addSelect('r.exempt')
+            ->addSelect('r.dateReport')
+            ->addSelect('r.id')
+            ->leftJoin('r.idJournee', 'j')
+            ->leftJoin('r.idEquipe', 'e')
             ->leftJoin('e.idDivision', 'd')
+            ->where('r.idChampionnat = :type')
+            ->setParameter('type', $type)
             ->orderBy('j.dateJournee')
-            ->addOrderBy('rp.idJournee')
+            ->addOrderBy('r.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()
             ->getResult();

@@ -2,16 +2,12 @@
 
 namespace App\Controller;
 
-use App\Form\RencontreDepartementaleType;
 use App\Form\RencontreType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
-use App\Repository\EquipeParisRepository;
-use App\Repository\JourneeParisRepository;
-use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use DateTime;
@@ -28,51 +24,39 @@ class HomeController extends AbstractController
 {
     private $em;
     private $competiteurRepository;
-    private $equipeDepartementalRepository;
-    private $equipeParisRepository;
-    private $disponibiliteDepartementaleRepository;
-    private $disponibiliteParisRepository;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
+    private $equipeRepository;
+    private $championnatRepository;
+    private $disponibiliteRepository;
+    private $journeeRepository;
+    private $rencontreRepository;
     private $divisionRepository;
 
     /**
-     * @param JourneeRepository $journeeDepartementaleRepository
-     * @param JourneeParisRepository $journeeParisRepository
-     * @param DisponibiliteRepository $disponibiliteDepartementaleRepository
-     * @param DisponibiliteParisRepository $disponibiliteParisRepository
+     * @param JourneeRepository $journeeRepository
+     * @param ChampionnatRepository $championnatRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreRepository $rencontreParisRepository
-     * @param EquipeRepository $equipeDepartementalRepository
-     * @param EquipeParisRepository $equipeParisRepository
+     * @param RencontreRepository $rencontreRepository
+     * @param EquipeRepository $equipeRepository
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeDepartementaleRepository,
-                                JourneeParisRepository $journeeParisRepository,
-                                DisponibiliteRepository $disponibiliteDepartementaleRepository,
-                                DisponibiliteParisRepository $disponibiliteParisRepository,
+    public function __construct(JourneeRepository $journeeRepository,
+                                ChampionnatRepository $championnatRepository,
+                                DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository $competiteurRepository,
-                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreRepository $rencontreParisRepository,
-                                EquipeRepository $equipeDepartementalRepository,
-                                EquipeParisRepository $equipeParisRepository,
+                                RencontreRepository $rencontreRepository,
+                                EquipeRepository $equipeRepository,
                                 DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
+        $this->rencontreRepository = $rencontreRepository;
         $this->competiteurRepository = $competiteurRepository;
-        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
-        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
-        $this->equipeDepartementalRepository = $equipeDepartementalRepository;
-        $this->equipeParisRepository = $equipeParisRepository;
+        $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->journeeRepository = $journeeRepository;
+        $this->championnatRepository = $championnatRepository;
+        $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
     }
 
@@ -82,10 +66,11 @@ class HomeController extends AbstractController
      */
     public function indexAction(): Response
     {
-        $type = ($this->get('session')->get('type') != null ? $this->get('session')->get('type') : 'departementale');
-        if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
-        else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ($this->get('session')->get('type')){
+            if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        } else $championnat = $this->championnatRepository->getFirstChamp();
+
+        $dates = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = 1;
 
         while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
@@ -93,7 +78,7 @@ class HomeController extends AbstractController
         }
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $type,
+            'type' => $championnat->getNom(),
             'id' => $idJournee
         ]);
     }
@@ -106,9 +91,8 @@ class HomeController extends AbstractController
      */
     public function indexTypeAction(string $type): Response
     {
-        if ($type == 'departementale') $dates = $this->journeeDepartementaleRepository->findAllDates();
-        else if ($type == 'paris') $dates = $this->journeeParisRepository->findAllDates();
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        $dates = $this->journeeRepository->findAllDates($type);
         $idJournee = 1;
 
         while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
@@ -116,82 +100,60 @@ class HomeController extends AbstractController
         }
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $type,
+            'type' => $championnat->getNom(),
             'id' => $idJournee
         ]);
     }
 
     /**
-     * @param string $type
+     * @param int $type
      * @param int $id
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      * @throws Exception
      * @Route("/journee/{type}/{id}", name="journee.show")
      */
-    public function journee(string $type, int $id): Response
+    public function journee(int $type, int $id): Response
     {
-        if ($type == 'departementale') {
-            // On vérifie que la journée existe
-            if ((!$journee = $this->journeeDepartementaleRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
-            $this->get('session')->set('type', $type);
+        if ((!$championnat = $this->championnatRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
+        if ((!$journee = $this->journeeRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
 
-            // Toutes les journées du type de championnat visé
-            $journees = $this->journeeDepartementaleRepository->findAll();
+        $this->get('session')->set('type', $type);
 
-            // Objet Disponibilité du joueur
-            $dispoJoueur = $this->disponibiliteDepartementaleRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
+        // Toutes les journées du type de championnat visé
+        $journees = $this->journeeRepository->findAll();
 
-            // Joueurs ayant déclaré leur disponibilité
-            $joueursDeclares = $this->disponibiliteDepartementaleRepository->findJoueursDeclares($id);
+        // Objet Disponibilité du joueur
+        $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
 
-            // Joueurs n'ayant pas déclaré leur disponibilité
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
+        // Joueurs ayant déclaré leur disponibilité
+        $joueursDeclares = $this->disponibiliteRepository->findJoueursDeclares($id);
 
-            // Compositions d'équipe
-            $compos = $this->rencontreDepartementaleRepository->getRencontresDepartementales($id);
+        // Joueurs n'ayant pas déclaré leur disponibilité
+        $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
 
-            // Joueurs sélectionnées
-            $selectedPlayers = $this->rencontreDepartementaleRepository->getSelectedPlayers($compos);
+        // Compositions d'équipe
+        $compos = $this->rencontreRepository->getRencontres($id, $type);
 
-            // Nombre maximal de joueurs pour les compos du championnat départemental
-            $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale();
-            }, $compos));
+        // Joueurs sélectionnées
+        $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
 
-            // Id des équipes valides
-            $idEquipesVisuel = $this->equipeDepartementalRepository->getIdEquipesBrulees('MIN');
-            $idEquipesBrulage = $this->equipeDepartementalRepository->getIdEquipesBrulees('MAX');
+        // Nombre maximal de joueurs pour les compos du championnat départemental
+        $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale();
+        }, $compos));
 
-            // Nombre minimal critique de joueurs pour les compos du championnat départemental
-            $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1;
-            }, $compos));
+        // Id des équipes valides
+        $idEquipesVisuel = $this->equipeRepository->getIdEquipesBrulees('MIN');
+        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX');
 
-            // Equipes sans divisions affiliées
-            $equipesSansDivision = $this->equipeDepartementalRepository->getEquipesSansDivision();
-        }
-        else if ($type == 'paris') {
-            if ((!$journee = $this->journeeParisRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
-            $this->get('session')->set('type', $type);
-            $journees = $this->journeeParisRepository->findAll();
-            $dispoJoueur = $this->disponibiliteParisRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
-            $joueursDeclares = $this->disponibiliteParisRepository->findJoueursDeclares($id);
-            $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
-            $compos = $this->rencontreParisRepository->getRencontresParis($id);
-            $selectedPlayers = $this->rencontreParisRepository->getSelectedPlayers($compos);
-            $idEquipesVisuel = $this->equipeParisRepository->getIdEquipesBrulees('MIN');
-            $idEquipesBrulage = $this->equipeParisRepository->getIdEquipesBrulees('MAX');
-            $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis();
-            }, $compos));
-            $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
-                return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis() - 1;
-            }, $compos));
-            $equipesSansDivision = $this->equipeParisRepository->getEquipesSansDivision();
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
+        // Nombre minimal critique de joueurs pour les compos du championnat départemental
+        $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1;
+        }, $compos));
+
+        // Equipes sans divisions affiliées
+        $equipesSansDivision = $this->equipeRepository->getEquipesSansDivision();
+
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo)
             {
@@ -205,12 +167,12 @@ class HomeController extends AbstractController
         // Si l'utilisateur actuel est sélectionné pour la journée actuelle
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
-        $allDisponibilitesDepartementales = $this->competiteurRepository->findAllDisposRecapitulatif('departementale', count($journees));
-        $allDisponibiliteParis = $this->competiteurRepository->findAllDisposRecapitulatif('paris', count($journees));
+        // TODO Classer en fonction des championnats
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif('departementale', count($journees));
         $nbJournees = count($journees);
 
         // Brûlages des joueurs
-        $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->divisionRepository->getMaxNbJoueursChamp($type));
+        $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->getParameter('nb_max_joueurs'));
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -229,8 +191,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'nbJournees' => $nbJournees,
             'brulages' => $brulages,
-            'allDisponibilitesDepartementales' => $allDisponibilitesDepartementales,
-            'allDisponibiliteParis' => $allDisponibiliteParis
+            'allDisponibilites' => $allDisponibilites,
         ]);
     }
 
