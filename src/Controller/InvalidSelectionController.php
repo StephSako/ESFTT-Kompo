@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\RencontreDepartementale;
 use App\Entity\Rencontre;
-use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,34 +11,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class InvalidSelectionController extends AbstractController
 {
     private $em;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
+    private $rencontreRepository;
+    private $championnatRepository;
 
     /**
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreRepository $rencontreParisRepository
+     * @param ChampionnatRepository $championnatRepository
+     * @param RencontreRepository $rencontreRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreRepository $rencontreParisRepository,
+    public function __construct(ChampionnatRepository $championnatRepository,
+                                RencontreRepository $rencontreRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->rencontreRepository = $rencontreRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
-     * @param $type
-     * @param RencontreDepartementale|Rencontre $compo
+     * @param int $type
+     * @param Rencontre $compo
      * @param int $idJoueur
      * @param int $nbJournees
      * @param int $nbJoueurs
      */
-    public function checkInvalidSelection($type, $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
+    public function checkInvalidSelection(int $type, $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $nbJournees) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_departementale'), $nbJoueurs), $nbJoueurs);
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_paris'), $nbJoueurs), $nbJoueurs);
+            $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbJoueurs), $nbJoueurs);
         }
     }
 

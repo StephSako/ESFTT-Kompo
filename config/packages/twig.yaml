@@ -1,5 +1,2 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-    globals:
-      limite_brulage_departementale: "%limite_brulage_departementale%"
-      limite_brulage_paris: "%limite_brulage_paris%"

@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JourneeRepository")
@@ -50,17 +51,7 @@ class Journee
     private $undefined;
 
     /**
-     * @var string
-     */
-    private $type = 'Départemental';
-
-    /**
-     * @var string
-     */
-    private $linkType = 'departementale';
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\RencontreDepartementale", mappedBy="idJournee")
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee")
      */
     protected $rencontres;
 
@@ -80,22 +71,6 @@ class Journee
     {
         $this->idChampionnat = $idChampionnat;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLinkType(): string
-    {
-        return $this->linkType;
     }
 
     /**

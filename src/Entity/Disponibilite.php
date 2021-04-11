@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DisponibiliteRepository")
@@ -64,7 +65,7 @@ class Disponibilite
     /**
      * @var Journee
      *
-     * @ORM\ManyToOne(targetEntity="Journee.php")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journee")
      * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
      */
     private $idJournee;

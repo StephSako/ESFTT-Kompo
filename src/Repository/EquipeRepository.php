@@ -26,20 +26,22 @@ class EquipeRepository extends ServiceEntityRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getNbEquipesDepartementales()
+    public function getNbEquipes(int $type)
     {
-        return $this->createQueryBuilder('ed')
-            ->select('count(ed.idEquipe)')
-            ->where('ed.idDivision IS NOT NULL')
+        return $this->createQueryBuilder('e')
+            ->select('count(e.idEquipe)')
+            ->where('e.idDivision IS NOT NULL')
+            ->andWhere('e.idChampionnat = :idChampionnat')
+            ->setParameter('idChampionnat', $type)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
     /**
      * Equipes sans affiliation à une division
-     * @return int|mixed|string
+     * @return array
      */
-    public function getEquipesSansDivision()
+    public function getEquipesSansDivision(): array
     {
         return array_column($this->createQueryBuilder('ed')
             ->select('ed.numero')
@@ -52,14 +54,16 @@ class EquipeRepository extends ServiceEntityRepository
     /**
      * Liste des IDs des équipes soumises au brûlage
      * @param string $fonction
-     * @return int|mixed|string
+     * @param int $type
+     * @return array
      */
-    public function getIdEquipesBrulees(string $fonction)
+    public function getIdEquipesBrulees(string $fonction, int $type): array
     {
-        return array_column($this->createQueryBuilder('ed')
-            ->select('ed.idEquipe')
-            ->where('ed.idDivision IS NOT NULL')
-            ->andWhere('ed.idEquipe <> (SELECT ' . $fonction . '(e.idEquipe) from App\Entity\EquipeDepartementale e WHERE e.idDivision IS NOT NULL)')
+        return array_column($this->createQueryBuilder('e')
+            ->select('e.idEquipe')
+            ->where('e.idDivision IS NOT NULL')
+            ->andWhere('e.idEquipe <> (SELECT ' . $fonction . '(e_.idEquipe) from App\Entity\Equipe e_ WHERE e_.idChampionnat = :idChampionnat AND e_.idDivision IS NOT NULL)')
+            ->setParameter('idChampionnat', $type)
             ->getQuery()
             ->getResult(), 'idEquipe');
     }

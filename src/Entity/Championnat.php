@@ -48,6 +48,27 @@ class Championnat
     private $nom;
 
     /**
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 1,
+     *     message = "La limite de brûlage doit être supérieure à {{ limit }}"
+     * )
+     *
+     * @Assert\LessThanOrEqual(
+     *     value = 4,
+     *     message = "La limite de brûlage doit être inférierue à {{ limit }}"
+     * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
+     * @ORM\Column(type="integer", name="limite_brulage", nullable=false)
+     */
+    private $limiteBrulage;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="j2rule", nullable=false)
@@ -78,6 +99,24 @@ class Championnat
      * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $journees;
+
+    /**
+     * @return int
+     */
+    public function getLimiteBrulage(): int
+    {
+        return $this->limiteBrulage;
+    }
+
+    /**
+     * @param int|null $limiteBrulage
+     * @return Championnat
+     */
+    public function setLimiteBrulage(?int $limiteBrulage): self
+    {
+        $this->limiteBrulage = $limiteBrulage;
+        return $this;
+    }
 
     /**
      * @return mixed

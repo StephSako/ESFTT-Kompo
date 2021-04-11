@@ -22,6 +22,14 @@ class ChampionnatType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
+            ->add('limiteBrulage', IntegerType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 4
+                ]
+            ])
             ->add('j2Rule', CheckboxType::class,[
                 'label' => ' ',
                 'required' => false

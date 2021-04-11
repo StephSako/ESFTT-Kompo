@@ -12,8 +12,6 @@ use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,7 +66,8 @@ class HomeController extends AbstractController
     {
         if ($this->get('session')->get('type')){
             if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
-        } else $championnat = $this->championnatRepository->getFirstChamp();
+        } else $championnat = $this->championnatRepository->getFirstChamp()[0];
+        dump($championnat);
 
         $dates = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = 1;
@@ -78,20 +77,20 @@ class HomeController extends AbstractController
         }
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $championnat->getNom(),
+            'type' => $championnat->getIdChampionnat(),
             'id' => $idJournee
         ]);
     }
 
     /**
      * @Route("/journee/{type}", name="index.type")
-     * @param string $type
+     * @param int $type
      * @return Response
      * @throws Exception
      */
-    public function indexTypeAction(string $type): Response
+    public function indexTypeAction(int $type): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         $dates = $this->journeeRepository->findAllDates($type);
         $idJournee = 1;
 
@@ -114,7 +113,7 @@ class HomeController extends AbstractController
      */
     public function journee(int $type, int $id): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if ((!$journee = $this->journeeRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
 
         $this->get('session')->set('type', $type);
@@ -139,16 +138,16 @@ class HomeController extends AbstractController
 
         // Nombre maximal de joueurs pour les compos du championnat départemental
         $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
-            return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale();
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
         }, $compos));
 
         // Id des équipes valides
-        $idEquipesVisuel = $this->equipeRepository->getIdEquipesBrulees('MIN');
-        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX');
+        $idEquipesVisuel = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
+        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
 
         // Nombre minimal critique de joueurs pour les compos du championnat départemental
         $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
-            return $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale() - 1;
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() - 1;
         }, $compos));
 
         // Equipes sans divisions affiliées
@@ -168,7 +167,7 @@ class HomeController extends AbstractController
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
         // TODO Classer en fonction des championnats
-        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif('departementale', count($journees));
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($type, count($journees));
         $nbJournees = count($journees);
 
         // Brûlages des joueurs
@@ -181,6 +180,7 @@ class HomeController extends AbstractController
             'nbTotalJoueurs' => $nbTotalJoueurs,
             'nbMinJoueurs' => $nbMinJoueurs,
             'selected' => $selected,
+            'championnat' => $championnat,
             'compos' => $compos,
             'idEquipes' => $idEquipesVisuel,
             'selectedPlayers' => $selectedPlayers,
@@ -197,57 +197,38 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/composition/{type}/edit/{compo}", name="composition.edit")
-     * @param string $type
+     * @param int $type
      * @param $compo
      * @param Request $request
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
      * @throws Exception
      */
-    public function edit(string $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
+    public function edit(int $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $journees = $form = null;
-        $nbMaxJoueurs = 0;
-        $brulageSelectionnables = $idEquipes = $joueursBrules = [];
-        if ($type != ('departementale' || 'paris')) throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($compo = $this->rencontreRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
+        if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
 
-        if ($type == 'departementale'){
-            if (!($compo = $this->rencontreDepartementaleRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
-            if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
-            $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-            $idEquipesBrulage = $this->equipeDepartementalRepository->getIdEquipesBrulees('MAX');
-            $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_departementale'));
-            $form = $this->createForm(RencontreDepartementaleType::class, $compo, [
-                'nbMaxJoueurs' => $nbMaxJoueurs,
-                'limiteBrulage' => $this->getParameter('limite_brulage_departementale')
-            ]);
-            $journees = $this->journeeDepartementaleRepository->findAll();
-            $idEquipes = $this->equipeDepartementalRepository->getIdEquipesBrulees('MIN');
-        }
-        else if ($type == 'paris'){
-            if (!($compo = $this->rencontreParisRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
-            if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
-            $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-            $idEquipesBrulage = $this->equipeParisRepository->getIdEquipesBrulees('MAX');
-            $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $this->getParameter('limite_brulage_paris'));
-            $form = $this->createForm(RencontreType::class, $compo, [
-                'nbMaxJoueurs' => $nbMaxJoueurs,
-                'limiteBrulage' => $this->getParameter('limite_brulage_paris')
-            ]);
-            $journees = $this->journeeParisRepository->findAll();
-            $idEquipes = $this->equipeParisRepository->getIdEquipesBrulees('MIN');
-        }
+        $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
+        $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat->isJ2Rule(), $type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
+        $form = $this->createForm(RencontreType::class, $compo, [
+            'nbMaxJoueurs' => $nbMaxJoueurs,
+            'limiteBrulage' => $championnat->getLimiteBrulage()
+        ]);
+        $journees = $this->journeeRepository->findAll();
+        $idEquipes = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
+
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $this->getParameter('limite_brulage_' . $type));
-        $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueursChamp($type);
+        $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $nbJoueursBruleJ2 = 0;
-            if ($type == 'departementale'){
+            if ($championnat->isJ2Rule()){
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
                 $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
                 {   return ($joueur["bruleJ2"]);    }
@@ -283,7 +264,7 @@ class HomeController extends AbstractController
                         'brulageSelectionnables' => $brulageSelectionnables,
                         'idEquipes' => $idEquipes,
                         'compo' => $compo,
-                        'type' => $type,
+                        'type' => $championnat->getNom(),
                         'form' => $form->createView()
                     ]);
                 }
@@ -291,7 +272,7 @@ class HomeController extends AbstractController
                 $this->addFlash('success', 'Composition modifiée avec succès !');
 
                 return $this->redirectToRoute('journee.show', [
-                    'type' => $compo->getIdJournee()->getLinkType(),
+                    'type' => $championnat->getSlug(),
                     'id' => $compo->getIdJournee()->getIdJournee()
                 ]);
             }
@@ -304,30 +285,24 @@ class HomeController extends AbstractController
             'brulageSelectionnables' => $brulageSelectionnables,
             'idEquipes' => $idEquipes,
             'compo' => $compo,
-            'type' => $type,
+            'type' => $championnat->getNom(),
             'form' => $form->createView()
         ]);
     }
 
     /**
      * @Route("/composition/empty/{type}/{idRencontre}/{fromTemplate}/{nbJoueurs}", name="composition.vider")
-     * @param string $type
+     * @param int $type
      * @param int $idRencontre
      * @param bool $fromTemplate // Affiche le flash uniquement s'il est activé depuis le template journee/index.html.twig
      * @param int $nbJoueurs
      * @return Response
      * @throws Exception
      */
-    public function emptyComposition(string $type, int $idRencontre, bool $fromTemplate, int $nbJoueurs) : Response
+    public function emptyComposition(int $type, int $idRencontre, bool $fromTemplate, int $nbJoueurs) : Response
     {
-        $compo = null;
-        if ($type == 'departementale'){
-            if (!($compo = $this->rencontreDepartementaleRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
-        }
-        else if ($type == 'paris'){
-            if (!($compo = $this->rencontreParisRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($compo = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
 
         for ($i = 0; $i < $nbJoueurs; $i++){
             $compo->setIdJoueurN($i, null);
@@ -337,7 +312,7 @@ class HomeController extends AbstractController
         if ($fromTemplate) $this->addFlash('success', 'Composition vidée avec succès !');
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $compo->getIdJournee()->getLinkType(),
+            'type' => $championnat->getSlug(),
             'id' => $compo->getIdJournee()->getIdJournee()
         ]);
     }

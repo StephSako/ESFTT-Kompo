@@ -2,9 +2,8 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Form\BackOfficeRencontreDepartementaleType;
 use App\Form\BackOfficeRencontreType;
-use App\Repository\RencontreDepartementaleRepository;
+use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,22 +15,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeRencontreController extends AbstractController
 {
     private $em;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
+    private $championnatRepository;
+    private $rencontreRepository;
 
     /**
      * BackOfficeController constructor.
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreRepository $rencontreParisRepository
+     * @param RencontreRepository $rencontreRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(RencontreRepository $rencontreParisRepository,
-                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
+    public function __construct(RencontreRepository $rencontreRepository,
+                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->rencontreParisRepository = $rencontreParisRepository;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
+        $this->rencontreRepository = $rencontreRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -41,30 +40,24 @@ class BackOfficeRencontreController extends AbstractController
     public function indexRencontre(): Response
     {
         return $this->render('backoffice/rencontre/index.html.twig', [
-            'rencontreDepartementales' => $this->rencontreDepartementaleRepository->getOrderedRencontres(),
-            'rencontreParis' => $this->rencontreParisRepository->getOrderedRencontres()
+            // TODO Classer selon les championnats
+            'rencontres' => $this->rencontreRepository->getOrderedRencontres()
         ]);
     }
 
     /**
      * @Route("/backoffice/rencontre/edit/{type}/{idRencontre}", name="backoffice.rencontre.edit")
-     * @param $type
-     * @param $idRencontre
+     * @param int $type
+     * @param int $idRencontre
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editRencontre($type, $idRencontre, Request $request): Response
+    public function editRencontre(int $type, int $idRencontre, Request $request): Response
     {
-        if ($type == 'departementale'){
-            if (!($rencontre = $this->rencontreDepartementaleRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
-            $form = $this->createForm(BackOfficeRencontreDepartementaleType::class, $rencontre);
-        }
-        else if ($type == 'paris'){
-            if (!($rencontre = $this->rencontreParisRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
-            $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($rencontre = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
+        $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);
 
         $form->handleRequest($request);
         $domicile = ($rencontre->getDomicile() ? "D" : "E");
@@ -101,7 +94,7 @@ class BackOfficeRencontreController extends AbstractController
 
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
-            'type' => $type,
+            'type' => $championnat->getNom(),
             'domicile' => $domicile,
             'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
             'idJournee' => $rencontre->getIdJournee()->getIdJournee(),

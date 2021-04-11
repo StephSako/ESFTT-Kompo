@@ -3,9 +3,8 @@
 namespace App\Controller\BackOffice;
 
 use App\Form\JourneeType;
-use App\Form\JourneeParisType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\JourneeRepository;
-use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,22 +15,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeJourneeController extends AbstractController
 {
     private $em;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
+    private $journeeRepository;
+    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
-     * @param JourneeParisRepository $journeeParisRepository
-     * @param JourneeRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeParisRepository $journeeParisRepository,
-                                JourneeRepository $journeeDepartementaleRepository,
+    public function __construct(JourneeRepository $journeeRepository,
+                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->journeeRepository = $journeeRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -41,31 +40,24 @@ class BackOfficeJourneeController extends AbstractController
     public function indexJournee(): Response
     {
         return $this->render('backoffice/journee/index.html.twig', [
-            'journeeDepartementales' => $this->journeeDepartementaleRepository->findAll(),
-            'journeeParis' => $this->journeeParisRepository->findAll()
+            // TODO Classer selon les championnats
+            'journees' => $this->journeeRepository->findAll()
         ]);
     }
 
     /**
      * @Route("/backoffice/journee/edit/{type}/journee/{idJournee}", name="backoffice.journee.edit")
      * @param $idJournee
-     * @param $type
+     * @param int $type
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editJournee($type, $idJournee, Request $request): Response
+    public function editJournee(int $type, $idJournee, Request $request): Response
     {
-        $form = null;
-        if ($type == 'departementale'){
-            if (!($journee = $this->journeeDepartementaleRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
-            $form = $this->createForm(JourneeType::class, $journee);
-        }
-        else if ($type == 'paris'){
-            if (!($journee = $this->journeeParisRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);
-            $form = $this->createForm(JourneeParisType::class, $journee);
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
+        $form = $this->createForm(JourneeType::class, $journee);
 
         $form->handleRequest($request);
 
@@ -81,7 +73,7 @@ class BackOfficeJourneeController extends AbstractController
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'type' => $type,
+            'type' => $championnat->getNom(),
             'idJournee' => $idJournee
         ]);
     }

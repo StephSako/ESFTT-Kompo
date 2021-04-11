@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
 use App\Repository\JourneeRepository;
-use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,21 +18,17 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     private $em;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
+    private $journeeRepository;
 
     /**
      * SecurityController constructor.
-     * @param JourneeRepository $journeeDepartementaleRepository
-     * @param JourneeParisRepository $journeeParisRepository
+     * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeDepartementaleRepository,
-                                JourneeParisRepository $journeeParisRepository,
+    public function __construct(JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
-        $this->journeeParisRepository = $journeeParisRepository;
+        $this->journeeRepository = $journeeRepository;
         $this->em = $em;
     }
 
@@ -60,10 +55,8 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function edit(Request $request){
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
-
+        //TODO Classer selon le championnat en cache
+        $journees = $this->journeeRepository->findAll($this->get('session')->get('type'));
         $user = $this->getUser();
 
         if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
@@ -120,10 +113,8 @@ class SecurityController extends AbstractController
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
-
+        //TODO Classer selon le championnat en cache
+        $journees = $this->journeeRepository->findAll($this->get('session')->get('type'));
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);

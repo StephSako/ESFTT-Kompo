@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\JourneeRepository;
-use App\Repository\JourneeParisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -20,38 +20,35 @@ use Twig\Environment;
 
 class ContactController extends AbstractController
 {
-    private $journeeParisRepository;
-    private $journeeDepartementaleRepository;
+    private $journeeRepository;
     private $competiteurRepository;
+    private $championnatRepository;
     private $mailer;
     private $environment;
-    /**
-     * @var EntityManagerInterface
-     */
     private $em;
 
     /**
      * ContactController constructor.
-     * @param JourneeRepository $journeeParisRepository
-     * @param JourneeParisRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
+     * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
      * @param Environment $environment
      */
-    public function __construct(JourneeRepository $journeeParisRepository,
-                                JourneeParisRepository $journeeDepartementaleRepository,
+    public function __construct(JourneeRepository $journeeRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
+                                ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer,
                                 Environment $environment)
     {
         $this->em = $em;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->journeeRepository = $journeeRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->mailer = $mailer;
         $this->environment = $environment;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -60,10 +57,11 @@ class ContactController extends AbstractController
      */
     public function index(): Response
     {
-        $type = ($this->get('session')->get('type') != null ? $this->get('session')->get('type') : 'departementale');
-        if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if ($this->get('session')->get('type')){
+            if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        } else $championnat = $this->championnatRepository->getFirstChamp();
+
+        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
 
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 

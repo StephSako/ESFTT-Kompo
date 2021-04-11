@@ -3,17 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Disponibilite;
-use App\Entity\DisponibiliteParis;
+use App\Repository\ChampionnatRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DisponibiliteParisRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\JourneeRepository;
-use App\Repository\JourneeParisRepository;
-use App\Repository\RencontreDepartementaleRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,80 +17,56 @@ use Symfony\Component\Routing\Annotation\Route;
 class DisponibiliteController extends AbstractController
 {
     private $em;
-    private $journeeParisRepository;
-    private $journeeDepartementaleRepository;
-    private $disponibiliteDepartementaleRepository;
-    private $disponibiliteParisRepository;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
-    private $divisionRepository;
+    private $journeeRepository;
+    private $disponibiliteRepository;
+    private $rencontreRepository;
+    private $championnatRepository;
 
     /**
      * @param EntityManagerInterface $em
-     * @param JourneeParisRepository $journeeParisRepository
-     * @param JourneeRepository $journeeDepartementaleRepository
-     * @param DisponibiliteRepository $disponibiliteDepartementaleRepository
-     * @param DisponibiliteParisRepository $disponibiliteParisRepository
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param DivisionRepository $divisionRepository
-     * @param RencontreRepository $rencontreParisRepository
+     * @param JourneeRepository $journeeRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
+     * @param ChampionnatRepository $championnatRepository
+     * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
-                                JourneeParisRepository $journeeParisRepository,
-                                JourneeRepository $journeeDepartementaleRepository,
-                                DisponibiliteRepository $disponibiliteDepartementaleRepository,
-                                DisponibiliteParisRepository $disponibiliteParisRepository,
-                                RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                DivisionRepository $divisionRepository,
-                                RencontreRepository $rencontreParisRepository)
+                                JourneeRepository $journeeRepository,
+                                DisponibiliteRepository $disponibiliteRepository,
+                                ChampionnatRepository $championnatRepository,
+                                RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
-        $this->disponibiliteDepartementaleRepository = $disponibiliteDepartementaleRepository;
-        $this->disponibiliteParisRepository = $disponibiliteParisRepository;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
-        $this->divisionRepository = $divisionRepository;
+        $this->journeeRepository = $journeeRepository;
+        $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->rencontreRepository = $rencontreRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
      * @Route("/journee/disponibilite/new/{journee}/{type}/{dispo}", name="journee.disponibilite.new")
      * @param int $journee
-     * @param string $type
+     * @param int $type
      * @param int $dispo
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, string $type, int $dispo):Response
+    public function new(int $journee, int $type, int $dispo):Response
     {
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         $competiteur = $this->getUser();
 
-        if ($type) {
-            if ($type == 'departementale') {
-                if (!($journee = $this->journeeDepartementaleRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
-                if (sizeof($this->disponibiliteDepartementaleRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new Disponibilite($competiteur, $journee, $dispo);
+        if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
+        if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
+            $disponibilite = new Disponibilite($competiteur, $journee, $dispo, $championnat);
 
-                    $this->em->persist($disponibilite);
-                    $this->em->flush();
-                    $this->addFlash('success', 'Disponibilité signalée avec succès !');
-                } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
-            } else if ($type == 'paris') {
-                if (!($journee = $this->journeeParisRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
-                if (sizeof($this->disponibiliteParisRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-                    $disponibilite = new DisponibiliteParis($competiteur, $journee, $dispo);
-
-                    $this->em->persist($disponibilite);
-                    $this->em->flush();
-                    $this->addFlash('success', 'Disponibilité signalée avec succès !');
-                } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
-            } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
-        } else $this->addFlash('fail', 'Compétition non renseignée !');
+            $this->em->persist($disponibilite);
+            $this->em->flush();
+            $this->addFlash('success', 'Disponibilité signalée avec succès !');
+        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $type,
+                'type' => $championnat->getNom(),
                 'id' => $journee->getIdJournee()
             ]
         );
@@ -108,43 +79,25 @@ class DisponibiliteController extends AbstractController
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
+     * @throws Exception
      */
     public function update(string $type, int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        $journee = 1;
-        if ($type == 'departementale'){
-            if (!($disposJoueur = $this->disponibiliteDepartementaleRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
-            $disposJoueur->setDisponibiliteDepartementale($dispo);
-            $journee = $disposJoueur->getIdJournee()->getIdJournee();
+        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
 
-            /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-            if (!$dispo){
-                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-                $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs), $nbMaxJoueurs);
-            }
+        if (!($disposJoueur = $this->disponibiliteRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
+        $disposJoueur->setDisponibilite($dispo);
+        $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
-            $this->em->flush();
-            $this->addFlash('success', 'Disponibilité modifiée avec succès !');
-        }
-        else if ($type == 'paris'){
-            if (!($disposJoueur = $this->disponibiliteParisRepository->find($dispoJoueur))) throw new Exception('Cette disponiblité est inexistante', 500);
-            $disposJoueur->setDisponibiliteParis($dispo);
-            $journee = $disposJoueur->getIdJournee()->getIdJournee();
+        /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
+        if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $this->getParameter('nb_max_joueurs')), $this->getParameter('nb_max_joueurs'));
 
-            if (!$dispo){
-                $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-                $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs), $nbMaxJoueurs);
-            }
-
-            $this->em->flush();
-            $this->addFlash('success', 'Disponibilité modifiée avec succès !');
-        } else $this->addFlash('fail', 'Cette compétition n\'existe pas !');
+        $this->em->flush();
+        $this->addFlash('success', 'Disponibilité modifiée avec succès !');
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $type,
+                'type' => $championnat->getNom(),
                 'id' => $journee
             ]
         );

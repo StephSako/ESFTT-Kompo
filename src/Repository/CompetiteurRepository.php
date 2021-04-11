@@ -21,17 +21,18 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * @param int $idJournee
-     * @param string $type
-     * @return mixed[]
+     * @param int $type
+     * @return array
      */
-    public function findJoueursNonDeclares(int $idJournee, string $type): array
+    public function findJoueursNonDeclares(int $idJournee, int $type): array
     {
         return $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.idCompetiteur')
             ->addSelect('c.prenom')
-            ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite" . ucfirst($type) . " d WHERE d.idJournee = :idJournee)")
+            ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite d WHERE d.idJournee = :idJournee AND d.idChampionnat = :idChampionnat)")
             ->setParameter('idJournee', $idJournee)
+            ->setParameter('idChampionnat', $type)
             ->andWhere('c.visitor <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
@@ -41,21 +42,23 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
-     * @param string $type
+     * @param int $type
      * @param int $nbJournees
      * @return int|mixed|string
      */
-    public function findAllDisposRecapitulatif(string $type, int $nbJournees){
+    public function findAllDisposRecapitulatif(int $type, int $nbJournees){
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
             ->addSelect('c.nom')
             ->addSelect('c.prenom');
 
         for ($i = 1; $i <= $nbJournees; $i++) {
-            $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite" . $type . " dt" . $i . " WHERE c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
+            $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite dt" . $i . " WHERE dt" . $i . ".idChampionnat = :idChampionnat AND c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
         }
 
-        $result = $result->where('c.visitor <> true')
+        $result = $result
+            ->where('c.visitor <> true')
+            ->setParameter('idChampionnat', $type)
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -66,13 +69,14 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Brûlages en championnat départemental
-     * @param string $type
+     * @param int $type
      * @param int $idJournee
-     * @param $idEquipes
+     * @param array $idEquipes
      * @param int $nbJoueurs
-     * @return int|mixed|string
+     * @return array
      */
-    public function getBrulages(string $type, int $idJournee, array $idEquipes, int $nbJoueurs){
+    public function getBrulages(int $type, int $idJournee, array $idEquipes, int $nbJoueurs): array
+    {
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom');
@@ -83,8 +87,17 @@ class CompetiteurRepository extends ServiceEntityRepository
                 if ($i < $nbJoueurs - 1) $str .= ' OR ';
             }
             $brulages = $brulages
-                ->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) FROM App\Entity\Rencontre' . ucfirst($type) . ' p' . $idEquipe . ', App\Entity\Equipe' . ucfirst($type) . ' e' . $idEquipe . ' WHERE (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe AND e' . $idEquipe . '.numero = ' . $idEquipe . ' AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
-                ->setParameter('idJournee', $idJournee);
+                ->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) ' .
+                                  'FROM App\Entity\Rencontre p' . $idEquipe . ', ' .
+                                  'App\Entity\Equipe e' . $idEquipe . ' ' .
+                                  'WHERE p' . $idEquipe . '.idChampionnat = :idChampionnat ' .
+                                  'AND e' . $idEquipe . '.idChampionnat = :idChampionnat ' .
+                                  'AND (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee ' .
+                                  'AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe ' .
+                                  'AND e' . $idEquipe . '.numero = ' . $idEquipe . ' ' .
+                                  'AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
+                ->setParameter('idJournee', $idJournee)
+                ->setParameter('idChampionnat', $type);
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
@@ -111,7 +124,8 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Brûlage des joueurs sélectionnables dans une compo
-     * @param string $type
+     * @param bool $isJ2Rule
+     * @param int $type
      * @param int $idEquipe
      * @param int $idJournee
      * @param array $idEquipes
@@ -119,16 +133,16 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $limiteBrulage
      * @return array
      */
-    public function getBrulagesSelectionnables(string $type, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
+    public function getBrulagesSelectionnables(bool $isJ2Rule, int $type, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
     {
-        if ($idJournee == 2 && $type == 'departementale') $strJ2 = '';
+        if ($idJournee == 2 && $isJ2Rule) $strJ2 = '';
         $strD = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            if ($idJournee == 2 && $type == 'departementale') $strJ2 .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($idJournee == 2 && $isJ2Rule) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
             $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
             if ($j < $nbJoueurs - 1){
                 $strD .= ' OR ';
-                if ($idJournee == 2 && $type == 'departementale') $strJ2 .= ' OR ';
+                if ($idJournee == 2 && $isJ2Rule) $strJ2 .= ' OR ';
             }
         }
 
@@ -137,13 +151,16 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.prenom')
             ->addSelect('c.idCompetiteur');
 
-        if ($idJournee == 2 && $type == 'departementale'){
+        if ($idJournee == 2 && $isJ2Rule){
             $brulages = $brulages->addSelect('(SELECT COUNT(rd.id)' .
-                ' FROM App\Entity\Rencontre' . ucfirst($type) . ' rd, App\Entity\Equipe' . ucfirst($type) . ' e' .
+                ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                 ' WHERE e.idDivision IS NOT NULL' .
                 ' AND e.numero < :idEquipe' .
-                ' AND rd.idJournee = 1' .
-                ' AND rd.idEquipe = e.idEquipe' .
+                ' AND e.idChampionnat = :idChampionnat' .
+                ' AND r.idChampionnat = :idChampionnat' .
+                ' AND e.numero < :idEquipe' .
+                ' AND r.idJournee = 1' .
+                ' AND r.idEquipe = e.idEquipe' .
                 ' AND (' . $strJ2 . ')) AS bruleJ2');
         }
 
