@@ -1,4 +1,4 @@
-{% macro table(type, brulages, idEquipes) %}
+{% macro table(limiteBrulage, brulages, idEquipes) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
@@ -27,9 +27,9 @@
                 <td class="left">{{ nom }}</td>
                 {% for brulageJournee in brulage['brulage'] %}
                     <td class="center">
-                        {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
+                        {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
                             <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
+                        {% elseif brulageCumule(brulage['brulage'], loop.index) == limiteBrulage - 1 %}
                             <i class="orange-text material-icons">error_outline</i>
                         {% endif %}
                     </td>

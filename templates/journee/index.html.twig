@@ -15,7 +15,7 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            {{ _brulage.table(championnat.slug, brulages, idEquipes) }}
+            {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
         <div class="col s12 m7">
@@ -57,7 +57,7 @@
                         {% if disponible is not null %}
                             {% if disponible == 1 %}
                                 <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                                <a {% if selected %}onclick="return confirm('Vous risquez d\'être désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
+                                <a {% if selected %}onclick="return confirm('Vous risquez d\'être désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {type: championnat.slug, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
                                     <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                                 </a>
                             {% elseif disponible == 0 %}
@@ -196,7 +196,7 @@
                             <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idDvision.nbJoueurs > 4 %}paris_table {% endif%}responsive-table">
+                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}paris_table {% endif%}responsive-table">
                             <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
                                     {{ _composition.joueur(i, compo.idJoueurN(i)) }}
@@ -233,7 +233,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
                 </div>
             </li>
             <li>
@@ -245,13 +245,13 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _brulage.table(championnat.slug, brulages, idEquipes) }}
+                    {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
                 </div>
             </li>
         </ul>
 
         <div class="col s12 m2 hide-on-small-only">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
         </div>
     </div>
 

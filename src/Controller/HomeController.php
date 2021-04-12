@@ -67,12 +67,11 @@ class HomeController extends AbstractController
         if ($this->get('session')->get('type')){
             if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
         } else $championnat = $this->championnatRepository->getFirstChamp()[0];
-        dump($championnat);
 
         $dates = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = 1;
 
-        while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
+        while ($idJournee <= 7 && !$dates[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($dates[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
@@ -94,12 +93,12 @@ class HomeController extends AbstractController
         $dates = $this->journeeRepository->findAllDates($type);
         $idJournee = 1;
 
-        while ($idJournee <= 7 && !$dates[$idJournee - 1]["undefined"] && (int) (new DateTime())->diff($dates[$idJournee - 1]["dateJournee"])->format('%R%a') < 0){
+        while ($idJournee <= 7 && !$dates[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($dates[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $championnat->getNom(),
+            'type' => $championnat->getIdChampionnat(),
             'id' => $idJournee
         ]);
     }
@@ -119,7 +118,7 @@ class HomeController extends AbstractController
         $this->get('session')->set('type', $type);
 
         // Toutes les journées du type de championnat visé
-        $journees = $this->journeeRepository->findAll();
+        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
 
         // Objet Disponibilité du joueur
         $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
@@ -167,7 +166,7 @@ class HomeController extends AbstractController
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
         // TODO Classer en fonction des championnats
-        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($type, count($journees));
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif(count($journees), $this->championnatRepository->findAll());
         $nbJournees = count($journees);
 
         // Brûlages des joueurs

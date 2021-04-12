@@ -54,19 +54,20 @@ class RencontreRepository extends ServiceEntityRepository
 
     /**
      * Liste des rencontres dans le backoffice
-     * @param int $type
      * @return array
      */
-    public function getOrderedRencontres(int $type): array
+    public function getOrderedRencontres(): array
     {
         $query = $this->createQueryBuilder('r')
             ->select('e.numero')
             ->addSelect('j.idJournee')
+            ->addSelect('c.nom')
+            ->addSelect('c.idChampionnat')
             ->addSelect('j.dateJournee')
             ->addSelect('j.undefined')
-            ->addSelect('rp.adversaire')
-            ->addSelect('rp.domicile')
-            ->addSelect('rp.hosted')
+            ->addSelect('r.adversaire')
+            ->addSelect('r.domicile')
+            ->addSelect('r.hosted')
             ->addSelect('d.idDivision')
             ->addSelect('r.reporte')
             ->addSelect('r.exempt')
@@ -75,8 +76,7 @@ class RencontreRepository extends ServiceEntityRepository
             ->leftJoin('r.idJournee', 'j')
             ->leftJoin('r.idEquipe', 'e')
             ->leftJoin('e.idDivision', 'd')
-            ->where('r.idChampionnat = :type')
-            ->setParameter('type', $type)
+            ->leftJoin('r.idChampionnat', 'c')
             ->orderBy('j.dateJournee')
             ->addOrderBy('r.idJournee')
             ->addOrderBy('e.numero')
@@ -85,9 +85,8 @@ class RencontreRepository extends ServiceEntityRepository
 
         $querySorted = [];
         foreach ($query as $key => $item) {
-            $querySorted[$item['numero']][$key] = $item;
+            $querySorted[$item['nom']][$item['numero']][$key] = $item;
         }
-
         return $querySorted;
     }
 

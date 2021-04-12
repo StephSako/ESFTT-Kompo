@@ -28,8 +28,6 @@ class JourneeRepository extends ServiceEntityRepository
     public function findAllDates(int $type)
     {
         return $this->createQueryBuilder('j')
-            ->select('j.dateJournee')
-            ->addSelect('j.undefined')
             ->where('j.idChampionnat = :type')
             ->setParameter('type', $type)
             ->orderBy('j.dateJournee')

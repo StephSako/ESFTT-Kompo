@@ -1,8 +1,8 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, type, nbJournees, nbMinJoueurs, nbTotalJoueurs) %}
+{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbJournees, nbMinJoueurs, nbTotalJoueurs) %}
     <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#all_dispos">Tout voir</a>
     <div id="all_dispos" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
-            {{ _self.recapitulatif(allDisponibilitesDepartementales, allDisponibiliteParis, nbJournees) }}
+            {{ _self.recapitulatif(allDisponibilites, nbJournees) }}
         </div>
         <div class="modal-footer">
             <h6 class="valign-wrapper left">Toutes les disponibilités</h6>
@@ -63,83 +63,53 @@
     </table>
 {% endmacro %}
 
-{% macro recapitulatif(disponibilitesDep, disponibilitesParis, nbJournees) %}
+{% macro recapitulatif(allDisponibilites, nbJournees) %}
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-        <li class="tab"><a href="#all_dispo_departementale" class="active">Départemental</a></li>
-        <li class="tab"><a href="#all_dispo_paris">Paris</a></li>
+        {% for nomChamp, disponibilites in allDisponibilites %}
+            <li class="tab"><a href="{{ '#all_dispo_' ~ nomChamp|slug }}" class="active">{{ nomChamp }}</a></li>
+        {% endfor %}
     </ul>
 
-    <div id="all_dispo_departementale">
-        <table class="centered responsive-table striped">
-            <thead>
-                <tr>
-                    <th><span class="hide-on-small-only">Joueurs</span></th>
-                    {% for i in 1..nbJournees %}
-                        <th>J{{ i }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
+    {% for nomChamp, disponibilites in allDisponibilites %}
+        <div id="{{ '#all_dispo_' ~ nomChamp|slug }}">
+            <table class="centered responsive-table striped">
+                <thead>
+                    <tr>
+                        <th><span class="hide-on-small-only">Joueurs</span></th>
+                        {% for i in 1..nbJournees %}
+                            <th>J{{ i }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
 
-            <tbody>
-            {% for dispo in disponibilitesDep %}
-                <tr>
-                    <td style="padding-top: 5px; padding-bottom: 5px;">
-                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
-                        </div>
-                    </td>
-                    {% for i in 1..nbJournees %}
-                        {{ _self.td_recap(dispo["j" ~ i]) }}
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div id="all_dispo_paris">
-        <table class="centered responsive-table striped">
-            <thead>
-                <tr>
-                    <th><span class="hide-on-small-only">Joueurs</span></th>
-                    {% for i in 1..nbJournees %}
-                        <th>J{{ i }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <tbody>
-            {% for dispo in disponibilitesParis %}
-                <tr>
-                    <td style="padding-top: 5px; padding-bottom: 5px;">
-                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
-                        </div>
-                    </td>
-                    {% for i in 1..nbJournees %}
-                        {{ _self.td_recap(dispo["j" ~ i]) }}
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endmacro %}
-
-{% macro td_recap(dispo) %}
-    <td>
-        {% if dispo is not null %}
-            {% if dispo == 1 %}
-                <i style="vertical-align: middle;" class="green-text center tiny material-icons">check</i>
-            {% else %}
-                <i style="vertical-align: middle;" class="red-text center tiny material-icons">close</i>
-            {% endif %}
-        {% else %}
-            <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
-        {% endif %}
-    </td>
+                <tbody>
+                {% for disponibilite in disponibilites %}
+                    <tr>
+                        <td style="padding-top: 5px; padding-bottom: 5px;">
+                            <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') }}" alt="Avatar">
+                                <span>{{ disponibilite.nom }} {{ disponibilite.prenom }}</span>
+                            </div>
+                        </td>
+                        {% for i in 1..nbJournees %}
+                            <td>
+                                {% if disponibilite["dispos"][i-1] is not null %}
+                                    {% if disponibilite["dispos"][i-1] == 1 %}
+                                        <i style="vertical-align: middle;" class="green-text center tiny material-icons">check</i>
+                                    {% else %}
+                                        <i style="vertical-align: middle;" class="red-text center tiny material-icons">close</i>
+                                    {% endif %}
+                                {% else %}
+                                    <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
 {% endmacro %}
 
 {% macro labelDispoSelec(nbSelectedPlayers, type, nbDispos, nbMinJoueurs, nbTotalJoueurs) %}

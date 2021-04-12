@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Championnat;
 use App\Entity\Competiteur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,29 +43,64 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
-     * @param int $type
      * @param int $nbJournees
+     * @param Championnat[] $championnats
      * @return int|mixed|string
      */
-    public function findAllDisposRecapitulatif(int $type, int $nbJournees){
+    public function findAllDisposRecapitulatif(int $nbJournees, array $championnats){
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
             ->addSelect('c.nom')
             ->addSelect('c.prenom');
 
-        for ($i = 1; $i <= $nbJournees; $i++) {
-            $result = $result->addSelect("(SELECT dt" . $i . ".disponibilite FROM App\Entity\Disponibilite dt" . $i . " WHERE dt" . $i . ".idChampionnat = :idChampionnat AND c.idCompetiteur = dt" . $i . ".idCompetiteur AND dt" . $i . ".idJournee = " . $i . ") AS j" . $i);
+        foreach ($championnats as $championnat){
+            for ($i = 1; $i <= $nbJournees; $i++) {
+                $suffixe = $i . $championnat->getIdChampionnat();
+                $result = $result
+                    ->addSelect("(SELECT dt" . $suffixe . ".disponibilite " .
+                                      "FROM App\Entity\Disponibilite dt" . $suffixe . " " .
+                                      "WHERE dt" . $suffixe . ".idChampionnat = " . $championnat->getIdChampionnat() . " " .
+                                      "AND c.idCompetiteur = dt" . $suffixe . ".idCompetiteur " .
+                                      "AND dt" . $suffixe . ".idJournee = " . $i . ") AS " . $championnat->getSlug() . $i);
+            }
         }
 
         $result = $result
             ->where('c.visitor <> true')
-            ->setParameter('idChampionnat', $type)
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
-        return $result;
+        $querySorted = [];
+        foreach ($result as $key => $item) {
+            $querySorted[$key] = $item;
+            foreach ($championnats as $championnat) {
+                $querySorted[$key][$championnat->getSlug()] = [];
+                for ($i = 1; $i <= $nbJournees; $i++) {
+                    array_push($querySorted[$key][$championnat->getSlug()], $querySorted[$key][$championnat->getSlug() . $i]);
+                    unset($querySorted[$key][$championnat->getSlug() . $i]);
+                }
+            }
+        }
+
+        $queryChamp = [];
+        $nomsChampionnat = array_map(function ($championnat){ return $championnat->getSlug(); }, $championnats);
+
+        foreach ($championnats as $championnat) {
+            $queryChamp[$championnat->getNom()] = [];
+            foreach ($querySorted as $joueur) {
+                foreach ($joueur as $key => $value) {
+                    if (in_array($key, $nomsChampionnat) && $key != $championnat->getSlug()) unset($joueur[$key]);
+                }
+                $joueur["dispos"] = $joueur[$championnat->getSlug()];
+                unset($joueur[$championnat->getSlug()]);
+                array_push($queryChamp[$championnat->getNom()], $joueur);
+            }
+        }
+        dump($queryChamp);
+
+        return $queryChamp;
     }
 
     /**

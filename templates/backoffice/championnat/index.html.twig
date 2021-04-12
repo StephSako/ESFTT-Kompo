@@ -30,6 +30,7 @@
                     <thead>
                     <tr>
                         <th>Nom</th>
+                        <th>Limite brûlage</th>
                         <th>Slug</th>
                         <th>Règle J2</th>
                         <th></th>
@@ -41,6 +42,7 @@
                     {% for championnat in championnats %}
                         <tr>
                             <td>{{ championnat.nom }}</td>
+                            <td>{{ championnat.limiteBrulage }}</td>
                             <td>{{ championnat.slug }}</td>
                             <td>
                                 {% if championnat.j2Rule %} <i class="material-icons green-text">check</i>
