@@ -215,8 +215,6 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('success', 'Compétiteur supprimé avec succès !');
         } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
 
-        return $this->render('backoffice/competiteur/index.html.twig', [
-            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC'])
-        ]);
+        return $this->redirectToRoute('backoffice.competiteurs');
     }
 }

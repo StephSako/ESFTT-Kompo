@@ -77,13 +77,8 @@ class Division
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
-     *     value = -1,
-     *     message = "Indiquez -1 si division inexistante pour ce championnat"
-     * )
-     *
-     * @Assert\NotEqualTo(
-     *     value = 0,
-     *     message = "Indiquez -1 si division inexistante pour ce championnat "
+     *     value = 2,
+     *     message = "Le nombre minimal de joueurs est {{ value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
@@ -125,9 +120,9 @@ class Division
     }
 
     /**
-     * @return Championnat
+     * @return Championnat|null
      */
-    public function getIdChampionnat(): Championnat
+    public function getIdChampionnat(): ?Championnat
     {
         return $this->idChampionnat;
     }

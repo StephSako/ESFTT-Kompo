@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Division;
+use App\Repository\ChampionnatRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,25 +32,24 @@ class DivisionFormType extends AbstractType
                     'maxlength' => 25
                 ]
             ])
-            ->add('nbJoueursChampParis', IntegerType::class, [
-                'invalid_message' => 'Indiquez -1 si division absente en champ. de Paris',
+            ->add('nbJoueurs', IntegerType::class, [
                 'empty_data' => 0,
                 'label' => false,
-                'required' => false,
+                'required' => true,
                 'attr' => [
+                    'class' => 'validate',
                     'min' => -1,
                     'max' => 9
                 ]
             ])
-            ->add('nbJoueursChampDepartementale', IntegerType::class, [
-                'invalid_message' => 'Indiquez -1 si division absente en champ. depart.',
-                'empty_data' => 0,
+            ->add('idChampionnat', EntityType::class, [
+                'class' => 'App\Entity\Championnat',
                 'label' => false,
-                'required' => false,
-                'attr' => [
-                    'min' => -1,
-                    'max' => 4
-                ]
+                'required' => true,
+                'choice_label' => 'nom',
+                'query_builder' => function (ChampionnatRepository $cr) use ($options, $builder) {
+                    return $cr->createQueryBuilder('c')->orderBy('c.nom');
+                }
             ]);
     }
 

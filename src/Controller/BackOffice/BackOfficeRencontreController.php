@@ -3,7 +3,6 @@
 namespace App\Controller\BackOffice;
 
 use App\Form\BackOfficeRencontreType;
-use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,22 +14,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeRencontreController extends AbstractController
 {
     private $em;
-    private $championnatRepository;
     private $rencontreRepository;
 
     /**
      * BackOfficeController constructor.
      * @param RencontreRepository $rencontreRepository
-     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(RencontreRepository $rencontreRepository,
-                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->rencontreRepository = $rencontreRepository;
-        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -40,22 +35,19 @@ class BackOfficeRencontreController extends AbstractController
     public function indexRencontre(): Response
     {
         return $this->render('backoffice/rencontre/index.html.twig', [
-            // TODO Classer selon les championnats
             'rencontres' => $this->rencontreRepository->getOrderedRencontres()
         ]);
     }
 
     /**
-     * @Route("/backoffice/rencontre/edit/{type}/{idRencontre}", name="backoffice.rencontre.edit")
-     * @param int $type
+     * @Route("/backoffice/rencontre/edit/{idRencontre}", name="backoffice.rencontre.edit")
      * @param int $idRencontre
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editRencontre(int $type, int $idRencontre, Request $request): Response
+    public function editRencontre(int $idRencontre, Request $request): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if (!($rencontre = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
         $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);
 
@@ -80,7 +72,6 @@ class BackOfficeRencontreController extends AbstractController
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     return $this->render('backoffice/rencontre/edit.html.twig', [
                         'form' => $form->createView(),
-                        'type' => $type,
                         'domicile' => $domicile,
                         'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
                         'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
@@ -94,7 +85,6 @@ class BackOfficeRencontreController extends AbstractController
 
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
-            'type' => $championnat->getNom(),
             'domicile' => $domicile,
             'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
             'idJournee' => $rencontre->getIdJournee()->getIdJournee(),

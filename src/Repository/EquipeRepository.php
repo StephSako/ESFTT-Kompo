@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Equipe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,22 +17,6 @@ class EquipeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Equipe::class);
-    }
-
-    /**
-     * @return int|mixed|string
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function getNbEquipes(int $type)
-    {
-        return $this->createQueryBuilder('e')
-            ->select('count(e.idEquipe)')
-            ->where('e.idDivision IS NOT NULL')
-            ->andWhere('e.idChampionnat = :idChampionnat')
-            ->setParameter('idChampionnat', $type)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
     /**
@@ -74,12 +56,36 @@ class EquipeRepository extends ServiceEntityRepository
      */
     public function setDeletedDivisionToNull(int $idDeletedDivision)
     {
-        return $this->createQueryBuilder('ed')
-            ->update('Equipe.php', 'ed')
-            ->set('ed.idDivision', 'NULL')
-            ->where('ed.idDivision = :idDeletedDivision')
+        return $this->createQueryBuilder('e')
+            ->update('App\Entity\Equipe', 'e')
+            ->set('e.idDivision', 'NULL')
+            ->where('e.idDivision = :idDeletedDivision')
             ->setParameter('idDeletedDivision', $idDeletedDivision)
             ->getQuery()
             ->execute();
+    }
+
+    public function getAllEquipes(): array
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e.idEquipe')
+            ->addSelect('e.numero')
+            ->addSelect('p.poule')
+            ->addSelect('d.longName as divLongName')
+            ->addSelect('d.nbJoueurs as divNbJoueurs')
+            ->addSelect('c.nom')
+            ->leftJoin('e.idDivision', 'd')
+            ->leftJoin('e.idPoule', 'p')
+            ->leftJoin('e.idChampionnat', 'c')
+            ->orderBy('c.nom')
+            ->addOrderBy('e.numero')
+            ->getQuery()
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[$item['nom']][$key] = $item;
+        }
+        return $querySorted;
     }
 }

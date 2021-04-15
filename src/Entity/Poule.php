@@ -46,6 +46,31 @@ class Poule
     private $poule;
 
     /**
+     * @var Equipe[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idPoule")
+     */
+    protected $equipes;
+
+    /**
+     * @return Equipe[]|null
+     */
+    public function getEquipes(): ?array
+    {
+        return $this->equipes;
+    }
+
+    /**
+     * @param Equipe[]|null $equipes
+     * @return Poule
+     */
+    public function setEquipes(?array $equipes): self
+    {
+        $this->equipes = $equipes;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getIdPoule()

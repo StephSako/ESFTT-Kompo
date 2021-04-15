@@ -21,17 +21,20 @@ class DisponibiliteRepository extends ServiceEntityRepository
 
     /**
      * Liste des personnes ayant déclaré leur disponibilité pour la journée
-     * @param $idJournee
+     * @param int $idJournee
+     * @param int $type
      * @return int|mixed|string
      */
-    public function findJoueursDeclares($idJournee)
+    public function findJoueursDeclares(int $idJournee, int $type)
     {
         return $this->createQueryBuilder('d')
             ->select('d')
             ->leftJoin('d.idCompetiteur', 'c')
             ->addSelect('c')
             ->where('d.idJournee = :idJournee')
+            ->andWhere('d.idChampionnat = :idChampionnat')
             ->setParameter('idJournee', $idJournee)
+            ->setParameter('idChampionnat', $type)
             ->andWhere('c.visitor <> true')
             ->orderBy('d.disponibilite', 'DESC')
             ->addOrderBy('c.nom')
@@ -48,7 +51,7 @@ class DisponibiliteRepository extends ServiceEntityRepository
     public function setDeleteDisposVisiteur(int $idCompetiteur)
     {
         return $this->createQueryBuilder('dd')
-            ->delete('App\Entity\Disponibilite.php', 'dd')
+            ->delete('App\Entity\Disponibilite', 'dd')
             ->where('dd.idCompetiteur = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()

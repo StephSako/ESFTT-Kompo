@@ -46,7 +46,7 @@ class BackOfficeDivisionController extends AbstractController
     public function indexDivisions(): Response
     {
         return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->divisionRepository->findBy([], ['nbJoueursChampParis' => 'DESC', 'shortName' => 'ASC'])
+            'divisions' => $this->divisionRepository->getAllDivisions()
         ]);
     }
 
@@ -147,31 +147,21 @@ class BackOfficeDivisionController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
 
             /** On vide les compos des équipes affiliées à la division qui va être supprimée **/
-            $compos = $this->rencontreDepartementaleRepository->getRencontresForDivision($idDivision);
+            $compos = $this->rencontreRepository->getRencontresForDivision($idDivision);
             foreach ($compos as $compo){
-                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampDepartementale(); $i++){
-                    $compo->setIdJoueurN($i, null);
-                }
-            }
-
-            $compos = $this->rencontreParisRepository->getRencontresForDivision($idDivision);
-            foreach ($compos as $compo){
-                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueursChampParis(); $i++){
+                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
                     $compo->setIdJoueurN($i, null);
                 }
             }
 
             /** On met la division des équipes affiliées à NULL **/
-            $this->equipeDepartementaleRepository->setDeletedDivisionToNull($idDivision);
-            $this->equipeParisRepository->setDeletedDivisionToNull($idDivision);
+            $this->equipeRepository->setDeletedDivisionToNull($idDivision);
 
             $this->em->remove($division);
             $this->em->flush();
             $this->addFlash('success', 'Division supprimée avec succès !');
         } else $this->addFlash('error', 'La division n\'a pas pu être supprimée');
 
-        return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->divisionRepository->findAll()
-        ]);
+        return $this->redirectToRoute('backoffice.divisions');
     }
 }

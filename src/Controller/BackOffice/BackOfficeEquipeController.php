@@ -5,7 +5,6 @@ namespace App\Controller\BackOffice;
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
 use App\Form\EquipeType;
-use App\Repository\ChampionnatRepository;
 use App\Repository\EquipeRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
@@ -22,26 +21,22 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $journeeRepository;
     private $rencontreRepository;
-    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param JourneeRepository $journeesRepository
      * @param RencontreRepository $rencontreRepository
-     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 JourneeRepository $journeesRepository,
                                 RencontreRepository $rencontreRepository,
-                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
         $this->journeeRepository = $journeesRepository;
-        $this->championnatRepository = $championnatRepository;
         $this->rencontreRepository = $rencontreRepository;
     }
 
@@ -52,22 +47,19 @@ class BackOfficeEquipeController extends AbstractController
     public function indexEquipes(): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
-            // TODO Classer selon les champioonats
-            'equipes' => $this->equipeRepository->findAll()
+            'equipes' => $this->equipeRepository->getAllEquipes()
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/{type}/new", name="backoffice.equipe.new")
-     * @param int $type
+     * @Route("/backoffice/equipe/new", name="backoffice.equipe.new")
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function new(int $type, Request $request): Response
+    public function new(Request $request): Response
     {
-        if (!($championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        $equipe = new Equipe($championnat);
+        $equipe = new Equipe();
         $form = $this->createForm(EquipeType::class);
         $form->handleRequest($request);
 
@@ -81,7 +73,7 @@ class BackOfficeEquipeController extends AbstractController
                     $journees = $this->journeeRepository->findAll();
 
                     foreach ($journees as $journee){
-                        $rencontre = new Rencontre($championnat);
+                        $rencontre = new Rencontre($equipe->getIdChampionnat());
 
                         $rencontre
                             ->setIdJournee($journee)
@@ -119,16 +111,14 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
-     * @param int $type
+     * @Route("/backoffice/equipe/edit/{idEquipe}", name="backoffice.equipe.edit")
      * @param int $idEquipe
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function edit(int $type, int $idEquipe, Request $request): Response
+    public function edit(int $idEquipe, Request $request): Response
     {
-        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
         if (!($equipe = $this->equipeRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
 
         $form = $this->createForm(EquipeType::class, $equipe);
@@ -171,16 +161,14 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/delete/{type}/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE")
+     * @Route("/backoffice/equipe/delete/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE")
      * @param int $idEquipe
-     * @param int $type
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function delete(int $idEquipe, int $type, Request $request): Response
+    public function delete(int $idEquipe, Request $request): Response
     {
-        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
         $equipe = $this->equipeRepository->find($idEquipe);
 
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
@@ -189,9 +177,6 @@ class BackOfficeEquipeController extends AbstractController
             $this->addFlash('success', 'Équipe supprimée avec succès !');
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
-        return $this->render('backoffice/equipe/index.html.twig', [
-            // TODO Classer selon les championnats
-            'equipes' => $this->equipeRepository->findAll()
-        ]);
+        return $this->redirectToRoute('backoffice.equipes');
     }
 }

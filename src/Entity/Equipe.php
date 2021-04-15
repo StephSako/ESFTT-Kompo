@@ -25,15 +25,6 @@ class Equipe
 {
 
     /**
-     * Equipe constructor.
-     * @param Championnat $type
-     */
-    public function __construct(Championnat $type)
-    {
-        $this->setIdChampionnat($type);
-    }
-
-    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_equipe")
@@ -76,7 +67,7 @@ class Equipe
     /**
      * @var Poule|null
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Poule", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Poule", inversedBy="equipes")
      * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id_poule")
      */
     private $idPoule;

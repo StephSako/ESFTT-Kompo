@@ -18,4 +18,27 @@ class DivisionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Division::class);
     }
+
+    public function getAllDivisions(): array
+    {
+        $query = $this->createQueryBuilder('d')
+            ->select('d.longName')
+            ->addSelect('d.shortName')
+            ->addSelect('c.nom')
+            ->addSelect('d.nbJoueurs')
+            ->addSelect('d.idDivision')
+            ->addSelect('c.idChampionnat')
+            ->leftJoin('d.idChampionnat', 'c')
+            ->orderBy('c.nom')
+            ->addOrderBy('d.nbJoueurs', 'DESC')
+            ->addOrderBy('d.longName')
+            ->getQuery()
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[$item['nom']][$key] = $item;
+        }
+        return $querySorted;
+    }
 }

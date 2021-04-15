@@ -62,7 +62,6 @@ class RencontreRepository extends ServiceEntityRepository
             ->select('e.numero')
             ->addSelect('j.idJournee')
             ->addSelect('c.nom')
-            ->addSelect('c.idChampionnat')
             ->addSelect('j.dateJournee')
             ->addSelect('j.undefined')
             ->addSelect('r.adversaire')
@@ -77,7 +76,8 @@ class RencontreRepository extends ServiceEntityRepository
             ->leftJoin('r.idEquipe', 'e')
             ->leftJoin('e.idDivision', 'd')
             ->leftJoin('r.idChampionnat', 'c')
-            ->orderBy('j.dateJournee')
+            ->orderBy('c.nom')
+            ->addOrderBy('j.dateJournee')
             ->addOrderBy('r.idJournee')
             ->addOrderBy('e.numero')
             ->getQuery()
@@ -167,7 +167,7 @@ class RencontreRepository extends ServiceEntityRepository
     public function setDeletedCompetiteurToNull(int $idCompetiteur, int $idJoueurColumn)
     {
         return $this->createQueryBuilder('rp')
-            ->update('Rencontre.php', 'rp')
+            ->update('App\Entity\Rencontre', 'rp')
             ->set('rp.idJoueur' . $idJoueurColumn, 'NULL')
             ->where('rp.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
@@ -181,14 +181,14 @@ class RencontreRepository extends ServiceEntityRepository
      */
     public function getRencontresForDivision(int $idDivision)
     {
-        return $this->createQueryBuilder('rp')
-            ->select('rp')
+        return $this->createQueryBuilder('r')
+            ->select('r')
             ->addSelect('e')
             ->addSelect('d')
-            ->leftJoin('rp.idEquipe', 'e')
+            ->leftJoin('r.idEquipe', 'e')
             ->leftJoin('e.idDivision', 'd')
             ->where('e.idDivision = :idDivision')
-            ->andWhere('rp.idEquipe = e.idEquipe')
+            ->andWhere('r.idEquipe = e.idEquipe')
             ->setParameter('idDivision', $idDivision)
             ->getQuery()
             ->getResult();
@@ -203,7 +203,7 @@ class RencontreRepository extends ServiceEntityRepository
     public function reset(int $nbJoueurs)
     {
         $query = $this->createQueryBuilder('rp')
-            ->update('Rencontre.php', 'rp');
+            ->update('App\Entity\Rencontre', 'rp');
         for ($i = 0; $i < $nbJoueurs; $i++){
             $query = $query->set('rp.idJoueur' . $i, null);
         }

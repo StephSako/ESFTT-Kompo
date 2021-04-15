@@ -1,4 +1,4 @@
-{% macro rencontre(idJournee, type, idEquipe, date, form, domicile) %}
+{% macro rencontre(idJournee, idEquipe, date, form, domicile) %}
     <div class="card-panel center-align">
         <h4 class="hide-on-small-only titre">Journée {{ idJournee }} - Equipe {{ idEquipe }} - {{ date|format_datetime('long', 'none', locale='fr') }}</h4>
         <h4 class="hide-on-med-and-up titre">J{{ idJournee }} - Equipe {{ idEquipe }}<br>{{ date|date("m/d/Y") }}</h4>

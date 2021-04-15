@@ -6,7 +6,6 @@ use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
@@ -27,7 +26,6 @@ class HomeController extends AbstractController
     private $disponibiliteRepository;
     private $journeeRepository;
     private $rencontreRepository;
-    private $divisionRepository;
 
     /**
      * @param JourneeRepository $journeeRepository
@@ -36,7 +34,6 @@ class HomeController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
      * @param EquipeRepository $equipeRepository
-     * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
@@ -45,7 +42,6 @@ class HomeController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
                                 EquipeRepository $equipeRepository,
-                                DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -55,7 +51,6 @@ class HomeController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->championnatRepository = $championnatRepository;
         $this->equipeRepository = $equipeRepository;
-        $this->divisionRepository = $divisionRepository;
     }
 
     /**
@@ -113,7 +108,7 @@ class HomeController extends AbstractController
     public function journee(int $type, int $id): Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        if ((!$journee = $this->journeeRepository->find($id))) throw new Exception('Cette journée est inexistante', 500);
+        if ((!$journee = $this->journeeRepository->findOneBy(['idJournee' => $id, 'idChampionnat' => $type]))) throw new Exception('Cette journée est inexistante', 500);
 
         $this->get('session')->set('type', $type);
 
@@ -124,7 +119,7 @@ class HomeController extends AbstractController
         $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
 
         // Joueurs ayant déclaré leur disponibilité
-        $joueursDeclares = $this->disponibiliteRepository->findJoueursDeclares($id);
+        $joueursDeclares = $this->disponibiliteRepository->findJoueursDeclares($id, $type);
 
         // Joueurs n'ayant pas déclaré leur disponibilité
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);

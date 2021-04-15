@@ -131,8 +131,6 @@ class BackOfficeChampionnatController extends AbstractController
             $this->addFlash('success', 'Championnat supprimé avec succès !');
         } else $this->addFlash('error', 'Le championnat n\'a pas pu être supprimé');
 
-        return $this->render('backoffice/championnat/index.html.twig', [
-            'championnats' => $this->championnatRepository->findAll()
-        ]);
+        return $this->redirectToRoute('back_office.championnats');
     }
 }
