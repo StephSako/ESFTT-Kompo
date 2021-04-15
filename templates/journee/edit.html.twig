@@ -21,7 +21,7 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.numero) }}
+                        {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
                     </div>
                 </li>
                 <li>
@@ -33,13 +33,13 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
+                        {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
                     </div>
                 </li>
             </ul>
 
             <div class="col l2 hide-on-small-only">
-                {{ _brulage.joueursBrules(type, joueursBrules, compo.idEquipe.numero) }}
+                {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
             </div>
 
             <div class="col s12 m7">
@@ -115,19 +115,19 @@
                             <div class="form_div_list">
                                 {% for i in 0..(nbJoueursDivision - 1) %}
                                     <div class="row">
-                                        <div class="col s12 m3{% if compo.idJournee.linkType == 'paris' and i > 3 and i < 7 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
+                                        <div class="col s12 m3{% if i > 3 and i < 7 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
                                         <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
                                     </div>
                                 {% endfor %}
                             </div>
                         <br>
-                        <a href="{{ path("journee.show", {type: type, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
                         <button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
                     {{ form_end(form) }}
                 </div>
             </div>
             <div class="col s12 m3 hide-on-small-only">
-                {{ _brulage.selectionnables(type, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
+                {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
             </div>
         </div>
     {% else %}
@@ -136,7 +136,7 @@
                 <h5 style="margin-top: 10px; margin-bottom: 10px;">Cette rencontre n'est pas modifiable</h5>
             </div>
 
-            <a href="{{ path('journee.show', {id: compo.idJournee.idJournee, type: compo.idJournee.linkType}) }}">
+            <a href="{{ path('journee.show', {id: compo.idJournee.idJournee, type: championnat.idChampionnat}) }}">
                 <button class="btn waves-effect blue lighten-2 waves-light center">Retour à l'accueil</button>
             </a>
         </div>

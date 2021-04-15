@@ -66,8 +66,8 @@
     </table>
 {% endmacro %}
 
-{% macro selectionnables(type, selectionnables, idEquipe, idJournee, idEquipes) %}
-    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 and type == 'departementale' %}
+{% macro selectionnables(championnat, selectionnables, idEquipe, idJournee, idEquipes) %}
+    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 and championnat.j2Rule %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
             <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 seul joueur orange peut être sélectionné</i></span>
         </div>
@@ -99,9 +99,9 @@
                         </td>
                         {% for brulageJournee in brulage['brulage'] %}
                             <td class="center">
-                                {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
+                                {% if brulageCumule(brulage['brulage'], loop.index) >= championnat.limiteBrulage %}
                                     <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
+                                {% elseif brulageCumule(brulage['brulage'], loop.index) == championnat.limiteBrulage - 1 %}
                                     <i class="orange-text material-icons">error_outline</i>
                                 {% endif %}
                             </td>

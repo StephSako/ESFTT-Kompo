@@ -135,7 +135,7 @@ class HomeController extends AbstractController
         // Joueurs sélectionnées
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
 
-        // Nombre maximal de joueurs pour les compos du championnat départemental
+        // Nombre maximal de joueurs pour les compos du championnat sélectionné
         $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
             return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
         }, $compos));
@@ -165,7 +165,6 @@ class HomeController extends AbstractController
         // Si l'utilisateur actuel est sélectionné pour la journée actuelle
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
-        // TODO Classer en fonction des championnats
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif(count($journees), $this->championnatRepository->findAll());
         $nbJournees = count($journees);
 
@@ -209,17 +208,17 @@ class HomeController extends AbstractController
         if (!($compo = $this->rencontreRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
         if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
 
-        $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+        $nbMaxJoueurs = $this->getParameter('nb_max_joueurs');
         $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
-        $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat->isJ2Rule(), $type, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
+        $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $form = $this->createForm(RencontreType::class, $compo, [
             'nbMaxJoueurs' => $nbMaxJoueurs,
             'limiteBrulage' => $championnat->getLimiteBrulage()
         ]);
-        $journees = $this->journeeRepository->findAll();
+        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idEquipes = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
 
-        $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $this->getParameter('limite_brulage_' . $type));
+        $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
 
         $form->handleRequest($request);
@@ -284,7 +283,7 @@ class HomeController extends AbstractController
             'brulageSelectionnables' => $brulageSelectionnables,
             'idEquipes' => $idEquipes,
             'compo' => $compo,
-            'type' => $championnat->getNom(),
+            'championnat' => $championnat,
             'form' => $form->createView()
         ]);
     }

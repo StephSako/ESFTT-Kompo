@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -19,17 +20,21 @@ class SecurityController extends AbstractController
 {
     private $em;
     private $journeeRepository;
+    private $championnatRepository;
 
     /**
      * SecurityController constructor.
      * @param JourneeRepository $journeeRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
+                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->journeeRepository = $journeeRepository;
         $this->em = $em;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -53,10 +58,15 @@ class SecurityController extends AbstractController
      * @Route("/compte", name="account")
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function edit(Request $request){
         //TODO Classer selon le championnat en cache
-        $journees = $this->journeeRepository->findAll($this->get('session')->get('type'));
+        if ($this->get('session')->get('type')){
+            if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        } else $championnat = $this->championnatRepository->getFirstChamp()[0];
+
+        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $user = $this->getUser();
 
         if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
