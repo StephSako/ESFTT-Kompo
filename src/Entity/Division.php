@@ -78,12 +78,12 @@ class Division
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 2,
-     *     message = "Le nombre minimal de joueurs est {{ value }}"
+     *     message = "Le nombre minimal de joueurs est 2"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 9,
-     *     message = "Le nombre maximal de joueurs est {{ value }}"
+     *     message = "Le nombre maximal de joueurs est 9"
      * )
      *
      * @Assert\NotBlank(

@@ -49,7 +49,7 @@ class BackOfficeChampionnatController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    $championnat->setNom(strtoupper($championnat->getNom()));
+                    $championnat->setNom(ucwords(strtolower($championnat->getNom())));
                     $this->em->persist($championnat);
                     $this->em->flush();
                     $this->addFlash('success', 'Championnat créé avec succès !');

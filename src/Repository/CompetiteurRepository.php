@@ -187,24 +187,28 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $strB .= 'r' . $equipe . '.idJoueur' . $i . ' = c.idCompetiteur';
                 if ($i < $nbJoueurs - 1) $strB .= ' OR ';
             }
-            $brulages = $brulages->addSelect('(SELECT COUNT(r' . $equipe . '.id)' .
-                                                   ' FROM App\Entity\Rencontre r' . $equipe . ', App\Entity\Equipe e' . $equipe .
-                                                   ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
-                                                   ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
-                                                   ' AND e' . $equipe . '.numero = ' . $equipe .
-                                                   ' AND r' . $equipe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
-                                                   ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
+            $brulages = $brulages
+                ->addSelect('(SELECT COUNT(r' . $equipe . '.id)' .
+                                  ' FROM App\Entity\Rencontre r' . $equipe . ', App\Entity\Equipe e' . $equipe .
+                                  ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
+                                  ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
+                                  ' AND e' . $equipe . '.numero = ' . $equipe .
+                                  ' AND r' . $equipe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
+                                  ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
         }
         $brulages = $brulages
             ->leftJoin('c.dispos', 'd')
             ->where('d.idChampionnat = :idChampionnat')
-            ->andWhere('c.visitor <> true');
+            ->andWhere('c.visitor <> true')
+            ->andWhere('d.idJournee = :idJournee')
+            ->andWhere('d.disponibilite = 1');
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            $brulages = $brulages->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
-                                                                   ' FROM App\Entity\Rencontre p' . $j .
-                                                                   ' WHERE p' . $j . '.idJournee = d.idJournee' .
-                                                                   ' AND p' . $j . '.idEquipe <> :idEquipe'.
-                                                                   ' AND p' . $j . '.idChampionnat = :idChampionnat)');
+            $brulages = $brulages
+                ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
+                                                  ' FROM App\Entity\Rencontre p' . $j .
+                                                  ' WHERE p' . $j . '.idJournee = d.idJournee' .
+                                                  ' AND p' . $j . '.idEquipe <> :idEquipe'.
+                                                  ' AND p' . $j . '.idChampionnat = :idChampionnat)');
         }
         $brulages = $brulages
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p' .
@@ -212,8 +216,6 @@ class CompetiteurRepository extends ServiceEntityRepository
                        ' AND p.idJournee < :idJournee' .
                        ' AND p.idChampionnat = :idChampionnat' .
                        ' AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
-            ->andWhere('d.idJournee = :idJournee')
-            ->andWhere('d.disponibilite = 1')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idEquipe', $idEquipe)
             ->setParameter('idChampionnat', $championnat->getIdChampionnat())

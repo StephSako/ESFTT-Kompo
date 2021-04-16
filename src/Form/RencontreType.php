@@ -30,30 +30,35 @@ class RencontreType extends AbstractType
                 'choice_attr' => function ($competiteur) use ($builder) {
                     return ['data-icon' => $competiteur->getAvatar() ? '/images/profile_pictures/' . $competiteur->getAvatar() : '/images/account.png'];
                 },
-                'query_builder' => function (CompetiteurRepository $cr) use ($options, $builder) {
+                'query_builder' => function (CompetiteurRepository $cr) use ($j, $options, $builder) {
                     $request = $cr->createQueryBuilder('c')
                         ->leftJoin('c.dispos', 'd')
                         ->where('d.idJournee = :idJournee')
                         ->andWhere('d.disponibilite = 1')
+                        ->andWhere('d.idChampionnat = :idChampionnat')
                         ->andWhere('c.visitor <> true');
                     $str = '';
                     for ($i = 0; $i < $options['nbMaxJoueurs']; $i++) {
                         $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
                         if ($i < $options['nbMaxJoueurs'] - 1) $str .= ' OR ';
-                        $request->andWhere('c.idCompetiteur NOT IN ' .
-                                                '(SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
-                                                'FROM App\Entity\Rencontre p' . $i . ' ' .
-                                                'WHERE p' . $i . '.idJournee = d.idJournee ' .
-                                                'AND p' . $i . '.idEquipe <> :idEquipe ' .
-                                                'AND p' . $i . '.idChampionnat = :idChampionnat)');
+                        $request = $request
+                            ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
+                                       'FROM App\Entity\Rencontre p' . $i . ' ' .
+                                       'WHERE p' . $i . '.idJournee = d.idJournee ' .
+                                       'AND p' . $i . '.idEquipe <> :idEquipe ' .
+                                       'AND p' . $i . '.idChampionnat = :idChampionnat)');
                     }
-                    $request->andWhere("(SELECT COUNT(p.id) FROM App\Entity\Rencontre p WHERE (" . $str . ") AND p.idJournee < :idJournee AND p.idEquipe = :idEquipe AND p.idChampionnat = :idChampionnat) < " . $options['limiteBrulage'])
+                    return $request
+                        ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p' .
+                                   ' WHERE (' . $str . ')' .
+                                   ' AND p.idJournee < :idJournee' .
+                                   ' AND p.idEquipe < :idEquipe' .
+                                   ' AND p.idChampionnat = :idChampionnat) < ' . $options['limiteBrulage'])
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
                         ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
-                        ->setParameter('idChampionnat', $builder->getData()->getIdEquipe()->getIdChampionnat())
+                        ->setParameter('idChampionnat', $builder->getData()->getIdChampionnat()->getIdChampionnat())
                         ->orderBy('c.nom')
                         ->addOrderBy('c.prenom');
-                    return $request;
                 }
             ]);
         }

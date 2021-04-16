@@ -136,10 +136,14 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   margin-bottom: 10px;
 }
 
-li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
+li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   font-size: 100%;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+.nav-wrapper li a {
+  font-size: 16px;
 }
 
 .nav-wrapper li a, .sidenav li a, .poule, .card-panel > h5, .complete_compos h5, h6, .lobster_2 {
@@ -533,12 +537,17 @@ li.active .collapsible-header .caret {
     margin-right: 80px;
   }
 }
-@media screen and (min-width: 993px) and (max-width: 1334px) {
-  .menu_navbar {
-    display: block;
+@media screen and (max-width: 1125px) {
+  .right_items_navbar {
+    display: none;
   }
 
-  .right_items_navbar {
+  .sidenav-trigger {
+    display: block !important;
+  }
+}
+@media screen and (max-width: 849px) {
+  .left_items_navbar {
     display: none;
   }
 }

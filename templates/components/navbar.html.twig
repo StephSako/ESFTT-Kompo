@@ -17,7 +17,7 @@
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 
             {% if app.user %}
-                <ul class="left hide-on-med-and-down">
+                <ul class="left_items_navbar">
                     {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
 
                     {% for i, journee in journees %}
@@ -36,12 +36,7 @@
 
                     <li class="waves-light waves-effect li_in_line">
                         <a class="white-text" href="{{ path("index.type", {type: (type == 'paris' ? 'departementale' : 'paris')}) }}">
-                            <i class="material-icons left green-text">swap_horiz</i>
-                            {% if type == 'paris' %}
-                                Champ. départemental
-                            {% elseif type == 'departementale' %}
-                                Champ. de Paris
-                            {% endif %}
+                            <i class="material-icons left green-text">swap_horiz</i>Champ. départemental
                         </a>
                     </li>
                 </ul>
