@@ -38,6 +38,9 @@ body {
 .card-panel.backoffice-panel {
   padding-bottom: 10px;
 }
+.card-panel.account-card .col {
+  margin-top: 20px;
+}
 
 .btn {
   margin-top: 20px;
@@ -439,6 +442,10 @@ div .profile_pic .file-field.input-field {
 .footer-copyright {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+.footer-copyright img {
+  width: 70px;
+  padding-top: 8px;
 }
 
 .rainbow {

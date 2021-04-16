@@ -35,16 +35,22 @@ class JourneeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return int
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function getNbJournee(): int
+    public function getAllJournees(): array
     {
-        return intval($this->createQueryBuilder('j')
-            ->select('COUNT(j.idJournee)')
+        $query = $this->createQueryBuilder('j')
+            ->select('j.idJournee')
+            ->addSelect('j.dateJournee')
+            ->addSelect('j.undefined')
+            ->addSelect('c.nom')
+            ->leftJoin('j.idChampionnat', 'c')
+            ->orderBy('c.nom')
             ->getQuery()
-            ->getSingleScalarResult());
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($query as $key => $item) {
+            $querySorted[$item['nom']][$key] = $item;
+        }
+        return $querySorted;
     }
 }

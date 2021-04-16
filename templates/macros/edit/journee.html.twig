@@ -1,7 +1,7 @@
-{% macro journee(type, idJournee, form) %}
+{% macro journee(idJournee, form) %}
     <div class="card-panel center-align">
         <h4 class="h4_form">
-            Date de la journée{% if type == 'paris' %} de {{ type | capitalize }} {% else %} départementale{% endif %}
+            Date de la journée
         </h4>
         <h5>Journée n°{{ idJournee }}</h5><br>
 
@@ -12,7 +12,7 @@
 
             <h5>OU</h5>
 
-            {{ form_row(form.undefined) }}
+            {{ form_row(form.undefined, {'id': 'journee_undefined'}) }}
 
             <br>
             <a href="{{ path('backoffice.journees') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
@@ -20,29 +20,5 @@
         {{ form_end(form) }}
     </div>
 
-    <script>
-        $(document).ready(function() {
-            let undefinedDep = $('#journee_departementale_undefined');
-            let undefinedPar = $('#journee_paris_undefined');
-
-            if ("{{ type }}" === "departementale"){
-
-                if (undefinedDep.is(':checked')) $('.select-dropdown').prop('disabled', true);
-
-                undefinedDep.change(function() {
-                    if(this.checked) $('.select-dropdown').prop('disabled', true);
-                    else $('.select-dropdown').prop('disabled', false);
-                });
-            }
-            else if ("{{ type }}" === "paris") {
-
-                if (undefinedPar.is(':checked')) $('.select-dropdown').prop('disabled', true);
-
-                undefinedPar.change(function() {
-                    if(this.checked) $('.select-dropdown').prop('disabled', true);
-                    else $('.select-dropdown').prop('disabled', false);
-                });
-            }
-        });
-    </script>
+    <script type="text/javascript" src="{{ asset('JS/eventEditJournee.js') }}"></script>
 {% endmacro %}

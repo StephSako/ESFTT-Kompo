@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+    let cb_admin = $('#cb_admin');
+    let cb_capitaine = $('#cb_capitaine');
+    let cb_visiteur = $('#cb_visiteur');
+
     /** Evènements liés au checkbox Administrateur, Capitaine et Visiteur **/
     if (cb_admin.is(":checked")){
         cb_capitaine.prop('checked', true).prop('disabled', true);

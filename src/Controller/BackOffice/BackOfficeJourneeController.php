@@ -3,7 +3,6 @@
 namespace App\Controller\BackOffice;
 
 use App\Form\JourneeType;
-use App\Repository\ChampionnatRepository;
 use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,21 +15,17 @@ class BackOfficeJourneeController extends AbstractController
 {
     private $em;
     private $journeeRepository;
-    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
      * @param JourneeRepository $journeeRepository
-     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
-                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
-        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -40,22 +35,19 @@ class BackOfficeJourneeController extends AbstractController
     public function indexJournee(): Response
     {
         return $this->render('backoffice/journee/index.html.twig', [
-            // TODO Classer selon les championnats
-            'journees' => $this->journeeRepository->findAll()
+            'journees' => $this->journeeRepository->getAllJournees()
         ]);
     }
 
     /**
-     * @Route("/backoffice/journee/edit/{type}/journee/{idJournee}", name="backoffice.journee.edit")
+     * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit")
      * @param $idJournee
-     * @param int $type
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editJournee(int $type, $idJournee, Request $request): Response
+    public function editJournee($idJournee, Request $request): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
         $form = $this->createForm(JourneeType::class, $journee);
 
@@ -73,7 +65,6 @@ class BackOfficeJourneeController extends AbstractController
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'type' => $championnat->getNom(),
             'idJournee' => $idJournee
         ]);
     }

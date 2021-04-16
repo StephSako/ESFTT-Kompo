@@ -29,7 +29,7 @@
 
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
             {% for nomChampionnat, renc_equipes in equipes %}
-                <li class="tab"><a href="{{ '#equipes_' ~ nomChampionnat|slug }}" class="active">{{ nomChampionnat }}</a></li>
+                <li class="tab"><a href="{{ '#equipes_' ~ nomChampionnat|slug }}">{{ nomChampionnat }}</a></li>
             {% endfor %}
         </ul>
 

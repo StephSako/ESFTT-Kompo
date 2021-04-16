@@ -72,7 +72,6 @@ class EquipeRepository extends ServiceEntityRepository
             ->addSelect('e.numero')
             ->addSelect('p.poule')
             ->addSelect('d.longName as divLongName')
-            ->addSelect('d.nbJoueurs as divNbJoueurs')
             ->addSelect('c.nom')
             ->leftJoin('e.idDivision', 'd')
             ->leftJoin('e.idPoule', 'p')

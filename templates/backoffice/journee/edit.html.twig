@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/journee.html.twig' as edit %}
+{% import 'macros/edit/journee.html.twig' as _journee %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}Modifier la journée de phase{% endblock %}
@@ -15,7 +15,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ edit.journee(type, idJournee, form) }}
+        {{ _journee.journee(idJournee, form) }}
     </div>
 
 {% endblock %}

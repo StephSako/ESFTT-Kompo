@@ -42,15 +42,8 @@
         {{ form_end(form) }}
     </div>
 
-    <script>
+    <script type="text/javascript">
         let exterieur = "{{ domicile }}";
-        let lieu_rencontre = $('#lieu_rencontre');
-        let span_domicile = $('#domicile');
-        let span_exterieur = $('#exterieur');
-        let exempt = $('#exempt');
-        let adversaire = $('#adversaire');
-        let hosted = $('#hosted');
-        let reported = $('#reporte');
     </script>
-    <script src="{{ asset('JS/editRencontre.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/editRencontre.js') }}"></script>
 {% endmacro %}

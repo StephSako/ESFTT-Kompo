@@ -23,17 +23,16 @@
         </div>
 
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#journees_departementales" class="active">Départemental</a></li>
-            <li class="tab"><a href="#journees_paris">Paris</a></li>
+            {% for nomChampionnat, renc_equipes in journees %}
+                <li class="tab"><a href="{{ '#journees_' ~ nomChampionnat|slug }}" class="active">{{ nomChampionnat }}</a></li>
+            {% endfor %}
         </ul>
 
-        <div class="card-panel" id="journees_departementales">
-            {{ _journee.table(journeeDepartementales, 'departementale') }}
-        </div>
-
-        <div class="card-panel" id="journees_paris">
-            {{ _journee.table(journeeParis, 'paris') }}
-        </div>
+        {% for nomChampionnat, journees_champ in journees %}
+            <div class="card-panel" id="{{ 'journees_' ~ nomChampionnat|slug }}">
+                {{ _journee.table(journees_champ) }}
+            </div>
+        {% endfor %}
     </div>
 
 {% endblock %}

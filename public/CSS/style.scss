@@ -46,6 +46,12 @@ body {
   &.backoffice-panel {
     padding-bottom: 10px;
   }
+
+  &.account-card {
+    .col {
+      margin-top: 20px;
+    }
+  }
 }
 
 .btn {
@@ -503,6 +509,11 @@ div .profile_pic .file-field.input-field{
 .footer-copyright{
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+
+  img {
+    width: 70px;
+    padding-top: 8px;
+  }
 }
 
 .rainbow {
