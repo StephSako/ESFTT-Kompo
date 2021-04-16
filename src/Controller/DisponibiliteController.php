@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Disponibilite;
 use App\Repository\ChampionnatRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DivisionRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,7 +65,7 @@ class DisponibiliteController extends AbstractController
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $championnat->getNom(),
+                'type' => $type,
                 'id' => $journee->getIdJournee()
             ]
         );
@@ -74,30 +73,30 @@ class DisponibiliteController extends AbstractController
 
     /**
      * @Route("/journee/disponibilite/update/{type}/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
-     * @param string $type
+     * @param int $type
      * @param int $dispoJoueur
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function update(string $type, int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(int $type, int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-
+        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
         if (!($disposJoueur = $this->disponibiliteRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
+
         $disposJoueur->setDisponibilite($dispo);
         $journee = $disposJoueur->getIdJournee()->getIdJournee();
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-        if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $this->getParameter('nb_max_joueurs')), $this->getParameter('nb_max_joueurs'));
+        if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $this->getParameter('nb_max_joueurs'), $type), $this->getParameter('nb_max_joueurs'));
 
         $this->em->flush();
         $this->addFlash('success', 'Disponibilité modifiée avec succès !');
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $championnat->getNom(),
+                'type' => $type,
                 'id' => $journee
             ]
         );
