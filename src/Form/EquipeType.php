@@ -32,10 +32,11 @@ class EquipeType extends AbstractType
                 ],
                 'label' => false,
                 'choice_label' => 'longName',
-                'query_builder' => function (EntityRepository $dr) {
+                'query_builder' => function (EntityRepository $dr) use ($builder) {
                     return $dr->createQueryBuilder('d')
-                        ->where('d.nbJoueursChampDepartementale <> -1')
-                        ->orderBy('d.nbJoueursChampDepartementale', 'DESC')
+                        ->where('d.idChampionnat = :idChampionnat')
+                        ->setParameter('idChampionnat', $builder->getData()->getIdChampionnat()->getIdChampionnat())
+                        ->orderBy('d.nbJoueurs', 'DESC')
                         ->addOrderBy('d.shortName', 'ASC');
                 }
             ])

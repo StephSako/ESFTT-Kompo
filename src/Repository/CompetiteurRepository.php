@@ -43,11 +43,10 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
-     * @param int $nbJournees
      * @param Championnat[] $championnats
      * @return array
      */
-    public function findAllDisposRecapitulatif(int $nbJournees, array $championnats): array
+    public function findAllDisposRecapitulatif(array $championnats): array
     {
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
@@ -56,14 +55,14 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         foreach ($championnats as $championnat){
             $strDispos = '';
-            for ($i = 1; $i <= $nbJournees; $i++) {
-                $suffixe = $i . $championnat->getIdChampionnat();
+            foreach ($championnat->getJournees()->toArray() as $i => $journee) {
+                $suffixe = $journee->getIdJournee() . $championnat->getIdChampionnat();
                 $strDispos .= 'IFNULL((SELECT dt' . $suffixe . '.disponibilite' .
                               ' FROM App\Entity\Disponibilite dt' . $suffixe .
                               ' WHERE dt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
                               ' AND c.idCompetiteur = dt' . $suffixe . '.idCompetiteur' .
-                              ' AND dt' . $suffixe . '.idJournee = ' . $i . '), -1)';
-                if ($i < $nbJournees) $strDispos .= ", ',' , ";
+                              ' AND dt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
+                if ($i < count($championnat->getJournees()->toArray())-1) $strDispos .= ", ',' , ";
             }
             $result = $result
                 ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug());
@@ -83,7 +82,6 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $queryChamp[$championnat->getNom()] = $queryResult[$championnat->getSlug()];
             }
         }
-
         return $queryChamp;
     }
 
@@ -171,7 +169,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur');
 
         if ($idJournee == 2 && $championnat->isJ2Rule()){
-            $brulages = $brulages->addSelect('(SELECT COUNT(rd.id)' .
+            $brulages = $brulages->addSelect('(SELECT COUNT(r.id)' .
                 ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                 ' WHERE e.idDivision IS NOT NULL' .
                 ' AND e.numero < :idEquipe' .
@@ -260,7 +258,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     {
         $str = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            $str .= 'rd.idJoueur' . $j . ' = c.idCompetiteur';
+            $str .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
             if ($j < $nbJoueurs - 1) $str .= ' OR ';
         }
         $query = $this->createQueryBuilder('c')

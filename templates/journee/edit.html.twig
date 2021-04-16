@@ -115,7 +115,7 @@
                             <div class="form_div_list">
                                 {% for i in 0..(nbJoueursDivision - 1) %}
                                     <div class="row">
-                                        <div class="col s12 m3{% if i > 3 and i < 7 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
+                                        <div class="col s12 m3{% if i > 2 and i < 6 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
                                         <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
                                     </div>
                                 {% endfor %}

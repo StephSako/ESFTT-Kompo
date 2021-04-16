@@ -44,6 +44,7 @@ class EquipeRepository extends ServiceEntityRepository
         return array_column($this->createQueryBuilder('e')
             ->select('e.idEquipe')
             ->where('e.idDivision IS NOT NULL')
+            ->andWhere('e.idChampionnat = :idChampionnat')
             ->andWhere('e.idEquipe <> (SELECT ' . $fonction . '(e_.idEquipe) from App\Entity\Equipe e_ WHERE e_.idChampionnat = :idChampionnat AND e_.idDivision IS NOT NULL)')
             ->setParameter('idChampionnat', $type)
             ->getQuery()

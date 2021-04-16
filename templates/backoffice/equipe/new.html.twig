@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/equipe.html.twig' as  %}
+{% import 'macros/edit/equipe.html.twig' as _equipe %}
 
 {% block title %}Back-office - Les équipes{% endblock %}
 
@@ -15,7 +15,7 @@
 
         {{ form_errors(form) }}
 
-        {{ new.equipe(form, 'Créer') }}
+        {{ _equipe.equipe(form, 'Créer') }}
     </div>
 
 {% endblock %}

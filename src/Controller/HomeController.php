@@ -54,6 +54,7 @@ class HomeController extends AbstractController
     }
 
     /**
+     * //TODO Merge avec la route d'en dessous
      * @Route("/", name="index")
      * @throws Exception
      */
@@ -63,10 +64,10 @@ class HomeController extends AbstractController
             if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
         } else $championnat = $this->championnatRepository->getFirstChamp()[0];
 
-        $dates = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
-        $idJournee = 1;
+        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
+        $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= 7 && !$dates[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($dates[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= count($journees) && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
@@ -85,10 +86,10 @@ class HomeController extends AbstractController
     public function indexTypeAction(int $type): Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        $dates = $this->journeeRepository->findAllDates($type);
-        $idJournee = 1;
+        $journees = $this->journeeRepository->findAllDates($type);
+        $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= 7 && !$dates[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($dates[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= count($journees) && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
@@ -147,12 +148,7 @@ class HomeController extends AbstractController
         // Equipes sans divisions affiliées
         $equipesSansDivision = $this->equipeRepository->getEquipesSansDivision();
 
-
-        $nbDispos = count(array_filter($joueursDeclares, function($dispo)
-            {
-                return $dispo->getDisponibilite();
-            }
-        ));
+        $nbDispos = count(array_filter($joueursDeclares, function($dispo){return $dispo->getDisponibilite();}));
 
         // Si l'utilisateur actuel est disponible pour la journée actuelle
         $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
@@ -160,7 +156,7 @@ class HomeController extends AbstractController
         // Si l'utilisateur actuel est sélectionné pour la journée actuelle
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
-        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif(count($journees), $this->championnatRepository->findAll());
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($this->championnatRepository->findAll());
         $nbJournees = count($journees);
 
         // Brûlages des joueurs
@@ -223,9 +219,10 @@ class HomeController extends AbstractController
             $nbJoueursBruleJ2 = 0;
             if ($championnat->isJ2Rule()){
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
-                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables, function($joueur)
-                {   return ($joueur["bruleJ2"]);    }
-                ), 'idCompetiteur');
+                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables,
+                    function($joueur){
+                        return ($joueur["bruleJ2"]);
+                    }), 'idCompetiteur');
 
                 /** On vérifie qu'il n'y aie pas 2 joueurs brûlés ou + sélectionnés pour respecter la règle de la J2 **/
                 for ($i = 0; $i < $nbJoueursDivision; $i++) {
@@ -294,7 +291,7 @@ class HomeController extends AbstractController
      */
     public function emptyComposition(int $type, int $idRencontre, bool $fromTemplate, int $nbJoueurs) : Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
         if (!($compo = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
 
         for ($i = 0; $i < $nbJoueurs; $i++){

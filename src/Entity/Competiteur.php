@@ -467,7 +467,7 @@ class Competiteur implements UserInterface, Serializable
      * @param mixed|null $dispos
      * @return Competiteur
      */
-    public function setDisposDepartemental($dispos): self
+    public function setDispos($dispos): self
     {
         $this->dispos = $dispos;
         return $this;

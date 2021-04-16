@@ -5,6 +5,7 @@ namespace App\Controller\BackOffice;
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
 use App\Form\EquipeType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\EquipeRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
@@ -21,22 +22,26 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $journeeRepository;
     private $rencontreRepository;
+    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param JourneeRepository $journeesRepository
      * @param RencontreRepository $rencontreRepository
+     * @param ChampionnatRepository $championnatepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 JourneeRepository $journeesRepository,
                                 RencontreRepository $rencontreRepository,
+                                ChampionnatRepository $championnatepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
         $this->journeeRepository = $journeesRepository;
+        $this->championnatRepository = $championnatepository;
         $this->rencontreRepository = $rencontreRepository;
     }
 
@@ -46,21 +51,25 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function indexEquipes(): Response
     {
+        dump($this->equipeRepository->getAllEquipes());
         return $this->render('backoffice/equipe/index.html.twig', [
             'equipes' => $this->equipeRepository->getAllEquipes()
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/new", name="backoffice.equipe.new")
+     * @Route("/backoffice/equipe/new/{type}", name="backoffice.equipe.new")
+     * @param string $type
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request): Response
+    public function new(string $type, Request $request): Response
     {
-        $equipe = new Equipe();
-        $form = $this->createForm(EquipeType::class);
+        if (!($championnat = $this->championnatRepository->findOneBy(['nom' => $type]))) throw new Exception('Ce championnat est inexistant', 500);
+
+        $equipe = new Equipe($championnat);
+        $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){

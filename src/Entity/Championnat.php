@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionnatRepository")
@@ -22,6 +23,7 @@ use Cocur\Slugify\Slugify;
  */
 class Championnat
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -76,26 +78,36 @@ class Championnat
     private $j2Rule;
 
     /**
+     * @var Rencontre[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $rencontres;
 
     /**
+     * @var Division[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Division", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $divisions;
 
     /**
+     * @var Disponibilite[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $dispos;
 
     /**
+     * @var Equipe[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $equipes;
 
     /**
+     * @var Collection
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $journees;
@@ -119,18 +131,18 @@ class Championnat
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getJournees()
+    public function getJournees(): Collection
     {
         return $this->journees;
     }
 
     /**
-     * @param mixed $journees
+     * @param Collection $journees
      * @return Championnat
      */
-    public function setJournees($journees): self
+    public function setJournees(Collection $journees): self
     {
         $this->journees = $journees;
         return $this;

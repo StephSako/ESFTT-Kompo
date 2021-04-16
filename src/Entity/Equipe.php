@@ -24,6 +24,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Equipe
 {
 
+    public function __construct(Championnat $type)
+    {
+        $this->setIdChampionnat($type);
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

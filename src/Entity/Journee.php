@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\Index;
  * @ORM\Table(
  *     name="prive_journee",
  *     indexes={
- *         @Index(name="IDX_j_champ", columns={"id_championnat"}),
+ *          @Index(name="IDX_j_champ", columns={"id_championnat"}),
  *     },
  *     uniqueConstraints={
  *          @UniqueConstraint(name="UNIQ_journee", columns={"date_journee", "id_championnat"})
