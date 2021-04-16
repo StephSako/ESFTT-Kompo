@@ -248,7 +248,7 @@ class HomeController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'CHK_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                     }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    else $this->addFlash('fail', $e);
 
                     return $this->render('journee/edit.html.twig', [
                         'joueursBrules' => $joueursBrules,
@@ -257,7 +257,7 @@ class HomeController extends AbstractController
                         'brulageSelectionnables' => $brulageSelectionnables,
                         'idEquipes' => $idEquipes,
                         'compo' => $compo,
-                        'type' => $championnat->getNom(),
+                        'championnat' => $championnat,
                         'form' => $form->createView()
                     ]);
                 }
@@ -265,7 +265,7 @@ class HomeController extends AbstractController
                 $this->addFlash('success', 'Composition modifiée avec succès !');
 
                 return $this->redirectToRoute('journee.show', [
-                    'type' => $championnat->getSlug(),
+                    'type' => $type,
                     'id' => $compo->getIdJournee()->getIdJournee()
                 ]);
             }
@@ -305,7 +305,7 @@ class HomeController extends AbstractController
         if ($fromTemplate) $this->addFlash('success', 'Composition vidée avec succès !');
 
         return $this->redirectToRoute('journee.show', [
-            'type' => $championnat->getSlug(),
+            'type' => $type,
             'id' => $compo->getIdJournee()->getIdJournee()
         ]);
     }

@@ -97,33 +97,46 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $idEquipe
      * @param int $limiteBrulage
      * @param int $nbJoueurs
+     * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs){
-        $query = $this->createQueryBuilder('rp')
-            ->select('rp as compo');
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs, int $type){
+        $query = $this->createQueryBuilder('r')
+            ->select('r as compo');
         $strP = $strRP = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
-            $strRP .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
+            $strRP .= 'r.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1){
                 $strP .= ' OR ';
                 $strRP .= ' OR ';
             }
-            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
         $query = $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rp.idEquipe', 'e')
-            ->where('rp.idJournee > :idJournee')
+            ->leftJoin('r.idEquipe', 'e')
+            ->where('r.idJournee > :idJournee')
             ->andWhere('e.numero > :idEquipe')
-            ->setParameter('idEquipe', $idEquipe)
+            ->andWhere('e.idChampionnat = :idChampionnat')
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
-            ->setParameter('idCompetiteur', $idCompetiteur)
             ->andWhere($strRP)
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\RencontreParis p, App\Entity\EquipeParis e1 WHERE (' . $strP . ') AND p.idEquipe = e1.idEquipe AND p.idJournee <= :idJournee AND e1.idDivision IS NOT NULL AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\EquipeParis e2 WHERE e2.idDivision IS NOT NULL)) >= ' . $limiteBrulage)
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe e1 ' .
+                       'WHERE (' . $strP . ') ' .
+                       'AND p.idEquipe = e1.idEquipe ' .
+                       'AND p.idJournee <= :idJournee ' .
+                       'AND p.idChampionnat = :idChampionnat ' .
+                       'AND e1.idChampionnat = :idChampionnat ' .
+                       'AND e1.idDivision IS NOT NULL ' .
+                       'AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\Equipe e2 ' .
+                                        'WHERE e2.idChampionnat = :idChampionnat ' .
+                                        'AND e2.idDivision IS NOT NULL)) >= :limite')
+            ->setParameter('idCompetiteur', $idCompetiteur)
+            ->setParameter('idEquipe', $idEquipe)
+            ->setParameter('limite', $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
+            ->setParameter('idChampionnat', $type)
             ->getQuery()
             ->getResult();
         return $query;
@@ -134,25 +147,28 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $idCompetiteur
      * @param int $idJournee
      * @param int $nbJoueurs
+     * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenIndispo(int $idCompetiteur, int $idJournee, int $nbJoueurs){
-        $query = $this->createQueryBuilder('rp')
-            ->select('rp as compo');
+    public function getSelectedWhenIndispo(int $idCompetiteur, int $idJournee, int $nbJoueurs, int $type){
+        $query = $this->createQueryBuilder('r')
+            ->select('r as compo');
         $str = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
-            $str .= 'rp.idJoueur' .$i . ' = c.idCompetiteur';
+            $str .= 'r.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $query = $query->addSelect('IF(rp.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
         $query = $query
             ->from('App:Competiteur', 'c')
-            ->leftJoin('rp.idEquipe', 'e')
+            ->leftJoin('r.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
-            ->andWhere('rp.idJournee = :idJournee')
+            ->andWhere('r.idJournee = :idJournee')
+            ->andWhere('r.idChampionnat = :idChampionnat')
             ->setParameter('idJournee', $idJournee)
             ->andWhere('c.idCompetiteur = c.idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
+            ->setParameter('idChampionnat', $type)
             ->andWhere($str)
             ->getQuery()
             ->getResult();
@@ -166,10 +182,10 @@ class RencontreRepository extends ServiceEntityRepository
      */
     public function setDeletedCompetiteurToNull(int $idCompetiteur, int $idJoueurColumn)
     {
-        return $this->createQueryBuilder('rp')
-            ->update('App\Entity\Rencontre', 'rp')
-            ->set('rp.idJoueur' . $idJoueurColumn, 'NULL')
-            ->where('rp.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
+        return $this->createQueryBuilder('r')
+            ->update('App\Entity\Rencontre', 'r')
+            ->set('r.idJoueur' . $idJoueurColumn, 'NULL')
+            ->where('r.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();
@@ -202,19 +218,19 @@ class RencontreRepository extends ServiceEntityRepository
      */
     public function reset(int $nbJoueurs)
     {
-        $query = $this->createQueryBuilder('rp')
-            ->update('App\Entity\Rencontre', 'rp');
+        $query = $this->createQueryBuilder('r')
+            ->update('App\Entity\Rencontre', 'r');
         for ($i = 0; $i < $nbJoueurs; $i++){
-            $query = $query->set('rp.idJoueur' . $i, null);
+            $query = $query->set('r.idJoueur' . $i, null);
         }
         $query = $query
-            ->set('rp.reporte', false)
-            ->set('rp.dateReport', 'j.dateJournee')
-            ->set('rp.domicile', true)
-            ->set('rp.hosted', false)
-            ->set('rp.exempt', false)
-            ->set('rp.adversaire', null)
-            ->leftJoin('rp.idJournee', 'j')
+            ->set('r.reporte', false)
+            ->set('r.dateReport', 'j.dateJournee')
+            ->set('r.domicile', true)
+            ->set('r.hosted', false)
+            ->set('r.exempt', false)
+            ->set('r.adversaire', null)
+            ->leftJoin('r.idJournee', 'j')
             ->getQuery()
             ->execute();
 

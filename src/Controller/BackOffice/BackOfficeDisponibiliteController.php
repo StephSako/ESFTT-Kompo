@@ -11,8 +11,6 @@ use App\Repository\DivisionRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,7 +104,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     public function update(int $type, int $idCompetiteur, int $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
-        if (!($championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
 
         if (!($disposJoueur = $this->disponibiliteRepository->find($disposJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
         $disposJoueur->setDisponibilite($dispo);
@@ -114,7 +112,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
         if (!$dispo){
             $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-            $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $disposJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs), $nbMaxJoueurs);
+            $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $disposJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $type), $nbMaxJoueurs);
         }
 
         $this->em->flush();
