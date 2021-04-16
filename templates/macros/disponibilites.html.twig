@@ -93,8 +93,8 @@
                         </td>
                         {% for i in 1..nbJournees %}
                             <td>
-                                {% if disponibilite["dispos"][i-1] is not null %}
-                                    {% if disponibilite["dispos"][i-1] == 1 %}
+                                {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
                                         <i style="vertical-align: middle;" class="green-text center tiny material-icons">check</i>
                                     {% else %}
                                         <i style="vertical-align: middle;" class="red-text center tiny material-icons">close</i>

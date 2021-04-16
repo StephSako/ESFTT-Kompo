@@ -29,21 +29,12 @@
             </div>
 
             <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-                <li class="tab"><a href="#disponibilites_departementales" class="active">Départemental</a></li>
-                <li class="tab"><a href="#disponibilites_paris">Paris</a></li>
+                <li class="tab"><a href="#disponibilites" class="active">Départemental</a></li>
             </ul>
 
-            <div id="disponibilites_departementales" class="card-panel backoffice-panel">
-                {% if disponibiliteDepartementales|length > 0 %}
-                    {{ _disponibilites.backoffice(disponibiliteDepartementales, 'departementale') }}
-                {% else %}
-                    <p style="font-size: 20px" class="lobster_2 center">Il n'y a pas de disponibilités disponibles</p>
-                {% endif %}
-            </div>
-
-            <div id="disponibilites_paris" class="card-panel backoffice-panel">
-                {% if disponibiliteDepartementales|length > 0 %}
-                    {{ _disponibilites.backoffice(disponibiliteParis, 'paris') }}
+            <div id="disponibilites" class="card-panel backoffice-panel">
+                {% if disponibilites|length > 0 %}
+                    {{ _disponibilites.backoffice(disponibilites, 'departementale') }}
                 {% else %}
                     <p style="font-size: 20px" class="lobster_2 center">Il n'y a pas de disponibilités disponibles</p>
                 {% endif %}

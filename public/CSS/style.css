@@ -36,7 +36,7 @@ body {
   padding-bottom: 6px;
 }
 .card-panel.backoffice-panel {
-  padding-bottom: 10px;
+  padding: 10px;
 }
 .card-panel.account-card .col {
   margin-top: 20px;

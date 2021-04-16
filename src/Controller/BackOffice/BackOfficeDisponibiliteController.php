@@ -60,8 +60,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     public function indexDisponibilites(): Response
     {
         return $this->render('backoffice/disponibilites/index.html.twig', [
-            // TODO Classer selon le championnat
-            'disponibiliteDepartementales' => $this->competiteurRepository->findAllDisponibilites('departementale')
+            'disponibilites' => $this->competiteurRepository->findAllDisponibilites()
         ]);
     }
 

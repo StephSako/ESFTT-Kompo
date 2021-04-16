@@ -17,3 +17,4 @@ doctrine:
         dql:
             string_functions:
                 IF: DoctrineExtensions\Query\Sqlite\IfElse
+                IFNULL: DoctrineExtensions\Query\Sqlite\IfNull
