@@ -66,6 +66,7 @@ class SecurityController extends AbstractController
             if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
         } else $championnat = $this->championnatRepository->getFirstChamp()[0];
 
+        $allChampionnats = $this->championnatRepository->findAll();
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $user = $this->getUser();
 
@@ -94,6 +95,8 @@ class SecurityController extends AbstractController
                         'user' => $user,
                         'urlImage' => $user->getAvatar(),
                         'path' => 'account.update.password',
+                        'allChampionnats' => $allChampionnats,
+                        'championnat' => $championnat,
                         'journees' => $journees,
                         'form' => $form->createView()
                     ]);
@@ -109,6 +112,8 @@ class SecurityController extends AbstractController
             'user' => $user,
             'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
             'journees' => $journees,
             'form' => $form->createView()
         ]);

@@ -34,11 +34,16 @@
                         </li>
                     {% endfor %}
 
-                    <li class="waves-light waves-effect li_in_line">
-                        <a class="white-text" href="{{ path("index.type", {type: (type == 'paris' ? 'departementale' : 'paris')}) }}">
-                            <i class="material-icons left green-text">swap_horiz</i>Champ. départemental
-                        </a>
-                    </li>
+                    <!-- Dropdown Trigger -->
+                    {% if allChampionnats|length > 1 %}
+                        <li>
+                            <a id="dropdowner" class="menu_navbar dropdown-trigger" href="#!" data-target="menu_dropdown">
+                                <i class="material-icons left green-text">swap_horiz</i>
+                                {{ championnat.nom }}
+                                <i class="material-icons right">arrow_drop_down</i>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             {% endif %}
 
@@ -47,6 +52,7 @@
     </nav>
 </div>
 
+<!-- SideNav Structure -->
 <ul id="slide-out" class="sidenav">
     {% if app.user %}
         {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
@@ -81,4 +87,15 @@
     {% endif %}
 
     {% include('components/navbar_common_mobile.html.twig') %}
+</ul>
+
+<!-- Dropdown Structure -->
+<ul id="menu_dropdown" class="dropdown-content">
+    {% for championnatList in allChampionnats %}
+        <li style="white-space:nowrap" class="waves-light waves-effect li_in_line{% if championnat.idChampionnat == championnatList.idChampionnat %} blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
+                <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+            </a>
+        </li>
+    {% endfor %}
 </ul>

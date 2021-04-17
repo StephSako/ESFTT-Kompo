@@ -62,11 +62,13 @@ class ContactController extends AbstractController
         } else $championnat = $this->championnatRepository->getFirstChamp();
 
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
-
+        $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
             'journees' => $journees
         ]);
     }

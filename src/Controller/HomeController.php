@@ -156,7 +156,8 @@ class HomeController extends AbstractController
         // Si l'utilisateur actuel est sélectionné pour la journée actuelle
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
 
-        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($this->championnatRepository->findAll());
+        $allChampionnats = $this->championnatRepository->findAll();
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
         $nbJournees = count($journees);
 
         // Brûlages des joueurs
@@ -168,6 +169,7 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'nbTotalJoueurs' => $nbTotalJoueurs,
             'nbMinJoueurs' => $nbMinJoueurs,
+            'allChampionnats' => $allChampionnats,
             'selected' => $selected,
             'championnat' => $championnat,
             'compos' => $compos,
@@ -199,6 +201,7 @@ class HomeController extends AbstractController
         if (!($compo = $this->rencontreRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
         if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
 
+        $allChampionnats = $this->championnatRepository->findAll();
         $nbMaxJoueurs = $this->getParameter('nb_max_joueurs');
         $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
         $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
@@ -254,6 +257,7 @@ class HomeController extends AbstractController
                         'brulageSelectionnables' => $brulageSelectionnables,
                         'idEquipes' => $idEquipes,
                         'compo' => $compo,
+                        'allChampionnats' => $allChampionnats,
                         'championnat' => $championnat,
                         'form' => $form->createView()
                     ]);
@@ -275,6 +279,7 @@ class HomeController extends AbstractController
             'brulageSelectionnables' => $brulageSelectionnables,
             'idEquipes' => $idEquipes,
             'compo' => $compo,
+            'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'form' => $form->createView()
         ]);

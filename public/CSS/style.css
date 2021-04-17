@@ -110,12 +110,13 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
 }
 
 #menu_dropdown {
+  width: auto !important;
   background-color: #012242;
-  padding: 0 4px;
+  padding: 2px 2px;
 }
 #menu_dropdown li {
   border-radius: 5px;
-  margin: 4px 0;
+  margin: 2px 2px;
 }
 #menu_dropdown li:hover {
   background-color: #1565c0;
@@ -210,21 +211,12 @@ i {
   background-color: #1565c0;
 }
 .li_in_line.deconnexion > a {
-  color: red;
+  color: white;
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
 }
 .li_in_line.deconnexion > a:hover {
-  background-color: red;
-  color: white;
-}
-
-#menu_dropdown > li.deconnexion > a {
-  color: red;
-}
-#menu_dropdown > li.deconnexion > a:hover {
-  background-color: red;
-  color: white;
+  color: #f15454;
 }
 
 .nav-wrapper .li_in_line {
@@ -537,7 +529,7 @@ li.active .collapsible-header .caret {
     margin-right: 80px;
   }
 }
-@media screen and (max-width: 1125px) {
+@media screen and (max-width: 1115px) {
   .right_items_navbar {
     display: none;
   }
@@ -546,7 +538,7 @@ li.active .collapsible-header .caret {
     display: block !important;
   }
 }
-@media screen and (max-width: 849px) {
+@media screen and (max-width: 890px) {
   .left_items_navbar {
     display: none;
   }
