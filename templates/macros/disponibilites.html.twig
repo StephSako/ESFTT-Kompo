@@ -67,7 +67,7 @@
 {% endmacro %}
 
 {% macro recapitulatif(allDisponibilites, nbJournees, nomTab) %}
-    <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+    <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="margin-bottom: 2px">
         {% for nomChamp, disponibilites in allDisponibilites %}
             <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" class="active">{{ nomChamp }}</a></li>
         {% endfor %}

@@ -291,7 +291,9 @@ p.lobster {
 .btn_gestion {
   margin-top: 0;
 }
-.paris_table>tbody>tr:nth-child(4)>.rank, .paris_table>tbody>tr:nth-child(5)>.rank, .paris_table>tbody>tr:nth-child(6)>.rank,
+.striped_table>tbody>tr:nth-child(4)>.rank,
+.striped_table>tbody>tr:nth-child(5)>.rank,
+.striped_table>tbody>tr:nth-child(6)>.rank,
 .light_blue {
   color: $light_blue;
 }
@@ -410,12 +412,6 @@ li.error {
   color: red;
 }
 
-#all_dispo_departementale, #all_dispo_paris {
-  .dispos>tbody>tr>td:not(:first-child)>span {
-    margin-right: 0;
-  }
-}
-
 .switch label {
   color: black;
 
@@ -441,7 +437,7 @@ li.error {
   font-style: italic;
 }
 
-form[name="rencontre_paris_haut"], form[name="rencontre_paris_bas"], form[name="rencontre_departementale"] {
+form {
   h5 {
     font-size: 1.3rem;
   }

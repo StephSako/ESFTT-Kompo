@@ -3,8 +3,6 @@
 namespace App\Twig;
 
 use App\Entity\Journee;
-use App\Entity\JourneeParis;
-use App\Entity\RencontreDepartementale;
 use App\Entity\Rencontre;
 use DateTime;
 use Twig\Extension\AbstractExtension;
@@ -22,7 +20,7 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision'])
@@ -30,11 +28,11 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param Journee|JourneeParis $journee
-     * @param RencontreDepartementale[]|Rencontre[] $rencontres
+     * @param Journee $journee
+     * @param Rencontre[] $rencontres
      * @return bool
      */
-    public function journeeStillEditable($journee, array $rencontres): bool
+    public function journeeStillEditable(Journee $journee, array $rencontres): bool
     {
         $nbRencontresReportees = count(array_filter($rencontres, function ($rencontre)
             {
@@ -45,10 +43,10 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param RencontreDepartementale|Rencontre $rencontre
+     * @param Rencontre $rencontre
      * @return bool
      */
-    public function rencontreStillEditable($rencontre): bool
+    public function rencontreStillEditable(Rencontre $rencontre): bool
     {
         $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;

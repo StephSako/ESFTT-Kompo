@@ -117,7 +117,6 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-
                     /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions d'équipe ... **/
                     if ($competiteur->isVisitor()){
                         for ($i = 0; $i < $this->getParameter('nb_max_joueurs'); $i++) {
@@ -128,6 +127,14 @@ class BackOfficeCompetiteurController extends AbstractController
                         $this->disponibiliteRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
                     }
 
+                    if ($competiteur->isAdmin()){
+                        $competiteur->setIsCapitaine(true);
+                        $competiteur->setVisitor(false);
+                    }
+                    else if ($competiteur->isVisitor()){
+                        $competiteur->setIsCapitaine(false);
+                        $competiteur->setIsAdmin(false);
+                    }
                     $competiteur->setNom(strtoupper($competiteur->getNom()));
                     $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
                     $this->em->flush();
@@ -155,6 +162,7 @@ class BackOfficeCompetiteurController extends AbstractController
             }
         }
 
+        //TODO URL_IMAGE ?
         return $this->render('account/edit.html.twig', [
             'type' => 'backoffice',
             'urlImage' => $competiteur->getAvatar(),

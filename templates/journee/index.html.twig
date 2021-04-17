@@ -196,7 +196,7 @@
                             <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}paris_table {% endif%}responsive-table">
+                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table">
                             <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
                                     {{ _composition.joueur(i, compo.idJoueurN(i)) }}
