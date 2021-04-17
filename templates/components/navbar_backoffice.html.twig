@@ -1,10 +1,12 @@
 <div class="navbar-fixed">
     <nav class="nav-extended">
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo hide-on-med-and-up"><img width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
-            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <div class="nav-wrapper navbar-backoffice">
+            <a href="#" class="esftt_logo" hidden>
+                <img class="brand-logo" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT">
+            </a>
+            <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-backoffice"><i class="material-icons">menu</i></a>
 
-            <ul class="left hide-on-med-and-down">
+            <ul class="left_items">
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.rencontres") }}"><i class="material-icons left">flash_on</i>Rencontre</a>
                 </li>
@@ -33,7 +35,9 @@
                 </li>
             </ul>
 
-            {% include('components/navbar_common_pc.html.twig') %}
+            <div class="right_items_navbar_backoffice">
+                {% include('components/navbar_common_pc.html.twig') %}
+            </div>
         </div>
     </nav>
 </div>

@@ -520,6 +520,8 @@ li .collapsible-header {
   justify-content: space-between;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+li .collapsible-header.collapsible-header-sidenav {
   background-color: #021931 !important;
 }
 li .collapsible-header .caret {
@@ -541,24 +543,48 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   transform-origin: 0.6em 0.5em;
 }
 
+.brand-logo {
+  left: 50% !important;
+}
+
+@media screen and (max-width: 1396px) {
+  .right_items_navbar_backoffice .right_items_navbar {
+    display: none;
+  }
+
+  .sidenav-trigger.sidenav-backoffice {
+    display: block !important;
+  }
+}
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
     margin-right: 80px;
   }
 }
-@media screen and (max-width: 1080px) {
-  .right_items_navbar {
+@media screen and (max-width: 1120px) {
+  .right_items_navbar_general .right_items_navbar {
     display: none;
   }
 
-  .sidenav-trigger {
+  .sidenav-trigger.sidenav-general {
     display: block !important;
   }
 }
-@media screen and (max-width: 890px) {
-  .left_items_navbar {
+@media screen and (max-width: 1110px) {
+  .navbar-backoffice .left_items {
     display: none;
+  }
+  .navbar-backoffice .esftt_logo {
+    display: block;
+  }
+}
+@media screen and (max-width: 890px) {
+  .navbar-general .left_items {
+    display: none;
+  }
+  .navbar-general .esftt_logo {
+    display: block;
   }
 }
 

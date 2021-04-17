@@ -2,12 +2,14 @@
 
 <div class="navbar-fixed">
     <nav class="nav-extended">
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo hide-on-med-and-up"><img width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
-            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <div class="nav-wrapper navbar-general">
+            <a href="#" class="esftt_logo" hidden>
+                <img class="brand-logo" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT">
+            </a>
+            <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-general"><i class="material-icons">menu</i></a>
 
             {% if app.user %}
-                <ul class="left_items_navbar">
+                <ul class="left_items">
                     {% for i, journee in journees %}
                         <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
@@ -25,7 +27,7 @@
                     <!-- Dropdown Trigger -->
                     {% if allChampionnats|length > 1 %}
                         <li>
-                            <a class="dropdown-trigger" href="#!" data-target="menu_dropdown">
+                            <a id="dropdowner" class="dropdown-trigger" href="#!" data-target="menu_dropdown">
                                 {{ championnat.nom }}
                                 <i class="material-icons right">arrow_drop_down</i>
                             </a>
@@ -45,7 +47,9 @@
                 </ul>
             {% endif %}
 
-            {% include('components/navbar_common_pc.html.twig') %}
+            <div class="right_items_navbar_general">
+                {% include('components/navbar_common_pc.html.twig') %}
+            </div>
         </div>
     </nav>
 </div>
@@ -54,6 +58,31 @@
 <ul id="slide-out" class="sidenav">
     {% if app.user %}
         <div class="first_sidenav">
+
+            {% if allChampionnats|length > 1 %}
+                <ul class="collapsible collapsible-accordion">
+                    <li class="li_in_line">
+                        <a class="collapsible-header collapsible-header-sidenav white-text center">
+                            <div class="chip white-text chip-sidenav">
+                                {{ championnat.nom }}
+                            </div>
+                            <i class="caret caret-sidenav material-icons white-text right">keyboard_arrow_down</i>
+                        </a>
+                        <div id="collapsible-sidenav" class="collapsible-body" style="padding: 0">
+                            <ul>
+                                {% for championnatList in allChampionnats %}
+                                    <li class="waves-light waves-effect li_in_line{% if championnat.idChampionnat == championnatList.idChampionnat %} blue darken-3{% endif %}">
+                                        <a class="white-text center" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
+                                            <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            {% endif %}
+
             {% for journee in journees %}
                 <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                     <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
@@ -67,31 +96,6 @@
                 </li>
             {% endfor %}
         </div>
-
-        {% if allChampionnats|length > 1 %}
-            <ul class="collapsible collapsible-accordion">
-                <li class="li_in_line">
-                    <a class="collapsible-header white-text center">
-                        <div class="chip white-text chip-sidenav">
-                            {{ championnat.nom }}
-                        </div>
-                        <i class="caret caret-sidenav material-icons white-text right">keyboard_arrow_down</i>
-                    </a>
-                    <div id="collapsible-sidenav" class="collapsible-body" style="padding: 0">
-                        <ul>
-                            {% for championnatList in allChampionnats %}
-                                <li class="waves-light waves-effect li_in_line{% if championnat.idChampionnat == championnatList.idChampionnat %} blue darken-3{% endif %}">
-                                    <a class="white-text center" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
-                                        <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        {% endif %}
-
         <li><div class="divider_custom"></div></li>
     {% endif %}
 

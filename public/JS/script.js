@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('.modal').modal();
 
-    $(".dropdown-trigger").dropdown();
+    $("#dropdowner").dropdown();
 
     $('select').formSelect();
 
