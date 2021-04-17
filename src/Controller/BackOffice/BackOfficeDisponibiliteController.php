@@ -7,7 +7,6 @@ use App\Entity\Disponibilite;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\DivisionRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +22,6 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $competiteurRepository;
     private $journeeRepository;
     private $rencontreRepository;
-    private $divisionRepository;
     private $championnatRepository;
 
     /**
@@ -32,7 +30,6 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
-     * @param DivisionRepository $divisionRepository
      * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
@@ -40,7 +37,6 @@ class BackOfficeDisponibiliteController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em,
-                                DivisionRepository $divisionRepository,
                                 ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository)
     {
@@ -49,7 +45,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->competiteurRepository = $competiteurRepository;
         $this->journeeRepository = $journeeRepository;
         $this->rencontreRepository = $rencontreRepository;
-        $this->divisionRepository = $divisionRepository;
         $this->championnatRepository = $championnatRepository;
     }
 
@@ -91,26 +86,26 @@ class BackOfficeDisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/disponibilites/update/{idCompetiteur}/{type}/{disposJoueur}/{dispo}", name="backoffice.disponibilite.update")
+     * @Route("/backoffice/disponibilites/update/{idCompetiteur}/{idDispo}/{dispo}/{type}", name="backoffice.disponibilite.update")
      * @param int $type
      * @param int $idCompetiteur
-     * @param int $disposJoueur
+     * @param int $idDispo
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function update(int $type, int $idCompetiteur, int $disposJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(int $type, int $idCompetiteur, int $idDispo, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
         if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
 
-        if (!($disposJoueur = $this->disponibiliteRepository->find($disposJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
+        if (!($disposJoueur = $this->disponibiliteRepository->find($idDispo))) throw new Exception('Cette disponibilité est inexistante', 500);
         $disposJoueur->setDisponibilite($dispo);
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
         if (!$dispo){
-            $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
+            $nbMaxJoueurs = $this->getParameter('nb_max_joueurs');
             $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $disposJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $type), $nbMaxJoueurs);
         }
 

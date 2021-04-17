@@ -224,6 +224,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+        // TODO Optimize
         $allBrulage = [];
         foreach ($brulages as $joueur => $brulage){
             /** On formate en associant le joueur à son brûlage par équipe */
@@ -307,6 +308,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.licence')
             ->addSelect('j.idJournee')
             ->addSelect('champ.nom AS nomChamp')
+            ->addSelect('champ.idChampionnat')
             ->addSelect('j.undefined')
             ->addSelect('(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite d1 ' .
                               'WHERE c.idCompetiteur = d1.idCompetiteur ' .
@@ -327,17 +329,24 @@ class CompetiteurRepository extends ServiceEntityRepository
         $queryTest = $queryFinal = [];
         foreach ($query as $key => $item) {
             $queryTest[$item['nomChamp']][$key] = $item;
-            /*foreach ($queryTest as $key2 => $item2) {
-                $queryFinal[$key2][$item['nom'] . ' ' . $item['prenom']] = $item2;
-            }*/
-        }
-        dump($queryTest);
-
-        $querySorted = [];
-        foreach ($query as $key => $item) {
-            $querySorted[$item['nom'] . ' ' . $item['prenom']][$key] = $item;
         }
 
-        return $querySorted;
+        foreach ($allChampionnats as $championnat) {
+            $queryFinal[$championnat->getNom()] = [];
+            foreach ($queryTest[$championnat->getNom()] as $item) {
+                $nom = $item['nom'] . ' ' . $item['prenom'];
+                if (!array_key_exists($nom, $queryFinal[$championnat->getNom()])){
+                    $dispos = [];
+                    $queryFinal[$championnat->getNom()][$nom] = [];
+                    $queryFinal[$championnat->getNom()][$nom]['avatar'] = $item['avatar'];
+                    $queryFinal[$championnat->getNom()][$nom]['idCompetiteur'] = $item['idCompetiteur'];
+                    $queryFinal[$championnat->getNom()][$nom]['classement_officiel'] = $item['classement_officiel'];
+                    $queryFinal[$championnat->getNom()][$nom]['licence'] = $item['licence'];
+                }
+                array_push($dispos, $item);
+                $queryFinal[$championnat->getNom()][$nom]['dispos'] = $dispos;
+            }
+        }
+        return $queryFinal;
     }
 }

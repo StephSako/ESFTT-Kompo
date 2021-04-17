@@ -51,7 +51,6 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function indexEquipes(): Response
     {
-        dump($this->equipeRepository->getAllEquipes());
         return $this->render('backoffice/equipe/index.html.twig', [
             'equipes' => $this->equipeRepository->getAllEquipes()
         ]);
