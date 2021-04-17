@@ -1,5 +1,8 @@
 {% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbJournees, nbMinJoueurs, nbTotalJoueurs, nomModal) %}
-    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#{{ nomModal }}">Toutes les dispos</a>
+    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#{{ nomModal }}">
+        Toutes les dispos
+    </a>
+
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
             {{ _self.recapitulatif(allDisponibilites, nbJournees, nomModal) }}

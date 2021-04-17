@@ -293,9 +293,10 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Liste des disponibilités de tous les joueurs
+     * @param Championnat[] $allChampionnats
      * @return array
      */
-    public function findAllDisponibilites(): array
+    public function findAllDisponibilites(array $allChampionnats): array
     {
         $query = $this->createQueryBuilder('c')
             ->select('c.avatar')
@@ -322,6 +323,15 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addOrderBy('j.idJournee', 'ASC')
             ->getQuery()
             ->getResult();
+
+        $queryTest = $queryFinal = [];
+        foreach ($query as $key => $item) {
+            $queryTest[$item['nomChamp']][$key] = $item;
+            /*foreach ($queryTest as $key2 => $item2) {
+                $queryFinal[$key2][$item['nom'] . ' ' . $item['prenom']] = $item2;
+            }*/
+        }
+        dump($queryTest);
 
         $querySorted = [];
         foreach ($query as $key => $item) {

@@ -1,6 +1,7 @@
 $green: #2db009;
 $grey: #918c8c;
 $light_grey: #aba9a9;
+$darken_blue: #021931;
 $dark_blue: #012242;
 $light_blue: #1565c0;
 $gradient_blue_light: rgb(17, 116, 184);
@@ -128,19 +129,28 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   background: $dark_blue;
 }
 
-#menu_dropdown {
+#menu_dropdown, #collapsible-sidenav {
   width: auto !important;
   background-color: $dark_blue;
-  padding: 2px 2px;
 
   & li {
     border-radius: 5px;
     margin: 2px 2px;
+    white-space: nowrap;
+    width: 100% !important;
 
     &:hover {
       background-color: $light_blue;
     }
   }
+}
+
+#menu_dropdown{
+  padding: 2px 2px;
+}
+
+#collapsible-sidenav{
+  padding: 0 !important;
 }
 
 .nav-extended {
@@ -166,15 +176,17 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
 }
 
 .nav-wrapper li a {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .nav-wrapper li a, .sidenav li a, .poule, .card-panel>h5, .complete_compos h5, h6, .lobster_2 {
   font-family: 'Lobster Two', cursive;
 }
 
-.sidenav li a {
-  font-size: 17px;
+.sidenav {
+  li a, .chip-sidenav {
+    font-size: 17px;
+  }
 }
 
 .chip {
@@ -320,6 +332,14 @@ p.lobster {
           margin-top: 0;
         }
       }
+    }
+  }
+}
+
+#slide-out {
+  .collapsible {
+    .li_in_line {
+      background-color: $dark_blue;
     }
   }
 }
@@ -552,6 +572,7 @@ li {
     justify-content: space-between;
     padding-top: 10px;
     padding-bottom: 10px;
+    background-color: $darken_blue !important;
 
     .caret {
       height: 29px;
@@ -562,14 +583,18 @@ li {
 
     .chip {
       margin: 0;
-      font-size: 14px;
+      &:not(.chip-sidenav) {
+        font-size: 14px;
+      }
     }
   }
   &.active {
     .collapsible-header {
       .caret {
+        &:not(.caret-sidenav) {
+          transform-origin: 0.6em 0.5em;
+        }
         transform: rotate(-180deg);
-        transform-origin: 0.6em 0.5em;
       }
     }
   }
@@ -582,7 +607,7 @@ li {
   }
 }
 
-@media screen and (max-width: 1115px) {
+@media screen and (max-width: 1080px) {
   .right_items_navbar {
     display: none;
   }
