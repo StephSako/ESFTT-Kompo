@@ -233,7 +233,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs, 'mobile') }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, championnat.nbJournees, nbMinJoueurs, nbTotalJoueurs, 'mobile') }}
                 </div>
             </li>
             <li>
@@ -251,7 +251,7 @@
         </ul>
 
         <div class="col s12 m2 hide-on-small-only">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbJournees, nbMinJoueurs, nbTotalJoueurs, 'pc') }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, championnat.nbJournees, nbMinJoueurs, nbTotalJoueurs, 'pc') }}
         </div>
     </div>
 

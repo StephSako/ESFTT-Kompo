@@ -71,6 +71,27 @@ class Championnat
     private $limiteBrulage;
 
     /**
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 1,
+     *     message = "Il doit y avoir au minimum {{ limit }} journée"
+     * )
+     *
+     * @Assert\LessThanOrEqual (
+     *     value = 10,
+     *     message = "Il doit y avoir au maximum {{ limit }} journée"
+     * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
+     * @ORM\Column(type="integer", name="nb_journees", nullable=false)
+     */
+    private $nbJournees;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="j2rule", nullable=false)
@@ -111,6 +132,24 @@ class Championnat
      * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $journees;
+
+    /**
+     * @return int
+     */
+    public function getNbJournees(): int
+    {
+        return $this->nbJournees;
+    }
+
+    /**
+     * @param int $nbJournees
+     * @return Championnat
+     */
+    public function setNbJournees(int $nbJournees): self
+    {
+        $this->nbJournees = $nbJournees;
+        return $this;
+    }
 
     /**
      * @return int

@@ -30,6 +30,7 @@
                     <thead>
                     <tr>
                         <th>Nom</th>
+                        <th>Nombre de journées</th>
                         <th>Limite brûlage</th>
                         <th>Règle brûlage J2</th>
                         <th></th>
@@ -41,6 +42,7 @@
                     {% for championnat in championnats %}
                         <tr>
                             <td>{{ championnat.nom }}</td>
+                            <td>{{ championnat.nbJournees }}</td>
                             <td>{{ championnat.limiteBrulage }}</td>
                             <td>
                                 {% if championnat.j2Rule %} <i class="material-icons green-text">check</i>

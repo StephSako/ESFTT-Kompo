@@ -31,6 +31,14 @@ class ChampionnatType extends AbstractType
                     'max' => 4
                 ]
             ])
+            ->add('nbJournees', IntegerType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 10
+                ]
+            ])
             ->add('j2Rule', CheckboxType::class,[
                 'label' => ' ',
                 'required' => false

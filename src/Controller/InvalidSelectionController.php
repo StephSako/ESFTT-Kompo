@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Championnat;
 use App\Entity\Rencontre;
 use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
@@ -25,17 +26,15 @@ class InvalidSelectionController extends AbstractController
     }
 
     /**
-     * @param int $type
+     * @param Championnat $championnat
      * @param Rencontre $compo
      * @param int $idJoueur
-     * @param int $nbJournees
      * @param int $nbJoueurs
      * @throws Exception
      */
-    public function checkInvalidSelection(int $type, Rencontre $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $nbJournees) {
-            $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbJoueurs, $type), $nbJoueurs);
+    public function checkInvalidSelection(Championnat $championnat, Rencontre $compo, int $idJoueur, int $nbJoueurs){
+        if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $championnat->getNbJournees()) {
+            $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbJoueurs, $championnat->getIdChampionnat()), $nbJoueurs);
         }
     }
 

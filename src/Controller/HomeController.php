@@ -54,7 +54,6 @@ class HomeController extends AbstractController
     }
 
     /**
-     * //TODO Merge avec la route d'en dessous
      * @Route("/", name="index")
      * @throws Exception
      */
@@ -67,7 +66,7 @@ class HomeController extends AbstractController
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= count($journees) && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
@@ -89,7 +88,7 @@ class HomeController extends AbstractController
         $journees = $this->journeeRepository->findAllDates($type);
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= count($journees) && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 
@@ -109,12 +108,12 @@ class HomeController extends AbstractController
     public function journee(int $type, int $id): Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        if ((!$journee = $this->journeeRepository->findOneBy(['idJournee' => $id, 'idChampionnat' => $type]))) throw new Exception('Cette journée est inexistante', 500);
+
+        // Toutes les journées du championnat
+        $journees = $championnat->getJournees()->toArray();
+        if ((!$journee = array_values(array_filter($journees, function($journee) use ($id) { return ($journee->getIdJournee() == $id ? $journee : null); }))[0])) throw new Exception('Cette journée est inexistante', 500);
 
         $this->get('session')->set('type', $type);
-
-        // Toutes les journées du type de championnat visé
-        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
 
         // Objet Disponibilité du joueur
         $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
@@ -158,10 +157,9 @@ class HomeController extends AbstractController
 
         $allChampionnats = $this->championnatRepository->findAll();
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
-        $nbJournees = count($journees);
 
         // Brûlages des joueurs
-        $brulages = $this->competiteurRepository->getBrulages($type, $journee->getIdJournee(), $idEquipesBrulage, $this->getParameter('nb_max_joueurs'));
+        $brulages = $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, $this->getParameter('nb_max_joueurs'));
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -180,7 +178,6 @@ class HomeController extends AbstractController
             'joueursNonDeclares' => $joueursNonDeclares,
             'dispoJoueur' => $dispoJoueur,
             'nbDispos' => $nbDispos,
-            'nbJournees' => $nbJournees,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
         ]);
@@ -209,7 +206,7 @@ class HomeController extends AbstractController
             'nbMaxJoueurs' => $nbMaxJoueurs,
             'limiteBrulage' => $championnat->getLimiteBrulage()
         ]);
-        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
+        $journees = $championnat->getJournees()->toArray();
         $idEquipes = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
 
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
@@ -241,7 +238,7 @@ class HomeController extends AbstractController
 
                     /** On vérifie que chaque joueur qui devient brûlé pour de futures compositions y soit désélectionné **/
                     for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                        if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($type, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), count($journees), $nbMaxJoueurs);
+                        if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
                     }
                     $this->em->flush();
                 } catch (Exception $e) {
