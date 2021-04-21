@@ -159,7 +159,7 @@ class RencontreRepository extends ServiceEntityRepository
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
             $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
-        $query = $query
+        return $query
             ->from('App:Competiteur', 'c')
             ->leftJoin('r.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
@@ -172,7 +172,6 @@ class RencontreRepository extends ServiceEntityRepository
             ->andWhere($str)
             ->getQuery()
             ->getResult();
-        return $query;
     }
 
     /**
@@ -192,25 +191,6 @@ class RencontreRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $idDivision
-     * @return int|mixed|string
-     */
-    public function getRencontresForDivision(int $idDivision)
-    {
-        return $this->createQueryBuilder('r')
-            ->select('r')
-            ->addSelect('e')
-            ->addSelect('d')
-            ->leftJoin('r.idEquipe', 'e')
-            ->leftJoin('e.idDivision', 'd')
-            ->where('e.idDivision = :idDivision')
-            ->andWhere('r.idEquipe = e.idEquipe')
-            ->setParameter('idDivision', $idDivision)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * // TODO Tester
      * Réinitialise les rencontres pour une nouvelle phase
      * @param int $nbJoueurs
@@ -223,7 +203,7 @@ class RencontreRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++){
             $query = $query->set('r.idJoueur' . $i, null);
         }
-        $query = $query
+        return $query
             ->set('r.reporte', false)
             ->set('r.dateReport', 'j.dateJournee')
             ->set('r.domicile', true)
@@ -233,7 +213,5 @@ class RencontreRepository extends ServiceEntityRepository
             ->leftJoin('r.idJournee', 'j')
             ->getQuery()
             ->execute();
-
-        return $query;
     }
 }

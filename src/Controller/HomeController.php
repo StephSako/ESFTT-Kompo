@@ -159,7 +159,7 @@ class HomeController extends AbstractController
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
 
         // Brûlages des joueurs
-        $brulages = $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, $this->getParameter('nb_max_joueurs'));
+        $brulages = $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray())));
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -199,7 +199,11 @@ class HomeController extends AbstractController
         if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
 
         $allChampionnats = $this->championnatRepository->findAll();
-        $nbMaxJoueurs = $this->getParameter('nb_max_joueurs');
+
+        // Nombre de joueurs maximum par équipe du championnat
+        $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
+
+        // IDs des équipes sujettes au brûlage
         $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
         $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $form = $this->createForm(RencontreType::class, $compo, [
@@ -207,7 +211,9 @@ class HomeController extends AbstractController
             'limiteBrulage' => $championnat->getLimiteBrulage()
         ]);
         $journees = $championnat->getJournees()->toArray();
-        $idEquipes = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
+
+        // IDs des équipes sujettes au brûlage à afficher dans la table
+        $idEquipesBrulagePrint = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
 
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
@@ -224,7 +230,7 @@ class HomeController extends AbstractController
                         return ($joueur["bruleJ2"]);
                     }), 'idCompetiteur');
 
-                /** On vérifie qu'il n'y aie pas 2 joueurs brûlés ou + sélectionnés pour respecter la règle de la J2 **/
+                /** On vérifie qu'il n'y aie pas plus de 2 joueurs brûlés J2 sélectionnés **/
                 for ($i = 0; $i < $nbJoueursDivision; $i++) {
                     if ($form->getData()->getIdJoueurN($i) && in_array($form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $joueursBrulesRegleJ2)) $nbJoueursBruleJ2++;
                 }
@@ -236,14 +242,14 @@ class HomeController extends AbstractController
                 try {
                     $this->em->flush();
 
-                    /** On vérifie que chaque joueur qui devient brûlé pour de futures compositions y soit désélectionné **/
+                    /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné **/
                     for ($i = 0; $i < $nbJoueursDivision; $i++) {
                         if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
                     }
                     $this->em->flush();
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'CHK_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
+                        if (str_contains($e->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                     }
                     else $this->addFlash('fail', $e);
 
@@ -252,7 +258,7 @@ class HomeController extends AbstractController
                         'journees' => $journees,
                         'nbJoueursDivision' => $nbJoueursDivision,
                         'brulageSelectionnables' => $brulageSelectionnables,
-                        'idEquipes' => $idEquipes,
+                        'idEquipesBrulagePrint' => $idEquipesBrulagePrint,
                         'compo' => $compo,
                         'allChampionnats' => $allChampionnats,
                         'championnat' => $championnat,
@@ -274,7 +280,7 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
             'brulageSelectionnables' => $brulageSelectionnables,
-            'idEquipes' => $idEquipes,
+            'idEquipesBrulagePrint' => $idEquipesBrulagePrint,
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,

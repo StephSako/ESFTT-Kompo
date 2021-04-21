@@ -6,7 +6,6 @@ use App\Entity\Division;
 use App\Form\DivisionFormType;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
-use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,24 +18,20 @@ class BackOfficeDivisionController extends AbstractController
     private $em;
     private $divisionRepository;
     private $equipeRepository;
-    private $rencontreRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      * @param EquipeRepository $equipeRepository
-     * @param RencontreRepository $rencontreRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
-                                EquipeRepository $equipeRepository,
-                                RencontreRepository $rencontreRepository)
+                                EquipeRepository $equipeRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->equipeRepository = $equipeRepository;
-        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
@@ -146,11 +141,13 @@ class BackOfficeDivisionController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
 
-            /** On vide les compos des équipes affiliées à la division qui va être supprimée **/
-            $compos = $this->rencontreRepository->getRencontresForDivision($idDivision);
-            foreach ($compos as $compo){
-                for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-                    $compo->setIdJoueurN($i, null);
+            /** On vide les compositions des équipes affiliées à la division supprimée car une équipe sans division n'est pas editable **/
+            //TODO Optimize
+            foreach ($division->getEquipes()->toArray() as $equipes){
+                foreach ($equipes->getRencontres() as $compo){
+                    for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+                        $compo->setIdJoueurN($i, null);
+                    }
                 }
             }
 

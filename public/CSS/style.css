@@ -545,6 +545,11 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   left: 50% !important;
 }
 
+.backoffice-table th {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 @media screen and (max-width: 1396px) {
   .right_items_navbar_backoffice .right_items_navbar {
     display: none;

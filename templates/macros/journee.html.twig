@@ -12,7 +12,9 @@
             <tbody>
                 {% for journee in journees %}
                     <tr>
-                        <td>{{ journee.idJournee }}</td>
+                        <td>
+                            <b>{{ loop.index }}</b>
+                        </td>
                         <td>
                             {% if journee.undefined %} <span class="red-text">Date indéfinie</span>
                             {% else %} {{ journee.dateJournee|format_datetime('long', 'none', locale='fr') }}

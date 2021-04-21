@@ -14,10 +14,12 @@
             <tbody>
                 {% for equipe in equipes %}
                     <tr>
-                        <td>{{ equipe.numero }}</td>
                         <td>
-                            {% if equipe.divLongName %}
-                                {{ equipe.divLongName }}
+                            <b>{{ equipe.numero }}</b>
+                        </td>
+                        <td>
+                            {% if equipe.divShortName %}
+                                {{ equipe.divShortName }}
                             {% else %}
                                 <span class="red-text lighten-2">Division indéfinie</span>
                             {% endif %}

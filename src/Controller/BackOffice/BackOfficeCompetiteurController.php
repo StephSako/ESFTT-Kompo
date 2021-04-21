@@ -8,8 +8,10 @@ use App\Form\BackOfficeCompetiteurCapitaineType;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\DivisionRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,23 +26,27 @@ class BackOfficeCompetiteurController extends AbstractController
     private $competiteurRepository;
     private $rencontreRepository;
     private $disponibiliteRepository;
+    private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      * @param DisponibiliteRepository $disponibiliteRepository
+     * @param DivisionRepository $divisionRepository
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 DisponibiliteRepository $disponibiliteRepository,
+                                DivisionRepository $divisionRepository,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->divisionRepository = $divisionRepository;
     }
 
     /**
@@ -117,9 +123,9 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions d'équipe ... **/
+                    /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions de chaque championnat ... **/
                     if ($competiteur->isVisitor()){
-                        for ($i = 0; $i < $this->getParameter('nb_max_joueurs'); $i++) {
+                        for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax(); $i++) {
                             $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                         }
 
@@ -208,13 +214,14 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
+     * @throws NonUniqueResultException
      */
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
 
             /** On set à NULL ses sélections dans les compositions d'équipe */
-            for ($i = 0; $i < $this->getParameter('nb_max_joueurs'); $i+=1) {
+            for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax(); $i+=1) {
                 $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
             }
 

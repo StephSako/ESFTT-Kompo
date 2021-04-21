@@ -33,7 +33,7 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
+                        {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipesBrulagePrint) }}
                     </div>
                 </li>
             </ul>
@@ -127,7 +127,7 @@
                 </div>
             </div>
             <div class="col s12 m3 hide-on-small-only">
-                {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipes) }}
+                {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipesBrulagePrint) }}
             </div>
         </div>
     {% else %}

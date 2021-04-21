@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -78,6 +79,8 @@ class Equipe
     private $idPoule;
 
     /**
+     * @var Collection
+     *
      * Liste des rencontres de l'équipe
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
      */
@@ -156,18 +159,18 @@ class Equipe
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getRencontres()
+    public function getRencontres(): Collection
     {
         return $this->rencontres;
     }
 
     /**
-     * @param mixed $rencontres
+     * @param Collection $rencontres
      * @return Equipe
      */
-    public function setRencontres($rencontres): self
+    public function setRencontres(Collection $rencontres): self
     {
         $this->rencontres = $rencontres;
         return $this;

@@ -73,9 +73,7 @@ class BackOfficeRencontreController extends AbstractController
                     return $this->render('backoffice/rencontre/edit.html.twig', [
                         'form' => $form->createView(),
                         'domicile' => $domicile,
-                        'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
-                        'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
-                        'idEquipe' => $rencontre->getIdEquipe()->getNumero()
+                        'rencontre' => $rencontre
                     ]);
                 }
             } else {
@@ -86,9 +84,7 @@ class BackOfficeRencontreController extends AbstractController
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'domicile' => $domicile,
-            'dateJournee' => $rencontre->getIdJournee()->getDateJournee(),
-            'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
-            'idEquipe' => $rencontre->getIdEquipe()->getNumero()
+            'rencontre' => $rencontre
         ]);
     }
 }

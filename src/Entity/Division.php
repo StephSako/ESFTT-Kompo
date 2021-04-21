@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -95,7 +96,7 @@ class Division
     private $nbJoueurs;
 
     /**
-     * @var Equipe[]
+     * @var Collection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idDivision")
      */
@@ -174,18 +175,18 @@ class Division
     }
 
     /**
-     * @return Equipe[]
+     * @return Collection
      */
-    public function getEquipes(): array
+    public function getEquipes(): Collection
     {
         return $this->equipes;
     }
 
     /**
-     * @param Equipe[] $equipes
+     * @param Collection $equipes
      * @return Division
      */
-    public function setEquipes(array $equipes): self
+    public function setEquipes(Collection $equipes): self
     {
         $this->equipes = $equipes;
         return $this;
