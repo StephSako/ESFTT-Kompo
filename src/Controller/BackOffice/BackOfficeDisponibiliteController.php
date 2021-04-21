@@ -64,15 +64,16 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param int $journee
      * @param int $type
      * @param int $dispo
-     * @param $idCompetiteur
+     * @param int $idCompetiteur
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, int $type, int $dispo, $idCompetiteur):Response
+    public function new(int $journee, int $type, int $dispo, int $idCompetiteur):Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistant', 500);
         if (!($championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
 
+        //TODO Optimize & test
         if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee, 'idChampionnat' => $type])) == 0) {
             if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
             $disponibilite = new Disponibilite($competiteur, $journee, $dispo, $championnat);
@@ -100,6 +101,8 @@ class BackOfficeDisponibiliteController extends AbstractController
         if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
 
+
+        //TODO Get by injection
         if (!($disposJoueur = $this->disponibiliteRepository->find($idDispo))) throw new Exception('Cette disponibilité est inexistante', 500);
         $disposJoueur->setDisponibilite($dispo);
 

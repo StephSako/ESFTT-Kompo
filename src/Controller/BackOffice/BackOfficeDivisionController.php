@@ -71,7 +71,7 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/division/edit.html.twig', [
+                    return $this->render('backoffice/division/new.html.twig', [
                         'form' => $form->createView()
                     ]);
                 }
@@ -112,9 +112,12 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/division/edit.html.twig', [
+                    return $this->render('backoffice/edit.html.twig', [
                         'division' => $division,
-                        'form' => $form->createView()
+                        'form' => $form->createView(),
+                        'title' => 'Modifier la division',
+                        'macro' => 'division',
+                        'textForm' => 'Modifier'
                     ]);
                 }
             } else {
@@ -122,9 +125,12 @@ class BackOfficeDivisionController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/division/edit.html.twig', [
+        return $this->render('backoffice/edit.html.twig', [
             'division' => $division,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'title' => 'Modifier la division',
+            'macro' => 'division',
+            'textForm' => 'Modifier'
         ]);
     }
 
@@ -142,7 +148,6 @@ class BackOfficeDivisionController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
 
             /** On vide les compositions des équipes affiliées à la division supprimée car une équipe sans division n'est pas editable **/
-            //TODO Optimize
             foreach ($division->getEquipes()->toArray() as $equipes){
                 foreach ($equipes->getRencontres() as $compo){
                     for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){

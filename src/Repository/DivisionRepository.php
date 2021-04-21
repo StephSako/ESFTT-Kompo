@@ -28,7 +28,7 @@ class DivisionRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('d')
             ->select('d.longName')
             ->addSelect('d.shortName')
-            ->addSelect('COUNT(e) as equipes')
+            ->addSelect('COUNT(e) as nbEquipes')
             ->addSelect('c.nom')
             ->addSelect('d.nbJoueurs')
             ->addSelect('d.idDivision')

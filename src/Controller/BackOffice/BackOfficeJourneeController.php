@@ -63,9 +63,11 @@ class BackOfficeJourneeController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/journee/edit.html.twig', [
+        return $this->render('backoffice/edit.html.twig', [
             'form' => $form->createView(),
-            'idJournee' => $idJournee
+            'title' => 'Modifier la journée',
+            'macro' => 'journee',
+            'textForm' => $idJournee
         ]);
     }
 }

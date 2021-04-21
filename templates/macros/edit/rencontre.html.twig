@@ -1,4 +1,4 @@
-{% macro rencontre(rencontre, form, domicile) %}
+{% macro edit(rencontre, form, domicile) %}
     <div class="card-panel center-align">
         <h4 class="hide-on-small-only titre">Journée {{ rencontre.idJournee.idJournee }} - Equipe {{ rencontre.idEquipe.numero }} - {{ rencontre.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h4>
 

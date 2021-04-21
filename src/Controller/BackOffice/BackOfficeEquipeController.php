@@ -131,9 +131,12 @@ class BackOfficeEquipeController extends AbstractController
                     } catch(Exception $e){
                         if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                        return $this->render('backoffice/equipe/edit.html.twig', [
+                        return $this->render('backoffice/edit.html.twig', [
                             'equipe' => $equipeForm,
-                            'form' => $form->createView()
+                            'form' => $form->createView(),
+                            'title' => 'Modifier l\'équipe',
+                            'macro' => 'equipe',
+                            'textForm' => 'Modifier'
                         ]);
                     }
                 }
@@ -146,9 +149,12 @@ class BackOfficeEquipeController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/equipe/edit.html.twig', [
+        return $this->render('backoffice/edit.html.twig', [
             'equipe' => $equipeForm,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'title' => 'Modifier l\'équipe',
+            'macro' => 'equipe',
+            'textForm' => 'Modifier'
         ]);
     }
 

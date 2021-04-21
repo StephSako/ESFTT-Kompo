@@ -59,7 +59,7 @@ class BackOfficeChampionnatController extends AbstractController
                         if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/championnat/edit.html.twig', [
+                    return $this->render('backoffice/championnat/new.html.twig', [
                         'form' => $form->createView()
                     ]);
                 }
@@ -98,9 +98,12 @@ class BackOfficeChampionnatController extends AbstractController
                         if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/championnat/edit.html.twig', [
+                    return $this->render('backoffice/edit.html.twig', [
                         'championnat' => $championnat,
-                        'form' => $form->createView()
+                        'form' => $form->createView(),
+                        'title' => 'Modifier le championnat',
+                        'macro' => 'championnat',
+                        'textForm' => 'Modifier'
                     ]);
                 }
             } else {
@@ -108,9 +111,12 @@ class BackOfficeChampionnatController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/championnat/edit.html.twig', [
+        return $this->render('backoffice/edit.html.twig', [
             'championnat' => $championnat,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'title' => 'Modifier le championnat',
+            'macro' => 'championnat',
+            'textForm' => 'Modifier'
         ]);
     }
 
