@@ -85,7 +85,7 @@ class BackOfficeDivisionController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit")
+     * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit", requirements={"idDivision"="\d+"})
      * @param int $idDivision
      * @param Request $request
      * @return Response
@@ -126,7 +126,7 @@ class BackOfficeDivisionController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/division/delete/{idDivision}", name="backoffice.division.delete", methods="DELETE")
+     * @Route("/backoffice/division/delete/{idDivision}", name="backoffice.division.delete", methods="DELETE", requirements={"idDivision"="\d+"})
      * @param int $idDivision
      * @param Request $request
      * @return Response
@@ -147,7 +147,7 @@ class BackOfficeDivisionController extends AbstractController
                 }
             }
 
-            /** On met la division des équipes affiliées à NULL **/
+            /** On set la division des équipes affiliées à NULL **/
             $this->equipeRepository->setDeletedDivisionToNull($idDivision);
 
             $this->em->remove($division);

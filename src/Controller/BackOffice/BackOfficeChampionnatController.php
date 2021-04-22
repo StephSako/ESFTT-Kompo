@@ -73,7 +73,7 @@ class BackOfficeChampionnatController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/championnat/edit/{idChampionnat}", name="backoffice.championnat.edit")
+     * @Route("/backoffice/championnat/edit/{idChampionnat}", name="backoffice.championnat.edit", requirements={"idChampionnat"="\d+"})
      * @param int $idChampionnat
      * @param Request $request
      * @return Response
@@ -113,7 +113,7 @@ class BackOfficeChampionnatController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/championnat/delete/{idChampionnat}", name="backoffice.championnat.delete", methods="DELETE")
+     * @Route("/backoffice/championnat/delete/{idChampionnat}", name="backoffice.championnat.delete", methods="DELETE", requirements={"idChampionnat"="\d+"})
      * @param int $idChampionnat
      * @param Request $request
      * @return Response

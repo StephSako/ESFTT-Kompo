@@ -40,7 +40,7 @@ class BackOfficeRencontreController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/rencontre/edit/{idRencontre}", name="backoffice.rencontre.edit")
+     * @Route("/backoffice/rencontre/edit/{idRencontre}", name="backoffice.rencontre.edit", requirements={"idRencontre"="\d+"})
      * @param int $idRencontre
      * @param Request $request
      * @return Response

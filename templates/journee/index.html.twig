@@ -210,7 +210,7 @@
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Modifier la compo', 'blue') }}
-                                    {{ _index.btnEmptyCompo(championnat.idChampionnat, compo.id, compo.idEquipe.idDivision.getNbJoueurs) }}<br>
+                                    {{ _index.btnEmptyCompo(compo.id) }}<br>
                                 {% endif %}
                             </div>
                         {% endif %}

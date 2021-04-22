@@ -47,6 +47,7 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
+     * //TOOD Changer sans prendre le championnat en paramètre
      * @Route("/backoffice/equipe/new/{type}", name="backoffice.equipe.new")
      * @param string $type
      * @param Request $request
@@ -101,7 +102,7 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/edit/{idEquipe}", name="backoffice.equipe.edit")
+     * @Route("/backoffice/equipe/edit/{idEquipe}", name="backoffice.equipe.edit", requirements={"idEquipe"="\d+"})
      * @param Equipe $equipeForm
      * @param int $idEquipe
      * @param Request $request
@@ -149,7 +150,7 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/delete/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE")
+     * @Route("/backoffice/equipe/delete/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE", requirements={"idEquipe"="\d+"})
      * @param int $idEquipe
      * @param Request $request
      * @return Response

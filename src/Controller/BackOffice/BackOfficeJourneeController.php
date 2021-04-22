@@ -40,13 +40,13 @@ class BackOfficeJourneeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit")
-     * @param $idJournee
+     * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit", requirements={"idJournee"="\d+"})
+     * @param int $idJournee
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editJournee($idJournee, Request $request): Response
+    public function editJournee(int $idJournee, Request $request): Response
     {
         if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
         $form = $this->createForm(JourneeType::class, $journee);

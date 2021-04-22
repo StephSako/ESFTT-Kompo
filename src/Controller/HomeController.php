@@ -77,7 +77,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/journee/{type}", name="index.type")
+     * @Route("/journee/{type}", name="index.type", requirements={"type"="\d+"})
      * @param int $type
      * @return Response
      * @throws Exception
@@ -102,7 +102,7 @@ class HomeController extends AbstractController
      * @param int $id
      * @return Response
      * @throws Exception
-     * @Route("/journee/{type}/{id}", name="journee.show")
+     * @Route("/journee/{type}/{id}", name="journee.show", requirements={"type"="\d+", "id"="\d+"})
      */
     public function journee(int $type, int $id): Response
     {
@@ -183,15 +183,15 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/{type}/edit/{compo}", name="composition.edit")
+     * @Route("/composition/{type}/edit/{compo}", name="composition.edit", requirements={"type"="\d+", "compo"="\d+"})
      * @param int $type
-     * @param $compo
+     * @param int $compo
      * @param Request $request
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function edit(int $type, $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
+    public function edit(int $type, int $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if (!($compo = $this->rencontreRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
@@ -245,32 +245,20 @@ class HomeController extends AbstractController
                     for ($i = 0; $i < $nbJoueursDivision; $i++) {
                         if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
                     }
+
                     $this->em->flush();
+                    $this->addFlash('success', 'Composition modifiée avec succès !');
+
+                    return $this->redirectToRoute('journee.show', [
+                        'type' => $type,
+                        'id' => $compo->getIdJournee()->getIdJournee()
+                    ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                     }
                     else $this->addFlash('fail', $e);
-
-                    return $this->render('journee/edit.html.twig', [
-                        'joueursBrules' => $joueursBrules,
-                        'journees' => $journees,
-                        'nbJoueursDivision' => $nbJoueursDivision,
-                        'brulageSelectionnables' => $brulageSelectionnables,
-                        'idEquipesBrulagePrint' => $idEquipesBrulagePrint,
-                        'compo' => $compo,
-                        'allChampionnats' => $allChampionnats,
-                        'championnat' => $championnat,
-                        'form' => $form->createView()
-                    ]);
                 }
-
-                $this->addFlash('success', 'Composition modifiée avec succès !');
-
-                return $this->redirectToRoute('journee.show', [
-                    'type' => $type,
-                    'id' => $compo->getIdJournee()->getIdJournee()
-                ]);
             }
         }
 
@@ -288,28 +276,23 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/empty/{type}/{idRencontre}/{fromTemplate}/{nbJoueurs}", name="composition.vider")
-     * @param int $type
-     * @param int $idRencontre
-     * @param bool $fromTemplate // Affiche le flash uniquement s'il est activé depuis le template journee/index.html.twig
-     * @param int $nbJoueurs
+     * @Route("/composition/empty/{idCompo}", name="composition.vider", requirements={"idCompo"="\d+"})
+     * @param int $idCompo
      * @return Response
      * @throws Exception
      */
-    public function emptyComposition(int $type, int $idRencontre, bool $fromTemplate, int $nbJoueurs) : Response
+    public function emptyComposition(int $idCompo) : Response
     {
-        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
-        if (!($compo = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
+        if (!($compo = $this->rencontreRepository->find($idCompo))) throw new Exception('Cette rencontre est inexistante', 500);
 
-        for ($i = 0; $i < $nbJoueurs; $i++){
+        for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
             $compo->setIdJoueurN($i, null);
         }
 
         $this->em->flush();
-        if ($fromTemplate) $this->addFlash('success', 'Composition vidée avec succès !');
-
+        $this->addFlash('success', 'Composition vidée avec succès !');
         return $this->redirectToRoute('journee.show', [
-            'type' => $type,
+            'type' => $compo->getIdChampionnat()->getIdChampionnat(),
             'id' => $compo->getIdJournee()->getIdJournee()
         ]);
     }

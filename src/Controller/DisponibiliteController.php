@@ -45,11 +45,11 @@ class DisponibiliteController extends AbstractController
      * @Route("/journee/disponibilite/new/{journee}/{type}/{dispo}", name="journee.disponibilite.new")
      * @param int $journee
      * @param int $type
-     * @param int $dispo
+     * @param bool $dispo
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, int $type, int $dispo):Response
+    public function new(int $journee, int $type, bool $dispo):Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         $competiteur = $this->getUser();

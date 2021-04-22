@@ -104,7 +104,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit")
+     * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
      * @param int $idCompetiteur
      * @param Request $request
      * @return Response
@@ -172,7 +172,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit")
+     * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
@@ -202,7 +202,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE")
+     * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
