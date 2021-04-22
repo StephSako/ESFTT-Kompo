@@ -21,14 +21,17 @@ class EquipeRepository extends ServiceEntityRepository
 
     /**
      * Equipes sans affiliation à une division
+     * @param int $idChampionnat
      * @return array
      */
-    public function getEquipesSansDivision(): array
+    public function getEquipesSansDivision(int $idChampionnat): array
     {
-        return array_column($this->createQueryBuilder('ed')
-            ->select('ed.numero')
-            ->where('ed.idDivision IS NULL')
-            ->orderBy('ed.numero')
+        return array_column($this->createQueryBuilder('e')
+            ->select('e.numero')
+            ->where('e.idDivision IS NULL')
+            ->andWhere('e.idChampionnat = :idChampionnat')
+            ->setParameter('idChampionnat', $idChampionnat)
+            ->orderBy('e.numero')
             ->getQuery()
             ->getResult(), 'numero');
     }

@@ -144,7 +144,7 @@ class HomeController extends AbstractController
         }, $compos));
 
         // Equipes sans divisions affiliées
-        $equipesSansDivision = $this->equipeRepository->getEquipesSansDivision();
+        $equipesSansDivision = $this->equipeRepository->getEquipesSansDivision($type);
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo){return $dispo->getDisponibilite();}));
 
@@ -162,6 +162,7 @@ class HomeController extends AbstractController
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
+            'idJournee' => array_search($journee, $journees)+1,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'nbTotalJoueurs' => $nbTotalJoueurs,
