@@ -5,9 +5,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -17,21 +17,21 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les championnats</h4>
         </div>
 
-        <div class="card-panel center">
+        <div class='card-panel center'>
 
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.championnat.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer un championnat</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.championnat.new') }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'>Créer un championnat</a>
 
             {% if championnats|length > 0 %}
-                <table class="striped centered responsive-table backoffice-table">
+                <table class='striped centered responsive-table backoffice-table'>
                     <thead>
                     <tr>
                         <th>Nom</th>
-                        <th class="hide-on-med-and-down">Nombre de journées</th>
-                        <th class="hide-on-large-only">Nb journées</th>
+                        <th class='hide-on-med-and-down'>Nombre de journées</th>
+                        <th class='hide-on-large-only'>Nb journées</th>
                         <th>Limite brûlage</th>
                         <th>Règle brûlage J2</th>
                         <th></th>
@@ -48,19 +48,19 @@
                             <td>{{ championnat.nbJournees }}</td>
                             <td>{{ championnat.limiteBrulage }}</td>
                             <td>
-                                {% if championnat.j2Rule %} <i class="material-icons green-text">check</i>
-                                {% else %} <i class="material-icons red-text">block</i>
+                                {% if championnat.j2Rule %} <i class='material-icons green-text'>check</i>
+                                {% else %} <i class='material-icons red-text'>block</i>
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ path('backoffice.championnat.edit', {idChampionnat: championnat.idChampionnat}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                                <a href='{{ path('backoffice.championnat.edit', {idChampionnat: championnat.idChampionnat}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                             </td>
                             <td>
-                                <form method="post" action="{{ path('backoffice.championnat.delete', {idChampionnat: championnat.idChampionnat}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer le championnat ?')">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ championnat.idChampionnat) }}">
-                                    <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                        <i class="material-icons">delete</i>
+                                <form method='post' action='{{ path('backoffice.championnat.delete', {idChampionnat: championnat.idChampionnat}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le championnat ?')">
+                                    <input type='hidden' name='_method' value='DELETE'>
+                                    <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ championnat.idChampionnat) }}'>
+                                    <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>
+                                        <i class='material-icons'>delete</i>
                                     </button>
                                 </form>
                             </td>
@@ -69,7 +69,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de championnats enregistrés.</p>
+                <p class='lobster_2' style='font-size: 20px;'>Il n'y a pas de championnats enregistrés.</p>
             {% endif %}
         </div>
     </div>

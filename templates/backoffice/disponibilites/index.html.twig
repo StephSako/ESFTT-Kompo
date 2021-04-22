@@ -6,9 +6,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -22,18 +22,18 @@
             {{ _flash.message(message, 'orange') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les disponibilités</h4>
         </div>
 
-        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+        <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
             {% for nomChampionnat, disponibilites_champ in disponibilites %}
-                <li class="tab"><a href="{{ '#disponibilites_' ~ nomChampionnat|slug }}" class="active">{{ nomChampionnat }}</a></li>
+                <li class='tab'><a href='{{ '#disponibilites_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
             {% endfor %}
         </ul>
 
         {% for nomChampionnat, disponibilites_champ in disponibilites %}
-            <div id="{{ 'disponibilites_' ~ nomChampionnat|slug }}" class="card-panel backoffice-panel">
+            <div id='{{ 'disponibilites_' ~ nomChampionnat|slug }}' class='card-panel backoffice-panel'>
                 {{ _disponibilites.backoffice(disponibilites_champ) }}
             </div>
         {% endfor %}

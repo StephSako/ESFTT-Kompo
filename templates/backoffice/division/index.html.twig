@@ -6,9 +6,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container center">
+    <div class='container center'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -18,23 +18,23 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les divisions</h4>
         </div>
 
-        <a style="margin-bottom: 20px;" href="{{ path('backoffice.division.new') }}"
-           class="btn waves-effect waves-light blue lighten-2 btn_gestion">
+        <a style='margin-bottom: 20px;' href='{{ path('backoffice.division.new') }}'
+           class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
             Créer une division
         </a>
 
-        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+        <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
             {% for nomChampionnat, divisions_champ in divisions %}
-                <li class="tab"><a href="{{ '#divisions_' ~ nomChampionnat|slug }}">{{ nomChampionnat }}</a></li>
+                <li class='tab'><a href='{{ '#divisions_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
             {% endfor %}
         </ul>
 
         {% for nomChampionnat, divisions_champ in divisions %}
-            <div class="card-panel backoffice-panel center" id="{{ 'divisions_' ~ nomChampionnat|slug }}">
+            <div class='card-panel backoffice-panel center' id='{{ 'divisions_' ~ nomChampionnat|slug }}'>
                 {{ _division.table(divisions_champ) }}
             </div>
         {% endfor %}

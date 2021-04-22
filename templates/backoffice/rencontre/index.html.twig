@@ -6,7 +6,7 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
     <div class="container">
 
@@ -18,18 +18,18 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les rencontres</h4>
         </div>
 
-        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+        <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
             {% for nomChampionnat, renc_equipes in rencontres %}
-                <li class="tab"><a href="{{ '#journees_' ~ nomChampionnat|slug }}">{{ nomChampionnat }}</a></li>
+                <li class='tab'><a href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
             {% endfor %}
         </ul>
 
         {% for nomChampionnat, renc_equipes in rencontres %}
-            <div class="card-panel backoffice-panel" id="{{ 'journees_' ~ nomChampionnat|slug }}">
+            <div class='card-panel backoffice-panel' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
                 {{ _rencontre.table(renc_equipes) }}
             </div>
         {% endfor %}

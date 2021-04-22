@@ -191,7 +191,6 @@ class RencontreRepository extends ServiceEntityRepository
     }
 
     /**
-     * // TODO Tester
      * Réinitialise les rencontres pour une nouvelle phase
      * @param int $nbJoueurs
      * @return int|mixed|string

@@ -66,7 +66,7 @@ class HomeController extends AbstractController
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
             $idJournee++;
         }
 
@@ -85,10 +85,9 @@ class HomeController extends AbstractController
     public function indexTypeAction(int $type): Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        $journees = $this->journeeRepository->findAllDates($type);
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
             $idJournee++;
         }
 

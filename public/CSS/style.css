@@ -565,7 +565,7 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
     margin-right: 80px;
   }
 }
-@media screen and (max-width: 1120px) {
+@media screen and (max-width: 1172px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
   }
@@ -582,7 +582,7 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
     display: block;
   }
 }
-@media screen and (max-width: 890px) {
+@media screen and (max-width: 885px) {
   .navbar-general .left_items {
     display: none;
   }
