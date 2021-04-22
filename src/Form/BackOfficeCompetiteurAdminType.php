@@ -81,19 +81,19 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 ]
             ])
             ->add('contactableMail', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable à l\'adresse mail n°1',
                 'required' => false
             ])
             ->add('contactableMail2', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable à l\'adresse mail n°2',
                 'required' => false
             ])
             ->add('contactablePhoneNumber', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable à ce numéro n°1',
                 'required' => false
             ])
             ->add('contactablePhoneNumber2', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable à ce numéro n°2',
                 'required' => false
             ])
             ->add('phoneNumber', TelType::class, [

@@ -70,8 +70,7 @@ class SecurityController extends AbstractController
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $user = $this->getUser();
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
-        else $form = $this->createForm(CompetiteurType::class, $user);
+        $form = $this->createForm(CompetiteurType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

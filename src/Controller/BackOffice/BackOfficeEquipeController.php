@@ -112,30 +112,31 @@ class BackOfficeEquipeController extends AbstractController
     public function edit(Equipe $equipeForm, int $idEquipe, Request $request): Response
     {
         if (!($equipe = $this->equipeRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-        $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
-
         $form = $this->createForm(EquipeType::class, $equipeForm);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
 
-                try {
-                    /** Désinscrire les joueurs superflus en cas de changement de division **/
-                    if ($equipeForm->getIdDivision() && $lastNbJoueursDivision > $equipeForm->getIdDivision()->getNbJoueurs()){
-                        foreach ($equipeForm->getRencontres()->toArray() as $rencontre){
-                            for ($i = $equipeForm->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
-                                $rencontre->setIdJoueurN($i, null);
+                if ($equipeForm->getIdDivision()){
+                    try {
+                        $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
+                        /** Désinscrire les joueurs superflus en cas de changement de division **/
+                        if ($equipeForm->getIdDivision() && $lastNbJoueursDivision > $equipeForm->getIdDivision()->getNbJoueurs()){
+                            foreach ($equipeForm->getRencontres()->toArray() as $rencontre){
+                                for ($i = $equipeForm->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
+                                    $rencontre->setIdJoueurN($i, null);
+                                }
                             }
                         }
-                    }
 
-                    $this->em->flush();
-                    $this->addFlash('success', 'Equipe modifiée avec succès !');
-                    return $this->redirectToRoute('backoffice.equipes');
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        $this->em->flush();
+                        $this->addFlash('success', 'Equipe modifiée avec succès !');
+                        return $this->redirectToRoute('backoffice.equipes');
+                    } catch(Exception $e){
+                        if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    }
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }

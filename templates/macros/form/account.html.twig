@@ -17,7 +17,7 @@
                     <span><i class="material-icons prefix">account_circle</i> Pseudo *</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
 
-                {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                     <div class="col s12 m4">
                         {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
                     </div>
@@ -30,7 +30,7 @@
                 {% endif %}
             </div>
 
-            {% if type == 'general' or (('ROLE_ADMIN' in app.token.roleNames or ('ROLE_CAPITAINE' in app.token.roleNames and options is not null and options.idActualUser == options.competiteurId)) and type == 'backoffice') %}
+            {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                 <div class="row section">
                     <h5>Contacts</h5>
 
@@ -71,7 +71,13 @@
                 <h5>Informations Ping</h5>
 
                 <div class="col s12 m6">
-                    <span><i class="material-icons prefix">payment</i> Licence</span>{{ form_row(form.licence) }}
+                    <span><i class="material-icons prefix">payment</i> Licence</span>
+                    {% if ('ROLE_ADMIN' in app.token.roleNames or 'ROLE_CAPITAINE' in app.token.roleNames) and type == 'backoffice' %}
+                        {{ form_row(form.licence) }}
+                    {% else %}
+                        <br><br>
+                        <b><span style="margin-top: 20px;">{{ options.licence }}</span></b>
+                    {% endif %}
                 </div>
                 <div class="col s12 m6">
                     <span><i class="material-icons prefix">trending_up</i> Classement (points officiels de la phase)</span>{{ form_row(form.classementOfficiel) }}

@@ -25,14 +25,13 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="margin-bottom: 0">
                 <div class="col s12">
                     <span>Règle de la J2 appliquée ?</span><br>
                     <div style="margin-top: 15px;">{{ form_row(form.j2Rule) }}</div>
                 </div>
             </div>
 
-            <br>
             <a href="{{ path('back_office.championnats') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
             <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
         {{ form_end(form) }}

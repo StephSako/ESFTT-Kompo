@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TEST{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class='card-panel center-align white-text title_journee'>
+            <h4>Vérifications des classements</h4>
+        </div>
+
+        <div class='card-panel center'>
+            <p><b>{{ message }}</b></p>
+
+            {% if joueursIssued|length %}
+
+                <table class="centered responsive-table">
+                    <thead>
+                    <tr>
+                        <th>Recensé</th>
+                        <th>Points valides</th>
+                        <th>Nom</th>
+                        <th>Licence</th>
+                        <th>Points sur Kompo</th>
+                        <th>Points FFTT</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for joueur in joueursIssued %}
+                            <tr>
+                                <td>
+                                    {% if joueur.recorded %}
+                                        <i class='green-text material-icons'>done</i>
+                                    {% else %}
+                                        <i class='red-text material-icons'>clear</i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if not joueur.hasSamePoints %}
+                                        <i class='green-text material-icons'>done</i>
+                                    {% else %}
+                                        <i class='red-text material-icons'>clear</i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="chip">
+                                        {% if joueur.joueur.avatar %}
+                                            <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') }}" alt="Avatar">
+                                        {% else %}
+                                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                                        {% endif %}
+                                        <span>{{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ joueur.joueur.licence }}</td>
+                                <td>
+                                    {% if joueur.hasSamePoints %}
+                                        <span class="red-text"><b>{{ joueur.joueur.classementOfficiel }}</b></span>
+                                    {% else %}
+                                        {{ joueur.joueur.classementOfficiel }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if joueur.hasSamePoints %}
+                                        <span class="red-text"><b>{{ joueur.pointsFFTT }}</b></span>
+                                    {% else %}
+                                        {{ joueur.pointsFFTT }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
