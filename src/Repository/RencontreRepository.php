@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Rencontre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -212,5 +213,23 @@ class RencontreRepository extends ServiceEntityRepository
             ->leftJoin('r.idJournee', 'j')
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * Retourne le nombre maximal de joueurs d'une journée
+     * @param int $idJournee
+     * @return array
+     * @throws NonUniqueResultException
+     */
+    public function getNbJoueursMaxJournee(int $idJournee): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('MAX(d.nbJoueurs) as nbMaxJoueurs')
+            ->leftJoin('r.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
+            ->where('r.idJournee = :idJournee')
+            ->setParameter('idJournee', $idJournee)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -50,6 +50,7 @@ class DivisionRepository extends ServiceEntityRepository
     }
 
     /**
+     * Retourne le nombre maximal de joueurs de toutes les divisions
      * @return array
      * @throws NonUniqueResultException
      */

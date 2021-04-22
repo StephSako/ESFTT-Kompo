@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Disponibilite;
-use App\Repository\ChampionnatRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
@@ -19,26 +18,22 @@ class DisponibiliteController extends AbstractController
     private $journeeRepository;
     private $disponibiliteRepository;
     private $rencontreRepository;
-    private $championnatRepository;
 
     /**
      * @param EntityManagerInterface $em
      * @param JourneeRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
-     * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
                                 JourneeRepository $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->rencontreRepository = $rencontreRepository;
-        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -51,12 +46,10 @@ class DisponibiliteController extends AbstractController
      */
     public function new(int $journee, int $type, bool $dispo):Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-        $competiteur = $this->getUser();
-
         if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
-        if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee])) == 0) {
-            $disponibilite = new Disponibilite($competiteur, $journee, $dispo, $championnat);
+
+        if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser(), 'idJournee' => $journee])) == 0) {
+            $disponibilite = new Disponibilite($this->getUser(), $journee, $dispo, $journee->getIdChampionnat());
 
             $this->em->persist($disponibilite);
             $this->em->flush();
@@ -65,39 +58,40 @@ class DisponibiliteController extends AbstractController
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $type,
+                'type' => $journee->getIdChampionnat()->getIdChampionnat(),
                 'id' => $journee->getIdJournee()
             ]
         );
     }
 
     /**
-     * @Route("/journee/disponibilite/update/{type}/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
-     * @param int $type
+     * @Route("/journee/disponibilite/update/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param int $dispoJoueur
      * @param bool $dispo
      * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function update(int $type, int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if (!$this->championnatRepository->find($type)) throw new Exception('Ce championnat est inexistant', 500);
-        if (!($disposJoueur = $this->disponibiliteRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
+        if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
 
-        $disposJoueur->setDisponibilite($dispo);
-        $journee = $disposJoueur->getIdJournee()->getIdJournee();
+        $dispoJoueur->setDisponibilite($dispo);
+        $journee = $dispoJoueur->getIdJournee()->getIdJournee();
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-        //TODO
-        if (!$dispo) $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $this->getParameter('nb_max_joueurs'), $type), $this->getParameter('nb_max_joueurs'));
+        //TODO Faire à la main sans requête
+        if (!$dispo){
+            $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
+            $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+        }
 
         $this->em->flush();
         $this->addFlash('success', 'Disponibilité modifiée avec succès !');
 
         return $this->redirectToRoute('journee.show',
             [
-                'type' => $type,
+                'type' => $dispoJoueur->getIdChampionnat()->getIdChampionnat(),
                 'id' => $journee
             ]
         );
