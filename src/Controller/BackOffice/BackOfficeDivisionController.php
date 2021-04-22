@@ -71,17 +71,16 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/division/new.html.twig', [
-                        'form' => $form->createView()
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
-        return $this->render('backoffice/division/new.html.twig', [
-            'form' => $form->createView()
+        return $this->render('backoffice/new.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'divisions',
+            'macro' => 'division'
         ]);
     }
 
@@ -111,14 +110,6 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                     }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/edit.html.twig', [
-                        'division' => $division,
-                        'form' => $form->createView(),
-                        'title' => 'Modifier la division',
-                        'macro' => 'division',
-                        'textForm' => 'Modifier'
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');

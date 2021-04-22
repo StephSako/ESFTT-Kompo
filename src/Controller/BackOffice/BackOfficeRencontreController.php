@@ -70,11 +70,6 @@ class BackOfficeRencontreController extends AbstractController
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/rencontre/edit.html.twig', [
-                        'form' => $form->createView(),
-                        'domicile' => $domicile,
-                        'rencontre' => $rencontre
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');

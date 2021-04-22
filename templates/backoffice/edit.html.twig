@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/' ~ macro ~ '.html.twig' as macro %}
+{% import 'macros/form/' ~ macro ~ '.html.twig' as macro %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
 
-    {% include("components/navbar_backoffice.html.twig") %}
+    {% include('components/navbar_backoffice.html.twig') %}
 
     <div class="container">
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ macro.edit(form, textForm) }}
+        {{ macro.form(form, textForm) }}
     </div>
 
 {% endblock %}

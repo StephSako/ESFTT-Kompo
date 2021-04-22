@@ -154,14 +154,6 @@ class BackOfficeCompetiteurController extends AbstractController
                         if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('account/edit.html.twig', [
-                        'type' => 'backoffice',
-                        'urlImage' => $competiteur->getAvatar(),
-                        'path' => 'backoffice.password.edit',
-                        'competiteur' => $competiteur,
-                        'idActualUser' => $this->getUser()->getIdCompetiteur(),
-                        'form' => $form->createView()
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');

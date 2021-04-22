@@ -59,17 +59,16 @@ class BackOfficeChampionnatController extends AbstractController
                         if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/championnat/new.html.twig', [
-                        'form' => $form->createView()
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
-        return $this->render('backoffice/championnat/new.html.twig', [
-            'form' => $form->createView()
+        return $this->render('backoffice/new.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'championnats',
+            'macro' => 'championnat'
         ]);
     }
 
@@ -98,13 +97,6 @@ class BackOfficeChampionnatController extends AbstractController
                         if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/edit.html.twig', [
-                        'championnat' => $championnat,
-                        'form' => $form->createView(),
-                        'title' => 'Modifier le championnat',
-                        'macro' => 'championnat',
-                        'textForm' => 'Modifier'
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');

@@ -80,24 +80,23 @@ class BackOfficeEquipeController extends AbstractController
                             ->setExempt(false);
                         $this->em->persist($rencontre);
                     }
-                    $this->em->flush();
 
+                    $this->em->flush();
                     $this->addFlash('success', 'Equipe créée avec succès !');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/equipe/new.html.twig', [
-                        'form' => $form->createView()
-                    ]);
                 }
             } else {
                 $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
-        return $this->render('backoffice/equipe/new.html.twig', [
-            'form' => $form->createView()
+        return $this->render('backoffice/new.html.twig', [
+            'form' => $form->createView(),
+            'title' => 'équipes',
+            'macro' => 'equipe'
         ]);
     }
 
@@ -120,33 +119,24 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
 
-                /** Désinscrire les joueurs superflus en cas de changement de division **/
-                if ($equipeForm->getIdDivision() && $lastNbJoueursDivision > $equipeForm->getIdDivision()->getNbJoueurs()){
-                    try {
+                try {
+                    /** Désinscrire les joueurs superflus en cas de changement de division **/
+                    if ($equipeForm->getIdDivision() && $lastNbJoueursDivision > $equipeForm->getIdDivision()->getNbJoueurs()){
                         foreach ($equipeForm->getRencontres()->toArray() as $rencontre){
                             for ($i = $equipeForm->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
                                 $rencontre->setIdJoueurN($i, null);
                             }
                         }
-                    } catch(Exception $e){
-                        if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                        return $this->render('backoffice/edit.html.twig', [
-                            'equipe' => $equipeForm,
-                            'form' => $form->createView(),
-                            'title' => 'Modifier l\'équipe',
-                            'macro' => 'equipe',
-                            'textForm' => 'Modifier'
-                        ]);
                     }
-                }
 
-                $this->em->flush();
-                $this->addFlash('success', 'Equipe modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.equipes');
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+                    $this->em->flush();
+                    $this->addFlash('success', 'Equipe modifiée avec succès !');
+                    return $this->redirectToRoute('backoffice.equipes');
+                } catch(Exception $e){
+                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
+                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/edit.html.twig', [

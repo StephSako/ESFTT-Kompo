@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/equipe.html.twig' as _equipe %}
+{% import 'macros/form/' ~ macro ~ '.html.twig' as macro %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
-{% block title %}Back-office - Les équipes{% endblock %}
+{% block title %}Back-office - {{ title }}{% endblock %}
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
     <div class="container">
         {% for message in app.flashes('fail') %}
@@ -15,7 +16,7 @@
 
         {{ form_errors(form) }}
 
-        {{ _equipe.equipe(form, 'Créer') }}
+        {{ macro.form(form, 'Créer') }}
     </div>
 
 {% endblock %}

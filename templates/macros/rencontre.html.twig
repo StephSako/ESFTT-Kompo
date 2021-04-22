@@ -33,7 +33,9 @@
                             <tbody>
                             {% for rencontre in matches %}
                                 <tr>
-                                    <td>{{ rencontre.idJournee }}</td>
+                                    <td>
+                                        <b>{{ rencontre.idJournee }}</b>
+                                    </td>
                                     <td>
                                         {% if rencontre.undefined %}
                                             <span class="red-text">Date indéfinie</span>
