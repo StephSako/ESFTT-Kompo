@@ -4,12 +4,13 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="container fftt_api_manager">
         <div class='card-panel center-align white-text title_journee'>
             <h4>Vérifications des classements</h4>
         </div>
 
         <div class='card-panel center'>
+            <h4>Les compétiteurs</h4>
             <p><b>{{ message }}</b></p>
 
             {% if joueursIssued|length %}
@@ -21,7 +22,7 @@
                         <th>Points valides</th>
                         <th>Nom</th>
                         <th>Licence</th>
-                        <th>Points sur Kompo</th>
+                        <th>Points Kompo</th>
                         <th>Points FFTT</th>
                     </tr>
                     </thead>
@@ -72,6 +73,58 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            {% endif %}
+        </div>
+
+        <div class="card-panel center">
+            <h4>Les équipes - Départemental</h4>
+        </div>
+
+        <div class="card-panel center">
+            <h4>Les rencontres - Départemental</h4>
+
+            {#  #}{% if rencontresParEquipesSorted|length > 0 %}
+                {% for equipe, rencontres in rencontresParEquipesSorted %}
+                    <ul class="collapsible backoffice_disponibilites">
+                        <li>
+                            <div class="collapsible-header">
+                                <div class="chip">
+                                    <i class="material-icons" style="vertical-align: middle;">people</i>
+                                    {{ equipe }}
+                                </div>
+                                <i class="caret material-icons">keyboard_arrow_down</i>
+                            </div>
+                            <div class="collapsible-body">
+
+                                <table class="striped centered responsive-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Journée</th>
+                                        <th>Adversaire Kompo</th>
+                                        <th>Adversaire FFTT</th>
+                                        <th>Domicile Kompo</th>
+                                        <th>Domicile FFTT</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for rencontre in rencontres %}
+                                        <tr>
+                                            <td><b>{{ rencontre.journee }}</b></td>
+                                            <td {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text" {% endif %}>{{ rencontre.adversaireKompo }}</td>
+                                            <td {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text" {% endif %}>{{ rencontre.adversaireFFTT }}</td>
+                                            <td {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileKompo ? 'Oui' : 'Non' }}</td>
+                                            <td {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileFFTT ? 'Oui' : 'Non' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                    </ul>
+                {% endfor %}
+            {% else %}
+                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de rencontres incorrectes.</p>
             {% endif %}
         </div>
     </div>

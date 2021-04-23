@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\CompetiteurRepository;
+use App\Repository\RencontreRepository;
+use Cocur\Slugify\Slugify;
 use Exception;
 use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,13 +15,16 @@ class FFTTApiController extends AbstractController
 {
 
     private $competiteurRepository;
+    private $rencontreRepository;
 
     /**
      * ContactController constructor.
      */
-    public function __construct(CompetiteurRepository $competiteurRepository)
+    public function __construct(CompetiteurRepository $competiteurRepository,
+                                RencontreRepository $rencontreRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
+        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
@@ -29,10 +34,12 @@ class FFTTApiController extends AbstractController
     public function index(): Response
     {
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $message = '';
+
+        /** Gestion des joueurs */
         $joueursKompo = $this->competiteurRepository->findBy(['visitor' => 0]);
         $joueursFFTT = $api->getJoueursByClub('08951331');
         $joueursIssued = [];
-        $message = '';
 
         foreach ($joueursKompo as $competiteur){
             $joueurFFTT = array_filter($joueursFFTT,
@@ -59,10 +66,57 @@ class FFTTApiController extends AbstractController
         if (!count($joueursIssued)) $message = 'Tous les joueurs sont recensés et à jour.';
         else if (count($joueursIssued) < count($joueursKompo)) $message = count($joueursIssued) . ' joueurs doivent être mis à jour :';
 
-        // dump($api->getEquipesByClub('08951331'));
+        /** Gestion des équipes */
+        /*
+         * $libele = explode(' ', $rencontre->getLibelle());
+            $poule = $libele[];
+         */
+
+        /** Gestion des rencontres */
+        $rencontresKompo = $this->rencontreRepository->getOrderedRencontres()['Départemental'];
+        $equipesFFTT = $api->getEquipesByClub('08951331', 'M');
+        $rencontresParEquipes = [];
+
+        $nbEquipe = 0;
+        foreach ($equipesFFTT as $equipe){
+            $nbRencontre = 0;
+            $rencontresEquipeKompo = array_values(array_values($rencontresKompo)[$nbEquipe]);
+            $rencontresFFTT = $api->getRencontrePouleByLienDivision($equipe->getLienDivision());
+
+            foreach ($rencontresFFTT as $rencontre){
+                if (str_contains($rencontre->getLien(), 'LA+FRETTE')){
+                    if ($rencontresEquipeKompo[$nbRencontre]['adversaire'] != null && $rencontresEquipeKompo[$nbRencontre]['exempt'] == false && ($rencontre->getNomEquipeA() != 'Exempt' || $rencontre->getNomEquipeB() != 'Exempt')){
+                        $domicile = str_contains($rencontre->getNomEquipeA(), 'LA FRETTE');
+                        if (($domicile && (new Slugify())->slugify($rencontresEquipeKompo[$nbRencontre]['adversaire']) != (new Slugify())->slugify($rencontre->getNomEquipeB())) ||
+                            (!$domicile && (new Slugify())->slugify($rencontresEquipeKompo[$nbRencontre]['adversaire']) != (new Slugify())->slugify($rencontre->getNomEquipeA())) ||
+                            ($domicile != $rencontresEquipeKompo[$nbRencontre]['domicile']) )
+                        {
+                            $rencontreTemp = [];
+                            $rencontreTemp['equipeESFTT'] = ($domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB());
+                            $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
+                            $rencontreTemp['adversaireFFTT'] = ucwords(strtolower($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA()));
+                            $rencontreTemp['adversaireKompo'] = $rencontresEquipeKompo[$nbRencontre]['adversaire'];
+                            $rencontreTemp['domicileFFTT'] = $domicile;
+                            $rencontreTemp['domicileKompo'] = $rencontresEquipeKompo[$nbRencontre]['domicile'];
+                            array_push($rencontresParEquipes, $rencontreTemp);
+                        }
+                    }
+                    $nbRencontre++;
+                }
+            }
+            $nbEquipe++;
+        }
+
+        $rencontresParEquipesSorted = [];
+        foreach ($rencontresParEquipes as $key => $item) {
+            $rencontresParEquipesSorted[ucwords(strtolower($item['equipeESFTT']))][$key] = $item;
+        }
+
         return $this->render('TEST.html.twig', [
             'message' => $message,
-            'joueursIssued' => $joueursIssued
+            'joueursIssued' => $joueursIssued,
+            'rencontresParEquipesSorted' => $rencontresParEquipesSorted
         ]);
     }
+
 }
