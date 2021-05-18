@@ -5,7 +5,6 @@ namespace App\Controller\BackOffice;
 use App\Entity\Competiteur;
 use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\BackOfficeCompetiteurCapitaineType;
-use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
@@ -60,6 +59,16 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
     }
 
+    private function throwExceptionBOAccount(Exception $e, Competiteur $competiteur){
+        if ($e->getPrevious()->getCode() == "23000"){
+            if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
+            if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+            if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
+            if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+        }
+        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+    }
+
     /**
      * @Route("/backoffice/competiteur/new", name="backoffice.competiteur.new")
      * @param Request $request
@@ -82,13 +91,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->addFlash('success', 'Compétiteur créé avec succès !');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
-                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
-                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    $this->throwExceptionBOAccount($e);
                     return $this->render('backoffice/competiteur/new.html.twig', [
                         'form' => $form->createView()
                     ]);
@@ -122,7 +125,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 try {
                     /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions de chaque championnat ... **/
                     if ($competiteur->isVisitor()){
-                        for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax(); $i++) {
+                        for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
                             $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                         }
 
@@ -143,27 +146,16 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->flush();
                     $this->addFlash('success', 'Compétiteur modifié avec succès !');
                     return $this->redirectToRoute('backoffice.competiteurs');
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
-                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
-                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+                } catch(Exception $e){ $this->throwExceptionBOAccount($e); }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
-        //TODO URL_IMAGE ?
         return $this->render('account/edit.html.twig', [
             'type' => 'backoffice',
             'urlImage' => $competiteur->getAvatar(),
             'path' => 'backoffice.password.edit',
-            'competiteur' => $competiteur,
-            'idActualUser' => $this->getUser()->getIdCompetiteur(),
+            'competiteurId' => $idCompetiteur,
+            'competiteurIsVisitor' => $competiteur->isVisitor(),
             'form' => $form->createView()
         ]);
     }
