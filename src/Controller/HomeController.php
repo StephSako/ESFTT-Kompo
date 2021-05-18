@@ -107,10 +107,10 @@ class HomeController extends AbstractController
     public function journee(int $type, int $id): Response
     {
         if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
-
-        // Toutes les journées du championnat
         $journees = $championnat->getJournees()->toArray();
-        if ((!$journee = array_values(array_filter($journees, function($journee) use ($id) { return ($journee->getIdJournee() == $id ? $journee : null); }))[0])) throw new Exception('Cette journée est inexistante', 500);
+
+        if (!in_array($id, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))) throw new Exception('Cette journée est inexistante', 500);
+        $journee = array_values(array_filter($journees, function($journee) use ($id) { return ($journee->getIdJournee() == $id ? $journee : null); }))[0];
 
         $this->get('session')->set('type', $type);
 
