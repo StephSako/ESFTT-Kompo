@@ -69,6 +69,9 @@ class EquipeRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /**
+     * @return array
+     */
     public function getAllEquipes(): array
     {
         $query = $this->createQueryBuilder('e')
@@ -90,5 +93,21 @@ class EquipeRepository extends ServiceEntityRepository
             $querySorted[$item['nom']][$key] = $item;
         }
         return $querySorted;
+    }
+
+    /**
+     * @param string $nomChampionnat
+     * @return array
+     */
+    public function getEquipesDepartementalesApiFFTT(string $nomChampionnat): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->leftJoin('e.idChampionnat', 'c')
+            ->where('c.nom = :nomChampionnat')
+            ->setParameter('nomChampionnat', $nomChampionnat)
+            ->orderBy('e.numero')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -75,8 +75,8 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    $competiteur->setNom(strtoupper($competiteur->getNom()));
-                    $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
+                    $competiteur->setNom(mb_convert_case($competiteur->getNom(), MB_CASE_UPPER, "UTF-8"));
+                    $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->persist($competiteur);
                     $this->em->flush();
                     $this->addFlash('success', 'Compétiteur créé avec succès !');
@@ -138,8 +138,8 @@ class BackOfficeCompetiteurController extends AbstractController
                         $competiteur->setIsCapitaine(false);
                         $competiteur->setIsAdmin(false);
                     }
-                    $competiteur->setNom(strtoupper($competiteur->getNom()));
-                    $competiteur->setPrenom(ucwords(strtolower($competiteur->getPrenom())));
+                    $competiteur->setNom(mb_convert_case($competiteur->getNom(), MB_CASE_UPPER, "UTF-8"));
+                    $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->flush();
                     $this->addFlash('success', 'Compétiteur modifié avec succès !');
                     return $this->redirectToRoute('backoffice.competiteurs');

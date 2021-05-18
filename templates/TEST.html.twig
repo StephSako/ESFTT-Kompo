@@ -6,7 +6,7 @@
 
     <div class="container fftt_api_manager">
         <div class='card-panel center-align white-text title_journee'>
-            <h4>Vérifications des classements</h4>
+            <h3 style="margin-bottom: 15px; margin-top: 15px;">Vérifications des données</h3>
         </div>
 
         <div class='card-panel center'>
@@ -78,12 +78,40 @@
 
         <div class="card-panel center">
             <h4>Les équipes - Départemental</h4>
+
+            {% if equipesIssued|length > 0 %}
+                    <table class="striped centered responsive-table">
+                        <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Division Kompo</th>
+                            <th>Division FFTT</th>
+                            <th>Poule Kompo</th>
+                            <th>Poule FFTT</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for numero, equipe in equipesIssued %}
+                                <tr>
+                                    <td><b>{{ equipe.numeroKompo }}</b></td>
+                                    <td {% if equipe.divisionKompo != equipe.divisionFFTT %}class="red-text" {% endif %}>{{ equipe.divisionKompo }}</td>
+                                    <td {% if equipe.divisionKompo != equipe.divisionFFTT %}class="red-text" {% endif %}>{{ equipe.divisionFFTT }}</td>
+                                    <td {% if equipe.pouleKompo != equipe.pouleFFTT %}class="red-text" {% endif %}>{{ equipe.pouleKompo }}</td>
+                                    <td {% if equipe.pouleKompo != equipe.pouleFFTT %}class="red-text" {% endif %}>{{ equipe.pouleFFTT }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            {% else %}
+                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas d'équipes incorrectes.</p>
+            {% endif %}
         </div>
 
         <div class="card-panel center">
             <h4>Les rencontres - Départemental</h4>
 
-            {#  #}{% if rencontresParEquipesSorted|length > 0 %}
+            {% if rencontresParEquipesSorted|length > 0 %}
                 {% for equipe, rencontres in rencontresParEquipesSorted %}
                     <ul class="collapsible backoffice_disponibilites">
                         <li>

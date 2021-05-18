@@ -76,8 +76,8 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    $user->setNom(strtoupper($user->getNom()));
-                    $user->setPrenom(ucwords(strtolower($user->getPrenom())));
+                    $user->setNom(mb_convert_case($user->getNom(), MB_CASE_UPPER, "UTF-8"));
+                    $user->setPrenom(mb_convert_case($user->getPrenom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->flush();
                     $this->addFlash('success', 'Informations modifiées !');
                     return $this->redirectToRoute('account');

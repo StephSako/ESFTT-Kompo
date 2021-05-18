@@ -49,7 +49,7 @@ class BackOfficeChampionnatController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    $championnat->setNom(ucwords(strtolower($championnat->getNom())));
+                    $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->persist($championnat);
                     $this->em->flush();
                     $this->addFlash('success', 'Championnat créé avec succès !');
@@ -88,7 +88,7 @@ class BackOfficeChampionnatController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $championnat->setNom(ucwords(strtolower($championnat->getNom())));
+                    $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->flush();
                     $this->addFlash('success', 'Championnat modifié avec succès !');
                     return $this->redirectToRoute('back_office.championnats');

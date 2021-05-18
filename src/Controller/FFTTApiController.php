@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CompetiteurRepository;
+use App\Repository\EquipeRepository;
 use App\Repository\RencontreRepository;
 use Cocur\Slugify\Slugify;
 use Exception;
@@ -16,15 +17,18 @@ class FFTTApiController extends AbstractController
 
     private $competiteurRepository;
     private $rencontreRepository;
+    private $equipeRepository;
 
     /**
      * ContactController constructor.
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
-                                RencontreRepository $rencontreRepository)
+                                RencontreRepository $rencontreRepository,
+                                EquipeRepository $equipeRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->rencontreRepository = $rencontreRepository;
+        $this->equipeRepository = $equipeRepository;
     }
 
     /**
@@ -67,14 +71,60 @@ class FFTTApiController extends AbstractController
         else if (count($joueursIssued) < count($joueursKompo)) $message = count($joueursIssued) . ' joueurs doivent être mis à jour :';
 
         /** Gestion des équipes */
-        /*
-         * $libele = explode(' ', $rencontre->getLibelle());
-            $poule = $libele[];
-         */
+        $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental');
+        $equipesFFTT = $api->getEquipesByClub('08951331', 'M');
+        $equipesIssued = [];
+
+        $equipesIDsFFTT = array_map(function ($equipe) {
+            return intval(explode(' ', $equipe->getLibelle())[2]);
+        }, $api->getEquipesByClub('08951331', 'M'));
+
+        $equipesIDsKompo = array_map(function ($equipe) {
+            return $equipe->getNumero();
+        }, $equipesKompo);
+
+        $idEquipesUnrecorded = array_merge(array_diff($equipesIDsFFTT, $equipesIDsKompo), array_diff($equipesIDsKompo, $equipesIDsFFTT));
+
+        /** TODO On vérifie que les équipes Kompo sont recensées ??? */
+
+        foreach ($equipesFFTT as $equipe) {
+            $idEquipeFFTT = intval(explode(' ', $equipe->getLibelle())[2]);
+            $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
+            $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
+            $divisionEquipeFFTT = (new Slugify())->slugify($libelleDivisionEquipeFFTT[0] . ' ' . $libelleDivisionEquipeFFTT[1]);
+            $equipeIssued = [];
+            /** On vérifie que l'équipe FFTT est recensée */
+            if (in_array($idEquipeFFTT, $idEquipesUnrecorded)){
+                $equipeIssued['numeroKompo'] = null;
+                $equipeIssued['divisionFFTT'] = $divisionEquipeFFTT;
+                $equipeIssued['divisionKompo'] = null;
+                $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
+                $equipeIssued['pouleKompo'] = null;
+                array_push($equipesIssued, $equipeIssued);
+            }
+            else {
+                $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($idEquipeFFTT) {
+                    return $equipe->getNumero() == $idEquipeFFTT;
+                }))[0];
+
+                if ((new Slugify())->slugify($equipeKompo->getIdDivision()->getLongName()) != $divisionEquipeFFTT ||
+                    $equipeKompo->getIdPoule()->getPoule() != mb_strtoupper($pouleEquipeFFTT)){
+                    $equipeIssued['numeroKompo'] = $equipeKompo->getNumero();
+                    $equipeIssued['divisionFFTT'] = $divisionEquipeFFTT;
+                    $equipeIssued['divisionKompo'] = (new Slugify())->slugify($equipeKompo->getIdDivision()->getLongName());
+                    $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
+                    $equipeIssued['pouleKompo'] = $equipeKompo->getIdPoule()->getPoule();
+                    array_push($equipesIssued, $equipeIssued);
+                }
+            }
+        }
+        //TODO Changer partout dans le projet
+        /*dump(mb_convert_case('écarté', MB_CASE_TITLE, "UTF-8"));
+        dump(mb_convert_case('écarté', MB_CASE_UPPER, "UTF-8"));
+        dump(mb_convert_case('écarté', MB_CASE_LOWER, "UTF-8"));*/
 
         /** Gestion des rencontres */
         $rencontresKompo = $this->rencontreRepository->getOrderedRencontres()['Départemental'];
-        $equipesFFTT = $api->getEquipesByClub('08951331', 'M');
         $rencontresParEquipes = [];
 
         $nbEquipe = 0;
@@ -94,7 +144,7 @@ class FFTTApiController extends AbstractController
                             $rencontreTemp = [];
                             $rencontreTemp['equipeESFTT'] = ($domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB());
                             $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
-                            $rencontreTemp['adversaireFFTT'] = ucwords(strtolower($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA()));
+                            $rencontreTemp['adversaireFFTT'] = mb_convert_case($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8");
                             $rencontreTemp['adversaireKompo'] = $rencontresEquipeKompo[$nbRencontre]['adversaire'];
                             $rencontreTemp['domicileFFTT'] = $domicile;
                             $rencontreTemp['domicileKompo'] = $rencontresEquipeKompo[$nbRencontre]['domicile'];
@@ -109,12 +159,13 @@ class FFTTApiController extends AbstractController
 
         $rencontresParEquipesSorted = [];
         foreach ($rencontresParEquipes as $key => $item) {
-            $rencontresParEquipesSorted[ucwords(strtolower($item['equipeESFTT']))][$key] = $item;
+            $rencontresParEquipesSorted[mb_convert_case($item['equipeESFTT'], MB_CASE_TITLE, "UTF-8")][$key] = $item;
         }
 
         return $this->render('TEST.html.twig', [
             'message' => $message,
             'joueursIssued' => $joueursIssued,
+            'equipesIssued' => $equipesIssued,
             'rencontresParEquipesSorted' => $rencontresParEquipesSorted
         ]);
     }

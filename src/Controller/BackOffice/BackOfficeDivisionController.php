@@ -59,8 +59,8 @@ class BackOfficeDivisionController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    $division->setLongName(ucwords(strtolower($division->getLongName())));
-                    $division->setShortName(strtoupper($division->getShortName()));
+                    $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
+                    $division->setShortName(mb_convert_case($division->getShortName(), MB_CASE_UPPER, "UTF-8"));
                     $this->em->persist($division);
                     $this->em->flush();
                     $this->addFlash('success', 'Division créée avec succès !');
@@ -100,8 +100,8 @@ class BackOfficeDivisionController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $division->setLongName(ucwords(strtolower($division->getLongName())));
-                    $division->setShortName(strtoupper($division->getShortName()));
+                    $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
+                    $division->setShortName(mb_convert_case($division->getShortName(), MB_CASE_UPPER, "UTF-8"));
                     $this->em->flush();
                     $this->addFlash('success', 'Division modifiée avec succès !');
                     return $this->redirectToRoute('backoffice.divisions');

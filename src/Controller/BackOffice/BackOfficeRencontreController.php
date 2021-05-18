@@ -63,7 +63,7 @@ class BackOfficeRencontreController extends AbstractController
                     /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
                     if (!$rencontre->isReporte()) $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
 
-                    $rencontre->setAdversaire(ucwords(strtolower($rencontre->getAdversaire())));
+                    $rencontre->setAdversaire(mb_convert_case($rencontre->getAdversaire(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->flush();
                     $this->addFlash('success', 'Rencontre modifiée avec succès !');
                     return $this->redirectToRoute('backoffice.rencontres');
