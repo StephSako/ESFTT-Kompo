@@ -3,8 +3,10 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Championnat;
+use App\Entity\Journee;
 use App\Form\ChampionnatType;
 use App\Repository\ChampionnatRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,6 +53,16 @@ class BackOfficeChampionnatController extends AbstractController
                 try {
                     $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->persist($championnat);
+
+                    /** On créé les n journées du championnat */
+                    for ($i = 0; $i < $championnat->getNbJournees(); $i++) {
+                        $journee = new Journee();
+                        $journee->setIdChampionnat($championnat);
+                        $journee->setUndefined(true);
+                        $journee->setDateJournee((new DateTime())->modify('+' .$i . ' day'));
+                        $this->em->persist($journee);
+                    }
+
                     $this->em->flush();
                     $this->addFlash('success', 'Championnat créé avec succès !');
                     return $this->redirectToRoute('back_office.championnats');
