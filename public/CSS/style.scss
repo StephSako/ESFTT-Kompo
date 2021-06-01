@@ -489,15 +489,21 @@ div .profile_pic .file-field.input-field{
     //}
   }
 
-  td.td_buttons_contact {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    height: 100px !important;
-  }
+  td{
+    &.td_buttons_contact {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+      height: 100px !important;
+    }
 
-  td:nth-last-child(2) {
-    min-height: 74px;
+    &:nth-last-child(2) {
+      min-height: 74px;
+    }
   }
+}
+
+td#noTeam {
+  font-style: italic;
 }
 
 .page-footer{

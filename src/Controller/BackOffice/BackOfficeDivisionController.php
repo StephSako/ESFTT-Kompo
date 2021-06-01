@@ -3,7 +3,9 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Division;
+use App\Form\DivisionChampFormType;
 use App\Form\DivisionFormType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,20 +20,24 @@ class BackOfficeDivisionController extends AbstractController
     private $em;
     private $divisionRepository;
     private $equipeRepository;
+    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
+     * @param ChampionnatRepository $championnatRepository
      * @param EquipeRepository $equipeRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
+                                ChampionnatRepository $championnatRepository,
                                 EquipeRepository $equipeRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->equipeRepository = $equipeRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -41,7 +47,7 @@ class BackOfficeDivisionController extends AbstractController
     public function indexDivisions(): Response
     {
         return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->divisionRepository->getAllDivisions()
+            'divisions' => $this->championnatRepository->getAllDivisions()
         ]);
     }
 
@@ -53,7 +59,7 @@ class BackOfficeDivisionController extends AbstractController
     public function new(Request $request): Response
     {
         $division = new Division();
-        $form = $this->createForm(DivisionFormType::class, $division);
+        $form = $this->createForm(DivisionChampFormType::class, $division);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){

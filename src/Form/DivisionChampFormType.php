@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DivisionFormType extends AbstractType
+class DivisionChampFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -41,6 +41,15 @@ class DivisionFormType extends AbstractType
                     'min' => -1,
                     'max' => 9
                 ]
+            ])
+            ->add('idChampionnat', EntityType::class, [
+                'class' => 'App\Entity\Championnat',
+                'label' => false,
+                'required' => true,
+                'choice_label' => 'nom',
+                'query_builder' => function (ChampionnatRepository $cr) use ($options, $builder) {
+                    return $cr->createQueryBuilder('c')->orderBy('c.nom');
+                }
             ]);
     }
 

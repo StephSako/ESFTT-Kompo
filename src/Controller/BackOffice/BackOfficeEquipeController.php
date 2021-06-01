@@ -23,16 +23,16 @@ class BackOfficeEquipeController extends AbstractController
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
-     * @param ChampionnatRepository $championnatepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
-                                ChampionnatRepository $championnatepository,
+                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
-        $this->championnatRepository = $championnatepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -42,23 +42,20 @@ class BackOfficeEquipeController extends AbstractController
     public function indexEquipes(): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
-            'equipes' => $this->equipeRepository->getAllEquipes()
+            'equipes' => $this->championnatRepository->getAllEquipes()
         ]);
     }
 
     /**
      * //TOOD Changer sans prendre le championnat en paramètre
-     * @Route("/backoffice/equipe/new/{type}", name="backoffice.equipe.new")
-     * @param string $type
+     * @Route("/backoffice/equipe/new/", name="backoffice.equipe.new")
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function new(string $type, Request $request): Response
+    public function new(Request $request): Response
     {
-        if (!($championnat = $this->championnatRepository->findOneBy(['nom' => $type]))) throw new Exception('Ce championnat est inexistant', 500);
-
-        $equipe = new Equipe($championnat);
+        $equipe = new Equipe();
         $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
 
@@ -68,7 +65,7 @@ class BackOfficeEquipeController extends AbstractController
                     $this->em->persist($equipe);
 
                     /** On créé toutes les rencontres de la nouvelle équipe **/
-                    foreach ($championnat->getJournees()->toArray() as $journee){
+                    foreach ($equipe->getIdChampionnat()->getJournees()->toArray() as $journee){
                         $rencontre = new Rencontre($equipe->getIdChampionnat());
                         $rencontre
                             ->setIdJournee($journee)

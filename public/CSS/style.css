@@ -431,6 +431,10 @@ div .profile_pic .file-field.input-field {
   min-height: 74px;
 }
 
+td#noTeam {
+  font-style: italic;
+}
+
 .page-footer {
   padding-top: 0;
   background-color: #012242;

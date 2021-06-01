@@ -158,7 +158,8 @@ class HomeController extends AbstractController
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
 
         // Brûlages des joueurs
-        $brulages = $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray())));
+        $divisions = $championnat->getDivisions()->toArray();
+        $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,

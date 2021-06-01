@@ -40,13 +40,13 @@
                 {% endif %}
             </div>
 
-            {% if selectedPlayers|length == nbTotalJoueurs %}
+            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
                     <h5 class="white-text"><i class="material-icons">check_circle</i> Kompositions complètes</h5>
                 </div>
             {% else %}
                 <div class="hide-on-med-and-up">
-                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs) }}
+                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}
 
@@ -217,9 +217,9 @@
                     </div>
                 {% endfor %}
             {% else %}
-            <div class="center card-panel">
-                <span class="lobster_2" style="font-size: 20px;">Il n'y a pas d'équipes enregistrées</span>
-            </div>
+                <div class="center card-panel">
+                    <span class="lobster_2" style="font-size: 20px;">Aucune équipe valide enregistrée</span>
+                </div>
             {% endif %}
         </div>
 
@@ -233,7 +233,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, championnat.nbJournees, nbMinJoueurs, nbTotalJoueurs, 'mobile') }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
                 </div>
             </li>
             <li>
@@ -251,7 +251,7 @@
         </ul>
 
         <div class="col s12 m2 hide-on-small-only">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, championnat.nbJournees, nbMinJoueurs, nbTotalJoueurs, 'pc') }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
     </div>
 

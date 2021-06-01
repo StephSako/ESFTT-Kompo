@@ -22,6 +22,11 @@
             <h4>Les équipes</h4>
         </div>
 
+        <a style='margin-bottom: 20px;' href='{{ path('backoffice.equipe.new') }}'
+           class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+            Créer une équipe
+        </a>
+
         <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
             {% for nomChampionnat, renc_equipes in equipes %}
                 <li class='tab'><a href='{{ '#equipes_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
@@ -30,11 +35,6 @@
 
         {% for nomChampionnat, renc_equipes in equipes %}
             <div class='card-panel center' id='{{ 'equipes_' ~ nomChampionnat|slug }}'>
-                <a style='margin-bottom: 20px;' href='{{ path('backoffice.equipe.new', {type: nomChampionnat}) }}'
-                   class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
-                    +1 équipe champ. {{ nomChampionnat }}
-                </a>
-
                 {{ _equipe.table(renc_equipes) }}
             </div>
         {% endfor %}

@@ -70,32 +70,6 @@ class EquipeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array
-     */
-    public function getAllEquipes(): array
-    {
-        $query = $this->createQueryBuilder('e')
-            ->select('e.idEquipe')
-            ->addSelect('e.numero')
-            ->addSelect('p.poule')
-            ->addSelect('d.shortName as divShortName')
-            ->addSelect('c.nom')
-            ->leftJoin('e.idDivision', 'd')
-            ->leftJoin('e.idPoule', 'p')
-            ->leftJoin('e.idChampionnat', 'c')
-            ->orderBy('c.nom')
-            ->addOrderBy('e.numero')
-            ->getQuery()
-            ->getResult();
-
-        $querySorted = [];
-        foreach ($query as $key => $item) {
-            $querySorted[$item['nom']][$key] = $item;
-        }
-        return $querySorted;
-    }
-
-    /**
      * @param string $nomChampionnat
      * @return array
      */

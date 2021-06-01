@@ -1,4 +1,4 @@
-{% macro form(form, btnText) %}
+{% macro form(form, btnText, editMode) %}
     <style>
         li {
             color: red;
@@ -10,20 +10,22 @@
 
         {{ form_start(form) }}
             <div class="row">
-                <div class="col s12 m2">
+                <div class="col s12 {% if not editMode %}l2{% else %}m3{% endif %}">
                     <span><i class="material-icons prefix">short_text</i> Diminutif</span>{{ form_row(form.shortName) }}
                 </div>
-                <div class="col s12 m4">
+                <div class="col s12 {% if not editMode %}l4{% else %}m5{% endif %}">
                     <span><i class="material-icons prefix">subject</i> Nom</span>{{ form_row(form.longName) }}
                 </div>
-                <div class="col s12 m3">
-                    <span><i class="material-icons prefix">people</i> Nombre de joueurs</span>
+                <div class="col s12 {% if not editMode %}l3{% else %}m4{% endif %}">
+                    <span><i class="material-icons prefix">people</i> Nombre de joueurs/composition</span>
                     {{ form_row(form.nbJoueurs) }}
                 </div>
-                <div class="col s12 m3">
-                    <span><i class="material-icons prefix">stars</i> Championnat</span>
-                    {{ form_row(form.idChampionnat) }}
-                </div>
+                {% if not editMode %}
+                    <div class="col s12 l3">
+                        <span><i class="material-icons prefix">stars</i> Championnat</span>
+                        {{ form_row(form.idChampionnat) }}
+                    </div>
+                {% endif %}
             </div>
 
             <br>

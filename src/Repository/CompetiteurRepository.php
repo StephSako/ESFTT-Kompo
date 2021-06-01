@@ -76,10 +76,12 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $queryResult = $queryChamp = [];
+
         foreach ($championnats as $championnat) {
             foreach ($result as $key => $item) {
                 $queryResult[$championnat->getSlug()][$key] = $item;
-                $queryChamp[$championnat->getNom()] = $queryResult[$championnat->getSlug()];
+                $queryChamp[$championnat->getNom()]["nbJournees"] = $championnat->getNbJournees();
+                $queryChamp[$championnat->getNom()]["dispos"] = $queryResult[$championnat->getSlug()];
             }
         }
         return $queryChamp;
