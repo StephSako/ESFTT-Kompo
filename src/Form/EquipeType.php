@@ -3,15 +3,23 @@
 namespace App\Form;
 
 use App\Entity\Equipe;
+use App\Repository\DivisionRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EquipeType extends AbstractType
 {
+    private $dr;
+
+    public function __construct(DivisionRepository $dr){
+        $this->dr = $dr;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -24,21 +32,14 @@ class EquipeType extends AbstractType
                     'max' => 100
                 ]
             ])
-            ->add('idDivision', EntityType::class, [
-                'class' => 'App\Entity\Division',
-                'required' => true,
+            ->add('idDivision', ChoiceType::class, [
+                'empty_data' => null,
+                'placeholder' => 'Définir vide',
                 'attr' => [
                     'class' => 'validate'
                 ],
                 'label' => false,
-                'choice_label' => 'longName',
-                'query_builder' => function (EntityRepository $dr) use ($builder) {
-                    return $dr->createQueryBuilder('d')
-                        ->where('d.idChampionnat = :idChampionnat')
-                        ->setParameter('idChampionnat', $builder->getData()->getIdChampionnat()->getIdChampionnat())
-                        ->orderBy('d.nbJoueurs', 'DESC')
-                        ->addOrderBy('d.shortName', 'ASC');
-                }
+                'choices' => $this->getDivisionsOptgroup()
             ])
             ->add('idPoule', EntityType::class, [
                 'class' => 'App\Entity\Poule',
@@ -52,6 +53,25 @@ class EquipeType extends AbstractType
                         ->orderBy('p.poule');
                 }
             ]);
+    }
+
+    private function getDivisionsOptgroup() : array
+    {
+        $data = $this->dr->createQueryBuilder('d')
+            ->addSelect('c')
+            ->leftJoin('d.idChampionnat', 'c')
+            ->orderBy('c.nom', 'ASC')
+            ->addOrderBy('d.nbJoueurs', 'DESC')
+            ->addOrderBy('d.shortName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($data as $item) {
+            if (!array_key_exists($item->getIdChampionnat()->getNom(), $querySorted)) $querySorted[$item->getIdChampionnat()->getNom()] = [];
+            if ($item->getLongName()) $querySorted[$item->getIdChampionnat()->getNom()][$item->getLongName()] = $item;
+        }
+        return $querySorted;
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -62,6 +62,7 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
+                    $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->em->persist($equipe);
 
                     /** On créé toutes les rencontres de la nouvelle équipe **/
