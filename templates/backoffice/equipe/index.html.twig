@@ -34,7 +34,7 @@
         </ul>
 
         {% for nomChampionnat, renc_equipes in equipes %}
-            <div class='card-panel center' id='{{ 'equipes_' ~ nomChampionnat|slug }}'>
+            <div class='card-panel backoffice-panel center' id='{{ 'equipes_' ~ nomChampionnat|slug }}'>
                 {{ _equipe.table(renc_equipes) }}
             </div>
         {% endfor %}

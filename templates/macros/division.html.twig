@@ -1,17 +1,16 @@
 {% macro table(divisions) %}
-
     {% if divisions|length > 0 %}
         <table class="striped centered responsive-table backoffice-table">
             <thead>
-            <tr>
-                <th>Diminutif</th>
-                <th>Nom</th>
-                <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
-                <th class="hide-on-large-only">Nb joueurs/compo</th>
-                <th>Nombre d'équipes</th>
-                <th></th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>Diminutif</th>
+                    <th>Nom</th>
+                    <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
+                    <th class="hide-on-large-only">Nb joueurs/compo</th>
+                    <th>Nombre d'équipes</th>
+                    <th></th>
+                    <th></th>
+                </tr>
             </thead>
 
             <tbody>
@@ -42,6 +41,6 @@
             </tbody>
         </table>
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de divisions enregistrées.</p>
+        <p class="lobster_2" style="font-size: 20px;">Aucune division enregistrée</p>
     {% endif %}
 {% endmacro %}

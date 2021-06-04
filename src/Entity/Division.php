@@ -43,7 +43,7 @@ class Division
      *
      * @Assert\Length(
      *      min = 1,
-     *      max = 5,
+     *      max = 2,
      *      minMessage = "Le diminitif doit contenir au moins {{ limit }} lettres",
      *      maxMessage = "Le diminitif doit contenir au maximum {{ limit }} lettres"
      * )

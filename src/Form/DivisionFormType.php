@@ -21,7 +21,7 @@ class DivisionFormType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'class' => 'validate uppercase',
-                    'maxlength' => 5
+                    'maxlength' => 2
                 ]
             ])
             ->add('longName', TextType::class, [
