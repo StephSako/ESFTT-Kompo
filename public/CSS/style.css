@@ -116,7 +116,7 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   border-radius: 5px;
   margin: 2px 2px;
   white-space: nowrap;
-  width: 100% !important;
+  width: 98% !important;
 }
 #menu_dropdown li:hover, #collapsible-sidenav li:hover {
   background-color: #1565c0;
