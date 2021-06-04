@@ -34,7 +34,7 @@
                             {% for rencontre in matches %}
                                 <tr>
                                     <td>
-                                        <b>{{ rencontre.idJournee }}</b>
+                                        <b>{{ loop.index }}</b>
                                     </td>
                                     <td>
                                         {% if rencontre.undefined %}
@@ -86,6 +86,6 @@
             </ul>
         {% endfor %}
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de rencontres enregistrées.</p>
+        <p class="lobster_2 center" style="font-size: 20px;">Aucune rencontre enregistrée</p>
     {% endif %}
 {% endmacro %}

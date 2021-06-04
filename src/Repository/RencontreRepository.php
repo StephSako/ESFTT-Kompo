@@ -54,44 +54,6 @@ class RencontreRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des rencontres dans le backoffice
-     * @return array
-     */
-    public function getOrderedRencontres(): array
-    {
-        $query = $this->createQueryBuilder('r')
-            ->select('e.numero')
-            ->addSelect('j.idJournee')
-            ->addSelect('c.nom')
-            ->addSelect('j.dateJournee')
-            ->addSelect('j.undefined')
-            ->addSelect('r.adversaire')
-            ->addSelect('r.domicile')
-            ->addSelect('r.hosted')
-            ->addSelect('d.idDivision')
-            ->addSelect('r.reporte')
-            ->addSelect('r.exempt')
-            ->addSelect('r.dateReport')
-            ->addSelect('r.id')
-            ->leftJoin('r.idJournee', 'j')
-            ->leftJoin('r.idEquipe', 'e')
-            ->leftJoin('e.idDivision', 'd')
-            ->leftJoin('r.idChampionnat', 'c')
-            ->orderBy('c.nom')
-            ->addOrderBy('j.dateJournee')
-            ->addOrderBy('r.idJournee')
-            ->addOrderBy('e.numero')
-            ->getQuery()
-            ->getResult();
-
-        $querySorted = [];
-        foreach ($query as $key => $item) {
-            $querySorted[$item['nom']][$item['numero']][$key] = $item;
-        }
-        return $querySorted;
-    }
-
-    /**
      * Liste des compositions où le joueur est brûlé et sélectionné
      * @param int $idCompetiteur
      * @param int $idJournee

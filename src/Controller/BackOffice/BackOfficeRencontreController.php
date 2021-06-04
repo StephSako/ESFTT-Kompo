@@ -3,6 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Form\BackOfficeRencontreType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,17 +16,21 @@ class BackOfficeRencontreController extends AbstractController
 {
     private $em;
     private $rencontreRepository;
+    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
      * @param RencontreRepository $rencontreRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(RencontreRepository $rencontreRepository,
+                                ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->rencontreRepository = $rencontreRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -35,7 +40,7 @@ class BackOfficeRencontreController extends AbstractController
     public function indexRencontre(): Response
     {
         return $this->render('backoffice/rencontre/index.html.twig', [
-            'rencontres' => $this->rencontreRepository->getOrderedRencontres()
+            'rencontres' => $this->championnatRepository->getAllRencontres()
         ]);
     }
 
