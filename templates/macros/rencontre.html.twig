@@ -3,17 +3,22 @@
         {% for numero, matches in rencontres %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
-                    <div class="collapsible-header">
-                        <div class="chip">
+                    <div class="collapsible-header" style="padding: 6px 0 !important;">
+                        <div class="chip" style="padding: 0 !important;">
                             <i class="material-icons" style="vertical-align: middle;">people</i>
                             La Frette {{ numero }}
+                            {% if (rencontres[numero]|first)['idDivision'] is null %}
+                                <span class="center red-text noDivisionPill noDivisionPillHeader">
+                                    <b>Sans division</b>
+                                </span>
+                            {% endif %}
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
 
                         {% if(rencontres[numero]|first)['idDivision'] is null %}
-                            <p class="center red-text" style="background-color: rgba(241,35,35, 0.2); border-radius: 5px; padding: 5px 0;">
+                            <p class="center red-text noDivisionPill noDivisionPillBody" hidden>
                                 <b>Division non renseignée</b>
                             </p>
                         {% endif %}

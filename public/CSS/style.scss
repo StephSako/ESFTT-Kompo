@@ -618,6 +618,16 @@ li {
   }
 }
 
+.noDivisionPill {
+  background-color: rgba(241,35,35, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+
+  &.noDivisionPillHeader {
+    margin-left: 6px;
+  }
+}
+
 @media screen and (max-width: 1396px) {
   .right_items_navbar_backoffice{
     .right_items_navbar {
@@ -670,5 +680,15 @@ li {
     .esftt_logo {
       display: block;
     }
+  }
+}
+
+@media screen and (max-width: 324px) {
+  .noDivisionPillHeader {
+    display: none;
+  }
+
+  .noDivisionPillBody {
+    display: block;
   }
 }

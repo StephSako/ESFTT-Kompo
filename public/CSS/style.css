@@ -557,6 +557,15 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   padding-right: 0;
 }
 
+.noDivisionPill {
+  background-color: rgba(241, 35, 35, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
+.noDivisionPill.noDivisionPillHeader {
+  margin-left: 6px;
+}
+
 @media screen and (max-width: 1396px) {
   .right_items_navbar_backoffice .right_items_navbar {
     display: none;
@@ -594,6 +603,15 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
     display: none;
   }
   .navbar-general .esftt_logo {
+    display: block;
+  }
+}
+@media screen and (max-width: 324px) {
+  .noDivisionPillHeader {
+    display: none;
+  }
+
+  .noDivisionPillBody {
     display: block;
   }
 }

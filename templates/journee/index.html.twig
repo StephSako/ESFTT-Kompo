@@ -32,7 +32,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.idJournee }} - {{ championnat.nom }}</h4>
+                <h4>Journée {{ idJournee }} - {{ championnat.nom }}</h4>
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
@@ -100,13 +100,13 @@
             {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length > 0 %}
                 <div class="card-panel center cardTeamsWithoutDiv">
                     <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
-                    <a href="{{ path('backoffice.equipes') }}">Corriger</a>
+                    <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                 </div>
             {% endif %}
 
             {% if compos|length > 0 %}
                 {% for compo in compos %}
-                    <div class="center card-panel"{% if compo.isFull %} style="border: green solid 4px" {% endif %}>
+                    <div class="center card-panel">
                         <div class="row header_compo">
 
                             {% if compo.reporte %}
@@ -148,8 +148,8 @@
                             {% if not compo.exempt %}
                                 <div class="col s4 hide-on-med-and-up">
                                     <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text darken-4{% endif%} material-icons">home</i>
+                                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -158,8 +158,8 @@
                             <div class="col s4 m2 hide-on-small-only">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if not compo.exempt %}
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text darken-4{% endif%} material-icons">home</i>
+                                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
                                         {% endif %}
                                     {% endif %}
                                 </h5>

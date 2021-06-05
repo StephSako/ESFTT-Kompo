@@ -36,13 +36,15 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipes", name="backoffice.equipes")
+     * @Route("/backoffice/equipes/{focusedTab?}", name="backoffice.equipes")
+     * @param string|null $focusedTab
      * @return Response
      */
-    public function indexEquipes(): Response
+    public function indexEquipes(?string $focusedTab): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
-            'equipes' => $this->championnatRepository->getAllEquipes()
+            'equipes' => $this->championnatRepository->getAllEquipes(),
+            'focusedTab' => $focusedTab
         ]);
     }
 

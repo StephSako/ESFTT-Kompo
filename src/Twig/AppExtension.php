@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Entity\Journee;
 use App\Entity\Rencontre;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -23,7 +24,8 @@ class AppExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision'])
+            new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision']),
+            new TwigFilter('customSlug', [$this, 'customSlug'])
         ];
     }
 
@@ -88,5 +90,14 @@ class AppExtension extends AbstractExtension
         else $str .= ' à ses compositions d\'équipe.';
 
         return $str;
+    }
+
+    /**
+     * @param string $chaine
+     * @return string
+     */
+    public function customSlug(string $chaine): string
+    {
+        return (new Slugify())->slugify($chaine);
     }
 }
