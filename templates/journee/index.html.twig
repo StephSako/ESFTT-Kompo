@@ -125,11 +125,7 @@
 
                             <div class="col s4 m2">
                                 <h5>
-                                {% if compo.idEquipe.idDivision %}
-                                    <span class="white-text bulle"{% if compo.idEquipe.idDivision.shortName|length == 1 %} style="padding-left: 16px; padding-right: 16px;"{% endif %}>{{ compo.idEquipe.idDivision.shortName }}</span><br>
-                                {% else %}
-                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
-                                {% endif %}
+                                    <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <p class="poule" style="margin-bottom: 0;">
                                     Poule
@@ -148,8 +144,8 @@
                             {% if not compo.exempt %}
                                 <div class="col s4 hide-on-med-and-up">
                                     <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text darken-4{% endif%} material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -158,8 +154,8 @@
                             <div class="col s4 m2 hide-on-small-only">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if not compo.exempt %}
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text darken-4{% endif%} material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
                                         {% endif %}
                                     {% endif %}
                                 </h5>

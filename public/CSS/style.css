@@ -89,7 +89,7 @@ body {
   margin-bottom: 8px;
 }
 
-thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
+thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
   font-family: Lobster, cursive;
 }
 
@@ -102,6 +102,11 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   padding-top: 0;
   padding-bottom: 0;
   margin: 0;
+}
+
+i.iconPlace {
+  font-size: 2.1rem;
+  color: #012242;
 }
 
 .nav-extended, .sidenav, .title_journee {
@@ -203,7 +208,7 @@ i {
   vertical-align: bottom;
 }
 
-.bulle {
+.divisionBubble {
   background: #012242;
   text-align: center;
   border-radius: 50%;

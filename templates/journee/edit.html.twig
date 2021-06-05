@@ -76,11 +76,7 @@
 
                         <div class="col s4 m2">
                             <h5>
-                                {% if compo.idEquipe.idDivision %}
-                                    <span class="white-text bulle">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
-                                {% else %}
-                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
-                                {% endif %}
+                                <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                             </h5>
                             <p class="poule" style="margin-bottom: 0;">
                                 Poule
@@ -99,8 +95,8 @@
                         {% endif %}
 
                         <h5 class="col s4 m2">
-                            {% if compo.domicile %} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                            {% else %} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                            {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
+                            {% else %} <i class="material-icons iconPlace">directions_car</i>
                             {% endif %}
                         </h5>
 
@@ -133,11 +129,11 @@
     {% else %}
         <div class="container center">
             <div class="card-panel red white-text title_journee" style="margin-top: 30px; margin-bottom: 0;">
-                <h5 style="margin-top: 10px; margin-bottom: 10px;">Cette rencontre n'est pas modifiable</h5>
+                <h5 style="margin-top: 10px; margin-bottom: 10px;">Cette rencontre n'est plus modifiable : date de journée dépassée</h5>
             </div>
 
             <a href="{{ path('journee.show', {id: compo.idJournee.idJournee, type: championnat.idChampionnat}) }}">
-                <button class="btn waves-effect blue lighten-2 waves-light center">Retour à l'accueil</button>
+                <button class="btn waves-effect blue lighten-2 waves-light center">Retour à la journée</button>
             </a>
         </div>
     {% endif %}
