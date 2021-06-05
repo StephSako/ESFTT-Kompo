@@ -1,5 +1,5 @@
 {% macro table(rencontres) %}
-    {% if rencontres|length > 0 %}
+    {% if rencontres|length %}
         {% for numero, matches in rencontres %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
@@ -91,6 +91,6 @@
             </ul>
         {% endfor %}
     {% else %}
-        <p class="lobster_2 center" style="font-size: 20px;">Aucune rencontre enregistrée</p>
+        <p class="lobster_2 center missingTitle">Aucune rencontre enregistrée</p>
     {% endif %}
 {% endmacro %}

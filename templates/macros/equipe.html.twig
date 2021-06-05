@@ -1,5 +1,5 @@
 {% macro table(equipes) %}
-    {% if equipes|length > 0 %}
+    {% if equipes|length %}
         <table class="striped centered responsive-table backoffice-table">
             <thead>
                 <tr>
@@ -50,6 +50,6 @@
             </tbody>
         </table>
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Aucune équipe enregistrée</p>
+        <p class="lobster_2 missingTitle">Aucune équipe enregistrée</p>
     {% endif %}
 {% endmacro %}

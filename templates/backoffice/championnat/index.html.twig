@@ -7,7 +7,7 @@
 
     {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class='container'>
+    <div class='container center'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -21,11 +21,13 @@
             <h4>Les championnats</h4>
         </div>
 
-        <div class='card-panel center'>
+        <a href='{{ path('backoffice.championnat.new') }}'
+           class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+            Créer un championnat
+        </a>
 
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.championnat.new') }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'>Créer un championnat</a>
-
-            {% if championnats|length > 0 %}
+        <div class='card-panel' style='margin-top: 20px;'>
+            {% if championnats|length %}
                 <table class='striped centered responsive-table backoffice-table'>
                     <thead>
                     <tr>
@@ -69,7 +71,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class='lobster_2' style='font-size: 20px;'>Il n'y a pas de championnats enregistrés.</p>
+                <p class='lobster_2 missingTitle'>Aucun championnat enregistré</p>
             {% endif %}
         </div>
     </div>

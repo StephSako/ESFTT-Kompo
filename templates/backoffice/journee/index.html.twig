@@ -22,17 +22,23 @@
             <h4>Les journées</h4>
         </div>
 
-        <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
-            {% for nomChampionnat, renc_equipes in journees %}
-                <li class="tab"><a href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
-            {% endfor %}
-        </ul>
-
-        {% for nomChampionnat, journees_champ in journees %}
-            <div class='card-panel backoffice-panel center' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
-                {{ _journee.table(journees_champ) }}
+        {% if not journees|length %}
+            <div class='card-panel center'>
+                <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
             </div>
-        {% endfor %}
+        {% else %}
+            <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
+                {% for nomChampionnat, renc_equipes in journees %}
+                    <li class="tab"><a href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                {% endfor %}
+            </ul>
+
+            {% for nomChampionnat, journees_champ in journees %}
+                <div class='card-panel backoffice-panel center' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
+                    {{ _journee.table(journees_champ) }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
 {% endblock %}

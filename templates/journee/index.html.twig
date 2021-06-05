@@ -97,14 +97,14 @@
                 </div>
             {% endif %}
 
-            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length > 0 %}
+            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length %}
                 <div class="card-panel center cardTeamsWithoutDiv">
                     <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
                     <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                 </div>
             {% endif %}
 
-            {% if compos|length > 0 %}
+            {% if compos|length %}
                 {% for compo in compos %}
                     <div class="center card-panel">
                         <div class="row header_compo">
@@ -214,7 +214,7 @@
                 {% endfor %}
             {% else %}
                 <div class="center card-panel">
-                    <span class="lobster_2" style="font-size: 20px;">Aucune équipe valide enregistrée</span>
+                    <span class="lobster_2 missingTitle">Aucune équipe valide enregistrée</span>
                 </div>
             {% endif %}
         </div>

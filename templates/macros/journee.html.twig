@@ -1,5 +1,5 @@
 {% macro table(journees) %}
-    {% if journees|length > 0 %}
+    {% if journees|length %}
         <table class="striped centered">
             <thead>
                 <tr>
@@ -31,6 +31,6 @@
             </tbody>
         </table>
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de journées enregistrées.</p>
+        <p class="lobster_2 missingTitle">Il n'y a pas de journées enregistrées.</p>
     {% endif %}
 {% endmacro %}

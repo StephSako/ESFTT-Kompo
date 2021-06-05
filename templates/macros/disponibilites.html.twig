@@ -154,7 +154,7 @@
 {% endmacro %}
 
 {% macro backoffice(disponibilites) %}
-    {% if disponibilites|length > 0 %}
+    {% if disponibilites|length %}
         {% for nomJoueur, infos in disponibilites %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
@@ -239,6 +239,6 @@
             </ul>
         {% endfor %}
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de disponibilités enregistrées.</p>
+        <p class="lobster_2 missingTitle">Aucune disponibilité</p>
     {% endif %}
 {% endmacro %}

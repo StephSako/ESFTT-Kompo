@@ -1,5 +1,5 @@
 {% macro table(divisions) %}
-    {% if divisions|length > 0 %}
+    {% if divisions|length %}
         <table class="striped centered responsive-table backoffice-table">
             <thead>
                 <tr>
@@ -41,6 +41,6 @@
             </tbody>
         </table>
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Aucune division enregistrée</p>
+        <p class="lobster_2 missingTitle">Aucune division enregistrée</p>
     {% endif %}
 {% endmacro %}

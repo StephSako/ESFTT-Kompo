@@ -14,7 +14,7 @@
             <h4>Page de contact</h4>
         </div>
 
-            {% if competiteurs|length > 0 %}
+            {% if competiteurs|length %}
                 <table class="card-panel striped centered responsive-table table_contact">
                     <thead>
                         <tr class="hide-on-small-only">
@@ -91,7 +91,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
+                <p class="lobster_2 missingTitle">Il n'y a pas de compétiteurs enregistrés.</p>
             {% endif %}
         </div>
 
