@@ -63,8 +63,8 @@ class SecurityController extends AbstractController
     public function edit(Request $request){
         //TODO Classer selon le championnat en cache
         if ($this->get('session')->get('type')){
-            if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
-        } else $championnat = $this->championnatRepository->getFirstChamp()[0];
+            if (!($championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
+        } else $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
 
         $allChampionnats = $this->championnatRepository->findAll();
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());

@@ -59,9 +59,7 @@ class HomeController extends AbstractController
      */
     public function indexAction(): Response
     {
-        if ($this->get('session')->get('type')){
-            if ((!$championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
-        } else $championnat = $this->championnatRepository->getFirstChamp()[0];
+        $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?:$this->championnatRepository->getFirstChampionnatAvailable());
 
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
@@ -84,7 +82,7 @@ class HomeController extends AbstractController
      */
     public function indexTypeAction(int $type): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        $championnat = ($this->championnatRepository->find($type) ?:$this->championnatRepository->getFirstChampionnatAvailable());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
         while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
@@ -106,7 +104,7 @@ class HomeController extends AbstractController
      */
     public function journee(int $type, int $id): Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
 
         if (!in_array($id, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))) throw new Exception('Cette journée est inexistante', 500);
@@ -195,7 +193,7 @@ class HomeController extends AbstractController
      */
     public function edit(int $type, int $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if ((!$championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($championnat = $this->championnatRepository->find($type))) throw new Exception('Ce championnat est inexistant', 500);
         if (!($compo = $this->rencontreRepository->find($compo))) throw new Exception('Cette journée est inexistante', 500);
         if (!$compo->getIdEquipe()->getIdDivision()) throw new Exception('Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée', 500);
 
