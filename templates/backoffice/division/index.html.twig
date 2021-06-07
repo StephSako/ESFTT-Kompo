@@ -32,11 +32,13 @@
                 Créer une division
             </a>
 
-            <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
-                {% for nomChampionnat, divisions_champ in divisions %}
-                    <li class='tab'><a href='{{ '#divisions_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
-                {% endfor %}
-            </ul>
+            {% if divisions|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+                    {% for nomChampionnat, divisions_champ in divisions %}
+                        <li class='tab'><a href='{{ '#divisions_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             {% for nomChampionnat, divisions_champ in divisions %}
                 <div class='card-panel backoffice-panel center' id='{{ 'divisions_' ~ nomChampionnat|slug }}'>

@@ -32,11 +32,13 @@
                 Créer une équipe
             </a>
 
-            <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
-                {% for nomChampionnat, renc_equipes in equipes %}
-                    <li class='tab'><a {% if nomChampionnat|customSlug == focusedTab %} class="active" {% endif %}href='{{ '#equipes_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
-                {% endfor %}
-            </ul>
+            {% if equipes|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+                    {% for nomChampionnat, renc_equipes in equipes %}
+                        <li class='tab'><a {% if nomChampionnat|customSlug == focusedTab %} class="active" {% endif %}href='{{ '#equipes_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             {% for nomChampionnat, renc_equipes in equipes %}
                 <div class='card-panel backoffice-panel center' id='{{ 'equipes_' ~ nomChampionnat|slug }}'>

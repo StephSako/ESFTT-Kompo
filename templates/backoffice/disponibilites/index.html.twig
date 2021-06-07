@@ -31,11 +31,13 @@
                 <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
             </div>
         {% else %}
-            <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
-                {% for nomChampionnat, disponibilites_champ in disponibilites %}
-                    <li class='tab'><a href='{{ '#disponibilites_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
-                {% endfor %}
-            </ul>
+            {% if disponibilites|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
+                    {% for nomChampionnat, disponibilites_champ in disponibilites %}
+                        <li class='tab'><a href='{{ '#disponibilites_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             {% for nomChampionnat, disponibilites_champ in disponibilites %}
                 <div id='{{ 'disponibilites_' ~ nomChampionnat|slug }}' class='card-panel backoffice-panel'>

@@ -33,8 +33,6 @@ class EquipeType extends AbstractType
                 ]
             ])
             ->add('idDivision', ChoiceType::class, [
-                'empty_data' => null,
-                'placeholder' => 'Définir vide',
                 'attr' => [
                     'class' => 'validate'
                 ],
