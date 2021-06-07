@@ -45,13 +45,14 @@ class EquipeRepository extends ServiceEntityRepository
     public function getIdEquipesBrulees(string $fonction, int $type): array
     {
         return array_column($this->createQueryBuilder('e')
-            ->select('e.idEquipe')
+            ->select('e.numero')
             ->where('e.idDivision IS NOT NULL')
             ->andWhere('e.idChampionnat = :idChampionnat')
             ->andWhere('e.idEquipe <> (SELECT ' . $fonction . '(e_.idEquipe) from App\Entity\Equipe e_ WHERE e_.idChampionnat = :idChampionnat AND e_.idDivision IS NOT NULL)')
             ->setParameter('idChampionnat', $type)
+            ->orderBy('e.numero')
             ->getQuery()
-            ->getResult(), 'idEquipe');
+            ->getResult(), 'numero');
     }
 
     /**
