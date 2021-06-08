@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/form/division.html.twig' as _division %}
+
+{% block title %}Modifier la rencontre{% endblock %}
+
+{% block body %}
+
+    {% include("components/navbar_backoffice.html.twig") %}
+
+    <div class="container">
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        {{ _division.form(form, textForm, true, true) }}
+    </div>
+
+{% endblock %}

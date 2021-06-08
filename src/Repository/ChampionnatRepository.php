@@ -20,6 +20,24 @@ class ChampionnatRepository extends ServiceEntityRepository
     }
 
     /**
+     * Liste des championnats pour le select de la form des divisions dans le back-office
+     * @return array
+     */
+    public function getAllChampionnats(): array
+    {
+        $data = $this->createQueryBuilder('c')
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($data as $item) {
+            $querySorted[$item->getNom()] = $item;
+        }
+        return $querySorted;
+    }
+
+    /**
      * Retourne le premier championnat
      * @return Championnat|string
      */

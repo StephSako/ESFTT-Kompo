@@ -59,10 +59,13 @@ class BackOfficeDivisionController extends AbstractController
     public function new(Request $request): Response
     {
         $division = new Division();
-        $form = $this->createForm(DivisionChampFormType::class, $division);
+        $listChamps = $this->championnatRepository->getAllChampionnats();
+        $form = $this->createForm(DivisionChampFormType::class, $division, [
+            'listChamps' => $listChamps
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted() && $listChamps){
             if ($form->isValid()){
                 try {
                     $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
@@ -73,8 +76,8 @@ class BackOfficeDivisionController extends AbstractController
                     return $this->redirectToRoute('backoffice.divisions');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
@@ -83,10 +86,11 @@ class BackOfficeDivisionController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/new.html.twig', [
+        return $this->render('backoffice/division/new.html.twig', [
             'form' => $form->createView(),
             'title' => 'divisions',
-            'macro' => 'division'
+            'macro' => 'division',
+            'hasChampionnats' => count($listChamps) > 0
         ]);
     }
 
@@ -122,7 +126,7 @@ class BackOfficeDivisionController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/edit.html.twig', [
+        return $this->render('backoffice/division/edit.html.twig', [
             'division' => $division,
             'form' => $form->createView(),
             'title' => 'Modifier la division',

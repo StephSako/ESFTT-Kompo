@@ -6,6 +6,7 @@ use App\Entity\Division;
 use App\Repository\ChampionnatRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,14 +43,10 @@ class DivisionChampFormType extends AbstractType
                     'max' => 9
                 ]
             ])
-            ->add('idChampionnat', EntityType::class, [
-                'class' => 'App\Entity\Championnat',
+            ->add('idChampionnat', ChoiceType::class, [
                 'label' => false,
                 'required' => true,
-                'choice_label' => 'nom',
-                'query_builder' => function (ChampionnatRepository $cr) use ($options, $builder) {
-                    return $cr->createQueryBuilder('c')->orderBy('c.nom');
-                }
+                'choices' => $options['listChamps']
             ]);
     }
 
@@ -57,7 +54,8 @@ class DivisionChampFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Division::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'listChamps' => []
         ]);
     }
 }

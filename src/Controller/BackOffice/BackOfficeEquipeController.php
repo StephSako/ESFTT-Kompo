@@ -7,6 +7,7 @@ use App\Entity\Rencontre;
 use App\Form\EquipeEditType;
 use App\Form\EquipeNewType;
 use App\Repository\ChampionnatRepository;
+use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -20,19 +21,23 @@ class BackOfficeEquipeController extends AbstractController
     private $em;
     private $equipeRepository;
     private $championnatRepository;
+    private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param ChampionnatRepository $championnatRepository
+     * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 ChampionnatRepository $championnatRepository,
+                                DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
+        $this->divisionRepository = $divisionRepository;
         $this->championnatRepository = $championnatRepository;
     }
 
@@ -59,10 +64,13 @@ class BackOfficeEquipeController extends AbstractController
     public function new(Request $request): Response
     {
         $equipe = new Equipe();
-        $form = $this->createForm(EquipeNewType::class, $equipe);
+        $divisions = $this->divisionRepository->getDivisionsOptgroup();
+        $form = $this->createForm(EquipeNewType::class, $equipe, [
+            'divisionsOptGroup' => $divisions
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted() && $divisions){
             if ($form->isValid()){
                 try {
                     $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
@@ -95,37 +103,37 @@ class BackOfficeEquipeController extends AbstractController
             }
         }
 
-        return $this->render('backoffice/new.html.twig', [
+        return $this->render('backoffice/equipe/new.html.twig', [
             'form' => $form->createView(),
             'title' => 'équipes',
-            'macro' => 'equipe'
+            'macro' => 'equipe',
+            'champHasDivisions' => count($divisions) > 0
         ]);
     }
 
     /**
      * @Route("/backoffice/equipe/edit/{idEquipe}", name="backoffice.equipe.edit", requirements={"idEquipe"="\d+"})
-     * @param Equipe $equipeForm
      * @param int $idEquipe
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function edit(Equipe $equipeForm, int $idEquipe, Request $request): Response
+    public function edit(int $idEquipe, Request $request): Response
     {
         if (!($equipe = $this->equipeRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-        $form = $this->createForm(EquipeEditType::class, $equipeForm);
+        $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
+        $form = $this->createForm(EquipeEditType::class, $equipe);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $champHasDivisions) {
             if ($form->isValid()) {
 
-                if ($equipeForm->getIdDivision()){
                     try {
                         $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
                         /** Désinscrire les joueurs superflus en cas de changement de division **/
-                        if ($equipeForm->getIdDivision() && $lastNbJoueursDivision > $equipeForm->getIdDivision()->getNbJoueurs()){
-                            foreach ($equipeForm->getRencontres()->toArray() as $rencontre){
-                                for ($i = $equipeForm->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
+                        if ($equipe->getIdDivision() && $lastNbJoueursDivision > $equipe->getIdDivision()->getNbJoueurs()){
+                            foreach ($equipe->getRencontres()->toArray() as $rencontre){
+                                for ($i = $equipe->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
                                     $rencontre->setIdJoueurN($i, null);
                                 }
                             }
@@ -135,19 +143,18 @@ class BackOfficeEquipeController extends AbstractController
                         $this->addFlash('success', 'Equipe modifiée avec succès !');
                         return $this->redirectToRoute('backoffice.equipes');
                     } catch(Exception $e){
-                        if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipeForm->getNumero() . '\' est déjà attribué');
+                        if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
-                }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
-        return $this->render('backoffice/edit.html.twig', [
-            'equipe' => $equipeForm,
+        return $this->render('backoffice/equipe/edit.html.twig', [
+            'equipe' => $equipe,
             'form' => $form->createView(),
             'title' => 'Modifier l\'équipe',
-            'macro' => 'equipe',
-            'textForm' => 'Modifier'
+            'textForm' => 'Modifier',
+            'champHasDivisions' => $champHasDivisions
         ]);
     }
 

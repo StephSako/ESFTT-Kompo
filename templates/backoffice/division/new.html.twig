@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/form/division.html.twig' as _division %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
+
+{% block title %}Back-office - {{ title }}{% endblock %}
+
+{% block body %}
+
+    {{ include('components/navbar_backoffice.html.twig') }}
+
+    <div class="container">
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        {{ form_errors(form) }}
+
+        {{ _division.form(form, 'Créer', false, hasChampionnats) }}
+    </div>
+
+{% endblock %}

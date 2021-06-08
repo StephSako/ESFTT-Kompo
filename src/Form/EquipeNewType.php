@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Equipe;
-use App\Repository\DivisionRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -14,12 +13,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EquipeNewType extends AbstractType
 {
-    private $dr;
-
-    public function __construct(DivisionRepository $dr){
-        $this->dr = $dr;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -36,8 +29,9 @@ class EquipeNewType extends AbstractType
                 'attr' => [
                     'class' => 'validate'
                 ],
+                'required' => true,
                 'label' => false,
-                'choices' => $this->getDivisionsOptgroup()
+                'choices' => $options['divisionsOptGroup']
             ])
             ->add('idPoule', EntityType::class, [
                 'class' => 'App\Entity\Poule',
@@ -47,37 +41,17 @@ class EquipeNewType extends AbstractType
                 'placeholder' => 'Définir vide',
                 'required' => false,
                 'query_builder' => function (EntityRepository $pr) {
-                    return $pr->createQueryBuilder('p')
-                        ->orderBy('p.poule');
+                    return $pr->createQueryBuilder('p')->orderBy('p.poule');
                 }
             ]);
-    }
-
-    private function getDivisionsOptgroup() : array
-    {
-        $data = $this->dr->createQueryBuilder('d')
-            ->addSelect('c')
-            ->leftJoin('d.idChampionnat', 'c')
-            ->orderBy('c.nom', 'ASC')
-            ->addOrderBy('d.nbJoueurs', 'DESC')
-            ->addOrderBy('d.longName', 'ASC')
-            ->addOrderBy('d.shortName', 'ASC')
-            ->getQuery()
-            ->getResult();
-
-        $querySorted = [];
-        foreach ($data as $item) {
-            if (!array_key_exists($item->getIdChampionnat()->getNom(), $querySorted)) $querySorted[$item->getIdChampionnat()->getNom()] = [];
-            if ($item->getLongName()) $querySorted[$item->getIdChampionnat()->getNom()][$item->getLongName()] = $item;
-        }
-        return $querySorted;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Equipe::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'divisionsOptGroup' => []
         ]);
     }
 }
