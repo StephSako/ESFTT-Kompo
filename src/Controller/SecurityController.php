@@ -83,10 +83,10 @@ class SecurityController extends AbstractController
                     return $this->redirectToRoute('account');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $user->getLicence() . '\' est déjà attribuée');
-                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
-                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+                        if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     return $this->render('account/edit.html.twig', [

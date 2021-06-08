@@ -73,7 +73,10 @@ class BackOfficeRencontreController extends AbstractController
                     $this->addFlash('success', 'Rencontre modifiée avec succès !');
                     return $this->redirectToRoute('backoffice.rencontres');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getPrevious()->getMessage(), 'adversaire'))  $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             } else {

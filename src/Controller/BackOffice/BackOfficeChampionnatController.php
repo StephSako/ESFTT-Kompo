@@ -49,31 +49,28 @@ class BackOfficeChampionnatController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
-            if ($form->isValid()){
-                try {
-                    $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
-                    $this->em->persist($championnat);
+            try {
+                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
+                $this->em->persist($championnat);
 
-                    /** On créé les n journées du championnat */
-                    for ($i = 0; $i < $championnat->getNbJournees(); $i++) {
-                        $journee = new Journee();
-                        $journee->setIdChampionnat($championnat);
-                        $journee->setUndefined(true);
-                        $journee->setDateJournee((new DateTime())->modify('+' .$i . ' day'));
-                        $this->em->persist($journee);
-                    }
+                /** On créé les n journées du championnat */
+                for ($i = 0; $i < $championnat->getNbJournees(); $i++) {
+                    $journee = new Journee();
+                    $journee->setIdChampionnat($championnat);
+                    $journee->setUndefined(true);
+                    $journee->setDateJournee((new DateTime())->modify('+' .$i . ' day'));
+                    $this->em->persist($journee);
+                }
 
-                    $this->em->flush();
-                    $this->addFlash('success', 'Championnat créé avec succès !');
-                    return $this->redirectToRoute('back_office.championnats');
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
-                    }
+                $this->em->flush();
+                $this->addFlash('success', 'Championnat créé avec succès !');
+                return $this->redirectToRoute('back_office.championnats');
+            } catch(Exception $e){
+                if ($e->getPrevious()->getCode() == "23000"){
+                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
@@ -98,20 +95,17 @@ class BackOfficeChampionnatController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                try {
-                    $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
-                    $this->em->flush();
-                    $this->addFlash('success', 'Championnat modifié avec succès !');
-                    return $this->redirectToRoute('back_office.championnats');
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
-                    }
+            try {
+                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
+                $this->em->flush();
+                $this->addFlash('success', 'Championnat modifié avec succès !');
+                return $this->redirectToRoute('back_office.championnats');
+            } catch(Exception $e){
+                if ($e->getPrevious()->getCode() == "23000"){
+                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 

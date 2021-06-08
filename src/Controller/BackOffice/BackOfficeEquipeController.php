@@ -55,7 +55,6 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * TODO Changer sans prendre le championnat en paramètre
      * @Route("/backoffice/equipe/new/", name="backoffice.equipe.new")
      * @param Request $request
      * @return Response
@@ -95,7 +94,10 @@ class BackOfficeEquipeController extends AbstractController
                     $this->addFlash('success', 'Equipe créée avec succès !');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                    if ($e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             } else {
@@ -143,7 +145,10 @@ class BackOfficeEquipeController extends AbstractController
                         $this->addFlash('success', 'Equipe modifiée avec succès !');
                         return $this->redirectToRoute('backoffice.equipes');
                     } catch(Exception $e){
-                        if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                        if ($e->getPrevious()->getCode() == "23000"){
+                            if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        }
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');

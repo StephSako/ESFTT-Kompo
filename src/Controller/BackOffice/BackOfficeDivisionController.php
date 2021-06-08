@@ -78,6 +78,7 @@ class BackOfficeDivisionController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
@@ -117,13 +118,12 @@ class BackOfficeDivisionController extends AbstractController
                     return $this->redirectToRoute('backoffice.divisions');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/division/edit.html.twig', [

@@ -59,7 +59,8 @@ class HomeController extends AbstractController
      */
     public function indexAction(): Response
     {
-        $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?:$this->championnatRepository->getFirstChampionnatAvailable());
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?:$this->championnatRepository->getFirstChampionnatAvailable());
 
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
@@ -175,7 +176,7 @@ class HomeController extends AbstractController
             'dispos' => $joueursDeclares,
             'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
-            'dispoJoueur' => $dispoJoueur,
+            'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
@@ -255,9 +256,10 @@ class HomeController extends AbstractController
                     ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
+                        if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
-                    else $this->addFlash('fail', $e);
+                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             }
         }
