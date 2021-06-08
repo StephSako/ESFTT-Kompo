@@ -76,7 +76,7 @@ class RencontreRepository extends ServiceEntityRepository
             }
             $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
         }
-        $query = $query
+        return $query
             ->from('App:Competiteur', 'c')
             ->leftJoin('r.idEquipe', 'e')
             ->where('r.idJournee > :idJournee')
@@ -102,7 +102,6 @@ class RencontreRepository extends ServiceEntityRepository
             ->setParameter('idChampionnat', $type)
             ->getQuery()
             ->getResult();
-        return $query;
     }
 
     /**

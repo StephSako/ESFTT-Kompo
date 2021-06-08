@@ -4,7 +4,8 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
-use App\Form\EquipeType;
+use App\Form\EquipeEditType;
+use App\Form\EquipeNewType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,7 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * //TOOD Changer sans prendre le championnat en paramètre
+     * TODO Changer sans prendre le championnat en paramètre
      * @Route("/backoffice/equipe/new/", name="backoffice.equipe.new")
      * @param Request $request
      * @return Response
@@ -58,7 +59,7 @@ class BackOfficeEquipeController extends AbstractController
     public function new(Request $request): Response
     {
         $equipe = new Equipe();
-        $form = $this->createForm(EquipeType::class, $equipe);
+        $form = $this->createForm(EquipeNewType::class, $equipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -112,7 +113,7 @@ class BackOfficeEquipeController extends AbstractController
     public function edit(Equipe $equipeForm, int $idEquipe, Request $request): Response
     {
         if (!($equipe = $this->equipeRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-        $form = $this->createForm(EquipeType::class, $equipeForm);
+        $form = $this->createForm(EquipeEditType::class, $equipeForm);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

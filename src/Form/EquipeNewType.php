@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EquipeType extends AbstractType
+class EquipeNewType extends AbstractType
 {
     private $dr;
 
@@ -60,6 +60,7 @@ class EquipeType extends AbstractType
             ->leftJoin('d.idChampionnat', 'c')
             ->orderBy('c.nom', 'ASC')
             ->addOrderBy('d.nbJoueurs', 'DESC')
+            ->addOrderBy('d.longName', 'ASC')
             ->addOrderBy('d.shortName', 'ASC')
             ->getQuery()
             ->getResult();

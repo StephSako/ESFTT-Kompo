@@ -4,6 +4,8 @@ $light_grey: #aba9a9;
 $darken_blue: #021931;
 $dark_blue: #012242;
 $light_blue: #1565c0;
+$scroll_blue: #1b5fac;
+$scroll_dark_blue: #0d427f;
 $gradient_blue_light: rgb(17, 116, 184);
 $gradient_blue_dark:  rgba(0, 19, 23, 1);
 
@@ -635,6 +637,22 @@ li {
   &.noDivisionPillHeader {
     margin-left: 6px;
   }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $scroll_blue;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $scroll_dark_blue;
 }
 
 @media screen and (max-width: 1396px) {

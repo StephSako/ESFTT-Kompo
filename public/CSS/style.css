@@ -575,6 +575,22 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   margin-left: 6px;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1b5fac;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0d427f;
+}
+
 @media screen and (max-width: 1396px) {
   .right_items_navbar_backoffice .right_items_navbar {
     display: none;
