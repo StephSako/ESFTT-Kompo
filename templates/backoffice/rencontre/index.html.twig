@@ -24,7 +24,12 @@
 
         {% if not rencontres|length %}
             <div class='card-panel center'>
-                    <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
+                <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
+
+                <a href='{{ path('backoffice.championnat.new') }}'
+                   class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+                    Créer un championnat
+                </a>
             </div>
         {% else %}
             {% if rencontres|length > 1 %}

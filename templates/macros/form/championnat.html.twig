@@ -10,17 +10,17 @@
 
         {{ form_start(form) }}
             <div class="row">
-                <div class="col s12 m6">
+                <div class="col s12 m4">
                     <span><i class="material-icons prefix">short_text</i> Nom</span>
                     {{ form_row(form.nom) }}
                 </div>
 
-                <div class="col s12 m3">
+                <div class="col s12 m3 offset-m1">
                     <span><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</span>
                     {{ form_row(form.limiteBrulage) }}
                 </div>
 
-                <div class="col s12 m3">
+                <div class="col s12 m3 offset-m1">
                     <span><i class="material-icons prefix">date_range</i> Nombre de journées</span>
                     {{ form_row(form.nbJournees) }}
                 </div>
