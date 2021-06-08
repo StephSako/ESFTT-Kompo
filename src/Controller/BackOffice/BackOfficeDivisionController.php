@@ -3,8 +3,8 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Division;
-use App\Form\DivisionChampFormType;
-use App\Form\DivisionFormType;
+use App\Form\DivisionWithChampType;
+use App\Form\DivisionType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
@@ -60,7 +60,7 @@ class BackOfficeDivisionController extends AbstractController
     {
         $division = new Division();
         $listChamps = $this->championnatRepository->getAllChampionnats();
-        $form = $this->createForm(DivisionChampFormType::class, $division, [
+        $form = $this->createForm(DivisionWithChampType::class, $division, [
             'listChamps' => $listChamps
         ]);
         $form->handleRequest($request);
@@ -105,7 +105,7 @@ class BackOfficeDivisionController extends AbstractController
     public function edit(int $idDivision, Request $request): Response
     {
         if (!($division = $this->divisionRepository->find($idDivision))) throw new Exception('Cette division est inexistante', 500);
-        $form = $this->createForm(DivisionFormType::class, $division);
+        $form = $this->createForm(DivisionType::class, $division);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
