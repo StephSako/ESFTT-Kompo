@@ -17,18 +17,18 @@
             {% if competiteurs|length %}
                 <table class="card-panel striped centered responsive-table table_contact">
                     <thead>
-                        <tr class="hide-on-small-only">
+                        <tr class="hide-on-med-and-down">
                             <th></th>
                             <th></th>
                             <th>Nom</th>
-                            <th>Adresses e-mail</th>
-                            <th>Numéros de téléphone</th>
+                            <th>E-mails</th>
+                            <th>Téléphones</th>
                         </tr>
                     </thead>
 
                     <tbody class="center">
                         {% for competiteur in competiteurs %}
-                            {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
+                            {% if competiteur.idCompetiteur != app.user.idCompetiteur and competiteur.username != 'visiteur' %}
                                 <tr>
                                     <td>
                                         {% if not competiteur.visitor %}
@@ -43,11 +43,11 @@
                                             <span class="new badge orange" data-badge-caption="Visiteur"></span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="td_picture_compet">
                                         {% if competiteur.avatar %}
-                                            <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                            <img class="picture_compet" src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="60rem" height="60rem" style="object-fit:cover">
                                         {% else %}
-                                            <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
+                                            <img class="picture_compet" src="{{ asset('images/account.png') }}" alt="Avatar" width="60rem" height="60rem" style="object-fit:cover">
                                         {% endif %}
                                     </td>
                                     <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>

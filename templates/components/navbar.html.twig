@@ -96,7 +96,15 @@
                 </li>
             {% endfor %}
         </div>
-        <li><div class="divider_custom"></div></li>
+
+        {% if allChampionnats|length > 0 %}
+            <li><div class="divider_custom"></div></li>
+        {% endif %}
+        {% if allChampionnats|length == 0 %}
+            <li class="li_in_line{% if app.request.getPathInfo == '/' %} active blue darken-3{% endif %}">
+                <a class="white-text center-align" href="{{ path('index') }}"><i class="white-text material-icons left">home</i>Accueil</a>
+            </li>
+        {% endif %}
     {% endif %}
 
     {% include('components/navbar_common_mobile.html.twig') %}

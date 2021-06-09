@@ -60,7 +60,7 @@ class HomeController extends AbstractController
     public function indexAction(): Response
     {
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?:$this->championnatRepository->getFirstChampionnatAvailable());
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));

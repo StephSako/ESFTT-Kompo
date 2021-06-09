@@ -57,11 +57,10 @@ class ContactController extends AbstractController
      */
     public function index(): Response
     {
-        if ($this->get('session')->get('type')){
-            if (!($championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
-        } else $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
-        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
+        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
         $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 

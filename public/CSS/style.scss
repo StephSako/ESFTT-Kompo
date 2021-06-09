@@ -698,6 +698,33 @@ li {
   }
 }
 
+@media screen and (max-width: 992px) {
+  th.th_picture_compet_table{
+    height: 116px;
+  }
+
+  td.td_picture_compet {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 601px) {
+  th.th_picture_compet_table{
+    height: 96px;
+  }
+
+  td.td_picture_compet {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    & img.picture_compet{
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
 @media screen and (max-width: 885px) {
   .navbar-general{
     .left_items {

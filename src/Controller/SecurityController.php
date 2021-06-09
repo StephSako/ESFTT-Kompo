@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\JourneeRepository;
@@ -61,10 +60,8 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     public function edit(Request $request){
-        //TODO Classer selon le championnat en cache
-        if ($this->get('session')->get('type')){
-            if (!($championnat = $this->championnatRepository->find($this->get('session')->get('type')))) throw new Exception('Ce championnat est inexistant', 500);
-        } else $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
         $allChampionnats = $this->championnatRepository->findAll();
         $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
