@@ -129,7 +129,6 @@ class BackOfficeEquipeController extends AbstractController
 
         if ($form->isSubmitted() && $champHasDivisions) {
             if ($form->isValid()) {
-
                     try {
                         $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
                         /** Désinscrire les joueurs superflus en cas de changement de division **/

@@ -51,7 +51,7 @@ class Journee
     private $undefined;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee")
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee", cascade={"remove"}, orphanRemoval=true)
      */
     protected $rencontres;
 
