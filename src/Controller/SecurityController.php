@@ -62,9 +62,9 @@ class SecurityController extends AbstractController
     public function edit(Request $request){
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
 
         $allChampionnats = $this->championnatRepository->findAll();
-        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
         $user = $this->getUser();
 
         $form = $this->createForm(CompetiteurType::class, $user);
@@ -125,7 +125,9 @@ class SecurityController extends AbstractController
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         //TODO Classer selon le championnat en cache
-        $journees = $this->journeeRepository->findAll($this->get('session')->get('type'));
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
         $user = $this->getUser();
 
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);

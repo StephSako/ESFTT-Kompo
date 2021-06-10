@@ -10,6 +10,12 @@
 
             {% if app.user %}
                 <ul class="left_items">
+                    {% if allChampionnats|length == 0 %}
+                        <li class="li_in_line{% if app.request.getPathInfo == '/' %} active blue darken-3{% endif %}">
+                            <a class="white-text center-align" href="{{ path('index') }}"><i class="white-text material-icons left">home</i>Accueil</a>
+                        </li>
+                    {% endif %}
+
                     {% for i, journee in journees %}
                         <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">

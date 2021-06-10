@@ -62,16 +62,21 @@ class HomeController extends AbstractController
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
-        $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
-        $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
+        if ($championnat){
+            $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
+            $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
-            $idJournee++;
-        }
+            while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
+                $idJournee++;
+            }
 
-        return $this->redirectToRoute('journee.show', [
-            'type' => $championnat->getIdChampionnat(),
-            'id' => $idJournee
+            return $this->redirectToRoute('journee.show', [
+                'type' => $championnat->getIdChampionnat(),
+                'id' => $idJournee
+            ]);
+        } else return $this->render('journee/noChamp.html.twig', [
+            'allChampionnats' => null,
+            'journees' => null
         ]);
     }
 
