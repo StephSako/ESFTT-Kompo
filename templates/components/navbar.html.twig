@@ -89,10 +89,10 @@
                 </ul>
             {% endif %}
 
-            {% for journee in journees %}
+            {% for i, journee in journees %}
                 <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                     <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
-                        Journée {{ journee.idJournee }} -
+                        Journée {{ i+1 }} -
                         {% if journee.undefined %}
                             <span class="red-text"><b>?/?</b></span>
                         {% else %}

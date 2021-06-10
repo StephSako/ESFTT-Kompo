@@ -10,23 +10,23 @@
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("back_office.championnats") }}"><i class="material-icons left">stars</i>Championnat</a>
                 </li>
-                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.rencontres") }}"><i class="material-icons left">flash_on</i>Rencontre</a>
-                </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/journee' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.journees") }}"><i class="material-icons left">date_range</i>Journée</a>
                 </li>
-                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.equipes") }}"><i class="material-icons left">people</i>Équipe</a>
+                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("backoffice.rencontres") }}"><i class="material-icons left">flash_on</i>Rencontre</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/division' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.divisions") }}"><i class="material-icons left">import_export</i>Division</a>
                 </li>
-                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.disponibilites") }}"><i class="material-icons left">feedback</i>Disponibilité</a>
+                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("backoffice.equipes") }}"><i class="material-icons left">people</i>Équipe</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.competiteurs") }}"><i class="material-icons left">account_box</i>Compétiteur</a>
+                </li>
+                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("backoffice.disponibilites") }}"><i class="material-icons left">feedback</i>Disponibilité</a>
                 </li>
                 <li class="waves-light waves-effect li_in_line">
                     <a class="white-text" href="{{ path("index") }}">
@@ -46,23 +46,23 @@
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("back_office.championnats") }}"><i class="white-text material-icons left">stars</i>Championnat</a>
     </li>
-    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("backoffice.rencontres") }}"><i class="white-text material-icons left">flash_on</i>Rencontre</a>
-    </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/journee' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.journees") }}"><i class="white-text material-icons left">date_range</i>Journée</a>
     </li>
-    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("backoffice.equipes") }}"><i class="white-text material-icons left">people</i>Équipe</a>
+    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %}active blue darken-3{% endif %}">
+        <a class="white-text center-align" href="{{ path("backoffice.rencontres") }}"><i class="white-text material-icons left">flash_on</i>Rencontre</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/division' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.divisions") }}"><i class="white-text material-icons left">import_export</i>Division</a>
     </li>
-    <li class="first_sidenav li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("backoffice.disponibilites") }}"><i class="white-text material-icons left">feedback</i>Disponibilité</a>
+    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/equipe' %}active blue darken-3{% endif %}">
+        <a class="white-text center-align" href="{{ path("backoffice.equipes") }}"><i class="white-text material-icons left">people</i>Équipe</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.competiteurs") }}"><i class="white-text material-icons left">account_box</i>Compétiteur</a>
+    </li>
+    <li class="first_sidenav li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
+        <a class="white-text center-align" href="{{ path("backoffice.disponibilites") }}"><i class="white-text material-icons left">feedback</i>Disponibilité</a>
     </li>
     <li class="li_in_line">
         <a class="white-text center-align dropdown-trigger" href="{{ path('index') }}">

@@ -42,7 +42,8 @@ class JourneeRepository extends ServiceEntityRepository
             ->addSelect('j.undefined')
             ->addSelect('c.nom')
             ->leftJoin('j.idChampionnat', 'c')
-            ->orderBy('c.nom')
+            ->orderBy('j.dateJournee')
+            ->addOrderBy('c.nom')
             ->getQuery()
             ->getResult();
 

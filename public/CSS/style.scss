@@ -23,6 +23,11 @@ body {
   position: relative;
 }
 
+html,body{
+  scrollbar-color: $scroll_blue white !important;
+  scrollbar-width: thin;
+}
+
 #wrap {
   min-height: 100%;
   position: relative;
@@ -655,7 +660,19 @@ li {
   background: $scroll_dark_blue;
 }
 
-@media screen and (max-width: 1396px) {
+@media screen and (max-width: 1455px) {
+  .right_items_navbar_general{
+    .right_items_navbar {
+      display: none;
+    }
+  }
+
+  .sidenav-trigger.sidenav-general {
+    display: block !important;
+  }
+}
+
+@media screen and (max-width: 1389px) {
   .right_items_navbar_backoffice{
     .right_items_navbar {
       display: none;
@@ -674,15 +691,15 @@ li {
   }
 }
 
-@media screen and (max-width: 1172px) {
-  .right_items_navbar_general{
-    .right_items_navbar {
+@media screen and (max-width: 1167px) {
+  .navbar-general{
+    .left_items {
       display: none;
     }
-  }
 
-  .sidenav-trigger.sidenav-general {
-    display: block !important;
+    .esftt_logo {
+      display: block;
+    }
   }
 }
 
@@ -721,18 +738,6 @@ li {
     & img.picture_compet{
       width: 40px;
       height: 40px;
-    }
-  }
-}
-
-@media screen and (max-width: 885px) {
-  .navbar-general{
-    .left_items {
-      display: none;
-    }
-
-    .esftt_logo {
-      display: block;
     }
   }
 }

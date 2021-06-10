@@ -83,7 +83,7 @@ class HomeController extends AbstractController
      */
     public function indexTypeAction(int $type): Response
     {
-        $championnat = ($this->championnatRepository->find($type) ?:$this->championnatRepository->getFirstChampionnatAvailable());
+        $championnat = ($this->championnatRepository->find($type) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
         if ($championnat) {
             $idJournee = min(array_map(function ($journee) {
@@ -112,6 +112,9 @@ class HomeController extends AbstractController
     {
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
+        usort($journees, function($j1, $j2){
+            return $j1->getDateJournee() > $j2->getDateJournee();
+        });
 
         if (!in_array($id, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))) throw new Exception('Cette journée est inexistante', 500);
         $journee = array_values(array_filter($journees, function($journee) use ($id) { return ($journee->getIdJournee() == $id ? $journee : null); }))[0];
@@ -233,6 +236,9 @@ class HomeController extends AbstractController
             'limiteBrulage' => $championnat->getLimiteBrulage()
         ]);
         $journees = $championnat->getJournees()->toArray();
+        usort($journees, function($j1, $j2){
+            return $j1->getDateJournee() > $j2->getDateJournee();
+        });
 
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
