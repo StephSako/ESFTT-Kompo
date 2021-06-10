@@ -143,9 +143,14 @@ class HomeController extends AbstractController
             return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
         }, $compos));
 
-        // Id des équipes valides
-        $idEquipesVisuel = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
-        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
+        // Numéros des équipes valides pour le brûlage
+        $equipesBrulage = array_map(function($equipe){
+            return $equipe->getNumero();
+        }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
+            return $equipe->getIdDivision() != null;
+        }));
+        $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
+        $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
 
         // Nombre minimal critique de joueurs pour les compos du championnat départemental
         $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
@@ -213,17 +218,21 @@ class HomeController extends AbstractController
         // Nombre de joueurs maximum par équipe du championnat
         $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
 
-        // IDs des équipes sujettes au brûlage
-        $idEquipesBrulage = $this->equipeRepository->getIdEquipesBrulees('MAX', $type);
+        // Numéros des équipes valides pour le brûlage
+        $equipesBrulage = array_map(function($equipe){
+            return $equipe->getNumero();
+        }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
+            return $equipe->getIdDivision() != null;
+        }));
+        $idEquipesBrulageVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
+        $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
+
         $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $form = $this->createForm(RencontreType::class, $compo, [
             'nbMaxJoueurs' => $nbMaxJoueurs,
             'limiteBrulage' => $championnat->getLimiteBrulage()
         ]);
         $journees = $championnat->getJournees()->toArray();
-
-        // IDs des équipes sujettes au brûlage à afficher dans la table
-        $idEquipesBrulagePrint = $this->equipeRepository->getIdEquipesBrulees('MIN', $type);
 
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
@@ -279,7 +288,7 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
             'brulageSelectionnables' => $brulageSelectionnables,
-            'idEquipesBrulagePrint' => $idEquipesBrulagePrint,
+            'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,

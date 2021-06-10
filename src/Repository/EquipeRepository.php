@@ -37,25 +37,6 @@ class EquipeRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des IDs des équipes soumises au brûlage
-     * @param string $fonction
-     * @param int $type
-     * @return array
-     */
-    public function getIdEquipesBrulees(string $fonction, int $type): array
-    {
-        return array_column($this->createQueryBuilder('e')
-            ->select('e.numero')
-            ->where('e.idDivision IS NOT NULL')
-            ->andWhere('e.idChampionnat = :idChampionnat')
-            ->andWhere('e.idEquipe <> (SELECT ' . $fonction . '(e_.idEquipe) from App\Entity\Equipe e_ WHERE e_.idChampionnat = :idChampionnat AND e_.idDivision IS NOT NULL)')
-            ->setParameter('idChampionnat', $type)
-            ->orderBy('e.numero')
-            ->getQuery()
-            ->getResult(), 'numero');
-    }
-
-    /**
      * @param int $idDeletedDivision
      * @return int|mixed|string
      */
