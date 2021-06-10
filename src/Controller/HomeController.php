@@ -89,16 +89,21 @@ class HomeController extends AbstractController
     public function indexTypeAction(int $type): Response
     {
         $championnat = ($this->championnatRepository->find($type) ?:$this->championnatRepository->getFirstChampionnatAvailable());
-        $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
 
-        while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
-            $idJournee++;
-        }
+        if ($championnat) {
+            $idJournee = min(array_map(function ($journee) {
+                return $journee->getIdJournee();
+            }, $championnat->getJournees()->toArray()));
 
-        return $this->redirectToRoute('journee.show', [
-            'type' => $championnat->getIdChampionnat(),
-            'id' => $idJournee
-        ]);
+            while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int)(new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()) {
+                $idJournee++;
+            }
+
+            return $this->redirectToRoute('journee.show', [
+                'type' => $championnat->getIdChampionnat(),
+                'id' => $idJournee
+            ]);
+        } else return $this->redirectToRoute('index', []);
     }
 
     /**
