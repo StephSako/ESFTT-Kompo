@@ -6,7 +6,6 @@ use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\EquipeRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use DateTime;
@@ -21,7 +20,6 @@ class HomeController extends AbstractController
 {
     private $em;
     private $competiteurRepository;
-    private $equipeRepository;
     private $championnatRepository;
     private $disponibiliteRepository;
     private $journeeRepository;
@@ -33,7 +31,6 @@ class HomeController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
-     * @param EquipeRepository $equipeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
@@ -41,7 +38,6 @@ class HomeController extends AbstractController
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
-                                EquipeRepository $equipeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -50,7 +46,6 @@ class HomeController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->journeeRepository = $journeeRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->equipeRepository = $equipeRepository;
     }
 
     /**
@@ -144,9 +139,10 @@ class HomeController extends AbstractController
         }, $compos));
 
         // Numéros des équipes valides pour le brûlage
+        $equipes = $championnat->getEquipes()->toArray();
         $equipesBrulage = array_map(function($equipe){
             return $equipe->getNumero();
-        }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
+        }, array_filter($equipes, function($equipe){
             return $equipe->getIdDivision() != null;
         }));
         $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
@@ -158,7 +154,11 @@ class HomeController extends AbstractController
         }, $compos));
 
         // Equipes sans divisions affiliées
-        $equipesSansDivision = $this->equipeRepository->getEquipesSansDivision($type);
+        $equipesSansDivision = array_map(function($equipe){
+            return $equipe->getNumero();
+        }, array_filter($equipes, function($equipe){
+            return $equipe->getIdDivision() == null;
+        }));
 
         $nbDispos = count(array_filter($joueursDeclares, function($dispo){return $dispo->getDisponibilite();}));
 
