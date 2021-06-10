@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Journee;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -50,5 +51,23 @@ class JourneeRepository extends ServiceEntityRepository
             $querySorted[$item['nom']][$key] = $item;
         }
         return $querySorted;
+    }
+
+    /**
+     * Avoir la date la plus lointaine d'un championnat
+     * @param int $type
+     * @return int|mixed|string
+     */
+    public function findEarlistDate(int $type): DateTime
+    {
+        $query = $this->createQueryBuilder('j')
+            ->select('j.dateJournee')
+            ->where('j.idChampionnat = :type')
+            ->setParameter('type', $type)
+            ->orderBy('j.dateJournee', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+        return $query[0]['dateJournee'];
     }
 }

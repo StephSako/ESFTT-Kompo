@@ -162,7 +162,7 @@ class FFTTApiController extends AbstractController
             $rencontresParEquipesSorted[mb_convert_case($item['equipeESFTT'], MB_CASE_TITLE, "UTF-8")][$key] = $item;
         }
 
-        return $this->render('TEST.html.twig', [
+        return $this->render('backoffice/reset.html.twig', [
             'message' => $message,
             'joueursIssued' => $joueursIssued,
             'equipesIssued' => $equipesIssued,

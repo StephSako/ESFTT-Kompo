@@ -37,7 +37,7 @@ class BackOfficeRencontreController extends AbstractController
      * @Route("/backoffice/rencontres", name="backoffice.rencontres")
      * @return Response
      */
-    public function indexRencontre(): Response
+    public function index(): Response
     {
         return $this->render('backoffice/rencontre/index.html.twig', [
             'rencontres' => $this->championnatRepository->getAllRencontres()
@@ -76,12 +76,9 @@ class BackOfficeRencontreController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'adversaire'))  $this->addFlash('fail', 'L\'adversaire \'' . $rencontre->getAdversaire() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/rencontre/edit.html.twig', [

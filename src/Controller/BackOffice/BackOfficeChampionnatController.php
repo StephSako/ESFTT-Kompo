@@ -4,8 +4,10 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Championnat;
 use App\Entity\Journee;
+use App\Entity\Rencontre;
 use App\Form\ChampionnatType;
 use App\Repository\ChampionnatRepository;
+use App\Repository\JourneeRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -19,12 +21,21 @@ class BackOfficeChampionnatController extends AbstractController
 
     private $em;
     private $championnatRepository;
+    private $journeeRepository;
 
+    /**
+     * BackOfficeChampionnatController constructor.
+     * @param ChampionnatRepository $championnatRepository
+     * @param JourneeRepository $journeeRepository
+     * @param EntityManagerInterface $em
+     */
     public function __construct(ChampionnatRepository $championnatRepository,
+                                JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
+        $this->journeeRepository = $journeeRepository;
     }
 
     /**
@@ -58,7 +69,7 @@ class BackOfficeChampionnatController extends AbstractController
                     $journee = new Journee();
                     $journee->setIdChampionnat($championnat);
                     $journee->setUndefined(true);
-                    $journee->setDateJournee((new DateTime())->modify('+' .$i . ' day'));
+                    $journee->setDateJournee((new DateTime())->modify('+' . $i . ' day'));
                     $this->em->persist($journee);
                 }
 
@@ -97,9 +108,38 @@ class BackOfficeChampionnatController extends AbstractController
         if ($form->isSubmitted()) {
             try {
                 $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
+                $journees = $championnat->getJournees()->toArray();
 
-                for ($i = $championnat->getNbJournees(); $i < count($championnat->getJournees()->toArray()); $i++) {
-                    $this->em->remove($championnat->getJournees()->toArray()[$i]);
+                if ($championnat->getNbJournees() < count($journees)){
+                    for ($i = $championnat->getNbJournees(); $i < count($journees); $i++) {
+                        $this->em->remove($journees[$i]);
+                    }
+                } else if ($championnat->getNbJournees() > count($journees)){
+                    $equipes = $championnat->getEquipes()->toArray();
+                    $earliestDate = $this->journeeRepository->findEarlistDate($idChampionnat);
+                    for ($i = count($journees); $i < $championnat->getNbJournees(); $i++) {
+                        $journee = new Journee();
+                        $journee->setIdChampionnat($championnat);
+                        $journee->setUndefined(true);
+                        $journee->setDateJournee($earliestDate->modify('+1 day'));
+                        $this->em->persist($journee);
+                        $this->em->flush();
+
+                        foreach ($equipes as $equipe){
+                            $rencontre = new Rencontre($equipe->getIdChampionnat());
+                            $rencontre
+                                ->setIdJournee($journee)
+                                ->setIdEquipe($equipe)
+                                ->setDomicile(true)
+                                ->setHosted(false)
+                                ->setDateReport($journee->getDateJournee())
+                                ->setReporte(false)
+                                ->setAdversaire(null)
+                                ->setExempt(false);
+                            $this->em->persist($rencontre);
+                            $this->em->flush();
+                        }
+                    }
                 }
 
                 $this->em->flush();
@@ -109,8 +149,7 @@ class BackOfficeChampionnatController extends AbstractController
                 if ($e->getPrevious()->getCode() == "23000"){
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                }
-                else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 

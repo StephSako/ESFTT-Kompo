@@ -46,7 +46,7 @@ class BackOfficeEquipeController extends AbstractController
      * @param string|null $focusedTab
      * @return Response
      */
-    public function indexEquipes(?string $focusedTab): Response
+    public function index(?string $focusedTab): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
             'equipes' => $this->championnatRepository->getAllEquipes(),
@@ -76,7 +76,8 @@ class BackOfficeEquipeController extends AbstractController
                     $this->em->persist($equipe);
 
                     /** On créé toutes les rencontres de la nouvelle équipe **/
-                    foreach ($equipe->getIdChampionnat()->getJournees()->toArray() as $journee){
+                    $journees = $equipe->getIdChampionnat()->getJournees()->toArray();
+                    foreach ($journees as $journee){
                         $rencontre = new Rencontre($equipe->getIdChampionnat());
                         $rencontre
                             ->setIdJournee($journee)
@@ -97,12 +98,9 @@ class BackOfficeEquipeController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/equipe/new.html.twig', [
@@ -147,8 +145,7 @@ class BackOfficeEquipeController extends AbstractController
                         if ($e->getPrevious()->getCode() == "23000"){
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                        }
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }

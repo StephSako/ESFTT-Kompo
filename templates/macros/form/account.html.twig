@@ -117,10 +117,10 @@
                 } else return false;
             }
         </script>
-        <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}" defer></script>
     {% endif %}
 
-    <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.js') }}" defer></script>
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
@@ -147,5 +147,5 @@
         </form>
     </div>
 
-    <script type="text/javascript" src="{{ asset('JS/accountEditPassword.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/accountEditPassword.js') }}" defer></script>
 {% endmacro %}

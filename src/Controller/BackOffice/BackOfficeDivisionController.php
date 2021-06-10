@@ -44,7 +44,7 @@ class BackOfficeDivisionController extends AbstractController
      * @Route("/backoffice/divisions", name="backoffice.divisions")
      * @return Response
      */
-    public function indexDivisions(): Response
+    public function index(): Response
     {
         return $this->render('backoffice/division/index.html.twig', [
             'divisions' => $this->championnatRepository->getAllDivisions()
@@ -79,12 +79,9 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/division/new.html.twig', [
@@ -121,7 +118,7 @@ class BackOfficeDivisionController extends AbstractController
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }

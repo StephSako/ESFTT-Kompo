@@ -32,7 +32,7 @@ class BackOfficeJourneeController extends AbstractController
      * @Route("/backoffice/journees", name="backoffice.journees")
      * @return Response
      */
-    public function indexJournee(): Response
+    public function index(): Response
     {
         return $this->render('backoffice/journee/index.html.twig', [
             'journees' => $this->journeeRepository->getAllJournees()
@@ -46,7 +46,7 @@ class BackOfficeJourneeController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function editJournee(int $idJournee, Request $request): Response
+    public function edit(int $idJournee, Request $request): Response
     {
         if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
         $form = $this->createForm(JourneeType::class, $journee);
@@ -55,12 +55,17 @@ class BackOfficeJourneeController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $this->em->flush();
-                $this->addFlash('success', 'Journée modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.journees');
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+                try {
+                    $this->em->flush();
+                    $this->addFlash('success', 'Journée modifiée avec succès !');
+                    return $this->redirectToRoute('backoffice.journees');
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000") {
+                        if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/edit.html.twig', [
