@@ -48,17 +48,31 @@ class BackOfficeJourneeController extends AbstractController
      */
     public function edit(int $idJournee, Request $request): Response
     {
-        if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
+        if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);
         $form = $this->createForm(JourneeType::class, $journee);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $this->em->flush();
-                    $this->addFlash('success', 'Journée modifiée avec succès !');
-                    return $this->redirectToRoute('backoffice.journees');
+                    /** On ne peut pas mélanger les dates */
+                    $journees = $journee->getIdChampionnat()->getJournees()->toArray();
+                    $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+                        return $journeeChamp->getDateJournee() == $journee->getDateJournee();
+                    }));
+                    $posJournee = end($posJournee);
+
+                    $nbJourneesBefore = count(array_filter($journees, function($journeeChamp) use ($journee) {
+                        return $journeeChamp->getDateJournee() < $journee->getDateJournee();
+                    }));
+
+                    if ($posJournee > $nbJourneesBefore) $this->addFlash('fail', 'La date ne peut pas être postèrieure ou égale à celles des journées précédentes');
+                    else if ($posJournee < $nbJourneesBefore) $this->addFlash('fail', 'La date ne peut pas être ultèrieure ou égale à celles des journées suivantes');
+                    else {
+                        $this->em->flush();
+                        $this->addFlash('success', 'Journée modifiée avec succès !');
+                        return $this->redirectToRoute('backoffice.journees');
+                    }
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
