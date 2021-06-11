@@ -114,7 +114,6 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * // TODO Refaire
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
@@ -122,30 +121,22 @@ class SecurityController extends AbstractController
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-        //TODO Classer selon le championnat en cache
-        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
-        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
         $user = $this->getUser();
-
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
 
-        if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-            $password = $encoder->encodePassword($user, $request->get('new_password'));
-            $user->setPassword($password);
+        if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
+            if ($encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
+            if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+                    $password = $encoder->encodePassword($user, $request->get('new_password'));
+                    $user->setPassword($password);
 
-            $this->em->flush();
-            $this->addFlash('success', 'Mot de passe modifié !');
-        } else $this->addFlash('fail', 'Les mots de passe ne correspond pas');
+                    $this->em->flush();
+                    $this->addFlash('success', 'Mot de passe modifié !');
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+            } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
+        } else $this->addFlash('fail', 'Remplissez tous les champs');
 
-        return $this->render('account/edit.html.twig', [
-            'user' => $user,
-            'type' => 'general',
-            'urlImage' => $user->getAvatar(),
-            'path' => 'account.update.password',
-            'journees' => $journees,
-            'form' => $formCompetiteur->createView()
-        ]);
+        return $this->redirectToRoute('account');
     }
 }
