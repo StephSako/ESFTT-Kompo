@@ -52,7 +52,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/competiteurs", name="backoffice.competiteurs")
      * @return Response
      */
-    public function indexCompetiteurs(): Response
+    public function index(): Response
     {
         return $this->render('backoffice/competiteur/index.html.twig', [
             'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC'])
@@ -66,8 +66,7 @@ class BackOfficeCompetiteurController extends AbstractController
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-        }
-        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
     }
 
     /**
@@ -97,9 +96,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         'form' => $form->createView()
                     ]);
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/competiteur/new.html.twig', [
@@ -122,33 +119,32 @@ class BackOfficeCompetiteurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-                try {
-                    /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions de chaque championnat ... **/
-                    if ($competiteur->isVisitor()){
-                        for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
-                            $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
-                        }
-
-                        /** ... et ses disponiblités sont supprimées */
-                        $this->disponibiliteRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
+            try {
+                /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions de chaque championnat ... **/
+                if ($competiteur->isVisitor()){
+                    for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
+                        $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                     }
 
-                    if ($competiteur->isAdmin()){
-                        $competiteur->setIsCapitaine(true);
-                        $competiteur->setVisitor(false);
-                    }
-                    else if ($competiteur->isVisitor()){
-                        $competiteur->setIsCapitaine(false);
-                        $competiteur->setIsAdmin(false);
-                    }
-                    $competiteur->setNom(mb_convert_case($competiteur->getNom(), MB_CASE_UPPER, "UTF-8"));
-                    $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
-                    $this->em->flush();
-                    $this->addFlash('success', 'Compétiteur modifié avec succès !');
-                    return $this->redirectToRoute('backoffice.competiteurs');
-                } catch(Exception $e){
-                    $this->throwExceptionBOAccount($e, $competiteur);
+                    /** ... et ses disponiblités sont supprimées */
+                    $this->disponibiliteRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
                 }
+
+                if ($competiteur->isAdmin()) {
+                    $competiteur->setIsCapitaine(true);
+                    $competiteur->setVisitor(false);
+                } else if ($competiteur->isVisitor()) {
+                    $competiteur->setIsCapitaine(false);
+                    $competiteur->setIsAdmin(false);
+                }
+                $competiteur->setNom(mb_convert_case($competiteur->getNom(), MB_CASE_UPPER, "UTF-8"));
+                $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
+                $this->em->flush();
+                $this->addFlash('success', 'Compétiteur modifié avec succès !');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            } catch(Exception $e){
+                $this->throwExceptionBOAccount($e, $competiteur);
+            }
         }
 
         return $this->render('account/edit.html.twig', [
@@ -161,6 +157,7 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
     }
 
+    // TODO TESTER
     /**
      * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
@@ -168,7 +165,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @return RedirectResponse|Response
      */
-    public function updateCompetiteurPassword(Competiteur $competiteur, Request $request, UserPasswordEncoderInterface $encoder){
+    public function updatePassword(Competiteur $competiteur, Request $request, UserPasswordEncoderInterface $encoder){
         $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
@@ -179,10 +176,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Mot de passe de l\'utilisateur modifié !');
             return $this->redirectToRoute('backoffice.competiteurs');
-        }
-        else {
-            $this->addFlash('fail', 'Les mots de passe ne correspond pas');
-        }
+        } else $this->addFlash('fail', 'Les mots de passe ne correspond pas');
 
         return $this->render('account/edit.html.twig', [
             'competiteur' => $competiteur,
@@ -201,7 +195,6 @@ class BackOfficeCompetiteurController extends AbstractController
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
-
             /** On set à NULL ses sélections dans les compositions d'équipe */
             for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
                 $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);

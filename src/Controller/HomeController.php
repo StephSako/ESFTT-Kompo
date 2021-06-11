@@ -166,7 +166,7 @@ class HomeController extends AbstractController
         $nbDispos = count(array_filter($joueursDeclares, function($dispo){return $dispo->getDisponibilite();}));
 
         // Si l'utilisateur actuel est disponible pour la journée actuelle
-        $disponible = ($dispoJoueur ? $dispoJoueur->getDisponibilite() : null);
+        $disponible = ($dispoJoueur ? ($dispoJoueur->getDisponibilite() ? 1 : 0) : -1);
 
         // Si l'utilisateur actuel est sélectionné pour la journée actuelle
         $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);

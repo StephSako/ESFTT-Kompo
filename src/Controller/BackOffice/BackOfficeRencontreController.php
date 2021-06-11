@@ -51,7 +51,7 @@ class BackOfficeRencontreController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function editRencontre(int $idRencontre, Request $request): Response
+    public function edit(int $idRencontre, Request $request): Response
     {
         if (!($rencontre = $this->rencontreRepository->find($idRencontre))) throw new Exception('Cette rencontre est inexistante', 500);
         $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);

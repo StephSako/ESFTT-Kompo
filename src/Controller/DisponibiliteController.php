@@ -37,14 +37,13 @@ class DisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/journee/disponibilite/new/{journee}/{type}/{dispo}", name="journee.disponibilite.new")
+     * @Route("/journee/disponibilite/new/{journee}/{dispo}", name="journee.disponibilite.new")
      * @param int $journee
-     * @param int $type
      * @param bool $dispo
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, int $type, bool $dispo):Response
+    public function new(int $journee, bool $dispo):Response
     {
         if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
 

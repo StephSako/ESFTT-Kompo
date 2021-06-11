@@ -75,6 +75,7 @@ class SecurityController extends AbstractController
                 try {
                     $user->setNom(mb_convert_case($user->getNom(), MB_CASE_UPPER, "UTF-8"));
                     $user->setPrenom(mb_convert_case($user->getPrenom(), MB_CASE_TITLE, "UTF-8"));
+
                     $this->em->flush();
                     $this->addFlash('success', 'Informations modifiées !');
                     return $this->redirectToRoute('account');
@@ -84,8 +85,8 @@ class SecurityController extends AbstractController
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+
                     return $this->render('account/edit.html.twig', [
                         'type' => 'general',
                         'user' => $user,
@@ -97,10 +98,7 @@ class SecurityController extends AbstractController
                         'form' => $form->createView()
                     ]);
                 }
-            }
-            else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('account/edit.html.twig', [
@@ -139,10 +137,7 @@ class SecurityController extends AbstractController
 
             $this->em->flush();
             $this->addFlash('success', 'Mot de passe modifié !');
-        }
-        else {
-            $this->addFlash('fail', 'Les mots de passe ne correspond pas');
-        }
+        } else $this->addFlash('fail', 'Les mots de passe ne correspond pas');
 
         return $this->render('account/edit.html.twig', [
             'user' => $user,
