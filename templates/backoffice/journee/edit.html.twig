@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/form/division.html.twig' as _division %}
+{% import 'macros/form/journee.html.twig' as _journee %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
-{% block title %}Modifier la division{% endblock %}
+{% block title %}Modifier la journée{% endblock %}
 
 {% block body %}
 
@@ -13,7 +14,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ _division.form(form, 'Modifier', true, true) }}
+        {{ _journee.form(form, iJournee) }}
     </div>
 
 {% endblock %}

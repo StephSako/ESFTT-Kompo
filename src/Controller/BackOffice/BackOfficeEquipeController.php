@@ -105,8 +105,6 @@ class BackOfficeEquipeController extends AbstractController
 
         return $this->render('backoffice/equipe/new.html.twig', [
             'form' => $form->createView(),
-            'title' => 'équipes',
-            'macro' => 'equipe',
             'champHasDivisions' => count($divisions) > 0
         ]);
     }
@@ -153,8 +151,6 @@ class BackOfficeEquipeController extends AbstractController
         return $this->render('backoffice/equipe/edit.html.twig', [
             'equipe' => $equipe,
             'form' => $form->createView(),
-            'title' => 'Modifier l\'équipe',
-            'textForm' => 'Modifier',
             'champHasDivisions' => $champHasDivisions
         ]);
     }

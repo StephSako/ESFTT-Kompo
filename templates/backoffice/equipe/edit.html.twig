@@ -3,7 +3,7 @@
 {% import 'macros/form/equipe.html.twig' as _equipe %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
-{% block title %}Modifier la rencontre{% endblock %}
+{% block title %}Modifier l'équipe{% endblock %}
 
 {% block body %}
 
@@ -14,7 +14,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ _equipe.form(form, textForm, champHasDivisions) }}
+        {{ _equipe.form(form, 'Modifier', champHasDivisions) }}
     </div>
 
 {% endblock %}

@@ -51,17 +51,16 @@ class BackOfficeJourneeController extends AbstractController
         if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);
         $form = $this->createForm(JourneeType::class, $journee);
         $form->handleRequest($request);
+        $journees = $journee->getIdChampionnat()->getJournees()->toArray();
+        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+            return $journeeChamp->getDateJournee() == $journee->getDateJournee();
+        }));
+        $posJournee = end($posJournee);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
                     /** On ne peut pas mélanger les dates */
-                    $journees = $journee->getIdChampionnat()->getJournees()->toArray();
-                    $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
-                        return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-                    }));
-                    $posJournee = end($posJournee);
-
                     $nbJourneesBefore = count(array_filter($journees, function($journeeChamp) use ($journee) {
                         return $journeeChamp->getDateJournee() < $journee->getDateJournee();
                     }));
@@ -82,11 +81,9 @@ class BackOfficeJourneeController extends AbstractController
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
-        return $this->render('backoffice/edit.html.twig', [
+        return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'title' => 'Modifier la journée',
-            'macro' => 'journee',
-            'textForm' => $idJournee
+            'iJournee' => $posJournee+=1
         ]);
     }
 }

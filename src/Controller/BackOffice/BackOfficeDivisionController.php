@@ -86,8 +86,6 @@ class BackOfficeDivisionController extends AbstractController
 
         return $this->render('backoffice/division/new.html.twig', [
             'form' => $form->createView(),
-            'title' => 'divisions',
-            'macro' => 'division',
             'hasChampionnats' => count($listChamps) > 0
         ]);
     }
@@ -126,9 +124,6 @@ class BackOfficeDivisionController extends AbstractController
         return $this->render('backoffice/division/edit.html.twig', [
             'division' => $division,
             'form' => $form->createView(),
-            'title' => 'Modifier la division',
-            'macro' => 'division',
-            'textForm' => 'Modifier'
         ]);
     }
 
