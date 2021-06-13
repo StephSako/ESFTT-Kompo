@@ -8,7 +8,6 @@ $(document).ready(function () {
     let cb_c_mail2 = $('#cb_c_mail_2');
     let cb_c_num = $('#cb_c_num');
     let cb_c_num2 = $('#cb_c_num_2');
-    console.log(cb_c_num2)
 
     /** Evènements liés aux emails et numéros de téléphone **/
     if (!i_mail.val()) cb_c_mail.prop('checked', false).prop('disabled', true);

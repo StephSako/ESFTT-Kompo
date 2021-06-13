@@ -106,19 +106,42 @@
                             <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title }}</h5>
                         {% endif %}
                     </div>
-
-                        {{ form_start(form)}}
-                            <div class="form_div_list">
-                                {% for i in 0..(nbJoueursDivision - 1) %}
-                                    <div class="row">
-                                        <div class="col s12 m3{% if i > 2 and i < 6 and compo.idEquipe.idDivision.nbJoueurs > 4 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
-                                        <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                    {{ form_start(form)}}
+                        <div class="form_div_list">
+                            {% for i in 0..(nbJoueursDivision - 1) %}
+                                <div class="row">
+                                    <div class="col s12 m3{% if i > 2 and i < 6 and compo.idEquipe.idDivision.nbJoueurs > 4 %} light_blue{% endif %}"><h5>Joueur {{ i + 1 }}</h5></div>
+                                    <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
                         <br>
-                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
-                        <button class="btn btn_form waves-effect waves-light blue lighten-2">Confirmer</button><br>
+                        <div id="btnsEditCompo" style="height: 38px;">
+                            <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+                            <button class="btn btn_form waves-effect waves-light blue lighten-2" onclick="preloaderConfirm()">Confirmer</button><br>
+                        </div>
+
+                        <div id="preloaderSetDispo" hidden style="height: 38px;">
+                            <div class="preloader-wrapper small active">
+                                <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script type="text/javascript">
+                            function preloaderConfirm() {
+                                $('#preloaderSetDispo').removeAttr('hidden');
+                                $('#btnsEditCompo').attr('hidden', true);
+                            }
+                        </script>
+
                     {{ form_end(form) }}
                 </div>
             </div>
