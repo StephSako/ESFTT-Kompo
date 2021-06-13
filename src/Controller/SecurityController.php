@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -86,24 +87,12 @@ class SecurityController extends AbstractController
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-
-                    return $this->render('account/edit.html.twig', [
-                        'type' => 'general',
-                        'user' => $user,
-                        'urlImage' => $user->getAvatar(),
-                        'path' => 'account.update.password',
-                        'allChampionnats' => $allChampionnats,
-                        'championnat' => $championnat,
-                        'journees' => $journees,
-                        'form' => $form->createView()
-                    ]);
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('account/edit.html.twig', [
             'type' => 'general',
-            'user' => $user,
             'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
             'allChampionnats' => $allChampionnats,

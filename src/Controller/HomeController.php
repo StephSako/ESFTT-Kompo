@@ -151,7 +151,7 @@ class HomeController extends AbstractController
         $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
         $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
 
-        // Nombre minimal critique de joueurs pour les compos du championnat départemental
+        // Nombre minimal critique de joueurs pour les compos du championnat
         $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
             return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() - 1;
         }, $compos));

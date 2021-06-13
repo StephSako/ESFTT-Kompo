@@ -84,19 +84,19 @@ class CompetiteurType extends AbstractType
                 ]
             ])
             ->add('contactableMail', CheckboxType::class, [
-                'label' => 'Contactable à l\'adresse mail n°1',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactableMail2', CheckboxType::class, [
-                'label' => 'Contactable à l\'adresse mail n°2',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro n°1',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber2', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro n°2',
+                'label' => 'Contactable',
                 'required' => false
             ]);
     }
