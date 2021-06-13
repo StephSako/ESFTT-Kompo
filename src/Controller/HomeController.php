@@ -267,9 +267,17 @@ class HomeController extends AbstractController
                 try {
                     $this->em->flush();
 
-                    /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné **/
-                    for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                        if ($form->getData()->getIdJoueurN($i)) $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
+                    /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
+                    $idJournee = array_keys(array_filter($championnat->getJournees()->toArray(), function ($c) use ($compo) {
+                        return $c->getIdJournee() === $compo->getIdJournee()->getIdJournee();
+                    }))[0]+=1;
+
+                    // TODO Si pas dernière dernière journée
+                    if (!in_array($compo->getIdEquipe()->getNumero(), $idEquipesBrulageVisuel)){
+                        for ($i = 0; $i < $nbJoueursDivision; $i++) {
+                            if ($form->getData()->getIdJoueurN($i) && $idJournee < $championnat->getNbJournees())
+                                $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
+                        }
                     }
 
                     $this->em->flush();
@@ -298,6 +306,7 @@ class HomeController extends AbstractController
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
+            'idJournee' => array_search($compo->getIdJournee(), $journees)+1,
             'form' => $form->createView()
         ]);
     }

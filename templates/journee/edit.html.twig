@@ -3,7 +3,7 @@
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 
-{% block title %}J{{ compo.idJournee.idJournee }} - Equipe {{ compo.idEquipe.numero }}{% endblock %}
+{% block title %}J{{ idJournee }} - Equipe {{ compo.idEquipe.numero }}{% endblock %}
 
 {% block body %}
 
@@ -33,7 +33,7 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipesBrulagePrint) }}
+                        {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, idJournee, idEquipesBrulagePrint) }}
                     </div>
                 </li>
             </ul>
@@ -64,8 +64,8 @@
                             </span>
                     {% endif %}
 
-                    <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
-                    <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ compo.idJournee.idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
+                    <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
+                    <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
 
                     <div class="row header_compo">
                         {% if compo.adversaire is null %}
@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div class="col s12 m3 hide-on-small-only">
-                {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, compo.idJournee.idJournee, idEquipesBrulagePrint) }}
+                {{ _brulage.selectionnables(championnat, brulageSelectionnables, compo.idEquipe.idEquipe, idJournee, idEquipesBrulagePrint) }}
             </div>
         </div>
     {% else %}
