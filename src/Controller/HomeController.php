@@ -281,7 +281,7 @@ class HomeController extends AbstractController
                     }
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Composition modifiée avec succès !');
+                    $this->addFlash('success', 'Composition modifiée');
 
                     return $this->redirectToRoute('journee.show', [
                         'type' => $type,
@@ -326,7 +326,7 @@ class HomeController extends AbstractController
         }
 
         $this->em->flush();
-        $this->addFlash('success', 'Composition vidée avec succès !');
+        $this->addFlash('success', 'Composition vidée');
         return $this->redirectToRoute('journee.show', [
             'type' => $compo->getIdChampionnat()->getIdChampionnat(),
             'id' => $compo->getIdJournee()->getIdJournee()

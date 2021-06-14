@@ -92,7 +92,7 @@ class BackOfficeEquipeController extends AbstractController
                     }
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Equipe créée avec succès !');
+                    $this->addFlash('success', 'Equipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
@@ -137,7 +137,7 @@ class BackOfficeEquipeController extends AbstractController
                         }
 
                         $this->em->flush();
-                        $this->addFlash('success', 'Equipe modifiée avec succès !');
+                        $this->addFlash('success', 'Equipe modifiée');
                         return $this->redirectToRoute('backoffice.equipes');
                     } catch(Exception $e){
                         if ($e->getPrevious()->getCode() == "23000"){
@@ -169,7 +169,7 @@ class BackOfficeEquipeController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
             $this->em->remove($equipe);
             $this->em->flush();
-            $this->addFlash('success', 'Équipe supprimée avec succès !');
+            $this->addFlash('success', 'Équipe supprimée');
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
         return $this->redirectToRoute('backoffice.equipes');

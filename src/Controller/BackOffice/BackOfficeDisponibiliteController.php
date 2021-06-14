@@ -78,8 +78,8 @@ class BackOfficeDisponibiliteController extends AbstractController
 
             $this->em->persist($disponibilite);
             $this->em->flush();
-            $this->addFlash('success', 'Disponibilité signalée avec succès !');
-        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
+            $this->addFlash('success', 'Disponibilité enregistrée');
+        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
 
         return $this->redirectToRoute('backoffice.disponibilites');
 
@@ -118,7 +118,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         }
 
         $this->em->flush();
-        $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+        $this->addFlash('success', 'Disponibilité modifiée');
 
         return $this->redirectToRoute('backoffice.disponibilites');
 

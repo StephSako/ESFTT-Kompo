@@ -88,7 +88,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->persist($competiteur);
                     $this->em->flush();
-                    $this->addFlash('success', 'Compétiteur créé avec succès !');
+                    $this->addFlash('success', 'Compétiteur créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
                     $this->throwExceptionBOAccount($e, $competiteur);
@@ -140,7 +140,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 $competiteur->setNom(mb_convert_case($competiteur->getNom(), MB_CASE_UPPER, "UTF-8"));
                 $competiteur->setPrenom(mb_convert_case($competiteur->getPrenom(), MB_CASE_TITLE, "UTF-8"));
                 $this->em->flush();
-                $this->addFlash('success', 'Compétiteur modifié avec succès !');
+                $this->addFlash('success', 'Compétiteur modifié');
                 return $this->redirectToRoute('backoffice.competiteurs');
             } catch(Exception $e){
                 $this->throwExceptionBOAccount($e, $competiteur);
@@ -157,7 +157,6 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
     }
 
-    // TODO TESTER
     /**
      * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
@@ -169,19 +168,19 @@ class BackOfficeCompetiteurController extends AbstractController
         $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
-        if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-            $password = $encoder->encodePassword($competiteur, $request->get('new_password'));
-            $competiteur->setPassword($password);
+        if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate'))) {
+            if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+                $password = $encoder->encodePassword($competiteur, $request->get('new_password'));
+                $competiteur->setPassword($password);
 
-            $this->em->flush();
-            $this->addFlash('success', 'Mot de passe de l\'utilisateur modifié !');
-            return $this->redirectToRoute('backoffice.competiteurs');
-        } else $this->addFlash('fail', 'Les mots de passe ne correspond pas');
+                $this->em->flush();
+                $this->addFlash('success', 'Mot de passe de l\'utilisateur modifié');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+        } else $this->addFlash('fail', 'Remplissez tous les champs');
 
-        return $this->render('account/edit.html.twig', [
-            'competiteur' => $competiteur,
-            'path' => 'backoffice.password.edit',
-            'form' => $form->createView()
+        return $this->redirectToRoute('backoffice.competiteur.edit', [
+            'idCompetiteur' => $competiteur->getIdCompetiteur()
         ]);
     }
 
@@ -202,7 +201,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->em->remove($competiteur);
             $this->em->flush();
-            $this->addFlash('success', 'Compétiteur supprimé avec succès !');
+            $this->addFlash('success', 'Compétiteur supprimé');
         } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('backoffice.competiteurs');

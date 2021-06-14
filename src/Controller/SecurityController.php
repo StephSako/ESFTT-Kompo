@@ -77,7 +77,7 @@ class SecurityController extends AbstractController
                     $user->setPrenom(mb_convert_case($user->getPrenom(), MB_CASE_TITLE, "UTF-8"));
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées !');
+                    $this->addFlash('success', 'Informations modifiées');
                     return $this->redirectToRoute('account');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
@@ -115,12 +115,12 @@ class SecurityController extends AbstractController
 
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
             if ($encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
-            if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
                     $password = $encoder->encodePassword($user, $request->get('new_password'));
                     $user->setPassword($password);
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Mot de passe modifié !');
+                    $this->addFlash('success', 'Mot de passe modifié');
                 } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
         } else $this->addFlash('fail', 'Remplissez tous les champs');

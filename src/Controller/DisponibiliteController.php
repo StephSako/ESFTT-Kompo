@@ -52,8 +52,8 @@ class DisponibiliteController extends AbstractController
 
             $this->em->persist($disponibilite);
             $this->em->flush();
-            $this->addFlash('success', 'Disponibilité signalée avec succès !');
-        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée !');
+            $this->addFlash('success', 'Disponibilité enregistrée');
+        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
 
         return $this->redirectToRoute('journee.show',
             [
@@ -86,7 +86,7 @@ class DisponibiliteController extends AbstractController
         }
 
         $this->em->flush();
-        $this->addFlash('success', 'Disponibilité modifiée avec succès !');
+        $this->addFlash('success', 'Disponibilité modifiée');
 
         return $this->redirectToRoute('journee.show',
             [

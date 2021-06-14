@@ -69,7 +69,7 @@ class BackOfficeJourneeController extends AbstractController
                     else if ($posJournee < $nbJourneesBefore) $this->addFlash('fail', 'La date ne peut pas être ultèrieure ou égale à celles des journées suivantes');
                     else {
                         $this->em->flush();
-                        $this->addFlash('success', 'Journée modifiée avec succès !');
+                        $this->addFlash('success', 'Journée modifiée');
                         return $this->redirectToRoute('backoffice.journees');
                     }
                 } catch (Exception $e) {

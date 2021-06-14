@@ -70,7 +70,7 @@ class BackOfficeRencontreController extends AbstractController
 
                     $rencontre->setAdversaire(mb_convert_case($rencontre->getAdversaire(), MB_CASE_TITLE, "UTF-8"));
                     $this->em->flush();
-                    $this->addFlash('success', 'Rencontre modifiée avec succès !');
+                    $this->addFlash('success', 'Rencontre modifiée');
                     return $this->redirectToRoute('backoffice.rencontres');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){

@@ -74,7 +74,7 @@ class BackOfficeChampionnatController extends AbstractController
                 }
 
                 $this->em->flush();
-                $this->addFlash('success', 'Championnat créé avec succès !');
+                $this->addFlash('success', 'Championnat créé');
                 return $this->redirectToRoute('back_office.championnats');
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000"){
@@ -143,7 +143,7 @@ class BackOfficeChampionnatController extends AbstractController
                 }
 
                 $this->em->flush();
-                $this->addFlash('success', 'Championnat modifié avec succès !');
+                $this->addFlash('success', 'Championnat modifié');
                 return $this->redirectToRoute('back_office.championnats');
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000"){
@@ -176,7 +176,7 @@ class BackOfficeChampionnatController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $championnat->getIdChampionnat(), $request->get('_token'))) {
             $this->em->remove($championnat);
             $this->em->flush();
-            $this->addFlash('success', 'Championnat supprimé avec succès !');
+            $this->addFlash('success', 'Championnat supprimé');
         } else $this->addFlash('error', 'Le championnat n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('back_office.championnats');
