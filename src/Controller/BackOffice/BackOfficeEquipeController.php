@@ -131,7 +131,7 @@ class BackOfficeEquipeController extends AbstractController
                         if ($equipe->getIdDivision() && $lastNbJoueursDivision > $equipe->getIdDivision()->getNbJoueurs()){
                             foreach ($equipe->getRencontres()->toArray() as $rencontre){
                                 for ($i = $equipe->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
-                                    $rencontre->setIdJoueurN($i, null);
+                                    $rencontre->setIdJoueurNToNull($i);
                                 }
                             }
                         }

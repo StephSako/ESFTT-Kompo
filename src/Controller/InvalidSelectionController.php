@@ -40,7 +40,7 @@ class InvalidSelectionController extends AbstractController
             $i = 0;
             while($i != $nbJoueurs){
                 if (boolval($compo['isPlayer' . $i])){
-                    $compo['compo']->setIdJoueurN($i, NULL);
+                    $compo['compo']->setIdJoueurNToNull($i);
                     break;
                 }
                 $i++;

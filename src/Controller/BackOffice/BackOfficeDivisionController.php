@@ -100,6 +100,7 @@ class BackOfficeDivisionController extends AbstractController
     public function edit(int $idDivision, Request $request): Response
     {
         if (!($division = $this->divisionRepository->find($idDivision))) throw new Exception('Cette division est inexistante', 500);
+        $nbJoueurs = $division->getNbJoueurs();
         $form = $this->createForm(DivisionType::class, $division);
         $form->handleRequest($request);
 
@@ -108,6 +109,20 @@ class BackOfficeDivisionController extends AbstractController
                 try {
                     $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
                     $division->setShortName(mb_convert_case($division->getShortName(), MB_CASE_UPPER, "UTF-8"));
+
+                    /** Si nbJoueurs diminue, on supprime les joueurs superflux des rencontres des équipes affiliées */
+                    if ($nbJoueurs > $form->getData()->getNbJoueurs()) {
+                        $commposWithPlayerSuperflux = array_filter($division->getIdChampionnat()->getRencontres()->toArray(), function ($rencontre) use ($division){
+                            return $rencontre->getIdEquipe()->getIdDivision()->getIdDivision() == $division->getIdDivision();
+                        });
+
+                        foreach($commposWithPlayerSuperflux as $compo){
+                            for ($i = $form->getData()->getNbJoueurs(); $i < $nbJoueurs; $i++){
+                                $compo->setIdJoueurNToNull($i);
+                            }
+                        }
+                    }
+
                     $this->em->flush();
                     $this->addFlash('success', 'Division modifiée');
                     return $this->redirectToRoute('backoffice.divisions');
@@ -144,7 +159,7 @@ class BackOfficeDivisionController extends AbstractController
             foreach ($division->getEquipes()->toArray() as $equipes){
                 foreach ($equipes->getRencontres() as $compo){
                     for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-                        $compo->setIdJoueurN($i, null);
+                        $compo->setIdJoueurNToNull($i);
                     }
                 }
             }

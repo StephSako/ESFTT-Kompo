@@ -322,7 +322,7 @@ class HomeController extends AbstractController
         if (!($compo = $this->rencontreRepository->find($idCompo))) throw new Exception('Cette rencontre est inexistante', 500);
 
         for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            $compo->setIdJoueurN($i, null);
+            $compo->setIdJoueurNToNull($i);
         }
 
         $this->em->flush();

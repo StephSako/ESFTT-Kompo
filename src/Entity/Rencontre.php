@@ -214,20 +214,19 @@ class Rencontre
 
     /**
      * @param int $n
-     * @param $val
      * @return Rencontre
      */
-    public function setIdJoueurN(int $n, $val): self
+    public function setIdJoueurNToNull(int $n): self
     {
-        if ($n == 0) return $this->setIdJoueur0($val);
-        else if ($n == 1) return $this->setIdJoueur1($val);
-        else if ($n == 2) return $this->setIdJoueur2($val);
-        else if ($n == 3) return $this->setIdJoueur3($val);
-        else if ($n == 4) return $this->setIdJoueur4($val);
-        else if ($n == 5) return $this->setIdJoueur5($val);
-        else if ($n == 6) return $this->setIdJoueur6($val);
-        else if ($n == 7) return $this->setIdJoueur7($val);
-        else if ($n == 8) return $this->setIdJoueur8($val);
+        if ($n == 0) return $this->setIdJoueur0(null);
+        else if ($n == 1) return $this->setIdJoueur1(null);
+        else if ($n == 2) return $this->setIdJoueur2(null);
+        else if ($n == 3) return $this->setIdJoueur3(null);
+        else if ($n == 4) return $this->setIdJoueur4(null);
+        else if ($n == 5) return $this->setIdJoueur5(null);
+        else if ($n == 6) return $this->setIdJoueur6(null);
+        else if ($n == 7) return $this->setIdJoueur7(null);
+        else if ($n == 8) return $this->setIdJoueur8(null);
         else return $this;
     }
 

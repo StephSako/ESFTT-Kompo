@@ -110,6 +110,7 @@ class BackOfficeChampionnatController extends AbstractController
                 $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
                 $journees = $championnat->getJournees()->toArray();
 
+                /** Si nbJournees diminue, on supprime les rencontres, sinon on en créé */
                 if ($championnat->getNbJournees() < count($journees)){
                     for ($i = $championnat->getNbJournees(); $i < count($journees); $i++) {
                         $this->em->remove($journees[$i]);
