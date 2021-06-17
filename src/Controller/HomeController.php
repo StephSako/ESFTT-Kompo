@@ -222,6 +222,7 @@ class HomeController extends AbstractController
         $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
 
         // Numéros des équipes valides pour le brûlage
+        $equipes = $championnat->getEquipes()->toArray();
         $equipesBrulage = array_map(function($equipe){
             return $equipe->getNumero();
         }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
@@ -268,15 +269,16 @@ class HomeController extends AbstractController
                     $this->em->flush();
 
                     /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
-                    $idJournee = array_keys(array_filter($championnat->getJournees()->toArray(), function ($c) use ($compo) {
-                        return $c->getIdJournee() === $compo->getIdJournee()->getIdJournee();
-                    }))[0]+=1;
+                    $idJournee = array_search($compo->getIdJournee(), $journees)+1;
 
-                    // TODO Si pas dernière dernière journée
-                    if (!in_array($compo->getIdEquipe()->getNumero(), $idEquipesBrulageVisuel)){
-                        for ($i = 0; $i < $nbJoueursDivision; $i++) {
-                            if ($form->getData()->getIdJoueurN($i) && $idJournee < $championnat->getNbJournees())
-                                $invalidSelectionController->checkInvalidSelection($championnat, $compo, $form->getData()->getIdJoueurN($i)->getIdCompetiteur(), $nbMaxJoueurs);
+                    /**  Si pas en dernière dernière journée ni dernière équipe **/
+                    if (end($equipes)->getNumero() != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $idJournee){
+                        $nbJournees = $championnat->getNbJournees();
+                        for ($i = $compo->getIdJournee()->getIdJournee(); $i <= $nbJournees; $i++) {
+                            for ($j = 0; $j < $nbJoueursDivision; $j++) { // TODO Optimize et à mettre dans la fonction de InvalidSelectionController
+                                if ($form->getData()->getIdJoueurN($j) && $idJournee < $nbJournees)
+                                    $invalidSelectionController->checkInvalidSelection($championnat, $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $i);
+                            }
                         }
                     }
 

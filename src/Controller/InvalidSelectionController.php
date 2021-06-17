@@ -22,13 +22,13 @@ class InvalidSelectionController extends AbstractController
 
     /**
      * @param Championnat $championnat
-     * @param Rencontre $compo
      * @param int $idJoueur
      * @param int $nbJoueurs
-     * @throws Exception
+     * @param int $numEquipe
+     * @param int $idJournee
      */
-    public function checkInvalidSelection(Championnat $championnat, Rencontre $compo, int $idJoueur, int $nbJoueurs){
-        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbJoueurs, $championnat->getIdChampionnat()), $nbJoueurs);
+    public function checkInvalidSelection(Championnat $championnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
+        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $championnat->getLimiteBrulage(), $nbJoueurs, $championnat->getIdChampionnat()), $nbJoueurs);
     }
 
     /**
