@@ -302,10 +302,7 @@ p.lobster {
 .btn_gestion {
   margin-top: 0;
 }
-.striped_table>tbody>tr:nth-child(4)>.rank,
-.striped_table>tbody>tr:nth-child(5)>.rank,
-.striped_table>tbody>tr:nth-child(6)>.rank,
-.light_blue {
+.rank.rank_blue, .light_blue {
   color: $light_blue;
 }
 

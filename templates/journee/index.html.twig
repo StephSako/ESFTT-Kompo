@@ -195,7 +195,7 @@
                         <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table">
                             <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i)) }}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs) }}
                                 {% endfor %}
                             </tbody>
                         </table>
