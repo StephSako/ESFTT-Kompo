@@ -14,7 +14,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ _equipe.form(form, 'Modifier', champHasDivisions) }}
+        {{ _equipe.form(form, 'Modifier', champHasDivisions, {championnat: championnat}) }}
     </div>
 
 {% endblock %}

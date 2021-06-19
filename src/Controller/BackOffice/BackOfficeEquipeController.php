@@ -149,7 +149,7 @@ class BackOfficeEquipeController extends AbstractController
         }
 
         return $this->render('backoffice/equipe/edit.html.twig', [
-            'equipe' => $equipe,
+            'championnat' => $equipe->getIdChampionnat()->getNom(),
             'form' => $form->createView(),
             'champHasDivisions' => $champHasDivisions
         ]);

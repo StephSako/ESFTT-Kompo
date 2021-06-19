@@ -13,7 +13,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ _division.form(form, 'Modifier', true, true) }}
+        {{ _division.form(form, 'Modifier', true, true, {championnat: championnat}) }}
     </div>
 
 {% endblock %}

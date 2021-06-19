@@ -83,7 +83,8 @@ class BackOfficeJourneeController extends AbstractController
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'iJournee' => $posJournee+=1
+            'iJournee' => $posJournee+=1,
+            'championnat' => $journee->getIdChampionnat()->getNom()
         ]);
     }
 }

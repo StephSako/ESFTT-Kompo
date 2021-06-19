@@ -1,4 +1,4 @@
-{% macro form(form, btnText, champHasDivisions) %}
+{% macro form(form, btnText, champHasDivisions, options) %}
     <style>
         li {
             color: red;
@@ -7,7 +7,8 @@
 
     {% if champHasDivisions %}
         <div class="card-panel center-align">
-            <h4 class="h4_form">{{ btnText }} une équipe</h4>
+            <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une équipe</h4>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if options %}{{ options.championnat }}{% endif %}</h5>
 
             {{ form_start(form) }}
                 <div class="row">

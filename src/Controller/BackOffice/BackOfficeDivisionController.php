@@ -137,7 +137,7 @@ class BackOfficeDivisionController extends AbstractController
         }
 
         return $this->render('backoffice/division/edit.html.twig', [
-            'division' => $division,
+            'championnat' => $division->getIdChampionnat()->getNom(),
             'form' => $form->createView(),
         ]);
     }

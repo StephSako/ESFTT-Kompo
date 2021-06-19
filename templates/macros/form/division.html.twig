@@ -1,4 +1,4 @@
-{% macro form(form, btnText, editMode, hasChampionnats) %}
+{% macro form(form, btnText, editMode, hasChampionnats, options) %}
     <style>
         li {
             color: red;
@@ -7,7 +7,8 @@
 
     {% if hasChampionnats %}
         <div class="card-panel center-align">
-            <h4 class="h4_form">{{ btnText }} une division</h4>
+            <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une division</h4>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if options %}{{ options.championnat }}{% endif %}</h5>
 
             {{ form_start(form) }}
                 <div class="row">
@@ -18,7 +19,7 @@
                         <span><i class="material-icons prefix">subject</i> Nom</span>{{ form_row(form.longName) }}
                     </div>
                     <div class="col s12 {% if not editMode %}l3{% else %}m4{% endif %}">
-                        <span><i class="material-icons prefix">people</i> Nombre de joueurs/composition</span>
+                        <span><i class="material-icons prefix">people</i> Nombre de joueurs</span>
                         {{ form_row(form.nbJoueurs) }}
                     </div>
                     {% if not editMode %}

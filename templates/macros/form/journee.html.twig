@@ -1,9 +1,7 @@
-{% macro form(form, idJournee) %}
+{% macro form(form, idJournee, championnat) %}
     <div class="card-panel center-align">
-        <h4 class="h4_form">
-            Date de la journée
-        </h4>
-        <h5>Journée n°{{ idJournee }}</h5><br>
+        <h4 class="h4_form">Date de la journée</h4>
+        <h5>Journée n°{{ idJournee }} - {{ championnat }}</h5><br>
 
         {{ form_start(form) }}
             <div class="container">
