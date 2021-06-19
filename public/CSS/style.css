@@ -611,6 +611,10 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   background: #0d427f;
 }
 
+.dark_blue {
+  color: #1b5fac;
+}
+
 @media screen and (max-width: 1455px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;

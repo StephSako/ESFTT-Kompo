@@ -676,6 +676,10 @@ li {
   background: $scroll_dark_blue;
 }
 
+.dark_blue {
+  color: $scroll_blue;
+}
+
 @media screen and (max-width: 1455px) {
   .right_items_navbar_general{
     .right_items_navbar {

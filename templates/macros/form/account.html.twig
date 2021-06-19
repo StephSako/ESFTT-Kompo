@@ -6,7 +6,7 @@
 
         {{ form_start(form) }}
             <div class="row section" style="margin-bottom: 0;">
-                <h5 style="margin-top: 0;">Informations personnelles</h5>
+                <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m4">
                     <span><i class="material-icons prefix">person</i> NOM *</span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
@@ -33,43 +33,43 @@
 
             {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                 <div class="row section">
-                    <h5>Contacts</h5>
+                    <h5 class="dark_blue">Me contacter</h5>
 
-                    <div class="col s12 m6 offset-m1">
+                    <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">mail</i> Adresse mail n°1</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                     </div>
-                    <div class="col s12 m5 left-align">
+                    <div class="col s12 m3 left-align">
                         {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 m6 offset-m1">
+                    <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">mail</i> Adresse mail n°2</span>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                     </div>
-                    <div class="col s12 m5 left-align">
+                    <div class="col s12 m3 left-align">
                         {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 m6 offset-m1">
+                    <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">smartphone</i> Téléphone n°1</span>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                     </div>
-                    <div class="col s12 m5 left-align">
+                    <div class="col s12 m3 left-align">
                         {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 m6 offset-m1">
+                    <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">smartphone</i> Téléphone n°2</span>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                     </div>
-                    <div class="col s12 m5 left-align">
+                    <div class="col s12 m3 left-align">
                         {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
                     </div>
                 </div>
             {% endif %}
 
             <div class="row section" style="margin-bottom: 0;">
-                <h5>Informations Ping</h5>
+                <h5 class="dark_blue">Informations Ping</h5>
 
                 <div class="col s12 m6">
                     <span><i class="material-icons prefix">payment</i> Licence</span>
@@ -88,7 +88,7 @@
             <br>
 
             <div class="section profile_pic" style="margin-bottom: 0;">
-                <h5>Image de profil</h5>
+                <h5 class="dark_blue">Image de profil</h5>
                 <p><i>Formats acceptés : JPEG, PNG et GIF</i></p>
                 {{ form_row(form.imageFile) }}
 
