@@ -57,19 +57,8 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="{{ asset('JS/modalContact.js') }}"></script>
     <script type="text/javascript">
-        $('#btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}').addClass('disabled');
-
-        $('#sujetMail{{ idMail }}{{ competiteur.idCompetiteur }}').on('keyup', function () {
-            if ($('#sujetMail{{ idMail }}{{ competiteur.idCompetiteur }}').val() && $('#messageMail{{ idMail }}{{ competiteur.idCompetiteur }}').val())
-                $('#btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}').removeClass('disabled');
-            else $('#btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}').addClass('disabled');
-        });
-
-        $('#messageMail{{ idMail }}{{ competiteur.idCompetiteur }}').on('keyup', function () {
-            if ($('#sujetMail{{ idMail }}{{ competiteur.idCompetiteur }}').val() && $('#messageMail{{ idMail }}{{ competiteur.idCompetiteur }}').val())
-                $('#btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}').removeClass('disabled');
-            else $('#btnSendMail{{ idMail }}{{ competiteur.idCompetiteur }}').addClass('disabled');
-        });
+        setModal('{{ idMail }}{{ competiteur.idCompetiteur }}');
     </script>
 {% endmacro %}

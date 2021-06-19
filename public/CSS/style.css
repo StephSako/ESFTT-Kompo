@@ -615,7 +615,7 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   color: #1b5fac;
 }
 
-@media screen and (max-width: 1455px) {
+@media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
   }

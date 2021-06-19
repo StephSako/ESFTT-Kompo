@@ -8,7 +8,6 @@ function alertBecomingVisitor(){
 }
 
 $(document).ready(function () {
-
     let cb_admin = $('#cb_admin');
     let cb_capitaine = $('#cb_capitaine');
     let cb_visiteur = $('#cb_visiteur');

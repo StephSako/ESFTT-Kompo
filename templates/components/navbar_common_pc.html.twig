@@ -18,7 +18,7 @@
 
         {% if 'ROLE_JOUEUR' in app.token.roleNames %}
             <li class="li_in_line waves-light waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('contact') }}">Contact</a>
+                <a class="white-text" href="{{ path('contact') }}">Contacter</a>
             </li>
         {% endif %}
 
