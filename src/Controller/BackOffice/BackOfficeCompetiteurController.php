@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
@@ -26,6 +27,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $rencontreRepository;
     private $disponibiliteRepository;
     private $divisionRepository;
+    private $uploadHandler;
 
     /**
      * BackOfficeController constructor.
@@ -33,12 +35,14 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param EntityManagerInterface $em
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param DivisionRepository $divisionRepository
+     * @param UploadHandler $uploadHandler
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 DivisionRepository $divisionRepository,
+                                UploadHandler $uploadHandler,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
@@ -46,6 +50,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->rencontreRepository = $rencontreRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->divisionRepository = $divisionRepository;
+        $this->uploadHandler = $uploadHandler;
     }
 
     /**
@@ -205,5 +210,23 @@ class BackOfficeCompetiteurController extends AbstractController
         } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('backoffice.competiteurs');
+    }
+
+    /**
+     * @Route("/backoffice/competiteur/delete/avatar/{id}", name="backoffice.competiteur.delete.avatar")
+     * @param Competiteur $competiteur
+     * @return Response
+     */
+    public function deleteAvatar(Competiteur $competiteur): Response
+    {
+        $this->uploadHandler->remove($competiteur, 'imageFile');
+        $competiteur->setAvatar(null);
+        $competiteur->setImageFile(null);
+
+        $this->em->flush();
+        $this->addFlash('success', 'Avatar supprimé');
+        return $this->redirectToRoute('backoffice.competiteur.edit', [
+            'idCompetiteur' => $competiteur->getIdCompetiteur()
+        ]);
     }
 }

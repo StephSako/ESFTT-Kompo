@@ -14,26 +14,39 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class SecurityController extends AbstractController
 {
     private $em;
     private $journeeRepository;
     private $championnatRepository;
+    private $utils;
+    private $uploadHandler;
+    private $encoder;
 
     /**
      * SecurityController constructor.
      * @param JourneeRepository $journeeRepository
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
+     * @param AuthenticationUtils $utils
+     * @param UploadHandler $uploadHandler
+     * @param UserPasswordEncoderInterface $encoder
      */
     public function __construct(JourneeRepository $journeeRepository,
                                 ChampionnatRepository $championnatRepository,
-                                EntityManagerInterface $em)
+                                EntityManagerInterface $em,
+                                AuthenticationUtils $utils,
+                                UploadHandler $uploadHandler,
+                                UserPasswordEncoderInterface $encoder)
     {
         $this->journeeRepository = $journeeRepository;
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
+        $this->utils = $utils;
+        $this->uploadHandler = $uploadHandler;
+        $this->encoder = $encoder;
     }
 
     /**
@@ -104,19 +117,18 @@ class SecurityController extends AbstractController
     /**
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function updatePassword(Request $request): Response
     {
         $user = $this->getUser();
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
 
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
-            if ($encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
+            if ($this->encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
                 if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-                    $password = $encoder->encodePassword($user, $request->get('new_password'));
+                    $password = $this->encoder->encodePassword($user, $request->get('new_password'));
                     $user->setPassword($password);
 
                     $this->em->flush();
@@ -125,6 +137,28 @@ class SecurityController extends AbstractController
             } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
         } else $this->addFlash('fail', 'Remplissez tous les champs');
 
+        return $this->redirectToRoute('account');
+    }
+
+    /**
+     * @Route("/compte/delete/avatar", name="account.delete.avatar")
+     * @return Response
+     */
+    public function deleteAvatar(): Response
+    {
+        if ($this->getUser() != null){
+            $this->uploadHandler->remove($this->getUser(), 'imageFile');
+            $this->getUser()->setAvatar(null);
+            $this->getUser()->setImageFile(null);
+
+            $this->em->flush();
+            $this->addFlash('success', 'Avatar supprimé');
+        } else {
+            return $this->render('account/login.html.twig', [
+                'lastUsername' => $this->utils->getLastUsername(),
+                'error' => $this->utils->getLastAuthenticationError()
+            ]);
+        }
         return $this->redirectToRoute('account');
     }
 }

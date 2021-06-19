@@ -176,8 +176,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ' WHERE e.idDivision IS NOT NULL' .
                 ' AND e.numero < :idEquipe' .
                 ' AND e.idChampionnat = :idChampionnat' .
-                ' AND r.idChampionnat = :idChampionnat' .
-                ' AND e.numero < :idEquipe' .
+                ' AND r.idChampionnat = e.idChampionnat' .
                 ' AND r.idJournee = 1' .
                 ' AND r.idEquipe = e.idEquipe' .
                 ' AND (' . $strJ2 . ')) AS bruleJ2');

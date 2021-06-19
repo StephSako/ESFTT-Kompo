@@ -1,4 +1,9 @@
 @charset "UTF-8";
+[type=checkbox].filled-in:checked + span:not(.lever):after {
+  background-color: #2196f3;
+  border-color: #2196f3;
+}
+
 html {
   font-family: "Lato", sans-serif;
   background: linear-gradient(135deg, #1174b8 1%, #001317 100%) fixed;
@@ -575,6 +580,19 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
 }
 .noDivisionPill.noDivisionPillHeader {
   margin-left: 6px;
+}
+
+.avatarSectionDelete {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  margin: 20px auto 0;
+}
+.avatarSectionDelete a {
+  margin-top: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 /* width */

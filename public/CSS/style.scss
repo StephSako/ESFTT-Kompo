@@ -9,6 +9,11 @@ $scroll_dark_blue: #0d427f;
 $gradient_blue_light: rgb(17, 116, 184);
 $gradient_blue_dark:  rgba(0, 19, 23, 1);
 
+[type="checkbox"].filled-in:checked+span:not(.lever):after{
+  background-color: #2196f3;
+  border-color: #2196f3;
+}
+
 html {
   font-family: 'Lato', sans-serif;
   background: linear-gradient(135deg, $gradient_blue_light 1%, $gradient_blue_dark 100%) fixed;
@@ -638,6 +643,20 @@ li {
 
   &.noDivisionPillHeader {
     margin-left: 6px;
+  }
+}
+
+.avatarSectionDelete {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  margin: 20px auto 0;
+
+  a {
+    margin-top: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 

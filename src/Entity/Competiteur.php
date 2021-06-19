@@ -668,7 +668,7 @@ class Competiteur implements UserInterface, Serializable
     public function setImageFile(?File $imageFile): self
     {
         $this->imageFile = $imageFile;
-        if ($this->imageFile instanceof UploadedFile) {
+        if ($this->imageFile instanceof UploadedFile || $imageFile == null) {
             $this->setUpdatedAt(new DateTime('now'));
         }
         return $this;

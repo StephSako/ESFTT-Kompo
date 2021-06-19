@@ -4,8 +4,6 @@ $(document).ready(function() {
     let btn_edit_password = $('#btnEditPassword');
     let i_actual_password;
 
-    btn_edit_password.prop('disabled', true);
-
     if (type === 'general'){
         i_actual_password = $('#actual_password');
         i_actual_password.on('keyup', function () {

@@ -1,4 +1,5 @@
 {% macro edit_account(type, title, form, urlImage, editMode, options) %}
+
     <div class="card-panel center-align account-card">
 
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
@@ -37,7 +38,7 @@
                     <div class="col s12 m6 offset-m1">
                         <span><i class="material-icons prefix">mail</i> Adresse mail n°1</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                     </div>
-                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                    <div class="col s12 m5 left-align">
                         {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
                     </div>
                 </div>
@@ -45,23 +46,23 @@
                     <div class="col s12 m6 offset-m1">
                         <span><i class="material-icons prefix">mail</i> Adresse mail n°2</span>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                     </div>
-                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                    <div class="col s12 m5 left-align">
                         {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone n°1</span>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
+                        <span><i class="material-icons prefix">smartphone</i> Téléphone n°1</span>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                     </div>
-                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                    <div class="col s12 m5 left-align">
                         {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12 m6 offset-m1">
-                        <span><i class="material-icons prefix">smartphone</i> Numéro de téléphone n°2</span>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
+                        <span><i class="material-icons prefix">smartphone</i> Téléphone n°2</span>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                     </div>
-                    <div class="col s12 m5 left-align" style="margin-top: 40px;">
+                    <div class="col s12 m5 left-align">
                         {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
                     </div>
                 </div>
@@ -80,7 +81,7 @@
                     {% endif %}
                 </div>
                 <div class="col s12 m5">
-                    <span><i class="material-icons prefix">trending_up</i> Classement (points officiels de la phase)</span>{{ form_row(form.classementOfficiel) }}
+                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel) }}
                 </div>
                 <div class="col m1 hide-on-small-and-down"></div>
             </div>
@@ -90,7 +91,21 @@
                 <h5>Image de profil</h5>
                 <p><i>Formats acceptés : JPEG, PNG et GIF</i></p>
                 {{ form_row(form.imageFile) }}
-                <img style="max-width: 10rem; max-height: 10rem; margin-top: 8px;" id="img_competiteur_avatar" class="center-align" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
+
+                <div class="avatarSectionDelete">
+                    {% if urlImage %}
+                        <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect waves-light red lighten-2'
+                            {% if type == 'backoffice' %}
+                                href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
+                            {% else %}
+                                href="{{ path('account.delete.avatar') }}"
+                            {% endif %}>
+                            <i class="material-icons">delete</i>
+                        </a>
+                    {% endif %}
+                    <img width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
+                </div>
+
             </div>
 
             {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
@@ -102,21 +117,12 @@
                 {% if editMode and (not options.competiteurIsVisitor is defined or options.competiteurIsVisitor == false) %}
                     onclick="alertBecomingVisitor()"
                 {% endif %}
-                class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ editMode ? 'Modifier' : 'Créer' }}</button>
+                class="btn waves-effect waves-light light-blue darken-1 btn_gestion">{{ editMode ? 'Modifier' : 'Créer' }}
+            </button>
         {{ form_end(form) }}
     </div>
 
     {% if 'ROLE_ADMIN' in app.token.roleNames %}
-        <script type="text/javascript">
-            function alertBecomingVisitor(){
-                if ($('#cb_visiteur').is(":checked")){
-                    let r = confirm('Les disponiblités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
-                    if (r !== true) {
-                        event.preventDefault();
-                    }
-                } else return false;
-            }
-        </script>
         <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}" defer></script>
     {% endif %}
 
@@ -144,7 +150,7 @@
                     <label for="new_password_validate">Ressaisissez le nouveau mot de passe</label>
                 </div>
             </div>
-            <br><button id="btnEditPassword" class="btn btn_form waves-effect waves-light light-blue darken-1">Modifier</button>
+            <br><button id="btnEditPassword" class="btn btn_form waves-effect waves-light light-blue darken-1" disabled>Modifier</button>
         </form>
     </div>
 

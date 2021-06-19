@@ -262,7 +262,7 @@ class HomeController extends AbstractController
                 }
             }
 
-            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés sont sélectionnés (règle de la J2 en rouge)');
+            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés J2 sont sélectionnés');
             else {
                 /** On sauvegarde la composition d'équipe */
                 try {
