@@ -3,10 +3,13 @@
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-general">
-            <a href="#" class="esftt_logo" hidden>
+            <div class="esftt_logo" {% if app.user %}hidden{% endif %}>
                 <img class="brand-logo" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT">
-            </a>
-            <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-general"><i class="material-icons">menu</i></a>
+            </div>
+            
+            {% if app.user %}
+                <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-general"><i class="material-icons">menu</i></a>
+            {% endif %}
 
             {% if app.user %}
                 <ul class="left_items">
@@ -60,11 +63,10 @@
     </nav>
 </div>
 
+{% if app.user %}
 <!-- SideNav Structure -->
-<ul id="slide-out" class="sidenav">
-    {% if app.user %}
+    <ul id="slide-out" class="sidenav">
         <div class="first_sidenav">
-
             {% if allChampionnats|length > 1 %}
                 <ul class="collapsible collapsible-accordion">
                     <li class="li_in_line center">
@@ -111,7 +113,7 @@
                 <a class="white-text center-align" href="{{ path('index') }}"><i class="white-text material-icons left">home</i>Accueil</a>
             </li>
         {% endif %}
-    {% endif %}
 
-    {% include('components/navbar_common_mobile.html.twig') %}
-</ul>
+        {% include('components/navbar_common_mobile.html.twig') %}
+    </ul>
+{% endif %}
