@@ -1,6 +1,7 @@
 parameters:
     fftt_api_login: '%env(FFTT_API_LOGIN)%'
     fftt_api_password: '%env(FFTT_API_PASSWORD)%'
+    maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
 
 services:
     _defaults:
@@ -13,3 +14,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\EventListener\MaintenanceListener:
+        arguments:
+            - '%maintenance_file_path%'
+            - '@twig'
+        tags:
+            - { name: 'kernel.event_listener', event: kernel.request}
