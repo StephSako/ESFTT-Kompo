@@ -72,6 +72,10 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted() && $divisions){
             if ($form->isValid()){
                 try {
+                    if (!$equipe->getIdDivision()) {
+                        throw new Exception('Renseignez une division', 12345);
+                    }
+
                     $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->em->persist($equipe);
 
@@ -95,7 +99,10 @@ class BackOfficeEquipeController extends AbstractController
                     $this->addFlash('success', 'Equipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
+                    if ($e->getCode() == "12345"){
+                        $this->addFlash('fail', $e->getMessage());
+                    }
+                    else if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');

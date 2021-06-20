@@ -29,7 +29,9 @@ class EquipeNewType extends AbstractType
                 'attr' => [
                     'class' => 'validate'
                 ],
-                'required' => true,
+                'required' => false,
+                'empty_data' => null,
+                'placeholder' => 'Choisissez une division',
                 'label' => false,
                 'choices' => $options['divisionsOptGroup']
             ])

@@ -15,7 +15,7 @@
                     <div class="col s12 m4">
                         <span>Numéro</span>{{ form_row(form.numero) }}
                     </div>
-                    <div class="col s12 m4">
+                    <div class="col s12 m4 {% if btnText != 'Modifier' %}form_div_list{% endif %}">
                         <span>Division</span>{{ form_row(form.idDivision) }}
                     </div>
                     <div class="col s12 m4 form_div_list">
