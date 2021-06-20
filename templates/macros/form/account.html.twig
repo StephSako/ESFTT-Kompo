@@ -34,6 +34,7 @@
             {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                 <div class="row section">
                     <h5 class="dark_blue">Me contacter</h5>
+                    <p><i>Une adresse email minimum requise</i></p>
 
                     <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">mail</i> Adresse mail n°1</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
