@@ -69,8 +69,14 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function new(int $journee, int $dispo, int $idCompetiteur):Response
     {
-        if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistant', 500);
+        if (!($journee = $this->journeeRepository->find($journee))) {
+            $this->addFlash('fail', 'Journée inexistante');
+            return $this->redirectToRoute('backoffice.disponibilites');
+        }
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
+            $this->addFlash('fail', 'Compétiteur inexistant');
+            return $this->redirectToRoute('backoffice.disponibilites');
+        }
 
         //TODO Optimize & test
         if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $competiteur, 'idJournee' => $journee, 'idChampionnat' => $journee->getIdChampionnat()->getIdChampionnat()])) == 0) {
@@ -104,10 +110,15 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function update(int $idCompetiteur, int $idDispo, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistante', 500);
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
+            $this->addFlash('fail', 'Compétiteur inexistant');
+            return $this->redirectToRoute('backoffice.disponibilites');
+        }
 
-        //TODO Get by injection
-        if (!($dispoJoueur = $this->disponibiliteRepository->find($idDispo))) throw new Exception('Cette disponibilité est inexistante', 500);
+        if (!($dispoJoueur = $this->disponibiliteRepository->find($idDispo))) {
+            $this->addFlash('fail', 'Disponibilité inexistante');
+            return $this->redirectToRoute('backoffice.disponibilites');
+        }
         $dispoJoueur->setDisponibilite($dispo);
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */

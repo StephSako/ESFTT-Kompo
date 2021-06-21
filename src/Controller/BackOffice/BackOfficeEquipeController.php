@@ -72,9 +72,7 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted() && $divisions){
             if ($form->isValid()){
                 try {
-                    if (!$equipe->getIdDivision()) {
-                        throw new Exception('Renseignez une division', 12345);
-                    }
+                    if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12345);
 
                     $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->em->persist($equipe);
@@ -125,7 +123,10 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function edit(int $idEquipe, Request $request): Response
     {
-        if (!($equipe = $this->equipeRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Equipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
         $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
         $form = $this->createForm(EquipeEditType::class, $equipe);
         $form->handleRequest($request);

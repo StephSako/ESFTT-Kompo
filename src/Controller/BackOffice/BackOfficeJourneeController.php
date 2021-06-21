@@ -48,7 +48,11 @@ class BackOfficeJourneeController extends AbstractController
      */
     public function edit(int $idJournee, Request $request): Response
     {
-        if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);
+        if (!($journee = $this->journeeRepository->find($idJournee))) {
+            $this->addFlash('fail', 'Journée inexistante');
+            return $this->redirectToRoute('backoffice.journees');
+        }
+
         $form = $this->createForm(JourneeType::class, $journee);
         $form->handleRequest($request);
         $journees = $journee->getIdChampionnat()->getJournees()->toArray();

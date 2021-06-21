@@ -99,7 +99,11 @@ class BackOfficeDivisionController extends AbstractController
      */
     public function edit(int $idDivision, Request $request): Response
     {
-        if (!($division = $this->divisionRepository->find($idDivision))) throw new Exception('Cette division est inexistante', 500);
+        if (!($division = $this->divisionRepository->find($idDivision))) {
+            $this->addFlash('fail', 'Division inexistante');
+            return $this->redirectToRoute('backoffice.divisions');
+        }
+
         $nbJoueurs = $division->getNbJoueurs();
         $form = $this->createForm(DivisionType::class, $division);
         $form->handleRequest($request);
@@ -151,7 +155,10 @@ class BackOfficeDivisionController extends AbstractController
      */
     public function delete(int $idDivision, Request $request): Response
     {
-        if (!($division = $this->divisionRepository->find($idDivision))) throw new Exception('Cette division est inexistante', 500);
+        if (!($division = $this->divisionRepository->find($idDivision))) {
+            $this->addFlash('fail', 'Division inexistante');
+            return $this->redirectToRoute('backoffice.divisions');
+        }
 
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
 

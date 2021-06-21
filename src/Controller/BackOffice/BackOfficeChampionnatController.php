@@ -39,7 +39,7 @@ class BackOfficeChampionnatController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/championnats", name="back_office.championnats")
+     * @Route("/backoffice/championnats", name="backoffice.championnats")
      */
     public function index(): Response
     {
@@ -75,7 +75,7 @@ class BackOfficeChampionnatController extends AbstractController
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat créé');
-                return $this->redirectToRoute('back_office.championnats');
+                return $this->redirectToRoute('backoffice.championnats');
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000"){
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
@@ -101,7 +101,10 @@ class BackOfficeChampionnatController extends AbstractController
      */
     public function edit(int $idChampionnat, Request $request): Response
     {
-        if (!($championnat = $this->championnatRepository->find($idChampionnat))) throw new Exception('Ce championnat est inexistant', 500);
+        if (!($championnat = $this->championnatRepository->find($idChampionnat))) {
+            $this->addFlash('fail', 'Championnat inexistant');
+            return $this->redirectToRoute('backoffice.championnats');
+        }
         $form = $this->createForm(ChampionnatType::class, $championnat);
         $form->handleRequest($request);
 
@@ -145,7 +148,7 @@ class BackOfficeChampionnatController extends AbstractController
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat modifié');
-                return $this->redirectToRoute('back_office.championnats');
+                return $this->redirectToRoute('backoffice.championnats');
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000"){
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
@@ -172,7 +175,10 @@ class BackOfficeChampionnatController extends AbstractController
      */
     public function delete(int $idChampionnat, Request $request): Response
     {
-        if (!($championnat = $this->championnatRepository->find($idChampionnat))) throw new Exception('Cette championnat est inexistante', 500);
+        if (!($championnat = $this->championnatRepository->find($idChampionnat))) {
+            $this->addFlash('fail', 'Championnat inexistant');
+            return $this->redirectToRoute('backoffice.championnats');
+        }
 
         if ($this->isCsrfTokenValid('delete' . $championnat->getIdChampionnat(), $request->get('_token'))) {
             $this->em->remove($championnat);
@@ -180,6 +186,6 @@ class BackOfficeChampionnatController extends AbstractController
             $this->addFlash('success', 'Championnat supprimé');
         } else $this->addFlash('error', 'Le championnat n\'a pas pu être supprimé');
 
-        return $this->redirectToRoute('back_office.championnats');
+        return $this->redirectToRoute('backoffice.championnats');
     }
 }

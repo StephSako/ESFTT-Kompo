@@ -119,7 +119,10 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function edit(int $idCompetiteur, Request $request): Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Ce compétiteur est inexistant', 500);
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
+            $this->addFlash('fail', 'Compétiteur inexistant');
+            return $this->redirectToRoute('backoffice.competiteurs');
+        }
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur);
         else $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);

@@ -45,7 +45,10 @@ class DisponibiliteController extends AbstractController
      */
     public function new(int $journee, bool $dispo):Response
     {
-        if (!($journee = $this->journeeRepository->find($journee))) throw new Exception('Cette journée est inexistante', 500);
+        if (!($journee = $this->journeeRepository->find($journee))) {
+            $this->addFlash('fail', 'Journée inexistante');
+            return $this->redirectToRoute('index');
+        }
 
         if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser(), 'idJournee' => $journee])) == 0) {
             $disponibilite = new Disponibilite($this->getUser(), $journee, $dispo, $journee->getIdChampionnat());
@@ -73,7 +76,10 @@ class DisponibiliteController extends AbstractController
      */
     public function update(int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
     {
-        if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) throw new Exception('Cette disponibilité est inexistante', 500);
+        if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) {
+            $this->addFlash('fail', 'Disponibilité inexistante');
+            return $this->redirectToRoute('index');
+        }
 
         $dispoJoueur->setDisponibilite($dispo);
         $journee = $dispoJoueur->getIdJournee()->getIdJournee();
