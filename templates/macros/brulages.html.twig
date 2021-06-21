@@ -75,7 +75,7 @@
 {% macro selectionnables(championnatJ2Rule, championnatLimiteBrulage, selectionnables, idEquipe, idJournee, idEquipes) %}
     {% if idEquipe in idEquipes and idJournee == 2 and championnatJ2Rule %}
         <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
-            <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 seul joueur orange peut être sélectionné</i></span>
+            <span style="margin-top: 0; margin-bottom: 0;">En J2, 1 seul joueur <i class="material-icons red-text">report_problem</i> peut être sélectionné</span>
         </div>
     {% endif %}
 
@@ -100,8 +100,8 @@
             {% else %}
                 {% for nom, brulage in selectionnables %}
                     <tr>
-                        <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
-                            {{ nom }}
+                        <td>
+                            {% if brulage["bruleJ2"] == true %}<i class="material-icons red-text">report_problem</i>{% endif %}{{ nom }}
                         </td>
                         {% for brulageJournee in brulage['brulage'] %}
                             <td class="center">

@@ -213,6 +213,25 @@ class Rencontre
     }
 
     /**
+     * Retourne la liste des joueurs sélectionnés d'une rencontre
+     * @return int[]
+     */
+    public function getSelectedPlayers(): array
+    {
+        $players = [];
+        if ($this->getIdJoueur0()) array_push($players, $this->getIdJoueur0()->getIdCompetiteur());
+        if ($this->getIdJoueur1()) array_push($players, $this->getIdJoueur1()->getIdCompetiteur());
+        if ($this->getIdJoueur2()) array_push($players, $this->getIdJoueur2()->getIdCompetiteur());
+        if ($this->getIdJoueur3()) array_push($players, $this->getIdJoueur3()->getIdCompetiteur());
+        if ($this->getIdJoueur4()) array_push($players, $this->getIdJoueur4()->getIdCompetiteur());
+        if ($this->getIdJoueur5()) array_push($players, $this->getIdJoueur5()->getIdCompetiteur());
+        if ($this->getIdJoueur6()) array_push($players, $this->getIdJoueur6()->getIdCompetiteur());
+        if ($this->getIdJoueur7()) array_push($players, $this->getIdJoueur7()->getIdCompetiteur());
+        if ($this->getIdJoueur8()) array_push($players, $this->getIdJoueur8()->getIdCompetiteur());
+        return $players;
+    }
+
+    /**
      * @param int $n
      * @return Rencontre
      */

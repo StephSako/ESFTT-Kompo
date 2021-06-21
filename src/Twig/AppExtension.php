@@ -17,7 +17,8 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
-            new TwigFunction('brulageCumule', [$this, 'brulageCumule'])
+            new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
+            new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2'])
         ];
     }
 
@@ -99,5 +100,21 @@ class AppExtension extends AbstractExtension
     public function customSlug(string $chaine): string
     {
         return (new Slugify())->slugify($chaine);
+    }
+
+
+    /**
+     * @param int $nbCompo
+     * @param int $idCompetiteur
+     * @param array $brulageJ2
+     * @param array $selectedPlayers
+     * @return bool
+     */
+    public function isBrulesJ2(int $nbCompo, int $idCompetiteur, array $brulageJ2, array $selectedPlayers): bool
+    {
+        $burntJ2 = array_intersect(array_merge(...array_filter($brulageJ2, function($index) use ($nbCompo) {
+            return $index < $nbCompo;
+        },ARRAY_FILTER_USE_KEY)), $selectedPlayers);
+        return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
     }
 }

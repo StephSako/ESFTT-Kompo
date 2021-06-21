@@ -133,6 +133,9 @@ class HomeController extends AbstractController
         // Compositions d'équipe
         $compos = $this->rencontreRepository->getRencontres($id, $type);
 
+        // Numero de la journée
+        $numJournee = array_search($journee, $journees)+1;
+
         // Joueurs sélectionnées
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
 
@@ -178,9 +181,13 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
+        $brulagesJ2 = ($numJournee == 2 && $championnat->isJ2Rule()) ? array_map(function($renc) {
+            return $renc->getSelectedPlayers();
+        }, array_slice($championnat->getRencontres()->toArray(), 0, count($compos))) : null;
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
-            'idJournee' => array_search($journee, $journees)+1,
+            'idJournee' => $numJournee,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'nbTotalJoueurs' => $nbTotalJoueurs,
@@ -198,6 +205,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
+            'brulagesJ2' => $brulagesJ2
         ]);
     }
 
