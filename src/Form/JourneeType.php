@@ -15,7 +15,8 @@ class JourneeType extends AbstractType
     {
         $builder
             ->add('dateJournee', DateType::class, [
-                'label' => false
+                'label' => false,
+                'format' => 'd MMMM y',
             ])
             ->add('undefined', CheckboxType::class, [
                 'label' => 'Date indéfinie',

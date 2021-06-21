@@ -33,7 +33,7 @@ class BackOfficeRencontreType extends AbstractType
             ])
             ->add('dateReport', DateType::class,[
                 'label' => false,
-                'required' => false
+                'format' => 'd MMMM y'
             ])
             ->add('exempt', CheckboxType::class,[
                 'label' => 'Pas de match',
