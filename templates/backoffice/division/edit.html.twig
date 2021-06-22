@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/division.html.twig' as edit %}
+{% import 'macros/form/division.html.twig' as _division %}
 
 {% block title %}Modifier la division{% endblock %}
 
@@ -9,12 +9,11 @@
     {% include("components/navbar_backoffice.html.twig") %}
 
     <div class="container">
-
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ edit.division(form, 'Modifier') }}
+        {{ _division.form(form, 'Modifier', true, true, {championnat: championnat}) }}
     </div>
 
 {% endblock %}

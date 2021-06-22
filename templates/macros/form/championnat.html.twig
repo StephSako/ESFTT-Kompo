@@ -1,0 +1,40 @@
+{% macro form(form, btnText) %}
+    <style>
+        li {
+            color: red;
+        }
+    </style>
+
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ btnText }} un championnat</h4>
+
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col s12 m4">
+                    <span><i class="material-icons prefix">short_text</i> Nom</span>
+                    {{ form_row(form.nom) }}
+                </div>
+
+                <div class="col s12 m3 offset-m1">
+                    <span><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</span>
+                    {{ form_row(form.limiteBrulage) }}
+                </div>
+
+                <div class="col s12 m3 offset-m1">
+                    <span><i class="material-icons prefix">date_range</i> Nombre de journées</span>
+                    {{ form_row(form.nbJournees) }}
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 0">
+                <div class="col s12">
+                    <span>Règle du brûlage de la J2 appliquée ?</span><br>
+                    <div style="margin-top: 15px;">{{ form_row(form.j2Rule) }}</div>
+                </div>
+            </div>
+
+            <a href="{{ path('backoffice.championnats') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+            <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
+        {{ form_end(form) }}
+    </div>
+{% endmacro %}

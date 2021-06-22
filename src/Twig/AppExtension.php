@@ -2,10 +2,9 @@
 
 namespace App\Twig;
 
-use App\Entity\JourneeDepartementale;
-use App\Entity\JourneeParis;
-use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
+use App\Entity\Journee;
+use App\Entity\Rencontre;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -18,23 +17,25 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
-            new TwigFunction('brulageCumule', [$this, 'brulageCumule'])
+            new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
+            new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2'])
         ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision'])
+            new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision']),
+            new TwigFilter('customSlug', [$this, 'customSlug'])
         ];
     }
 
     /**
-     * @param JourneeDepartementale|JourneeParis $journee
-     * @param RencontreDepartementale[]|RencontreParis[] $rencontres
+     * @param Journee $journee
+     * @param Rencontre[] $rencontres
      * @return bool
      */
-    public function journeeStillEditable($journee, array $rencontres): bool
+    public function journeeStillEditable(Journee $journee, array $rencontres): bool
     {
         $nbRencontresReportees = count(array_filter($rencontres, function ($rencontre)
             {
@@ -45,10 +46,10 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param RencontreDepartementale|RencontreParis $rencontre
+     * @param Rencontre $rencontre
      * @return bool
      */
-    public function rencontreStillEditable($rencontre): bool
+    public function rencontreStillEditable(Rencontre $rencontre): bool
     {
         $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;
@@ -90,5 +91,30 @@ class AppExtension extends AbstractExtension
         else $str .= ' à ses compositions d\'équipe.';
 
         return $str;
+    }
+
+    /**
+     * @param string $chaine
+     * @return string
+     */
+    public function customSlug(string $chaine): string
+    {
+        return (new Slugify())->slugify($chaine);
+    }
+
+
+    /**
+     * @param int $nbCompo
+     * @param int $idCompetiteur
+     * @param array $brulageJ2
+     * @param array $selectedPlayers
+     * @return bool
+     */
+    public function isBrulesJ2(int $nbCompo, int $idCompetiteur, array $brulageJ2, array $selectedPlayers): bool
+    {
+        $burntJ2 = array_intersect(array_merge(...array_filter($brulageJ2, function($index) use ($nbCompo) {
+            return $index < $nbCompo;
+        },ARRAY_FILTER_USE_KEY)), $selectedPlayers);
+        return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
     }
 }

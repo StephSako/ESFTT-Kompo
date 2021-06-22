@@ -1,4 +1,9 @@
 @charset "UTF-8";
+[type=checkbox].filled-in:checked + span:not(.lever):after {
+  background-color: #2196f3;
+  border-color: #2196f3;
+}
+
 html {
   font-family: "Lato", sans-serif;
   background: linear-gradient(135deg, #1174b8 1%, #001317 100%) fixed;
@@ -11,6 +16,11 @@ body {
   height: 100%;
   margin: 0;
   position: relative;
+}
+
+html, body {
+  scrollbar-color: #1b5fac white !important;
+  scrollbar-width: thin;
 }
 
 #wrap {
@@ -36,7 +46,10 @@ body {
   padding-bottom: 6px;
 }
 .card-panel.backoffice-panel {
-  padding: 0;
+  padding: 10px;
+}
+.card-panel.account-card .col {
+  margin-top: 20px;
 }
 
 .btn {
@@ -86,7 +99,7 @@ body {
   margin-bottom: 8px;
 }
 
-thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
+thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
   font-family: Lobster, cursive;
 }
 
@@ -98,24 +111,38 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   font-size: 24px;
   padding-top: 0;
   padding-bottom: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 0;
+}
+
+i.iconPlace {
+  font-size: 2.1rem;
+  color: #012242;
 }
 
 .nav-extended, .sidenav, .title_journee {
   background: #012242;
 }
 
-#menu_dropdown {
+#menu_dropdown, #collapsible-sidenav {
+  width: auto !important;
   background-color: #012242;
-  padding: 0 4px;
 }
-#menu_dropdown li {
+#menu_dropdown li, #collapsible-sidenav li {
   border-radius: 5px;
-  margin: 4px 0;
+  margin: 2px 2px;
+  white-space: nowrap;
+  width: 98% !important;
 }
-#menu_dropdown li:hover {
+#menu_dropdown li:hover, #collapsible-sidenav li:hover {
   background-color: #1565c0;
+}
+
+#menu_dropdown {
+  padding: 2px 2px;
+}
+
+#collapsible-sidenav {
+  padding: 0 !important;
 }
 
 .nav-extended {
@@ -133,17 +160,21 @@ thead th, h5, h4, h3, td.rank, .flash, .bulle, .lobster {
   margin-bottom: 10px;
 }
 
-li, p, .btn, label, .nav-wrapper li a, nav ul a, .card-panel .bottom_0, .tab a {
+li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   font-size: 100%;
   padding-left: 10px;
   padding-right: 10px;
 }
 
-.nav-wrapper li a, .sidenav li a, .poule, .card-panel > h5, .complete_compos h5, h6, .lobster_2 {
+.nav-wrapper li a {
+  font-size: 17px;
+}
+
+.nav-wrapper li a, .sidenav li a, .poule, .card-panel h5, .complete_compos h5, h6, .lobster_2 {
   font-family: "Lobster Two", cursive;
 }
 
-.sidenav li a {
+.sidenav li a, .sidenav .chip-sidenav {
   font-size: 17px;
 }
 
@@ -187,7 +218,7 @@ i {
   vertical-align: bottom;
 }
 
-.bulle {
+.divisionBubble {
   background: #012242;
   text-align: center;
   border-radius: 50%;
@@ -203,21 +234,12 @@ i {
   background-color: #1565c0;
 }
 .li_in_line.deconnexion > a {
-  color: red;
+  color: white;
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
 }
 .li_in_line.deconnexion > a:hover {
-  background-color: red;
-  color: white;
-}
-
-#menu_dropdown > li.deconnexion > a {
-  color: red;
-}
-#menu_dropdown > li.deconnexion > a:hover {
-  background-color: red;
-  color: white;
+  color: #f15454;
 }
 
 .nav-wrapper .li_in_line {
@@ -247,8 +269,7 @@ p.lobster {
   margin-top: 0;
 }
 
-.paris_table > tbody > tr:nth-child(4) > .rank, .paris_table > tbody > tr:nth-child(5) > .rank, .paris_table > tbody > tr:nth-child(6) > .rank,
-.light_blue {
+.rank.rank_blue, .light_blue {
   color: #1565c0;
 }
 
@@ -284,6 +305,10 @@ p.lobster {
 }
 .collapsible.backoffice_disponibilites .collapsible-body .row:first-child {
   margin-top: 0;
+}
+
+#slide-out .collapsible .li_in_line {
+  background-color: #012242;
 }
 
 .tabs .tab a {
@@ -344,10 +369,6 @@ li.error {
   color: red;
 }
 
-#all_dispo_departementale .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_departementale .brulages > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .dispos > tbody > tr > td:not(:first-child) > span, #all_dispo_paris .brulages > tbody > tr > td:not(:first-child) > span {
-  margin-right: 0;
-}
-
 .switch label {
   color: black;
 }
@@ -369,12 +390,16 @@ li.error {
   font-style: italic;
 }
 
-form[name=rencontre_paris_haut] h5, form[name=rencontre_paris_bas] h5, form[name=rencontre_departementale] h5 {
+form h5 {
   font-size: 1.3rem;
 }
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.titlecase {
+  text-transform: capitalize;
 }
 
 div .profile_pic .file-field.input-field {
@@ -422,12 +447,20 @@ div .profile_pic .file-field.input-field {
   min-height: 74px;
 }
 
+td#noTeam {
+  font-style: italic;
+}
+
 .page-footer {
   padding-top: 0;
   background-color: #012242;
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+.missingTitle {
+  font-size: 20px;
 }
 
 .cardTeamsWithoutDiv {
@@ -439,6 +472,10 @@ div .profile_pic .file-field.input-field {
 .footer-copyright {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+.footer-copyright img {
+  width: 70px;
+  padding-top: 8px;
 }
 
 .rainbow {
@@ -454,6 +491,10 @@ div .profile_pic .file-field.input-field {
   margin-top: 0;
   margin-bottom: 0;
   height: 22px;
+}
+
+.fftt_api_manager h4 {
+  margin-top: 0;
 }
 
 @-webkit-keyframes rainbow {
@@ -505,6 +546,9 @@ li .collapsible-header {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+li .collapsible-header.collapsible-header-sidenav {
+  background-color: #021931 !important;
+}
 li .collapsible-header .caret {
   height: 29px;
   margin-top: 8px;
@@ -513,26 +557,139 @@ li .collapsible-header .caret {
 }
 li .collapsible-header .chip {
   margin: 0;
+}
+li .collapsible-header .chip:not(.chip-sidenav) {
   font-size: 14px;
 }
 li.active .collapsible-header .caret {
   transform: rotate(-180deg);
+}
+li.active .collapsible-header .caret:not(.caret-sidenav) {
   transform-origin: 0.6em 0.5em;
 }
 
+.brand-logo {
+  left: 50% !important;
+}
+
+.backoffice-table th {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.noDivisionPill {
+  background-color: rgba(241, 35, 35, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
+.noDivisionPill.noDivisionPillHeader {
+  margin-left: 6px;
+}
+
+.avatarSectionDelete {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  margin: 20px auto 0;
+}
+.avatarSectionDelete a {
+  margin-top: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1b5fac;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0d427f;
+}
+
+.dark_blue {
+  color: #1b5fac;
+}
+
+@media screen and (max-width: 1466px) {
+  .right_items_navbar_general .right_items_navbar {
+    display: none;
+  }
+
+  .sidenav-trigger.sidenav-general {
+    display: block !important;
+  }
+}
+@media screen and (max-width: 1389px) {
+  .right_items_navbar_backoffice .right_items_navbar {
+    display: none;
+  }
+
+  .sidenav-trigger.sidenav-backoffice {
+    display: block !important;
+  }
+}
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
     margin-right: 80px;
   }
 }
-@media screen and (min-width: 993px) and (max-width: 1334px) {
-  .menu_navbar {
+@media screen and (max-width: 1167px) {
+  .navbar-general .left_items {
+    display: none;
+  }
+  .navbar-general .esftt_logo {
     display: block;
   }
-
-  .right_items_navbar {
+}
+@media screen and (max-width: 1110px) {
+  .navbar-backoffice .left_items {
     display: none;
+  }
+  .navbar-backoffice .esftt_logo {
+    display: block;
+  }
+}
+@media screen and (max-width: 992px) {
+  th.th_picture_compet_table {
+    height: 116px;
+  }
+
+  td.td_picture_compet {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+@media screen and (max-width: 601px) {
+  th.th_picture_compet_table {
+    height: 96px;
+  }
+
+  td.td_picture_compet {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  td.td_picture_compet img.picture_compet {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media screen and (max-width: 324px) {
+  .noDivisionPillHeader {
+    display: none;
+  }
+
+  .noDivisionPillBody {
+    display: block;
   }
 }
 

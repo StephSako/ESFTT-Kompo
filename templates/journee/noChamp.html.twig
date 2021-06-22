@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <header>
+        {% include("components/navbar.html.twig") %}
+    </header>
+
+    <div class="container">
+        <div class="card-panel center-align white-text title_journee">
+            <h5>Aucun championnat enregistré</h5>
+            <p>Revenez plus tard pour renseigner vos disponiblités et gérer les équipes</p>
+        </div>
+    </div>
+{% endblock %}

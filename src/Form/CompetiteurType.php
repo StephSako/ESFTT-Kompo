@@ -50,13 +50,6 @@ class CompetiteurType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
-            ->add('licence', IntegerType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 11
-                ]
-            ])
             ->add('imageFile', FileType::class, [
                 'label' => false,
                 'required' => false
@@ -91,19 +84,19 @@ class CompetiteurType extends AbstractType
                 ]
             ])
             ->add('contactableMail', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactableMail2', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber2', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable',
                 'required' => false
             ]);
     }

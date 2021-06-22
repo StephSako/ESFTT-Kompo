@@ -5,9 +5,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -17,26 +17,26 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les compétiteurs</h4>
         </div>
 
-        <div class="card-panel center">
+        <div class='card-panel backoffice-panel center'>
 
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer un compétiteur</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'>Créer un compétiteur</a>
 
-            {% if competiteurs|length > 0 %}
-                <table class="striped centered responsive-table table_competiteur_backoffice">
+            {% if competiteurs|length %}
+                <table class='striped centered responsive-table backoffice-table'>
                     <thead>
                         <tr>
-                            <th></th>
-                            <th class="hide-on-small-only">Avatar</th>
+                            <th class='th_picture_compet_table'></th>
+                            <th class='hide-on-med-and-down'>Avatar</th>
                             <th>Nom</th>
                             <th>Pseudo</th>
-                            <th class="hide-on-small-only">Licence</th>
-                            <th class="hide-on-med-and-up">Lic.</th>
-                            <th class="hide-on-small-only">Classement</th>
-                            <th class="hide-on-med-and-up">Class.</th>
+                            <th class='hide-on-small-only'>Licence</th>
+                            <th class='hide-on-med-and-up'>Lic.</th>
+                            <th class='hide-on-small-only'>Classement</th>
+                            <th class='hide-on-med-and-up'>Class.</th>
                             <th></th>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <th></th>
@@ -46,71 +46,73 @@
 
                     <tbody>
                     {% for competiteur in competiteurs %}
-                        <tr>
-                            <td>
-                                {% if not competiteur.visitor %}
-                                    {% if competiteur.isAdmin %}
-                                        <span class="new badge red" data-badge-caption="Administrateur"></span>
-                                    {% elseif competiteur.isCapitaine %}
-                                        <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                    {% else %}
-                                        <span class="new badge green" data-badge-caption="Joueur"></span>
-                                    {% endif %}
-                                {% else %}
-                                    <span class="new badge orange" data-badge-caption="Visiteur"></span>
-                                {% endif %}
-                            </td>
-                            <td class="hide-on-small-only">
-                                {% if competiteur.avatar %}
-                                    <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                                {% else %}
-                                    <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                                {% endif %}
-                            </td>
-                            <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                            <td>{{ competiteur.username }}</td>
-                            <td>
-                                {% if competiteur.visitor %}
-                                    <i>Sans licence</i>
-                                {% else %}
-                                    {% if competiteur.licence %}
-                                        {{ competiteur.licence }}
-                                    {% else %}
-                                        <span class="red-text lighten-2">License indéfinie</span>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if competiteur.visitor %}
-                                    <i>Sans classement</i>
-                                {% else %}
-                                    {% if competiteur.classementOfficiel %}
-                                        {{ competiteur.classementOfficiel }}
-                                    {% else %}
-                                        <span class="red-text lighten-2">Non renseigné</span>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                            </td>
-                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                        {% if competiteur.username != 'visiteur' %}
+                            <tr>
                                 <td>
-                                    <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
-                                        <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                            <i class="material-icons">delete</i>
-                                        </button>
-                                    </form>
+                                    {% if not competiteur.visitor %}
+                                        {% if competiteur.isAdmin %}
+                                            <span class='new badge red' data-badge-caption='Administrateur'></span>
+                                        {% elseif competiteur.isCapitaine %}
+                                            <span class='new badge blue' data-badge-caption='Capitaine'></span>
+                                        {% else %}
+                                            <span class='new badge green' data-badge-caption='Joueur'></span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class='new badge orange' data-badge-caption='Visiteur'></span>
+                                    {% endif %}
                                 </td>
-                            {% endif %}
-                        </tr>
+                                <td class="td_picture_compet">
+                                    {% if competiteur.avatar %}
+                                        <img class="picture_compet" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem' style='object-fit:cover'>
+                                    {% else %}
+                                        <img class="picture_compet" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem' style='object-fit:cover'>
+                                    {% endif %}
+                                </td>
+                                <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                <td>{{ competiteur.username }}</td>
+                                <td>
+                                    {% if competiteur.visitor %}
+                                        <i>Sans licence</i>
+                                    {% else %}
+                                        {% if competiteur.licence %}
+                                            {{ competiteur.licence }}
+                                        {% else %}
+                                            <span class='red-text lighten-2'>License indéfinie</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if competiteur.visitor %}
+                                        <i>Sans classement</i>
+                                    {% else %}
+                                        {% if competiteur.classementOfficiel %}
+                                            {{ competiteur.classementOfficiel }}
+                                        {% else %}
+                                            <span class='red-text lighten-2'>Non renseigné</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                                </td>
+                                {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                    <td>
+                                        <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
+                                            <input type='hidden' name='_method' value='DELETE'>
+                                            <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
+                                            <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>
+                                                <i class='material-icons'>delete</i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
+                <p class='lobster_2 missingTitle'>Aucun compétiteur enregistré</p>
             {% endif %}
         </div>
     </div>

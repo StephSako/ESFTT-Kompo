@@ -121,7 +121,7 @@ Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont séle
 
 Le tableau sur la droite de la page liste toutes les disponibilités de chaque compétiteur pour la journée. Un joueur en vert est disponible, en rouge indisponible et en gris n'a pas déclaré sa disponibilité. Si un logo bleu suit un joueur, cela signifie qu'il est sélectionné dans une des équipes de la journée.
 
-Le bouton bleu **TOUT VOIR** au dessus du tableau ouvre un panneau détaillant toutes les disponibilités de la phase entière pour chacun des championnats.
+Le bouton bleu **TOUTES LES DISPOS** au dessus du tableau ouvre un panneau détaillant toutes les disponibilités de la phase entière pour chacun des championnats.
 
 <p align="center"><img src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/toutes_les_dispos.PNG"></p>
 

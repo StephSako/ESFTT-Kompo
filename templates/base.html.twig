@@ -5,25 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="icon" href="https://www.esftt.com/favicon.ico?v3">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!--Import materialize.css-->
         <link rel="stylesheet" href="{{ asset('CSS/materialize-v1.0.0/materialize/css/materialize.min.css') }}">
-        <!--Import my own CSS.css-->
         <link type="text/css" rel="stylesheet" href="{{ asset('CSS/style.css') }}" media="screen,projection" />
-        <!--Import Google Font Family-->
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lobster" />
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
         <link href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500&display=swap" rel="stylesheet">
-        <!--Scripts trigger de JQuery-->
         <script type="text/javascript" src="{{ asset('JS/jquery.min.js') }}"></script>
-        <!--Scripts trigger de Materialize-->
-        <script src="{{ asset('CSS/materialize-v1.0.0/materialize/js/materialize.min.js') }}"></script>
-        <!--Scripts personnel -->
-        <script src="{{ asset('JS/script.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('CSS/materialize-v1.0.0/materialize/js/materialize.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/script.js') }}"></script>
     </head>
-
 
     <body>
         <div id="wrap">
@@ -31,19 +23,7 @@
                 {% block body %}{% endblock %}
             </div>
 
-            <footer class="page-footer">
-                <div class="footer-copyright">
-                    <div class="container center">
-                        <a href="https://www.esftt.com" class="brand-logo"><img style="width: 70px; padding-top: 8px;" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
-                    </div>
-                    <div class="container center">
-                        <a class="grey-text text-lighten-4 center" href="https://github.com/StephSako/Kompo/blob/master/README.md">Notice</a>
-                    </div>
-                    <div class="container center">
-                        <a class="grey-text text-lighten-4 center" href="https://www.esftt.com/forum">Forum</a>
-                    </div>
-                </div>
-            </footer>
+            {% include('components/footer.html.twig') %}
         </div>
     </body>
 </html>

@@ -1,8 +1,11 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, type, nbJournees, nbMinJoueurs, nbTotalJoueurs) %}
-    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#all_dispos">Tout voir</a>
-    <div id="all_dispos" class="modal modal-fixed-footer">
+{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+    <a style="width: 100%; margin-bottom: 0; margin-top: 20px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2" href="#{{ nomModal }}">
+        Toutes les dispos
+    </a>
+
+    <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
-            {{ _self.recapitulatif(allDisponibilitesDepartementales, allDisponibiliteParis, nbJournees) }}
+            {{ _self.recapitulatif(allDisponibilites, nomModal) }}
         </div>
         <div class="modal-footer">
             <h6 class="valign-wrapper left">Toutes les disponibilités</h6>
@@ -10,7 +13,7 @@
         </div>
     </div>
 
-    {{ _self.labelDispoSelec((selectedPlayers|length), type, nbDispos, nbMinJoueurs, nbTotalJoueurs) }}
+    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
     <table class="card-panel dispos">
         <thead>
@@ -63,96 +66,71 @@
     </table>
 {% endmacro %}
 
-{% macro recapitulatif(disponibilitesDep, disponibilitesParis, nbJournees) %}
-    <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-        <li class="tab"><a href="#all_dispo_departementale" class="active">Départemental</a></li>
-        <li class="tab"><a href="#all_dispo_paris">Paris</a></li>
-    </ul>
-
-    <div id="all_dispo_departementale">
-        <table class="centered responsive-table striped">
-            <thead>
-                <tr>
-                    <th><span class="hide-on-small-only">Joueurs</span></th>
-                    {% for i in 1..nbJournees %}
-                        <th>J{{ i }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <tbody>
-            {% for dispo in disponibilitesDep %}
-                <tr>
-                    <td style="padding-top: 5px; padding-bottom: 5px;">
-                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
-                        </div>
-                    </td>
-                    {% for i in 1..nbJournees %}
-                        {{ _self.td_recap(dispo["j" ~ i]) }}
-                    {% endfor %}
-                </tr>
+{% macro recapitulatif(allDisponibilites, nomTab) %}
+    {% if allDisponibilites|length > 1 %}
+        <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="margin-bottom: 2px">
+            {% for nomChamp, disponibilites in allDisponibilites %}
+                <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" class="active">{{ nomChamp }}</a></li>
             {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        </ul>
+    {% endif %}
 
-    <div id="all_dispo_paris">
-        <table class="centered responsive-table striped">
-            <thead>
-                <tr>
-                    <th><span class="hide-on-small-only">Joueurs</span></th>
-                    {% for i in 1..nbJournees %}
-                        <th>J{{ i }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
+    {% for nomChamp, disponibilites in allDisponibilites %}
+        <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
+            <table class="centered responsive-table striped">
+                <thead>
+                    <tr>
+                        <th><span class="hide-on-small-only">Joueurs</span></th>
+                        {% for i in 1..disponibilites["nbJournees"] %}
+                            <th style="width: 70px;">J{{ i }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
 
-            <tbody>
-            {% for dispo in disponibilitesParis %}
-                <tr>
-                    <td style="padding-top: 5px; padding-bottom: 5px;">
-                        <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                            <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
-                        </div>
-                    </td>
-                    {% for i in 1..nbJournees %}
-                        {{ _self.td_recap(dispo["j" ~ i]) }}
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                <tbody>
+                {% for disponibilite in disponibilites["dispos"] %}
+                    <tr>
+                        <td style="padding-top: 5px; padding-bottom: 5px;">
+                            <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') }}" alt="Avatar">
+                                <span>{{ disponibilite.nom }} {{ disponibilite.prenom }}</span>
+                            </div>
+                        </td>
+                        {% for i in 1..disponibilites["nbJournees"] %}
+                            <td>
+                                {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                        <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                    {% else %}
+                                        <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                    {% endif %}
+                                {% else %}
+                                    <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
 {% endmacro %}
 
-{% macro td_recap(dispo) %}
-    <td>
-        {% if dispo is not null %}
-            {% if dispo == 1 %}
-                <i style="vertical-align: middle;" class="green-text center tiny material-icons">check</i>
-            {% else %}
-                <i style="vertical-align: middle;" class="red-text center tiny material-icons">close</i>
-            {% endif %}
-        {% else %}
-            <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
-        {% endif %}
-    </td>
-{% endmacro %}
-
-{% macro labelDispoSelec(nbSelectedPlayers, type, nbDispos, nbMinJoueurs, nbTotalJoueurs) %}
+{% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) %}
     <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0; margin-top: 10px;">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7 offset-s1">Disponibles</div>
-            <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
-                {% if nbDispos >= nbTotalJoueurs %}
-                    rainbow
-                {% elseif nbDispos >= nbMinJoueurs %}
-                    orange darken-2
-                {% else %}
-                    red
+            <div style="font-size: 100%; width: auto;" class="col s4 lobster
+                {% if hasCompos %}
+                    pastille
+                    {% if nbDispos >= nbTotalJoueurs %}
+                        rainbow
+                    {% elseif nbDispos >= nbMinJoueurs %}
+                        orange darken-2
+                    {% else %}
+                        red
+                    {% endif %}
                 {% endif %}">
                 {{ nbDispos }}/{{ nbTotalJoueurs }}
             </div>
@@ -160,13 +138,16 @@
 
         <div class="row bottom_0">
             <div class="col s7 offset-s1">Sélectionnés</div>
-            <div style="font-size: 100%; width: auto;" class="col s4 pastille lobster
-                {% if nbSelectedPlayers == nbTotalJoueurs %}
-                    rainbow
-                {% elseif nbSelectedPlayers >= nbMinJoueurs %}
-                    orange darken-2
-                {% else %}
-                    red
+            <div style="font-size: 100%; width: auto;" class="col s4 lobster
+                {% if hasCompos %}
+                    pastille
+                    {% if nbSelectedPlayers == nbTotalJoueurs %}
+                        rainbow
+                    {% elseif nbSelectedPlayers >= nbMinJoueurs %}
+                        orange darken-2
+                    {% else %}
+                        red
+                    {% endif %}
                 {% endif %}">
                 {{ nbSelectedPlayers }}/{{ nbTotalJoueurs }}
             </div>
@@ -174,86 +155,103 @@
     </div>
 {% endmacro %}
 
-{% macro backoffice(disponibilites, type) %}
-    {% if disponibilites|length > 0 %}
-        {% for nom, dispos in disponibilites %}
+{% macro backoffice(disponibilites) %}
+    {% if disponibilites|length %}
+        {% for nomJoueur, infos in disponibilites %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
-                            <img src="{{ asset((disponibilites[nom]|first)['avatar'] ? 'images/profile_pictures/' ~ (disponibilites[nom]|first)['avatar'] : 'images/account.png') }}" alt="Avatar">
-                            <span>{{ nom }}</span>
+                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') }}" alt="Avatar">
+                            <span>{{ nomJoueur }}</span>
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
+
                     <div class="collapsible-body">
                         <table class="centered striped responsive-table">
-                            <thead>
-                                <tr class="hide-on-med-and-down">
-                                    <th></th>
-                                    <th>Journée</th>
-                                    <th>Date</th>
-                                    <th>Disponibilités</th>
-                                </tr>
-                            </thead>
-
                             <tbody>
-                                {% for dispo in dispos %}
+                                {% for i, dispos in infos.dispos %}
                                     <tr>
                                         <td class="hide-on-med-and-down">
                                             <div class="chip">
-                                                <img src="{{ asset(dispo.avatar ? 'images/profile_pictures/' ~ dispo.avatar : 'images/account.png') }}" alt="Avatar">
-                                                <span>{{ dispo.nom }} {{ dispo.prenom }}</span>
+                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') }}" alt="Avatar">
+                                                <span>{{ dispos.nom }} {{ dispos.prenom }}</span>
                                             </div>
                                         </td>
-                                        <td>J{{ dispo.idJournee }}</td>
+                                        <td>J{{ i+1 }}</td>
                                         <td>
-                                            {% if dispo.undefined %}
+                                            {% if dispos.undefined %}
                                                 <span class="red-text">Date indéfinie</span>
                                             {% else %}
-                                                {{ dispo.dateJournee | date("d/m/Y") }}
+                                                {{ dispos.dateJournee | date("d/m/Y") }}
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if dispo.classement_officiel and dispo.licence %}
-                                                {% if dispo.idDisponibilite is null %}
+                                            {#
+                                                <div id="preloaderSetDispo">
+                                                    <div class="preloader-wrapper small active">
+                                                        <div class="spinner-layer spinner-blue-only">
+                                                            <div class="circle-clipper left">
+                                                                <div class="circle"></div>
+                                                            </div><div class="gap-patch">
+                                                                <div class="circle"></div>
+                                                            </div><div class="circle-clipper right">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            #}
+                                            {% if dispos.classement_officiel and dispos.licence %}
+                                                {% if dispos.idDisponibilite is null %}
                                                     <div class="row" style="margin-bottom: 0;">
-                                                        <div class="col s12 xl6">
-                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 1}) }}">
+                                                        <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
+                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispos.idCompetiteur, journee: dispos.idJournee, dispo: 1}) }}">
                                                                 <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
                                                             </a>
                                                         </div>
-                                                        <div class="col s12 xl6">
-                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispo.idCompetiteur, journee: dispo.idJournee, type: type, dispo: 0}) }}">
+                                                        <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
+                                                            <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispos.idCompetiteur, journee: dispos.idJournee, dispo: 0}) }}">
                                                                 <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
                                                             </a>
                                                         </div>
                                                     </div>
                                                 {% else %}
-                                                    {% if dispo.disponibilite == 1 %}
+                                                    {% if dispos.disponibilite == 1 %}
                                                         <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
-                                                        <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')" href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 0}) }}">
+                                                        <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')"
+                                                           href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispos.idCompetiteur, idDispo: dispos.idDisponibilite, dispo: 0}) }}">
                                                             <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                                         </a>
                                                     {% else %}
                                                         <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
-                                                        <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispo.idCompetiteur, type: type, disposJoueur: dispo.idDisponibilite, dispo: 1}) }}">
+                                                        <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispos.idCompetiteur, idDispo: dispos.idDisponibilite, dispo: 1}) }}">
                                                             <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                         </a>
                                                     {% endif %}
                                                 {% endif %}
+
+                                                {#
+                                                <script type="text/javascript">
+                                                    let disponible = {{ disponible }};
+                                                    let numJournee = {{ journee.idJournee }};
+                                                    let dispoJoueur = {{ dispoJoueur }};
+                                                </script>
+                                                <script type="text/javascript" src="{{ asset('JS/setDispo.js') }}" defer></script>
+                                                #}
                                             {% else %}
                                                 {% if not dispo.licence and dispo.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence indéfinie<br>
-                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
                                                 {% elseif dispo.licence and not dispo.classement_officiel %}
                                                     <span class="red-text lighten-2">Classement indéfini<br>
-                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
                                                 {% elseif not dispo.licence and not dispo.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence et classement indéfinis<br>
-                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispo.idCompetiteur}) }}">Corriger</a>
+                                                        <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
                                                 {% endif %}
                                             {% endif %}
@@ -267,6 +265,6 @@
             </ul>
         {% endfor %}
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de disponibilités enregistrées.</p>
+        <p class="lobster_2 missingTitle">Aucune disponibilité</p>
     {% endif %}
 {% endmacro %}

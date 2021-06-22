@@ -2,45 +2,31 @@
 
 namespace App\Controller;
 
-use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
-use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\RencontreRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class InvalidSelectionController extends AbstractController
 {
-    private $em;
-    private $rencontreDepartementaleRepository;
-    private $rencontreParisRepository;
+    private $rencontreRepository;
 
     /**
-     * @param RencontreDepartementaleRepository $rencontreDepartementaleRepository
-     * @param RencontreParisRepository $rencontreParisRepository
-     * @param EntityManagerInterface $em
+     * @param RencontreRepository $rencontreRepository
      */
-    public function __construct(RencontreDepartementaleRepository $rencontreDepartementaleRepository,
-                                RencontreParisRepository $rencontreParisRepository,
-                                EntityManagerInterface $em)
+    public function __construct(RencontreRepository $rencontreRepository)
     {
-        $this->em = $em;
-        $this->rencontreDepartementaleRepository = $rencontreDepartementaleRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
-     * @param $type
-     * @param RencontreDepartementale|RencontreParis $compo
+     * @param int $limiteBrulage
+     * @param int $idChampionnat
      * @param int $idJoueur
-     * @param int $nbJournees
      * @param int $nbJoueurs
+     * @param int $numEquipe
+     * @param int $idJournee
      */
-    public function checkInvalidSelection($type, $compo, int $idJoueur, int $nbJournees, int $nbJoueurs){
-        if ($idJoueur != null && $compo->getIdJournee()->getIdJournee() < $nbJournees) {
-            if ($type === 'departementale') $this->deleteInvalidSelectedPlayers($this->rencontreDepartementaleRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_departementale'), $nbJoueurs), $nbJoueurs);
-            else if ($type === 'paris') $this->deleteInvalidSelectedPlayers($this->rencontreParisRepository->getSelectedWhenBurnt($idJoueur, $compo->getIdJournee()->getIdJournee(), $compo->getIdEquipe()->getNumero(), $this->getParameter('limite_brulage_paris'), $nbJoueurs), $nbJoueurs);
-        }
+    public function checkInvalidSelection(int $limiteBrulage, int $idChampionnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
+        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs);
     }
 
     /**
@@ -52,7 +38,7 @@ class InvalidSelectionController extends AbstractController
             $i = 0;
             while($i != $nbJoueurs){
                 if (boolval($compo['isPlayer' . $i])){
-                    $compo['compo']->setIdJoueurN($i, NULL);
+                    $compo['compo']->setIdJoueurNToNull($i);
                     break;
                 }
                 $i++;

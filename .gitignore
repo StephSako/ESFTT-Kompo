@@ -20,3 +20,8 @@
 ###< symfony/phpunit-bridge ###
 .idea
 kompo.db
+kompo_refactored.db
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\JourneeParisRepository;
+use App\Repository\ChampionnatRepository;
+use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,26 +14,39 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class SecurityController extends AbstractController
 {
     private $em;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
+    private $journeeRepository;
+    private $championnatRepository;
+    private $utils;
+    private $uploadHandler;
+    private $encoder;
 
     /**
      * SecurityController constructor.
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
-     * @param JourneeParisRepository $journeeParisRepository
+     * @param JourneeRepository $journeeRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
+     * @param AuthenticationUtils $utils
+     * @param UploadHandler $uploadHandler
+     * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
-                                JourneeParisRepository $journeeParisRepository,
-                                EntityManagerInterface $em)
+    public function __construct(JourneeRepository $journeeRepository,
+                                ChampionnatRepository $championnatRepository,
+                                EntityManagerInterface $em,
+                                AuthenticationUtils $utils,
+                                UploadHandler $uploadHandler,
+                                UserPasswordEncoderInterface $encoder)
     {
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
-        $this->journeeParisRepository = $journeeParisRepository;
+        $this->journeeRepository = $journeeRepository;
         $this->em = $em;
+        $this->championnatRepository = $championnatRepository;
+        $this->utils = $utils;
+        $this->uploadHandler = $uploadHandler;
+        $this->encoder = $encoder;
     }
 
     /**
@@ -58,94 +70,96 @@ class SecurityController extends AbstractController
      * @Route("/compte", name="account")
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function edit(Request $request){
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
 
+        $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
-        else $form = $this->createForm(CompetiteurType::class, $user);
+        $form = $this->createForm(CompetiteurType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    $user->setNom(strtoupper($user->getNom()));
-                    $user->setPrenom(ucwords(strtolower($user->getPrenom())));
+                    $user->setNom(mb_convert_case($user->getNom(), MB_CASE_UPPER, "UTF-8"));
+                    $user->setPrenom(mb_convert_case($user->getPrenom(), MB_CASE_TITLE, "UTF-8"));
+
                     $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées !');
+                    $this->addFlash('success', 'Informations modifiées');
                     return $this->redirectToRoute('account');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $user->getLicence() . '\' est déjà attribuée');
-                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
-                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('account/edit.html.twig', [
-                        'type' => 'general',
-                        'user' => $user,
-                        'urlImage' => $user->getAvatar(),
-                        'path' => 'account.update.password',
-                        'journees' => $journees,
-                        'form' => $form->createView()
-                    ]);
+                        if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse email doit être renseignée');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses email doivent être différentes');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            }
-            else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('account/edit.html.twig', [
             'type' => 'general',
-            'user' => $user,
             'urlImage' => $user->getAvatar(),
             'path' => 'account.update.password',
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
             'journees' => $journees,
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * // TODO Refaire
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return RedirectResponse|Response
+     * @return Response
      */
-    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
-
+    public function updatePassword(Request $request): Response
+    {
         $user = $this->getUser();
-
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
 
-        if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-            $password = $encoder->encodePassword($user, $request->get('new_password'));
-            $user->setPassword($password);
+        if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
+            if ($this->encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+                    $password = $this->encoder->encodePassword($user, $request->get('new_password'));
+                    $user->setPassword($password);
+
+                    $this->em->flush();
+                    $this->addFlash('success', 'Mot de passe modifié');
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+            } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
+        } else $this->addFlash('fail', 'Remplissez tous les champs');
+
+        return $this->redirectToRoute('account');
+    }
+
+    /**
+     * @Route("/compte/delete/avatar", name="account.delete.avatar")
+     * @return Response
+     */
+    public function deleteAvatar(): Response
+    {
+        if ($this->getUser() != null){
+            $this->uploadHandler->remove($this->getUser(), 'imageFile');
+            $this->getUser()->setAvatar(null);
+            $this->getUser()->setImageFile(null);
 
             $this->em->flush();
-            $this->addFlash('success', 'Mot de passe modifié !');
+            $this->addFlash('success', 'Avatar supprimé');
+        } else {
+            return $this->render('account/login.html.twig', [
+                'lastUsername' => $this->utils->getLastUsername(),
+                'error' => $this->utils->getLastAuthenticationError()
+            ]);
         }
-        else {
-            $this->addFlash('fail', 'Les mots de passe ne correspond pas');
-        }
-
-        return $this->render('account/edit.html.twig', [
-            'user' => $user,
-            'type' => 'general',
-            'urlImage' => $user->getAvatar(),
-            'path' => 'account.update.password',
-            'journees' => $journees,
-            'form' => $formCompetiteur->createView()
-        ]);
+        return $this->redirectToRoute('account');
     }
 }

@@ -1,4 +1,16 @@
+function alertBecomingVisitor(){
+    if ($('#cb_visiteur').is(":checked")){
+        let r = confirm('Les disponiblités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
+        if (r !== true) {
+            event.preventDefault();
+        }
+    } else return false;
+}
+
 $(document).ready(function () {
+    let cb_admin = $('#cb_admin');
+    let cb_capitaine = $('#cb_capitaine');
+    let cb_visiteur = $('#cb_visiteur');
 
     /** Evènements liés au checkbox Administrateur, Capitaine et Visiteur **/
     if (cb_admin.is(":checked")){

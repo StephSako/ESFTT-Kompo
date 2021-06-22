@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    let lieu_rencontre = $('#lieu_rencontre');
+    let span_domicile = $('#domicile');
+    let span_exterieur = $('#exterieur');
+    let exempt = $('#exempt');
+    let adversaire = $('#adversaire');
+    let hosted = $('#hosted');
+    let reported = $('#reporte');
+
     if (exterieur === "D") {
         span_domicile.css("font-weight", "bold");
         span_exterieur.css("font-weight", "normal");

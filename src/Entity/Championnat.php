@@ -7,13 +7,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionnatRepository")
  * @ORM\Table(
  *     name="prive_championnat",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_champ_nom", columns={"nom"})
+ *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"})
  *     }
  * )
  * @UniqueEntity(
@@ -22,6 +23,7 @@ use Cocur\Slugify\Slugify;
  */
 class Championnat
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -48,11 +50,214 @@ class Championnat
     private $nom;
 
     /**
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 1,
+     *     message = "La limite de brûlage doit être supérieure à {{ limit }}"
+     * )
+     *
+     * @Assert\LessThanOrEqual(
+     *     value = 4,
+     *     message = "La limite de brûlage doit être inférierue à {{ limit }}"
+     * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
+     * @ORM\Column(type="integer", name="limite_brulage", nullable=false)
+     */
+    private $limiteBrulage;
+
+    /**
+     * @var int
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 1,
+     *     message = "Il doit y avoir au minimum {{ limit }} journée"
+     * )
+     *
+     * @Assert\LessThanOrEqual (
+     *     value = 10,
+     *     message = "Il doit y avoir au maximum {{ limit }} journée"
+     * )
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
+     * @ORM\Column(type="integer", name="nb_journees", nullable=false)
+     */
+    private $nbJournees;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="j2rule", nullable=false)
      */
     private $j2Rule;
+
+    /**
+     * @var Rencontre[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $rencontres;
+
+    /**
+     * @var Division[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Division", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $divisions;
+
+    /**
+     * @var Disponibilite[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $dispos;
+
+    /**
+     * @var Equipe[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $equipes;
+
+    /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
+     */
+    private $journees;
+
+    /**
+     * @return int
+     */
+    public function getNbJournees(): int
+    {
+        return $this->nbJournees;
+    }
+
+    /**
+     * @param int $nbJournees
+     * @return Championnat
+     */
+    public function setNbJournees(int $nbJournees): self
+    {
+        $this->nbJournees = $nbJournees;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimiteBrulage(): int
+    {
+        return $this->limiteBrulage;
+    }
+
+    /**
+     * @param int|null $limiteBrulage
+     * @return Championnat
+     */
+    public function setLimiteBrulage(?int $limiteBrulage): self
+    {
+        $this->limiteBrulage = $limiteBrulage;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJournees(): Collection
+    {
+        return $this->journees;
+    }
+
+    /**
+     * @param Collection $journees
+     * @return Championnat
+     */
+    public function setJournees(Collection $journees): self
+    {
+        $this->journees = $journees;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDispos()
+    {
+        return $this->dispos;
+    }
+
+    /**
+     * @param mixed $dispos
+     * @return Championnat
+     */
+    public function setDispos($dispos): self
+    {
+        $this->dispos = $dispos;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEquipes()
+    {
+        return $this->equipes;
+    }
+
+    /**
+     * @param mixed $equipes
+     * @return Championnat
+     */
+    public function setEquipes($equipes): self
+    {
+        $this->equipes = $equipes;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDivisions()
+    {
+        return $this->divisions;
+    }
+
+    /**
+     * @param mixed $divisions
+     * @return Championnat
+     */
+    public function setDivisions($divisions): self
+    {
+        $this->divisions = $divisions;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param mixed $rencontres
+     * @return Championnat
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
+    }
 
     /**
      * @return mixed

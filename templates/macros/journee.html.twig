@@ -1,5 +1,5 @@
-{% macro table(journees, type) %}
-    {% if journees|length > 0 %}
+{% macro table(journees) %}
+    {% if journees|length %}
         <table class="striped centered">
             <thead>
                 <tr>
@@ -12,18 +12,25 @@
             <tbody>
                 {% for journee in journees %}
                     <tr>
-                        <td>{{ journee.idJournee }}</td>
+                        <td>
+                            <b>{{ loop.index }}</b>
+                        </td>
                         <td>
                             {% if journee.undefined %} <span class="red-text">Date indéfinie</span>
                             {% else %} {{ journee.dateJournee|format_datetime('long', 'none', locale='fr') }}
                             {% endif %}
                         </td>
-                        <td><a href="{{ path('backoffice.journee.edit', {idJournee: journee.idJournee, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a></td>
+                        <td>
+                            <a href="{{ path('backoffice.journee.edit', {idJournee: journee.idJournee}) }}"
+                               class="btn waves-effect waves-light blue lighten-2 btn_gestion">
+                                <i class="material-icons">edit</i>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de journées enregistrées.</p>
+        <p class="lobster_2 missingTitle">Aucune journée enregistrée</p>
     {% endif %}
 {% endmacro %}

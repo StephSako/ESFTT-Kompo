@@ -16,7 +16,7 @@
 
     {% if 'ROLE_JOUEUR' in app.token.roleNames %}
         <li class="li_in_line{% if app.request.getPathInfo starts with '/contact' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contact</a>
+            <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contacter</a>
         </li>
     {% endif %}
 

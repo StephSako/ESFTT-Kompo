@@ -37,6 +37,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "al37350/fftt-api": "^1.7",
         "amphp/http-client": "^4.5",
         "beberlei/doctrineextensions": "^1.2",
         "cocur/slugify": "^4.0",

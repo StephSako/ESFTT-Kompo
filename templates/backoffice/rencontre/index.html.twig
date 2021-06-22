@@ -6,9 +6,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -18,22 +18,34 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les rencontres</h4>
         </div>
 
-        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#journees_departementales" class="active">Départemental</a></li>
-            <li class="tab"><a href="#journees_paris">Paris</a></li>
-        </ul>
+        {% if not rencontres|length %}
+            <div class='card-panel center'>
+                <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
 
-        <div class="card-panel backoffice-panel" id="journees_departementales">
-            {{ _rencontre.table(rencontreDepartementales, 'departementale') }}
-        </div>
+                <a href='{{ path('backoffice.championnat.new') }}'
+                   class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+                    Créer un championnat
+                </a>
+            </div>
+        {% else %}
+            {% if rencontres|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
+                    {% for nomChampionnat, renc_equipes in rencontres %}
+                        <li class='tab'><a href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-        <div class="card-panel backoffice-panel" id="journees_paris">
-            {{ _rencontre.table(rencontreParis, 'paris') }}
-        </div>
+            {% for nomChampionnat, renc_equipes in rencontres %}
+                <div class='card-panel backoffice-panel' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
+                    {{ _rencontre.table(renc_equipes) }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
 {% endblock %}

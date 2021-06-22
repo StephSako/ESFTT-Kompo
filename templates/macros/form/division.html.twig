@@ -1,0 +1,47 @@
+{% macro form(form, btnText, editMode, hasChampionnats, options) %}
+    <style>
+        li {
+            color: red;
+        }
+    </style>
+
+    {% if hasChampionnats %}
+        <div class="card-panel center-align">
+            <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une division</h4>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if options %}{{ options.championnat }}{% endif %}</h5>
+
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col s12 {% if not editMode %}l2{% else %}m3{% endif %}">
+                        <span><i class="material-icons prefix">short_text</i> Diminutif</span>{{ form_row(form.shortName) }}
+                    </div>
+                    <div class="col s12 {% if not editMode %}l4{% else %}m5{% endif %}">
+                        <span><i class="material-icons prefix">subject</i> Nom</span>{{ form_row(form.longName) }}
+                    </div>
+                    <div class="col s12 {% if not editMode %}l3{% else %}m4{% endif %}">
+                        <span><i class="material-icons prefix">people</i> Nombre de joueurs</span>
+                        {{ form_row(form.nbJoueurs) }}
+                    </div>
+                    {% if not editMode %}
+                        <div class="col s12 l3">
+                            <span><i class="material-icons prefix">stars</i> Championnat</span>
+                            {{ form_row(form.idChampionnat) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <br>
+                <a href="{{ path('backoffice.divisions') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
+                <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <div class="center card-panel">
+            <p class="lobster_2 missingTitle">Le formulaire de division est inaccessible car aucun championnat n'est enregistré</p>
+
+            <a href="{{ path('backoffice.divisions') }}">
+                <button class="btn waves-effect blue lighten-2 waves-light center">Retour aux divisions</button>
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}

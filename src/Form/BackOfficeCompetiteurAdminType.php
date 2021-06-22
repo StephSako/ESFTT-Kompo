@@ -63,7 +63,7 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 'required' => false
             ])
             ->add('visitor', CheckboxType::class, [
-                'label' => 'Compte visiteur (accès restreints)',
+                'label' => 'Visiteur',
                 'required' => false
             ])
             ->add('mail', EmailType::class, [
@@ -81,19 +81,19 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 ]
             ])
             ->add('contactableMail', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactableMail2', CheckboxType::class, [
-                'label' => 'Contactable à cette adresse mail',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('contactablePhoneNumber2', CheckboxType::class, [
-                'label' => 'Contactable à ce numéro',
+                'label' => 'Contactable',
                 'required' => false
             ])
             ->add('phoneNumber', TelType::class, [

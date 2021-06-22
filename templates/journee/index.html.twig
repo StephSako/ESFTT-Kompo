@@ -5,7 +5,7 @@
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
 {% import 'macros/index.html.twig' as _index %}
 
-{% block title %}J{{ journee.idJournee}} - {{ journee.type }}{% endblock %}
+{% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
 
 {% block body %}
 
@@ -15,7 +15,7 @@
 
     <div class="row main">
         <div class="col l3 hide-on-small-only">
-            {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+            {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
         <div class="col s12 m7">
@@ -32,7 +32,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.idJournee }} - {{ journee.type }}</h4>
+                <h4>Journée {{ idJournee }} - {{ championnat.nom }}</h4>
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
@@ -40,13 +40,13 @@
                 {% endif %}
             </div>
 
-            {% if selectedPlayers|length == nbTotalJoueurs %}
+            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
                     <h5 class="white-text"><i class="material-icons">check_circle</i> Kompositions complètes</h5>
                 </div>
             {% else %}
                 <div class="hide-on-med-and-up">
-                    {{ _disponibilites.labelDispoSelec((selectedPlayers|length), journee.linkType, nbDispos, nbMinJoueurs, nbTotalJoueurs) }}
+                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}
 
@@ -54,15 +54,15 @@
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
 
                     {% if app.user.licence and app.user.classementOfficiel %}
-                        {% if disponible is not null %}
+                        {% if disponible != -1 %}
                             {% if disponible == 1 %}
                                 <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                                <a {% if selected %}onclick="return confirm('Vous risquez d\'être désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
+                                <a {% if selected %}onclick="return confirm('Vous serez désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
                                     <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
                                 </a>
                             {% elseif disponible == 0 %}
                                 <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
-                                <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 1}) }}">
+                                <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
                                     <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                                 </a>
                             {% endif %}
@@ -70,12 +70,12 @@
                             <h5>Êtes-vous disponible pour cette journée ?</h5>
                             <div class="row">
                                 <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
                                         <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
                                     </a>
                                 </div>
                                 <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
                                         <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
                                     </a>
                                 </div>
@@ -91,22 +91,22 @@
                         {% endif %}
                     {% endif %}
                 </div>
-            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible is null %}
+            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
                 <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
                     <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
                 </div>
             {% endif %}
 
-            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length > 0 %}
+            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length %}
                 <div class="card-panel center cardTeamsWithoutDiv">
                     <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
-                    <a href="{{ path('backoffice.equipes') }}">Corriger</a>
+                    <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                 </div>
             {% endif %}
 
-            {% if compos|length > 0 %}
+            {% if compos|length %}
                 {% for compo in compos %}
-                    <div class="center card-panel"{% if compo.isFull %} style="border: green solid 4px" {% endif %}>
+                    <div class="center card-panel">
                         <div class="row header_compo">
 
                             {% if compo.reporte %}
@@ -125,11 +125,7 @@
 
                             <div class="col s4 m2">
                                 <h5>
-                                {% if compo.idEquipe.idDivision %}
-                                    <span class="white-text bulle"{% if compo.idEquipe.idDivision.shortName|length == 1 %} style="padding-left: 16px; padding-right: 16px;"{% endif %}>{{ compo.idEquipe.idDivision.shortName }}</span><br>
-                                {% else %}
-                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
-                                {% endif %}
+                                    <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <p class="poule" style="margin-bottom: 0;">
                                     Poule
@@ -148,8 +144,8 @@
                             {% if not compo.exempt %}
                                 <div class="col s4 hide-on-med-and-up">
                                     <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -158,8 +154,8 @@
                             <div class="col s4 m2 hide-on-small-only">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if not compo.exempt %}
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
                                         {% endif %}
                                     {% endif %}
                                 </h5>
@@ -185,7 +181,7 @@
                                         {% if compo.adversaire is null %}
                                             <h5 class="lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
                                         {% else %}
-                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
+                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -196,10 +192,10 @@
                             <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
+                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table">
                             <tbody>
-                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i)) }}
+                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulagesJ2, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule) }}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -207,19 +203,19 @@
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 {% if compo.isEmpty %}
-                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
+                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Créer la compo', 'green') }}
                                 {% else %}
-                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                    {{ _index.btnEmptyCompo(journee.linkType, compo.id, compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType)) }}<br>
+                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Modifier la compo', 'blue') }}
+                                    {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
                                 {% endif %}
                             </div>
                         {% endif %}
                     </div>
                 {% endfor %}
             {% else %}
-            <div class="center card-panel">
-                <span class="lobster_2" style="font-size: 20px;">Il n'y a pas d'équipes enregistrées</span>
-            </div>
+                <div class="center card-panel">
+                    <span class="lobster_2 missingTitle">Aucune équipe valide enregistrée</span>
+                </div>
             {% endif %}
         </div>
 
@@ -227,32 +223,31 @@
             <li>
                 <div class="collapsible-header">
                     <div class="chip">
-                        <i class="blue-text material-icons" style="vertical-align: middle;">people</i>
-                        Disponibilités
+                        <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
+                        <span class="lobster">Disponibilités</span>
                     </div>
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
                 </div>
             </li>
             <li>
                 <div class="collapsible-header">
                     <div class="chip">
-                        <i class="red-text material-icons" style="vertical-align: middle;">whatshot</i>
-                        Brûlage
+                        <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
+                        <span class="lobster">Brûlage</span>
                     </div>
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+                    {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
                 </div>
             </li>
         </ul>
 
         <div class="col s12 m2 hide-on-small-only">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
     </div>
-
 {% endblock %}

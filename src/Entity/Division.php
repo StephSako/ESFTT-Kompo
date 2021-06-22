@@ -2,22 +2,23 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DivisionRepository")
  * @ORM\Table(
  *     name="prive_division",
+ *     indexes={
+ *         @Index(name="IDX_div_champ", columns={"id_championnat"})
+ *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_div_short_name", columns={"short_name"}),
- *          @UniqueConstraint(name="UNIQ_div_long_name", columns={"long_name"})
+ *          @UniqueConstraint(name="UNIQ_div_sn", columns={"short_name", "id_championnat"}),
+ *          @UniqueConstraint(name="UNIQ_div_ln", columns={"long_name",  "id_championnat"})
  *     }
- * )
- * @UniqueEntity(
- *     fields={"shortName", "longName"}
  * )
  */
 class Division
@@ -30,11 +31,19 @@ class Division
     private $idDivision;
 
     /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="divisions")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
+
+    /**
      * @var string
      *
      * @Assert\Length(
      *      min = 1,
-     *      max = 5,
+     *      max = 2,
      *      minMessage = "Le diminitif doit contenir au moins {{ limit }} lettres",
      *      maxMessage = "Le diminitif doit contenir au maximum {{ limit }} lettres"
      * )
@@ -69,65 +78,29 @@ class Division
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
-     *     value = -1,
-     *     message = "Indiquez {{ value }} si division absente en champ. depart. }}"
-     * )
-     *
-     * @Assert\NotEqualTo(
-     *     value = 0,
-     *     message = "Indiquez -1 si division absente en champ. depart."
-     * )
-     *
-     * @Assert\LessThanOrEqual(
-     *     value = 4,
-     *     message = "Le nombre maximal de joueurs est {{ value }}"
-     * )
-     *
-     * @Assert\NotBlank(
-     *     normalizer="trim"
-     *)
-     *
-     * @ORM\Column(type="integer", name="nb_joueurs_champ_departementale", nullable=false)
-     */
-    private $nbJoueursChampDepartementale;
-
-    /**
-     * @var int
-     *
-     * @Assert\GreaterThanOrEqual(
-     *     value = -1,
-     *     message = "Indiquez {{ value }} si division absente en champ. de Paris }}"
-     * )
-     *
-     * @Assert\NotEqualTo(
-     *     value = 0,
-     *     message = "Indiquez -1 si division absente en champ. de Paris."
+     *     value = 2,
+     *     message = "Le nombre minimal de joueurs est 2"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 9,
-     *     message = "Le nombre maximal de joueurs est {{ value }}"
+     *     message = "Le nombre maximal de joueurs est 9"
      * )
      *
      * @Assert\NotBlank(
      *     normalizer="trim"
      *)
      *
-     * @ORM\Column(type="integer", name="nb_joueurs_champ_paris", nullable=false)
+     * @ORM\Column(type="integer", name="nb_joueurs", nullable=false)
      */
-    private $nbJoueursChampParis;
+    private $nbJoueurs;
 
     /**
-     * @var EquipeDepartementale[]
+     * @var Collection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\EquipeDepartementale", mappedBy="idDivision")
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idDivision")
      */
-    protected $equipesDepartementales;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EquipeParis", mappedBy="idDivision")
-     */
-    protected $equipesParis;
+    protected $equipes;
 
     /**
      * @return mixed
@@ -137,11 +110,6 @@ class Division
         return $this->idDivision;
     }
 
-    public function getNbJoueursChamp(string $type): ?int
-    {
-        return ($type == 'departementale' ? $this->nbJoueursChampDepartementale : $this->nbJoueursChampParis);
-    }
-
     /**
      * @param mixed $idDivision
      * @return Division
@@ -149,6 +117,24 @@ class Division
     public function setIdDivision($idDivision): self
     {
         $this->idDivision = $idDivision;
+        return $this;
+    }
+
+    /**
+     * @return Championnat|null
+     */
+    public function getIdChampionnat(): ?Championnat
+    {
+        return $this->idChampionnat;
+    }
+
+    /**
+     * @param Championnat $idChampionnat
+     * @return Division
+     */
+    public function setIdChampionnat(Championnat $idChampionnat): self
+    {
+        $this->idChampionnat = $idChampionnat;
         return $this;
     }
 
@@ -189,74 +175,38 @@ class Division
     }
 
     /**
-     * @return EquipeDepartementale[]
+     * @return Collection
      */
-    public function getEquipesDepartementales(): array
+    public function getEquipes(): Collection
     {
-        return $this->equipesDepartementales;
+        return $this->equipes;
     }
 
     /**
-     * @param EquipeDepartementale[] $equipesDepartementales
+     * @param Collection $equipes
      * @return Division
      */
-    public function setEquipesDepartementales(array $equipesDepartementales): self
+    public function setEquipes(Collection $equipes): self
     {
-        $this->equipesDepartementales = $equipesDepartementales;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEquipesParis()
-    {
-        return $this->equipesParis;
-    }
-
-    /**
-     * @param mixed $equipesParis
-     * @return Division
-     */
-    public function setEquipesParis($equipesParis): self
-    {
-        $this->equipesParis = $equipesParis;
+        $this->equipes = $equipes;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getNbJoueursChampDepartementale(): int
+    public function getNbJoueurs(): int
     {
-        return $this->nbJoueursChampDepartementale;
+        return $this->nbJoueurs;
     }
 
     /**
-     * @param int $nbJoueursChampDepartementale
+     * @param int $nbJoueurs
      * @return Division
      */
-    public function setNbJoueursChampDepartementale(int $nbJoueursChampDepartementale): self
+    public function setNbJoueurs(int $nbJoueurs): self
     {
-        $this->nbJoueursChampDepartementale = $nbJoueursChampDepartementale;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNbJoueursChampParis(): int
-    {
-        return $this->nbJoueursChampParis;
-    }
-
-    /**
-     * @param int $nbJoueursChampParis
-     * @return Division
-     */
-    public function setNbJoueursChampParis(int $nbJoueursChampParis): self
-    {
-        $this->nbJoueursChampParis = $nbJoueursChampParis;
+        $this->nbJoueurs = $nbJoueurs;
         return $this;
     }
 }

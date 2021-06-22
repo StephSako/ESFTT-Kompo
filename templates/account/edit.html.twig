@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/account.html.twig' as edit_account %}
+{% import 'macros/form/account.html.twig' as edit_account %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}
@@ -30,12 +30,12 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, true) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, true, {licence: app.user.licence}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, {competiteurId: competiteur.idCompetiteur, idActualUser: idActualUser}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, {competiteurId: competiteurId, competiteurIsVisitor: competiteurIsVisitor}) }}
             {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}
+                {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
             {% endif %}
         {% endif %}
     </div>

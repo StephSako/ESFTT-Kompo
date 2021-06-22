@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/rencontre.html.twig' as edit %}
+{% import 'macros/form/rencontre.html.twig' as _rencontre %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}Modifier la rencontre{% endblock %}
@@ -10,12 +10,11 @@
     {% include("components/navbar_backoffice.html.twig") %}
 
     <div class="container">
-
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ edit.rencontre(idJournee, type, idEquipe, dateJournee, form, domicile) }}
+        {{ _rencontre.form(rencontre, form, domicile) }}
     </div>
 
 {% endblock %}

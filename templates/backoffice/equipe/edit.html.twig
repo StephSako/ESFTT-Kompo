@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/equipe.html.twig' as edit %}
+{% import 'macros/form/equipe.html.twig' as _equipe %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}Modifier l'équipe{% endblock %}
 
@@ -13,7 +14,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ edit.equipe(form, 'Modifier') }}
+        {{ _equipe.form(form, 'Modifier', champHasDivisions, {championnat: championnat}) }}
     </div>
 
 {% endblock %}

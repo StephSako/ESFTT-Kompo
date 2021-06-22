@@ -2,12 +2,13 @@
 
 {% block title %}Back-office - Les divisions{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/division.html.twig' as _division %}
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container center'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -17,53 +18,38 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les divisions</h4>
         </div>
 
-        <div class="card-panel center">
+        {% if not divisions|length %}
+            <div class='card-panel center'>
+                <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
 
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.division.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer une division</a>
+                <a href='{{ path('backoffice.championnat.new') }}'
+                   class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+                    Créer un championnat
+                </a>
+            </div>
+        {% else %}
+            <a href='{{ path('backoffice.division.new') }}'
+               class='btn waves-effect waves-light blue lighten-2 btn_gestion'>
+                Créer une division
+            </a>
 
-            {% if divisions|length > 0 %}
-                <table class="striped centered responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Diminutif</th>
-                            <th>Nom</th>
-                            <th>Championnat départemental</th>
-                            <th>Championnat de Paris</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for division in divisions %}
-                        <tr>
-                            <td>{{ division.shortName }}</td>
-                            <td>{{ division.longName }}</td>
-                            <td>{{ division.nbJoueursChamp('departementale') != -1 ? division.nbJoueursChampDepartementale ~ ' joueurs' : "<i class='grey-text material-icons'>block</i>" }}</td>
-                            <td>{{ division.nbJoueursChamp('paris') != -1 ? division.nbJoueursChampParis ~ ' joueurs' : "<i class='grey-text material-icons'>block</i>" }}</td>
-                            <td>
-                                <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
-                                    <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+            {% if divisions|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+                    {% for nomChampionnat, divisions_champ in divisions %}
+                        <li class='tab'><a href='{{ '#divisions_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
                     {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de divisions enregistrées.</p>
+                </ul>
             {% endif %}
-        </div>
+
+            {% for nomChampionnat, divisions_champ in divisions %}
+                <div class='card-panel backoffice-panel center' id='{{ 'divisions_' ~ nomChampionnat|slug }}'>
+                    {{ _division.table(divisions_champ) }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
