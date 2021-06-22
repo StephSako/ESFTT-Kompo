@@ -24,6 +24,7 @@ class HomeController extends AbstractController
     private $disponibiliteRepository;
     private $journeeRepository;
     private $rencontreRepository;
+    private $invalidSelectionController;
 
     /**
      * @param JourneeRepository $journeeRepository
@@ -31,6 +32,7 @@ class HomeController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
+     * @param InvalidSelectionController $invalidSelectionController
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
@@ -38,6 +40,7 @@ class HomeController extends AbstractController
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
+                                InvalidSelectionController $invalidSelectionController,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -46,6 +49,7 @@ class HomeController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->journeeRepository = $journeeRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->invalidSelectionController = $invalidSelectionController;
     }
 
     /**
@@ -214,11 +218,10 @@ class HomeController extends AbstractController
      * @param int $type
      * @param int $compo
      * @param Request $request
-     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function edit(int $type, int $compo, Request $request, InvalidSelectionController $invalidSelectionController) : Response
+    public function edit(int $type, int $compo, Request $request) : Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) {
             $this->addFlash('fail', 'Championnat inexistant');
@@ -285,13 +288,12 @@ class HomeController extends AbstractController
                     $this->em->flush();
 
                     /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
-                    /**  Si pas en dernière dernière journée ni dernière équipe **/
+                    /**  Si pas en dernière journée ni en dernière équipe **/
                     if (end($equipes)->getNumero() != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $idJournee){
-                        $nbJournees = $championnat->getNbJournees();
-                        for ($i = $compo->getIdJournee()->getIdJournee(); $i <= $nbJournees; $i++) {
-                            for ($j = 0; $j < $nbJoueursDivision; $j++) { // TODO Optimize et à mettre dans la fonction de InvalidSelectionController
-                                if ($form->getData()->getIdJoueurN($j) && $idJournee < $nbJournees)
-                                    $invalidSelectionController->checkInvalidSelection($championnat, $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $i);
+                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                        foreach ($journeesToRecalculate as $journeeToRecalculate) {
+                            for ($j = 0; $j < $nbJoueursDivision; $j++) {
+                                if ($form->getData()->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $journeeToRecalculate->getIdJournee());
                             }
                         }
                     }

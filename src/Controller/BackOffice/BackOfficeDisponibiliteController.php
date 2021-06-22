@@ -23,6 +23,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $journeeRepository;
     private $rencontreRepository;
     private $championnatRepository;
+    private $invalidSelectionController;
 
     /**
      * BackOfficeController constructor.
@@ -30,6 +31,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
+     * @param InvalidSelectionController $invalidSelectionController
      * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
@@ -37,6 +39,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em,
+                                InvalidSelectionController $invalidSelectionController,
                                 ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository)
     {
@@ -46,6 +49,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->invalidSelectionController = $invalidSelectionController;
     }
 
     /**
@@ -104,11 +108,10 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param int $idCompetiteur
      * @param int $idDispo
      * @param bool $dispo
-     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function update(int $idCompetiteur, int $idDispo, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(int $idCompetiteur, int $idDispo, bool $dispo) : Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
             $this->addFlash('fail', 'Compétiteur inexistant');
@@ -125,7 +128,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         //TODO Faire à la main sans requête
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
-            $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+            $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
         }
 
         $this->em->flush();

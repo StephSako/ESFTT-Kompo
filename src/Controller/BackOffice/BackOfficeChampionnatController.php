@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\InvalidSelectionController;
 use App\Entity\Championnat;
 use App\Entity\Journee;
 use App\Entity\Rencontre;
@@ -22,20 +23,24 @@ class BackOfficeChampionnatController extends AbstractController
     private $em;
     private $championnatRepository;
     private $journeeRepository;
+    private $invalidSelectionController;
 
     /**
      * BackOfficeChampionnatController constructor.
      * @param ChampionnatRepository $championnatRepository
+     * @param InvalidSelectionController $invalidSelectionController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
+                                InvalidSelectionController $invalidSelectionController,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->journeeRepository = $journeeRepository;
+        $this->invalidSelectionController = $invalidSelectionController;
     }
 
     /**
@@ -105,13 +110,36 @@ class BackOfficeChampionnatController extends AbstractController
             $this->addFlash('fail', 'Championnat inexistant');
             return $this->redirectToRoute('backoffice.championnats');
         }
+        $limiteBrulage = $championnat->getLimiteBrulage();
         $form = $this->createForm(ChampionnatType::class, $championnat);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             try {
-                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
                 $journees = $championnat->getJournees()->toArray();
+
+                /** Si la limite du brûlage diminue, on recalcule tous les brûlages des joueurs */
+                if ($limiteBrulage > $championnat->getLimiteBrulage()){
+                    $numeroEquipes = array_map(function ($equipe) {
+                        return $equipe->getNumero();
+                    }, $championnat->getEquipes()->toArray());
+                    $journeesToRecalcul = array_slice($journees, 0, count($journees) - 1);
+                    $nbMaxJoueurs = max(array_map(function($division) {
+                        return $division->getNbJoueurs();
+                    }, $championnat->getDivisions()->toArray()));
+
+                    foreach ($journeesToRecalcul as $journee){
+                        foreach ($journee->getRencontres()->toArray() as $rencontre){
+                            if ($rencontre->getIdEquipe()->getIdEquipe() != end($numeroEquipes)){ /** Si ce n'est pas la dernière équipe **/
+                                for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
+                                    if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
 
                 /** Si nbJournees diminue, on supprime les rencontres, sinon on en créé */
                 if ($championnat->getNbJournees() < count($journees)){

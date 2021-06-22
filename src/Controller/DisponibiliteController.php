@@ -18,22 +18,26 @@ class DisponibiliteController extends AbstractController
     private $journeeRepository;
     private $disponibiliteRepository;
     private $rencontreRepository;
+    private $invalidSelectionController;
 
     /**
      * @param EntityManagerInterface $em
      * @param JourneeRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
+     * @param InvalidSelectionController $invalidSelectionController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
                                 JourneeRepository $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
+                                InvalidSelectionController $invalidSelectionController,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->rencontreRepository = $rencontreRepository;
+        $this->invalidSelectionController = $invalidSelectionController;
     }
 
     /**
@@ -70,11 +74,10 @@ class DisponibiliteController extends AbstractController
      * @Route("/journee/disponibilite/update/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param int $dispoJoueur
      * @param bool $dispo
-     * @param InvalidSelectionController $invalidSelectionController
      * @return Response
      * @throws Exception
      */
-    public function update(int $dispoJoueur, bool $dispo, InvalidSelectionController $invalidSelectionController) : Response
+    public function update(int $dispoJoueur, bool $dispo) : Response
     {
         if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) {
             $this->addFlash('fail', 'Disponibilité inexistante');
@@ -88,7 +91,7 @@ class DisponibiliteController extends AbstractController
         //TODO Faire à la main sans requête
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
-            $invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+            $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
         }
 
         $this->em->flush();

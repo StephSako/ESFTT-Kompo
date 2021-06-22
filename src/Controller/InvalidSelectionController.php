@@ -2,10 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Championnat;
-use App\Entity\Rencontre;
 use App\Repository\RencontreRepository;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class InvalidSelectionController extends AbstractController
@@ -21,14 +18,15 @@ class InvalidSelectionController extends AbstractController
     }
 
     /**
-     * @param Championnat $championnat
+     * @param int $limiteBrulage
+     * @param int $idChampionnat
      * @param int $idJoueur
      * @param int $nbJoueurs
      * @param int $numEquipe
      * @param int $idJournee
      */
-    public function checkInvalidSelection(Championnat $championnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
-        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $championnat->getLimiteBrulage(), $nbJoueurs, $championnat->getIdChampionnat()), $nbJoueurs);
+    public function checkInvalidSelection(int $limiteBrulage, int $idChampionnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
+        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs);
     }
 
     /**
