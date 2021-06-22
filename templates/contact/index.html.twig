@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% import 'macros/modal.html.twig' as _modal %}
+{% import 'contact/modal.html.twig' as _modal %}
 
 {% block title %}Page de contact{% endblock %}
 
@@ -11,7 +11,7 @@
 
     <div class="container">
         <div class="card-panel center-align white-text title_journee">
-            <h4>Contacter les adhérents</h4>
+            <h4>Contacter les membres</h4>
         </div>
 
         {% if competiteurs|length %}
@@ -72,12 +72,12 @@
                                 <td class="td_buttons_contact">
                                     {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
-                                            <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber }}">
+                                            <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber }}">
                                                 <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
                                             </a><br>
                                         {% endif %}
                                         {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
-                                            <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber2 }}">
+                                            <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
                                                 <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
                                             </a>
                                         {% endif %}

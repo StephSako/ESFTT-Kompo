@@ -239,7 +239,7 @@ i {
   transition: color 0.2s;
 }
 .li_in_line.deconnexion > a:hover {
-  color: #f15454;
+  background-color: #f15454;
 }
 
 .nav-wrapper .li_in_line {
