@@ -508,10 +508,14 @@ div .profile_pic .file-field.input-field{
   }
 
   td{
-    &.td_buttons_contact {
+    &.td_buttons_contact_phone {
       padding-top: 10px !important;
       padding-bottom: 10px !important;
       height: 100px !important;
+
+      & a {
+        margin: 0;
+      }
     }
 
     &:nth-last-child(2) {
@@ -575,6 +579,14 @@ td#noTeam {
 
 .fftt_api_manager h4 {
   margin-top: 0;
+}
+
+.progress {
+  background-color: #135299;
+}
+
+.progress .indeterminate {
+  background-color: #63aaff;
 }
 
 @-webkit-keyframes rainbow {

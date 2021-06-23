@@ -51,7 +51,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                                <td class="td_buttons_contact">
+                                <td>
                                     {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                         {% if competiteur.mail and competiteur.contactableMail %}
                                             <a class="btn blue modal-trigger truncate" href="#contactMail1{{ competiteur.idCompetiteur }}">
@@ -62,24 +62,49 @@
                                         {% if competiteur.mail2 and competiteur.contactableMail2 %}
                                             <a class="btn blue modal-trigger truncate" href="#contactMail2{{ competiteur.idCompetiteur }}">
                                                 <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
-                                            </a><br>
+                                            </a>
                                             {{ _modal.contact(competiteur, competiteur.mail2, '2') }}
                                         {% endif %}
                                     {% else %}
                                         <p class="grey-text"><i>Non renseigné</i></p>
                                     {% endif %}
                                 </td>
-                                <td class="td_buttons_contact">
+                                <td class="td_buttons_contact_phone">
                                     {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
-                                            <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber }}">
-                                                <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber | split('', 2) | join('.') }}</span>
-                                            </a><br>
+                                            <div class="row center-align valign-wrapper" style="margin-bottom: 0;">
+                                                <div class="col l12 m6">
+                                                    <span class="phone_number_span">{{ competiteur.phoneNumber | split('', 2) | join(' ') }}</span>
+                                                </div>
+                                                <div class="col m3 hide-on-large-only">
+                                                    <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber }}">
+                                                        <i class="material-icons">phone</i>
+                                                    </a>
+                                                </div>
+                                                <div class="col m3 hide-on-large-only">
+                                                    <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber }}">
+                                                        <i class="material-icons">message</i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <br>
                                         {% endif %}
                                         {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
-                                            <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
-                                                <i class="material-icons">phone_android</i> <span>{{ competiteur.phoneNumber2 | split('', 2) | join('.') }}</span>
-                                            </a>
+                                            <div class="row center-align valign-wrapper">
+                                                <div class="col m12 l6">
+                                                    <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
+                                                </div>
+                                                <div class="col m3 hide-on-large-only">
+                                                    <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
+                                                        <i class="material-icons">phone</i>
+                                                    </a>
+                                                </div>
+                                                <div class="col m3 hide-on-large-only">
+                                                    <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber2 }}">
+                                                        <i class="material-icons">message</i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         {% endif %}
                                     {% else %}
                                         <p class="grey-text"><i>Non renseigné</i></p>

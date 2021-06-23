@@ -438,10 +438,13 @@ div .profile_pic .file-field.input-field {
   margin-top: 2px;
   margin-bottom: 2px;
 }
-.table_contact td.td_buttons_contact {
+.table_contact td.td_buttons_contact_phone {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
   height: 100px !important;
+}
+.table_contact td.td_buttons_contact_phone a {
+  margin: 0;
 }
 .table_contact td:nth-last-child(2) {
   min-height: 74px;
@@ -499,6 +502,14 @@ td#noTeam {
 
 .fftt_api_manager h4 {
   margin-top: 0;
+}
+
+.progress {
+  background-color: #135299;
+}
+
+.progress .indeterminate {
+  background-color: #63aaff;
 }
 
 @-webkit-keyframes rainbow {
