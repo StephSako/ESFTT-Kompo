@@ -5,7 +5,7 @@
 
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
-            {{ _self.recapitulatif(allDisponibilites, nomModal) }}
+            {{ _self.recapitulatif(allDisponibilites, nomModal, type) }}
         </div>
         <div class="modal-footer">
             <h6 class="valign-wrapper left">Toutes les disponibilités</h6>
@@ -66,11 +66,11 @@
     </table>
 {% endmacro %}
 
-{% macro recapitulatif(allDisponibilites, nomTab) %}
+{% macro recapitulatif(allDisponibilites, nomTab, championnat) %}
     {% if allDisponibilites|length > 1 %}
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="margin-bottom: 2px">
             {% for nomChamp, disponibilites in allDisponibilites %}
-                <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" class="active">{{ nomChamp }}</a></li>
+                <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" id="{{ nomChamp|slug|lower }} {{ championnat|lower }}" {% if nomChamp|slug|lower == championnat|lower %} class="active"{% endif %}>{{ nomChamp }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
