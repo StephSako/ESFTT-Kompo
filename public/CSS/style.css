@@ -487,6 +487,10 @@ td#noTeam {
   animation: rainbow 8s ease infinite;
 }
 
+.avatar {
+  object-fit: cover;
+}
+
 #span_passwords_matching, #span_passwords_not_matching {
   margin-top: 0;
   margin-bottom: 0;
