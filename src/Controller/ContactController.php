@@ -89,7 +89,7 @@ class ContactController extends AbstractController
         $email = (new TemplatedEmail())
             ->from($addressSender)
             ->to($addressReceiver)
-            ->priority(boolval($importance) ? Email::PRIORITY_HIGH : Email::PRIORITY_NORMAL)
+            ->priority(boolval($importance) ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
             ->htmlTemplate('macros/email.html.twig')
             ->context([

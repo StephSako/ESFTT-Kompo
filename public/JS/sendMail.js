@@ -21,7 +21,7 @@ function contact(idReceiver, idMail, mailReceiver, nomReceiver)
                 mailSender: emailSender,
                 sujet: $('#sujetMail' + idMail + idReceiver).val(),
                 message: $('#messageMail' + idMail + idReceiver).val(),
-                importance: $('#importance' + idMail + idReceiver).is(":checked")
+                importance: ($('#importance' + idMail + idReceiver).is(":checked") ? 1 : 0)
             },
             dataType : 'json',
             success : function(response)
