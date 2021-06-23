@@ -443,6 +443,11 @@ div .profile_pic .file-field.input-field {
   padding-bottom: 10px !important;
   height: 100px !important;
 }
+.table_contact td.td_buttons_contact_phone .phone_number_span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .table_contact td.td_buttons_contact_phone a {
   margin: 0;
 }

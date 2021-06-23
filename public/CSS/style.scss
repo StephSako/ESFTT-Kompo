@@ -513,6 +513,12 @@ div .profile_pic .file-field.input-field{
       padding-bottom: 10px !important;
       height: 100px !important;
 
+      & .phone_number_span {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
       & a {
         margin: 0;
       }

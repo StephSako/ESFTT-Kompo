@@ -73,7 +73,7 @@
                                     {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
                                             <div class="row center-align valign-wrapper" style="margin-bottom: 0;">
-                                                <div class="col l12 m6">
+                                                <div class="col l12 m6" style="width: 100%; margin: 0 !important;">
                                                     <span class="phone_number_span">{{ competiteur.phoneNumber | split('', 2) | join(' ') }}</span>
                                                 </div>
                                                 <div class="col m3 hide-on-large-only">
@@ -91,7 +91,7 @@
                                         {% endif %}
                                         {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                             <div class="row center-align valign-wrapper">
-                                                <div class="col m12 l6">
+                                                <div class="col m12 l6" style="width: 100%; margin: 0 !important;">
                                                     <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
                                                 </div>
                                                 <div class="col m3 hide-on-large-only">
