@@ -86,26 +86,64 @@ html,body{
   float: right;
   margin-top: 10px;
   font-size: 95%;
+  padding: 0;
+  width: 100%;
 
   tr:first-child th {
     padding-top: 0;
     padding-bottom: 0;
   }
+
+  tbody tr > :first-child {
+    padding-left: 8px;
+  }
 }
 
-.brulages {
-  @extend .dispos;
+div.scrollableTable {
+  overflow-x: scroll;
+  width: 100%;
+  padding: 0;
+  font-size: 90%;
+  height: auto;
+  margin-top: 10px;
+
+  tr:nth-child(odd)>td {
+    background-color: rgb(242,242,242);
+  }
+
+  tr:nth-child(even)>td {
+    background-color: white;
+  }
 
   td:not(:first-child) {
-    background-color: rgba($light_grey, 0.1);
-    border-left-color: white;
-    border-left-style: solid;
-    border-right-color: white;
     width: 35.6px;
   }
 
-  tr:last-child td {
-    border-radius: 0 0 0 10px;
+  td:first-child {
+    min-width: 170px;
+  }
+
+  thead tr > th {
+    position: sticky;
+    padding: 0 5px;
+    z-index: 2;
+    background-color: white;
+  }
+
+  thead tr > :first-child {
+    z-index: 3;
+    left: 0;
+    top: 0;
+  }
+
+  tbody tr > :first-child {
+    position: sticky;
+    z-index: 1;
+    left: 0;
+    padding-left: 8px;
+  }
+
+  td:not(:first-child){
   }
 }
 

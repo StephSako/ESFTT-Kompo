@@ -2,57 +2,59 @@
     <div class="center-align">
         {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
-        <table class="card-panel dispos">
-            <thead>
-                <tr>
-                    <th class="center">
-                        <h5 class="center">Les dispos</h5>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
+        <div class="card-panel dispos">
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th class="center">
+                            <h5 class="center">Les dispos</h5>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-            <tbody>
-            {% for dispo in dispos %}
-                <tr>
-                    <td>
-                        <div class="valign-wrapper">
-                            {% if dispo.disponibilite == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.disponibilite == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
+                <tbody>
+                {% for dispo in dispos %}
+                    <tr>
+                        <td>
+                            <div class="valign-wrapper">
+                                {% if dispo.disponibilite == 1 %}
+                                    <span class="dot dot1 center">&nbsp;</span>
+                                {% elseif dispo.disponibilite == 0 %}
+                                    <span class="dot dot2 center">&nbsp;</span>
+                                {% else %}
+                                    <span class="dot dot3 center">&nbsp;</span>
+                                {% endif %}
+                                <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
+                                <i class="blue-text right-align material-icons">done</i>
                             {% endif %}
-                            <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                            <i class="blue-text right-align material-icons">event_available</i>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            {% for joueur in joueursNonDeclares %}
-                <tr>
-                    <td>
-                        <div class="valign-wrapper">
-                            <span class="dot dot3 center">&nbsp;</span>
-                            <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
-                        </div>
-                    </td>
-                    <td class="left">
-                        {% if joueur.idCompetiteur in selectedPlayers %}
-                            <i class="blue-text right-align material-icons">playlist_add_check</i>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% for joueur in joueursNonDeclares %}
+                    <tr>
+                        <td>
+                            <div class="valign-wrapper">
+                                <span class="dot dot3 center">&nbsp;</span>
+                                <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
+                            </div>
+                        </td>
+                        <td class="left">
+                            {% if joueur.idCompetiteur in selectedPlayers %}
+                                <i class="blue-text right-align material-icons">playlist_add_check</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-        <a style="margin-top: 0;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2 center-align center" href="#{{ nomModal }}">Tout afficher</a>
+            <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect waves-light blue lighten-2 center-align center" href="#{{ nomModal }}">Tout afficher</a>
+        </div>
     </div>
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">

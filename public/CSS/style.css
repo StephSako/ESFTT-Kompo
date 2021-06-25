@@ -65,29 +65,60 @@ html, body {
   margin-bottom: 16px;
 }
 
-.dispos, .brulages {
+.dispos {
   border-radius: 10px;
   background-color: white;
   float: right;
   margin-top: 10px;
   font-size: 95%;
+  padding: 0;
+  width: 100%;
 }
-.dispos tr:first-child th, .brulages tr:first-child th {
+.dispos tr:first-child th {
   padding-top: 0;
   padding-bottom: 0;
 }
+.dispos tbody tr > :first-child {
+  padding-left: 8px;
+}
 
-.brulages td:not(:first-child) {
-  background-color: rgba(171, 169, 169, 0.1);
-  border-left-color: white;
-  border-left-style: solid;
-  border-right-color: white;
+div.scrollableTable {
+  overflow-x: scroll;
+  width: 100%;
+  padding: 0;
+  font-size: 90%;
+  height: auto;
+  margin-top: 10px;
+}
+div.scrollableTable tr:nth-child(odd) > td {
+  background-color: #f2f2f2;
+}
+div.scrollableTable tr:nth-child(even) > td {
+  background-color: white;
+}
+div.scrollableTable td:not(:first-child) {
   width: 35.6px;
 }
-.brulages tr:last-child td {
-  border-radius: 0 0 0 10px;
+div.scrollableTable td:first-child {
+  min-width: 170px;
 }
-
+div.scrollableTable thead tr > th {
+  position: sticky;
+  padding: 0 5px;
+  z-index: 2;
+  background-color: white;
+}
+div.scrollableTable thead tr > :first-child {
+  z-index: 3;
+  left: 0;
+  top: 0;
+}
+div.scrollableTable tbody tr > :first-child {
+  position: sticky;
+  z-index: 1;
+  left: 0;
+  padding-left: 8px;
+}
 .complete_compos {
   padding-top: 0;
   padding-bottom: 0;
