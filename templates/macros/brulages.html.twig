@@ -80,42 +80,44 @@
         </div>
     {% endif %}
 
-    <table style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %};" class="centered card-panel brulages">
-        <thead>
-            <tr>
-                <th class="center">
-                    <h6 class="lobster hide-on-small-only">Joueurs sélectionnables et brûlages à J+1</h6>
-                    <h6 class="lobster hide-on-med-and-up">Joueurs</h6>
-                </th>
-                {% for idEquipe in idEquipes %}
-                    <th class="center"><h5>{{ idEquipe }}</h5></th>
-                {% endfor %}
-            </tr>
-        </thead>
-
-        <tbody>
-            {% if selectionnables|length == 0 %}
-                <tr>
-                    <td class="center">Aucun joueur sélectionnable</td>
-                </tr>
-            {% else %}
-                {% for nom, brulage in selectionnables %}
+    <div class="card-panel" style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %}; padding: 1px 0 0 0;">
+        <h6 style="padding-top: 10px; padding-right: 4px; padding-left: 4px;" class="center lobster hide-on-small-only">Joueurs sélectionnables et brûlages à J+1</h6>
+        <div class="scrollableTable">
+            <table class="striped {% if not idEquipes|length %} centered{% endif %}">
+                <thead>
                     <tr>
-                        <td>
-                            {% if brulage["bruleJ2"] == true %}<i class="material-icons red-text">report_problem</i>{% endif %}{{ nom }}
-                        </td>
-                        {% for brulageJournee in brulage['brulage'] %}
-                            <td class="center">
-                                {% if brulageCumule(brulage['brulage'], loop.index) >= championnatLimiteBrulage %}
-                                    <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulageCumule(brulage['brulage'], loop.index) == championnatLimiteBrulage - 1 %}
-                                    <i class="orange-text material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
+                        <th class="center"></th>
+                        {% for idEquipe in idEquipes %}
+                            <th class="center"><h5 style="margin: 0">{{ idEquipe }}</h5></th>
                         {% endfor %}
                     </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
+                </thead>
+
+                <tbody>
+                    {% if selectionnables|length == 0 %}
+                        <tr>
+                            <td class="center">Aucun joueur sélectionnable</td>
+                        </tr>
+                    {% else %}
+                        {% for nom, brulage in selectionnables %}
+                            <tr>
+                                <td>
+                                    {% if brulage["bruleJ2"] == true %}<i class="material-icons red-text">report_problem</i>{% endif %}{{ nom }}
+                                </td>
+                                {% for brulageJournee in brulage['brulage'] %}
+                                    <td class="center">
+                                        {% if brulageCumule(brulage['brulage'], loop.index) >= championnatLimiteBrulage %}
+                                            <i class="red-text material-icons">highlight_off</i>
+                                        {% elseif brulageCumule(brulage['brulage'], loop.index) == championnatLimiteBrulage - 1 %}
+                                            <i class="orange-text material-icons">error_outline</i>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endmacro %}
