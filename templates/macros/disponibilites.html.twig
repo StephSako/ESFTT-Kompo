@@ -189,21 +189,6 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {#
-                                                <div id="preloaderSetDispo">
-                                                    <div class="preloader-wrapper small active">
-                                                        <div class="spinner-layer spinner-blue-only">
-                                                            <div class="circle-clipper left">
-                                                                <div class="circle"></div>
-                                                            </div><div class="gap-patch">
-                                                                <div class="circle"></div>
-                                                            </div><div class="circle-clipper right">
-                                                                <div class="circle"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            #}
                                             {% if dispos.classement_officiel and dispos.licence %}
                                                 {% if dispos.idDisponibilite is null %}
                                                     <div class="row" style="margin-bottom: 0;">
@@ -232,15 +217,6 @@
                                                         </a>
                                                     {% endif %}
                                                 {% endif %}
-
-                                                {#
-                                                <script type="text/javascript">
-                                                    let disponible = {{ disponible }};
-                                                    let numJournee = {{ journee.idJournee }};
-                                                    let dispoJoueur = {{ dispoJoueur }};
-                                                </script>
-                                                <script type="text/javascript" src="{{ asset('JS/setDispo.js') }}" defer></script>
-                                                #}
                                             {% else %}
                                                 {% if not dispo.licence and dispo.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence indéfinie<br>

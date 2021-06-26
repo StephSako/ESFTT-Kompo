@@ -92,15 +92,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
 
         return $this->redirectToRoute('backoffice.disponibilites');
-
-        /*
-         $json = json_encode([
-            'message' => $message,
-            'data' => $dispo ? 1 : 0
-        ]);
-        $response = new Response($json);
-        $response->headers->set('Content-Type', 'application/json');
-        */
     }
 
     /**
@@ -135,14 +126,5 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->addFlash('success', 'Disponibilité modifiée');
 
         return $this->redirectToRoute('backoffice.disponibilites');
-
-        /*
-         $json = json_encode([
-            'message' => $message,
-            'data' => $dispo ? 1 : 0
-        ]);
-        $response = new Response($json);
-        $response->headers->set('Content-Type', 'application/json');
-        */
     }
 }
