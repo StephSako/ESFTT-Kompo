@@ -119,9 +119,9 @@
 {% endmacro %}
 
 {% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) %}
-    <div class="card-panel bottom_0" style="padding: 5px;">
+    <div class="card-panel bottom_0" style="padding: 5px 0;">
         <div class="row bottom_0" style="margin-bottom: 2px;">
-            <div class="col s7 offset-s1">Disponibles</div>
+            <div class="col s7">Disponibles</div>
             <div style="font-size: 100%; width: auto;" class="col s4 lobster
                 {% if hasCompos %}
                     pastille
@@ -138,7 +138,7 @@
         </div>
 
         <div class="row bottom_0">
-            <div class="col s7 offset-s1">Sélectionnés</div>
+            <div class="col s7">Sélectionnés</div>
             <div style="font-size: 100%; width: auto;" class="col s4 lobster
                 {% if hasCompos %}
                     pastille

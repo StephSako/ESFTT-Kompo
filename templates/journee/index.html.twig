@@ -14,11 +14,11 @@
     </header>
 
     <div class="row main">
-        <div class="col l3 hide-on-small-only">
+        <div class="col s12 l3 hide-on-small-only">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
-        <div class="col s12 m7">
+        <div class="col s12 l7">
             {% for message in app.flashes('success') %}
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
@@ -246,7 +246,7 @@
             </li>
         </ul>
 
-        <div class="col s12 m2 hide-on-small-only">
+        <div class="col s12 l2 hide-on-small-only">
             {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
     </div>

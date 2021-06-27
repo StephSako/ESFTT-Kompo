@@ -95,7 +95,7 @@ html,body{
   }
 
   tbody tr > :first-child {
-    padding-left: 8px;
+    padding-left: 1%;
   }
 }
 
@@ -254,6 +254,16 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
     height: 40px;
     width: 40px;
     object-fit:cover;
+  }
+}
+
+.cardJoueursBrules {
+  margin-top: 20px;
+  padding: 10px 0 6px;
+
+  h5 {
+    margin-top: 8px;
+    margin-bottom: 8px;
   }
 }
 

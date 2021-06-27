@@ -48,29 +48,24 @@
 {% endmacro %}
 
 {% macro joueursBrules(type, joueursBrules, idEquipe) %}
-    <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
-        <thead>
-            <tr>
-                <th>
-                    <h5>Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
-                </th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% if joueursBrules|length == 0 %}
-                <tr>
-                    <td>Aucun joueur brûlé</td>
-                </tr>
-            {% else %}
-                {% for joueur in joueursBrules %}
+    <div class="card-panel cardJoueursBrules">
+        <h5 class="center">Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
+        <table style="margin-top: 20px;" class="centered striped">
+            <tbody>
+                {% if joueursBrules|length == 0 %}
                     <tr>
-                        <td>{{ joueur }}</td>
+                        <td>Aucun joueur brûlé</td>
                     </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
+                {% else %}
+                    {% for joueur in joueursBrules %}
+                        <tr>
+                            <td>{{ joueur }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endmacro %}
 
 {% macro selectionnables(championnatJ2Rule, championnatLimiteBrulage, selectionnables, idEquipe, idJournee, idEquipes) %}
