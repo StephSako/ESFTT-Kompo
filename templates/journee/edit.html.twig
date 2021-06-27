@@ -11,7 +11,7 @@
 
     {% if rencontreStillEditable(compo) %}
         <div class="row main">
-            <ul class="collapsible hide-on-med-and-up" style="margin-top: 20px; margin-bottom: 0;">
+            <ul class="collapsible hide-on-large-only" style="margin-top: 20px; margin-bottom: 0;">
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
@@ -38,11 +38,11 @@
                 </li>
             </ul>
 
-            <div class="col l2 hide-on-small-only">
+            <div class="col l2 hide-on-med-and-down">
                 {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
             </div>
 
-            <div class="col s12 m7">
+            <div class="col s12 l7">
 
                 {% for message in app.flashes('fail') %}
                     {{ _flash.message(message, 'red') }}
@@ -147,7 +147,7 @@
                     {{ form_end(form) }}
                 </div>
             </div>
-            <div class="col s12 m3 hide-on-small-only">
+            <div class="col s12 l3 hide-on-med-and-down">
                 {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
             </div>
         </div>
