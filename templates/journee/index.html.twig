@@ -14,7 +14,7 @@
     </header>
 
     <div class="row main">
-        <div class="col s12 l3 hide-on-small-only">
+        <div class="col s12 l3 hide-on-med-and-down">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
@@ -45,7 +45,7 @@
                     <h5 class="white-text"><i class="material-icons">check_circle</i> Kompositions complètes</h5>
                 </div>
             {% else %}
-                <div class="hide-on-med-and-up center-align">
+                <div class="hide-on-large-only center-align">
                     {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}
@@ -181,7 +181,7 @@
                                         {% if compo.adversaire is null %}
                                             <h5 class="lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
                                         {% else %}
-                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
+                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -219,7 +219,7 @@
             {% endif %}
         </div>
 
-        <ul class="collapsible hide-on-med-and-up">
+        <ul class="collapsible hide-on-large-only">
             <li>
                 <div class="collapsible-header">
                     <div class="chip">
@@ -246,7 +246,7 @@
             </li>
         </ul>
 
-        <div class="col s12 l2 hide-on-small-only">
+        <div class="col s12 l2 hide-on-med-and-down">
             {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
     </div>

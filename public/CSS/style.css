@@ -78,8 +78,12 @@ html, body {
   padding-top: 0;
   padding-bottom: 0;
 }
-.dispos tbody tr > :first-child {
-  padding-left: 1%;
+.dispos tbody tr > td:first-child {
+  padding-right: 0;
+  padding-left: 3%;
+}
+.dispos tbody tr > td:last-child {
+  padding-left: 0;
 }
 
 div.scrollableTable {

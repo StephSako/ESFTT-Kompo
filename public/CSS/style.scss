@@ -94,8 +94,15 @@ html,body{
     padding-bottom: 0;
   }
 
-  tbody tr > :first-child {
-    padding-left: 1%;
+  tbody tr {
+    & > td:first-child {
+      padding-right: 0;
+      padding-left: 3%;
+    }
+
+    & > td:last-child {
+      padding-left: 0;
+    }
   }
 }
 
