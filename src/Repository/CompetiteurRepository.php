@@ -350,4 +350,27 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
         return $queryFinal;
     }
+
+    /**
+     * Indique si l'utilisateur existe pour reset son password
+     * @param string $username
+     * @param string $mail
+     * @return string|null
+     */
+    public function findJoueurResetPassword(string $username, string $mail): ?string
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c.nom')
+            ->addSelect('c.prenom')
+            ->where('c.username = :username')
+            ->andWhere('c.mail = :mail OR c.mail2 = :mail')
+            ->setParameter('username', $username)
+            ->setParameter('mail', $mail)
+            ->andWhere('c.visitor <> true')
+            ->getQuery()
+            ->getResult();
+
+        if (count($query) == 1) return $query[0]['nom'] . ' ' . $query[0]['prenom'];
+        else return null;
+    }
 }

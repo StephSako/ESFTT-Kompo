@@ -56,9 +56,8 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $utils): Response
     {
-        if ($this->getUser() != null){
-            return $this->redirectToRoute('index');
-        } else {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
             return $this->render('account/login.html.twig', [
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
@@ -161,5 +160,16 @@ class SecurityController extends AbstractController
             ]);
         }
         return $this->redirectToRoute('account');
+    }
+
+    /**
+     * @Route("/login/forgotten_password", name="login.forgotten.password")
+     * @param Request $request
+     * @return Response
+     */
+    public function forgottenPassword(Request $request): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else return $this->render('account/forgotten_password.html.twig', []);
     }
 }

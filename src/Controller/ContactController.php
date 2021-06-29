@@ -79,26 +79,69 @@ class ContactController extends AbstractController
      */
     public function contact(Request $request): Response
     {
-        $addressReceiver = new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver'));
-        $addressSender = new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
-        $sujet = $request->request->get('sujet');
-        $message = $request->request->get('message');
-        $importance = $request->request->get('importance');
+        return $this->sendMail(
+            new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver')),
+            new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()),
+            boolval($request->request->get('importance')),
+            $request->request->get('sujet'),
+            $request->request->get('message'),
+            'mail_templating/contact.html.twig');
+    }
 
+    /**
+     * @Route("/login/reset_password", name="contact.reset.password")
+     * @param Request $request
+     * @return Response
+     */
+    public function contactResetPassword(Request $request): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
+            $mail = $request->request->get('mail');
+            $username = $request->request->get('username');
+            $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
+
+            if (!$nom){
+                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés']));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+
+            return $this->sendMail(
+                new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
+                new Address($mail, $nom),
+                true,
+                'Réinitialisation de votre mot de passe',
+                null,
+                'mail_templating/forgotten_password.html.twig');
+        }
+    }
+
+    /**
+     * @param Address $addressSender
+     * @param Address $addressReceiver
+     * @param bool $importance
+     * @param string $sujet
+     * @param string|null $message
+     * @param string $template
+     * @return Response
+     */
+    public function sendMail(Address $addressSender, Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template): Response
+    {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
             ->from($addressSender)
             ->to($addressReceiver)
-            ->priority(boolval($importance) ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
+            ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
-            ->htmlTemplate('macros/email.html.twig')
+            ->htmlTemplate($template)
             ->context([
                 'message' => $message
             ]);
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => 'Votre mail a été envoyé !']);
+            $json = json_encode(['message' => 'Le mail a été envoyé !']);
         } catch (TransportExceptionInterface $e) {
             $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !']);
         }
@@ -177,7 +220,7 @@ class ContactController extends AbstractController
             ->cc(...$to)
             ->priority(Email::PRIORITY_HIGH)
             ->subject($contact->getTitre())
-            ->htmlTemplate('macros/email.html.twig')
+            ->htmlTemplate('mail_templating/contact.html.twig')
             ->context([
                 'title' => $contact->getTitre(),
                 'message' => $contact->getMessage()
