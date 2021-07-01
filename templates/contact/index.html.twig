@@ -28,7 +28,7 @@
 
                 <tbody class="center">
                     {% for competiteur in competiteurs %}
-                        {% if competiteur.idCompetiteur != app.user.idCompetiteur and competiteur.username != 'visiteur' %}
+                        {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
                             <tr>
                                 <td>
                                     {% if not competiteur.visitor %}

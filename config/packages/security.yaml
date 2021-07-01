@@ -29,11 +29,11 @@ security:
 
     access_control:
         - { path: ^/composition, roles: ROLE_CAPITAINE }
-        - { path: ^/compte, roles: ROLE_JOUEUR }
+        - { path: ^/compte, roles: ROLE_VISITEUR }
         - { path: ^/backoffice, roles: ROLE_CAPITAINE }
         - { path: ^/journee, roles: ROLE_VISITEUR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/contact, roles: ROLE_JOUEUR }
+        - { path: ^/contact, roles: ROLE_VISITEUR }
 
     encoders:
         App\Entity\Competiteur:

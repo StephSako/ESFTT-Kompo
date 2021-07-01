@@ -69,20 +69,24 @@
                 </div>
             {% endif %}
 
+        {{ app.token.roleNames|json_encode }}
+
             <div class="row section" style="margin-bottom: 0;">
                 <h5 class="dark_blue">Informations Ping</h5>
 
-                <div class="col s12 m6">
-                    <span><i class="material-icons prefix">payment</i> Licence</span>
-                    {% if ('ROLE_ADMIN' in app.token.roleNames or 'ROLE_CAPITAINE' in app.token.roleNames) and type == 'backoffice' %}
-                        {{ form_row(form.licence) }}
-                    {% else %}
-                        <br><br>
-                        <b><span style="margin-top: 20px;">{{ options.licence }}</span></b>
-                    {% endif %}
-                </div>
-                <div class="col s12 m5">
-                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel) }}
+                {% if 'ROLE_JOUEUR' in app.token.roleNames %}
+                    <div class="col s12 m6">
+                        <span><i class="material-icons prefix">payment</i> Licence</span>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.licence) }}
+                        {% else %}
+                            <br><br>
+                            <b><span style="margin-top: 20px;">{{ options.licence }}</span></b>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="col s12 m5" {% if 'ROLE_JOUEUR' not in app.token.roleNames %}style="margin-left: 29%;"{% endif %}>
+                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel, {'attr': {'disabled': ('ROLE_JOUEUR' not in app.token.roleNames ? 'disabled' : ''), 'placeholder': ('ROLE_JOUEUR' not in app.token.roleNames ? 'Vous n\'êtes pas compétiteur' : '')}}) }}
                 </div>
                 <div class="col m1 hide-on-small-and-down"></div>
             </div>
