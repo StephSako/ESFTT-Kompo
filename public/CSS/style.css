@@ -269,6 +269,14 @@ i {
   padding: 8px 10px;
 }
 
+.whatsapp_btn a.btn {
+  background-color: #25d366;
+  padding: 0;
+}
+.whatsapp_btn a.btn img {
+  padding: 5px 8px;
+}
+
 .li_in_line {
   border-radius: 5px;
   padding-left: 0;
