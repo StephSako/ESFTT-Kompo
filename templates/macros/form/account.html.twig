@@ -69,8 +69,6 @@
                 </div>
             {% endif %}
 
-        {{ app.token.roleNames|json_encode }}
-
             <div class="row section" style="margin-bottom: 0;">
                 <h5 class="dark_blue">Informations Ping</h5>
 
@@ -85,12 +83,11 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                <div class="col s12 m5" {% if 'ROLE_JOUEUR' not in app.token.roleNames %}style="margin-left: 29%;"{% endif %}>
-                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel, {'attr': {'disabled': ('ROLE_JOUEUR' not in app.token.roleNames ? 'disabled' : ''), 'placeholder': ('ROLE_JOUEUR' not in app.token.roleNames ? 'Vous n\'êtes pas compétiteur' : '')}}) }}
+                <div class="col s12 m6" {% if 'ROLE_JOUEUR' not in app.token.roleNames and type == 'general' %}style="margin-left: 25%;"{% endif %}>
+                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel, {'attr': ('ROLE_VISITEUR' in app.token.roleNames and type == 'general' ? {'disabled': 'disabled', 'placeholder': 'Vous n\'êtes pas compétiteur'} : {} )}) }}
                 </div>
                 <div class="col m1 hide-on-small-and-down"></div>
             </div>
-            <br>
 
             <div class="section profile_pic" style="margin-bottom: 0;">
                 <h5 class="dark_blue">Image de profil</h5>
