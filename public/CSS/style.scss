@@ -562,6 +562,14 @@ div .profile_pic .file-field.input-field{
 }
 
 .table_contact {
+  tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+  }
+
+  tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+  }
+
   .btn {
     text-transform: none;
     margin-top: 2px;
@@ -606,6 +614,14 @@ td#noTeam {
   position: absolute;
   bottom: 0;
   width: 100%;
+
+  a {
+    color: #f5f5f5;
+
+    &:hover {
+      color: #3691f8;
+    }
+  }
 }
 
 .missingTitle {
@@ -616,16 +632,6 @@ td#noTeam {
   padding-top: 5px;
   padding-bottom: 5px;
   border: red solid 2px;
-}
-
-.footer-copyright{
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-
-  img {
-    width: 70px;
-    padding-top: 8px;
-  }
 }
 
 .rainbow {
