@@ -3,15 +3,15 @@ function resetPassword() {
     else {
         sending();
         $.ajax({
-            url : '/login/reset_password',
+            url : '/login/contact/forgotten_password',
             type : 'POST',
             data: {
                 mail: $('#email').val(),
                 username: $('#username').val(),
             },
             dataType : 'json',
-            success : function(response) { endSending(response.message); },
-            error : function(error) { console.log(error); endSending('Une erreur est survenue !'); }
+            success : function(response) { endSending(response.message, response.success); },
+            error : function() { endSending('Une erreur est survenue !', false); }
         });
     }
 }
@@ -23,13 +23,17 @@ function sending(){
     $('#username').prop('disabled', true);
 }
 
-function endSending(message){
-    $('#btnResetPassword').addClass('disabled');
+function endSending(message, success){
     $("#preloaderResetPassword").hide();
     $('#buttonsResetPassword').show();
-    M.toast({html: message});
-    $('#email').val('').prop('disabled', false);
-    $('#username').val('').prop('disabled', false);
+    $('#email').prop('disabled', false);
+    $('#username').prop('disabled', false);
+
+    if (!success) M.toast({html: message});
+    else {
+        $('#divMailSent').removeClass('hide');
+        $('#sendMailForm').addClass('hide');
+    }
 }
 
 $(document).ready(function() {

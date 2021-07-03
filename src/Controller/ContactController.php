@@ -24,8 +24,6 @@ class ContactController extends AbstractController
     private $competiteurRepository;
     private $championnatRepository;
     private $mailer;
-    private $environment;
-    private $em;
 
     /**
      * ContactController constructor.
@@ -38,16 +36,12 @@ class ContactController extends AbstractController
      */
     public function __construct(JourneeRepository $journeeRepository,
                                 CompetiteurRepository $competiteurRepository,
-                                EntityManagerInterface $em,
                                 ChampionnatRepository $championnatRepository,
-                                MailerInterface $mailer,
-                                Environment $environment)
+                                MailerInterface $mailer)
     {
-        $this->em = $em;
         $this->journeeRepository = $journeeRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->mailer = $mailer;
-        $this->environment = $environment;
         $this->championnatRepository = $championnatRepository;
     }
 
@@ -89,7 +83,7 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/login/reset_password", name="contact.reset.password")
+     * @Route("/login/contact/forgotten_password", name="contact.reset.password")
      * @param Request $request
      * @return Response
      */
@@ -102,7 +96,7 @@ class ContactController extends AbstractController
             $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
 
             if (!$nom){
-                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés']));
+                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés', 'success' => false]));
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
             }
@@ -112,7 +106,7 @@ class ContactController extends AbstractController
                 new Address($mail, $nom),
                 true,
                 'Réinitialisation de votre mot de passe',
-                null,
+                password_hash($request->request->get('username'), PASSWORD_BCRYPT, ['cost' => 12]),
                 'mail_templating/forgotten_password.html.twig');
         }
     }
@@ -135,15 +129,13 @@ class ContactController extends AbstractController
             ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
             ->htmlTemplate($template)
-            ->context([
-                'message' => $message
-            ]);
+            ->context(['message' => $message]);
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => 'Le mail a été envoyé !']);
+            $json = json_encode(['message' => 'Le mail a été envoyé !', 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !']);
+            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false]);
         }
 
         $response = new Response($json);

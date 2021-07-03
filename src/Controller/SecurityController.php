@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
+use App\Repository\CompetiteurRepository;
 use App\Repository\JourneeRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,10 +26,12 @@ class SecurityController extends AbstractController
     private $utils;
     private $uploadHandler;
     private $encoder;
+    private $competiteurRepository;
 
     /**
      * SecurityController constructor.
      * @param JourneeRepository $journeeRepository
+     * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      * @param AuthenticationUtils $utils
@@ -35,6 +39,7 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      */
     public function __construct(JourneeRepository $journeeRepository,
+                                CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em,
                                 AuthenticationUtils $utils,
@@ -47,6 +52,7 @@ class SecurityController extends AbstractController
         $this->utils = $utils;
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
+        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -128,9 +134,7 @@ class SecurityController extends AbstractController
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
             if ($this->encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
                 if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-                    $password = $this->encoder->encodePassword($user, $request->get('new_password'));
-                    $user->setPassword($password);
-
+                    $user->setPassword($this->encoder->encodePassword($user, $request->get('new_password')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
                 } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
@@ -164,12 +168,43 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login/forgotten_password", name="login.forgotten.password")
-     * @param Request $request
      * @return Response
      */
-    public function forgottenPassword(Request $request): Response
+    public function forgottenPassword(): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else return $this->render('account/forgotten_password.html.twig', []);
+    }
+
+    /**
+     * @Route("/login/reset_password", name="login.reset.password")
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function resetPassword(Request $request): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
+            /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
+            if (intval($request->query->get('dateValidation')) < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
+
+            if ($request->request->get('username') && $request->request->get('new_password') && $request->request->get('new_password_validate')) {
+                if (password_verify($request->request->get('username'), $request->query->get('tokenCheck'))) {
+                    if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
+                        $competiteur = $this->competiteurRepository->findBy(['username' => $request->request->get('username')])[0];
+                        $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
+                        $this->em->flush();
+                        $this->addFlash('success', 'Mot de passe modifié');
+                        return $this->redirectToRoute('login');
+                    } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                } else $this->addFlash('fail', 'Le pseudo saisi est différent de celui renseigné dans la demande');
+            }
+
+            $request->request->set('username', null);
+            $request->request->set('new_password', null);
+            $request->request->set('new_password_validate', null);
+            return $this->render('account/reset_password.html.twig', []);
+        }
     }
 }

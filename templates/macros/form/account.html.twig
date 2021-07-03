@@ -143,18 +143,18 @@
         <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
             <div class="row">
                 {% if type == 'general' %}
-                    <div class="input-field col s12 m4">
+                    <div class="input-field col s12 l4">
                         <input name="actual_password" id="actual_password" type="password" class="validate" maxlength="100" required>
                         <label for="actual_password">Mot de passe actuel</label>
                     </div>
                 {% endif %}
-                <div class="input-field col s12 {% if type == 'general' %}m4{% elseif type == 'backoffice' %}m6{% endif %}">
+                <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
                     <input name="new_password" id="new_password" type="password" class="validate" maxlength="100" required>
                     <label for="new_password">Nouveau mot de passe</label>
                 </div>
-                <div class="input-field col s12 {% if type == 'general' %}m4{% elseif type == 'backoffice' %}m6{% endif %}">
+                <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
                     <input name="new_password_validate" id="new_password_validate" type="password" maxlength="100" class="validate" required>
-                    <label for="new_password_validate">Ressaisissez le nouveau mot de passe</label>
+                    <label for="new_password_validate">Saisir de nouveau</label>
                 </div>
             </div>
             <br><button id="btnEditPassword" class="btn btn_form waves-effect waves-light light-blue darken-1" disabled>Modifier</button>
