@@ -177,34 +177,41 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/reset_password", name="login.reset.password")
+     * @Route("/login/reset_password/{token}", name="login.reset.password")
      * @param Request $request
+     * @param string $token
      * @return Response
      * @throws Exception
      */
-    public function resetPassword(Request $request): Response
+    public function resetPassword(Request $request, string $token): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
-            /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
-            if (intval($request->query->get('dateValidation')) < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
+            $ciphering = "BF-CBC";
+            list($tokenDecoded, $encryption_iv) = explode("::", base64_decode($token));
+            $decryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+            $decryption = openssl_decrypt($tokenDecoded, $ciphering, $decryption_key, 0, hex2bin($encryption_iv));
 
-            if ($request->request->get('username') && $request->request->get('new_password') && $request->request->get('new_password_validate')) {
-                if (password_verify($request->request->get('username'), $request->query->get('tokenCheck'))) {
-                    if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
-                        $competiteur = $this->competiteurRepository->findBy(['username' => $request->request->get('username')])[0];
-                        $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
-                        $this->em->flush();
-                        $this->addFlash('success', 'Mot de passe modifié');
-                        return $this->redirectToRoute('login');
-                    } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
-                } else $this->addFlash('fail', 'Le pseudo saisi est différent de celui renseigné dans la demande');
+            $username = json_decode($decryption, true)['username'];
+            $dateValid = json_decode($decryption, true)['dateValidation'];
+
+            /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
+            if ($dateValid < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
+
+            /**Formulaire soumis **/
+            if ($request->request->get('new_password') && $request->request->get('new_password_validate')) {
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
+                    $competiteur = $this->competiteurRepository->findBy(['username' => $username])[0];
+                    $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Mot de passe modifié, connectez-vous');
+                    return $this->redirectToRoute('login');
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             }
 
-            $request->request->set('username', null);
-            $request->request->set('new_password', null);
-            $request->request->set('new_password_validate', null);
-            return $this->render('account/reset_password.html.twig', []);
+            return $this->render('account/reset_password.html.twig', [
+                'token' => $token
+            ]);
         }
     }
 }

@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\JourneeRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use DateInterval;
+use DateTime;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 
 class ContactController extends AbstractController
 {
@@ -29,10 +29,8 @@ class ContactController extends AbstractController
      * ContactController constructor.
      * @param JourneeRepository $journeeRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param EntityManagerInterface $em
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
-     * @param Environment $environment
      */
     public function __construct(JourneeRepository $journeeRepository,
                                 CompetiteurRepository $competiteurRepository,
@@ -101,12 +99,22 @@ class ContactController extends AbstractController
                 return $response;
             }
 
+            $token = json_encode(
+                [
+                    'username' => $request->request->get('username'),
+                    'dateValidation' => (new DateTime())->add(new DateInterval('PT2H'))->getTimestamp()
+                ]);
+            $ciphering = "BF-CBC";
+            $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ciphering));
+            $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+            $encryption = openssl_encrypt($token, $ciphering, $encryption_key, 0, $encryption_iv);
+
             return $this->sendMail(
                 new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
                 new Address($mail, $nom),
                 true,
                 'Réinitialisation de votre mot de passe',
-                password_hash($request->request->get('username'), PASSWORD_BCRYPT, ['cost' => 12]),
+                base64_encode($encryption . '::' . bin2hex($encryption_iv)),
                 'mail_templating/forgotten_password.html.twig');
         }
     }
