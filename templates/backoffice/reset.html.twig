@@ -11,39 +11,22 @@
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
-            <p><b>{{ message }}</b></p>
+            <p><b>{{ messageJoueurs }}</b></p>
 
             {% if joueursIssued|length %}
-
                 <table class="centered responsive-table">
                     <thead>
                     <tr>
-                        <th>Recensé</th>
-                        <th>Points valides</th>
-                        <th>Nom</th>
                         <th>Licence</th>
-                        <th>Points Kompo</th>
-                        <th>Points FFTT</th>
+                        <th>Nom</th>
+                        <th>Points officiels</th>
                     </tr>
                     </thead>
 
                     <tbody>
                         {% for joueur in joueursIssued %}
                             <tr>
-                                <td>
-                                    {% if joueur.recorded %}
-                                        <i class='green-text material-icons'>done</i>
-                                    {% else %}
-                                        <i class='red-text material-icons'>clear</i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not joueur.hasSamePoints %}
-                                        <i class='green-text material-icons'>done</i>
-                                    {% else %}
-                                        <i class='red-text material-icons'>clear</i>
-                                    {% endif %}
-                                </td>
+                                <td>{{ joueur.joueur.licence }}</td>
                                 <td>
                                     <div class="chip">
                                         {% if joueur.joueur.avatar %}
@@ -51,23 +34,18 @@
                                         {% else %}
                                             <img src="{{ asset('images/account.png') }}" alt="Avatar">
                                         {% endif %}
-                                        <span>{{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}</span>
+                                        <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}</span>
+                                        {% if not joueur.sameName %} <i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT }}{% endif %}
                                     </div>
                                 </td>
-                                <td>{{ joueur.joueur.licence }}</td>
                                 <td>
-                                    {% if joueur.hasSamePoints %}
-                                        <span class="red-text"><b>{{ joueur.joueur.classementOfficiel }}</b></span>
-                                    {% else %}
-                                        {{ joueur.joueur.classementOfficiel }}
+                                    <span {% if joueur.joueur.classementOfficiel != joueur.pointsFFTT %}class="red-text"{% endif %}>{{ joueur.joueur.classementOfficiel }}</span>
+                                    {% if joueur.joueur.classementOfficiel != joueur.pointsFFTT %}
+                                        <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if joueur.hasSamePoints %}
-                                        <span class="red-text"><b>{{ joueur.pointsFFTT }}</b></span>
-                                    {% else %}
-                                        {{ joueur.pointsFFTT }}
-                                    {% endif %}
+
                                 </td>
                             </tr>
                         {% endfor %}
@@ -78,16 +56,15 @@
 
         <div class="card-panel center">
             <h4>Les équipes - Départemental</h4>
+            <p><b>{{ messageEquipes }}</b></p>
 
             {% if equipesIssued|length %}
                     <table class="striped centered responsive-table">
                         <thead>
                         <tr>
                             <th>Numéro</th>
-                            <th>Division Kompo</th>
-                            <th>Division FFTT</th>
-                            <th>Poule Kompo</th>
-                            <th>Poule FFTT</th>
+                            <th>Division</th>
+                            <th>Poule</th>
                         </tr>
                         </thead>
 
@@ -95,10 +72,14 @@
                             {% for numero, equipe in equipesIssued %}
                                 <tr>
                                     <td><b>{{ equipe.numeroKompo }}</b></td>
-                                    <td {% if equipe.divisionKompo != equipe.divisionFFTT %}class="red-text" {% endif %}>{{ equipe.divisionKompo }}</td>
-                                    <td {% if equipe.divisionKompo != equipe.divisionFFTT %}class="red-text" {% endif %}>{{ equipe.divisionFFTT }}</td>
-                                    <td {% if equipe.pouleKompo != equipe.pouleFFTT %}class="red-text" {% endif %}>{{ equipe.pouleKompo }}</td>
-                                    <td {% if equipe.pouleKompo != equipe.pouleFFTT %}class="red-text" {% endif %}>{{ equipe.pouleFFTT }}</td>
+                                    <td>
+                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.divisionKompo }}</span>
+                                        {% if not equipe.sameDivision %} <i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
+                                    </td>
+                                    <td>
+                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.pouleKompo }}</span>
+                                        {% if not equipe.samePoule %} <i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

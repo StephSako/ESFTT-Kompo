@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\EquipeRepository;
-use App\Repository\RencontreRepository;
 use Cocur\Slugify\Slugify;
 use Exception;
 use FFTTApi\FFTTApi;
@@ -16,18 +16,18 @@ class FFTTApiController extends AbstractController
 {
 
     private $competiteurRepository;
-    private $rencontreRepository;
+    private $championnatRepository;
     private $equipeRepository;
 
     /**
      * ContactController constructor.
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
-                                RencontreRepository $rencontreRepository,
+                                ChampionnatRepository $championnatRepository,
                                 EquipeRepository $equipeRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
-        $this->rencontreRepository = $rencontreRepository;
+        $this->championnatRepository = $championnatRepository;
         $this->equipeRepository = $equipeRepository;
     }
 
@@ -38,7 +38,8 @@ class FFTTApiController extends AbstractController
     public function index(): Response
     {
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $message = '';
+        $messageJoueurs = '';
+        $messageEquipes = '';
 
         /** Gestion des joueurs */
         $joueursKompo = $this->competiteurRepository->findBy(['visitor' => 0]);
@@ -53,22 +54,17 @@ class FFTTApiController extends AbstractController
 
             if (count($joueurFFTT)){ /** Si la licence correspond bien */
                 $joueur = array_values($joueurFFTT)[0];
-                if ($joueur->getPoints() != $competiteur->getClassementOfficiel()){ /** Si les classements ne concordent pas */
-                    $joueursIssued[$competiteur->getIdCompetiteur()]['recorded'] = true;
+                $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
+                if ($joueur->getPoints() != $competiteur->getClassementOfficiel() || !$sameName){ /** Si les classements ne concordent pas */
                     $joueursIssued[$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
                     $joueursIssued[$competiteur->getIdCompetiteur()]['pointsFFTT'] = $joueur->getPoints();
-                    $joueursIssued[$competiteur->getIdCompetiteur()]['hasSamePoints'] = true;
+                    $joueursIssued[$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom() . ' ' . $joueur->getPrenom();
+                    $joueursIssued[$competiteur->getIdCompetiteur()]['sameName'] = $sameName;
                 }
             }
-            else {
-                $joueursIssued[$competiteur->getIdCompetiteur()]['recorded'] = false;
-                $joueursIssued[$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
-                $joueursIssued[$competiteur->getIdCompetiteur()]['pointsFFTT'] = null;
-                $joueursIssued[$competiteur->getIdCompetiteur()]['hasSamePoints'] = null;
-            }
         }
-        if (!count($joueursIssued)) $message = 'Tous les joueurs sont recensés et à jour.';
-        else if (count($joueursIssued) < count($joueursKompo)) $message = count($joueursIssued) . ' joueurs doivent être mis à jour :';
+        if (!count($joueursIssued)) $messageJoueurs = 'Tous les joueurs sont à jour.';
+        else if (count($joueursIssued) < count($joueursKompo)) $messageJoueurs = count($joueursIssued) . ' joueurs doivent être mis à jour';
 
         /** Gestion des équipes */
         $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental');
@@ -91,7 +87,7 @@ class FFTTApiController extends AbstractController
             $idEquipeFFTT = intval(explode(' ', $equipe->getLibelle())[2]);
             $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
             $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
-            $divisionEquipeFFTT = (new Slugify())->slugify($libelleDivisionEquipeFFTT[0] . ' ' . $libelleDivisionEquipeFFTT[1]);
+            $divisionEquipeFFTT = $libelleDivisionEquipeFFTT[0][0] . $libelleDivisionEquipeFFTT[1][0];
             $equipeIssued = [];
             /** On vérifie que l'équipe FFTT est recensée */
             if (in_array($idEquipeFFTT, $idEquipesUnrecorded)){
@@ -100,6 +96,8 @@ class FFTTApiController extends AbstractController
                 $equipeIssued['divisionKompo'] = null;
                 $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
                 $equipeIssued['pouleKompo'] = null;
+                $equipeIssued['sameDivision'] = false;
+                $equipeIssued['samePoule'] = false;
                 array_push($equipesIssued, $equipeIssued);
             }
             else {
@@ -107,24 +105,29 @@ class FFTTApiController extends AbstractController
                     return $equipe->getNumero() == $idEquipeFFTT;
                 }))[0];
 
-                if ((new Slugify())->slugify($equipeKompo->getIdDivision()->getLongName()) != $divisionEquipeFFTT ||
-                    $equipeKompo->getIdPoule()->getPoule() != mb_strtoupper($pouleEquipeFFTT)){
+                $sameDivision = $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTT;
+                $samePoule = $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT);
+                if (!$sameDivision || !$samePoule){
                     $equipeIssued['numeroKompo'] = $equipeKompo->getNumero();
                     $equipeIssued['divisionFFTT'] = $divisionEquipeFFTT;
-                    $equipeIssued['divisionKompo'] = (new Slugify())->slugify($equipeKompo->getIdDivision()->getLongName());
+                    $equipeIssued['divisionKompo'] = $equipeKompo->getIdDivision()->getShortName();
                     $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
                     $equipeIssued['pouleKompo'] = $equipeKompo->getIdPoule()->getPoule();
+                    $equipeIssued['sameDivision'] = $sameDivision;
+                    $equipeIssued['samePoule'] = $samePoule;
                     array_push($equipesIssued, $equipeIssued);
                 }
             }
         }
-        //TODO Changer partout dans le projet
+        if (!count($equipesIssued)) $messageEquipes = 'Toutes les équipes sont à jour.';
+        else if (count($equipesIssued) < count($equipesKompo)) $messageEquipes = count($equipesIssued) . ' équipes doivent être mises à jour';
+
         /*dump(mb_convert_case('écarté', MB_CASE_TITLE, "UTF-8"));
         dump(mb_convert_case('écarté', MB_CASE_UPPER, "UTF-8"));
         dump(mb_convert_case('écarté', MB_CASE_LOWER, "UTF-8"));*/
 
         /** Gestion des rencontres */
-        $rencontresKompo = $this->rencontreRepository->getOrderedRencontres()['Départemental'];
+        $rencontresKompo = $this->championnatRepository->getAllRencontres()['Départemental'];
         $rencontresParEquipes = [];
 
         $nbEquipe = 0;
@@ -163,7 +166,8 @@ class FFTTApiController extends AbstractController
         }
 
         return $this->render('backoffice/reset.html.twig', [
-            'message' => $message,
+            'messageJoueurs' => $messageJoueurs,
+            'messageEquipes' => $messageEquipes,
             'joueursIssued' => $joueursIssued,
             'equipesIssued' => $equipesIssued,
             'rencontresParEquipesSorted' => $rencontresParEquipesSorted
