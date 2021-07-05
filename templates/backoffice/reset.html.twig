@@ -4,10 +4,25 @@
 
 {% block body %}
 
+    {{ include('components/navbar_backoffice.html.twig') }}
+
+    {% for message in app.flashes('success') %}
+        {{ _flash.message(message, 'green') }}
+    {% endfor %}
+
+    {% for message in app.flashes('fail') %}
+        {{ _flash.message(message, 'red') }}
+    {% endfor %}
+
     <div class="container fftt_api_manager">
         <div class='card-panel center-align white-text title_journee'>
-            <h3 style="margin-bottom: 15px; margin-top: 15px;">Vérifications des données</h3>
+            <h3 style="margin-bottom: 15px; margin-top: 15px;">Recommencer une nouvelle phase</h3>
         </div>
+
+        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de recommencer une nouvelle phase ?')">
+            <input type="hidden" name="resetPhase" value="1">
+            <button class='btn waves-effect waves-light green lighten-2 btn_gestion'>Tout mettre à jour</button>
+        </form>
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
@@ -35,7 +50,7 @@
                                             <img src="{{ asset('images/account.png') }}" alt="Avatar">
                                         {% endif %}
                                         <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}</span>
-                                        {% if not joueur.sameName %} <i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT }}{% endif %}
+                                        {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT }}{% endif %}
                                     </div>
                                 </td>
                                 <td>
@@ -71,14 +86,14 @@
                         <tbody>
                             {% for numero, equipe in equipesIssued %}
                                 <tr>
-                                    <td><b>{{ equipe.numeroKompo }}</b></td>
+                                    <td><b>{{ equipe.equipe.numero }}</b></td>
                                     <td>
-                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.divisionKompo }}</span>
-                                        {% if not equipe.sameDivision %} <i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
+                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision.shortName }}</span>
+                                        {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
                                     </td>
                                     <td>
-                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.pouleKompo }}</span>
-                                        {% if not equipe.samePoule %} <i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule.poule }}</span>
+                                        {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -91,6 +106,7 @@
 
         <div class="card-panel center">
             <h4>Les rencontres - Départemental</h4>
+            <p><b>{{ messageRencontres }}</b></p>
 
             {% if rencontresParEquipesSorted|length %}
                 {% for equipe, rencontres in rencontresParEquipesSorted %}
@@ -109,10 +125,8 @@
                                     <thead>
                                     <tr>
                                         <th>Journée</th>
-                                        <th>Adversaire Kompo</th>
-                                        <th>Adversaire FFTT</th>
-                                        <th>Domicile Kompo</th>
-                                        <th>Domicile FFTT</th>
+                                        <th>Adversaire</th>
+                                        <th>Lieu</th>
                                     </tr>
                                     </thead>
 
@@ -120,10 +134,14 @@
                                     {% for rencontre in rencontres %}
                                         <tr>
                                             <td><b>{{ rencontre.journee }}</b></td>
-                                            <td {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text" {% endif %}>{{ rencontre.adversaireKompo }}</td>
-                                            <td {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text" {% endif %}>{{ rencontre.adversaireFFTT }}</td>
-                                            <td {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileKompo ? 'Oui' : 'Non' }}</td>
-                                            <td {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileFFTT ? 'Oui' : 'Non' }}</td>
+                                            <td>
+                                                <span {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.adversaireKompo }}</span>
+                                                {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                            </td>
+                                            <td>
+                                                <span {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileKompo ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
+                                                {% if rencontre.domicileKompo != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

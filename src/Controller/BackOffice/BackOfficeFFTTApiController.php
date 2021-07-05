@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\BackOffice;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
@@ -9,10 +9,11 @@ use Cocur\Slugify\Slugify;
 use Exception;
 use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FFTTApiController extends AbstractController
+class BackOfficeFFTTApiController extends AbstractController
 {
 
     private $competiteurRepository;
@@ -32,14 +33,12 @@ class FFTTApiController extends AbstractController
     }
 
     /**
-     * @Route("/fftt_api", name="fftt_api")
+     * @Route("/backoffice/new_phase", name="backoffice.reset.phase")
      * @throws Exception
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $messageJoueurs = '';
-        $messageEquipes = '';
 
         /** Gestion des joueurs */
         $joueursKompo = $this->competiteurRepository->findBy(['visitor' => 0]);
@@ -63,8 +62,7 @@ class FFTTApiController extends AbstractController
                 }
             }
         }
-        if (!count($joueursIssued)) $messageJoueurs = 'Tous les joueurs sont à jour.';
-        else if (count($joueursIssued) < count($joueursKompo)) $messageJoueurs = count($joueursIssued) . ' joueurs doivent être mis à jour';
+        $messageJoueurs = (!count($joueursIssued) ? 'Tous les joueurs sont à jour.' : count($joueursIssued) . ' joueurs doivent être mis à jour');
 
         /** Gestion des équipes */
         $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental');
@@ -82,6 +80,7 @@ class FFTTApiController extends AbstractController
         $idEquipesUnrecorded = array_merge(array_diff($equipesIDsFFTT, $equipesIDsKompo), array_diff($equipesIDsKompo, $equipesIDsFFTT));
 
         /** TODO On vérifie que les équipes Kompo sont recensées ??? */
+        /** TODO On vérifie que les équipes FFTT reçues font bien partie de la départementale */
 
         foreach ($equipesFFTT as $equipe) {
             $idEquipeFFTT = intval(explode(' ', $equipe->getLibelle())[2]);
@@ -90,6 +89,7 @@ class FFTTApiController extends AbstractController
             $divisionEquipeFFTT = $libelleDivisionEquipeFFTT[0][0] . $libelleDivisionEquipeFFTT[1][0];
             $equipeIssued = [];
             /** On vérifie que l'équipe FFTT est recensée */
+            //TODO Faire pour une equipe vide en passant l'objet dans le tableau
             if (in_array($idEquipeFFTT, $idEquipesUnrecorded)){
                 $equipeIssued['numeroKompo'] = null;
                 $equipeIssued['divisionFFTT'] = $divisionEquipeFFTT;
@@ -108,19 +108,16 @@ class FFTTApiController extends AbstractController
                 $sameDivision = $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTT;
                 $samePoule = $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT);
                 if (!$sameDivision || !$samePoule){
-                    $equipeIssued['numeroKompo'] = $equipeKompo->getNumero();
+                    $equipeIssued['equipe'] = $equipeKompo;
                     $equipeIssued['divisionFFTT'] = $divisionEquipeFFTT;
-                    $equipeIssued['divisionKompo'] = $equipeKompo->getIdDivision()->getShortName();
                     $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
-                    $equipeIssued['pouleKompo'] = $equipeKompo->getIdPoule()->getPoule();
                     $equipeIssued['sameDivision'] = $sameDivision;
                     $equipeIssued['samePoule'] = $samePoule;
                     array_push($equipesIssued, $equipeIssued);
                 }
             }
         }
-        if (!count($equipesIssued)) $messageEquipes = 'Toutes les équipes sont à jour.';
-        else if (count($equipesIssued) < count($equipesKompo)) $messageEquipes = count($equipesIssued) . ' équipes doivent être mises à jour';
+        $messageEquipes = (!count($equipesIssued) ? 'Toutes les équipes sont à jour.' : count($equipesIssued) . ' équipes doivent être mises à jour');
 
         /*dump(mb_convert_case('écarté', MB_CASE_TITLE, "UTF-8"));
         dump(mb_convert_case('écarté', MB_CASE_UPPER, "UTF-8"));
@@ -129,6 +126,7 @@ class FFTTApiController extends AbstractController
         /** Gestion des rencontres */
         $rencontresKompo = $this->championnatRepository->getAllRencontres()['Départemental'];
         $rencontresParEquipes = [];
+        $dates = null;
 
         $nbEquipe = 0;
         foreach ($equipesFFTT as $equipe){
@@ -136,12 +134,19 @@ class FFTTApiController extends AbstractController
             $rencontresEquipeKompo = array_values(array_values($rencontresKompo)[$nbEquipe]);
             $rencontresFFTT = $api->getRencontrePouleByLienDivision($equipe->getLienDivision());
 
+            if (!$dates){
+                $dates = $rencontresFFTT;
+                dump(array_unique(array_map(function($renc) {
+                    return $renc->getDatePrevue()->format('d-m-Y');
+                }, $dates)));
+            }
+
             foreach ($rencontresFFTT as $rencontre){
                 if (str_contains($rencontre->getLien(), 'LA+FRETTE')){
                     if ($rencontresEquipeKompo[$nbRencontre]['adversaire'] != null && $rencontresEquipeKompo[$nbRencontre]['exempt'] == false && ($rencontre->getNomEquipeA() != 'Exempt' || $rencontre->getNomEquipeB() != 'Exempt')){
                         $domicile = str_contains($rencontre->getNomEquipeA(), 'LA FRETTE');
-                        if (($domicile && (new Slugify())->slugify($rencontresEquipeKompo[$nbRencontre]['adversaire']) != (new Slugify())->slugify($rencontre->getNomEquipeB())) ||
-                            (!$domicile && (new Slugify())->slugify($rencontresEquipeKompo[$nbRencontre]['adversaire']) != (new Slugify())->slugify($rencontre->getNomEquipeA())) ||
+                        if (($domicile && mb_convert_case($rencontresEquipeKompo[$nbRencontre]['adversaire'], MB_CASE_TITLE, "UTF-8") != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
+                            (!$domicile && mb_convert_case($rencontresEquipeKompo[$nbRencontre]['adversaire'], MB_CASE_TITLE, "UTF-8") != mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
                             ($domicile != $rencontresEquipeKompo[$nbRencontre]['domicile']) )
                         {
                             $rencontreTemp = [];
@@ -159,15 +164,29 @@ class FFTTApiController extends AbstractController
             }
             $nbEquipe++;
         }
+        $messageRencontres = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour.' : count($rencontresParEquipes) . ' rencontres doivent être mises à jour');
 
         $rencontresParEquipesSorted = [];
         foreach ($rencontresParEquipes as $key => $item) {
             $rencontresParEquipesSorted[mb_convert_case($item['equipeESFTT'], MB_CASE_TITLE, "UTF-8")][$key] = $item;
         }
 
+        //TODO Vérifier les dates
+
+
+
+
+
+
+        /** Si le button est cliqué */
+        if ($request->request->get('resetPhase')) {
+            return $this->redirectToRoute('backoffice.reset.phase');
+        }
+
         return $this->render('backoffice/reset.html.twig', [
             'messageJoueurs' => $messageJoueurs,
             'messageEquipes' => $messageEquipes,
+            'messageRencontres' => $messageRencontres,
             'joueursIssued' => $joueursIssued,
             'equipesIssued' => $equipesIssued,
             'rencontresParEquipesSorted' => $rencontresParEquipesSorted

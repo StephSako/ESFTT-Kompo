@@ -7,6 +7,9 @@
             <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-backoffice"><i class="material-icons">menu</i></a>
 
             <ul class="left_items">
+                <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path("backoffice.reset.phase") }}"><i class="material-icons left" style="margin-right: 0;">sync</i></a>
+                </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.championnats") }}"><i class="material-icons left">stars</i>Championnat</a>
                 </li>
@@ -43,6 +46,9 @@
 </div>
 
 <ul id="slide-out" class="sidenav">
+    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
+        <a class="white-text center-align" href="{{ path("backoffice.reset.phase") }}"><i class="white-text material-icons left">sync</i>Nouvelle phase</a>
+    </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.championnats") }}"><i class="white-text material-icons left">stars</i>Championnat</a>
     </li>
