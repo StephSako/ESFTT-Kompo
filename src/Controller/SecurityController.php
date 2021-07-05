@@ -187,10 +187,9 @@ class SecurityController extends AbstractController
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
-            $ciphering = "BF-CBC";
-            list($tokenDecoded, $encryption_iv) = explode("::", base64_decode($token));
+            $tokenDecoded = base64_decode($token);
             $decryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
-            $decryption = openssl_decrypt($tokenDecoded, $ciphering, $decryption_key, 0, hex2bin($encryption_iv));
+            $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
 
             $username = json_decode($decryption, true)['username'];
             $dateValid = json_decode($decryption, true)['dateValidation'];
@@ -204,7 +203,7 @@ class SecurityController extends AbstractController
                     $competiteur = $this->competiteurRepository->findBy(['username' => $username])[0];
                     $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
                     $this->em->flush();
-                    $this->addFlash('success', 'Mot de passe modifié, connectez-vous');
+                    $this->addFlash('success', 'Mot de passe modifié');
                     return $this->redirectToRoute('login');
                 } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             }

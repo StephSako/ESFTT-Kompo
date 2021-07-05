@@ -104,17 +104,16 @@ class ContactController extends AbstractController
                     'username' => $request->request->get('username'),
                     'dateValidation' => (new DateTime())->add(new DateInterval('PT2H'))->getTimestamp()
                 ]);
-            $ciphering = "BF-CBC";
-            $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ciphering));
+            $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
             $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
-            $encryption = openssl_encrypt($token, $ciphering, $encryption_key, 0, $encryption_iv);
+            $encryption = openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv);
 
             return $this->sendMail(
                 new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
                 new Address($mail, $nom),
                 true,
                 'Réinitialisation de votre mot de passe',
-                base64_encode($encryption . '::' . bin2hex($encryption_iv)),
+                base64_encode($encryption),
                 'mail_templating/forgotten_password.html.twig');
         }
     }
