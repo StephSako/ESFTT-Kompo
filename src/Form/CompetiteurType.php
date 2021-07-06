@@ -53,8 +53,7 @@ class CompetiteurType extends AbstractType
             ->add('imageFile', FileType::class, [
                 'label' => false,
                 'required' => false
-                ]
-            )
+            ])
             ->add('mail', EmailType::class, [
                 'label' => false,
                 'required' => false,

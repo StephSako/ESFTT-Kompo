@@ -159,6 +159,7 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->render('account/edit.html.twig', [
             'type' => 'backoffice',
             'urlImage' => $competiteur->getAvatar(),
+            'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'path' => 'backoffice.password.edit',
             'competiteurId' => $idCompetiteur,
             'competiteurIsVisitor' => $competiteur->isVisitor(),
@@ -232,5 +233,20 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->redirectToRoute('backoffice.competiteur.edit', [
             'idCompetiteur' => $competiteur->getIdCompetiteur()
         ]);
+    }
+
+    //TODO Renouveler le certificat médical
+    /**
+     * @Route("/backoffice/competiteur/renouveler/certificat/{id}", name="backoffice.competiteur.renouveler.certificat")
+     * @param Competiteur $competiteur
+     * @return Response
+     */
+    public function renouvelerCertificat(Competiteur $competiteur): Response
+    {
+        $competiteur->setAnneeCertificatMedical();
+
+        $this->em->flush();
+        $this->addFlash('success', 'Certificat médical renouvelé pour ' . $competiteur->getPrenom() . ' ' . $competiteur->getNom());
+        return $this->redirectToRoute('backoffice.competiteurs');
     }
 }

@@ -264,12 +264,29 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Image(
      *      mimeTypes = {"image/jpeg", "image/png", "image/gif"},
-     *      mimeTypesMessage = "L'image doit être au format .jpeg, .png ou .gif."
+     *      mimeTypesMessage = "L'image doit être au format JPEG, PNG ou GIF"
      * )
      *
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
      */
     private $imageFile;
+
+    /**
+     * @var integer|null
+     *
+     * @Assert\GreaterThanOrEqual(
+     *     value = 2016,
+     *     message = "L'année de la sauvegarde du certificat médical doit être supérieur à {{ value }}"
+     * )
+     *
+     * @Assert\LessThanOrEqual(
+     *     value = 9999,
+     *     message = "L'année de la sauvegarde du certificat médical doit être inférieur à {{ value }}"
+     * )
+     *
+     * @ORM\Column(type="integer", length=4, name="annee_certificat_medical", nullable=true)
+     */
+    private $anneeCertificatMedical;
 
     /**
      * @var DateTime|null
@@ -733,6 +750,23 @@ class Competiteur implements UserInterface, Serializable
     public function setPrenom(?string $prenom): self
     {
         $this->prenom = $prenom;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAnneeCertificatMedical(): ?int
+    {
+        return $this->anneeCertificatMedical;
+    }
+
+    /**
+     * @return Competiteur
+     */
+    public function setAnneeCertificatMedical(): self
+    {
+        $this->anneeCertificatMedical = intval((new DateTime())->format('Y'));
         return $this;
     }
 }

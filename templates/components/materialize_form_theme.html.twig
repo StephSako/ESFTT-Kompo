@@ -102,10 +102,9 @@
 {% block file_widget -%}
     <{{ element|default('div') }} class="file-field input-field">
     <div class="btn blue">
-        <span>{{ 'Image' | trans }}</span>
+        <i class="material-icons">attach_file</i>
         <input name="{{ form.vars.full_name }}"
            id="{{ form.vars.id }}"
-           accept="image/png, image/jpeg, image/gif"
            type="{{ form.vars.type }}"
             {{ form.vars.required ? 'required' : '' }}
         >

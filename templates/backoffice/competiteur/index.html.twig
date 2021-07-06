@@ -36,6 +36,9 @@
                             <th class='hide-on-med-and-up'>Lic.</th>
                             <th class='hide-on-small-only'>Classement</th>
                             <th class='hide-on-med-and-up'>Class.</th>
+                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                <th>Certificat médical</th>
+                            {% endif %}
                             <th></th>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <th></th>
@@ -89,6 +92,22 @@
                                     {% endif %}
                                 {% endif %}
                             </td>
+                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                <td>
+                                    {% if not competiteur.anneeCertificatMedical %}
+                                        <span class="red-text"><i class="material-icons">clear</i></span>
+                                    {% else %}
+                                        <span>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}</span>
+                                    {% endif %}
+                                    {% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %}
+                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                            <button class='btn waves-effect waves-light green lighten-2 btn_gestion'>
+                                                <i class='material-icons'>local_hospital</i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                             <td>
                                 <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                             </td>

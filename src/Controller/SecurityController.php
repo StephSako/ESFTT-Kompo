@@ -112,6 +112,7 @@ class SecurityController extends AbstractController
         return $this->render('account/edit.html.twig', [
             'type' => 'general',
             'urlImage' => $user->getAvatar(),
+            'anneeCertificatMedical' => $user->getAnneeCertificatMedical(),
             'path' => 'account.update.password',
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
