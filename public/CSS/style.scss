@@ -778,6 +778,10 @@ li {
   color: $scroll_blue;
 }
 
+button.btn_renouveler_certif_mobile {
+  display: none;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -836,6 +840,24 @@ li {
 @media screen and (max-width: 992px) {
   th.th_picture_compet_table{
     height: 116px;
+  }
+
+  button.btn_renouveler_certif_mobile {
+    display: inline-block;
+  }
+
+  button.btn_renouveler_certif_pc {
+    display: none;
+  }
+
+  td.td_certificat_btn {
+    height: 51px;
+    padding-bottom: 6px;
+    padding-top: 8px;
+
+    &.td_certificat_btned {
+      padding-top: 4px;
+    }
   }
 
   td.td_picture_compet {

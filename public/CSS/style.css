@@ -694,6 +694,10 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   color: #1b5fac;
 }
 
+button.btn_renouveler_certif_mobile {
+  display: none;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -737,6 +741,23 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
 @media screen and (max-width: 992px) {
   th.th_picture_compet_table {
     height: 116px;
+  }
+
+  button.btn_renouveler_certif_mobile {
+    display: inline-block;
+  }
+
+  button.btn_renouveler_certif_pc {
+    display: none;
+  }
+
+  td.td_certificat_btn {
+    height: 51px;
+    padding-bottom: 6px;
+    padding-top: 8px;
+  }
+  td.td_certificat_btn.td_certificat_btned {
+    padding-top: 4px;
   }
 
   td.td_picture_compet {

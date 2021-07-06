@@ -98,9 +98,9 @@
                 <div class="section input_file" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Certificat médical</h5>
                     {% if anneeCertificatMedical != null and anneeCertificatMedical > "now"|date('Y')-2 %}
-                        <p><span class="blue white-text darken-1" style="padding: 8px; border-radius: 30px;">Doit être présenté à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
+                        <p><span class="green white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
                     {% else %}
-                        <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Doit être présenté à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
+                        <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
                     {% endif %}
                 </div>
             {% endif %}

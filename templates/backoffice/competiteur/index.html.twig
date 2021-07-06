@@ -93,26 +93,38 @@
                                 {% endif %}
                             </td>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                <td>
+                                <td class="td_certificat_btn{% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %} td_certificat_btned{% endif %}">
                                     {% if not competiteur.anneeCertificatMedical %}
-                                        <span class="red-text"><i class="material-icons">clear</i></span>
+                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                            <i class="red-text material-icons" style="vertical-align: middle;">clear</i><button style="margin-left: 4px" class="btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_mobile"><i class="material-icons">sync</i></button>
+                                        </form>
                                     {% else %}
-                                        <span>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}</span>
+                                        <span style="vertical-align: sub;">
+                                            {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                                <i class="green-text material-icons" style="vertical-align: middle;">done</i>
+                                                {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                            {% endif %}
+                                            {% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %}
+                                                <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                                    <i class="red-text material-icons" style="vertical-align: middle;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}<button style="margin-left: 4px" class="btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_mobile"><i class="material-icons">sync</i></button>
+                                                </form>
+                                            {% endif %}
+                                        </span>
                                     {% endif %}
                                     {% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %}
                                         <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
-                                            <button class='btn waves-effect waves-light green lighten-2 btn_gestion'>
-                                                <i class='material-icons'>local_hospital</i>
+                                            <button class='btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_pc'>
+                                                Renouveler
                                             </button>
                                         </form>
                                     {% endif %}
                                 </td>
                             {% endif %}
-                            <td>
+                            <td style="padding-bottom: 0; padding-top: 0;">
                                 <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                             </td>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                <td>
+                                <td style="padding-top: 10px; padding-bottom: 4px;">
                                     <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
                                         <input type='hidden' name='_method' value='DELETE'>
                                         <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>

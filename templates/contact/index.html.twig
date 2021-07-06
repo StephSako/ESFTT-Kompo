@@ -99,14 +99,19 @@
                                                 <div class="col m12 l6" style="width: 100%; margin: 0 !important;">
                                                     <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
                                                 </div>
-                                                <div class="col m3 hide-on-large-only">
+                                                <div class="col m2 hide-on-large-only">
                                                     <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
                                                         <i class="material-icons">phone</i>
                                                     </a>
                                                 </div>
-                                                <div class="col m3 hide-on-large-only">
+                                                <div class="col m2 hide-on-large-only">
                                                     <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber2 }}">
                                                         <i class="material-icons">message</i>
+                                                    </a>
+                                                </div>
+                                                <div class="col m2 hide-on-large-only whatsapp_btn">
+                                                    <a class="btn truncate" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
+                                                        <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
                                                     </a>
                                                 </div>
                                             </div>
