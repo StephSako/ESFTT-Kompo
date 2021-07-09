@@ -71,6 +71,13 @@ class Championnat
     private $limiteBrulage;
 
     /**
+     * @var int|null
+     *
+     * @ORM\Column(type="integer", name="lien_fftt_api", nullable=true)
+     */
+    private $lienFfttApi;
+
+    /**
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
@@ -318,6 +325,24 @@ class Championnat
     public function setJ2Rule(bool $j2Rule): self
     {
         $this->j2Rule = $j2Rule;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLienFfttApi(): ?int
+    {
+        return $this->lienFfttApi;
+    }
+
+    /**
+     * @param int|null $lienFfttApi
+     * @return Championnat
+     */
+    public function setLienFfttApi(?int $lienFfttApi): self
+    {
+        $this->lienFfttApi = $lienFfttApi;
         return $this;
     }
 }

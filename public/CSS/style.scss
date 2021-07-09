@@ -655,8 +655,15 @@ td#noTeam {
   height: 22px;
 }
 
-.fftt_api_manager h4 {
-  margin-top: 0;
+.fftt_api_manager {
+  h4 {
+    margin-top: 0;
+  }
+
+  .title_journee h3 {
+    margin-bottom: 15px;
+    margin-top: 15px;
+  }
 }
 
 .progress {

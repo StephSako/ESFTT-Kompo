@@ -16,11 +16,17 @@
 
     <div class="container fftt_api_manager">
         <div class='card-panel center-align white-text title_journee'>
-            <h3 style="margin-bottom: 15px; margin-top: 15px;">Recommencer une nouvelle phase</h3>
+            <h3>Recommencer une nouvelle phase</h3>
         </div>
 
         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de recommencer une nouvelle phase ?')">
+            {% if phaseFinished %}
+                <p class="pastille green">La phase de ce championnat est terminée et est prête a être réinitialisée</p>
+            {% else %}
+                <p class="pastille red">La phase de ce championnat n'est pas terminée</p>
+            {% endif %}
             <input type="hidden" name="resetPhase" value="1">
+            {# <input type="hidden" name="idChampionnat" value="{{ championnat.idChampionnat }}"> #}
             <button class='btn waves-effect waves-light green lighten-2 btn_gestion'>Tout mettre à jour</button>
         </form>
 
@@ -135,12 +141,12 @@
                                         <tr>
                                             <td><b>{{ rencontre.journee }}</b></td>
                                             <td>
-                                                <span {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.adversaireKompo }}</span>
-                                                {% if rencontre.adversaireKompo != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.rencontre.adversaire }}</span>
+                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
                                             </td>
                                             <td>
-                                                <span {% if rencontre.domicileKompo != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.domicileKompo ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
-                                                {% if rencontre.domicileKompo != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
+                                                {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}

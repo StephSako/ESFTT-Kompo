@@ -563,6 +563,10 @@ td#noTeam {
 .fftt_api_manager h4 {
   margin-top: 0;
 }
+.fftt_api_manager .title_journee h3 {
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
 
 .progress {
   background-color: #135299;
