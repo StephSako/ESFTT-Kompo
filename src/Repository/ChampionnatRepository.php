@@ -147,4 +147,20 @@ class ChampionnatRepository extends ServiceEntityRepository
         }
         return $querySorted;
     }
+
+    /**
+     * Supprimer des données
+     * @param string $table
+     * @param int $idChampionnat
+     * @return int|mixed|string
+     */
+    public function deleteData(string $table, int $idChampionnat)
+    {
+        return $this->createQueryBuilder('c')
+            ->delete('App\Entity\\' . $table, 't')
+            ->where('t.idChampionnat = :idChampionnat')
+            ->setParameter('idChampionnat', $idChampionnat)
+            ->getQuery()
+            ->execute();
+    }
 }

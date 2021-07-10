@@ -73,21 +73,22 @@ class AppExtension extends AbstractExtension
     public function listeEquipesSansDivision(array $numEquipes): string
     {
         $str = '';
-        if (count($numEquipes) > 1) $str .= 'Les équipes ';
+        $nbEquipes = count($numEquipes);
+        if ($nbEquipes > 1) $str .= 'Les équipes ';
         else $str .= 'L\'équipe ';
 
-        foreach ($numEquipes as $i => $numEquipe) {
+        foreach (array_values($numEquipes) as $i => $numEquipe) {
             $str .= $numEquipe;
-            if ($i == count($numEquipes) - 2) $str .= ' et ';
-            elseif ($i < count($numEquipes) - 1) $str .= ', ';
+            if ($i == $nbEquipes - 2) $str .= ' et ';
+            elseif ($i < $nbEquipes - 1) $str .= ', ';
         }
 
-        if (count($numEquipes) > 1) $str .= ' n\'ont ';
+        if ($nbEquipes > 1) $str .= ' n\'ont ';
         else $str .= ' n\'a ';
 
-        $str .= 'pas de division' . (count($numEquipes) > 1 ? 's':'') . ' affiliée' . (count($numEquipes) > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder ';
+        $str .= 'pas de division' . ($nbEquipes > 1 ? 's':'') . ' affiliée' . ($nbEquipes > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder ';
 
-        if (count($numEquipes) > 1) $str .= ' à leurs compositions d\'équipe.';
+        if ($nbEquipes > 1) $str .= ' à leurs compositions d\'équipe.';
         else $str .= ' à ses compositions d\'équipe.';
 
         return $str;
