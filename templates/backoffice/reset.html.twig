@@ -34,16 +34,16 @@
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageJoueurs }}</span></b></p>
+            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageJoueurs|striptags('<span>')|raw }}</span></b></p>
 
             {% if joueursIssued|length %}
-                <table class="centered responsive-table">
+                <table class="striped centered responsive-table">
                     <thead>
-                    <tr>
-                        <th>Licence</th>
-                        <th>Nom</th>
-                        <th>Points officiels</th>
-                    </tr>
+                        <tr>
+                            <th>Licence</th>
+                            <th>Nom</th>
+                            <th>Points officiels</th>
+                        </tr>
                     </thead>
 
                     <tbody>
@@ -67,9 +67,6 @@
                                         <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
                                     {% endif %}
                                 </td>
-                                <td>
-
-                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -79,21 +76,21 @@
 
         <div class="card-panel center">
             <h4>Les disponibilités</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageDisponiblites }}</span></b></p>
+            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageDisponiblites|striptags('<span>')|raw }}</span></b></p>
         </div>
 
         <div class="card-panel center">
             <h4>Les équipes</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageEquipes }}</span></b></p>
+            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageEquipes|striptags('<span>')|raw }}</span></b></p>
 
             {% if equipesIssued|length %}
                     <table class="striped centered responsive-table">
                         <thead>
-                        <tr>
-                            <th>Numéro</th>
-                            <th>Division</th>
-                            <th>Poule</th>
-                        </tr>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Division</th>
+                                <th>Poule</th>
+                            </tr>
                         </thead>
 
                         <tbody>
@@ -117,12 +114,12 @@
 
         <div class="card-panel center">
             <h4>Les rencontres</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageRencontres }}</span></b></p>
+            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageRencontres|striptags('<span>')|raw }}</span></b></p>
 
             {% if rencontresParEquipesSorted|length %}
                 {% for equipe, rencontres in rencontresParEquipesSorted %}
                     <ul class="collapsible backoffice_disponibilites">
-                        <li>
+                        <li class="active">
                             <div class="collapsible-header">
                                 <div class="chip">
                                     <i class="material-icons" style="vertical-align: middle;">people</i>
@@ -130,8 +127,8 @@
                                 </div>
                                 <i class="caret material-icons">keyboard_arrow_down</i>
                             </div>
-                            <div class="collapsible-body">
 
+                            <div class="collapsible-body">
                                 <table class="striped centered responsive-table">
                                     <thead>
                                     <tr>
@@ -161,6 +158,34 @@
                         </li>
                     </ul>
                 {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="card-panel center">
+            <h4>Les dates des journées</h4>
+            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageDates|striptags('<span>')|raw }}</span></b></p>
+
+            {% if datesIssued|length %}
+                <table class="striped centered responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Journée</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for index, date in datesIssued %}
+                        <tr>
+                            <td><b>{{ date.nJournee }}</b></td>
+                            <td>
+                                <span class="red-text">{{ date.journee.date|date('d-m-Y') }}</span>
+                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|date('d-m-Y') }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </div>
     </div>

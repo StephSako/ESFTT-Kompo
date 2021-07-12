@@ -470,7 +470,7 @@ class Rencontre
      */
     public function getAdversaire(): ?string
     {
-        return $this->adversaire;
+        return mb_convert_case($this->adversaire, MB_CASE_TITLE, "UTF-8");
     }
 
     /**
@@ -479,7 +479,7 @@ class Rencontre
      */
     public function setAdversaire(?string $adversaire): self
     {
-        $this->adversaire = $adversaire;
+        $this->adversaire = mb_convert_case($adversaire, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 

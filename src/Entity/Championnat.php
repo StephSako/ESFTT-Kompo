@@ -306,7 +306,7 @@ class Championnat
      */
     public function setNom(?string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = mb_convert_case($nom, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 

@@ -90,7 +90,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
             }
         }
-        $messageJoueurs = (!count($joueursIssued) ? 'Tous les joueurs sont à jour' : count($joueursIssued) . ' joueurs doivent être mis à jour');
+        $messageJoueurs = (!count($joueursIssued) ? 'Tous les joueurs sont à jour' : '<span class=\'red-text text-lighten-1\'>' .count($joueursIssued) . '</span> joueurs doivent être mis à jour');
 
         /** Gestion des équipes */
         $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental');
@@ -149,7 +149,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
             }
         }
-        $messageEquipes = (!count($equipesIssued) ? 'Toutes les équipes sont à jour' : count($equipesIssued) . ' équipes doivent être mises à jour');
+        $messageEquipes = (!count($equipesIssued) ? 'Toutes les équipes sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($equipesIssued) . '</span> équipes doivent être mises à jour');
 
         /*dump(mb_convert_case('écarté', MB_CASE_TITLE, "UTF-8"));
         dump(mb_convert_case('écarté', MB_CASE_UPPER, "UTF-8"));
@@ -161,6 +161,7 @@ class BackOfficeFFTTApiController extends AbstractController
             return $renc->getIdChampionnat()->getIdChampionnat() == $championnatActif->getIdChampionnat();
         });
         $rencontresParEquipes = [];
+        $datesFFTT = [];
 
         foreach ($equipesFFTT as $index => $equipe){
             $nbEquipe = $index + 1;
@@ -171,11 +172,11 @@ class BackOfficeFFTTApiController extends AbstractController
             }));
             $rencontresFFTT = $api->getRencontrePouleByLienDivision($equipe->getLienDivision());
 
-            /*if (!$dates){
-                $dates = array_unique(array_map(function($renc) {
-                    return $renc->getDatePrevue()->format('d-m-Y');
-                }, $rencontresFFTT));
-            }*/
+            if (!$datesFFTT){
+                $datesFFTT = array_values(array_unique(array_map(function($renc) {
+                    return strtotime($renc->getDatePrevue()->format('d-m-Y'));
+                }, $rencontresFFTT)));
+            }
 
             foreach ($rencontresFFTT as $rencontre){
                 if (str_contains($rencontre->getLien(), 'LA+FRETTE')){
@@ -199,7 +200,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
             }
         }
-        $messageRencontres = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : count($rencontresParEquipes) . ' rencontres doivent être mises à jour');
+        $messageRencontres = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($rencontresParEquipes) . '</span> rencontres doivent être mises à jour');
 
         $rencontresParEquipesSorted = [];
         foreach ($rencontresParEquipes as $key => $item) {
@@ -207,12 +208,28 @@ class BackOfficeFFTTApiController extends AbstractController
         }
 
         //TODO Vérifier les dates
+        $datesKompo = $championnatActif->getJournees()->toArray();
+        $datesIssued = [];
+
+        foreach ($datesFFTT as $index => $dateFFTT) {
+            if ($datesKompo[$index]->getDateJournee()->getTimestamp() == $dateFFTT) unset($datesFFTT[$index]);
+            else {
+                $dateIssued = [];
+                $dateIssued['journee'] = $datesKompo[$index]->getDateJournee();
+                $dateIssued['nJournee'] = $index + 1;
+                $dateIssued['dateFFTT'] = $dateFFTT;
+                array_push($datesIssued, $dateIssued);
+            }
+        }
+
+        $messageDates = (!count($datesIssued) ? 'Toutes les dates sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($datesIssued) . '</span> dates doivent être mises à jour');
+
 
         /** On vérifie que la phase est terminée pour être reset **/
         $phaseFinished = $this->getLatestDate($championnatActif) < new DateTime();
 
         /** On vérifie que toutes les disponiblités seront supprimées */
-        $messageDisponiblites = count($championnatActif->getDispos()->toArray()) ? count($championnatActif->getDispos()->toArray()) . ' disponibilités de joueurs seront supprimées' : 'Toutes les disponibilités de joueurs ont été supprimées';
+        $messageDisponiblites = count($championnatActif->getDispos()->toArray()) ? '<span class=\'red-text text-lighten-1\'>' . count($championnatActif->getDispos()->toArray()) . '</span> disponibilités de joueurs seront supprimées' : 'Toutes les disponibilités de joueurs ont été supprimées';
 
 
 
@@ -248,7 +265,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 $this->em->flush();
             }
 
-            //TODO On reset les dates des journées (nb de journées (update du championnat si besoin), date)
+            //TODO On reset les dates des journées (nb de journées (update du championnat si besoin), date, undefined)
 
 
             /** On reset les équipes */
@@ -274,9 +291,11 @@ class BackOfficeFFTTApiController extends AbstractController
             'messageEquipes' => $messageEquipes,
             'messageRencontres' => $messageRencontres,
             'messageDisponiblites' => $messageDisponiblites,
+            'messageDates' => $messageDates,
             'joueursIssued' => $joueursIssued,
             'equipesIssued' => $equipesIssued,
-            'rencontresParEquipesSorted' => $rencontresParEquipesSorted
+            'rencontresParEquipesSorted' => $rencontresParEquipesSorted,
+            'datesIssued' => $datesIssued
         ]);
     }
 
