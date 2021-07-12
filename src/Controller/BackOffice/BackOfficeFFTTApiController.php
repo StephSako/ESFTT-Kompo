@@ -110,9 +110,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
         $idEquipesUnrecorded = array_merge(array_diff($equipesIDsFFTT, $equipesIDsKompo), array_diff($equipesIDsKompo, $equipesIDsFFTT));
 
-        /** TODO On vérifie que les équipes Kompo sont recensées ??? */
-        /** TODO On vérifie que les équipes FFTT reçues font bien partie de la départementale */
-
+        /** TODO On vérifie que les équipes Kompo sont recensées */
         foreach ($equipesFFTT as $index => $equipe) {
             $idEquipeFFTT = $index + 1;
             $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
@@ -200,14 +198,14 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
             }
         }
-        $messageRencontres = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($rencontresParEquipes) . '</span> rencontres doivent être mises à jour');
+        $messageRencontres = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($rencontresParEquipes) . '</span> rencontres doivent être mises à jour et leurs compositions d\'équipe vidées');
 
         $rencontresParEquipesSorted = [];
         foreach ($rencontresParEquipes as $key => $item) {
             $rencontresParEquipesSorted[mb_convert_case($item['equipeESFTT'], MB_CASE_TITLE, "UTF-8")][$key] = $item;
         }
 
-        //TODO Vérifier les dates
+        /** On vérifie les dates **/
         $datesKompo = $championnatActif->getJournees()->toArray();
         $datesIssued = [];
 
@@ -215,9 +213,9 @@ class BackOfficeFFTTApiController extends AbstractController
             if ($datesKompo[$index]->getDateJournee()->getTimestamp() == $dateFFTT) unset($datesFFTT[$index]);
             else {
                 $dateIssued = [];
-                $dateIssued['journee'] = $datesKompo[$index]->getDateJournee();
+                $dateIssued['journee'] = $datesKompo[$index];
                 $dateIssued['nJournee'] = $index + 1;
-                $dateIssued['dateFFTT'] = $dateFFTT;
+                $dateIssued['dateFFTT'] = (new DateTime())->setTimestamp($dateFFTT);
                 array_push($datesIssued, $dateIssued);
             }
         }
@@ -249,23 +247,26 @@ class BackOfficeFFTTApiController extends AbstractController
                                                  ->setDomicile($rencontresParEquipe['domicileFFTT'])
                                                  ->setHosted(false)->setExempt(false)->setReporte(false)
                                                  ->setDateReport($rencontresParEquipe['dateReelle']);
+            }
 
-                /** On reset les joueurs de la compo */
-                for ($i = 0; $i < $rencontresParEquipe['rencontre']->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-                    $rencontresParEquipe['rencontre']->setIdJoueurNToNull($i);
+            /** On reset les joueurs des compos */
+            foreach ($rencontresKompo as $rencontreKompo) {
+                for ($i = 0; $i < $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+                    $rencontreKompo->setIdJoueurNToNull($i);
                 }
-
-                $this->em->flush();
             }
 
             /** On reset les joueurs **/
             foreach ($joueursIssued as $joueurIssued) {
                 if (!$joueurIssued['sameName']) $joueurIssued['joueur']->setNom($joueurIssued['nomFFTT'])->setPrenom($joueurIssued['prenomFFTT']);
                 $joueurIssued['joueur']->setClassementOfficiel($joueurIssued['pointsFFTT']);
-                $this->em->flush();
             }
 
-            //TODO On reset les dates des journées (nb de journées (update du championnat si besoin), date, undefined)
+            /** On reset les dates des journées */
+            //TODO Update du nb de journées du championnat si besoin
+            foreach ($datesIssued as $dateIssued) {
+                $dateIssued['journee']->setDateJournee($dateIssued['dateFFTT'])->setUndefined(false);
+            }
 
 
             /** On reset les équipes */
@@ -278,9 +279,9 @@ class BackOfficeFFTTApiController extends AbstractController
                 $poule = count($poulesSearch) ? $this->pouleRepository->findBy(['poule' => $equipeIssued['pouleFFTT']])[0] : null;
 
                 $equipeIssued['equipe']->setIdDivision($division)->setIdPoule($poule);
-                $this->em->flush();
             }
 
+            $this->em->flush();
             $this->addFlash('success', 'Phase réinitialisée');
             return $this->redirectToRoute('backoffice.reset.phase');
         }

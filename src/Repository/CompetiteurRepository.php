@@ -154,14 +154,16 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function getBrulagesSelectionnables(Championnat $championnat, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
     {
-        if ($idJournee == 2 && $championnat->isJ2Rule()) $strJ2 = '';
+        $idFirstJournee = $championnat->getJournees()->toArray()[0]->getIdJournee();
+        $j2Condition = (count($championnat->getJournees()->toArray()) >= 2 && $championnat->getJournees()->toArray()[1]->getIdJournee() == $idJournee) && $championnat->isJ2Rule();
+        if ($j2Condition) $strJ2 = '';
         $strD = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
-            if ($idJournee == 2 && $championnat->isJ2Rule()) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
+            if ($j2Condition) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
             $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
             if ($j < $nbJoueurs - 1){
                 $strD .= ' OR ';
-                if ($idJournee == 2 && $championnat->isJ2Rule()) $strJ2 .= ' OR ';
+                if ($j2Condition) $strJ2 .= ' OR ';
             }
         }
 
@@ -170,14 +172,14 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.prenom')
             ->addSelect('c.idCompetiteur');
 
-        if ($idJournee == 2 && $championnat->isJ2Rule()){
+        if ($j2Condition){
             $brulages = $brulages->addSelect('(SELECT COUNT(r.id)' .
                 ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                 ' WHERE e.idDivision IS NOT NULL' .
                 ' AND e.numero < :idEquipe' .
                 ' AND e.idChampionnat = :idChampionnat' .
                 ' AND r.idChampionnat = e.idChampionnat' .
-                ' AND r.idJournee = 1' .
+                ' AND r.idJournee = ' . $idFirstJournee .
                 ' AND r.idEquipe = e.idEquipe' .
                 ' AND (' . $strJ2 . ')) AS bruleJ2');
         }
