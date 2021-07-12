@@ -101,6 +101,12 @@
                         <p><span class="green white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
                     {% else %}
                         <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
+
+                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                            <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
+                                Renouveler
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endif %}

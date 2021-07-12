@@ -95,7 +95,7 @@
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <td class="td_certificat_btn{% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %} td_certificat_btned{% endif %}">
                                     {% if not competiteur.anneeCertificatMedical %}
-                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur, routeToRedirect: 'backoffice.competiteurs'}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
                                             <i class="red-text material-icons" style="vertical-align: middle;">clear</i><button style="margin-left: 4px" class="btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_mobile"><i class="material-icons">sync</i></button>
                                         </form>
                                     {% else %}
@@ -105,14 +105,14 @@
                                                 {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
                                             {% endif %}
                                             {% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %}
-                                                <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                                <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur, routeToRedirect: 'backoffice.competiteurs'}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
                                                     <i class="red-text material-icons" style="vertical-align: middle;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}<button style="margin-left: 4px" class="btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_mobile"><i class="material-icons">sync</i></button>
                                                 </form>
                                             {% endif %}
                                         </span>
                                     {% endif %}
                                     {% if not competiteur.anneeCertificatMedical or competiteur.anneeCertificatMedical < "now"|date('Y')-2 %}
-                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
+                                        <form method='post' action='{{ path('backoffice.competiteur.renouveler.certificat', {id: competiteur.idCompetiteur, routeToRedirect: 'backoffice.competiteurs'}) }}' onsubmit="return confirm('Renouveler le certificat médical ?')">
                                             <button class='btn waves-effect waves-light green lighten-2 btn_gestion btn_renouveler_certif_pc'>
                                                 Renouveler
                                             </button>

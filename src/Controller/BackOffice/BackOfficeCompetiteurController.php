@@ -235,18 +235,20 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
     }
 
-    //TODO Renouveler le certificat médical
     /**
-     * @Route("/backoffice/competiteur/renouveler/certificat/{id}", name="backoffice.competiteur.renouveler.certificat")
+     * @Route("/backoffice/competiteur/renouveler/certificat/{id}/{routeToRedirect}", name="backoffice.competiteur.renouveler.certificat")
      * @param Competiteur $competiteur
+     * @param string $routeToRedirect
      * @return Response
      */
-    public function renouvelerCertificat(Competiteur $competiteur): Response
+    public function renouvelerCertificat(Competiteur $competiteur, string $routeToRedirect): Response
     {
         $competiteur->setAnneeCertificatMedical();
 
         $this->em->flush();
-        $this->addFlash('success', 'Certificat médical renouvelé pour ' . $competiteur->getPrenom() . ' ' . $competiteur->getNom());
-        return $this->redirectToRoute('backoffice.competiteurs');
+        $this->addFlash('success', 'Certificat médical renouvelé' . ($routeToRedirect != 'backoffice.competiteur.edit' ? ' pour ' . $competiteur->getPrenom() . ' ' . $competiteur->getNom() : null));
+        return $this->redirectToRoute($routeToRedirect, $routeToRedirect == 'backoffice.competiteur.edit' ? [
+            'idCompetiteur' => $competiteur->getIdCompetiteur()
+        ] : []);
     }
 }
