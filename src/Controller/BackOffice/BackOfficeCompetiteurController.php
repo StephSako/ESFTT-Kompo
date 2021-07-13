@@ -12,10 +12,13 @@ use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
@@ -250,5 +253,52 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->redirectToRoute($routeToRedirect, $routeToRedirect == 'backoffice.competiteur.edit' ? [
             'idCompetiteur' => $competiteur->getIdCompetiteur()
         ] : []);
+    }
+
+    private function getDataForPDF(): array
+    {
+        $competiteursList = [];
+        $competiteurs = $this->competiteurRepository->findAll();
+
+        foreach ($competiteurs as $user) {
+            array_push($competiteursList, $user->serializeToPDF());
+        }
+        return $competiteursList;
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/export-excel", name="backoffice.competiteurs.export.excel")
+     * @return Response
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function exportCompetiteursExcel(): Response
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        /** On set les noms des colonnes */
+        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Pseudo Kompo'];
+        for ($col = 'A', $i = 0; $col !== 'L'; $col++, $i++) {
+            $sheet->setCellValue($col . '1', $headers[$i]);
+        }
+        $sheet->fromArray($this->getDataForPDF(),'', 'A2', true);
+
+        /** On resize automatiquement les colonnes */
+        for($col = 'A'; $col !== 'L'; $col++) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
+
+        /** On envoie le fichier en téléchargement */
+        $response =  new StreamedResponse(
+            function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="competiteurs.xlsx"');
+        $response->headers->set('Cache-Control','max-age=0');
+        return $response;
     }
 }
