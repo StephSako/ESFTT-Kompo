@@ -66,7 +66,7 @@ class BackOfficeChampionnatController extends AbstractController
 
         if ($form->isSubmitted()){
             try {
-                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
+                $championnat->setNom($championnat->getNom());
                 $this->em->persist($championnat);
 
                 /** On créé les n journées du championnat */
@@ -139,7 +139,7 @@ class BackOfficeChampionnatController extends AbstractController
                     }
                 }
 
-                $championnat->setNom(mb_convert_case($championnat->getNom(), MB_CASE_TITLE, "UTF-8"));
+                $championnat->setNom($championnat->getNom());
 
                 /** Si nbJournees diminue, on supprime les rencontres, sinon on en créé */
                 if ($championnat->getNbJournees() < count($journees)){

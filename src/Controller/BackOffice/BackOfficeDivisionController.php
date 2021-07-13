@@ -68,8 +68,8 @@ class BackOfficeDivisionController extends AbstractController
         if ($form->isSubmitted() && $listChamps){
             if ($form->isValid()){
                 try {
-                    $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
-                    $division->setShortName(mb_convert_case($division->getShortName(), MB_CASE_UPPER, "UTF-8"));
+                    $division->setLongName($division->getLongName());
+                    $division->setShortName($division->getShortName());
                     $this->em->persist($division);
                     $this->em->flush();
                     $this->addFlash('success', 'Division créée');
@@ -111,8 +111,8 @@ class BackOfficeDivisionController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $division->setLongName(mb_convert_case($division->getLongName(), MB_CASE_TITLE, "UTF-8"));
-                    $division->setShortName(mb_convert_case($division->getShortName(), MB_CASE_UPPER, "UTF-8"));
+                    $division->setLongName($division->getLongName());
+                    $division->setShortName($division->getShortName());
 
                     /** Si nbJoueurs diminue, on supprime les joueurs superflux des rencontres des équipes affiliées */
                     if ($nbJoueurs > $form->getData()->getNbJoueurs()) {

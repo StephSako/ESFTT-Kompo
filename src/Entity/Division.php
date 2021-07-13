@@ -152,7 +152,7 @@ class Division
      */
     public function setShortName(?string $shortName): self
     {
-        $this->shortName = $shortName;
+        $this->shortName = mb_convert_case($shortName, MB_CASE_UPPER, "UTF-8");
         return $this;
     }
 
@@ -170,7 +170,7 @@ class Division
      */
     public function setLongName(?string $longName): self
     {
-        $this->longName = $longName;
+        $this->longName = mb_convert_case($longName, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 

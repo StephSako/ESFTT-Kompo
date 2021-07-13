@@ -358,7 +358,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setNom(?string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = mb_convert_case($nom, MB_CASE_UPPER, "UTF-8");
         return $this;
     }
 
@@ -749,7 +749,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = mb_convert_case($prenom, MB_CASE_TITLE, "UTF-8");;
         return $this;
     }
 

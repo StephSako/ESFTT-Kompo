@@ -149,10 +149,6 @@ class BackOfficeFFTTApiController extends AbstractController
         }
         $messageEquipes = (!count($equipesIssued) ? 'Toutes les équipes sont à jour' : '<span class=\'red-text text-lighten-1\'>' . count($equipesIssued) . '</span> équipes doivent être mises à jour');
 
-        /*dump(mb_convert_case('écarté', MB_CASE_TITLE, "UTF-8"));
-        dump(mb_convert_case('écarté', MB_CASE_UPPER, "UTF-8"));
-        dump(mb_convert_case('écarté', MB_CASE_LOWER, "UTF-8"));*/
-
         /** Gestion des rencontres */
         //TODO get les rencontres sous forme d'objets
         $rencontresKompo = array_filter($this->rencontreRepository->findAll(), function ($renc) use ($championnatActif) {
@@ -180,8 +176,8 @@ class BackOfficeFFTTApiController extends AbstractController
                 if (str_contains($rencontre->getLien(), 'LA+FRETTE')){
                     if ($rencontresEquipeKompo[$nbRencontre]->getAdversaire() != null && $rencontresEquipeKompo[$nbRencontre]->isExempt() == false && ($rencontre->getNomEquipeA() != 'Exempt' || $rencontre->getNomEquipeB() != 'Exempt')){
                         $domicile = str_contains($rencontre->getNomEquipeA(), 'LA FRETTE');
-                        if (($domicile && mb_convert_case($rencontresEquipeKompo[$nbRencontre]->getAdversaire(), MB_CASE_TITLE, "UTF-8") != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
-                            (!$domicile && mb_convert_case($rencontresEquipeKompo[$nbRencontre]->getAdversaire(), MB_CASE_TITLE, "UTF-8") != mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
+                        if (($domicile && $rencontresEquipeKompo[$nbRencontre]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
+                            (!$domicile && $rencontresEquipeKompo[$nbRencontre]->getAdversaire()!= mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
                             ($domicile != $rencontresEquipeKompo[$nbRencontre]->getDomicile()) )
                         {
                             $rencontreTemp = [];

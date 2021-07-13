@@ -67,7 +67,7 @@ class BackOfficeRencontreController extends AbstractController
                 try {
                     /** On récupère la valeur du switch du template **/
                     $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
-                    $rencontre->setAdversaire(mb_convert_case($rencontre->getAdversaire(), MB_CASE_TITLE, "UTF-8"));
+                    $rencontre->setAdversaire($rencontre->getAdversaire());
 
                     /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
                     if ($rencontre->isReporte()) {
