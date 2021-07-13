@@ -22,14 +22,14 @@
 
                 <div class="col s12 m3 offset-m1">
                     <span><i class="material-icons prefix">date_range</i> Nombre de journées</span>
-                    {{ form_row(form.nbJournees) }}
+                    {{ form_row(form.nbJournees, {'id': 'i_nb_journees'}) }}
                 </div>
             </div>
 
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12">
                     <span>Règle du brûlage de la J2 appliquée ?</span><br>
-                    <div style="margin-top: 15px;">{{ form_row(form.j2Rule) }}</div>
+                    <div style="margin-top: 15px;">{{ form_row(form.j2Rule, {'id': 'cb_regle_j2'}) }}</div>
                 </div>
             </div>
 
@@ -37,4 +37,17 @@
             <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
         {{ form_end(form) }}
     </div>
+
+    <script type="text/javascript">
+        let i_nb_journees = $('#i_nb_journees');
+        let cb_regle_j2 = $('#cb_regle_j2');
+
+        /** Evènements liés aux emails et numéros de téléphone **/
+        if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+
+        i_nb_journees.change(function () {
+            if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+            else cb_regle_j2.prop('disabled', false);
+        });
+    </script>
 {% endmacro %}
