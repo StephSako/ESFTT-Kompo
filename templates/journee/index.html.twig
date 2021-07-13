@@ -50,58 +50,66 @@
                 </div>
             {% endif %}
 
-            {% if 'ROLE_VISITEUR' not in app.token.roleNames and journeeStillEditable(journee, compos) %}
-                <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-
-                    {% if app.user.licence and app.user.classementOfficiel %}
-                        {% if disponible != -1 %}
-                            {% if disponible == 1 %}
-                                <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                                <a {% if selected %}onclick="return confirm('Vous serez désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
-                                    <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
-                                </a>
-                            {% elseif disponible == 0 %}
-                                <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
-                                <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
-                                    <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
-                                </a>
-                            {% endif %}
-                        {% else %}
-                            <h5>Êtes-vous disponible pour cette journée ?</h5>
-                            <div class="row">
-                                <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
-                                    </a>
-                                </div>
-                                <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
-                                    </a>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        {% if app.user.licence and not app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% elseif not app.user.licence and app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence et classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
-                <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-                    <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
+            {% if app.user.anneeCertificatMedical == null or app.user.anneeCertificatMedical < "now"|date('Y')-2 %}
+                <div class="center red white-text darken-1 card-panel" style="padding: 5px; font-size: 108%;">
+                    <p><span>Renouvellement du certificat médical à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
                 </div>
             {% endif %}
 
-            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length %}
-                <div class="card-panel center cardTeamsWithoutDiv">
-                    <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
-                    <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
-                </div>
+            {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
+                {% if journeeStillEditable(journee, compos) %}
+                    <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
+
+                        {% if app.user.licence and app.user.classementOfficiel %}
+                            {% if disponible != -1 %}
+                                {% if disponible == 1 %}
+                                    <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
+                                    <a {% if selected %}onclick="return confirm('Vous serez désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
+                                        <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                                    </a>
+                                {% elseif disponible == 0 %}
+                                    <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
+                                    <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
+                                        <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <h5>Êtes-vous disponible pour cette journée ?</h5>
+                                <div class="row">
+                                    <div class="col s6">
+                                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
+                                            <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
+                                        </a>
+                                    </div>
+                                    <div class="col s6">
+                                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
+                                            <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {% if app.user.licence and not app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                            {% elseif not app.user.licence and app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                            {% elseif not app.user.licence and not app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence et classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% elseif not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
+                    <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
+                        <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
+                    </div>
+                {% endif %}
+
+                {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length %}
+                    <div class="card-panel center cardTeamsWithoutDiv">
+                        <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
+                        <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
+                    </div>
+                {% endif %}
             {% endif %}
 
             {% if compos|length %}
