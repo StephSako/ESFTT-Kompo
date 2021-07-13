@@ -785,8 +785,7 @@ class Competiteur implements UserInterface, Serializable
             $this->getMail(),
             $this->getMail2(),
             $this->getPhoneNumber(),
-            $this->getPhoneNumber2(),
-            $this->getUsername()
+            $this->getPhoneNumber2()
         ];
     }
 }

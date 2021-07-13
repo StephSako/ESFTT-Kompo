@@ -9,11 +9,13 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -270,21 +272,51 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/competiteurs/export-excel", name="backoffice.competiteurs.export.excel")
      * @return Response
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function exportCompetiteursExcel(): Response
     {
+        $dataCompetiteurs = $this->getDataForPDF();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
         /** On set les noms des colonnes */
-        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Pseudo Kompo'];
-        for ($col = 'A', $i = 0; $col !== 'L'; $col++, $i++) {
+        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2'];
+        for ($col = 'A', $i = 0; $col !== 'K'; $col++, $i++) {
             $sheet->setCellValue($col . '1', $headers[$i]);
         }
-        $sheet->fromArray($this->getDataForPDF(),'', 'A2', true);
 
+        $sheet->getStyle('A1:J1')->applyFromArray(
+            array(
+                'fill' => array(
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => array('argb' => 'FF4F81BD')
+                ),
+                'font'  => array(
+                    'bold'  =>  true,
+                    'color' => array('rgb' => 'FFFFFF' )
+                )
+            )
+        );
+
+        foreach ($dataCompetiteurs as $index => $competiteur) {
+            $sheet->getStyle('F' . $index+=2)->applyFromArray(
+                array(
+                    'fill' => array(
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => array('argb' => ($competiteur[5] < ((new DateTime())->format('Y')) - 2) ? 'FFFF3C3C' : '50EA39')
+                    ),
+                    'font'  => array(
+                        'bold'  =>  true,
+                        'color' => array('rgb' => 'FFFFFF' )
+                    )
+                )
+            );
+        }
+
+        $sheet->fromArray($dataCompetiteurs,'', 'A2', true);
         /** On resize automatiquement les colonnes */
-        for($col = 'A'; $col !== 'L'; $col++) {
+        for($col = 'A'; $col !== 'K'; $col++) {
             $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
         }
 
