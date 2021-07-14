@@ -28,6 +28,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $disponibiliteRepository;
     private $divisionRepository;
     private $uploadHandler;
+    private $encoder;
 
     /**
      * BackOfficeController constructor.
@@ -36,6 +37,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param DivisionRepository $divisionRepository
      * @param UploadHandler $uploadHandler
+     * @param UserPasswordEncoderInterface $encoder
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -43,6 +45,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 DisponibiliteRepository $disponibiliteRepository,
                                 DivisionRepository $divisionRepository,
                                 UploadHandler $uploadHandler,
+                                UserPasswordEncoderInterface $encoder,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
@@ -51,6 +54,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->divisionRepository = $divisionRepository;
         $this->uploadHandler = $uploadHandler;
+        $this->encoder = $encoder;
     }
 
     /**
@@ -90,6 +94,7 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
+                    $competiteur->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')));
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
                     $this->em->persist($competiteur);
@@ -171,16 +176,15 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
      * @return RedirectResponse|Response
      */
-    public function updatePassword(Competiteur $competiteur, Request $request, UserPasswordEncoderInterface $encoder){
+    public function updatePassword(Competiteur $competiteur, Request $request){
         $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate'))) {
             if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-                $password = $encoder->encodePassword($competiteur, $request->get('new_password'));
+                $password = $this->encoder->encodePassword($competiteur, $request->get('new_password'));
                 $competiteur->setPassword($password);
 
                 $this->em->flush();

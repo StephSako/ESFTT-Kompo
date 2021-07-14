@@ -51,8 +51,8 @@
             {% endif %}
 
             {% if app.user.anneeCertificatMedical == null or app.user.anneeCertificatMedical < "now"|date('Y')-2 %}
-                <div class="center red white-text darken-1 card-panel" style="padding: 5px; font-size: 108%;">
-                    <p><span>Renouvellement du certificat médical à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
+                <div class="center red white-text card-panel" style="padding: 2px; font-size: 108%;">
+                    <p><i class="material-icons">error_outline</i><span><b> Renouvellement du certificat médical à la rentrée {{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
                 </div>
             {% endif %}
 

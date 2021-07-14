@@ -119,7 +119,7 @@ class Competiteur implements UserInterface, Serializable
      *     normalizer="trim"
      *)
      */
-    private $password = '$2y$12$sOKw0xGfJpYyRRamBiT8kO5qZx7SllVHQ6DEas0S48JbGUxSW7nqC';
+    private $password;
 
     /**
      * @var string

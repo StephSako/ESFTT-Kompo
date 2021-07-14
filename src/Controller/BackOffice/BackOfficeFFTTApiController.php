@@ -57,9 +57,6 @@ class BackOfficeFFTTApiController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $allChampionnats = $this->championnatRepository->findAll();
-        $championnatActif = $allChampionnats[0];
-
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
         /** idPere par organisme */
@@ -92,6 +89,9 @@ class BackOfficeFFTTApiController extends AbstractController
         }
         $messageJoueurs = (!count($joueursIssued) ? 'Tous les joueurs sont à jour' : '<span class=\'red-text text-lighten-1\'>' .count($joueursIssued) . '</span> joueurs doivent être mis à jour');
 
+        $allChampionnats = $this->championnatRepository->findAll();
+        $championnatActif = $allChampionnats[0];
+
         /** Gestion des équipes */
         $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental');
         $equipesFFTT = array_filter($api->getEquipesByClub('08951331', 'M'), function (Equipe $eq) use ($championnatActif) {
@@ -102,7 +102,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
         $equipesIDsFFTT = array_map(function ($equipe) {
             return intval(explode(' ', $equipe->getLibelle())[2]);
-        }, $api->getEquipesByClub('08951331', 'M'));
+        }, $equipesFFTT);
 
         $equipesIDsKompo = array_map(function ($equipe) {
             return $equipe->getNumero();
@@ -110,7 +110,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
         $idEquipesUnrecorded = array_merge(array_diff($equipesIDsFFTT, $equipesIDsKompo), array_diff($equipesIDsKompo, $equipesIDsFFTT));
 
-        /** TODO On vérifie que les équipes Kompo sont recensées */
+        /** TODO On vérifie à ce que les équipes Kompo soient recensées */
         foreach ($equipesFFTT as $index => $equipe) {
             $idEquipeFFTT = $index + 1;
             $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
