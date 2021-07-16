@@ -540,6 +540,13 @@ form {
   padding-bottom: 5px;
   border-radius: 30px;
   color: white;
+
+  &.reset {
+    width: fit-content;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0 auto;
+  }
 }
 
 .exempt {

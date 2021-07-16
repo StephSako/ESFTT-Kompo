@@ -87,6 +87,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function new(Request $request): Response
     {
         $competiteur = new Competiteur();
+        $competiteur->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')));
         if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur);
         else $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
@@ -94,7 +95,6 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    $competiteur->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')));
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
                     $this->em->persist($competiteur);

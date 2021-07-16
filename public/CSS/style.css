@@ -465,6 +465,12 @@ form h5 {
   border-radius: 30px;
   color: white;
 }
+.pastille.reset {
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0 auto;
+}
 
 .exempt {
   margin-left: 50px;

@@ -17,19 +17,14 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
+
         <div class='card-panel center-align white-text title_journee'>
             <h3>Recommencer une nouvelle phase</h3>
         </div>
 
-        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de recommencer une nouvelle phase ?')">
-            {% if phaseFinished %}
-                <p class="pastille green">La phase de ce championnat est terminée</p>
-            {% else %}
-                <p class="pastille red">La phase de ce championnat est en cours ...</p>
-            {% endif %}
-            <input type="hidden" name="resetPhase" value="1">
-            <input type="hidden" name="idChampionnat" value="{# championnat.idChampionnat }}#}1">
-            <button class='btn waves-effect waves-light green lighten-2 btn_gestion'>Tout mettre à jour</button>
+        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
+            <input type="hidden" name="resetPlayers" value="1">
+            <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour les compétiteurs</button>
         </form>
 
         <div class='card-panel center'>
@@ -74,120 +69,147 @@
             {% endif %}
         </div>
 
-        <div class="card-panel center">
-            <h4>Les disponibilités</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageDisponiblites|striptags('<span>')|raw }}</span></b></p>
-        </div>
+        {% if allChampionnatsReset|length > 1 %}
+            <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+                {% for nomChampionnat, data in allChampionnatsReset %}
+                    <li class='tab'><a href='{{ '#championnat_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-        <div class="card-panel center">
-            <h4>Les équipes</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageEquipes|striptags('<span>')|raw }}</span></b></p>
+        {% for nomChampionnat, data in allChampionnatsReset %}
+            <div class='backoffice-panel center' id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
 
-            {% if equipesIssued|length %}
-                    <table class="striped centered responsive-table">
-                        <thead>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Division</th>
-                                <th>Poule</th>
-                            </tr>
-                        </thead>
+                {% if data.recorded %}
+                    {% if data.finished %} <p class="pastille green reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est terminée</p>
 
-                        <tbody>
-                            {% for numero, equipe in equipesIssued %}
-                                <tr>
-                                    <td><b>{{ equipe.equipe.numero }}</b></td>
-                                    <td>
-                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
-                                        {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
-                                    </td>
-                                    <td>
-                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
-                                        {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-            {% endif %}
-        </div>
+                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer les phases terminées des championnats ?')">
+                            <input type="hidden" name="resetChampionnats" value="1">
+                            <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                            <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour '{{ nomChampionnat }}'</button>
+                        </form>
 
-        <div class="card-panel center">
-            <h4>Les rencontres</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageRencontres|striptags('<span>')|raw }}</span></b></p>
+                        <div class="card-panel center">
+                            <h4>Les disponibilités</h4>
+                            <p class="pastille black reset"><b>{{ data.disposMessage|striptags('<span>')|raw }}</b></p>
+                        </div>
 
-            {% if rencontresParEquipesSorted|length %}
-                {% for equipe, rencontres in rencontresParEquipesSorted %}
-                    <ul class="collapsible backoffice_disponibilites">
-                        <li class="active">
-                            <div class="collapsible-header">
-                                <div class="chip">
-                                    <i class="material-icons" style="vertical-align: middle;">people</i>
-                                    {{ equipe }}
-                                </div>
-                                <i class="caret material-icons">keyboard_arrow_down</i>
-                            </div>
+                        <div class="card-panel center">
+                            <h4>Les équipes</h4>
+                            <p class="pastille black reset"><b>{{ data.teamsMessage|striptags('<span>')|raw }}</b></p>
 
-                            <div class="collapsible-body">
+                            {% if data.teams|length %}
                                 <table class="striped centered responsive-table">
                                     <thead>
                                     <tr>
-                                        <th>Journée</th>
-                                        <th>Adversaire</th>
-                                        <th>Lieu</th>
+                                        <th>Numéro</th>
+                                        <th>Division</th>
+                                        <th>Poule</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
-                                    {% for rencontre in rencontres %}
+                                    {% for numero, equipe in data.teams %}
                                         <tr>
-                                            <td><b>{{ rencontre.journee }}</b></td>
+                                            <td><b>{{ equipe.equipe.numero }}</b></td>
                                             <td>
-                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.rencontre.adversaire }}</span>
-                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
+                                                {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
                                             </td>
                                             <td>
-                                                <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
-                                                {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
+                                                {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
                                 </table>
-                            </div>
-                        </li>
-                    </ul>
-                {% endfor %}
-            {% endif %}
-        </div>
+                            {% endif %}
+                        </div>
 
-        <div class="card-panel center">
-            <h4>Les dates des journées</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageDates|striptags('<span>')|raw }}</span></b></p>
+                        <div class="card-panel center">
+                            <h4>Les rencontres</h4>
+                            <p class="pastille black reset"><b>{{ data.matchesMessage|striptags('<span>')|raw }}</b></p>
 
-            {% if datesIssued|length %}
-                <table class="striped centered responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Journée</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
+                            {% if data.matches|length %}
+                                {% for equipe, rencontres in data.matches %}
+                                    <ul class="collapsible backoffice_disponibilites">
+                                        <li class="active">
+                                            <div class="collapsible-header">
+                                                <div class="chip">
+                                                    <i class="material-icons" style="vertical-align: middle;">people</i>
+                                                    {{ equipe }}
+                                                </div>
+                                                <i class="caret material-icons">keyboard_arrow_down</i>
+                                            </div>
 
-                    <tbody>
-                    {% for index, date in datesIssued %}
-                        <tr>
-                            <td><b>{{ date.nJournee }}</b></td>
-                            <td>
-                                <span class="red-text">{{ date.journee.dateJournee|date('d-m-Y') }}</span>
-                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|date('d-m-Y') }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        </div>
+                                            <div class="collapsible-body">
+                                                <table class="striped centered responsive-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Journée</th>
+                                                        <th>Adversaire</th>
+                                                        <th>Lieu</th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                    {% for rencontre in rencontres %}
+                                                        <tr>
+                                                            <td><b>{{ rencontre.journee }}</b></td>
+                                                            <td>
+                                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.rencontre.adversaire }}</span>
+                                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
+                                                                {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="card-panel center">
+                            <h4>Les dates des journées</h4>
+                            <p class="pastille black reset"><b>{{ data.datesMessage|striptags('<span>')|raw }}</b></p>
+
+                            {% if data.dates|length %}
+                                <table class="striped centered responsive-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Journée</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for index, date in data.dates %}
+                                        <tr>
+                                            <td><b>{{ date.nJournee }}</b></td>
+                                            <td>
+                                                <span class="red-text">{{ date.journee.dateJournee|date('d-m-Y') }}</span>
+                                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|date('d-m-Y') }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                    {% else %} <p class="pastille orange reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>
+                    {% endif %}
+                {% else %}
+                    <p class="pastille red center reset" style="margin-top: 20px;">Mise à jour impossible du championnat '{{ nomChampionnat }}' car ses équipes n'ont pas été inscrites auprès de la FFTT</p>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
 
 {% endblock %}
