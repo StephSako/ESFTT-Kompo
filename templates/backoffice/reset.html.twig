@@ -29,7 +29,7 @@
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
-            <p><b><span class="pastille center-align center" style="background-color: black;width: fit-content;padding-left: 10px;padding-right: 10px;">{{ messageJoueurs|striptags('<span>')|raw }}</span></b></p>
+            <p><b><span class="pastille blue center-align center" style="width: fit-content; padding-left: 10px; padding-right: 10px;">{{ messageJoueurs }}</span></b></p>
 
             {% if joueursIssued|length %}
                 <table class="striped centered responsive-table">
@@ -81,9 +81,9 @@
             <div class='backoffice-panel center' id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
 
                 {% if data.recorded %}
-                    {% if data.finished %} <p class="pastille green reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est terminée</p>
+                    {% if data.finished %} <p class="green-text text-lighten-2 reset">La phase de ce championnat est terminée</p>
 
-                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer les phases terminées des championnats ?')">
+                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer la phase de \'{{ nomChampionnat }}\' ?')">
                             <input type="hidden" name="resetChampionnats" value="1">
                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
                             <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour '{{ nomChampionnat }}'</button>
@@ -91,14 +91,16 @@
 
                         <div class="card-panel center">
                             <h4>Les disponibilités</h4>
-                            <p class="pastille black reset"><b>{{ data.disposMessage|striptags('<span>')|raw }}</b></p>
+                            <p class="pastille blue reset"><b>{{ data.disposMessage }}</b></p>
                         </div>
 
                         <div class="card-panel center">
                             <h4>Les équipes</h4>
-                            <p class="pastille black reset"><b>{{ data.teamsMessage|striptags('<span>')|raw }}</b></p>
+                            <p class="col pastille blue reset"><b>{{ data.teams.message }}</b></p>
+                            <p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDelete|listeEquipeToManage('supprimée') }}</b></p>
+                            <p class="col pastille green lighten-1 reset"><b>{{ data.teams.toCreate|listeEquipeToManage('créée') }}</b></p>
 
-                            {% if data.teams|length %}
+                            {% if data.teams.issued|length %}
                                 <table class="striped centered responsive-table">
                                     <thead>
                                     <tr>
@@ -109,7 +111,7 @@
                                     </thead>
 
                                     <tbody>
-                                    {% for numero, equipe in data.teams %}
+                                    {% for numero, equipe in data.teams.issued %}
                                         <tr>
                                             <td><b>{{ equipe.equipe.numero }}</b></td>
                                             <td>
@@ -129,10 +131,10 @@
 
                         <div class="card-panel center">
                             <h4>Les rencontres</h4>
-                            <p class="pastille black reset"><b>{{ data.matchesMessage|striptags('<span>')|raw }}</b></p>
+                            <p class="pastille blue reset"><b>{{ data.matches.message }}</b></p>
 
-                            {% if data.matches|length %}
-                                {% for equipe, rencontres in data.matches %}
+                            {% if data.matches.issued|length %}
+                                {% for equipe, rencontres in data.matches.issued %}
                                     <ul class="collapsible backoffice_disponibilites">
                                         <li class="active">
                                             <div class="collapsible-header">
@@ -178,9 +180,9 @@
 
                         <div class="card-panel center">
                             <h4>Les dates des journées</h4>
-                            <p class="pastille black reset"><b>{{ data.datesMessage|striptags('<span>')|raw }}</b></p>
+                            <p class="pastille blue reset"><b>{{ data.dates.message }}</b></p>
 
-                            {% if data.dates|length %}
+                            {% if data.dates.issued|length %}
                                 <table class="striped centered responsive-table">
                                     <thead>
                                     <tr>
@@ -190,12 +192,12 @@
                                     </thead>
 
                                     <tbody>
-                                    {% for index, date in data.dates %}
+                                    {% for index, date in data.dates.issued %}
                                         <tr>
                                             <td><b>{{ date.nJournee }}</b></td>
                                             <td>
-                                                <span class="red-text">{{ date.journee.dateJournee|date('d-m-Y') }}</span>
-                                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|date('d-m-Y') }}
+                                                <span class="red-text">{{ date.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
                                             </td>
                                         </tr>
                                     {% endfor %}

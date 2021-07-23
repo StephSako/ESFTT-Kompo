@@ -50,11 +50,11 @@
                 </div>
             {% endif %}
 
-            {% if app.user.anneeCertificatMedical == null or app.user.anneeCertificatMedical < "now"|date('Y')-2 %}
+            {# {% if app.user.anneeCertificatMedical == null or app.user.anneeCertificatMedical < "now"|date('Y')-2 %}
                 <div class="center red white-text card-panel" style="padding: 2px; font-size: 108%;">
                     <p><i class="material-icons">error_outline</i><span><b> Renouvellement du certificat médical à la rentrée {{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
                 </div>
-            {% endif %}
+            {% endif %} #}
 
             {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
                 {% if journeeStillEditable(journee, compos) %}

@@ -74,32 +74,13 @@ class BackOfficeEquipeController extends AbstractController
                 try {
                     if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12345);
 
-                    $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
-                    $this->em->persist($equipe);
-
-                    /** On créé toutes les rencontres de la nouvelle équipe **/
-                    $journees = $equipe->getIdChampionnat()->getJournees()->toArray();
-                    foreach ($journees as $journee){
-                        $rencontre = new Rencontre($equipe->getIdChampionnat());
-                        $rencontre
-                            ->setIdJournee($journee)
-                            ->setIdEquipe($equipe)
-                            ->setDomicile(true)
-                            ->setHosted(false)
-                            ->setDateReport($journee->getDateJournee())
-                            ->setReporte(false)
-                            ->setAdversaire(null)
-                            ->setExempt(false);
-                        $this->em->persist($rencontre);
-                    }
+                    $this->createEquipeAndRencontres($equipe);
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Equipe créée');
+                    $this->addFlash('success', 'Équipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    if ($e->getCode() == "12345"){
-                        $this->addFlash('fail', $e->getMessage());
-                    }
+                    if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
                     else if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -124,7 +105,7 @@ class BackOfficeEquipeController extends AbstractController
     public function edit(int $idEquipe, Request $request): Response
     {
         if (!($equipe = $this->equipeRepository->find($idEquipe))) {
-            $this->addFlash('fail', 'Equipe inexistante');
+            $this->addFlash('fail', 'Équipe inexistante');
             return $this->redirectToRoute('backoffice.equipes');
         }
         $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
@@ -145,7 +126,7 @@ class BackOfficeEquipeController extends AbstractController
                         }
 
                         $this->em->flush();
-                        $this->addFlash('success', 'Equipe modifiée');
+                        $this->addFlash('success', 'Équipe modifiée');
                         return $this->redirectToRoute('backoffice.equipes');
                     } catch(Exception $e){
                         if ($e->getPrevious()->getCode() == "23000"){
@@ -181,5 +162,29 @@ class BackOfficeEquipeController extends AbstractController
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
         return $this->redirectToRoute('backoffice.equipes');
+    }
+
+    /**
+     * @param Equipe $equipe
+     */
+    public function createEquipeAndRencontres(Equipe $equipe) {
+        $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
+        $this->em->persist($equipe);
+
+        /** On créé toutes les rencontres de la nouvelle équipe **/
+        $journees = $equipe->getIdChampionnat()->getJournees()->toArray();
+        foreach ($journees as $journee){
+            $rencontre = new Rencontre($equipe->getIdChampionnat());
+            $rencontre
+                ->setIdJournee($journee)
+                ->setIdEquipe($equipe)
+                ->setDomicile(true)
+                ->setHosted(false)
+                ->setDateReport($journee->getDateJournee())
+                ->setReporte(false)
+                ->setAdversaire(null)
+                ->setExempt(false);
+            $this->em->persist($rencontre);
+        }
     }
 }

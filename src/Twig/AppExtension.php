@@ -26,7 +26,8 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision']),
-            new TwigFilter('customSlug', [$this, 'customSlug'])
+            new TwigFilter('customSlug', [$this, 'customSlug']),
+            new TwigFilter('listeEquipeToManage', [$this, 'listeEquipeToManage'])
         ];
     }
 
@@ -72,10 +73,8 @@ class AppExtension extends AbstractExtension
      */
     public function listeEquipesSansDivision(array $numEquipes): string
     {
-        $str = '';
         $nbEquipes = count($numEquipes);
-        if ($nbEquipes > 1) $str .= 'Les équipes ';
-        else $str .= 'L\'équipe ';
+        $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
 
         foreach (array_values($numEquipes) as $i => $numEquipe) {
             $str .= $numEquipe;
@@ -83,13 +82,9 @@ class AppExtension extends AbstractExtension
             elseif ($i < $nbEquipes - 1) $str .= ', ';
         }
 
-        if ($nbEquipes > 1) $str .= ' n\'ont ';
-        else $str .= ' n\'a ';
-
+        $str .= $nbEquipes > 1 ? ' n\'ont ' : ' n\'a ';
         $str .= 'pas de division' . ($nbEquipes > 1 ? 's':'') . ' affiliée' . ($nbEquipes > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder ';
-
-        if ($nbEquipes > 1) $str .= ' à leurs compositions d\'équipe.';
-        else $str .= ' à ses compositions d\'équipe.';
+        $str .= $nbEquipes > 1 ? ' à leurs compositions d\'équipe.' : ' à ses compositions d\'équipe.';
 
         return $str;
     }
@@ -102,7 +97,6 @@ class AppExtension extends AbstractExtension
     {
         return (new Slugify())->slugify($chaine);
     }
-
 
     /**
      * @param int $nbCompo
@@ -117,5 +111,27 @@ class AppExtension extends AbstractExtension
             return $index < $nbCompo;
         },ARRAY_FILTER_USE_KEY)), $selectedPlayers);
         return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
+    }
+
+    /**
+     * @param array $teams
+     * @param string $verb
+     * @return string
+     */
+    public function listeEquipeToManage(array $teams, string $verb): string
+    {
+        $nbEquipes = count($teams);
+        $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+
+        foreach (array_values($teams) as $i => $numEquipe) {
+            $str .= $numEquipe;
+            if ($i == $nbEquipes - 2) $str .= ' et ';
+            elseif ($i < $nbEquipes - 1) $str .= ', ';
+        }
+
+        $str .= $nbEquipes > 1 ? ' seront ' : ' sera ';
+        $str .= $verb . ($nbEquipes > 1 ? 's' : '');
+
+        return $str;
     }
 }

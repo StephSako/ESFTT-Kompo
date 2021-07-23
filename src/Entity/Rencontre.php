@@ -27,7 +27,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *         @Index(name="IDX_renc_j", columns={"id_journee"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_renc_adv", columns={"adversaire", "id_championnat"}),
  *          @UniqueConstraint(name="UNIQ_renc", columns={"id_equipe", "id_journee", "id_championnat"})
  *     }
  * )
