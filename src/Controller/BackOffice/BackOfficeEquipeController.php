@@ -73,7 +73,7 @@ class BackOfficeEquipeController extends AbstractController
             if ($form->isValid()){
                 try {
                     if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12345);
-
+                    $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->createEquipeAndRencontres($equipe);
 
                     $this->em->flush();
@@ -168,7 +168,6 @@ class BackOfficeEquipeController extends AbstractController
      * @param Equipe $equipe
      */
     public function createEquipeAndRencontres(Equipe $equipe) {
-        $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
         $this->em->persist($equipe);
 
         /** On créé toutes les rencontres de la nouvelle équipe **/

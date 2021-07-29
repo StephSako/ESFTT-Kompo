@@ -3,7 +3,6 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Championnat;
-use App\Entity\Equipe;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
@@ -15,6 +14,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FFTTApi\FFTTApi;
+use FFTTApi\Model\Equipe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,6 +61,10 @@ class BackOfficeFFTTApiController extends AbstractController
     public function index(Request $request): Response
     {
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        /*dump($api->getClubDetails('08951331'));
+        dump($api->getClubDetails('08950330'));
+        dump($api->getClubDetails('08950479'));
+        dump($api->getClubDetails('08950103'));*/
 
         /** idPere par organisme */
         // Départementale Val d'Oise : 95
@@ -118,9 +122,17 @@ class BackOfficeFFTTApiController extends AbstractController
                     return $equipe->getNumero();
                 }, $equipesKompo);
 
-                $equipesToCreate = array_diff($equipesIDsFFTT, $equipesIDsKompo);
-                $equipesToDelete = array_diff($equipesIDsKompo, $equipesIDsFFTT);
-                $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo);
+                $equipesToCreateIDs = array_diff($equipesIDsFFTT, $equipesIDsKompo);
+                $equipesToCreate = array_filter($equipesFFTT, function ($indexEquipeFFTT) use ($equipesToCreateIDs) {
+                    return in_array(($indexEquipeFFTT + 1), $equipesToCreateIDs);
+                }, ARRAY_FILTER_USE_KEY);
+
+                $equipesToDeleteIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
+                $equipesToDelete = array_filter($equipesKompo, function ($equipeKompo) use ($equipesToDeleteIDs) {
+                    return in_array($equipeKompo->getNumero(), $equipesToDeleteIDs);
+                });
+
+                $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo); //TODO Get Equipes
 
                 foreach ($equipesFFTT as $index => $equipe) {
                     $idEquipeFFTT = $index + 1;
@@ -130,7 +142,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $equipeIssued = [];
 
                     /** L'équipe est recensée des 2 côtés */
-                    if (!in_array($idEquipeFFTT, array_merge($equipesToCreate, $equipesToDelete))){
+                    if (!in_array($idEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))){
                         $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($idEquipeFFTT) {
                             return $equipe->getNumero() == $idEquipeFFTT;
                         }))[0];
@@ -145,12 +157,22 @@ class BackOfficeFFTTApiController extends AbstractController
                             $equipeIssued['samePoule'] = $samePoule;
                             array_push($equipesIssued, $equipeIssued);
                         }
+                    } else if (in_array($idEquipeFFTT, $equipesToCreateIDs)){
+                        $newEquipe = new \App\Entity\Equipe();
+                        $newEquipe->setIdPoule($this->pouleRepository->findBy(['poule' => $pouleEquipeFFTT])[0]); //TODO try catch
+                        $newEquipe->setNumero($idEquipeFFTT);
+                        $newEquipe->setIdChampionnat($championnatActif);
+                        $newEquipe->setIdDivision($this->divisionRepository->findBy(['shortName' => $divisionEquipeFFTT])[0]); //TODO try catch
+                        $equipesToCreate[$idEquipeFFTT - 1] = $newEquipe;
                     }
                 }
                 $allChampionnatsReset[$championnatActif->getNom()]["teams"]["issued"] = $equipesIssued;
                 $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toDelete"] = $equipesToDelete;
+                $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toDeleteIDs"] = $equipesToDeleteIDs;
                 $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreate"] = $equipesToCreate;
-                $allChampionnatsReset[$championnatActif->getNom()]["teams"]["message"] = (!count($equipesIssued) ? 'Toutes les équipes sont à jour' : count($equipesIssued) . ' équipes seront mises à jour');
+                $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreateIDs"] = $equipesToCreateIDs;
+                $allChampionnatsReset[$championnatActif->getNom()]["teams"]["commonIDs"] = $equipesIDsCommon; //TODO Bug in twig
+
                 /** Gestion des rencontres */
                 $rencontresKompo = array_filter($this->rencontreRepository->findAll(), function ($renc) use ($championnatActif) {
                     return $renc->getIdChampionnat()->getIdChampionnat() == $championnatActif->getIdChampionnat();
@@ -195,7 +217,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                     }
                 }
-                $allChampionnatsReset[$championnatActif->getNom()]["matches"]["message"] = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : count($rencontresParEquipes) . ' rencontres seront mises à jour et leurs compositions d\'équipe vidées');
+                $allChampionnatsReset[$championnatActif->getNom()]["matches"]["message"] = (!count($rencontresParEquipes) ? 'Toutes les rencontres sont à jour' : count($rencontresParEquipes) . ' rencontres seront mises à jour. Toutes les compositions d\'équipe seront vidées.');
 
                 $rencontresParEquipesSorted = [];
                 foreach ($rencontresParEquipes as $key => $item) {
@@ -272,8 +294,6 @@ class BackOfficeFFTTApiController extends AbstractController
 
             /** On reset les équipes */
             //TODO Créer les divisions/poules si inexistants
-            //TODO Créer les équipes si besoin
-            //TODO Supprimer les équipes si besoin
             foreach ($equipesIssued as $equipeIssued) {
                 $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $equipeIssued['divisionFFTT'], 'idChampionnat' => $idChampionnat]);
                 $division = count($divisionsSearch) ? $this->divisionRepository->findBy(['shortName' => $equipeIssued['divisionFFTT'], 'idChampionnat' => $idChampionnat])[0] : null;
@@ -284,19 +304,23 @@ class BackOfficeFFTTApiController extends AbstractController
                 $equipeIssued['equipe']->setIdDivision($division)->setIdPoule($poule);
             }
 
-            /** On supprime les équipes superflux */
-            $equipesToDeleteEntity = array_filter($equipesKompo, function ($equipeKompo) use ($equipesToDelete) {
-                return in_array($equipeKompo->getNumero(), $equipesToDelete);
-            });
-            foreach ($equipesToDeleteEntity as $equipeToDelete) {
-                $this->em->remove($equipeToDelete);
-            }
+            try {
+                $aimedChampionnat = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
+                    return $champ->getIdChampionnat() == $idChampionnat;
+                })[0]->getNom();
 
-            /** On créer les équipes inexistantes */
-            foreach ($equipesToCreate as $equipeToCreate) {
-                $equipe = new Equipe();
-                //TODO Lier à la bonne division
-                $this->backOfficeEquipeController->createEquipeAndRencontres($equipe);
+                /** On supprime les équipes superflux */
+                foreach ($allChampionnatsReset[$aimedChampionnat]["teams"]["toDelete"] as $equipeToDelete) {
+                    $this->em->remove($equipeToDelete);
+                }
+
+                /** On créer les équipes inexistantes */
+                //TODO Créer ses rencontres avec les bonnes infos
+                foreach ($allChampionnatsReset[$aimedChampionnat]["teams"]["toCreate"] as $equipeToCreate) {
+                    $this->backOfficeEquipeController->createEquipeAndRencontres($equipeToCreate);
+                }
+            } catch (Exception $e) {
+                $this->addFlash('fail', 'Impossible de créer les équipes : championnat inconnu !');
             }
 
             $this->em->flush();

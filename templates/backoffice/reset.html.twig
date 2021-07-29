@@ -19,7 +19,7 @@
 
 
         <div class='card-panel center-align white-text title_journee'>
-            <h3>Recommencer une nouvelle phase</h3>
+            <h3>Mise à jour des données</h3>
         </div>
 
         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
@@ -96,9 +96,9 @@
 
                         <div class="card-panel center">
                             <h4>Les équipes</h4>
-                            <p class="col pastille blue reset"><b>{{ data.teams.message }}</b></p>
-                            <p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDelete|listeEquipeToManage('supprimée') }}</b></p>
-                            <p class="col pastille green lighten-1 reset"><b>{{ data.teams.toCreate|listeEquipeToManage('créée') }}</b></p>
+                            {% if data.teams.commonIDs %} <p class="col pastille blue reset"><b>{{ data.teams.commonIDs|listeEquipeToManage(2) }}</b></p> {% endif %}
+                            {% if data.teams.toDelete %} <p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p> {% endif %}
+                            {% if data.teams.toCreate %} <p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p> {% endif %}
 
                             {% if data.teams.issued|length %}
                                 <table class="striped centered responsive-table">

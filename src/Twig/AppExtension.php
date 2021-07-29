@@ -115,10 +115,10 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param array $teams
-     * @param string $verb
+     * @param int $mode : 0 => delete, 1 => create, 2 => update
      * @return string
      */
-    public function listeEquipeToManage(array $teams, string $verb): string
+    public function listeEquipeToManage(array $teams, int $mode): string
     {
         $nbEquipes = count($teams);
         $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
@@ -130,7 +130,7 @@ class AppExtension extends AbstractExtension
         }
 
         $str .= $nbEquipes > 1 ? ' seront ' : ' sera ';
-        $str .= $verb . ($nbEquipes > 1 ? 's' : '');
+        $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'mise' . ($nbEquipes > 1 ? 's' : '') . ' à jour')) . ($nbEquipes > 1 ? 's' : '');
 
         return $str;
     }
