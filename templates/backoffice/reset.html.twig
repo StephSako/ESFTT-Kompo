@@ -22,10 +22,12 @@
             <h3>Mise à jour des données</h3>
         </div>
 
-        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
-            <input type="hidden" name="resetPlayers" value="1">
-            <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour les compétiteurs</button>
-        </form>
+        {% if joueursIssued|length %}
+            <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
+                <input type="hidden" name="resetPlayers" value="1">
+                <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour les compétiteurs</button>
+            </form>
+        {% endif %}
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
@@ -96,9 +98,10 @@
 
                         <div class="card-panel center">
                             <h4>Les équipes</h4>
-                            {% if data.teams.commonIDs %} <p class="col pastille blue reset"><b>{{ data.teams.commonIDs|listeEquipeToManage(2) }}</b></p> {% endif %}
+                            {% if data.teams.toUpdate %} <p class="col pastille blue reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p> {% endif %}
                             {% if data.teams.toDelete %} <p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p> {% endif %}
                             {% if data.teams.toCreate %} <p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p> {% endif %}
+                            {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %} <p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p> {% endif %}
 
                             {% if data.teams.issued|length %}
                                 <table class="striped centered responsive-table">
@@ -116,7 +119,7 @@
                                             <td><b>{{ equipe.equipe.numero }}</b></td>
                                             <td>
                                                 <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
-                                                {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTT }}{% endif %}
+                                                {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
                                             </td>
                                             <td>
                                                 <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
@@ -133,8 +136,8 @@
                             <h4>Les rencontres</h4>
                             <p class="pastille blue reset"><b>{{ data.matches.message }}</b></p>
 
-                            {% if data.matches.issued|length %}
-                                {% for equipe, rencontres in data.matches.issued %}
+                            {% if data.matches.issuedSorted|length %}
+                                {% for equipe, rencontres in data.matches.issuedSorted %}
                                     <ul class="collapsible backoffice_disponibilites">
                                         <li class="active">
                                             <div class="collapsible-header">
