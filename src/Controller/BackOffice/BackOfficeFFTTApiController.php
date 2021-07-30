@@ -105,7 +105,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $allChampionnatsReset[$championnatActif->getNom()] = [];
 
             /** Gestion des équipes */
-            $equipesKompo = $this->equipeRepository->getEquipesDepartementalesApiFFTT('Départemental'); //TODO Selon l'ID du championnat
+            $equipesKompo = $championnatActif->getEquipes()->toArray();
             $equipesFFTT = array_filter($api->getEquipesByClub('08951331', 'M'), function (Equipe $eq) use ($championnatActif) {
                 $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[2])[1];
                 return $organisme_pere == $championnatActif->getLienFfttApi();
@@ -295,7 +295,8 @@ class BackOfficeFFTTApiController extends AbstractController
 
             /** On reset les joueurs des compos */
             foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
-                for ($i = 0; $i < $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+                $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */ //TODO In .env
+                for ($i = 0; $i < $nbJoueursDiv; $i++){
                     $rencontreKompo->setIdJoueurNToNull($i);
                 }
             }
@@ -334,7 +335,7 @@ class BackOfficeFFTTApiController extends AbstractController
             }
 
             $this->em->flush();
-            $this->addFlash('success', 'Championnats réinitialisés');
+            $this->addFlash('success', 'Phase du championnat \'' . $championnat->getNom() . '\' mise à jour');
             return $this->redirectToRoute('backoffice.reset.phase');
         }
 
@@ -382,6 +383,8 @@ class BackOfficeFFTTApiController extends AbstractController
             $this->em->persist($poule);
         }
         else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
+
+        $this->em->flush();
 
         return [$division, $poule];
     }

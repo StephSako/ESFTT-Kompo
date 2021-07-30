@@ -33,20 +33,4 @@ class EquipeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-
-    /**
-     * @param string $nomChampionnat
-     * @return array
-     */
-    public function getEquipesDepartementalesApiFFTT(string $nomChampionnat): array
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e')
-            ->leftJoin('e.idChampionnat', 'c')
-            ->where('c.nom = :nomChampionnat')
-            ->setParameter('nomChampionnat', $nomChampionnat)
-            ->orderBy('e.numero')
-            ->getQuery()
-            ->getResult();
-    }
 }
