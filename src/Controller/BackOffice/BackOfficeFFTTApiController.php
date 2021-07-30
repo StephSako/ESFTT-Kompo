@@ -8,7 +8,6 @@ use App\Entity\Poule;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
-use App\Repository\EquipeRepository;
 use App\Repository\PouleRepository;
 use App\Repository\RencontreRepository;
 use Cocur\Slugify\Slugify;
@@ -27,7 +26,6 @@ class BackOfficeFFTTApiController extends AbstractController
 
     private $competiteurRepository;
     private $championnatRepository;
-    private $equipeRepository;
     private $rencontreRepository;
     private $em;
     private $divisionRepository;
@@ -41,14 +39,12 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository,
                                 DivisionRepository $divisionRepository,
-                                EquipeRepository $equipeRepository,
                                 PouleRepository $pouleRepository,
                                 BackOfficeEquipeController $backOfficeEquipeController,
                                 EntityManagerInterface $em)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->equipeRepository = $equipeRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
@@ -75,7 +71,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
         /** Gestion des joueurs */
         $joueursKompo = $this->competiteurRepository->findBy(['visitor' => 0]);
-        $joueursFFTT = $api->getJoueursByClub('08951331');
+        $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
         $joueursIssued = [];
 
         foreach ($joueursKompo as $competiteur){
@@ -106,7 +102,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
             /** Gestion des équipes */
             $equipesKompo = $championnatActif->getEquipes()->toArray();
-            $equipesFFTT = array_filter($api->getEquipesByClub('08951331', 'M'), function (Equipe $eq) use ($championnatActif) {
+            $equipesFFTT = array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
                 $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[2])[1];
                 return $organisme_pere == $championnatActif->getLienFfttApi();
             });
@@ -134,13 +130,13 @@ class BackOfficeFFTTApiController extends AbstractController
                     return in_array($equipeKompo->getNumero(), $equipesToDeleteIDs);
                 });
 
-                $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo); //TODO Get Equipes
+                $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo);
 
                 foreach ($equipesFFTT as $index => $equipe) {
                     $idEquipeFFTT = $index + 1;
                     $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
                     $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
-                    $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[0] . ' ' . $libelleDivisionEquipeFFTT[1], MB_CASE_TITLE, "UTF-8");;
+                    $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[0] . ' ' . $libelleDivisionEquipeFFTT[1], MB_CASE_TITLE, "UTF-8");
                     $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[0][0] . $libelleDivisionEquipeFFTT[1][0];
                     $equipeIssued = [];
 
@@ -276,67 +272,70 @@ class BackOfficeFFTTApiController extends AbstractController
             return $this->redirectToRoute('backoffice.reset.phase');
         }
         else if ($request->request->get('resetChampionnats') && $request->request->get('idChampionnat')) {
-
             $idChampionnat = intval($request->request->get('idChampionnat'));
-            $championnat = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
+            $championnatSearch = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
                 return $champ->getIdChampionnat() == $idChampionnat;
-            })[0]; //TODO Try catch
+            });
+            if (count($championnatSearch) == 1){
+                $championnat = $championnatSearch[0];
 
-            /** On supprime toutes les dispos du championnat sélectionné **/
-            $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
+                /** On supprime toutes les dispos du championnat sélectionné **/
+                $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
-            /** On reset les rencontres **/
-            foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
-                $rencontresParEquipe['rencontre']->setAdversaire($rencontresParEquipe['adversaireFFTT'])
-                    ->setDomicile($rencontresParEquipe['domicileFFTT'])
-                    ->setHosted(false)->setExempt(false)->setReporte(false)
-                    ->setDateReport($rencontresParEquipe['dateReelle']);
-            }
-
-            /** On reset les joueurs des compos */
-            foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
-                $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */ //TODO In .env
-                for ($i = 0; $i < $nbJoueursDiv; $i++){
-                    $rencontreKompo->setIdJoueurNToNull($i);
+                /** On reset les rencontres **/
+                foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
+                    $rencontresParEquipe['rencontre']->setAdversaire($rencontresParEquipe['adversaireFFTT'])
+                        ->setDomicile($rencontresParEquipe['domicileFFTT'])
+                        ->setHosted(false)->setExempt(false)->setReporte(false)
+                        ->setDateReport($rencontresParEquipe['dateReelle']);
                 }
+
+                /** On reset les joueurs des compos */
+                foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
+                    $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */ //TODO In .env
+                    for ($i = 0; $i < $nbJoueursDiv; $i++){
+                        $rencontreKompo->setIdJoueurNToNull($i);
+                    }
+                }
+
+                /** On reset les dates des journées */
+                //TODO Update du nb de journées du championnat si besoin
+                foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssued) {
+                    $dateIssued['journee']->setDateJournee($dateIssued['dateFFTT'])->setUndefined(false);
+                }
+
+                /** On fix les équipes */
+                foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["issued"] as $equipeIssued) {
+                    /** On set la division et la poule à l'équipe */
+                    $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
+                    $equipeIssued['equipe']->setIdDivision($arrayDivisionPoule[0])->setIdPoule($arrayDivisionPoule[1]);
+                }
+
+                /** On supprime les équipes superflux */
+                foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
+                    $this->em->remove($equipeToDelete);
+                }
+
+                /** On créer les équipes inexistantes */
+                //TODO Créer ses rencontres avec les bonnes infos
+                foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $equipeToCreate) {
+                    $equipeJSON = json_decode($equipeToCreate, true);
+                    $arrayDivisionPoule = $this->getDivisionPoule($equipeJSON['divisionLongName'], $equipeJSON['divisionShortName'], $equipeJSON['poule'], $championnat);
+
+                    $newEquipe = new \App\Entity\Equipe();
+                    $newEquipe->setIdPoule($arrayDivisionPoule[1]);
+                    $newEquipe->setNumero($equipeJSON["numero"]);
+                    $newEquipe->setIdChampionnat($championnat);
+                    $newEquipe->setIdDivision($arrayDivisionPoule[0]);
+
+                    $this->backOfficeEquipeController->createEquipeAndRencontres($newEquipe);
+                }
+
+                $this->em->flush();
+                $this->addFlash('success', 'Phase du championnat \'' . $championnat->getNom() . '\' mise à jour');
+                return $this->redirectToRoute('backoffice.reset.phase');
             }
-
-            /** On reset les dates des journées */
-            //TODO Update du nb de journées du championnat si besoin
-            foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssued) {
-                $dateIssued['journee']->setDateJournee($dateIssued['dateFFTT'])->setUndefined(false);
-            }
-
-            /** On fix les équipes */
-            foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["issued"] as $equipeIssued) {
-                /** On set la division et la poule à l'équipe */
-                $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
-                $equipeIssued['equipe']->setIdDivision($arrayDivisionPoule[0])->setIdPoule($arrayDivisionPoule[1]);
-            }
-
-            /** On supprime les équipes superflux */
-            foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
-                $this->em->remove($equipeToDelete);
-            }
-
-            /** On créer les équipes inexistantes */
-            //TODO Créer ses rencontres avec les bonnes infos
-            foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $equipeToCreate) {
-                $equipeJSON = json_decode($equipeToCreate, true);
-                $arrayDivisionPoule = $this->getDivisionPoule($equipeJSON['divisionLongName'], $equipeJSON['divisionShortName'], $equipeJSON['poule'], $championnat);
-
-                $newEquipe = new \App\Entity\Equipe();
-                $newEquipe->setIdPoule($arrayDivisionPoule[1]);
-                $newEquipe->setNumero($equipeJSON["numero"]);
-                $newEquipe->setIdChampionnat($championnat);
-                $newEquipe->setIdDivision($arrayDivisionPoule[0]);
-
-                $this->backOfficeEquipeController->createEquipeAndRencontres($newEquipe);
-            }
-
-            $this->em->flush();
-            $this->addFlash('success', 'Phase du championnat \'' . $championnat->getNom() . '\' mise à jour');
-            return $this->redirectToRoute('backoffice.reset.phase');
+            else $this->addFlash('fail', 'Championnat inconnu !');
         }
 
         return $this->render('backoffice/reset.html.twig', [

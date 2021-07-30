@@ -86,7 +86,7 @@
                     {% if data.finished %}
 
                         {% if data.teams.toUpdate and data.teams.toDelete and data.teams.toCreate and data.dates.issued and data.matches.issuedSorted %}
-                            <p class="pastille green white-text reset" style="margin-bottom: 10px; margin-top: 15px;"><b>La phase de ce championnat est terminée</b></p>
+                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>La phase de ce championnat est terminée</b></p>
                             <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer la phase de \'{{ nomChampionnat }}\' ?')">
                                 <input type="hidden" name="resetChampionnats" value="1">
                                 <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
@@ -96,14 +96,14 @@
                             <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
                         {% endif %}
 
-                        <div class="divider grey darken-3" style="margin-top: 10px; margin-bottom: 30px;"></div>
+                        <div class="divider grey" style="margin-top: 15px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les disponibilités</h4>
                             <p class="pastille blue reset"><b>{{ data.disposMessage }}</b></p>
                         </div>
 
-                        <div class="divider grey darken-3" style="margin-top: 30px; margin-bottom: 30px;"></div>
+                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les équipes</h4>
@@ -141,7 +141,7 @@
                             {% endif %}
                         </div>
 
-                        <div class="divider grey darken-3" style="margin-top: 30px; margin-bottom: 30px;"></div>
+                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les rencontres</h4>
@@ -192,10 +192,10 @@
                             {% endif %}
                         </div>
 
-                        <div class="divider grey darken-3" style="margin-top: 30px; margin-bottom: 30px;"></div>
+                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
 
                         <div class="center">
-                            <h4>Les dates des journées</h4>
+                            <h4>Les journées</h4>
                             <p class="pastille blue reset"><b>{{ data.dates.message }}</b></p>
 
                             {% if data.dates.issued %}
@@ -224,7 +224,7 @@
                     {% else %} <p class="pastille orange reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>
                     {% endif %}
                 {% else %}
-                    <p class="pastille red center reset" style="margin-top: 20px;">Mise à jour impossible du championnat '{{ nomChampionnat }}' car ses équipes n'ont pas été inscrites auprès de la FFTT</p>
+                    <p class="pastille red center reset">Mise à jour impossible : équipes non inscrites</p>
                 {% endif %}
             </div>
         {% endfor %}

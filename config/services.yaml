@@ -4,6 +4,7 @@ parameters:
     encryption_iv: '%env(ENCRYPTION_IV)%'
     default_password: '%env(DEFAULT_PASSWORD)%'
     maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
+    club_id: '%env(CLUB_ID)%'
 
 services:
     _defaults:
