@@ -22,16 +22,16 @@
             <h3>Nouvelles phases</h3>
         </div>
 
-        {% if joueursIssued %}
-            <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
-                <input type="hidden" name="resetPlayers" value="1">
-                <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour les compétiteurs</button>
-            </form>
-        {% endif %}
-
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
             <p><b><span class="pastille blue center-align center" style="width: fit-content; padding-left: 10px; padding-right: 10px;">{{ messageJoueurs }}</span></b></p>
+
+            {% if joueursIssued %}
+                <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
+                    <input type="hidden" name="resetPlayers" value="1">
+                    <button class='btn waves-effect waves-light green btn_gestion'>Mettre à jour les compétiteurs</button>
+                </form>
+            {% endif %}
 
             {% if joueursIssued %}
                 <table class="striped centered responsive-table">
@@ -85,7 +85,7 @@
                 {% if data.recorded %}
                     {% if data.finished %}
 
-                        {% if data.teams.toUpdate and data.teams.toDelete and data.teams.toCreate and data.dates.issued and data.matches.issuedSorted %}
+                        {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.matches.issuedSorted %}
                             <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>La phase de ce championnat est terminée</b></p>
                             <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer la phase de \'{{ nomChampionnat }}\' ?')">
                                 <input type="hidden" name="resetChampionnats" value="1">
@@ -150,7 +150,7 @@
                             {% if data.matches.issuedSorted %}
                                 {% for equipe, rencontres in data.matches.issuedSorted %}
                                     <ul class="collapsible backoffice_disponibilites">
-                                        <li>
+                                        <li class="active">
                                             <div class="collapsible-header">
                                                 <div class="chip">
                                                     <i class="material-icons" style="vertical-align: middle;">people</i>
@@ -212,7 +212,7 @@
                                         <tr>
                                             <td><b>{{ date.nJournee }}</b></td>
                                             <td>
-                                                <span class="red-text">{{ date.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                <span class="red-text">{{ date.undefined ? 'Date indéfinie' : date.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
                                                 <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
                                             </td>
                                         </tr>

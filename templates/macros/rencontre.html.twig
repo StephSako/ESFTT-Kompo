@@ -6,7 +6,7 @@
                     <div class="collapsible-header" style="padding: 6px 0 !important;">
                         <div class="chip" style="padding: 0 !important;">
                             <i class="material-icons" style="vertical-align: middle;">people</i>
-                            La Frette {{ numero }}
+                            {{ club_name | title }} {{ numero }}
                             {% if (rencontres[numero]|first)['idDivision'] is null %}
                                 <span class="center red-text noDivisionPill noDivisionPillHeader">
                                     <b>Sans division</b>
@@ -58,7 +58,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Pas de match</span>
+                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Exemptée</span>
                                         {% else %}
                                             {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
                                             {% else %} <span class="red-text">Adversaire indéfini</span>

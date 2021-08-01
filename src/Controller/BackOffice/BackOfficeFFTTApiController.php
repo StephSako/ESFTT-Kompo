@@ -5,6 +5,7 @@ namespace App\Controller\BackOffice;
 use App\Entity\Championnat;
 use App\Entity\Division;
 use App\Entity\Poule;
+use App\Entity\Rencontre;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
@@ -30,7 +31,6 @@ class BackOfficeFFTTApiController extends AbstractController
     private $em;
     private $divisionRepository;
     private $pouleRepository;
-    private $backOfficeEquipeController;
 
     /**
      * ContactController constructor.
@@ -40,7 +40,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                 RencontreRepository $rencontreRepository,
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
-                                BackOfficeEquipeController $backOfficeEquipeController,
                                 EntityManagerInterface $em)
     {
         $this->competiteurRepository = $competiteurRepository;
@@ -49,7 +48,6 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
-        $this->backOfficeEquipeController = $backOfficeEquipeController;
     }
 
     /**
@@ -59,10 +57,6 @@ class BackOfficeFFTTApiController extends AbstractController
     public function index(Request $request): Response
     {
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        /*dump($api->getClubDetails('08951331'));
-        dump($api->getClubDetails('08950330'));
-        dump($api->getClubDetails('08950479'));
-        dump($api->getClubDetails('08950103'));*/
 
         /** idPere par organisme */
         // Départementale Val d'Oise : 95
@@ -99,6 +93,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
         foreach($allChampionnats as $championnatActif){
             $allChampionnatsReset[$championnatActif->getNom()] = [];
+            $datesKompo = $championnatActif->getJournees()->toArray();
 
             /** Gestion des équipes */
             $equipesKompo = $championnatActif->getEquipes()->toArray();
@@ -124,6 +119,8 @@ class BackOfficeFFTTApiController extends AbstractController
                 $equipesToCreate = array_filter($equipesFFTT, function ($indexEquipeFFTT) use ($equipesToCreateIDs) {
                     return in_array(($indexEquipeFFTT + 1), $equipesToCreateIDs);
                 }, ARRAY_FILTER_USE_KEY);
+                // On incrémente chaque key pour avoir le numéro juste de chaque équipe à créer
+                $equipesToCreate = array_combine(array_map(function ($key) { return ++$key; }, array_keys($equipesToCreate)), $equipesToCreate);
 
                 $equipesToDeleteIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
                 $equipesToDelete = array_filter($equipesKompo, function ($equipeKompo) use ($equipesToDeleteIDs) {
@@ -158,13 +155,11 @@ class BackOfficeFFTTApiController extends AbstractController
                             array_push($equipesIssued, $equipeIssued);
                         }
                     } else if (in_array($idEquipeFFTT, $equipesToCreateIDs)){
-                        $newEquipe = json_encode([
-                            "poule" => $pouleEquipeFFTT,
-                            "numero" => $idEquipeFFTT,
-                            "divisionShortName" => $divisionEquipeFFTTShortName,
-                            "divisionLongName" => $divisionEquipeFFTTLongName
-                        ]);
-                        $equipesToCreate[$idEquipeFFTT - 1] = $newEquipe;
+                        unset($equipesToCreate[$idEquipeFFTT]);
+                        $equipesToCreate[$idEquipeFFTT]["team"]["poule"] = $pouleEquipeFFTT;
+                        $equipesToCreate[$idEquipeFFTT]["team"]["divisionShortName"] = $divisionEquipeFFTTShortName;
+                        $equipesToCreate[$idEquipeFFTT]["team"]["divisionLongName"] = $divisionEquipeFFTTLongName;
+                        $equipesToCreate[$idEquipeFFTT]["rencontres"] = [];
                     }
                 }
                 $allChampionnatsReset[$championnatActif->getNom()]["teams"]["issued"] = $equipesIssued;
@@ -185,12 +180,18 @@ class BackOfficeFFTTApiController extends AbstractController
 
                 foreach ($equipesFFTT as $index => $equipe){
                     $nbEquipe = $index + 1;
-                    if (in_array($nbEquipe, $equipesIDsCommon)){
-                        $nbRencontre = 0;
-                        $rencontresEquipeKompo = array_values(array_filter($rencontresKompo, function ($renc) use ($nbEquipe) {
-                            return $renc->getIdEquipe()->getNumero() == $nbEquipe;
+
+                    if (in_array($nbEquipe, array_merge($equipesIDsCommon, $equipesToCreateIDs))){
+
+                        $rencontresFFTT = array_values(array_filter($api->getRencontrePouleByLienDivision($equipe->getLienDivision()), function ($rencontre) {
+                            return str_contains($rencontre->getNomEquipeA(), $this->getParameter('club_name')) || str_contains($rencontre->getNomEquipeB(), $this->getParameter('club_name'));
                         }));
-                        $rencontresFFTT = $api->getRencontrePouleByLienDivision($equipe->getLienDivision());
+
+                        if (in_array($nbEquipe, $equipesIDsCommon)) {
+                            $rencontresEquipeKompo = array_values(array_filter($rencontresKompo, function ($renc) use ($nbEquipe) {
+                                return $renc->getIdEquipe()->getNumero() == $nbEquipe;
+                            }));
+                        }
 
                         if (!$datesFFTT) {
                             $datesFFTT = array_values(array_unique(array_map(function ($renc) {
@@ -198,24 +199,36 @@ class BackOfficeFFTTApiController extends AbstractController
                             }, $rencontresFFTT)));
                         }
 
-                        foreach ($rencontresFFTT as $rencontre) {
-                            if (str_contains($rencontre->getLien(), 'LA+FRETTE')) {
-                                if ($rencontresEquipeKompo[$nbRencontre]->getAdversaire() != null && $rencontresEquipeKompo[$nbRencontre]->isExempt() == false && ($rencontre->getNomEquipeA() != 'Exempt' || $rencontre->getNomEquipeB() != 'Exempt')) {
-                                    $domicile = str_contains($rencontre->getNomEquipeA(), 'LA FRETTE');
-                                    if (($domicile && $rencontresEquipeKompo[$nbRencontre]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
-                                        (!$domicile && $rencontresEquipeKompo[$nbRencontre]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
-                                        ($domicile != $rencontresEquipeKompo[$nbRencontre]->getDomicile())) {
-                                        $rencontreTemp = [];
-                                        $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$nbRencontre];
-                                        $rencontreTemp['equipeESFTT'] = ($domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB());
-                                        $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
-                                        $rencontreTemp['adversaireFFTT'] = mb_convert_case($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8");
-                                        $rencontreTemp['domicileFFTT'] = $domicile;
-                                        $rencontreTemp['dateReelle'] = $rencontre->getDatePrevue();
-                                        array_push($rencontresParEquipes, $rencontreTemp);
-                                    }
+                        foreach ($rencontresFFTT as $i => $rencontre) {
+                            $isExempt = ($rencontre->getNomEquipeA() == 'Exempt' || $rencontre->getNomEquipeB() == 'Exempt');
+                            if (in_array($nbEquipe, $equipesIDsCommon) && $rencontresEquipeKompo[$i]->getAdversaire() != null && $rencontresEquipeKompo[$i]->isExempt() == false && !$isExempt) {
+                                $domicile = str_contains($rencontre->getNomEquipeA(), $this->getParameter('club_name'));
+                                if (($domicile && $rencontresEquipeKompo[$i]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
+                                    (!$domicile && $rencontresEquipeKompo[$i]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
+                                    ($domicile != $rencontresEquipeKompo[$i]->getDomicile())) {
+                                    $rencontreTemp = [];
+                                    $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
+                                    $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
+                                    $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
+                                    $rencontreTemp['adversaireFFTT'] = mb_convert_case($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8");
+                                    $rencontreTemp['domicileFFTT'] = $domicile;
+                                    $rencontreTemp['dateReelle'] = $rencontre->getDatePrevue();
+                                    array_push($rencontresParEquipes, $rencontreTemp);
                                 }
-                                $nbRencontre++;
+                            } else if (in_array($nbEquipe, $equipesToCreateIDs)) {
+                                /** On créé les nouvelles rencontres de la nouvelle équipe */
+                                $domicile = str_contains($rencontre->getNomEquipeA(), $this->getParameter('club_name'));
+                                $rencontreToCreate = new Rencontre($championnatActif);
+                                $rencontreToCreate
+                                    ->setIdJournee($datesKompo[$i])
+                                    ->setDomicile($domicile)
+                                    ->setHosted(false)
+                                    ->setDateReport($datesKompo[$i]->getDateJournee())
+                                    ->setReporte(false)
+                                    ->setAdversaire(!$isExempt ? mb_convert_case($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8") : null)
+                                    ->setExempt($isExempt);
+
+                                array_push($allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreate"][$nbEquipe]["rencontres"], $rencontreToCreate);
                             }
                         }
                     }
@@ -231,13 +244,14 @@ class BackOfficeFFTTApiController extends AbstractController
                 $allChampionnatsReset[$championnatActif->getNom()]["matches"]["kompo"] = $rencontresKompo;
 
                 /** On vérifie les dates **/
-                $datesKompo = $championnatActif->getJournees()->toArray();
                 $datesIssued = [];
 
                 foreach ($datesFFTT as $index => $dateFFTT) {
-                    if ($datesKompo[$index]->getDateJournee()->getTimestamp() == $dateFFTT) unset($datesFFTT[$index]);
+                    //TODO Fix undefined dates
+                    if ($datesKompo[$index]->getDateJournee()->getTimestamp() == $dateFFTT && !$datesKompo[$index]->getUndefined()) unset($datesFFTT[$index]);
                     else {
                         $dateIssued = [];
+                        $dateIssued['undefined'] = $datesKompo[$index]->getUndefined();
                         $dateIssued['journee'] = $datesKompo[$index];
                         $dateIssued['nJournee'] = $index + 1;
                         $dateIssued['dateFFTT'] = (new DateTime())->setTimestamp($dateFFTT);
@@ -317,18 +331,21 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
 
                 /** On créer les équipes inexistantes */
-                //TODO Créer ses rencontres avec les bonnes infos
-                foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $equipeToCreate) {
-                    $equipeJSON = json_decode($equipeToCreate, true);
-                    $arrayDivisionPoule = $this->getDivisionPoule($equipeJSON['divisionLongName'], $equipeJSON['divisionShortName'], $equipeJSON['poule'], $championnat);
+                foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {
+                    $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["team"]["divisionLongName"], $equipeToCreate["team"]["divisionShortName"], $equipeToCreate["team"]["poule"], $championnat);
 
                     $newEquipe = new \App\Entity\Equipe();
                     $newEquipe->setIdPoule($arrayDivisionPoule[1]);
-                    $newEquipe->setNumero($equipeJSON["numero"]);
+                    $newEquipe->setNumero($numero);
                     $newEquipe->setIdChampionnat($championnat);
                     $newEquipe->setIdDivision($arrayDivisionPoule[0]);
+                    $this->em->persist($newEquipe);
 
-                    $this->backOfficeEquipeController->createEquipeAndRencontres($newEquipe);
+                    /** Creating new team's rencontres  */
+                    foreach ($equipeToCreate["rencontres"] as $rencontre) {
+                        $rencontre->setIdEquipe($newEquipe);
+                        $this->em->persist($rencontre);
+                    }
                 }
 
                 $this->em->flush();

@@ -5,6 +5,7 @@ parameters:
     default_password: '%env(DEFAULT_PASSWORD)%'
     maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
     club_id: '%env(CLUB_ID)%'
+    club_name: '%env(CLUB_NAME)%'
 
 services:
     _defaults:
