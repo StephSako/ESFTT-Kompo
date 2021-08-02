@@ -478,7 +478,7 @@ class Rencontre
      */
     public function setAdversaire(?string $adversaire): self
     {
-        $this->adversaire = mb_convert_case($adversaire, MB_CASE_TITLE, "UTF-8");
+        $this->adversaire = ($adversaire == null ? null : mb_convert_case($adversaire, MB_CASE_TITLE, "UTF-8"));
         return $this;
     }
 

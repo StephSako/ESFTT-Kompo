@@ -96,14 +96,14 @@
                             <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
                         {% endif %}
 
-                        <div class="divider grey" style="margin-top: 15px; margin-bottom: 35px;"></div>
+                        <div style="margin-top: 15px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les disponibilités</h4>
                             <p class="pastille blue reset"><b>{{ data.disposMessage }}</b></p>
                         </div>
 
-                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
+                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les équipes</h4>
@@ -116,6 +116,7 @@
                                 <table class="striped centered responsive-table">
                                     <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Numéro</th>
                                         <th>Division</th>
                                         <th>Poule</th>
@@ -123,8 +124,9 @@
                                     </thead>
 
                                     <tbody>
-                                    {% for numero, equipe in data.teams.issued %}
+                                    {% for equipe in data.teams.issued %}
                                         <tr>
+                                            <td><i class="material-icons blue-text">edit</i></td>
                                             <td><b>{{ equipe.equipe.numero }}</b></td>
                                             <td>
                                                 <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
@@ -136,12 +138,38 @@
                                             </td>
                                         </tr>
                                     {% endfor %}
+
+                                    {% for numero, equipe in data.teams.toCreate %}
+                                        <tr>
+                                            <td><i class="material-icons green-text">add_circle</i></td>
+                                            <td><b>{{ numero }}</b></td>
+                                            <td>
+                                                <span>{{ equipe.team.divisionShortName }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ equipe.team.poule }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    {% for equipe in data.teams.toDelete %}
+                                        <tr>
+                                            <td><i class="material-icons red-text">delete</i></td>
+                                            <td><b>{{ equipe.numero }}</b></td>
+                                            <td>
+                                                <span>{{ equipe.idDivision.shortName }}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{ equipe.idPoule.poule }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
                                     </tbody>
                                 </table>
                             {% endif %}
                         </div>
 
-                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
+                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les rencontres</h4>
@@ -163,6 +191,7 @@
                                                 <table class="striped centered responsive-table">
                                                     <thead>
                                                     <tr>
+                                                        <th></th>
                                                         <th>Journée</th>
                                                         <th>Adversaire</th>
                                                         <th>Lieu</th>
@@ -170,19 +199,30 @@
                                                     </thead>
 
                                                     <tbody>
-                                                    {% for rencontre in rencontres %}
-                                                        <tr>
-                                                            <td><b>{{ rencontre.journee }}</b></td>
-                                                            <td>
-                                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>{{ rencontre.rencontre.adversaire }}</span>
-                                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
-                                                            </td>
-                                                            <td>
-                                                                <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
-                                                                {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
-                                                            </td>
-                                                        </tr>
-                                                    {% endfor %}
+                                                        {% for rencontre in rencontres %}
+                                                            <tr>
+                                                                <td><i class="material-icons {{ rencontre.recorded ? 'blue' : 'green' }}-text">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                <td><b>{{ rencontre.journee }}</b></td>
+                                                                <td>
+                                                                    {% if not rencontre.exempt %}
+                                                                        <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
+                                                                            {% if rencontre.rencontre.exempt %}
+                                                                                <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                            {% else %}
+                                                                                {{ rencontre.rencontre.adversaire }}
+                                                                            {% endif %}
+                                                                        </span>
+                                                                        {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                                    {% else %}
+                                                                        <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
+                                                                    {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -192,7 +232,7 @@
                             {% endif %}
                         </div>
 
-                        <div class="divider grey" style="margin-top: 35px; margin-bottom: 35px;"></div>
+                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les journées</h4>
