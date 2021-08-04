@@ -115,55 +115,55 @@
                             {% if data.teams.issued %}
                                 <table class="striped centered responsive-table">
                                     <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Numéro</th>
-                                        <th>Division</th>
-                                        <th>Poule</th>
-                                    </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th>Numéro</th>
+                                            <th>Division</th>
+                                            <th>Poule</th>
+                                        </tr>
                                     </thead>
 
                                     <tbody>
-                                    {% for equipe in data.teams.issued %}
-                                        <tr>
-                                            <td><i class="material-icons blue-text">edit</i></td>
-                                            <td><b>{{ equipe.equipe.numero }}</b></td>
-                                            <td>
-                                                <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
-                                                {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
-                                            </td>
-                                            <td>
-                                                <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
-                                                {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                        {% for equipe in data.teams.issued %}
+                                            <tr>
+                                                <td><i class="material-icons blue-text">edit</i></td>
+                                                <td><b>{{ equipe.equipe.numero }}</b></td>
+                                                <td>
+                                                    <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
+                                                    {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
+                                                </td>
+                                                <td>
+                                                    <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
+                                                    {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
 
-                                    {% for numero, equipe in data.teams.toCreate %}
-                                        <tr>
-                                            <td><i class="material-icons green-text">add_circle</i></td>
-                                            <td><b>{{ numero }}</b></td>
-                                            <td>
-                                                <span>{{ equipe.team.divisionShortName }}</span>
-                                            </td>
-                                            <td>
-                                                <span>{{ equipe.team.poule }}</span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                        {% for numero, equipe in data.teams.toCreate %}
+                                            <tr>
+                                                <td><i class="material-icons green-text">add_circle</i></td>
+                                                <td><b>{{ numero }}</b></td>
+                                                <td>
+                                                    <span>{{ equipe.team.divisionShortName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ equipe.team.poule }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
 
-                                    {% for equipe in data.teams.toDelete %}
-                                        <tr>
-                                            <td><i class="material-icons red-text">delete</i></td>
-                                            <td><b>{{ equipe.numero }}</b></td>
-                                            <td>
-                                                <span>{{ equipe.idDivision.shortName }}</span>
-                                            </td>
-                                            <td>
-                                                <span>{{ equipe.idPoule.poule }}</span>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                        {% for equipe in data.teams.toDelete %}
+                                            <tr>
+                                                <td><i class="material-icons red-text">delete</i></td>
+                                                <td><b>{{ equipe.numero }}</b></td>
+                                                <td>
+                                                    <span>{{ equipe.idDivision.shortName }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ equipe.idPoule.poule }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             {% endif %}
@@ -190,12 +190,12 @@
                                             <div class="collapsible-body">
                                                 <table class="striped centered responsive-table">
                                                     <thead>
-                                                    <tr>
-                                                        <th></th>
-                                                        <th>Journée</th>
-                                                        <th>Adversaire</th>
-                                                        <th>Lieu</th>
-                                                    </tr>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Journée</th>
+                                                            <th>Adversaire</th>
+                                                            <th>Lieu</th>
+                                                        </tr>
                                                     </thead>
 
                                                     <tbody>
@@ -238,25 +238,35 @@
                             <h4>Les journées</h4>
                             <p class="pastille blue reset"><b>{{ data.dates.message }}</b></p>
 
-                            {% if data.dates.issued %}
+                            {% if data.dates.issued or data.dates.missing %}
                                 <table class="striped centered responsive-table">
                                     <thead>
-                                    <tr>
-                                        <th>Journée</th>
-                                        <th>Date</th>
-                                    </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th>Journée</th>
+                                            <th>Date</th>
+                                        </tr>
                                     </thead>
 
                                     <tbody>
-                                    {% for index, date in data.dates.issued %}
-                                        <tr>
-                                            <td><b>{{ date.nJournee }}</b></td>
-                                            <td>
-                                                <span class="red-text">{{ date.undefined ? 'Date indéfinie' : date.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                <i class="material-icons black-text">arrow_forward</i> {{ date.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                        {% for dateIssued in data.dates.issued %}
+                                            <tr>
+                                                <td><i class="material-icons blue-text">edit</i></td>
+                                                <td><b>{{ dateIssued.nJournee }}</b></td>
+                                                <td>
+                                                    <span class="red-text">{{ dateIssued.undefined ? 'Date indéfinie' : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                    <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        {% for index, dateMissing in data.dates.missing %}
+                                            <tr>
+                                                <td><i class="material-icons green-text">add_circle</i></td>
+                                                <td><b>{{ index }}</b></td>
+                                                <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             {% endif %}
