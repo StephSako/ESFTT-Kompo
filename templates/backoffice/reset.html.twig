@@ -24,7 +24,9 @@
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
-            <p><b><span class="pastille blue center-align center" style="width: fit-content; padding-left: 10px; padding-right: 10px;">{{ messageJoueurs }}</span></b></p>
+            {% if joueursIssued %}<p class="pastille orange darken-2 center-align center"><b>{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</b></p>
+            {% else %}<p class="pastille blue center-align center"><b>Tous les joueurs sont à jour</b></p>
+            {% endif %}
 
             {% if joueursIssued %}
                 <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
@@ -101,19 +103,21 @@
 
                         <div class="center">
                             <h4>Les disponibilités</h4>
-                            <p class="pastille blue reset"><b>{{ data.disposMessage }}</b></p>
+                            {% if data.countDispos %}<p class="pastille reset orange darken-2"><b>{{ data.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
+                            {% else%}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
+                            {% endif %}
                         </div>
 
                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                         <div class="center">
                             <h4>Les équipes</h4>
-                            {% if data.teams.toUpdate %} <p class="col pastille blue reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p> {% endif %}
-                            {% if data.teams.toDelete %} <p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p> {% endif %}
-                            {% if data.teams.toCreate %} <p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p> {% endif %}
-                            {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %} <p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p> {% endif %}
+                            {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p>{% endif %}
+                            {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p>{% endif %}
+                            {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p>{% endif %}
+                            {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p>{% endif %}
 
-                            {% if data.teams.issued %}
+                            {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
                                 <table class="striped centered responsive-table">
                                     <thead>
                                         <tr>
@@ -127,7 +131,7 @@
                                     <tbody>
                                         {% for equipe in data.teams.issued %}
                                             <tr>
-                                                <td><i class="material-icons blue-text">edit</i></td>
+                                                <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
                                                 <td><b>{{ equipe.equipe.numero }}</b></td>
                                                 <td>
                                                     <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
@@ -174,9 +178,10 @@
 
                         <div class="center">
                             <h4>Les rencontres</h4>
-                            <p class="pastille blue reset"><b>{{ data.matches.message }}</b></p>
 
                             {% if data.matches.issuedSorted %}
+                                <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour. Toutes les compositions d\'équipe seront vidées.' }}</b></p>
+
                                 {% for equipe, rencontres in data.matches.issuedSorted %}
                                     <ul class="collapsible backoffice_disponibilites">
                                         <li class="active">
@@ -202,7 +207,7 @@
                                                     <tbody>
                                                         {% for rencontre in rencontres %}
                                                             <tr>
-                                                                <td><i class="material-icons {{ rencontre.recorded ? 'blue' : 'green' }}-text">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
                                                                 <td><b>{{ rencontre.journee }}</b></td>
                                                                 <td>
                                                                     {% if not rencontre.exempt %}
@@ -230,6 +235,7 @@
                                         </li>
                                     </ul>
                                 {% endfor %}
+                            {% else %}<p class="pastille blue reset"><b>Toutes les rencontres sont à jour</b></p>
                             {% endif %}
                         </div>
 
@@ -237,7 +243,9 @@
 
                         <div class="center">
                             <h4>Les journées</h4>
-                            <p class="pastille blue reset"><b>{{ data.dates.message }}</b></p>
+                            {% if not data.dates.issued and not data.dates.missing %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
+                            {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
+                            {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
 
                             {% if data.dates.issued or data.dates.missing %}
                                 <table class="striped centered responsive-table">
@@ -252,7 +260,7 @@
                                     <tbody>
                                         {% for dateIssued in data.dates.issued %}
                                             <tr>
-                                                <td><i class="material-icons blue-text">edit</i></td>
+                                                <td><i class="material-icons orange-text text-darken-2">edit</i></td>
                                                 <td><b>{{ dateIssued.nJournee }}</b></td>
                                                 <td>
                                                     <span class="red-text">{{ dateIssued.undefined ? 'Date indéfinie' : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
@@ -272,10 +280,10 @@
                                 </table>
                             {% endif %}
                         </div>
-                    {% else %} <p class="pastille orange reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>
+                    {% else %} <p class="pastille orange darken-2 reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>
                     {% endif %}
                 {% else %}
-                    <p class="pastille red center reset">Mise à jour impossible : équipes non inscrites</p>
+                    <p class="pastille red center reset">{{ data.messageChampionnat }}</p>
                 {% endif %}
             </div>
         {% endfor %}
