@@ -24,8 +24,8 @@
 
         <div class='card-panel center'>
             <h4>Les compétiteurs</h4>
-            {% if joueursIssued %}<p class="pastille orange darken-2 center-align center"><b>{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</b></p>
-            {% else %}<p class="pastille blue center-align center"><b>Tous les joueurs sont à jour</b></p>
+            {% if joueursIssued %}<p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;"><b>{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</b></p>
+            {% else %}<p class="col pastille blue reset"><b>Tous les joueurs sont à jour</b></p>
             {% endif %}
 
             {% if joueursIssued %}
@@ -134,11 +134,11 @@
                                                 <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
                                                 <td><b>{{ equipe.equipe.numero }}</b></td>
                                                 <td>
-                                                    <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : '?' }}</span>
+                                                    <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : 'Division indéfinie' }}</span>
                                                     {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
                                                 </td>
                                                 <td>
-                                                    <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : '?' }}</span>
+                                                    <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : 'Poule indéfinie' }}</span>
                                                     {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
                                                 </td>
                                             </tr>
@@ -149,10 +149,10 @@
                                                 <td><i class="material-icons green-text">add_circle</i></td>
                                                 <td><b>{{ numero }}</b></td>
                                                 <td>
-                                                    <span>{{ equipe.divisionShortName }}</span>
+                                                    {{ equipe.divisionShortName }}
                                                 </td>
                                                 <td>
-                                                    <span>{{ equipe.poule }}</span>
+                                                    {{ equipe.poule }}
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -162,10 +162,14 @@
                                                 <td><i class="material-icons red-text">delete</i></td>
                                                 <td><b>{{ equipe.numero }}</b></td>
                                                 <td>
-                                                    <span>{{ equipe.idDivision.shortName }}</span>
+                                                    {% if equipe.idDivision %}
+                                                        {{ equipe.idDivision.shortName }}
+                                                    {% else %}
+                                                        <span class="red-text lighten-2">Division indéfinie</span>
+                                                    {% endif %}
                                                 </td>
                                                 <td>
-                                                    <span>{{ equipe.idPoule.poule }}</span>
+                                                    {{ equipe.idPoule.poule }}
                                                 </td>
                                             </tr>
                                         {% endfor %}

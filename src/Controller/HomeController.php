@@ -95,7 +95,7 @@ class HomeController extends AbstractController
             }, $championnat->getJournees()->toArray()));
 
             while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int)(new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()) {
-                $idJournee++;
+                $idJournee++; //TODO Bug si $idJournee inexistante dans chap->getJournees()
             }
 
             return $this->redirectToRoute('journee.show', [

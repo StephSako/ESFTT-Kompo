@@ -290,25 +290,29 @@ class BackOfficeFFTTApiController extends AbstractController
                 $datesIssued = [];
                 $datesMissing = [];
 
+                $nbJourneesChamp = $championnatActif->getNbJournees();
                 foreach ($journeesFFTT as $index => $dateFFTT) {
-                    if ($index <= $championnatActif->getNbJournees() - 1) {
+                    $dateJournee = (new DateTime())->setTimestamp($dateFFTT);
+                    if ($index <= $nbJourneesChamp - 1) {
                         if ($journeesKompo[$index]->getDateJournee()->getTimestamp() != $dateFFTT || $journeesKompo[$index]->getUndefined()) {
                             $dateIssued = [];
                             $dateIssued['undefined'] = $journeesKompo[$index]->getUndefined();
                             $dateIssued['journee'] = $journeesKompo[$index];
                             $dateIssued['nJournee'] = $index + 1;
-                            $dateIssued['dateFFTT'] = (new DateTime())->setTimestamp($dateFFTT);
+                            $dateIssued['dateFFTT'] = $dateJournee;
                             array_push($datesIssued, $dateIssued);
                         }
                     } else {
                         $dateMissing = new Journee();
                         $dateMissing
                             ->setIdChampionnat($championnatActif)
-                            ->setDateJournee((new DateTime())->setTimestamp($dateFFTT))
+                            ->setDateJournee($dateJournee)
                             ->setUndefined(false);
 
                         $datesMissing[$index + 1] = $dateMissing;
                     }
+
+                    //TODO Supprimer les journées en surplus
                 }
 
                 $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
@@ -346,6 +350,15 @@ class BackOfficeFFTTApiController extends AbstractController
             if (count($championnatSearch) == 1){
                 $championnat = $championnatSearch[0];
 
+                /** On fix les dates des journées */
+                foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
+                    $dateIssuedToFix['journee']
+                        ->setDateJournee($dateIssuedToFix['dateFFTT'])
+                        ->setUndefined(false);
+                }
+                $this->em->flush();
+                $this->em->refresh($championnat);
+
                 /** On fix le nombre de journées du championnat */
                 if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()){
                     $championnat->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
@@ -356,13 +369,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
 
                     //TODO Supprimer les journées en surplus
-                }
-
-                /** On fix les journées */
-                foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
-                    $dateIssuedToFix['journee']
-                        ->setDateJournee($dateIssuedToFix['dateFFTT'])
-                        ->setUndefined(false);
                 }
 
                 /** On fix les équipes */
@@ -416,14 +422,16 @@ class BackOfficeFFTTApiController extends AbstractController
                             return $eq->getNumero() == $nbEquipe;
                         });
                         $journeeToSet = ($championnat->getJournees()->toArray())[$rencontresParEquipe['journee'] - 1];
+                        dump($nbEquipe);
+                        dump($equipeToSet);
 
-                        $rencontresParEquipe['rencontre']
+                        $rencontresParEquipe['rencontre'] //TODO Bug si on supprime une équipe dans Kompo
                             ->setIdEquipe($equipeToSet[$nbEquipe - 1])
                             ->setIdJournee($journeeToSet)
                             ->setDateReport($journeeToSet->getDateJournee());
                         $this->em->persist($rencontresParEquipe['rencontre']);
-                        $this->em->flush();
                     }
+                    $this->em->flush();
                 }
 
                 /** On reset les joueurs des compositions d'équipe */
