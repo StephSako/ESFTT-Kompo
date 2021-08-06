@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Championnat;
 use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,12 +22,10 @@ class HomeController extends AbstractController
     private $competiteurRepository;
     private $championnatRepository;
     private $disponibiliteRepository;
-    private $journeeRepository;
     private $rencontreRepository;
     private $invalidSelectionController;
 
     /**
-     * @param JourneeRepository $journeeRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
@@ -35,8 +33,7 @@ class HomeController extends AbstractController
      * @param InvalidSelectionController $invalidSelectionController
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeRepository,
-                                ChampionnatRepository $championnatRepository,
+    public function __construct(ChampionnatRepository $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
@@ -47,9 +44,28 @@ class HomeController extends AbstractController
         $this->rencontreRepository = $rencontreRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
-        $this->journeeRepository = $journeeRepository;
         $this->championnatRepository = $championnatRepository;
         $this->invalidSelectionController = $invalidSelectionController;
+    }
+
+    /**
+     * @param Championnat $championnat
+     * @return int
+     */
+    public function getJourneeToPlay(Championnat $championnat): int
+    {
+        $journees = $championnat->getJournees()->toArray(); //TODO Remplacer partout findAllDates() par champ->getJournees()
+        $IDsJournees = array_map(function($j) {
+            return $j->getIdJournee();
+        }, $journees);
+        $idJournee = 0;
+
+        /** Récupérer la prochaine journée à jouer */
+        while ($idJournee < $championnat->getNbJournees() && !$journees[$idJournee]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee]->getDateJournee())->format('%R%a') < 0){
+            $idJournee++;
+        }
+
+        return $IDsJournees[$idJournee];
     }
 
     /**
@@ -62,16 +78,9 @@ class HomeController extends AbstractController
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
         if ($championnat){
-            $journees = $this->journeeRepository->findAllDates($championnat->getIdChampionnat());
-            $idJournee = min(array_map(function ($journee){return $journee->getIdJournee();}, $championnat->getJournees()->toArray()));
-
-            while ($idJournee <= $championnat->getNbJournees() && !$journees[$idJournee - 1]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()){
-                $idJournee++;
-            }
-
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'id' => $idJournee
+                'id' => $this->getJourneeToPlay($championnat)
             ]);
         } else return $this->render('journee/noChamp.html.twig', [
             'allChampionnats' => null,
@@ -88,19 +97,10 @@ class HomeController extends AbstractController
     public function indexTypeAction(int $type): Response
     {
         $championnat = ($this->championnatRepository->find($type) ?: $this->championnatRepository->getFirstChampionnatAvailable());
-
         if ($championnat) {
-            $idJournee = min(array_map(function ($journee) {
-                return $journee->getIdJournee();
-            }, $championnat->getJournees()->toArray()));
-
-            while ($idJournee <= $championnat->getNbJournees() && !$championnat->getJournees()->toArray()[$idJournee - 1]->getUndefined() && (int)(new DateTime())->diff($championnat->getJournees()->toArray()[$idJournee - 1]->getDateJournee())->format('%R%a') < 0 && $idJournee < $championnat->getNbJournees()) {
-                $idJournee++; //TODO Bug si $idJournee inexistante dans chap->getJournees()
-            }
-
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'id' => $idJournee
+                'id' => $this->getJourneeToPlay($championnat)
             ]);
         } else return $this->redirectToRoute('index', []);
     }

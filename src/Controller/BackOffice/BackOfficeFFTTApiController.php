@@ -418,15 +418,13 @@ class BackOfficeFFTTApiController extends AbstractController
                     } else {
                         /** ... sinon on créé les rencontres inexistantes */
                         $nbEquipe = $rencontresParEquipe['nbEquipe'];
-                        $equipeToSet = array_filter($championnat->getEquipes()->toArray(), function($eq) use ($nbEquipe) {
+                        $equipeToSet = array_values(array_filter($championnat->getEquipes()->toArray(), function($eq) use ($nbEquipe) {
                             return $eq->getNumero() == $nbEquipe;
-                        });
+                        }))[0];
                         $journeeToSet = ($championnat->getJournees()->toArray())[$rencontresParEquipe['journee'] - 1];
-                        dump($nbEquipe);
-                        dump($equipeToSet);
 
-                        $rencontresParEquipe['rencontre'] //TODO Bug si on supprime une équipe dans Kompo
-                            ->setIdEquipe($equipeToSet[$nbEquipe - 1])
+                        $rencontresParEquipe['rencontre']
+                            ->setIdEquipe($equipeToSet)
                             ->setIdJournee($journeeToSet)
                             ->setDateReport($journeeToSet->getDateJournee());
                         $this->em->persist($rencontresParEquipe['rencontre']);
@@ -458,7 +456,7 @@ class BackOfficeFFTTApiController extends AbstractController
     function getLatestDate(Championnat $championnat): DateTime {
         return max(array_map(function($renc) {
             return $renc->getDateReport();
-            }, $championnat->getRencontres()->toArray()));
+            }, $championnat->getRencontres()->toArray())); //TODO Bug si pas d'équipes enregistrées dans Kompo
     }
 
     /**
