@@ -769,4 +769,23 @@ class Competiteur implements UserInterface, Serializable
         $this->anneeCertificatMedical = intval((new DateTime())->format('Y'));
         return $this;
     }
+
+    /**
+     * Retourne les informations serializées pour l'export en PDF
+     * @return array
+     */
+    public function serializeToPDF(): array {
+        return [
+            $this->getLicence(),
+            $this->getNom(),
+            $this->getPrenom(),
+            $this->getClassementOfficiel(),
+            $this->getClassementOfficiel() ? intval($this->getClassementOfficiel()/100) : null,
+            $this->getAnneeCertificatMedical(),
+            $this->getMail(),
+            $this->getMail2(),
+            $this->getPhoneNumber(),
+            $this->getPhoneNumber2()
+        ];
+    }
 }
