@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use App\Repository\JourneeRepository;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -20,24 +19,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
 {
-    private $journeeRepository;
     private $competiteurRepository;
     private $championnatRepository;
     private $mailer;
 
     /**
      * ContactController constructor.
-     * @param JourneeRepository $journeeRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
      */
-    public function __construct(JourneeRepository $journeeRepository,
-                                CompetiteurRepository $competiteurRepository,
+    public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer)
     {
-        $this->journeeRepository = $journeeRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->mailer = $mailer;
         $this->championnatRepository = $championnatRepository;
@@ -52,7 +47,7 @@ class ContactController extends AbstractController
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
-        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 

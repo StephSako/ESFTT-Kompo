@@ -80,7 +80,7 @@ class SecurityController extends AbstractController
     public function edit(Request $request){
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
-        $journees = ($championnat ? $this->journeeRepository->findAllDates($championnat->getIdChampionnat()) : []);
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
 
         $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();

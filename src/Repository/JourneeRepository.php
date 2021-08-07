@@ -21,19 +21,8 @@ class JourneeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $type
-     * @return int|mixed|string
+     * @return array
      */
-    public function findAllDates(int $type)
-    {
-        return $this->createQueryBuilder('j')
-            ->where('j.idChampionnat = :type')
-            ->setParameter('type', $type)
-            ->orderBy('j.dateJournee')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function getAllJournees(): array
     {
         $query = $this->createQueryBuilder('j')

@@ -54,7 +54,7 @@ class HomeController extends AbstractController
      */
     public function getJourneeToPlay(Championnat $championnat): int
     {
-        $journees = $championnat->getJournees()->toArray(); //TODO Remplacer partout findAllDates() par champ->getJournees()
+        $journees = $championnat->getJournees()->toArray();
         $IDsJournees = array_map(function($j) {
             return $j->getIdJournee();
         }, $journees);
