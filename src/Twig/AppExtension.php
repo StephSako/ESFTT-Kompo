@@ -130,7 +130,7 @@ class AppExtension extends AbstractExtension
         }
 
         $str .= $nbEquipes > 1 ? ' seront ' : ' sera ';
-        $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'mise' . ($nbEquipes > 1 ? 's' : '') . ' à jour')) . ($nbEquipes > 1 ? 's' : '');
+        $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 ? 's' : '');
 
         return $str;
     }

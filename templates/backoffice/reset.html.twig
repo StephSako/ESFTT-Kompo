@@ -88,7 +88,7 @@
                 {% if data.recorded %}
                     {% if data.finished %}
 
-                        {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.matches.issuedSorted %}
+                        {% if data.countDispos > 0 or data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
                             <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>La phase de ce championnat est terminée</b></p>
                             <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer la phase de \'{{ nomChampionnat }}\' ?')">
                                 <input type="hidden" name="resetChampionnats" value="1">
@@ -247,11 +247,12 @@
 
                         <div class="center">
                             <h4>Les journées</h4>
-                            {% if not data.dates.issued and not data.dates.missing %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
+                            {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
                             {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
                             {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
+                            {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
 
-                            {% if data.dates.issued or data.dates.missing %}
+                            {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
                                 <table class="striped centered responsive-table">
                                     <thead>
                                         <tr>
@@ -278,6 +279,20 @@
                                                 <td><i class="material-icons green-text">add_circle</i></td>
                                                 <td><b>{{ index }}</b></td>
                                                 <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        {% for dateSurplus in data.dates.surplus %}
+                                            <tr>
+                                                <td><i class="material-icons red-text">delete</i></td>
+                                                <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
+                                                <td>
+                                                    {% if dateSurplus.undefined %}
+                                                        <span class="red-text">Date indéfinie</span>
+                                                    {% else %}
+                                                        {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
+                                                    {% endif %}
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

@@ -61,7 +61,7 @@ class HomeController extends AbstractController
         $idJournee = 0;
 
         /** Récupérer la prochaine journée à jouer */
-        while ($idJournee < $championnat->getNbJournees() && !$journees[$idJournee]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee]->getDateJournee())->format('%R%a') < 0){
+        while ($idJournee < $championnat->getNbJournees() - 1 && !$journees[$idJournee]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee]->getDateJournee())->format('%R%a') < 0){
             $idJournee++;
         }
 

@@ -311,10 +311,10 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         $datesMissing[$index + 1] = $dateMissing;
                     }
-
-                    //TODO Supprimer les journées en surplus
                 }
 
+                /** On supprime les journées en surplus */
+                $allChampionnatsReset[$championnatActif->getNom()]["dates"]["surplus"] = count($journeesKompo) > count($journeesFFTT) ? array_slice($journeesKompo, count($journeesFFTT), count($journeesKompo) - count($journeesFFTT)) : [];
                 $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                 $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
@@ -368,7 +368,12 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->persist($dateMissingToCreate);
                     }
 
-                    //TODO Supprimer les journées en surplus
+                    /** On supprime les dates en surplus */
+                    foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["surplus"] as $dateSurplus) {
+                        $this->em->remove($dateSurplus);
+                        $this->em->flush();
+                    }
+                    $this->em->refresh($championnat);
                 }
 
                 /** On fix les équipes */
@@ -379,6 +384,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         ->setIdDivision($arrayDivisionPoule[0])
                         ->setIdPoule($arrayDivisionPoule[1]);
                 }
+                $this->em->refresh($championnat);
 
                 /** On supprime les équipes superflux */
                 foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
