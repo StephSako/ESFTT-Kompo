@@ -15,15 +15,6 @@ class EquipeEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numero', IntegerType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'validate',
-                    'min' => 1,
-                    'max' => 100
-                ]
-            ])
             ->add('idDivision', EntityType::class, [
                 'class' => 'App\Entity\Division',
                 'required' => true,
