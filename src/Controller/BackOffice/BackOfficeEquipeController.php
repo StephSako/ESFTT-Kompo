@@ -62,7 +62,7 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $equipe = new Equipe(); //TODO Afficher la suggestion du numéro et checker si le numéro est correct (trou et max)
+        $equipe = new Equipe();
         $divisions = $this->divisionRepository->getDivisionsOptgroup();
         $form = $this->createForm(EquipeNewType::class, $equipe, [
             'divisionsOptGroup' => $divisions
@@ -72,20 +72,41 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted() && $divisions){
             if ($form->isValid()){
                 try {
-                    if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12345);
-                    $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
+                    if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12342);
+
+                    $numEquipesChamp = array_map(function ($eq) {
+                        return $eq->getNumero();
+                    }, $equipe->getIdDivision()->getIdChampionnat()->getEquipes()->toArray());
+                    $numerosManquants = $this->getAllowedNumbers($numEquipesChamp);
+                    $lastNumero = $this->getLastNumero($numEquipesChamp);
+
+                    /** On vérifie que le numéro ne soit pas déjà attribué */
+                    if (in_array($equipe->getNumero(), $numEquipesChamp))
+                        throw new Exception('Le numéro ' . $equipe->getNumero() . ' est déjà attribué', 12340);
+                    /** On vérifie qu'il ne manque pas des numéros d'équipes */
+                    else if ($numerosManquants && !in_array($equipe->getNumero(), $numerosManquants)) {
+                        $nbMissingEquipes = count($numerosManquants);
+                        $str = $nbMissingEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+
+                        foreach (array_values($numerosManquants) as $i => $numEquipe) {
+                            $str .= $numEquipe;
+                            if ($i == $nbMissingEquipes - 2) $str .= ' et ';
+                            elseif ($i < $nbMissingEquipes - 1) $str .= ', ';
+                        }
+
+                        $str .= $nbMissingEquipes > 1 ? ' doivent d\'abord être créées' : ' doit d\'abord être créée';
+                        throw new Exception($str, 12341);
+                    /** Sinon le numéro attribué doit être le suivant de la dernière équipe */
+                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants)
+                        throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12342);
+
+                        $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->createEquipeAndRencontres($equipe);
 
                     $this->em->flush();
                     $this->addFlash('success', 'Équipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
-                } catch(Exception $e){
-                    if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
-                    else if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                }
+                } catch(Exception $e){ $this->addFlash('fail', $e->getMessage()); }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
@@ -187,7 +208,25 @@ class BackOfficeEquipeController extends AbstractController
         }
     }
 
-    public function getLastNumero(): int {
-        return max(array_map(function($equipe) { return $equipe->getNumero();}, $this->equipeRepository->findAll())) + 1;
+    /**
+     * Retourne le numéro de la prochaine équipe à créer du championnat
+     * @param array $numEquipes
+     * @return int
+     */
+    public function getLastNumero(array $numEquipes): int {
+        return max(array_map(function($numero) { return $numero;}, $numEquipes)) + 1;
+    }
+
+    /**
+     * Retourne les numéros des équipes si y en a des manquantes
+     * @param array $numEquipes
+     * @return array
+     */
+    public function getAllowedNumbers(Array $numEquipes): array {
+        $numEquipes = array_map(function ($numero) {
+            return $numero;
+        }, $numEquipes);
+        $range = range(1, max($numEquipes));
+        return array_diff($range, $numEquipes);
     }
 }
