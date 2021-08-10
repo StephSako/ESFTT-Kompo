@@ -67,10 +67,14 @@
                 <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
 
                 <div class="row header_compo">
-                    {% if compo.adversaire is null %}
-                        <h5 class="col s12 m5 hide-on-med-and-up lobster_2 red-text">Adversaire indéfini</h5>
+                    {% if compo.exempt %}
+                        <h5 style="margin-top: 0; margin-bottom: 10px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                     {% else %}
-                        <h5 class="col s12 m5 hide-on-med-and-up lobster_2">{{ compo.adversaire | title }}</h5>
+                        {% if compo.adversaire is null %}
+                            <h5 class="col s12 m5 hide-on-med-and-up lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
+                        {% else %}
+                            <h5 class="col s12 m5 hide-on-med-and-up lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
+                        {% endif %}
                     {% endif %}
 
                     <div class="col s4 m2">
@@ -93,17 +97,26 @@
                         <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.dateJournee|date('d/m') }}</h5>
                     {% endif %}
 
+
                     <h5 class="col s4 m2">
-                        {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
-                        {% else %} <i class="material-icons iconPlace">directions_car</i>
+                        {% if not compo.exempt %}
+                            {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
+                            {% else %} <i class="material-icons iconPlace">directions_car</i>
+                            {% endif %}
                         {% endif %}
                     </h5>
 
-                    {% if compo.adversaire is null %}
-                        <h5 class="hide-on-small-only col s12 m5 red-text">Adversaire indéfini</h5>
-                    {% else %}
-                        <h5 class="hide-on-small-only col s12 m5 lobster_2">{{ compo.adversaire | title }}</h5>
-                    {% endif %}
+                    <div class="hide-on-small-only col s12 m5">
+                        {% if compo.exempt %}
+                            <h5 style="margin-top: 11px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                        {% else %}
+                            {% if compo.adversaire is null %}
+                                <h5 class="red-text">Adversaire indéfini</h5>
+                            {% else %}
+                                <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
                 {{ form_start(form)}}
                     <div class="form_div_list">
