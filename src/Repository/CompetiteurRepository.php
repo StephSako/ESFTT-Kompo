@@ -34,7 +34,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite d WHERE d.idJournee = :idJournee AND d.idChampionnat = :idChampionnat)")
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)
-            ->andWhere('c.visitor <> true')
+            ->andWhere('c.isLoisir <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -69,7 +69,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
 
         $result = $result
-            ->where('c.visitor <> true')
+            ->where('c.isLoisir <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -121,7 +121,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
-            ->where('c.visitor <> true')
+            ->where('c.isLoisir <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -202,7 +202,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->leftJoin('c.dispos', 'd')
             ->where('d.idChampionnat = :idChampionnat')
-            ->andWhere('c.visitor <> true')
+            ->andWhere('c.isLoisir <> true')
             ->andWhere('d.idJournee = :idJournee')
             ->andWhere('d.disponibilite = 1');
         for ($j = 0; $j < $nbJoueurs; $j++) {
@@ -269,7 +269,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom')
-            ->where('c.visitor <> true')
+            ->where('c.isLoisir <> true')
             ->andWhere('(SELECT COUNT(r.id) ' .
                        ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                        ' WHERE e.idDivision IS NOT NULL' .
@@ -321,7 +321,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('j.dateJournee')
             ->from('App:Journee', 'j')
             ->leftJoin('j.idChampionnat', 'champ')
-            ->where('c.visitor <> true')
+            ->where('c.isLoisir <> true')
             ->orderBy('c.nom', 'ASC')
             ->addOrderBy('c.prenom', 'ASC')
             ->addOrderBy('j.idJournee', 'ASC')
@@ -367,7 +367,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('c.mail = :mail OR c.mail2 = :mail')
             ->setParameter('username', $username)
             ->setParameter('mail', $mail)
-            ->andWhere('c.visitor <> true')
+            ->andWhere('c.isLoisir <> true')
             ->getQuery()
             ->getResult();
 

@@ -65,7 +65,7 @@ class BackOfficeFFTTApiController extends AbstractController
         // Nationale France : 100001
 
         /** Gestion des joueurs */
-        $joueursKompo = $this->competiteurRepository->findBy(['visitor' => 0]);
+        $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0]);
         $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
         $joueursIssued = [];
 

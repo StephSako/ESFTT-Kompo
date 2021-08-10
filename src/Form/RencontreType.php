@@ -36,7 +36,7 @@ class RencontreType extends AbstractType
                         ->where('d.idJournee = :idJournee')
                         ->andWhere('d.disponibilite = 1')
                         ->andWhere('d.idChampionnat = :idChampionnat')
-                        ->andWhere('c.visitor <> true');
+                        ->andWhere('c.isLoisir <> true');
                     $str = '';
                     for ($i = 0; $i < $options['nbMaxJoueurs']; $i++) {
                         $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';

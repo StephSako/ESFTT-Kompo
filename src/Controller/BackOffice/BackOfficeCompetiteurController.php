@@ -139,20 +139,20 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             try {
-                /** Un joueur devenant 'visiteur' est désélectionné de toutes les compositions de chaque championnat ... **/
-                if ($competiteur->isVisitor()){
+                /** Un joueur devenant 'loisir' est désélectionné de toutes les compositions de chaque championnat ... **/
+                if ($competiteur->isLoisir()){
                     for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
                         $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                     }
 
                     /** ... et ses disponiblités sont supprimées */
-                    $this->disponibiliteRepository->setDeleteDisposVisiteur($competiteur->getIdCompetiteur());
+                    $this->disponibiliteRepository->setDeleteDisposLoisir($competiteur->getIdCompetiteur());
                 }
 
                 if ($competiteur->isAdmin()) {
                     $competiteur->setIsCapitaine(true);
-                    $competiteur->setVisitor(false);
-                } else if ($competiteur->isVisitor()) {
+                    $competiteur->setLoisir(false);
+                } else if ($competiteur->isLoisir()) {
                     $competiteur->setIsCapitaine(false);
                     $competiteur->setIsAdmin(false);
                 }
@@ -172,7 +172,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'path' => 'backoffice.password.edit',
             'competiteurId' => $idCompetiteur,
-            'competiteurIsVisitor' => $competiteur->isVisitor(),
+            'competiteurIsLoisir' => $competiteur->isLoisir(),
             'form' => $form->createView()
         ]);
     }

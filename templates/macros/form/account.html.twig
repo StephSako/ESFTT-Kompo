@@ -19,17 +19,37 @@
                 </div>
 
                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                    <div class="col s12 m4">
+                    <div class="col s12 m3">
                         {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
                     </div>
-                    <div class="col s12 m4">
+                    <div class="col s12 m3">
                         {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
                     </div>
-                    <div class="col s12 m4">
-                        {{ form_row(form.visitor, {'id': 'cb_visiteur'}) }}
+                    <div class="col s12 m3">
+                        {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
+                    </div>
+                    <div class="col s12 m3">
+                        {{ form_row(form.isEntraineur) }}
                     </div>
                 {% endif %}
             </div>
+
+            {% if anneeCertificatMedical != -1 %}
+                <div class="section input_file" style="margin-bottom: 0;">
+                    <h5 class="dark_blue">Certificat médical</h5>
+                    {% if anneeCertificatMedical != null and anneeCertificatMedical > "now"|date('Y')-2 %}
+                        <p><span class="green white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
+                    {% else %}
+                        <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
+
+                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                            <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
+                                Renouveler
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
 
             {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                 <div class="row section">
@@ -89,27 +109,10 @@
                     </div>
                 {% endif %}
                 <div class="col s12 m6" {% if 'ROLE_JOUEUR' not in app.token.roleNames and type == 'general' %}style="margin-left: 25%;"{% endif %}>
-                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel, {'attr': ('ROLE_VISITEUR' in app.token.roleNames and type == 'general' ? {'disabled': 'disabled', 'placeholder': 'Vous n\'êtes pas compétiteur'} : {} )}) }}
+                    <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>{{ form_row(form.classementOfficiel, {'attr': ('ROLE_LOISIR' in app.token.roleNames and type == 'general' ? {'disabled': 'disabled', 'placeholder': 'Vous n\'êtes pas compétiteur'} : {} )}) }}
                 </div>
                 <div class="col m1 hide-on-small-and-down"></div>
             </div>
-
-            {% if anneeCertificatMedical != -1 %}
-                <div class="section input_file" style="margin-bottom: 0;">
-                    <h5 class="dark_blue">Certificat médical</h5>
-                    {% if anneeCertificatMedical != null and anneeCertificatMedical > "now"|date('Y')-2 %}
-                        <p><span class="green white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
-                    {% else %}
-                        <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
-
-                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                            <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
-                                Renouveler
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            {% endif %}
 
             <div class="section input_file" style="margin-bottom: 0;">
                 <h5 class="dark_blue">Image de profil</h5>
@@ -137,8 +140,8 @@
 
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey">Annuler</a>
             <button
-                {% if editMode and (not options.competiteurIsVisitor is defined or options.competiteurIsVisitor == false) %}
-                    onclick="alertBecomingVisitor()"
+                {% if editMode and (not options.competiteurIsLoisir is defined or options.competiteurIsLoisir == false) %}
+                    onclick="alertBecomingLoisir()"
                 {% endif %}
                 class="btn waves-effect waves-light light-blue darken-1">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>

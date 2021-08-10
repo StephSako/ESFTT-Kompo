@@ -213,6 +213,13 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_entraineur", nullable=false)
+     */
+    private $isEntraineur = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="is_admin", nullable=false)
      */
     private $isAdmin = false;
@@ -220,9 +227,9 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean", name="visitor", nullable=false)
+     * @ORM\Column(type="boolean", name="is_loisir", nullable=false)
      */
-    private $visitor = false;
+    private $isLoisir = false;
 
     /**
      * @var boolean
@@ -385,7 +392,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function getRoles(): array
     {
-        if (!$this->isVisitor()){
+        if (!$this->isLoisir()){
             if ($this->isAdmin()) {
                 return ['ROLE_ADMIN', 'ROLE_CAPITAINE', 'ROLE_JOUEUR'];
             } else if ($this->isCapitaine()) {
@@ -394,7 +401,7 @@ class Competiteur implements UserInterface, Serializable
                 return ['ROLE_JOUEUR'];
             }
         }
-        else return ['ROLE_VISITEUR'];
+        else return ['ROLE_LOISIR'];
     }
 
     /**
@@ -499,21 +506,21 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param bool $visitor
+     * @param bool $loisir
      * @return Competiteur
      */
-    public function setVisitor(bool $visitor): self
+    public function setLoisir(bool $loisir): self
     {
-        $this->visitor = $visitor;
+        $this->isLoisir = $loisir;
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isVisitor(): bool
+    public function isLoisir(): bool
     {
-        return $this->visitor;
+        return $this->isLoisir;
     }
 
     /**
@@ -787,5 +794,23 @@ class Competiteur implements UserInterface, Serializable
             $this->getPhoneNumber(),
             $this->getPhoneNumber2()
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEntraineur(): bool
+    {
+        return $this->isEntraineur;
+    }
+
+    /**
+     * @param bool $isEntraineur
+     * @return Competiteur
+     */
+    public function setIsEntraineur(bool $isEntraineur): self
+    {
+        $this->isEntraineur = $isEntraineur;
+        return $this;
     }
 }

@@ -62,8 +62,12 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 'label' => 'Administrateur',
                 'required' => false
             ])
-            ->add('visitor', CheckboxType::class, [
-                'label' => 'Visiteur',
+            ->add('isLoisir', CheckboxType::class, [
+                'label' => 'Loisir',
+                'required' => false
+            ])
+            ->add('isEntraineur', CheckboxType::class, [
+                'label' => 'Entraîneur',
                 'required' => false
             ])
             ->add('mail', EmailType::class, [

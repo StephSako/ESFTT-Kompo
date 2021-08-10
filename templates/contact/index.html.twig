@@ -34,17 +34,21 @@
                     {% for competiteur in competiteurs %}
                         {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
                             <tr>
-                                <td>
-                                    {% if not competiteur.visitor %}
+                                <td style="padding-top: 8px; padding-bottom: 8px; height: 62px;">
+                                    {% if not competiteur.isLoisir %}
                                         {% if competiteur.isAdmin %}
-                                            <span class="new badge red" data-badge-caption="Administrateur"></span>
+                                            <span class='new badge red{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                         {% elseif competiteur.isCapitaine %}
-                                            <span class="new badge blue" data-badge-caption="Capitaine"></span>
+                                            <span class='new badge blue{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Capitaine'></span>
                                         {% else %}
-                                            <span class="new badge green" data-badge-caption="Joueur"></span>
+                                            <span class='new badge green{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
                                         {% endif %}
                                     {% else %}
-                                        <span class="new badge orange" data-badge-caption="Visiteur"></span>
+                                        <span class='new badge orange{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                    {% endif %}
+                                    {% if competiteur.isEntraineur %}
+                                        <br>
+                                        <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
                                     {% endif %}
                                 </td>
                                 <td class="td_picture_compet">

@@ -790,6 +790,10 @@ button.btn_renouveler_certif_mobile {
     padding-top: 0;
     padding-bottom: 0;
   }
+
+  span.badge-role {
+    margin-top: 12px;
+  }
 }
 @media screen and (max-width: 601px) {
   th.th_picture_compet_table {

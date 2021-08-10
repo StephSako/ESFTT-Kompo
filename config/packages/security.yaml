@@ -23,17 +23,17 @@ security:
                 secret: '%kernel.secret%'
 
     role_hierarchy:
-        ROLE_JOUEUR: ROLE_VISITEUR
-        ROLE_CAPITAINE: [ROLE_JOUEUR, ROLE_VISITEUR]
-        ROLE_ADMIN: [ROLE_CAPITAINE, ROLE_JOUEUR, ROLE_VISITEUR]
+        ROLE_JOUEUR: ROLE_LOISIR
+        ROLE_CAPITAINE: ROLE_JOUEUR
+        ROLE_ADMIN: ROLE_CAPITAINE
 
     access_control:
         - { path: ^/composition, roles: ROLE_CAPITAINE }
-        - { path: ^/compte, roles: ROLE_VISITEUR }
+        - { path: ^/compte, roles: ROLE_LOISIR }
         - { path: ^/backoffice, roles: ROLE_CAPITAINE }
-        - { path: ^/journee, roles: ROLE_VISITEUR }
+        - { path: ^/journee, roles: ROLE_LOISIR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/contact, roles: ROLE_VISITEUR }
+        - { path: ^/contact, roles: ROLE_LOISIR }
 
     encoders:
         App\Entity\Competiteur:

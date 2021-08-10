@@ -33,7 +33,7 @@
             {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, true, anneeCertificatMedical, {licence: app.user.licence}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, {competiteurId: competiteurId, competiteurIsVisitor: competiteurIsVisitor}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, {competiteurId: competiteurId, competiteurIsLoisir: competiteurIsLoisir}) }}
             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                 {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
             {% endif %}

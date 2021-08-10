@@ -35,7 +35,7 @@ class DisponibiliteRepository extends ServiceEntityRepository
             ->andWhere('d.idChampionnat = :idChampionnat')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)
-            ->andWhere('c.visitor <> true')
+            ->andWhere('c.isLoisir <> true')
             ->orderBy('d.disponibilite', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
@@ -44,11 +44,11 @@ class DisponibiliteRepository extends ServiceEntityRepository
     }
 
     /**
-     * Supprime toutes les disponibilités d'un joueur (cas d'un joueur devenant visiteur)
+     * Supprime toutes les disponibilités d'un joueur (cas d'un joueur devenant loisir)
      * @param int $idCompetiteur
      * @return int|mixed|string
      */
-    public function setDeleteDisposVisiteur(int $idCompetiteur)
+    public function setDeleteDisposLoisir(int $idCompetiteur)
     {
         return $this->createQueryBuilder('dd')
             ->delete('App\Entity\Disponibilite', 'dd')
