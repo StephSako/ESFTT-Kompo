@@ -703,6 +703,15 @@ td#noTeam {
   100%{background-position:0 82%}
 }
 
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(360deg);
+  }
+}
+
 li {
   .collapsible-header {
     justify-content: space-between;
@@ -746,6 +755,15 @@ li {
   th{
     padding-left: 0;
     padding-right: 0;
+  }
+}
+
+.navbar-backoffice, .sidenav {
+  .rotating-icon {
+    animation-name: spin;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 }
 

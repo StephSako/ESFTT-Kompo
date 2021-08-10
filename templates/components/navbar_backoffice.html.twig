@@ -1,3 +1,10 @@
+<script>
+    function showRotatingIcon() {
+        $('.fix-icon').addClass('hide');
+        $('.rotating-icon').removeClass('hide');
+    }
+</script>
+
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-backoffice">
@@ -8,7 +15,10 @@
 
             <ul class="left_items">
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.reset.phase") }}"><i class="material-icons left" style="margin-right: 0;">settings</i></a>
+                    <a onclick="showRotatingIcon()" class="white-text" href="{{ path("backoffice.reset.phase") }}">
+                        <i class="material-icons left fix-icon" style="margin-right: 0;">settings</i>
+                        <i class="material-icons left rotating-icon hide" style="margin-right: 0;">sync</i>
+                    </a>
                 </li>
                 <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.championnats") }}"><i class="material-icons left">stars</i>Championnat</a>
@@ -47,7 +57,10 @@
 
 <ul id="slide-out" class="sidenav">
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("backoffice.reset.phase") }}"><i class="white-text material-icons left">settings</i>Nouvelle phase</a>
+        <a onclick="showRotatingIcon()" class="white-text center-align" href="{{ path("backoffice.reset.phase") }}">
+            <i class="white-text material-icons left fix-icon" style="margin-right: 0;">settings</i>
+            <i class="white-text material-icons left rotating-icon hide" style="margin-right: 0;">sync</i>
+            Nouvelle phase</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.championnats") }}"><i class="white-text material-icons left">stars</i>Championnat</a>
