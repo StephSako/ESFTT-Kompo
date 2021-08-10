@@ -54,13 +54,15 @@ class DisponibiliteController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        if (sizeof($this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser(), 'idJournee' => $journee])) == 0) {
+        try {
             $disponibilite = new Disponibilite($this->getUser(), $journee, $dispo, $journee->getIdChampionnat());
 
             $this->em->persist($disponibilite);
             $this->em->flush();
             $this->addFlash('success', 'Disponibilité enregistrée');
-        } else $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
+        } catch (Exception $e) {
+            $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
+        }
 
         return $this->redirectToRoute('journee.show',
             [

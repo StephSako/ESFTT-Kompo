@@ -62,7 +62,7 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $equipe = new Equipe();
+        $equipe = new Equipe(); //TODO Afficher la suggestion du numéro et checker si le numéro est correct (trou et max)
         $divisions = $this->divisionRepository->getDivisionsOptgroup();
         $form = $this->createForm(EquipeNewType::class, $equipe, [
             'divisionsOptGroup' => $divisions
@@ -185,5 +185,9 @@ class BackOfficeEquipeController extends AbstractController
                 ->setExempt(false);
             $this->em->persist($rencontre);
         }
+    }
+
+    public function getLastNumero(): int {
+        return max(array_map(function($equipe) { return $equipe->getNumero();}, $this->equipeRepository->findAll())) + 1;
     }
 }

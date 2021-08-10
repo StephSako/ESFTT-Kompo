@@ -111,6 +111,63 @@
                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                         <div class="center">
+                            <h4>Les journées</h4>
+                            {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
+                            {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
+                            {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
+                            {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
+
+                            {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
+                                <table class="striped centered responsive-table">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Journée</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for dateIssued in data.dates.issued %}
+                                        <tr>
+                                            <td><i class="material-icons orange-text text-darken-2">edit</i></td>
+                                            <td><b>{{ dateIssued.nJournee }}</b></td>
+                                            <td>
+                                                <span class="red-text">{{ dateIssued.undefined ? 'Date indéfinie' : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    {% for index, dateMissing in data.dates.missing %}
+                                        <tr>
+                                            <td><i class="material-icons green-text">add_circle</i></td>
+                                            <td><b>{{ index }}</b></td>
+                                            <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    {% for dateSurplus in data.dates.surplus %}
+                                        <tr>
+                                            <td><i class="material-icons red-text">delete</i></td>
+                                            <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
+                                            <td>
+                                                {% if dateSurplus.undefined %}
+                                                    <span class="red-text">Date indéfinie</span>
+                                                {% else %}
+                                                    {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+
+                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                        <div class="center">
                             <h4>Les équipes</h4>
                             {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p>{% endif %}
                             {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p>{% endif %}
@@ -240,63 +297,6 @@
                                     </ul>
                                 {% endfor %}
                             {% else %}<p class="pastille blue reset"><b>Toutes les rencontres sont à jour</b></p>
-                            {% endif %}
-                        </div>
-
-                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                        <div class="center">
-                            <h4>Les journées</h4>
-                            {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
-                            {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
-                            {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
-                            {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
-
-                            {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
-                                <table class="striped centered responsive-table">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Journée</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {% for dateIssued in data.dates.issued %}
-                                            <tr>
-                                                <td><i class="material-icons orange-text text-darken-2">edit</i></td>
-                                                <td><b>{{ dateIssued.nJournee }}</b></td>
-                                                <td>
-                                                    <span class="red-text">{{ dateIssued.undefined ? 'Date indéfinie' : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                    <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-
-                                        {% for index, dateMissing in data.dates.missing %}
-                                            <tr>
-                                                <td><i class="material-icons green-text">add_circle</i></td>
-                                                <td><b>{{ index }}</b></td>
-                                                <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
-                                            </tr>
-                                        {% endfor %}
-
-                                        {% for dateSurplus in data.dates.surplus %}
-                                            <tr>
-                                                <td><i class="material-icons red-text">delete</i></td>
-                                                <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
-                                                <td>
-                                                    {% if dateSurplus.undefined %}
-                                                        <span class="red-text">Date indéfinie</span>
-                                                    {% else %}
-                                                        {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
                             {% endif %}
                         </div>
                     {% else %} <p class="pastille orange darken-2 reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>

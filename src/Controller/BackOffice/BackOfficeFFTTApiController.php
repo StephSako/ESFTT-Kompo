@@ -373,6 +373,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->remove($dateSurplus);
                         $this->em->flush();
                     }
+                    $this->em->flush();
                     $this->em->refresh($championnat);
                 }
 

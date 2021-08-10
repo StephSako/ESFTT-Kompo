@@ -227,16 +227,24 @@ class HomeController extends AbstractController
             $this->addFlash('fail', 'Championnat inexistant');
             return $this->redirectToRoute('index');
         }
+
         if (!($compo = $this->rencontreRepository->find($compo))) {
             $this->addFlash('fail', 'Journée inexistante pour ce championnat');
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
 
+        $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
+        if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
+            $this->addFlash('fail', 'Cette rencontre n\'est plus modifiable : date de journée dépassée');
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $compo->getIdJournee()->getIdJournee()]);
+        }
+
         $journees = $championnat->getJournees()->toArray();
-        $idJournee = array_search($compo->getIdJournee(), $journees)+1;
+        $idJournee = array_search($compo->getIdJournee(), $journees)+1; //TODO Bug
         if (!$compo->getIdEquipe()->getIdDivision()) {
             $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $idJournee]);
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $allChampionnats = $this->championnatRepository->findAll();
@@ -289,8 +297,8 @@ class HomeController extends AbstractController
 
                     /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
                     /**  Si pas en dernière journée ni en dernière équipe **/
-                    if (end($equipes)->getNumero() != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $idJournee){
-                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                    if (end($equipes)->getNumero() != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $idJournee){  //TODO Pas d'opération sur un ID
+                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1); //TODO Pas d'opération sur un ID
                         foreach ($journeesToRecalculate as $journeeToRecalculate) {
                             for ($j = 0; $j < $nbJoueursDivision; $j++) {
                                 if ($form->getData()->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $journeeToRecalculate->getIdJournee());
