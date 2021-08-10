@@ -227,21 +227,20 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        // TODO Optimize
         $allBrulage = [];
-        foreach ($brulages as $joueur => $brulage){
+        foreach ($brulages as $brulage){
             /** On formate en associant le joueur à son brûlage par équipe */
             $brulageJoueur = [];
             $brulageInt = [];
             foreach ($idEquipes as $equipe) {
-                array_push($brulageInt, intval($brulages[$joueur]['E'.$equipe]));
+                array_push($brulageInt, intval($brulage['E'.$equipe]));
             }
             $brulageJoueur['brulage'] = $brulageInt;
-            $brulageJoueur['idCompetiteur'] = $brulages[$joueur]['idCompetiteur'];
-            $nom = $brulages[$joueur]['nom'] . ' ' . $brulages[$joueur]['prenom'];
+            $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
+            $nom = $brulage['nom'] . ' ' . $brulage['prenom'];
 
             $allBrulage[$nom] = $brulageJoueur;
-            $allBrulage[$nom]['bruleJ2'] = (array_key_exists('bruleJ2', $brulage) ? boolval($brulage['bruleJ2']) : false);
+            $allBrulage[$nom]['bruleJ2'] = (array_key_exists('bruleJ2', $brulage) && $brulage['bruleJ2']);
 
             /** On effectue le brûlage prévisionnel **/
             if (in_array($idEquipe - 1, array_keys($allBrulage[$nom]['brulage'])))
