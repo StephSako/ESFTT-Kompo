@@ -14,7 +14,7 @@
     </header>
 
     <div class="row main">
-        <div class="col s12 l3 hide-on-med-and-down">
+        <div class="col l3 hide-on-med-and-down">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
@@ -159,7 +159,7 @@
                                 </div>
                             {% endif %}
 
-                            <div class="col s4 m2 hide-on-small-only">
+                            <div class="col m2 hide-on-small-only">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if not compo.exempt %}
                                         {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
@@ -169,7 +169,7 @@
                                 </h5>
                             </div>
 
-                            <div class="col s12 m5 hide-on-small-only">
+                            <div class="col m5 hide-on-small-only">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 11px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
                                 {% else %}
@@ -254,7 +254,7 @@
             </li>
         </ul>
 
-        <div class="col s12 l2 hide-on-med-and-down">
+        <div class="col l2 hide-on-med-and-down">
             {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
     </div>

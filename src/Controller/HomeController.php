@@ -155,6 +155,7 @@ class HomeController extends AbstractController
         }, array_filter($equipes, function($equipe){
             return $equipe->getIdDivision() != null;
         }));
+        sort($equipesBrulage, SORT_NUMERIC);
         $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
         $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
 
@@ -249,16 +250,17 @@ class HomeController extends AbstractController
 
         $allChampionnats = $this->championnatRepository->findAll();
 
-        // Nombre de joueurs maximum par équipe du championnat
+        /** Nombre de joueurs maximum par équipe du championnat */
         $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
 
-        // Numéros des équipes valides pour le brûlage
+        /** Numéros des équipes valides pour le brûlage */
         $equipes = $championnat->getEquipes()->toArray();
         $equipesBrulage = array_map(function($equipe){
             return $equipe->getNumero();
         }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
             return $equipe->getIdDivision() != null;
         }));
+        sort($equipesBrulage, SORT_NUMERIC);
         $idEquipesBrulageVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
         $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
 
@@ -322,6 +324,8 @@ class HomeController extends AbstractController
                 }
             }
         }
+
+        //TODO Bug exemptée affiché 2 fois
 
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,

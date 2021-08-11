@@ -145,14 +145,14 @@ class CompetiteurRepository extends ServiceEntityRepository
     /**
      * Brûlage des joueurs sélectionnables dans une compo
      * @param Championnat $championnat
-     * @param int $idEquipe
+     * @param int $numero
      * @param int $idJournee
      * @param array $idEquipes
      * @param int $nbJoueurs
      * @param int $limiteBrulage
      * @return array
      */
-    public function getBrulagesSelectionnables(Championnat $championnat, int $idEquipe, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
+    public function getBrulagesSelectionnables(Championnat $championnat, int $numero, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
     {
         $idFirstJournee = $championnat->getJournees()->toArray()[0]->getIdJournee();
         $j2Condition = (count($championnat->getJournees()->toArray()) >= 2 && $championnat->getJournees()->toArray()[1]->getIdJournee() == $idJournee) && $championnat->isJ2Rule();
@@ -176,7 +176,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             $brulages = $brulages->addSelect('(SELECT COUNT(r.id)' .
                 ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                 ' WHERE e.idDivision IS NOT NULL' .
-                ' AND e.numero < :idEquipe' .
+                ' AND e.numero < :numero' .
                 ' AND e.idChampionnat = :idChampionnat' .
                 ' AND r.idChampionnat = e.idChampionnat' .
                 ' AND r.idJournee = ' . $idFirstJournee .
@@ -208,24 +208,28 @@ class CompetiteurRepository extends ServiceEntityRepository
         for ($j = 0; $j < $nbJoueurs; $j++) {
             $brulages = $brulages
                 ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
-                                                  ' FROM App\Entity\Rencontre p' . $j .
+                                                  ' FROM App\Entity\Rencontre p' . $j . ', App\Entity\Equipe e' . $j .'e' .
                                                   ' WHERE p' . $j . '.idJournee = d.idJournee' .
-                                                  ' AND p' . $j . '.idEquipe <> :idEquipe'.
+                                                  ' AND p' . $j . '.idEquipe = e' . $j .'e.idEquipe'.
+                                                  ' AND e' . $j .'e.numero <> :numero'.
                                                   ' AND p' . $j . '.idChampionnat = :idChampionnat)');
         }
         $brulages = $brulages
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p' .
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
                        ' WHERE (' . $strD . ')' .
                        ' AND p.idJournee < :idJournee' .
                        ' AND p.idChampionnat = :idChampionnat' .
-                       ' AND p.idEquipe < :idEquipe) < ' . $limiteBrulage)
+                       ' AND p.idEquipe = eBis.idEquipe' .
+                       ' AND eBis.numero < :numero) < ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
-            ->setParameter('idEquipe', $idEquipe)
+            ->setParameter('numero', $numero)
             ->setParameter('idChampionnat', $championnat->getIdChampionnat())
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
+
+        //TODO Changer les id_equipe par numero + dans RencontreType
 
         $allBrulage = [];
         foreach ($brulages as $brulage){
@@ -243,8 +247,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             $allBrulage[$nom]['bruleJ2'] = (array_key_exists('bruleJ2', $brulage) && $brulage['bruleJ2']);
 
             /** On effectue le brûlage prévisionnel **/
-            if (in_array($idEquipe - 1, array_keys($allBrulage[$nom]['brulage'])))
-                $allBrulage[$nom]['brulage'][$idEquipe - 1]++;
+            if (in_array($numero - 1, array_keys($allBrulage[$nom]['brulage'])))
+                $allBrulage[$nom]['brulage'][$numero - 1]++;
         }
 
         return $allBrulage;
