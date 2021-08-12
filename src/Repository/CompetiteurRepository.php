@@ -229,8 +229,6 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        //TODO Changer les id_equipe par numero + dans RencontreType
-
         $allBrulage = [];
         foreach ($brulages as $brulage){
             /** On formate en associant le joueur à son brûlage par équipe */
@@ -256,14 +254,14 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Joueurs brûlés pour une rencontre
-     * @param int $idEquipe
+     * @param int $numero
      * @param int $idJournee
      * @param int $type
      * @param int $nbJoueurs
      * @param int $limiteBrulage
      * @return array
      */
-    public function getBrulesDansEquipe(int $idEquipe, int $idJournee, int $type, int $nbJoueurs, int $limiteBrulage): array
+    public function getBrulesDansEquipe(int $numero, int $idJournee, int $type, int $nbJoueurs, int $limiteBrulage): array
     {
         $str = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
@@ -277,14 +275,14 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('(SELECT COUNT(r.id) ' .
                        ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                        ' WHERE e.idDivision IS NOT NULL' .
-                       ' AND e.numero < :idEquipe' .
+                       ' AND e.numero < :numero' .
                        ' AND e.idChampionnat = :idChampionnat' .
                        ' AND r.idChampionnat = :idChampionnat' .
                        ' AND r.idJournee < :idJournee' .
 	                   ' AND r.idEquipe = e.idEquipe' .
                        ' AND (' . $str . ')) >= ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
-            ->setParameter('idEquipe', $idEquipe)
+            ->setParameter('numero', $numero)
             ->setParameter('idChampionnat', $type)
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')

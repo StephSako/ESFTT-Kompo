@@ -325,8 +325,6 @@ class HomeController extends AbstractController
             }
         }
 
-        //TODO Bug exemptée affiché 2 fois
-
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,

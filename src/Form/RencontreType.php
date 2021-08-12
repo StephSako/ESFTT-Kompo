@@ -43,19 +43,21 @@ class RencontreType extends AbstractType
                         if ($i < $options['nbMaxJoueurs'] - 1) $str .= ' OR ';
                         $request = $request
                             ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
-                                       'FROM App\Entity\Rencontre p' . $i . ' ' .
-                                       'WHERE p' . $i . '.idJournee = d.idJournee ' .
-                                       'AND p' . $i . '.idEquipe <> :idEquipe ' .
-                                       'AND p' . $i . '.idChampionnat = :idChampionnat)');
+                                                                ' FROM App\Entity\Rencontre p' . $i . ', App\Entity\Equipe e' . $i .'e' .
+                                                                ' WHERE p' . $i . '.idJournee = d.idJournee' .
+                                                                ' AND p' . $i . '.idEquipe = e' . $i .'e.idEquipe'.
+                                                                ' AND e' . $i .'e.numero <> :numero'.
+                                                                ' AND p' . $i . '.idChampionnat = :idChampionnat)');
                     }
                     return $request
-                        ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p' .
+                        ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
                                    ' WHERE (' . $str . ')' .
                                    ' AND p.idJournee < :idJournee' .
-                                   ' AND p.idEquipe < :idEquipe' .
+                                   ' AND p.idEquipe = eBis.idEquipe' .
+                                   ' AND eBis.numero < :numero ' .
                                    ' AND p.idChampionnat = :idChampionnat) < ' . $options['limiteBrulage'])
                         ->setParameter('idJournee', $builder->getData()->getIdJournee()->getIdJournee())
-                        ->setParameter('idEquipe', $builder->getData()->getIdEquipe()->getIdEquipe())
+                        ->setParameter('numero', $builder->getData()->getIdEquipe()->getNumero())
                         ->setParameter('idChampionnat', $builder->getData()->getIdChampionnat()->getIdChampionnat())
                         ->orderBy('c.nom')
                         ->addOrderBy('c.prenom');
