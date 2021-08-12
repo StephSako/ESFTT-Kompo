@@ -123,14 +123,16 @@ class BackOfficeChampionnatController extends AbstractController
                     $numeroEquipes = array_map(function ($equipe) {
                         return $equipe->getNumero();
                     }, $championnat->getEquipes()->toArray());
+
                     $journeesToRecalcul = array_slice($journees, 0, count($journees) - 1);
+
                     $nbMaxJoueurs = max(array_map(function($division) {
                         return $division->getNbJoueurs();
                     }, $championnat->getDivisions()->toArray()));
 
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
-                            if ($rencontre->getIdEquipe()->getIdEquipe() != end($numeroEquipes)){ /** Si ce n'est pas la dernière équipe **/
+                            if ($rencontre->getIdEquipe()->getNumero() != max($numeroEquipes)){ /** Si ce n'est pas la dernière équipe **/
                                 for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
                                     if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
                                 }

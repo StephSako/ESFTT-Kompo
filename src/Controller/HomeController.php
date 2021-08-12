@@ -242,7 +242,7 @@ class HomeController extends AbstractController
         }
 
         $journees = $championnat->getJournees()->toArray();
-        $idJournee = array_search($compo->getIdJournee(), $journees)+1; //TODO Bug
+        $idJournee = array_search($compo->getIdJournee(), $journees)+1;
         if (!$compo->getIdEquipe()->getIdDivision()) {
             $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
             return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $compo->getIdJournee()->getIdJournee()]);
@@ -299,8 +299,8 @@ class HomeController extends AbstractController
 
                     /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
                     /**  Si pas en dernière journée ni en dernière équipe **/
-                    if (end($equipes)->getNumero() != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $idJournee){  //TODO Pas d'opération sur un ID
-                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1); //TODO Pas d'opération sur un ID
+                    if (max(array_map(function($eq) { return $eq->getNumero(); }, $equipes)) != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $compo->getIdJournee()->getIdJournee()){
+                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
                         foreach ($journeesToRecalculate as $journeeToRecalculate) {
                             for ($j = 0; $j < $nbJoueursDivision; $j++) {
                                 if ($form->getData()->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $journeeToRecalculate->getIdJournee());

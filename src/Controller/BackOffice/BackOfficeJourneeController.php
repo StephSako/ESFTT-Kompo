@@ -58,8 +58,7 @@ class BackOfficeJourneeController extends AbstractController
         $journees = $journee->getIdChampionnat()->getJournees()->toArray();
         $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
             return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-        }));
-        $posJournee = end($posJournee);
+        }))[0];
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
