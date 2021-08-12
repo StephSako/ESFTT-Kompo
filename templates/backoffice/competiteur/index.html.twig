@@ -53,15 +53,19 @@
                                 <td style="padding-top: 8px; padding-bottom: 8px; height: 62px;">
                                     {% if not competiteur.isLoisir %}
                                         {% if competiteur.isAdmin %}
-                                            <span class='new badge red{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
-                                        {% elseif competiteur.isCapitaine %}
-                                            <span class='new badge blue{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Capitaine'></span>
+                                            <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                         {% else %}
-                                            <span class='new badge green{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                            <span class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
                                         {% endif %}
                                     {% else %}
-                                        <span class='new badge orange{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                        <span class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                     {% endif %}
+
+                                    {% if competiteur.isCapitaine %}
+                                        <br>
+                                        <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
+                                    {% endif %}
+
                                     {% if competiteur.isEntraineur %}
                                         <br>
                                         <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
@@ -91,7 +95,7 @@
                                         <i>Sans classement</i>
                                     {% else %}
                                         {% if competiteur.classementOfficiel %}
-                                            {{ competiteur.classementOfficiel }}
+                                            {{ competiteur.classementOfficiel }} pts
                                         {% else %}
                                             <span class='red-text lighten-2'>Non renseigné</span>
                                         {% endif %}
@@ -129,7 +133,7 @@
                                     <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                                 </td>
                                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                    <td style="padding-top: 10px; padding-bottom: 4px;">
+                                    <td>
                                         <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
                                             <input type='hidden' name='_method' value='DELETE'>
                                             <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>

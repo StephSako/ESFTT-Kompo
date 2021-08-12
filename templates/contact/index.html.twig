@@ -15,7 +15,7 @@
         </div>
 
         <div class="card-panel center-align  hide-on-med-and-down" style="padding: 4px;">
-            <p><i class="material-icons blue-text">info</i><i><b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</i></p>
+            <p><i class="material-icons blue-text">info</i><b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
         </div>
 
         {% if competiteurs|length %}
@@ -37,15 +37,19 @@
                                 <td style="padding-top: 8px; padding-bottom: 8px; height: 62px;">
                                     {% if not competiteur.isLoisir %}
                                         {% if competiteur.isAdmin %}
-                                            <span class='new badge red{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
-                                        {% elseif competiteur.isCapitaine %}
-                                            <span class='new badge blue{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Capitaine'></span>
+                                            <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                         {% else %}
-                                            <span class='new badge green{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                            <span class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
                                         {% endif %}
                                     {% else %}
-                                        <span class='new badge orange{% if not competiteur.isEntraineur %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                        <span class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                     {% endif %}
+
+                                    {% if competiteur.isCapitaine %}
+                                        <br>
+                                        <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
+                                    {% endif %}
+
                                     {% if competiteur.isEntraineur %}
                                         <br>
                                         <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
