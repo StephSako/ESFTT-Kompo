@@ -1,8 +1,4 @@
 @charset "UTF-8";
-strong {
-  font-weight: bold;
-}
-
 /*
  * Configure the z-index of the editor UI, so when inside a Materialize
  * modal, it will be rendered over the modal.
@@ -18,11 +14,11 @@ strong {
  *
  * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/forms/_input-fields.scss#L10-L40
  */
-#settings-page input.ck-input.ck-input-text {
-  box-shadow: var(--ck-inner-shadow), 0 0;
-  background: var(--ck-color-input-background);
-  border: 1px solid var(--ck-color-input-border);
-  padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+#settings-page #editor {
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1) inset, 0 0;
+  background: white;
+  border: 1px solid #c7c7c7;
+  padding: calc(0.6em * 0.16) calc(0.6em * 0.8);
   transition-property: box-shadow, border;
   transition: 0.2s ease-in-out;
   height: inherit;
@@ -30,6 +26,9 @@ strong {
   font-size: inherit;
   margin: 0;
   box-sizing: border-box;
+}
+#settings-page #editor:focus {
+  border: 1px solid #1f89e5;
 }
 
 #settings-page input.ck-input.ck-input-text:focus {
@@ -47,6 +46,10 @@ strong {
   list-style-type: inherit;
 }
 
+#settings-page strong {
+  font-weight: bold;
+}
+
 #settings-page h3, #settings-page h4, #settings-page h5 {
   font-family: "Lato", sans-serif;
 }
@@ -54,6 +57,12 @@ strong {
 #settings-page ul {
   /* Default user agent stylesheet, you can change it to your needs. */
   padding-left: 40px;
+}
+
+/* On customise l'aspect de l'Edit Block */
+.ck-button__icon {
+  background-color: white !important;
+  border-radius: 3px !important;
 }
 
 /*# sourceMappingURL=ckeditor.css.map */

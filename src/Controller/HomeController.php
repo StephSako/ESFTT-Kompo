@@ -383,16 +383,15 @@ class HomeController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
 
         $form = null;
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())){
-            $settings = $this->settingsRepository->find(1);
+        $settings = $this->settingsRepository->find(1);
+        $isAdmin = in_array("ROLE_ADMIN", $this->getUser()->getRoles());
+        if ($isAdmin){
             $form = $this->createForm(SettingsType::class, $settings);
             $form->handleRequest($request);
 
             if ($form->isSubmitted()) {
-                dump($form);
                 if ($form->isValid()) {
                     $this->em->flush();
-                    dump($settings);
                     $this->addFlash('success', 'Informations modifiées');
                     return $this->redirectToRoute('informations');
                 } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -403,8 +402,9 @@ class HomeController extends AbstractController
             'informations' => $this->settingsRepository->find(1)->getInformations(),
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
-            'form' => $form->createView(),
-            'journees' => $journees
+            'form' => $isAdmin ? $form->createView() : null,
+            'journees' => $journees,
+            'HTMLContent' => $settings->getInformations()
         ]);
     }
 }

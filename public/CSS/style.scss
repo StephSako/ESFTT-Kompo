@@ -917,6 +917,16 @@ button.btn_renouveler_certif_mobile {
       height: 40px;
     }
   }
+
+  #settings-form {
+    margin-left: 10px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #settings-form {
+    margin-left: 15px;
+  }
 }
 
 @media screen and (max-width: 324px) {

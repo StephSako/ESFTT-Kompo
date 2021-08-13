@@ -1,4 +1,4 @@
-ClassicEditor.create(
+BalloonEditor.create(
     document.querySelector('#editor'),
     {
         bold: {
@@ -49,8 +49,13 @@ ClassicEditor.create(
         },
         toolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link']
     }
-).then(editor => document.querySelector("#settings-form form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    this.querySelector('#settings-form #settings_informations').value = editor.getData();
-    this.submit();
-}));
+).catch(error => { console.error( error ); }).then(editor => {
+    const editorInstance = document.querySelector('.ck-editor__editable').ckeditorInstance;
+    editorInstance.setData($('<div/>').html(ckeditor_content).text());
+
+    document.querySelector("#settings-form form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        this.querySelector('#settings-form #settings_informations').value = editor.getData();
+        this.submit();
+    })
+});
