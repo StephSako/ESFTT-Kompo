@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Championnat;
 use App\Form\RencontreType;
+use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\RencontreRepository;
+use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -24,12 +26,14 @@ class HomeController extends AbstractController
     private $disponibiliteRepository;
     private $rencontreRepository;
     private $invalidSelectionController;
+    private $settingsRepository;
 
     /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
+     * @param SettingsRepository $settingsRepository
      * @param InvalidSelectionController $invalidSelectionController
      * @param EntityManagerInterface $em
      */
@@ -37,6 +41,7 @@ class HomeController extends AbstractController
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
+                                SettingsRepository $settingsRepository,
                                 InvalidSelectionController $invalidSelectionController,
                                 EntityManagerInterface $em)
     {
@@ -46,6 +51,7 @@ class HomeController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->championnatRepository = $championnatRepository;
         $this->invalidSelectionController = $invalidSelectionController;
+        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -362,6 +368,43 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('journee.show', [
             'type' => $compo->getIdChampionnat()->getIdChampionnat(),
             'id' => $compo->getIdJournee()->getIdJournee()
+        ]);
+    }
+
+    /**
+     * @Route("/informations", name="informations")
+     */
+    public function infos(Request $request): Response
+    {
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $allChampionnats = $this->championnatRepository->findAll();
+
+        $form = null;
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())){
+            $settings = $this->settingsRepository->find(1);
+            $form = $this->createForm(SettingsType::class, $settings);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted()) {
+                dump($form);
+                if ($form->isValid()) {
+                    $this->em->flush();
+                    dump($settings);
+                    $this->addFlash('success', 'Informations modifiées');
+                    return $this->redirectToRoute('informations');
+                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            }
+        }
+
+        return $this->render('journee/infos.html.twig', [
+            'informations' => $this->settingsRepository->find(1)->getInformations(),
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
+            'form' => $form->createView(),
+            'journees' => $journees
         ]);
     }
 }

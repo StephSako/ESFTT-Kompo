@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
+{% endblock %}
+
+{% block title %}Informations{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar.html.twig") %}
+    </header>
+
+    <div class="container" id="settings-page">
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Informations</h4>
+        </div>
+
+        <div class="card-panel">
+            <p>{{ informations | raw }}</p>
+        </div>
+
+        {% if 'ROLE_ADMIN' in app.token.roleNames %}
+            <div class="card-panel" id="settings-form">
+                {{ form_start(form) }}
+                <div class="center">
+                    <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition</h5>
+                    <div id="editor"></div>
+
+                    <br>
+                    <button class="btn waves-effect waves-light blue lighten-2 btn_gestion">
+                        Modifier
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/ckeditor5.js') }}"></script>
+{% endblock %}

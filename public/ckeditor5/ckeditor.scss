@@ -1,0 +1,59 @@
+// CKEditor compatibility
+
+strong {
+  font-weight: bold;
+}
+
+/*
+ * Configure the z-index of the editor UI, so when inside a Materialize
+ * modal, it will be rendered over the modal.
+ */
+:root {
+  --ck-z-default: 100;
+  --ck-z-modal: calc( var(--ck-z-default) + 999 );
+}
+
+/*
+ * Bring back the default CKEditor 5 input appearance by overriding
+ * high–specificity styles brought by materialize.css.
+ *
+ * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/forms/_input-fields.scss#L10-L40
+ */
+#settings-page input.ck-input.ck-input-text {
+  box-shadow: var(--ck-inner-shadow),0 0;
+  background: var(--ck-color-input-background);
+  border: 1px solid var(--ck-color-input-border);
+  padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+  transition-property: box-shadow,border;
+  transition: .2s ease-in-out;
+
+  height: inherit;
+  width: inherit;
+  font-size: inherit;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#settings-page input.ck-input.ck-input-text:focus {
+  border: var(--ck-focus-ring);
+  box-shadow: var(--ck-focus-outer-shadow),var(--ck-inner-shadow);
+}
+
+/*
+ * Bring back the default <ul> and <li> appearance.
+ *
+ * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/_global.scss#L28-L37
+ */
+#settings-page ul,
+#settings-page ul li {
+  list-style-type: inherit;
+}
+
+#settings-page h3, #settings-page h4, #settings-page h5 {
+  font-family: "Lato", sans-serif;
+}
+
+#settings-page ul {
+  /* Default user agent stylesheet, you can change it to your needs. */
+  padding-left: 40px;
+}
