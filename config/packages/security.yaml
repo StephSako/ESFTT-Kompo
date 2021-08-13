@@ -34,7 +34,7 @@ security:
         - { path: ^/journee, roles: ROLE_LOISIR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/contact, roles: ROLE_LOISIR }
-        - { path: ^/informations, roles: ROLE_CAPITAINE }
+        - { path: ^/informations, roles: ROLE_LOISIR }
 
     encoders:
         App\Entity\Competiteur:

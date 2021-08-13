@@ -1,13 +1,7 @@
 BalloonEditor.create(
-    document.querySelector('#editor'),
+    document.querySelector('#editor'), //TODO Faire la config pour l'Edit Block
+    //TODO Intégrer l'insert d'images
     {
-        bold: {
-            options: [
-                {
-                    element: 'b'
-                }
-            ]
-        },
         heading: {
             options: [
                 {
@@ -47,7 +41,8 @@ BalloonEditor.create(
                 }
             ]
         },
-        toolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link']
+        toolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link'],
+        blockToolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link']
     }
 ).catch(error => { console.error( error ); }).then(editor => {
     const editorInstance = document.querySelector('.ck-editor__editable').ckeditorInstance;
