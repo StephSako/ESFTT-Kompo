@@ -73,7 +73,7 @@
             {% endif %}
         </div>
 
-        <br><br>
+        <br>
         {% if allChampionnatsReset|length > 1 %}
             <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
                 {% for nomChampionnat, data in allChampionnatsReset %}
@@ -90,11 +90,37 @@
 
                         {% if data.countDispos > 0 or data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
                             <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>La phase de ce championnat est terminée</b></p>
-                            <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Recommencer la phase de \'{{ nomChampionnat }}\' ?')">
+                            <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader(this)">
                                 <input type="hidden" name="resetChampionnats" value="1">
                                 <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                <button class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Mettre à jour '{{ nomChampionnat }}'</button>
+                                <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Mettre à jour '{{ nomChampionnat }}'</button>
+
+                                <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                    <div class="preloader-wrapper small active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                            <div class="circle-clipper left">
+                                                <div class="circle"></div>
+                                            </div><div class="gap-patch">
+                                                <div class="circle"></div>
+                                            </div><div class="circle-clipper right">
+                                                <div class="circle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
+
+                            <script type="text/javascript">
+                                function resetPhasePreloader(form) {
+                                    const response = confirm('Recommencer la phase de {{ nomChampionnat }} ?');
+                                    if (response){
+                                        $('#preloaderResetPhase{{ nomChampionnat }}').removeAttr('hidden');
+                                        $('#btnResetPhase{{ nomChampionnat }}').addClass('hide');
+                                    }
+                                    return response;
+                                }
+                            </script>
+
                         {% else %}
                             <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
                         {% endif %}

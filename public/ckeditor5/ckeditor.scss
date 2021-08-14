@@ -33,6 +33,10 @@
   }
 }
 
+#settings-page blockquote {
+  border-left: 5px solid #ee6e73;
+}
+
 #settings-page input.ck-input.ck-input-text:focus {
   border: var(--ck-focus-ring);
   box-shadow: var(--ck-focus-outer-shadow),var(--ck-inner-shadow);

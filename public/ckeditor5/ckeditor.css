@@ -31,6 +31,10 @@
   border: 1px solid #1f89e5;
 }
 
+#settings-page blockquote {
+  border-left: 5px solid #ee6e73;
+}
+
 #settings-page input.ck-input.ck-input-text:focus {
   border: var(--ck-focus-ring);
   box-shadow: var(--ck-focus-outer-shadow), var(--ck-inner-shadow);

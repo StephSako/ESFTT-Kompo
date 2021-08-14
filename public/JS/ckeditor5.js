@@ -1,5 +1,5 @@
 BalloonEditor.create(
-    document.querySelector('#editor'), //TODO Faire la config pour l'Edit Block
+    document.querySelector('#editor'),
     //TODO Intégrer l'insert d'images
     {
         heading: {
