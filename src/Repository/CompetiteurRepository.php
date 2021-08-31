@@ -369,7 +369,6 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('c.mail = :mail OR c.mail2 = :mail')
             ->setParameter('username', $username)
             ->setParameter('mail', $mail)
-            ->andWhere('c.isLoisir <> true')
             ->getQuery()
             ->getResult();
 
