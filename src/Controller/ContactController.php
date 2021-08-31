@@ -67,8 +67,8 @@ class ContactController extends AbstractController
     public function contact(Request $request): Response
     {
         return $this->sendMail(
-            new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver')),
             new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()),
+            new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver')),
             boolval($request->request->get('importance')),
             $request->request->get('sujet'),
             $request->request->get('message'),
