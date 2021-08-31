@@ -151,7 +151,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                 if ($competiteur->isAdmin()) {
                     $competiteur->setIsCapitaine(true);
-                    $competiteur->setLoisir(false);
+                    $competiteur->setIsLoisir(false);
                 } else if ($competiteur->isLoisir()) {
                     $competiteur->setIsCapitaine(false);
                     $competiteur->setIsAdmin(false);

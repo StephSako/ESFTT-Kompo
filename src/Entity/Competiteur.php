@@ -509,7 +509,7 @@ class Competiteur implements UserInterface, Serializable
      * @param bool $loisir
      * @return Competiteur
      */
-    public function setLoisir(bool $loisir): self
+    public function setIsLoisir(bool $loisir): self
     {
         $this->isLoisir = $loisir;
         return $this;
