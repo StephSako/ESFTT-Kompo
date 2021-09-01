@@ -5,6 +5,17 @@
         width: 350px;
         background: grey;
     }
+
+    .customButton {
+        background-color: #1565c0;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
 </style>
 
 <div class="container">
@@ -12,6 +23,9 @@
 
     <div class="divider_custom" style="margin-top: 20px;"></div>
 
-    <p class="center" style="color: grey">Email envoyé depuis <a href="https://www.prive.esftt.com">Kompo</a></p>
+    <br>
+    <a href="mailto:{{ options.emailSender }}" class="customButton">Répondre à {{ options.nameSender }}</a>
+
+    <p class="center" style="color: grey">Mail reçu depuis <a href="https://www.prive.esftt.com">Kompo</a></p>
     <p class="center" style="color: grey">Modifiez vos paramètres de contact <a href="{{ url('account') }}">ici</a></p>
 </div>

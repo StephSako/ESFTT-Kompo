@@ -67,12 +67,13 @@ class ContactController extends AbstractController
     public function contact(Request $request): Response
     {
         return $this->sendMail(
-            new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()),
+            new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - Message reçu de ' . $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()),
             new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver')),
             boolval($request->request->get('importance')),
             $request->request->get('sujet'),
             $request->request->get('message'),
-            'mail_templating/contact.html.twig');
+            'mail_templating/contact.html.twig',
+            ['emailSender' => $request->request->get('mailSender'), 'nameSender' => $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()]);
     }
 
     /**
@@ -109,7 +110,8 @@ class ContactController extends AbstractController
                 true,
                 'Réinitialisation de votre mot de passe',
                 base64_encode($encryption),
-                'mail_templating/forgotten_password.html.twig');
+                'mail_templating/forgotten_password.html.twig',
+                []);
         }
     }
 
@@ -120,9 +122,10 @@ class ContactController extends AbstractController
      * @param string $sujet
      * @param string|null $message
      * @param string $template
+     * @param array $options
      * @return Response
      */
-    public function sendMail(Address $addressSender, Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template): Response
+    public function sendMail(Address $addressSender, Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template, array $options): Response
     {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
@@ -131,7 +134,7 @@ class ContactController extends AbstractController
             ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
             ->htmlTemplate($template)
-            ->context(['message' => $message]);
+            ->context(['message' => $message, 'options' => $options]);
 
         try {
             $this->mailer->send($email);
