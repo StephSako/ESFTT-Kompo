@@ -57,6 +57,10 @@ class BackOfficeFFTTApiController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
+        $joueursIssued = []; /** Tableau où seront stockés tous les joueurs devant être mis à jour */
+        $error = false;
+
         try {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
@@ -68,7 +72,6 @@ class BackOfficeFFTTApiController extends AbstractController
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0]);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
-            $joueursIssued = [];
 
             foreach ($joueursKompo as $competiteur){
                 $joueurFFTT = array_filter($joueursFFTT,
@@ -90,8 +93,6 @@ class BackOfficeFFTTApiController extends AbstractController
             }
 
             $allChampionnats = $this->championnatRepository->findAll();
-
-            $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
 
             foreach($allChampionnats as $championnatActif){
                 $allChampionnatsReset[$championnatActif->getNom()] = [];
@@ -454,14 +455,16 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
                 else $this->addFlash('fail', 'Championnat inconnu !');
             }
-
-            return $this->render('backoffice/reset.html.twig', [
-                'allChampionnatsReset' => $allChampionnatsReset,
-                'joueursIssued' => $joueursIssued
-            ]);
         } catch(Exception $exception) {
-            throw new Exception('Le service API de la FFTT est actuellement indisponible', 500);
+            $this->addFlash('fail', 'L\'API de la FFTT est indisponible pour le moment');
+            $error = true;
         }
+
+        return $this->render('backoffice/reset.html.twig', [
+            'allChampionnatsReset' => $allChampionnatsReset,
+            'joueursIssued' => $joueursIssued,
+            'error' => $error
+        ]);
     }
 
     function getLatestDate(Championnat $championnat): DateTime {
