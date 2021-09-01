@@ -50,17 +50,17 @@
                     <tbody>
                         {% for competiteur in competiteurs %}
                             <tr>
-                                <td style="padding-top: 8px; padding-bottom: 8px; height: 62px;">
+                                <td style="padding-top: 8px; padding-bottom: 8px;">
                                     {% if competiteur.isAdmin %}
                                         <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                     {% endif %}
 
                                     {% if not competiteur.isLoisir %}
                                         {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                        <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
                                     {% else %}
                                         {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                        <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                     {% endif %}
 
                                     {% if competiteur.isCapitaine %}

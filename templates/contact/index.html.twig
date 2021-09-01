@@ -30,21 +30,21 @@
                     </tr>
                 </thead>
 
-                <tbody class="center">
+                <tbody class="center" style="min-height: 395px;">
                     {% for competiteur in competiteurs %}
                         {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
                             <tr>
-                                <td style="padding-top: 8px; padding-bottom: 8px; height: 62px;">
+                                <td style="padding-top: 8px; padding-bottom: 8px;">
                                     {% if competiteur.isAdmin %}
                                         <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                     {% endif %}
 
                                     {% if not competiteur.isLoisir %}
                                         {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                        <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
                                     {% else %}
                                         {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                        <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                     {% endif %}
 
                                     {% if competiteur.isCapitaine %}
@@ -64,7 +64,7 @@
                                         <img class="picture_compet avatar" src="{{ asset('images/account.png') }}" alt="Avatar" width="60rem" height="60rem">
                                     {% endif %}
                                 </td>
-                                <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                <td style="padding-top: 10px; padding-bottom: 10px;">{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                                 <td>
                                     {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                         {% if competiteur.mail and competiteur.contactableMail %}
