@@ -777,15 +777,6 @@ button.btn_renouveler_certif_mobile {
     display: none;
   }
 
-  td.td_certificat_btn {
-    height: 51px;
-    padding-bottom: 6px;
-    padding-top: 8px;
-  }
-  td.td_certificat_btn.td_certificat_btned {
-    padding-top: 4px;
-  }
-
   td.td_picture_compet {
     padding-top: 0;
     padding-bottom: 0;

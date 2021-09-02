@@ -771,9 +771,19 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return Competiteur
      */
-    public function setAnneeCertificatMedical(): self
+    public function renouvelerAnneeCertificatMedical(): self
     {
         $this->anneeCertificatMedical = intval((new DateTime())->format('Y'));
+        return $this;
+    }
+
+    /**
+     * @param int $annee
+     * @return Competiteur
+     */
+    public function setAnneeCertificatMedical(int $annee): self
+    {
+        $this->anneeCertificatMedical = $annee;
         return $this;
     }
 

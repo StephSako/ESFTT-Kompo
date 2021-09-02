@@ -40,12 +40,25 @@
                     {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
                         <p><span class="green white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ anneeCertificatMedical+3 }} - {{ anneeCertificatMedical+4 }}</b></span></p>
                     {% else %}
-                        <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
-
+                        {% if anneeCertificatMedical != null %}
+                            <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Renouvellement à la rentrée <b>{{ "now"|date('Y') }} - {{ "now"|date('Y')+1 }}</b></span></p>
+                        {% else %}
+                            <p><span class="red white-text darken-1" style="padding: 8px; border-radius: 30px;">Année du certificat médical non renseignée</b></span></p>
+                        {% endif %}
                         {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                            <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
-                                Renouveler
-                            </a>
+                            {% if anneeCertificatMedical != null %}
+                                <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
+                                    Renouveler
+                                </a>
+                            {% else %}
+                                <p style="margin-bottom: 0;"><b>Renseignez l'année à laquelle le certificat médical a été créé</b></p>
+
+                                <div class="row" style="margin-bottom: 0;">
+                                    <div class="col s12 m4 offset-m4" style="margin-top: 0;">
+                                        {{ form_row(form.anneeCertificatMedical) }}
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>

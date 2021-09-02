@@ -120,6 +120,14 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 'attr' => [
                     'maxlength' => 11
                 ]
+            ])
+            ->add('anneeCertificatMedical', IntegerType::class, [
+                'label' => 'Année certificat médical',
+                'required' => false,
+                'attr' => [
+                    'min' => 2016,
+                    'max' => 9999
+                ]
             ]);
     }
 

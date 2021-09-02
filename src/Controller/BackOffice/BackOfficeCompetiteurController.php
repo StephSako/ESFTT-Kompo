@@ -252,7 +252,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function renouvelerCertificat(Competiteur $competiteur, string $routeToRedirect): Response
     {
-        $competiteur->setAnneeCertificatMedical();
+        $competiteur->renouvelerAnneeCertificatMedical();
 
         $this->em->flush();
         $this->addFlash('success', 'Certificat médical renouvelé' . ($routeToRedirect != 'backoffice.competiteur.edit' ? ' pour ' . $competiteur->getPrenom() . ' ' . $competiteur->getNom() : null));
