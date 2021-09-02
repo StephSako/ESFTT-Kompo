@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use App\Repository\JourneeRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -21,7 +20,6 @@ use Vich\UploaderBundle\Handler\UploadHandler;
 class SecurityController extends AbstractController
 {
     private $em;
-    private $journeeRepository;
     private $championnatRepository;
     private $utils;
     private $uploadHandler;
@@ -30,7 +28,6 @@ class SecurityController extends AbstractController
 
     /**
      * SecurityController constructor.
-     * @param JourneeRepository $journeeRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
@@ -38,15 +35,13 @@ class SecurityController extends AbstractController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(JourneeRepository $journeeRepository,
-                                CompetiteurRepository $competiteurRepository,
+    public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em,
                                 AuthenticationUtils $utils,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder)
     {
-        $this->journeeRepository = $journeeRepository;
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->utils = $utils;
