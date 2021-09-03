@@ -24,6 +24,13 @@ use Doctrine\Common\Collections\Collection;
 class Championnat
 {
 
+    /** idPere par organisme (API FFTT)*/
+    const LINKS_CHAMPIONNATS = [
+        'Départemental Val d\'Oise' => 95,
+        'Régional Val d\'Oise' => 1008,
+        'National France' => 100001
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

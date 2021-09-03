@@ -64,11 +64,6 @@ class BackOfficeFFTTApiController extends AbstractController
         try {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
-            /** idPere par organisme */
-            // Départementale Val d'Oise : 95
-            // Régionale Val d'Oise : 1008
-            // Nationale France : 100001
-
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0]);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
