@@ -19,16 +19,16 @@
                 </div>
 
                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                    <div class="col s12 m3">
+                    <div class="col s12 m6 l3">
                         {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
                     </div>
-                    <div class="col s12 m3">
+                    <div class="col s12 m6 l3">
                         {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
                     </div>
-                    <div class="col s12 m3">
+                    <div class="col s12 m6 l3">
                         {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
                     </div>
-                    <div class="col s12 m3">
+                    <div class="col s12 m6 l3">
                         {{ form_row(form.isEntraineur) }}
                     </div>
                 {% endif %}
