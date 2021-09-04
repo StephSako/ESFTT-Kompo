@@ -29,7 +29,10 @@
                         {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
                     </div>
                     <div class="col s12 m6 l3">
-                        {{ form_row(form.isEntraineur) }}
+                        {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
+                    </div>
+                    <div class="col s12">
+                        {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
                     </div>
                 {% endif %}
             </div>

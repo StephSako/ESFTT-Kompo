@@ -234,6 +234,13 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_archive", nullable=false)
+     */
+    private $isArchive = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="contactable_mail", nullable=false)
      */
     private $contactableMail = false;
@@ -400,8 +407,7 @@ class Competiteur implements UserInterface, Serializable
             } else {
                 return ['ROLE_JOUEUR'];
             }
-        }
-        else return ['ROLE_LOISIR'];
+        } else return ['ROLE_LOISIR'];
     }
 
     /**
@@ -821,6 +827,24 @@ class Competiteur implements UserInterface, Serializable
     public function setIsEntraineur(bool $isEntraineur): self
     {
         $this->isEntraineur = $isEntraineur;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchive(): bool
+    {
+        return $this->isArchive;
+    }
+
+    /**
+     * @param bool $isArchive
+     * @return Competiteur
+     */
+    public function setIsArchive(bool $isArchive): self
+    {
+        $this->isArchive = $isArchive;
         return $this;
     }
 }

@@ -66,6 +66,10 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 'label' => 'Loisir',
                 'required' => false
             ])
+            ->add('isArchive', CheckboxType::class, [
+                'label' => 'Archivé',
+                'required' => false
+            ])
             ->add('isEntraineur', CheckboxType::class, [
                 'label' => 'Entraîneur',
                 'required' => false

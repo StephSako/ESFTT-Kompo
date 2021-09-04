@@ -55,22 +55,26 @@
                                         <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                     {% endif %}
 
-                                    {% if not competiteur.isLoisir %}
-                                        {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                    {% if not competiteur.isArchive %}
+                                        {% if not competiteur.isLoisir %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                        {% else %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                        {% endif %}
+
+                                        {% if competiteur.isCapitaine %}
+                                            <br>
+                                            <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
+                                        {% endif %}
+
+                                        {% if competiteur.isEntraineur %}
+                                            <br>
+                                            <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
+                                        {% endif %}
                                     {% else %}
-                                        {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
-                                    {% endif %}
-
-                                    {% if competiteur.isCapitaine %}
-                                        <br>
-                                        <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
-                                    {% endif %}
-
-                                    {% if competiteur.isEntraineur %}
-                                        <br>
-                                        <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
+                                        <span class="new badge grey lighten-1" data-badge-caption="Archivé"></span>
                                     {% endif %}
                                 </td>
                                 <td class="td_picture_compet">
@@ -82,7 +86,7 @@
                                 </td>
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                                 <td>
-                                    {% if competiteur.isLoisir %}
+                                    {% if competiteur.isLoisir or competiteur.isArchive %}
                                         <i>Sans licence</i>
                                     {% else %}
                                         {% if competiteur.licence %}
@@ -93,7 +97,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if competiteur.isLoisir %}
+                                    {% if competiteur.isLoisir or competiteur.isArchive %}
                                         <i>Sans classement</i>
                                     {% else %}
                                         {% if competiteur.classementOfficiel %}
@@ -105,17 +109,19 @@
                                 </td>
                                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                     <td>
-                                        {% if not competiteur.anneeCertificatMedical %}
-                                            <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
-                                        {% else %}
-                                            <span>
-                                                {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                                    <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
-                                                    {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                {% else %}
-                                                    <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                {% endif %}
-                                            </span>
+                                        {% if not competiteur.isArchive %}
+                                            {% if not competiteur.anneeCertificatMedical %}
+                                                <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
+                                            {% else %}
+                                                <span>
+                                                    {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                                        <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
+                                                        {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% else %}
+                                                        <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 {% endif %}
