@@ -399,15 +399,23 @@ class Competiteur implements UserInterface, Serializable
      */
     public function getRoles(): array
     {
-        if (!$this->isLoisir()){
-            if ($this->isAdmin()) {
-                return ['ROLE_ADMIN', 'ROLE_CAPITAINE', 'ROLE_JOUEUR'];
-            } else if ($this->isCapitaine()) {
-                return ['ROLE_CAPITAINE', 'ROLE_JOUEUR'];
-            } else {
-                return ['ROLE_JOUEUR'];
-            }
-        } else return ['ROLE_LOISIR'];
+        $roles = [];
+        if (!$this->isArchive()){
+            if (!$this->isLoisir()){
+                if ($this->isAdmin()) array_push($roles, 'ROLE_ADMIN');
+                if ($this->isCapitaine()) array_push($roles, 'ROLE_CAPITAINE');
+                array_push($roles, 'ROLE_JOUEUR');
+            } else array_push($roles, 'ROLE_LOISIR');
+        } else array_push($roles, 'ROLE_ARCHIVE');
+        if ($this->isEntraineur()) array_push($roles, 'ROLE_ENTRAINEUR');
+
+        return $roles;
+    }
+
+    public function getRolesFormatted() {
+        return str_replace('Role_', '', implode(', ', array_map(function($role){
+            return mb_convert_case($role, MB_CASE_TITLE, "UTF-8");
+        }, $this->getRoles())));
     }
 
     /**
@@ -762,7 +770,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = mb_convert_case($prenom, MB_CASE_TITLE, "UTF-8");;
+        $this->prenom = mb_convert_case($prenom, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
@@ -808,7 +816,8 @@ class Competiteur implements UserInterface, Serializable
             $this->getMail(),
             $this->getMail2(),
             $this->getPhoneNumber(),
-            $this->getPhoneNumber2()
+            $this->getPhoneNumber2(),
+            $this->getRolesFormatted()
         ];
     }
 

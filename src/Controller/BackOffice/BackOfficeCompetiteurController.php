@@ -280,12 +280,12 @@ class BackOfficeCompetiteurController extends AbstractController
         $sheet = $spreadsheet->getActiveSheet();
 
         /** On set les noms des colonnes */
-        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2'];
-        for ($col = 'A', $i = 0; $col !== 'K'; $col++, $i++) {
+        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
+        for ($col = 'A', $i = 0; $col !== 'L'; $col++, $i++) {
             $sheet->setCellValue($col . '1', $headers[$i]);
         }
 
-        $sheet->getStyle('A1:J1')->applyFromArray(
+        $sheet->getStyle('A1:K1')->applyFromArray(
             array(
                 'fill' => array(
                     'fillType' => Fill::FILL_SOLID,
@@ -303,7 +303,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 array(
                     'fill' => array(
                         'fillType' => Fill::FILL_SOLID,
-                        'startColor' => array('argb' => ($competiteur[5] < ((new DateTime())->format('Y')) - 2) ? 'FFFF3C3C' : '50EA39')
+                        'startColor' => array('argb' => ($competiteur[5] < ((new DateTime())->format('Y')) - 2) ? 'E94040' : '2DB009')
                     ),
                     'font'  => array(
                         'bold'  =>  true,
@@ -315,7 +315,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
         $sheet->fromArray($dataCompetiteurs,'', 'A2', true);
         /** On resize automatiquement les colonnes */
-        for($col = 'A'; $col !== 'K'; $col++) {
+        for($col = 'A'; $col !== 'L'; $col++) {
             $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
         }
 
