@@ -35,6 +35,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)
             ->andWhere('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -70,6 +71,7 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $result = $result
             ->where('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -122,6 +124,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -203,6 +206,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->leftJoin('c.dispos', 'd')
             ->where('d.idChampionnat = :idChampionnat')
             ->andWhere('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->andWhere('d.idJournee = :idJournee')
             ->andWhere('d.disponibilite = 1');
         for ($j = 0; $j < $nbJoueurs; $j++) {
@@ -272,6 +276,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->select('c.nom')
             ->addSelect('c.prenom')
             ->where('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->andWhere('(SELECT COUNT(r.id) ' .
                        ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                        ' WHERE e.idDivision IS NOT NULL' .
@@ -324,6 +329,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->from('App:Journee', 'j')
             ->leftJoin('j.idChampionnat', 'champ')
             ->where('c.isLoisir <> true')
+            ->andWhere('c.isArchive <> true')
             ->orderBy('c.nom', 'ASC')
             ->addOrderBy('c.prenom', 'ASC')
             ->addOrderBy('j.idJournee', 'ASC')

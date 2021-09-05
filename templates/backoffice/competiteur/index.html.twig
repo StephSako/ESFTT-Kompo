@@ -84,24 +84,28 @@
                                 </td>
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                                 <td>
-                                    {% if competiteur.isLoisir or competiteur.isArchive %}
-                                        <i>Sans licence</i>
-                                    {% else %}
-                                        {% if competiteur.licence %}
-                                            {{ competiteur.licence }}
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.isLoisir %}
+                                            <i>Sans licence</i>
                                         {% else %}
-                                            <span class='red-text lighten-2'>License indéfinie</span>
+                                            {% if competiteur.licence %}
+                                                {{ competiteur.licence }}
+                                            {% else %}
+                                                <span class='red-text lighten-2'>License indéfinie</span>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if competiteur.isLoisir or competiteur.isArchive %}
-                                        <i>Sans classement</i>
-                                    {% else %}
-                                        {% if competiteur.classementOfficiel %}
-                                            {{ competiteur.classementOfficiel }} pts
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.isLoisir %}
+                                            <i>Sans classement</i>
                                         {% else %}
-                                            <span class='red-text lighten-2'>Non renseigné</span>
+                                            {% if competiteur.classementOfficiel %}
+                                                {{ competiteur.classementOfficiel }} pts
+                                            {% else %}
+                                                <span class='red-text lighten-2'>Non renseigné</span>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </td>

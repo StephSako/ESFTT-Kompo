@@ -157,7 +157,7 @@
             <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey">Annuler</a>
             <button
                 {% if editMode and (not options.competiteurIsLoisir is defined or options.competiteurIsLoisir == false) %}
-                    onclick="alertBecomingLoisir()"
+                    onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
                 class="btn waves-effect waves-light light-blue darken-1">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>

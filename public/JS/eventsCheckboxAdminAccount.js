@@ -1,6 +1,6 @@
-function alertBecomingLoisir(){
-    if ($('#cb_loisir').is(":checked")){
-        let r = confirm('Les disponibilités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
+function alertBecomingLoisirOrArchived(){
+    if ($('#cb_loisir').is(":checked") || $('#cb_archive').is(":checked")){
+        let r = confirm('Ses disponibilités seront supprimées et le joueur désélectionné de toutes compositions. Êtes-vous sûr ?');
         if (r !== true) {
             event.preventDefault();
         }

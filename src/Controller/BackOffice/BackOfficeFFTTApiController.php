@@ -65,7 +65,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
             /** Gestion des joueurs */
-            $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0]);
+            $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0, 'isArchive' => 0]);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
 
             foreach ($joueursKompo as $competiteur){

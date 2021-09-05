@@ -141,23 +141,16 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             try {
-                /** Un joueur devenant 'loisir' est désélectionné de toutes les compositions de chaque championnat ... **/
-                if ($competiteur->isLoisir()){
+                /** Un joueur devenant 'loisir' ou 'archivé' est désélectionné de toutes les compositions de chaque championnat ... **/
+                if ($competiteur->isLoisir() || $competiteur->isArchive()){
                     for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
                         $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                     }
 
                     /** ... et ses disponiblités sont supprimées */
-                    $this->disponibiliteRepository->setDeleteDisposLoisir($competiteur->getIdCompetiteur());
+                    $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
                 }
 
-                if ($competiteur->isAdmin()) {
-                    $competiteur->setIsCapitaine(true);
-                    $competiteur->setIsLoisir(false);
-                } else if ($competiteur->isLoisir()) {
-                    $competiteur->setIsCapitaine(false);
-                    $competiteur->setIsAdmin(false);
-                }
                 $competiteur->setNom($competiteur->getNom());
                 $competiteur->setPrenom($competiteur->getPrenom());
                 $this->em->flush();
@@ -266,7 +259,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private function getDataForPDF(): array
     {
         $competiteursList = [];
-        $competiteurs = $this->competiteurRepository->findAll();
+        $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 
         foreach ($competiteurs as $user) {
             array_push($competiteursList, $user->serializeToPDF());
