@@ -37,9 +37,7 @@
                             <th>Nom</th>
                             <th>Licence</th>
                             <th>Classement</th>
-                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                <th>Certificat médical</th>
-                            {% endif %}
+                            <th>Certificat médical</th>
                             <th></th>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <th></th>
@@ -107,24 +105,22 @@
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                    <td>
-                                        {% if not competiteur.isArchive %}
-                                            {% if not competiteur.anneeCertificatMedical %}
-                                                <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
-                                            {% else %}
-                                                <span>
-                                                    {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                                        <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
-                                                        {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                    {% else %}
-                                                        <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                    {% endif %}
-                                                </span>
-                                            {% endif %}
+                                <td>
+                                    {% if not competiteur.isArchive %}
+                                        {% if not competiteur.anneeCertificatMedical %}
+                                            <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
+                                        {% else %}
+                                            <span>
+                                                {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                                    <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
+                                                    {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                {% else %}
+                                                    <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                {% endif %}
+                                            </span>
                                         {% endif %}
-                                    </td>
-                                {% endif %}
+                                    {% endif %}
+                                </td>
                                 <td style="padding-bottom: 0; padding-top: 0;">
                                     <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                                 </td>

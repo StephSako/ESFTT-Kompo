@@ -124,8 +124,10 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                 'attr' => [
                     'maxlength' => 11
                 ]
-            ])
-            ->add('anneeCertificatMedical', IntegerType::class, [
+            ]);
+
+        if ($options['isCertificatInvalid']) {
+            $builder->add('anneeCertificatMedical', IntegerType::class, [
                 'label' => 'Année certificat médical',
                 'required' => false,
                 'attr' => [
@@ -133,13 +135,15 @@ class BackOfficeCompetiteurAdminType extends AbstractType
                     'max' => 9999
                 ]
             ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Competiteur::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'isCertificatInvalid' => false
         ]);
     }
 }

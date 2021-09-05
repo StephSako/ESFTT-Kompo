@@ -133,7 +133,9 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('fail', 'Compétiteur inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
-        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur);
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur, [
+            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null
+        ]);
         else $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
