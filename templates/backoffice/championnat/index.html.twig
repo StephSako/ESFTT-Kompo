@@ -51,9 +51,7 @@
                             <td>{{ championnat.nbJournees }}</td>
                             <td>{{ championnat.limiteBrulage }}</td>
                             <td>
-                                {% if championnat.j2Rule %} <i class='material-icons green-text'>check</i>
-                                {% else %} <i class='material-icons red-text'>clear</i>
-                                {% endif %}
+                                <i class='material-icons'>{% if championnat.j2Rule %}check{% else %}clear{% endif %}</i>
                             </td>
                             <td>
                                 {% if championnat.lienFfttApi %} <i class='material-icons green-text'>phonelink_ring</i>

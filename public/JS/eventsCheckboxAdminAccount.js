@@ -28,6 +28,13 @@ $(document).ready(function () {
         cb_archive.prop('disabled', true);
     }
 
+    if (cb_archive.is(":checked")){
+        cb_capitaine.prop('disabled', true);
+        cb_admin.prop('disabled', true);
+        cb_loisir.prop('disabled', true);
+        cb_entraineur.prop('disabled', true);
+    }
+
     if (cb_capitaine.is(":checked")){
         cb_loisir.prop('disabled', true);
         cb_archive.prop('disabled', true);
