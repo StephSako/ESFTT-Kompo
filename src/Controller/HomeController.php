@@ -384,7 +384,7 @@ class HomeController extends AbstractController
 
         $form = null;
         $settings = $this->settingsRepository->find(1);
-        $isAdmin = in_array("ROLE_ADMIN", $this->getUser()->getRoles());
+        $isAdmin = $this->getUser()->isAdmin();
         if ($isAdmin){
             $form = $this->createForm(SettingsType::class, $settings);
             $form->handleRequest($request);

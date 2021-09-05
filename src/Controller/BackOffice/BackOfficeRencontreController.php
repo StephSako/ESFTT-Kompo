@@ -2,7 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Form\BackOfficeRencontreType;
+use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,7 +57,7 @@ class BackOfficeRencontreController extends AbstractController
             $this->addFlash('fail', 'Rencontre inexistante');
             return $this->redirectToRoute('backoffice.rencontres');
         }
-        $form = $this->createForm(BackOfficeRencontreType::class, $rencontre);
+        $form = $this->createForm(RencontreType::class, $rencontre);
 
         $form->handleRequest($request);
         $domicile = ($rencontre->getDomicile() ? "D" : "E");

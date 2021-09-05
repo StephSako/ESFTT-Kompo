@@ -18,6 +18,14 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('username', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'class' => 'validate',
+                    'maxlength' => 50
+                ]
+            ])
             ->add('nom', TextType::class, [
                 'label' => false,
                 'required' => true,
@@ -42,19 +50,37 @@ class CompetiteurType extends AbstractType
                     'max' => 20000
                 ]
             ])
-            ->add('username', TextType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'validate',
-                    'maxlength' => 50
-                ]
-            ])
             ->add('imageFile', FileType::class, [
                 'label' => false,
                 'required' => false
+            ]);
+
+        if ($options['adminAccess']) {
+            $builder
+            ->add('isCapitaine', CheckboxType::class, [
+                'label' => 'Capitaine',
+                'required' => false
             ])
-            ->add('mail', EmailType::class, [
+            ->add('isAdmin', CheckboxType::class, [
+                'label' => 'Administrateur',
+                'required' => false
+            ])
+            ->add('isLoisir', CheckboxType::class, [
+                'label' => 'Loisir',
+                'required' => false
+            ])
+            ->add('isArchive', CheckboxType::class, [
+                'label' => 'Archivé',
+                'required' => false
+            ])
+            ->add('isEntraineur', CheckboxType::class, [
+                'label' => 'Entraîneur',
+                'required' => false
+            ]);
+        }
+
+        if (($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) {
+            $builder->add('mail', EmailType::class, [
                 'label' => false,
                 'required' => false,
                 'attr' => [
@@ -98,13 +124,38 @@ class CompetiteurType extends AbstractType
                 'label' => 'Contactable',
                 'required' => false
             ]);
+        }
+
+        if ($options['adminAccess'] && $options['isCertificatInvalid']) {
+            $builder->add('anneeCertificatMedical', IntegerType::class, [
+                'label' => 'Année certificat médical',
+                'required' => false,
+                'attr' => [
+                    'min' => 2016,
+                    'max' => 9999
+                ]
+            ]);
+        }
+
+        if ($options['adminAccess'] || $options['capitaineAccess']) {
+            $builder->add('licence', IntegerType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 11
+                ]
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Competiteur::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'isCertificatInvalid' => false,
+            'capitaineAccess' => false,
+            'adminAccess' => false
         ]);
     }
 }

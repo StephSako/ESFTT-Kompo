@@ -28,9 +28,9 @@ security:
         ROLE_ADMIN: ROLE_CAPITAINE
 
     access_control:
-        - { path: ^/composition, roles: ROLE_CAPITAINE }
+        - { path: ^/composition, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
         - { path: ^/compte, roles: ROLE_LOISIR }
-        - { path: ^/backoffice, roles: ROLE_CAPITAINE }
+        - { path: ^/backoffice, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
         - { path: ^/journee, roles: ROLE_LOISIR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/contact, roles: ROLE_LOISIR }

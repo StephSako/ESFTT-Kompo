@@ -3,9 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Division;
-use App\Repository\ChampionnatRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,13 +41,22 @@ class DivisionType extends AbstractType
                     'max' => 9
                 ]
             ]);
+
+        if ($options['listChamps']) {
+            $builder->add('idChampionnat', ChoiceType::class, [
+                'label' => false,
+                'required' => true,
+                'choices' => $options['listChamps']
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Division::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'listChamps' => null
         ]);
     }
 }

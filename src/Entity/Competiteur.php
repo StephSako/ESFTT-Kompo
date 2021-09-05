@@ -401,13 +401,13 @@ class Competiteur implements UserInterface, Serializable
     {
         $roles = [];
         if (!$this->isArchive()){
+            if ($this->isEntraineur()) array_push($roles, 'ROLE_ENTRAINEUR');
             if (!$this->isLoisir()){
                 if ($this->isAdmin()) array_push($roles, 'ROLE_ADMIN');
                 if ($this->isCapitaine()) array_push($roles, 'ROLE_CAPITAINE');
                 array_push($roles, 'ROLE_JOUEUR');
             } else array_push($roles, 'ROLE_LOISIR');
         } else array_push($roles, 'ROLE_ARCHIVE');
-        if ($this->isEntraineur()) array_push($roles, 'ROLE_ENTRAINEUR');
 
         return $roles;
     }
@@ -460,15 +460,15 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param $serialized
+     * @param $data
      */
-    public function unserialize($serialized)
+    public function unserialize($data)
     {
         list(
             $this->idCompetiteur,
             $this->username,
             $this->password
-            ) = unserialize($serialized, ['allowed_classes' => false]);
+            ) = unserialize($data, ['allowed_classes' => false]);
     }
 
     /**

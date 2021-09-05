@@ -3,8 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Competiteur;
-use App\Form\BackOfficeCompetiteurAdminType;
-use App\Form\BackOfficeCompetiteurCapitaineType;
+use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
@@ -93,8 +92,10 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         $competiteur = new Competiteur();
         $competiteur->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')));
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur);
-        else $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
+        $form = $this->createForm(CompetiteurType::class, $competiteur, [
+            'capitaineAccess' => $this->getUser()->isCapitaine(),
+            'adminAccess' => $this->getUser()->isAdmin()
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -133,10 +134,11 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('fail', 'Compétiteur inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
-        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $competiteur, [
-            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null
+        $form = $this->createForm(CompetiteurType::class, $competiteur, [
+            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null,
+            'capitaineAccess' => $this->getUser()->isCapitaine(),
+            'adminAccess' => $this->getUser()->isAdmin()
         ]);
-        else $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -179,7 +181,9 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function updatePassword(Competiteur $competiteur, Request $request){
-        $form = $this->createForm(BackOfficeCompetiteurCapitaineType::class, $competiteur);
+        $form = $this->createForm(CompetiteurType::class, $competiteur, [
+            'capitaineAccess' => true
+        ]);
         $form->handleRequest($request);
 
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate'))) {

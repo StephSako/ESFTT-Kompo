@@ -3,7 +3,6 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Division;
-use App\Form\DivisionWithChampType;
 use App\Form\DivisionType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\DivisionRepository;
@@ -60,7 +59,7 @@ class BackOfficeDivisionController extends AbstractController
     {
         $division = new Division();
         $listChamps = $this->championnatRepository->getAllChampionnats();
-        $form = $this->createForm(DivisionWithChampType::class, $division, [
+        $form = $this->createForm(DivisionType::class, $division, [
             'listChamps' => $listChamps
         ]);
         $form->handleRequest($request);

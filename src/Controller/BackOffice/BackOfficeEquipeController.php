@@ -4,8 +4,7 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
-use App\Form\EquipeEditType;
-use App\Form\EquipeNewType;
+use App\Form\EquipeType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
@@ -64,8 +63,9 @@ class BackOfficeEquipeController extends AbstractController
     {
         $equipe = new Equipe();
         $divisions = $this->divisionRepository->getDivisionsOptgroup();
-        $form = $this->createForm(EquipeNewType::class, $equipe, [
-            'divisionsOptGroup' => $divisions
+        $form = $this->createForm(EquipeType::class, $equipe, [
+            'divisionsOptGroup' => $divisions,
+            'newEquipe' => true
         ]);
         $form->handleRequest($request);
 
@@ -137,7 +137,7 @@ class BackOfficeEquipeController extends AbstractController
             return $this->redirectToRoute('backoffice.equipes');
         }
         $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
-        $form = $this->createForm(EquipeEditType::class, $equipe);
+        $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $champHasDivisions) {
