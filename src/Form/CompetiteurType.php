@@ -46,6 +46,7 @@ class CompetiteurType extends AbstractType
             ])
             ->add('dateNaissance', BirthdayType::class, [
                 'required' => false,
+                'invalid_message' => 'Cette date de naissance est invalide',
                 'label' => false,
                 'format' => 'd MMMM y',
             ])

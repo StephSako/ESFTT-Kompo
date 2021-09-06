@@ -526,7 +526,7 @@ form {
   text-transform: uppercase;
 }
 
-.titlecase{
+.titlecase .select-dropdown.dropdown-trigger, .titlecase .dropdown-content.select-dropdown{
   text-transform: capitalize;
 }
 
