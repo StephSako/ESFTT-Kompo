@@ -85,14 +85,10 @@
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
                                 <td>
                                     {% if not competiteur.isArchive %}
-                                        {% if competiteur.isLoisir %}
-                                            <i>Sans licence</i>
+                                        {% if competiteur.licence %}
+                                            {{ competiteur.licence }}
                                         {% else %}
-                                            {% if competiteur.licence %}
-                                                {{ competiteur.licence }}
-                                            {% else %}
-                                                <span class='red-text lighten-2'>License indéfinie</span>
-                                            {% endif %}
+                                            <span class='red-text lighten-2'>License indéfinie</span>
                                         {% endif %}
                                     {% endif %}
                                 </td>
@@ -104,24 +100,28 @@
                                             {% if competiteur.classementOfficiel %}
                                                 {{ competiteur.classementOfficiel }} pts
                                             {% else %}
-                                                <span class='red-text lighten-2'>Non renseigné</span>
+                                                <span class='red-text lighten-2'>Classement indéfni</span>
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if not competiteur.isArchive %}
-                                        {% if not competiteur.anneeCertificatMedical %}
-                                            <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
+                                        {% if competiteur.age != null and competiteur.age < 18 %}
+                                            <span style="color: grey"><i>Mineur (facultatif)</i></span>
                                         {% else %}
-                                            <span>
-                                                {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                                    <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
-                                                    {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                {% else %}
-                                                    <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                {% endif %}
-                                            </span>
+                                            {% if not competiteur.anneeCertificatMedical %}
+                                                <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
+                                            {% else %}
+                                                <span>
+                                                    {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                                        <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
+                                                        {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% else %}
+                                                        <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </td>

@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Competiteur;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -42,13 +44,10 @@ class CompetiteurType extends AbstractType
                     'maxlength' => 50
                 ]
             ])
-            ->add('classementOfficiel', IntegerType::class, [
-                'label' => false,
+            ->add('dateNaissance', BirthdayType::class, [
                 'required' => false,
-                'attr' => [
-                    'min' => 500,
-                    'max' => 20000
-                ]
+                'label' => false,
+                'format' => 'd MMMM y',
             ])
             ->add('imageFile', FileType::class, [
                 'label' => false,
@@ -57,73 +56,74 @@ class CompetiteurType extends AbstractType
 
         if ($options['adminAccess']) {
             $builder
-            ->add('isCapitaine', CheckboxType::class, [
-                'label' => 'Capitaine',
-                'required' => false
-            ])
-            ->add('isAdmin', CheckboxType::class, [
-                'label' => 'Administrateur',
-                'required' => false
-            ])
-            ->add('isLoisir', CheckboxType::class, [
-                'label' => 'Loisir',
-                'required' => false
-            ])
-            ->add('isArchive', CheckboxType::class, [
-                'label' => 'Archivé',
-                'required' => false
-            ])
-            ->add('isEntraineur', CheckboxType::class, [
-                'label' => 'Entraîneur',
-                'required' => false
-            ]);
+                ->add('isCapitaine', CheckboxType::class, [
+                    'label' => 'Capitaine',
+                    'required' => false
+                ])
+                ->add('isAdmin', CheckboxType::class, [
+                    'label' => 'Administrateur',
+                    'required' => false
+                ])
+                ->add('isLoisir', CheckboxType::class, [
+                    'label' => 'Loisir',
+                    'required' => false
+                ])
+                ->add('isArchive', CheckboxType::class, [
+                    'label' => 'Archivé',
+                    'required' => false
+                ])
+                ->add('isEntraineur', CheckboxType::class, [
+                    'label' => 'Entraîneur',
+                    'required' => false
+                ]);
         }
 
         if (($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) {
-            $builder->add('mail', EmailType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100
-                ]
-            ])
-            ->add('mail2', EmailType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100
-                ]
-            ])
-            ->add('phoneNumber', TelType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 10
-                ]
-            ])
-            ->add('phoneNumber2', TelType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 10
-                ]
-            ])
-            ->add('contactableMail', CheckboxType::class, [
-                'label' => 'Contactable',
-                'required' => false
-            ])
-            ->add('contactableMail2', CheckboxType::class, [
-                'label' => 'Contactable',
-                'required' => false
-            ])
-            ->add('contactablePhoneNumber', CheckboxType::class, [
-                'label' => 'Contactable',
-                'required' => false
-            ])
-            ->add('contactablePhoneNumber2', CheckboxType::class, [
-                'label' => 'Contactable',
-                'required' => false
-            ]);
+            $builder
+                ->add('mail', EmailType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 100
+                    ]
+                ])
+                ->add('mail2', EmailType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 100
+                    ]
+                ])
+                ->add('phoneNumber', TelType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 10
+                    ]
+                ])
+                ->add('phoneNumber2', TelType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 10
+                    ]
+                ])
+                ->add('contactableMail', CheckboxType::class, [
+                    'label' => 'Contactable',
+                    'required' => false
+                ])
+                ->add('contactableMail2', CheckboxType::class, [
+                    'label' => 'Contactable',
+                    'required' => false
+                ])
+                ->add('contactablePhoneNumber', CheckboxType::class, [
+                    'label' => 'Contactable',
+                    'required' => false
+                ])
+                ->add('contactablePhoneNumber2', CheckboxType::class, [
+                    'label' => 'Contactable',
+                    'required' => false
+                ]);
         }
 
         if ($options['adminAccess'] && $options['isCertificatInvalid']) {
@@ -138,13 +138,22 @@ class CompetiteurType extends AbstractType
         }
 
         if ($options['adminAccess'] || $options['capitaineAccess']) {
-            $builder->add('licence', IntegerType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 11
-                ]
-            ]);
+            $builder
+                ->add('licence', IntegerType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 11
+                    ]
+                ])
+                ->add('classementOfficiel', IntegerType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'min' => 500,
+                        'max' => 20000
+                    ]
+                ]);
         }
     }
 

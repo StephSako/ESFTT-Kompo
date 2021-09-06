@@ -108,6 +108,7 @@ class SecurityController extends AbstractController
             'type' => 'general',
             'urlImage' => $user->getAvatar(),
             'anneeCertificatMedical' => $user->getAnneeCertificatMedical(),
+            'age' => $user->getAge(),
             'path' => 'account.update.password',
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,

@@ -91,7 +91,9 @@ class BackOfficeCompetiteurController extends AbstractController
     public function new(Request $request): Response
     {
         $competiteur = new Competiteur();
-        $competiteur->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')));
+        $competiteur
+            ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
+            ->setDateNaissance(new DateTime('2000-01-01'));
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin()
@@ -135,7 +137,7 @@ class BackOfficeCompetiteurController extends AbstractController
             return $this->redirectToRoute('backoffice.competiteurs');
         }
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
-            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null,
+            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin()
         ]);
@@ -167,7 +169,9 @@ class BackOfficeCompetiteurController extends AbstractController
             'type' => 'backoffice',
             'urlImage' => $competiteur->getAvatar(),
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
+            'age' => $competiteur->getAge(),
             'path' => 'backoffice.password.edit',
+            'isArchived' => $competiteur->isArchive(),
             'competiteurId' => $idCompetiteur,
             'competiteurIsLoisir' => $competiteur->isLoisir(),
             'form' => $form->createView()

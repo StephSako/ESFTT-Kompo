@@ -104,6 +104,13 @@ class Competiteur implements UserInterface, Serializable
     private $prenom;
 
     /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(type="date", name="date_naissance", nullable=true)
+     */
+    private $dateNaissance;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=100, nullable=false)
@@ -855,5 +862,35 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->isArchive = $isArchive;
         return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getDateNaissance(): ?DateTime
+    {
+        return $this->dateNaissance;
+    }
+
+    /**
+     * @param DateTime|null $dateNaissance
+     * @return Competiteur
+     */
+    public function setDateNaissance(?DateTime $dateNaissance): self
+    {
+        $this->dateNaissance = $dateNaissance;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAge(): ?int
+    {
+        if ($this->getDateNaissance()) {
+            $now = new DateTime();
+            $interval = $now->diff($this->getDateNaissance());
+            return $interval->y;
+        } else return null;
     }
 }

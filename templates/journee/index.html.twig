@@ -90,11 +90,11 @@
                             {% endif %}
                         {% else %}
                             {% if app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités</h5>
                             {% elseif not app.user.licence and app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités</h5>
                             {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence et classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités</h5>
                             {% endif %}
                         {% endif %}
                     </div>
