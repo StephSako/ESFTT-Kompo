@@ -93,7 +93,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $competiteur = new Competiteur();
         $competiteur
             ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
-            ->setDateNaissance(new DateTime('2000-01-01'));
+            ->setDateNaissance(null);
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin()
@@ -280,6 +280,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return Response
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws Exception
      */
     public function exportCompetiteursExcel(): Response
     {
@@ -288,12 +289,13 @@ class BackOfficeCompetiteurController extends AbstractController
         $sheet = $spreadsheet->getActiveSheet();
 
         /** On set les noms des colonnes */
-        $headers = ['Licence', 'Nom', 'Prénom', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
-        for ($col = 'A', $i = 0; $col !== 'L'; $col++, $i++) {
+        $headers = ['Licence', 'Nom', 'Prénom', 'Date de naissance', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
+        for ($col = 'A', $i = 0; $col !== 'M'; $col++, $i++) {
             $sheet->setCellValue($col . '1', $headers[$i]);
         }
 
-        $sheet->getStyle('A1:K1')->applyFromArray(
+        /** On set le style des headers */
+        $sheet->getStyle('A1:L1')->applyFromArray(
             array(
                 'fill' => array(
                     'fillType' => Fill::FILL_SOLID,
@@ -307,23 +309,27 @@ class BackOfficeCompetiteurController extends AbstractController
         );
 
         foreach ($dataCompetiteurs as $index => $competiteur) {
-            $sheet->getStyle('F' . $index+=2)->applyFromArray(
-                array(
-                    'fill' => array(
-                        'fillType' => Fill::FILL_SOLID,
-                        'startColor' => array('argb' => ($competiteur[5] < ((new DateTime())->format('Y')) - 2) ? 'E94040' : '2DB009')
-                    ),
-                    'font'  => array(
-                        'bold'  =>  true,
-                        'color' => array('rgb' => 'FFFFFF' )
+            $date = explode('/', $competiteur[3]);
+            $date = implode('-', array_reverse($date));
+            if ($competiteur[11] != 'Archive' && (($competiteur[3] && (new DateTime())->diff(new DateTime($date))->y >= 18) || !$competiteur[3])){
+                $sheet->getStyle('G' . ($index + 2))->applyFromArray(
+                    array(
+                        'fill' => array(
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => array('rgb' => $competiteur[6] < ((new DateTime())->format('Y')) - 2 ? 'E94040' : '2DB009')
+                        ),
+                        'font'  => array(
+                            'bold'  =>  true,
+                            'color' => array('rgb' => 'FFFFFF' )
+                        )
                     )
-                )
-            );
+                );
+            }
         }
 
         $sheet->fromArray($dataCompetiteurs,'', 'A2', true);
         /** On resize automatiquement les colonnes */
-        for($col = 'A'; $col !== 'L'; $col++) {
+        for($col = 'A'; $col !== 'M'; $col++) {
             $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
         }
 

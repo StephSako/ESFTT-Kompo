@@ -817,9 +817,10 @@ class Competiteur implements UserInterface, Serializable
             $this->getLicence(),
             $this->getNom(),
             $this->getPrenom(),
+            $this->getDateNaissance() ? $this->getDateNaissance()->format('d/m/Y') : null,
             $this->getClassementOfficiel(),
             $this->getClassementOfficiel() ? intval($this->getClassementOfficiel()/100) : null,
-            $this->getAnneeCertificatMedical(),
+            !$this->isArchive() ? (!$this->getAnneeCertificatMedical() && (!$this->getAge() || $this->getAge() >= 18) ? 'Non présenté' : ($this->getAge() >= 18 ? $this->getAnneeCertificatMedical() : 'Mineur (facultatif)')) : null,
             $this->getMail(),
             $this->getMail2(),
             $this->getPhoneNumber(),
@@ -827,6 +828,8 @@ class Competiteur implements UserInterface, Serializable
             $this->getRolesFormatted()
         ];
     }
+
+
 
     /**
      * @return bool

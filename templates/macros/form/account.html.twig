@@ -3,19 +3,20 @@
     <div class="card-panel center-align account-card">
 
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
+        <span style="color: red"><i>* Champs obligatoires</i></span>
 
         {{ form_start(form) }}
             <div class="row section" style="margin-bottom: 0;">
                 <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">person</i> NOM *</span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                    <span><i class="material-icons prefix">person</i> NOM <span style="color: red">*</span></span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
                 <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">person</i> Prénom *</span>{{ form_row(form.prenom) }}
+                    <span><i class="material-icons prefix">person</i> Prénom <span style="color: red">*</span></span>{{ form_row(form.prenom) }}
                 </div>
                 <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">account_circle</i> Pseudo *</span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    <span><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
                 <div class="col s12 m6 l3">
                     <span><i class="material-icons prefix">today</i> Date de  naissance</span>
@@ -84,7 +85,7 @@
             {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                 <div class="row section">
                     <h5 class="dark_blue">Contact</h5>
-                    <p><i>Une adresse email minimum requise</i></p>
+                    <p><i><span style="color: red">*</span> Une adresse email minimum requise</i></p>
 
                     <div class="col s12 m6 offset-m3">
                         <span><i class="material-icons prefix">mail</i> Adresse mail principale</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
