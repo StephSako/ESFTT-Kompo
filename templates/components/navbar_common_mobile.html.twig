@@ -16,7 +16,7 @@
         <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contacter</a>
     </li>
 
-    {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+    {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
         <li class="li_in_line{% if app.request.getPathInfo starts with '/backoffice' %} active blue darken-3{% endif %}">
             <a class="white-text center-align" href="{{ path('backoffice') }}"><i class="white-text material-icons left">format_list_bulleted</i>Gestion</a>
         </li>

@@ -104,7 +104,7 @@
                     </div>
                 {% endif %}
 
-                {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length %}
+                {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and equipesSansDivision|length %}
                     <div class="card-panel center cardTeamsWithoutDiv">
                         <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
                         <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
@@ -196,7 +196,7 @@
                             </div>
                         </div>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <p class="center" style="margin: 0;"><b>N° ESFTT : {{ club_id }}</b></p>
                         {% endif %}
 
@@ -208,7 +208,7 @@
                             </tbody>
                         </table>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 {% if compo.isEmpty %}
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Créer la compo', 'green') }}
