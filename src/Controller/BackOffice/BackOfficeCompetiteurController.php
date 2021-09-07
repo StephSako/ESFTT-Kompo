@@ -137,7 +137,7 @@ class BackOfficeCompetiteurController extends AbstractController
             return $this->redirectToRoute('backoffice.competiteurs');
         }
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
-            'isCertificatInvalid' => $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
+            'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin()
         ]);

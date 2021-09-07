@@ -24,6 +24,14 @@
 
             <div class='card-panel center'>
                 <h4>Les compétiteurs</h4>
+
+                <div class="col pastille green lighten-2 reset"><i class="material-icons white-text">info</i> Avant de mettre les compétiteurs à jour, veuillez à:
+                    <ul>
+                        <li>- décocher la case 'loisir' dans le formulaire des joueurs concernés</li>
+                        <li>- renseignez le numéro de licence des joueurs compétiteurs</li>
+                    </ul>
+                </div>
+
                 {% if joueursIssued %}<p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;"><b>{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</b></p>
                 {% else %}<p class="col pastille blue reset"><b>Tous les joueurs sont à jour</b></p>
                 {% endif %}
