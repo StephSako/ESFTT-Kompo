@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Competiteur;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -79,7 +78,7 @@ class CompetiteurType extends AbstractType
                 ]);
         }
 
-        if (($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) {
+        if ((($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) && !$options['isArchived']) {
             $builder
                 ->add('mail', EmailType::class, [
                     'label' => false,
@@ -138,7 +137,7 @@ class CompetiteurType extends AbstractType
             ]);
         }
 
-        if ($options['adminAccess'] || $options['capitaineAccess']) {
+        if (($options['adminAccess'] || $options['capitaineAccess']) && !$options['isArchived']) {
             $builder
                 ->add('licence', IntegerType::class, [
                     'label' => false,
@@ -165,7 +164,8 @@ class CompetiteurType extends AbstractType
             'translation_domain' => 'forms',
             'isCertificatInvalid' => false,
             'capitaineAccess' => false,
-            'adminAccess' => false
+            'adminAccess' => false,
+            'isArchived' => false,
         ]);
     }
 }

@@ -799,10 +799,10 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param int $annee
+     * @param int|null $annee
      * @return Competiteur
      */
-    public function setAnneeCertificatMedical(int $annee): self
+    public function setAnneeCertificatMedical(?int $annee): self
     {
         $this->anneeCertificatMedical = $annee;
         return $this;
