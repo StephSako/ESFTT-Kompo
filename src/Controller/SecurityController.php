@@ -80,7 +80,9 @@ class SecurityController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
 
-        $form = $this->createForm(CompetiteurType::class, $user);
+        $form = $this->createForm(CompetiteurType::class, $user, [
+            'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

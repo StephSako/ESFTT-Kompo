@@ -96,7 +96,8 @@ class BackOfficeCompetiteurController extends AbstractController
             ->setDateNaissance(null);
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
-            'adminAccess' => $this->getUser()->isAdmin()
+            'adminAccess' => $this->getUser()->isAdmin(),
+            'dateNaissanceRequired' => false
         ]);
         $form->handleRequest($request);
 
@@ -140,7 +141,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
-            'isArchived' => $competiteur->isArchive()
+            'isArchived' => $competiteur->isArchive(),
+            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null
         ]);
         $form->handleRequest($request);
 

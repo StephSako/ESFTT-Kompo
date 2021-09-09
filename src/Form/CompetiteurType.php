@@ -44,7 +44,7 @@ class CompetiteurType extends AbstractType
                 ]
             ])
             ->add('dateNaissance', BirthdayType::class, [
-                'required' => false,
+                'required' => $options['dateNaissanceRequired'],
                 'invalid_message' => 'Cette date de naissance est invalide',
                 'label' => false,
                 'format' => 'd MMMM y',
@@ -166,6 +166,7 @@ class CompetiteurType extends AbstractType
             'capitaineAccess' => false,
             'adminAccess' => false,
             'isArchived' => false,
+            'dateNaissanceRequired' => false
         ]);
     }
 }
