@@ -9,16 +9,18 @@
             <div class="row section" style="margin-bottom: 0;">
                 <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
-                <div class="col s12 m6 l3">
+                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
                     <span><i class="material-icons prefix">person</i> NOM <span style="color: red">*</span></span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
-                <div class="col s12 m6 l3">
+                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
                     <span><i class="material-icons prefix">person</i> Prénom <span style="color: red">*</span></span>{{ form_row(form.prenom) }}
                 </div>
-                <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
-                </div>
-                <div class="col s12 m6 l3">
+                {% if options.usernameEditable %}
+                    <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                        <span><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    </div>
+                {% endif %}
+                <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
                     <span><i class="material-icons prefix">today</i> Date de  naissance</span>
                     <div class="titlecase">
                         {{ form_row(form.dateNaissance) }}

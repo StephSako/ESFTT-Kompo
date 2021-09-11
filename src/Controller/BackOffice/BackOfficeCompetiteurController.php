@@ -137,12 +137,14 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('fail', 'Compétiteur inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
+        $usernameEditable = !(($this->getUser()->isCapitaine() && !$this->getUser()->isAdmin()) && $competiteur->isAdmin() && $this->getUser()->getIdCompetiteur() != $competiteur->getIdCompetiteur());
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
-            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null
+            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null,
+            'usernameEditable' => $usernameEditable
         ]);
         $form->handleRequest($request);
 
@@ -177,7 +179,9 @@ class BackOfficeCompetiteurController extends AbstractController
             'path' => 'backoffice.password.edit',
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
+            'isAdmin' => $competiteur->isAdmin(),
             'competiteurId' => $idCompetiteur,
+            'usernameEditable' => $usernameEditable,
             'form' => $form->createView()
         ]);
     }

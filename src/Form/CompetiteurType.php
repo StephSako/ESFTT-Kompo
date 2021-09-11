@@ -19,14 +19,6 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'validate',
-                    'maxlength' => 50
-                ]
-            ])
             ->add('nom', TextType::class, [
                 'label' => false,
                 'required' => true,
@@ -155,6 +147,17 @@ class CompetiteurType extends AbstractType
                     ]
                 ]);
         }
+
+        if ($options['usernameEditable']) {
+            $builder->add('username', TextType::class, [
+                'label' => false,
+                'required' => true,
+                'attr' => [
+                    'class' => 'validate',
+                    'maxlength' => 50
+                ]
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -166,7 +169,8 @@ class CompetiteurType extends AbstractType
             'capitaineAccess' => false,
             'adminAccess' => false,
             'isArchived' => false,
-            'dateNaissanceRequired' => false
+            'dateNaissanceRequired' => false,
+            'usernameEditable' => true
         ]);
     }
 }
