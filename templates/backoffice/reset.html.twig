@@ -17,7 +17,7 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {% if not error %}
+        {% if not errorMajJoueurs %}
             <div class='card-panel center-align white-text title_journee'>
                 <h3>Nouvelles phases</h3>
             </div>
@@ -80,8 +80,10 @@
                     </table>
                 {% endif %}
             </div>
+        {% endif %}
 
-            <br>
+        <br>
+        {% if not errorMajRencontresEquipes %}
             {% if allChampionnatsReset|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
                     {% for nomChampionnat, data in allChampionnatsReset %}

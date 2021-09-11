@@ -1,11 +1,54 @@
-{% macro btnCreateEditCompo(type, idCompo, text, color) %}
+{% macro btnCreateEditCompo(type, idCompo, icon, color) %}
     <a href="{{ path('composition.edit', {type: type, compo: idCompo}) }}" class="center-align btn waves-effect waves-light {{ color }} lighten-2">
-        {{ text }}
+        <i class="material-icons">{{ icon }}</i>
     </a>
 {% endmacro %}
 
 {% macro btnEmptyCompo(idCompo, type, idJournee) %}
     <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {idCompo: idCompo, type: type, idJournee: idJournee}) }}">
-        <i class="material-icons">delete</i>Vider
+        <i class="material-icons">delete</i>
     </a>
+{% endmacro %}
+
+{% macro btnAlertPlayers(idCompo) %}
+    <a href="#modal{{ idCompo }}" class="center-align btn waves-effect waves-light green lighten-2 modal-trigger">
+        <i class="material-icons">record_voice_over</i>
+    </a>
+{% endmacro %}
+
+{% macro modalAlertPlayers(idCompo, response) %}
+    <div id="modal{{ idCompo }}" class="modal modal-alert modal-fixed-footer">
+        <div class="modal-content">
+            <h5>Joueurs contactables</h5>
+
+            <div class="row">
+                <div class="col s12 l6">
+                    <a href="mailto:stephsako@gmail.com" class="center-align btn waves-effect waves-light blue lighten-2">
+                        <i class="material-icons">mail</i>
+                    </a>
+                    <ul>
+                        {% for joueursContactables in response['mails']['contactables'] %}
+                            <li>{{ joueursContactables }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col s12 l6">
+                    <a href="mailto:stephsako@gmail.com" class="center-align btn waves-effect waves-light blue lighten-2">
+                        <i class="material-icons">message</i> {{ response['phoneNumbers']['length'] ~ '/' ~ response['nbJoueurs'] }}
+                    </a>
+                    <ul>
+                        {% for joueursContactables in response['phoneNumbers']['contactables'] %}
+                            <li class="green-text lighten-1">{{ joueursContactables }}</li>
+                        {% endfor %}
+                        {% for joueursContactables in response['phoneNumbers']['notContactables'] %}
+                            <li class="red-text lighten-1">{{ joueursContactables }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
+        </div>
+    </div>
 {% endmacro %}

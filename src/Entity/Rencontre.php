@@ -627,21 +627,53 @@ class Rencontre
         return $joueurs;
     }
 
+    //TODO Optimize functions
+
     /**
-     * Liste des numéros de téléphone des joueurs sélectionnés
+     * Liste des adresse mail des joueurs sélectionnés
      * @param int $idRedacteur
-     * @return string
+     * @return array
      */
-    public function getListPhoneNumbersSelectedPlayers(int $idRedacteur): string
+    public function getListContactSelectedPlayers(int $idRedacteur): array
     {
-        $phoneNumbers = [];
-        foreach ($this->getListSelectedPlayers() as $joueur) {
+        $mails = [];
+        $contactablesMails = [];
+        $joueurs = $this->getListSelectedPlayers();
+        $minusNbJoueurs = count(array_filter($joueurs, function($joueur) use ($idRedacteur) {
+            return $joueur->getIdCompetiteur() == $idRedacteur;
+        })) > 0 ? 1 : 0;
+
+        foreach ($joueurs as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
-                if ($joueur->isContactablePhoneNumber() && $joueur->getPhoneNumber() && $joueur->getPhoneNumber() != "") array_push($phoneNumbers, $joueur->getPhoneNumber());
-                if ($joueur->isContactablePhoneNumber2() && $joueur->getPhoneNumber2() && $joueur->getPhoneNumber2() != "") array_push($phoneNumbers, $joueur->getPhoneNumber2());
+                if ($joueur->getFirstContactableMail()){
+                    array_push($contactablesMails, $joueur->getPrenom() . ' ' . $joueur->getNom());
+                    array_push($mails, $joueur->getFirstContactableMail());
+                }
             }
         }
+        $response['mails']['toString'] = implode(', ', $mails);
+        $response['mails']['contactables'] = $contactablesMails;
 
-        return implode(",", $phoneNumbers);
+        $phoneNumbers = [];
+        $contactablesPhoneNumbers = [];
+        $notContactablesPhoneNumbers = [];
+        foreach ($joueurs as $joueur) {
+            if ($joueur->getIdCompetiteur() != $idRedacteur){
+                if ($joueur->getFirstContactablePhoneNumber()){
+                    array_push($contactablesPhoneNumbers, $joueur->getPrenom() . ' ' . $joueur->getNom());
+                    array_push($phoneNumbers, $joueur->getFirstContactablePhoneNumber());
+                }
+                else array_push($notContactablesPhoneNumbers, $joueur->getPrenom() . ' ' . $joueur->getNom());
+            }
+        }
+        $minus = in_array($idRedacteur, $phoneNumbers) ? 1 : 0; //TODO Bug
+        $response['phoneNumbers']['length'] = count($phoneNumbers) - $minus;
+        $response['phoneNumbers']['toString'] = implode(', ', $phoneNumbers);
+        $response['phoneNumbers']['contactables'] = $contactablesPhoneNumbers;
+        $response['phoneNumbers']['notContactables'] = $notContactablesPhoneNumbers;
+
+        $response['nbJoueurs'] = count($joueurs) - $minusNbJoueurs;
+
+        return $response;
     }
 }

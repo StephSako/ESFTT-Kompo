@@ -559,10 +559,25 @@ form {
   width: 92% !important ;
   height: 85% !important ;
   max-height: 100% !important;
-}
 
-.modal-content {
-  max-width: 100% !important;
+  & .modal-content {
+    max-width: 100% !important;
+
+    & > .row {
+      margin: 0 !important;
+    }
+  }
+
+  &.modal-alert {
+    margin-top: 10% !important;
+    width: 35% !important ;
+    height: 40% !important ;
+    min-width: 250px !important;
+
+    & .modal-content {
+      padding: 2px;
+    }
+  }
 }
 
 .preloaderSendMail {
@@ -892,6 +907,7 @@ button.btn_renouveler_certif_mobile {
     margin-top: 12px;
   }
 }
+
 
 @media screen and (max-width: 601px) {
   th.th_picture_compet_table{

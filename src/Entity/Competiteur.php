@@ -829,8 +829,6 @@ class Competiteur implements UserInterface, Serializable
         ];
     }
 
-
-
     /**
      * @return bool
      */
@@ -895,5 +893,17 @@ class Competiteur implements UserInterface, Serializable
             $interval = $now->diff($this->getDateNaissance());
             return $interval->y;
         } else return null;
+    }
+
+    public function getFirstContactableMail(): ?string {
+        if ($this->getMail() && $this->isContactableMail()) return $this->getMail();
+        if ($this->getMail2() && $this->isContactableMail2()) return $this->getMail2();
+        return null;
+    }
+
+    public function getFirstContactablePhoneNumber(): ?string {
+        if ($this->getPhoneNumber() && $this->isContactablePhoneNumber()) return $this->getPhoneNumber();
+        if ($this->getPhoneNumber2() && $this->isContactablePhoneNumber2()) return $this->getPhoneNumber2();
+        return null;
     }
 }

@@ -483,9 +483,20 @@ form h5 {
   height: 85% !important;
   max-height: 100% !important;
 }
-
-.modal-content {
+.modal .modal-content {
   max-width: 100% !important;
+}
+.modal .modal-content > .row {
+  margin: 0 !important;
+}
+.modal.modal-alert {
+  margin-top: 10% !important;
+  width: 35% !important;
+  height: 40% !important;
+  min-width: 250px !important;
+}
+.modal.modal-alert .modal-content {
+  padding: 2px;
 }
 
 .preloaderSendMail {

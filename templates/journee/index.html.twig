@@ -203,7 +203,7 @@
                         <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table">
                             <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulagesJ2, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule) }}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulagesJ2, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -211,9 +211,13 @@
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 {% if compo.isEmpty %}
-                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Créer la compo', 'green') }}
+                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'add_circle_outline', 'green') }}
                                 {% else %}
-                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'Modifier la compo', 'blue') }}
+                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'edit', 'blue') }}
+                                    {{ _index.btnAlertPlayers(compo.id) }}
+                                    {{ _index.modalAlertPlayers(
+                                        compo.id,
+                                        compo.getListContactSelectedPlayers(app.user.idCompetiteur)) }}
                                     {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
                                 {% endif %}
                             </div>

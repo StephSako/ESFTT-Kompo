@@ -59,7 +59,8 @@ class BackOfficeFFTTApiController extends AbstractController
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
         $joueursIssued = []; /** Tableau où seront stockés tous les joueurs devant être mis à jour */
-        $error = false;
+        $errorMajJoueurs = false;
+        $errorMajRencontresEquipes = false;
 
         try {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
@@ -86,7 +87,11 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
                 }
             }
-
+        } catch(Exception $exception) {
+            $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
+            $errorMajJoueurs = true;
+        }
+        try {
             $allChampionnats = $this->championnatRepository->findAll();
 
             foreach($allChampionnats as $championnatActif){
@@ -451,14 +456,15 @@ class BackOfficeFFTTApiController extends AbstractController
                 else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch(Exception $exception) {
-            $this->addFlash('fail', 'L\'API de la FFTT est indisponible pour le moment');
-            $error = true;
+            $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
+            $errorMajRencontresEquipes = true;
         }
 
         return $this->render('backoffice/reset.html.twig', [
             'allChampionnatsReset' => $allChampionnatsReset,
             'joueursIssued' => $joueursIssued,
-            'error' => $error
+            'errorMajJoueurs' => $errorMajJoueurs,
+            'errorMajRencontresEquipes' => $errorMajRencontresEquipes
         ]);
     }
 
