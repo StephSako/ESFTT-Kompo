@@ -216,7 +216,7 @@
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'edit', 'blue') }}
                                     {{ _index.btnAlertPlayers(compo.id) }}
                                     {{ _index.modalAlertPlayers(
-                                        compo.id,
+                                        compo,
                                         compo.getListContactSelectedPlayers(app.user.idCompetiteur)) }}
                                     {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
                                 {% endif %}

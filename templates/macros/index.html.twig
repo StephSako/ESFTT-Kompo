@@ -16,39 +16,56 @@
     </a>
 {% endmacro %}
 
-{% macro modalAlertPlayers(idCompo, response) %}
-    <div id="modal{{ idCompo }}" class="modal modal-alert modal-fixed-footer">
+{% macro modalAlertPlayers(compo, response) %}
+    <div id="modal{{ compo.id }}" class="modal modal-alert modal-fixed-footer">
         <div class="modal-content">
-            <h5>Joueurs contactables</h5>
-
+            <h5>Alerter les joueurs</h5>
             <div class="row">
-                <div class="col s12 l6">
-                    <a href="mailto:stephsako@gmail.com" class="center-align btn waves-effect waves-light blue lighten-2">
-                        <i class="material-icons">mail</i>
-                    </a>
-                    <ul>
-                        {% for joueursContactables in response['mails']['contactables'] %}
-                            <li>{{ joueursContactables }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col s12 l6">
-                    <a href="mailto:stephsako@gmail.com" class="center-align btn waves-effect waves-light blue lighten-2">
-                        <i class="material-icons">message</i> {{ response['phoneNumbers']['length'] ~ '/' ~ response['nbJoueurs'] }}
-                    </a>
-                    <ul>
-                        {% for joueursContactables in response['phoneNumbers']['contactables'] %}
-                            <li class="green-text lighten-1">{{ joueursContactables }}</li>
-                        {% endfor %}
-                        {% for joueursContactables in response['phoneNumbers']['notContactables'] %}
-                            <li class="red-text lighten-1">{{ joueursContactables }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                {% if response['nbJoueurs'] %}
+                    <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour alerter les joueurs par SMS / WhatsApp</i></p>
+                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', response['nbJoueurs'], 'mailto:' ~ response['mail']['toString'] ~ '?subject=' ~ "RDV Ping Compétition - " ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '&body=' ~ 'Salut, c\'est ' ~ (app.user.username|title) ~ '.%0D%0A%0D%0A' ~ 'Tu es sélectionné pour jouer en compétition en équipe ' ~ compo.idEquipe.numero ~ ' le ' ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ATu as rendez-vous à la ' ~ (compo.domicile ? 'salle Albert Marquet à 20h00' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ (compo.domicile ? 'à domicile' : 'à l\'extérieur') ~ ' contre ' ~ compo.adversaire ~ '.%0D%0A%0D%0AMerci de me confirmer et à vendredi !' ) }}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', response['nbJoueurs'], 'sms:' ~ response['sms']['toString'] ~ ';?&body=' ~ 'Salut, c\'est ' ~ (app.user.username|title) ~ '.%0D%0A%0D%0A' ~ 'Tu es sélectionné pour jouer en compétition en équipe ' ~ compo.idEquipe.numero ~ ' le ' ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ATu as rendez-vous à la ' ~ (compo.domicile ? 'salle Albert Marquet à 20h00' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ (compo.domicile ? 'à domicile' : 'à l\'extérieur') ~ ' contre ' ~ compo.adversaire ~ '.%0D%0A%0D%0AMerci de me confirmer et à vendredi !') }}
+                {% else %}
+                    <p>Il n'y a personne d'autre que vous de sélectionné</p>
+                {% endif %}
             </div>
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
         </div>
+    </div>
+{% endmacro %}
+
+{% macro cardAlertPlayers(response, hideClass, media, nbJoueurs, link) %}
+    <div class="col s12 l12 {{ hideClass }} card grey lighten-3 z-depth-0">
+        <a href="{{ link }}" class="center-align btn waves-effect waves-light blue lighten-2">
+            PAR {{ media }} (<b>{{ response['length'] ~ '/' ~ nbJoueurs }}</b>)
+        </a>
+        <ul class="row">
+            {% for joueurContactable in response['contactables'] %}
+                <li class="green-text lighten-1 col s12 m6">
+                    <div class="chip">
+                        {% if joueurContactable.avatar %}
+                            <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') }}" alt="Avatar">
+                        {% else %}
+                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                        {% endif %}
+                        <span style="color: green">{{ joueurContactable.prenom ~ ' ' ~ joueurContactable.nom }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+            {% for joueurNotContactable in response['notContactables'] %}
+                <li class="col s12 m6">
+                    <div class="chip">
+                        {% if joueurNotContactable.avatar %}
+                            <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') }}" alt="Avatar">
+                        {% else %}
+                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                        {% endif %}
+                        <span style="color: red">{{ joueurNotContactable.prenom ~ ' ' ~ joueurNotContactable.nom }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endmacro %}

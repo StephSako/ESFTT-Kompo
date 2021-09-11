@@ -515,18 +515,6 @@ class Rencontre
     /**
      * @return bool
      */
-    public function getIsFull(): bool
-    {
-        $nbJoueursSelected = 0;
-        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            if($this->getIdJoueurN($i)) $nbJoueursSelected++;
-        }
-        return $nbJoueursSelected == $this->getIdEquipe()->getIdDivision()->getNbJoueurs();
-    }
-
-    /**
-     * @return bool
-     */
     public function isHosted(): bool
     {
         return $this->hosted;
@@ -627,32 +615,31 @@ class Rencontre
         return $joueurs;
     }
 
-    //TODO Optimize functions
-
     /**
-     * Liste des adresse mail des joueurs sélectionnés
+     * Liste des adresses mail et numéros de téléphone des joueurs sélectionnés et contactables
      * @param int $idRedacteur
      * @return array
      */
     public function getListContactSelectedPlayers(int $idRedacteur): array
     {
+        $joueurs = $this->getListSelectedPlayers();
+
         $mails = [];
         $contactablesMails = [];
-        $joueurs = $this->getListSelectedPlayers();
-        $minusNbJoueurs = count(array_filter($joueurs, function($joueur) use ($idRedacteur) {
-            return $joueur->getIdCompetiteur() == $idRedacteur;
-        })) > 0 ? 1 : 0;
-
+        $notContactablesMails = [];
         foreach ($joueurs as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->getFirstContactableMail()){
-                    array_push($contactablesMails, $joueur->getPrenom() . ' ' . $joueur->getNom());
+                    array_push($contactablesMails, $joueur);
                     array_push($mails, $joueur->getFirstContactableMail());
                 }
+                else array_push($notContactablesMails, $joueur);
             }
         }
-        $response['mails']['toString'] = implode(', ', $mails);
-        $response['mails']['contactables'] = $contactablesMails;
+        $response['mail']['length'] = count($mails);
+        $response['mail']['toString'] = implode(',', $mails);
+        $response['mail']['contactables'] = $contactablesMails;
+        $response['mail']['notContactables'] = $notContactablesMails;
 
         $phoneNumbers = [];
         $contactablesPhoneNumbers = [];
@@ -660,18 +647,20 @@ class Rencontre
         foreach ($joueurs as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->getFirstContactablePhoneNumber()){
-                    array_push($contactablesPhoneNumbers, $joueur->getPrenom() . ' ' . $joueur->getNom());
+                    array_push($contactablesPhoneNumbers, $joueur);
                     array_push($phoneNumbers, $joueur->getFirstContactablePhoneNumber());
                 }
-                else array_push($notContactablesPhoneNumbers, $joueur->getPrenom() . ' ' . $joueur->getNom());
+                else array_push($notContactablesPhoneNumbers, $joueur);
             }
         }
-        $minus = in_array($idRedacteur, $phoneNumbers) ? 1 : 0; //TODO Bug
-        $response['phoneNumbers']['length'] = count($phoneNumbers) - $minus;
-        $response['phoneNumbers']['toString'] = implode(', ', $phoneNumbers);
-        $response['phoneNumbers']['contactables'] = $contactablesPhoneNumbers;
-        $response['phoneNumbers']['notContactables'] = $notContactablesPhoneNumbers;
+        $response['sms']['length'] = count($phoneNumbers);
+        $response['sms']['toString'] = implode(',', $phoneNumbers);
+        $response['sms']['contactables'] = $contactablesPhoneNumbers;
+        $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
 
+        $minusNbJoueurs = count(array_filter($joueurs, function($joueur) use ($idRedacteur) {
+            return $joueur->getIdCompetiteur() == $idRedacteur;
+        })) > 0 ? 1 : 0;
         $response['nbJoueurs'] = count($joueurs) - $minusNbJoueurs;
 
         return $response;

@@ -486,14 +486,27 @@ form h5 {
 .modal .modal-content {
   max-width: 100% !important;
 }
+.modal .modal-content h5 {
+  margin-bottom: 4px;
+}
+.modal .modal-content .card {
+  border-radius: 10px;
+  width: auto;
+  margin: 5px 15px;
+}
+.modal .modal-content .card a {
+  margin-top: 8px;
+}
 .modal .modal-content > .row {
   margin: 0 !important;
 }
+.modal .modal-content > .row .row {
+  margin: 10px 0 12px 0 !important;
+}
 .modal.modal-alert {
-  margin-top: 10% !important;
-  width: 35% !important;
-  height: 40% !important;
-  min-width: 250px !important;
+  margin-top: 6% !important;
+  width: 600px !important;
+  height: 44% !important;
 }
 .modal.modal-alert .modal-content {
   padding: 2px;
@@ -795,6 +808,17 @@ button.btn_renouveler_certif_mobile {
 
   span.badge-role {
     margin-top: 12px;
+  }
+}
+@media screen and (max-width: 650px) {
+  .modal.modal-alert {
+    width: 90% !important;
+  }
+}
+@media screen and (max-width: 600px) {
+  .modal.modal-alert {
+    margin-top: 0 !important;
+    height: 85% !important;
   }
 }
 @media screen and (max-width: 601px) {
