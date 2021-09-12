@@ -37,7 +37,7 @@
                             <th>Nom</th>
                             <th>Licence</th>
                             <th>Classement</th>
-                            <th>Certificat médical</th>
+                            <th class="truncate">Certificat médical</th>
                             <th></th>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <th></th>
@@ -83,7 +83,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                                <td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
                                         {% if competiteur.licence %}
                                             {{ competiteur.licence }}
@@ -92,7 +92,7 @@
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
                                         {% if competiteur.isLoisir %}
                                             <i>Sans classement</i>
@@ -105,7 +105,7 @@
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
                                         {% if competiteur.age != null and competiteur.age < 18 %}
                                             <span style="color: grey"><i>Mineur (facultatif)</i></span>
@@ -130,13 +130,21 @@
                                 </td>
                                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                     <td>
-                                        <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
-                                            <input type='hidden' name='_method' value='DELETE'>
-                                            <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
-                                            <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>
-                                                <i class='material-icons'>delete</i>
-                                            </button>
-                                        </form>
+                                        {% if not (onlyOneAdmin and competiteur.admin) %}
+                                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
+                                                <input type='hidden' name='_method' value='DELETE'>
+                                                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
+                                                <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>
+                                                    <i class='material-icons'>delete</i>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <div class="tooltipped" data-position="top" data-tooltip="Vous êtes le seul administrateur">
+                                                <a class='btn red lighten-2 btn_gestion' disabled="">
+                                                    <i class='material-icons'>delete</i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     </td>
                                 {% endif %}
                             </tr>

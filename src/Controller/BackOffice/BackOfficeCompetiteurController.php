@@ -67,8 +67,13 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function index(): Response
     {
+        $joueurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
+        $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
+           return $joueur->isAdmin();
+        })) == 1;
         return $this->render('backoffice/competiteur/index.html.twig', [
-            'competiteurs' => $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC'])
+            'competiteurs' => $joueurs,
+            'onlyOneAdmin' => $onlyOneAdmin
         ]);
     }
 
