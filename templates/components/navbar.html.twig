@@ -23,11 +23,16 @@
                         <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
                                 <span style="font-family: 'Lora', serif;">J</span>
-                                {{ i+1 }} -
-                                {% if journee.undefined %}
-                                    <span class="red-text"><b>?/?</b></span>
+                                {{ i+1 }}
+                                {% if not journeePassee(journee) %}
+                                    -
+                                    {% if journee.undefined %}
+                                        <span class="red-text"><b>?/?</b></span>
+                                    {% else %}
+                                        {{ journee.dateJournee|date('d/m') }}
+                                    {% endif %}
                                 {% else %}
-                                    {{ journee.dateJournee|date('d/m') }}
+                                    <i class="journee_passee material-icons green-text right">done</i>
                                 {% endif %}
                             </a>
                         </li>
@@ -94,11 +99,15 @@
             {% for i, journee in journees %}
                 <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                     <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
-                        Journée {{ i+1 }} -
-                        {% if journee.undefined %}
-                            <span class="red-text"><b>?/?</b></span>
+                        <span class="left">Journée {{ i+1 }}</span>
+                        {% if not journeePassee(journee) %}
+                            {% if journee.undefined %}
+                                <span class="right red-text"><b>?/?</b></span>
+                            {% else %}
+                                <span class="right">{{ journee.dateJournee|date('d/m/Y') }}</span>
+                            {% endif %}
                         {% else %}
-                            {{ journee.dateJournee|date('d/m/Y') }}
+                            <i class="material-icons green-text right" style="margin-right: 0;">done</i>
                         {% endif %}
                     </a>
                 </li>

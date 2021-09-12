@@ -18,7 +18,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
-            new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2'])
+            new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
+            new TwigFunction('journeePassee', [$this, 'journeePassee'])
         ];
     }
 
@@ -133,5 +134,9 @@ class AppExtension extends AbstractExtension
         $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 ? 's' : '');
 
         return $str;
+    }
+
+    public function journeePassee(Journee $journee): bool {
+        return !$journee->getUndefined() && intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) < 0;
     }
 }

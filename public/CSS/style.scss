@@ -218,6 +218,10 @@ i.iconPlace {
   padding-top: 4px;
   padding-bottom: 4px;
   font-size: 120%;
+
+  & .journee_passee {
+    margin-left: 0;
+  }
 }
 
 .title_journee {
