@@ -269,11 +269,11 @@ i {
   padding: 8px 10px;
 }
 
-.whatsapp_btn a.btn {
+.whatsapp_btn {
   background-color: #25d366;
   padding: 0;
 }
-.whatsapp_btn a.btn img {
+.whatsapp_btn img {
   padding: 5px 8px;
 }
 
@@ -493,6 +493,9 @@ form h5 {
   border-radius: 10px;
   width: auto;
   margin: 5px 15px;
+}
+.modal .modal-content .card p.red-text {
+  padding-top: 8px;
 }
 .modal .modal-content .card a {
   margin-top: 8px;

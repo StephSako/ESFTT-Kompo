@@ -312,13 +312,11 @@ i {
 }
 
 .whatsapp_btn {
-  a.btn {
-    background-color: #25d366;
-    padding: 0;
+  background-color: #25d366;
+  padding: 0;
 
-    img {
-      padding: 5px 8px;
-    }
+  img {
+    padding: 5px 8px;
   }
 }
 
@@ -571,6 +569,10 @@ form {
       border-radius: 10px;
       width: auto;
       margin: 5px 15px;
+
+      & p.red-text {
+        padding-top: 8px;
+      }
 
       & a {
         margin-top: 8px;

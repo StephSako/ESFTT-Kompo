@@ -636,7 +636,6 @@ class Rencontre
                 else array_push($notContactablesMails, $joueur);
             }
         }
-        $response['mail']['length'] = count($mails);
         $response['mail']['toString'] = implode(',', $mails);
         $response['mail']['contactables'] = $contactablesMails;
         $response['mail']['notContactables'] = $notContactablesMails;
@@ -653,7 +652,6 @@ class Rencontre
                 else array_push($notContactablesPhoneNumbers, $joueur);
             }
         }
-        $response['sms']['length'] = count($phoneNumbers);
         $response['sms']['toString'] = implode(',', $phoneNumbers);
         $response['sms']['contactables'] = $contactablesPhoneNumbers;
         $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
@@ -662,6 +660,7 @@ class Rencontre
             return $joueur->getIdCompetiteur() == $idRedacteur;
         })) > 0 ? 1 : 0;
         $response['nbJoueurs'] = count($joueurs) - $minusNbJoueurs;
+        $response['nbJoueursWithoutMe'] = count($contactablesMails) + count($notContactablesMails) + count($notContactablesPhoneNumbers) + count($contactablesPhoneNumbers);
 
         return $response;
     }

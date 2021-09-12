@@ -214,10 +214,12 @@
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'add_circle_outline', 'green') }}
                                 {% else %}
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'edit', 'blue') }}
-                                    {{ _index.btnAlertPlayers(compo.id) }}
-                                    {{ _index.modalAlertPlayers(
-                                        compo,
-                                        compo.getListContactSelectedPlayers(app.user.idCompetiteur)) }}
+                                    {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
+                                        {{ _index.btnAlertPlayers(compo.id) }}
+                                        {{ _index.modalAlertPlayers(
+                                            compo,
+                                            compo.getListContactSelectedPlayers(app.user.idCompetiteur)) }}
+                                    {% endif %}
                                     {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
                                 {% endif %}
                             </div>

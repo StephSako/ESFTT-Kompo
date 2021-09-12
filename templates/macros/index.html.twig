@@ -21,13 +21,14 @@
         <div class="modal-content">
             <h5>Alerter les joueurs</h5>
             <div class="row">
-                {% if response['nbJoueurs'] %}
-                    <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour alerter les joueurs par SMS / WhatsApp</i></p>
-                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', response['nbJoueurs'], 'mailto:' ~ response['mail']['toString'] ~ '?subject=' ~ "RDV Ping Compétition - " ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '&body=' ~ 'Salut, c\'est ' ~ (app.user.username|title) ~ '.%0D%0A%0D%0A' ~ 'Tu es sélectionné pour jouer en compétition en équipe ' ~ compo.idEquipe.numero ~ ' le ' ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ATu as rendez-vous à la ' ~ (compo.domicile ? 'salle Albert Marquet à 20h00' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ (compo.domicile ? 'à domicile' : 'à l\'extérieur') ~ ' contre ' ~ compo.adversaire ~ '.%0D%0A%0D%0AMerci de me confirmer et à vendredi !' ) }}
-                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', response['nbJoueurs'], 'sms:' ~ response['sms']['toString'] ~ ';?&body=' ~ 'Salut, c\'est ' ~ (app.user.username|title) ~ '.%0D%0A%0D%0A' ~ 'Tu es sélectionné pour jouer en compétition en équipe ' ~ compo.idEquipe.numero ~ ' le ' ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ATu as rendez-vous à la ' ~ (compo.domicile ? 'salle Albert Marquet à 20h00' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ (compo.domicile ? 'à domicile' : 'à l\'extérieur') ~ ' contre ' ~ compo.adversaire ~ '.%0D%0A%0D%0AMerci de me confirmer et à vendredi !') }}
-                {% else %}
-                    <p>Il n'y a personne d'autre que vous de sélectionné</p>
-                {% endif %}
+                    <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour alerter les joueurs par SMS</i></p>
+                    {% set message = '&body=' ~ ('Salut, c\'est ' ~ (app.user.username|title) ~ '.%0D%0A%0D%0A' ~
+                        (compo.exempt ? 'Vous êtes sélectionnés en équipe ' ~ compo.idEquipe.numero ~ ' le ' ~ (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ACependant, l\'équipe ' ~ compo.idEquipe.numero ~ ' est exemptée pour cette journée ce qui signifie qu\'il n\'y aura donc pas match à cette date.%0D%0A%0D%0ABonne journée à vous.' :
+                        'Vous êtes sélectionnés pour jouer en compétition en équipe ' ~ compo.idEquipe.numero ~ (not compo.idJournee.undefined ? ' le ' ~ (not compo.reporte ? (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) : (compo.dateReport|format_datetime('long', 'none', locale='fr'))) : ' pour une date indéterminée pour le moment') ~ '.%0D%0A%0D%0A' ~
+                        'Vous avez rendez-vous à la ' ~ (not compo.hosted and compo.domicile ? 'salle Albert Marquet à 20h00' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ ((not compo.domicile or compo.hosted) ? 'à l\'extérieur' : 'à domicile') ~ ' contre ' ~ compo.adversaire ~ '.%0D%0A%0D%0A' ~
+                        'Merci de me confirmer et à vendredi !')) %}
+                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', response['nbJoueurs'], 'mailto:' ~ response['mail']['toString'] ~ '?subject=' ~ 'RDV Ping Compétition' ~ (not compo.idJournee.undefined ? ' - ' ~ (not compo.reporte ? (compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) : (compo.dateReport|format_datetime('long', 'none', locale='fr'))) : '') ~ message) }}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', response['nbJoueurs'], 'sms:' ~ response['sms']['toString'] ~ ';?' ~ message) }}
             </div>
         </div>
         <div class="modal-footer">
@@ -37,10 +38,14 @@
 {% endmacro %}
 
 {% macro cardAlertPlayers(response, hideClass, media, nbJoueurs, link) %}
-    <div class="col s12 l12 {{ hideClass }} card grey lighten-3 z-depth-0">
-        <a href="{{ link }}" class="center-align btn waves-effect waves-light blue lighten-2">
-            PAR {{ media }} (<b>{{ response['length'] ~ '/' ~ nbJoueurs }}</b>)
-        </a>
+    <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
+        {% if response['contactables']|length %}
+            <a href="{{ link }}" class="center-align btn waves-effect waves-light blue lighten-2">
+                PAR {{ media }}
+            </a>
+        {% else %}
+            <p class="red-text"><b>Aucun joueur contactable</b></p>
+        {% endif %}
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}
                 <li class="green-text lighten-1 col s12 m6">
