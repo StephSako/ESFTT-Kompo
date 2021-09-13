@@ -202,10 +202,10 @@
             let isArchived = Boolean({{ options.isArchived ? 1 : 0 }});
             let isLoisir = Boolean({{ options.isLoisir ? 1 : 0 }});
         </script>
-        <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.min.js') }}" defer></script>
     {% endif %}
 
-    <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.min.js') }}" defer></script>
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
@@ -236,5 +236,5 @@
     <script type="text/javascript">
         let type = '{{ type }}'
     </script>
-    <script type="text/javascript" src="{{ asset('JS/accountEditPassword.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('JS/accountEditPassword.min.js') }}" defer></script>
 {% endmacro %}
