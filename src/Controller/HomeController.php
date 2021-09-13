@@ -192,10 +192,6 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
-        $brulagesJ2 = ($numJournee == 2 && $championnat->isJ2Rule()) ? array_map(function($renc) {
-            return $renc->getSelectedPlayers();
-        }, array_slice($championnat->getRencontres()->toArray(), 0, count($compos))) : null;
-
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -215,8 +211,7 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            'allDisponibilites' => $allDisponibilites,
-            'brulagesJ2' => $brulagesJ2
+            'allDisponibilites' => $allDisponibilites
         ]);
     }
 

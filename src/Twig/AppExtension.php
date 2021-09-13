@@ -100,17 +100,28 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param int $nbCompo
+     * @param int $numEquipe
      * @param int $idCompetiteur
-     * @param array $brulageJ2
      * @param array $selectedPlayers
+     * @param array $brulageGeneral
      * @return bool
      */
-    public function isBrulesJ2(int $nbCompo, int $idCompetiteur, array $brulageJ2, array $selectedPlayers): bool
+    public function isBrulesJ2(int $numEquipe, int $idCompetiteur, array $selectedPlayers, array $brulageGeneral): bool
     {
-        $burntJ2 = array_intersect(array_merge(...array_filter($brulageJ2, function($index) use ($nbCompo) {
-            return $index < $nbCompo;
-        },ARRAY_FILTER_USE_KEY)), $selectedPlayers);
+        $brulageJoueursCompo = (array_filter($brulageGeneral, function($brulageG) use ($selectedPlayers){
+            return in_array($brulageG['idCompetiteur'], $selectedPlayers);
+        }));
+
+        $isBurnt = array_filter($brulageJoueursCompo, function($brulageJoueur) use ($numEquipe) {
+            return in_array(1, array_filter($brulageJoueur['brulage'], function($numEquipeBrulage) use ($numEquipe) {
+                return $numEquipeBrulage < $numEquipe;
+            }, ARRAY_FILTER_USE_KEY));
+        });
+
+        $burntJ2 = array_values(array_map(function($joueurBruleJ2) {
+            return $joueurBruleJ2['idCompetiteur'];
+        },$isBurnt));
+
         return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
     }
 

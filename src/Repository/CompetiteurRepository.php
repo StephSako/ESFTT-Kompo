@@ -135,7 +135,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             $brulageJoueur = [];
             $brulageInt = [];
             foreach ($idEquipes as $idEquipe) {
-                array_push($brulageInt, intval($brulage['E'.$idEquipe]));
+                $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
