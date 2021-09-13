@@ -60,23 +60,6 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/contact/message", name="contact.email")
-     * @param Request $request
-     * @return Response
-     */
-    public function contact(Request $request): Response
-    {
-        return $this->sendMail(
-            new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - Message reçu de ' . $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()),
-            new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver')),
-            boolval($request->request->get('importance')),
-            $request->request->get('sujet'),
-            $request->request->get('message'),
-            'mail_templating/contact.html.twig',
-            ['emailSender' => $request->request->get('mailSender'), 'nameSender' => $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom()]);
-    }
-
-    /**
      * @Route("/login/contact/forgotten_password", name="contact.reset.password")
      * @param Request $request
      * @return Response

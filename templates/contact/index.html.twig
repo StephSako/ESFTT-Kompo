@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import 'contact/modal.html.twig' as _modal %}
 
 {% block title %}Page de contact{% endblock %}
 
@@ -68,16 +67,14 @@
                                 <td>
                                     {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                         {% if competiteur.mail and competiteur.contactableMail %}
-                                            <a class="btn blue modal-trigger truncate" href="#contactMail1{{ competiteur.idCompetiteur }}">
+                                            <a class="btn blue truncate" href="mailto:{{ competiteur.mail }}">
                                                 <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
                                             </a><br>
-                                            {{ _modal.contact(competiteur, competiteur.mail, '1') }}
                                         {% endif %}
                                         {% if competiteur.mail2 and competiteur.contactableMail2 %}
-                                            <a class="btn blue modal-trigger truncate" href="#contactMail2{{ competiteur.idCompetiteur }}">
+                                            <a class="btn blue truncate" href="mailto:{{ competiteur.mail2 }}">
                                                 <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
                                             </a>
-                                            {{ _modal.contact(competiteur, competiteur.mail2, '2') }}
                                         {% endif %}
                                     {% else %}
                                         <p class="grey-text"><i>Non renseigné</i></p>
@@ -143,6 +140,4 @@
             <p class="lobster_2 missingTitle">Il n'y a pas de compétiteurs enregistrés.</p>
         {% endif %}
     </div>
-
-    <script type="text/javascript" src="{{ asset('JS/sendMail.js') }}" defer></script>
 {% endblock %}

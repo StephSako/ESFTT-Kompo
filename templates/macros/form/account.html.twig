@@ -132,26 +132,29 @@
                     <h5 class="dark_blue">Informations Ping</h5>
 
                     <div class="col s12 m6">
-                        <span><i class="material-icons prefix">payment</i> N° licence</span>
+                        <p><i class="material-icons prefix">payment</i> N° licence</p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
                         {% else %}
-                            <br><br>
-                            <span style="margin-top: 20px;">{{ options.licence }}</span>
+                            {% if options.licence %}
+                                <span class="pastille blue centered">{{ options.licence }}</span>
+                            {% else %}
+                                <p style="color: red">Licence indéfinie</p>
+                            {% endif %}
                         {% endif %}
                     </div>
-                    <div class="col s12 m6" {% if 'ROLE_JOUEUR' not in app.token.roleNames and type == 'general' %}style="margin-left: 25%;"{% endif %}>
-                        <span><i class="material-icons prefix">trending_up</i> Classement officiel</span>
+                    <div class="col s12 m6">
+                        <p><i class="material-icons prefix">trending_up</i> Classement officiel</p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}
                         {% else %}
                             {% if 'ROLE_LOISIR' in app.token.roleNames %}
-                                <p>Vous n\'êtes pas compétiteur</p>
+                                <p>Vous n'êtes pas compétiteur</p>
                             {% else %}
                                 {% if app.user.classementOfficiel %}
-                                    <p>{{ app.user.classementOfficiel }} pts</p>
+                                    <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
                                 {% else %}
-                                    <p style="color: red">Licence indéfinie</p>
+                                    <p style="color: red">Classement indéfinie</p>
                                 {% endif %}
                             {% endif %}
                         {% endif %}

@@ -111,7 +111,7 @@
                                             <span style="color: grey"><i>Mineur (facultatif)</i></span>
                                         {% else %}
                                             {% if not competiteur.anneeCertificatMedical %}
-                                                <span class="red-text"><i class="material-icons" style="vertical-align: bottom;">clear</i>Non renseigné</span>
+                                                <span class="red-text">Certificat indéfini</span>
                                             {% else %}
                                                 <span>
                                                     {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}

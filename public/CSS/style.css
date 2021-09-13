@@ -468,7 +468,7 @@ form h5 {
   border-radius: 30px;
   color: white;
 }
-.pastille.reset {
+.pastille.reset, .pastille.centered {
   width: fit-content;
   padding-left: 10px;
   padding-right: 10px;

@@ -543,7 +543,7 @@ form {
   border-radius: 30px;
   color: white;
 
-  &.reset {
+  &.reset, &.centered {
     width: fit-content;
     padding-left: 10px;
     padding-right: 10px;
