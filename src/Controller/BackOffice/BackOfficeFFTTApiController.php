@@ -66,7 +66,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
             /** Gestion des joueurs */
-            $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0, 'isArchive' => 0]);
+            $joueursKompo = $this->competiteurRepository->findBy(['isLoisir' => 0, 'isArchive' => 0], ['nom ' => 'ASC', 'prenom' => 'ASC']);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
 
             foreach ($joueursKompo as $competiteur){
@@ -78,7 +78,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 if (count($joueurFFTT)){ /** Si la licence correspond bien */
                     $joueur = array_values($joueurFFTT)[0];
                     $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
-                    if ($joueur->getPoints() != $competiteur->getClassementOfficiel() || !$sameName){ /** Si les classements ne concordent pas */
+                    if ($joueur->getPoints() != $competiteur->getClassementOfficiel() || !$sameName && $joueur->getPoints() > 0){ /** Si les classements ne concordent pas */
                         $joueursIssued[$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
                         $joueursIssued[$competiteur->getIdCompetiteur()]['pointsFFTT'] = intval($joueur->getPoints());
                         $joueursIssued[$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom();
