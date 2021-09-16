@@ -24,20 +24,12 @@ class Settings
     /**
      * @var string
      *
-     * @Assert\NotBlank(
-     *     normalizer="trim"
-     *)
-     *
      * @ORM\Column(type="text", name="informations_competition", nullable=false)
      */
     private $informations_competition;
 
     /**
      * @var string
-     *
-     * @Assert\NotBlank(
-     *     normalizer="trim"
-     *)
      *
      * @ORM\Column(type="text", name="informations_criterium", nullable=false)
      */
@@ -70,12 +62,13 @@ class Settings
     }
 
     /**
-     * @param string $informations
+     * @param string|null $informations_competition
      * @return Settings
      */
-    public function setInformationsCompetition(string $informations): self
+    public function setInformationsCompetition(?string $informations_competition = ''): self
     {
-        $this->informations_competition = $informations;
+        $informations_competition = $informations_competition ?: '';
+        $this->informations_competition = $informations_competition;
         return $this;
     }
 
@@ -88,24 +81,13 @@ class Settings
     }
 
     /**
-     * @param string $informations_criterium
+     * @param string|null $informations_criterium
      * @return Settings
      */
-    public function setInformationsCriterium(string $informations_criterium): self
+    public function setInformationsCriterium(?string $informations_criterium): self
     {
+        $informations_criterium = $informations_criterium ?: '';
         $this->informations_criterium = $informations_criterium;
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     * @param string $informations
-     * @return Settings
-     */
-    public function setInformations(string $type, string $informations): self
-    {
-        if ($type == 'competition') $this->setInformationsCompetition($informations);
-        else if ($type == 'criterium') $this->setInformationsCriterium($informations);
         return $this;
     }
 

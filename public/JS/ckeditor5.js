@@ -50,7 +50,7 @@ BalloonEditor.create(
 
     document.querySelector("#settings-form form").addEventListener("submit", function (e) {
         e.preventDefault();
-        this.querySelector('#settings-form #settings_informations').value = editor.getData();
+        this.querySelector('#settings-form #settings_informations' + type).value = editor.getData();
         this.submit();
     })
 });

@@ -377,7 +377,6 @@ class HomeController extends AbstractController
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
 
-        $data = null;
         $settings = $this->settingsRepository->find(1);
         try {
             $data = $settings->getInformations($type);
@@ -397,7 +396,9 @@ class HomeController extends AbstractController
                 if ($form->isValid()) {
                     $this->em->flush();
                     $this->addFlash('success', 'Informations modifiées');
-                    return $this->redirectToRoute('informations');
+                    return $this->redirectToRoute('informations', [
+                        'type' => $type
+                    ]);
                 } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }

@@ -44,12 +44,13 @@
                 </div>
                 {{ form_end(form) }}
             </div>
+
+            <script type="text/javascript">
+                let ckeditor_content = '{{ HTMLContent }}';
+                let type = '{{ type|title }}';
+            </script>
+            <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
         {% endif %}
     </div>
-
-    <script type="text/javascript">
-        let ckeditor_content = '{{ HTMLContent }}';
-    </script>
-    <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
 {% endblock %}
