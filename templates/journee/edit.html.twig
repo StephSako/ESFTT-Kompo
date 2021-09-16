@@ -52,7 +52,7 @@
                 {% if compo.reporte %}
                     <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                         <i class="material-icons">update</i>
-                        <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b>
+                        <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
                     </span>
                 {% endif %}
 
@@ -94,7 +94,9 @@
                     </div>
 
                     {% if compo.idJournee.undefined %}
-                        <h5 class="col s4 m3 red-text">?/?</h5>
+                        <h5 class="col s4 m3 red-text">
+                            <i class="material-icons red-text" style="font-size: 2.1rem !important;">event_busy</i>
+                        </h5>
                     {% else %}
                         <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.dateJournee|date('d/m') }}</h5>
                     {% endif %}
@@ -102,8 +104,12 @@
 
                     <h5 class="col s4 m2">
                         {% if not compo.exempt %}
-                            {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
-                            {% else %} <i class="material-icons iconPlace">directions_car</i>
+                            {% if compo.domicile is null %}
+                                <i class='material-icons red-text'>location_off</i>
+                            {% else %}
+                                {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
+                                {% else %} <i class="material-icons iconPlace">directions_car</i>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </h5>

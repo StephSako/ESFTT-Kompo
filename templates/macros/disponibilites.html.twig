@@ -183,7 +183,7 @@
                                         <td>J{{ i+1 }}</td>
                                         <td>
                                             {% if dispos.undefined %}
-                                                <span class="red-text">Date indéfinie</span>
+                                                <i class='material-icons red-text'>event_busy</i>
                                             {% else %}
                                                 {{ dispos.dateJournee | date("d/m/Y") }}
                                             {% endif %}

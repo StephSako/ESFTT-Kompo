@@ -154,9 +154,9 @@ class Rencontre
     private $idEquipe;
 
     /**
-     * @var boolean
+     * @var boolean|null
      *
-     * @ORM\Column(name="domicile", type="boolean", nullable=false)
+     * @ORM\Column(name="domicile", type="boolean", nullable=true)
      */
     private $domicile;
 
@@ -411,18 +411,18 @@ class Rencontre
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function getDomicile(): bool
+    public function getDomicile(): ?bool
     {
         return $this->domicile;
     }
 
     /**
-     * @param bool $domicile
+     * @param bool|null $domicile
      * @return Rencontre
      */
-    public function setDomicile(bool $domicile): self
+    public function setDomicile(?bool $domicile): self
     {
         $this->domicile = $domicile;
         return $this;

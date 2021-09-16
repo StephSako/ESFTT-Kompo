@@ -120,7 +120,7 @@
                             {% if compo.reporte %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                                 <i class="material-icons">update</i>
-                                <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b>
+                                <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
                                 </span>
                             {% endif %}
 
@@ -152,8 +152,12 @@
                             {% if not compo.exempt %}
                                 <div class="col s4 hide-on-med-and-up">
                                     <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                        {% if compo.domicile is null %}
+                                            <i class='material-icons red-text'>location_off</i>
+                                        {% else %}
+                                            {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                            {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                        {% endif %}
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -162,8 +166,12 @@
                             <div class="col m2 hide-on-small-only">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
                                     {% if not compo.exempt %}
-                                        {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                        {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                        {% if compo.domicile is null %}
+                                            <i class='material-icons red-text'>location_off</i>
+                                        {% else %}
+                                            {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                            {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </h5>

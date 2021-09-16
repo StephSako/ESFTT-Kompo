@@ -23,8 +23,8 @@ $(document).ready(function () {
         reported.prop('disabled', true);
         adversaire.val("").attr('placeholder', "Pas d'adversaire");
         adversaire.prop('disabled', true);
-        lieu_rencontre.prop('checked', false).prop('disabled', true);
-        hosted.prop('checked', false).prop('disabled', true);
+        lieu_rencontre.prop('disabled', true);
+        hosted.prop('disabled', true);
         span_domicile.css("font-weight", "normal");
         span_exterieur.css("font-weight", "normal");
         span_domicile.css("color", "#a4a2a2");

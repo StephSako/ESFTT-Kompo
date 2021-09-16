@@ -112,7 +112,7 @@ class BackOfficeEquipeController extends AbstractController
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
                             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                         } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else if (in_array($e->getCode(), ["12340", "12341", "12343", "12343"]))  $this->addFlash('fail', $e->getMessage());
+                    } else if (in_array($e->getCode(), ["12340", "12341", "12342", "12343"]))  $this->addFlash('fail', $e->getMessage());
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
@@ -205,7 +205,7 @@ class BackOfficeEquipeController extends AbstractController
             $rencontre
                 ->setIdJournee($journee)
                 ->setIdEquipe($equipe)
-                ->setDomicile(true)
+                ->setDomicile(null)
                 ->setHosted(false)
                 ->setDateReport($journee->getDateJournee())
                 ->setReporte(false)

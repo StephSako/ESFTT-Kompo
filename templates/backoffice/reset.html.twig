@@ -169,7 +169,7 @@
                                                 <td><i class="material-icons orange-text text-darken-2">edit</i></td>
                                                 <td><b>{{ dateIssued.nJournee }}</b></td>
                                                 <td>
-                                                    <span class="red-text">{{ dateIssued.undefined ? 'Date indéfinie' : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                    <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
                                                     <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
                                                 </td>
                                             </tr>
@@ -189,7 +189,7 @@
                                                 <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
                                                 <td>
                                                     {% if dateSurplus.undefined %}
-                                                        <span class="red-text">Date indéfinie</span>
+                                                        <i class='material-icons red-text'>event_busy</i>
                                                     {% else %}
                                                         {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
                                                     {% endif %}
@@ -321,7 +321,7 @@
                                                                         {% endif %}
                                                                     </td>
                                                                     <td>
-                                                                        <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}</span>
+                                                                        <span {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}class="red-text" {% endif %}>{{ (rencontre.rencontre.domicile is null ? "<i class='material-icons'>location_off</i>" : (rencontre.rencontre.domicile ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>")) }}</span>
                                                                         {% if rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
                                                                     </td>
                                                                 </tr>
