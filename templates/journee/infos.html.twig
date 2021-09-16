@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
 {% endblock %}
 
-{% block title %}Informations{% endblock %}
+{% block title %}Informations {{ type }}{% endblock %}
 
 {% block body %}
 
@@ -23,11 +23,11 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4 style="font-family: Lobster, cursive">Informations</h4>
+            <h4 style="font-family: Lobster, cursive">Informations {{ type }}</h4>
         </div>
 
         <div class="card-panel">
-            <p>{{ informations | raw }}</p>
+            <p>{{ HTMLContent | raw }}</p>
         </div>
 
         {% if 'ROLE_ADMIN' in app.token.roleNames %}

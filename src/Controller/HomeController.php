@@ -367,9 +367,9 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/informations", name="informations")
+     * @Route("/informations/{type}", name="informations")
      */
-    public function infos(Request $request): Response
+    public function infos(Request $request, string $type): Response
     {
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
@@ -377,11 +377,20 @@ class HomeController extends AbstractController
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
 
-        $form = null;
+        $data = null;
         $settings = $this->settingsRepository->find(1);
+        try {
+            $data = $settings->getInformations($type);
+        } catch (Exception $e) {
+            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+        }
+
+        $form = null;
         $isAdmin = $this->getUser()->isAdmin();
         if ($isAdmin){
-            $form = $this->createForm(SettingsType::class, $settings);
+            $form = $this->createForm(SettingsType::class, $settings, [
+                'type_data' => $type
+            ]);
             $form->handleRequest($request);
 
             if ($form->isSubmitted()) {
@@ -394,12 +403,12 @@ class HomeController extends AbstractController
         }
 
         return $this->render('journee/infos.html.twig', [
-            'informations' => $this->settingsRepository->find(1)->getInformations(),
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
-            'HTMLContent' => $settings->getInformations()
+            'HTMLContent' => $data,
+            'type' => $type
         ]);
     }
 }

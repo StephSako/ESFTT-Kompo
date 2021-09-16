@@ -12,14 +12,16 @@ class SettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('informations', HiddenType::class);
+        if ($options['type_data'] == 'compet') $builder->add('informationsCompetition', HiddenType::class);
+        else if ($options['type_data'] == 'criterium') $builder->add('informationsCriterium', HiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Settings::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'type_data' => ''
         ]);
     }
 }

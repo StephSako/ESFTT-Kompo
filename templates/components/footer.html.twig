@@ -2,11 +2,12 @@
     <div class="footer-copyright">
         <div class="container center">
             <a class="center" href="https://www.esftt.com">Site du club</a><br>
-            <a class="center" href="https://www.esftt.com/forum">Forum privé</a>
+            <a class="center" href="https://www.esftt.com/forum">Forum privé</a><br>
+            <a class="center" href="https://www.facebook.com/groups/46831155736">Groupe Facebook</a>
         </div>
         <div class="container center">
-            <a class="center" href="{{ path('informations') }}">Infos compet</a><br>
-            <a class="center" href="https://www.facebook.com/groups/46831155736">Groupe Facebook</a>
+            <a class="center" href="{{ path('informations', {type: 'competition'}) }}">Infos compétition</a><br>
+            <a class="center" href="{{ path('informations', {type: 'criterium'}) }}">Infos crit. fédéral</a><br>
         </div>
         <div class="container center">
             <a class="center" href="https://www.pingpocket.fr/">PingPocket</a><br>
