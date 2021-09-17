@@ -1,7 +1,9 @@
 $(document).ready(function() {
     $('.modal').modal();
 
-    $("#dropdowner").dropdown();
+    $("#dropdowner").dropdown({
+        coverTrigger: false
+    });
 
     $('select').formSelect();
 
