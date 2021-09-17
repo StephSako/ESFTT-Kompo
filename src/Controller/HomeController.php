@@ -182,8 +182,14 @@ class HomeController extends AbstractController
         // Si l'utilisateur actuel est disponible pour la journée actuelle
         $disponible = ($dispoJoueur ? ($dispoJoueur->getDisponibilite() ? 1 : 0) : -1);
 
-        // Si l'utilisateur actuel est sélectionné pour la journée actuelle
-        $selected = in_array($this->getUser()->getIdCompetiteur(), $selectedPlayers);
+        // Si l'utilisateur est sélectionné pour la journée actuelle
+        $selectionArray = array_values(array_filter(array_map(function($compo) {
+            return in_array($this->getUser()->getIdCompetiteur(), $compo->getSelectedPlayers()) ? $compo : null;
+        }, $compos), function($compoFiltree){
+            return $compoFiltree != null;
+        }));
+
+        $selection = count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
 
         $allChampionnats = $this->championnatRepository->findAll();
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
@@ -200,7 +206,7 @@ class HomeController extends AbstractController
             'nbTotalJoueurs' => $nbTotalJoueurs,
             'nbMinJoueurs' => $nbMinJoueurs,
             'allChampionnats' => $allChampionnats,
-            'selected' => $selected,
+            'selection' => $selection,
             'championnat' => $championnat,
             'compos' => $compos,
             'idEquipes' => $idEquipesVisuel,
