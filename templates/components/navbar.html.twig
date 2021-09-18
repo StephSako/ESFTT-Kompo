@@ -40,14 +40,14 @@
                     <!-- Dropdown Trigger -->
                     {% if allChampionnats|length > 1 %}
                         <li class="li_in_line">
-                            <a id="dropdowner" class="dropdown-trigger" href="#!" data-target="menu_dropdown">
+                            <a class="dropdown-trigger" href="#!" data-target="menu_dropdown_champs">
                                 {{ championnat.nom }}
                                 <i class="material-icons right">arrow_drop_down</i>
                             </a>
                         </li>
 
                         <!-- Dropdown Structure -->
-                        <ul id="menu_dropdown" class="dropdown-content">
+                        <ul id="menu_dropdown_champs" class="dropdown-content">
                             {% for championnatList in allChampionnats %}
                                 {% if championnat.idChampionnat != championnatList.idChampionnat %}
                                     <li class="waves-light waves-effect li_in_line">

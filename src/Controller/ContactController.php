@@ -51,12 +51,57 @@ class ContactController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
 
+        $idRedacteur = $this->getUser()->getIdCompetiteur();
+        $joueurs = [];
+        $joueurs['loisirs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur));
+        $joueurs['competiteurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursCompetiteurs($idRedacteur));
+        $joueurs['capitaines'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur));
+        $joueurs['entraineurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur));
+        $joueurs['administrateurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur));
+
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
-            'journees' => $journees
+            'journees' => $journees,
+            'joueurs' => $joueurs
         ]);
+    }
+
+    /**
+     * Formatte les joueurs contactables par rôle
+     * @param array $joueurs
+     * @return array
+     */
+    public function returnPlayersContact(array $joueurs): array
+    {
+        $mails = [];
+        $contactablesMails = [];
+        $notContactablesMails = [];
+        foreach ($joueurs as $joueur) {
+            if ($joueur->getFirstContactableMail()){
+                array_push($contactablesMails, $joueur);
+                array_push($mails, $joueur->getFirstContactableMail());
+            } else array_push($notContactablesMails, $joueur);
+        }
+        $response['mail']['toString'] = implode(',', $mails);
+        $response['mail']['contactables'] = $contactablesMails;
+        $response['mail']['notContactables'] = $notContactablesMails;
+
+        $phoneNumbers = [];
+        $contactablesPhoneNumbers = [];
+        $notContactablesPhoneNumbers = [];
+        foreach ($joueurs as $joueur) {
+            if ($joueur->getFirstContactablePhoneNumber()){
+                array_push($contactablesPhoneNumbers, $joueur);
+                array_push($phoneNumbers, $joueur->getFirstContactablePhoneNumber());
+            } else array_push($notContactablesPhoneNumbers, $joueur);
+        }
+        $response['sms']['toString'] = implode(',', $phoneNumbers);
+        $response['sms']['contactables'] = $contactablesPhoneNumbers;
+        $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
+
+        return $response;
     }
 
     /**

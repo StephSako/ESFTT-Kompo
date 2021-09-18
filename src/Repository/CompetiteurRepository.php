@@ -381,4 +381,43 @@ class CompetiteurRepository extends ServiceEntityRepository
         if (count($query) == 1) return $query[0]['nom'] . ' ' . $query[0]['prenom'];
         else return null;
     }
+
+    /**
+     * Retourne une liste de joueurs selon le rôle passé en paramètre
+     * @param string $role Le paramètres correspond aux champs (boolean) dans la BDD
+     * @param int $idRedacteur
+     * @return int|mixed|string
+     */
+    public function findJoueursByRole(string $role, int $idRedacteur)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->where('c.is' . $role . ' = 1')
+            ->andWhere('c.idCompetiteur <> :idRedacteur')
+            ->orderBy('c.nom', 'ASC')
+            ->addOrderBy('c.prenom', 'ASC')
+            ->setParameter('idRedacteur', $idRedacteur)
+            ->getQuery()
+            ->getResult();
+
+    }
+
+    /**
+     * Retourne une liste des joueurs compétiteurs (non loisirs & non archivés)
+     * @param int $idRedacteur
+     * @return int|mixed|string
+     */
+    public function findJoueursCompetiteurs(int $idRedacteur)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->where('c.isArchive = 0')
+            ->andWhere('c.idCompetiteur <> :idRedacteur')
+            ->andWhere('c.isLoisir = 0')
+            ->orderBy('c.nom', 'ASC')
+            ->addOrderBy('c.prenom', 'ASC')
+            ->setParameter('idRedacteur', $idRedacteur)
+            ->getQuery()
+            ->getResult();
+    }
 }

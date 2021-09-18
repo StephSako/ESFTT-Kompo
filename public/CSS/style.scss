@@ -190,7 +190,7 @@ i.iconPlace {
   background: $dark_blue;
 }
 
-#menu_dropdown, #collapsible-sidenav {
+#menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
 
@@ -206,7 +206,7 @@ i.iconPlace {
   }
 }
 
-#menu_dropdown{
+#menu_dropdown_champs, #menu_dropdown_contact {
   padding: 2px 2px;
   border-radius: 5px;
 }

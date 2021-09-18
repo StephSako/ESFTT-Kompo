@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import 'macros/modalContact.html.twig' as _modalContact %}
 
 {% block title %}Page de contact{% endblock %}
 
@@ -17,127 +18,146 @@
             <p><i class="material-icons blue-text">info</i><b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
         </div>
 
-        {% if competiteurs|length %}
-            <table class="card-panel striped centered responsive-table table_contact">
-                <thead>
-                    <tr class="hide-on-med-and-down">
-                        <th></th>
-                        <th></th>
-                        <th>Nom</th>
-                        <th>E-mails</th>
-                        <th>Téléphones</th>
-                    </tr>
-                </thead>
+        <div class="card-panel center-align">
+            {% if competiteurs|length %}
 
-                <tbody class="center" style="min-height: 395px;">
-                    {% for competiteur in competiteurs %}
-                        {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
-                            <tr>
-                                <td style="padding-top: 8px; padding-bottom: 8px;">
-                                    {% if competiteur.isAdmin %}
-                                        <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
-                                    {% endif %}
+                <a class="dropdown-trigger btn btn_form waves-effect waves-light light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
 
-                                    {% if not competiteur.isLoisir %}
-                                        {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
-                                    {% else %}
-                                        {% if competiteur.isAdmin %}<br>{% endif %}
-                                        <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
-                                    {% endif %}
+                <ul id="menu_dropdown_contact" class="dropdown-content white-text">
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'loisirs' }}">Loisirs</a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'competiteurs' }}">Joueurs</a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'capitaines' }}">Capitaines</a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'entraineurs' }}">Entraîneurs</a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'administrateurs' }}">Administrateurs</a></li>
+                </ul>
 
-                                    {% if competiteur.isCapitaine %}
-                                        <br>
-                                        <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
-                                    {% endif %}
+                {{ _modalContact.modalAlertPlayers('loisirs', joueurs['loisirs'], 'loisirs', {}) }}
+                {{ _modalContact.modalAlertPlayers('competiteurs', joueurs['competiteurs'], 'competiteurs', {}) }}
+                {{ _modalContact.modalAlertPlayers('capitaines', joueurs['capitaines'], 'capitaines', {}) }}
+                {{ _modalContact.modalAlertPlayers('entraineurs', joueurs['entraineurs'], 'entraineurs', {}) }}
+                {{ _modalContact.modalAlertPlayers('administrateurs', joueurs['administrateurs'], 'administrateurs', {}) }}
 
-                                    {% if competiteur.isEntraineur %}
-                                        <br>
-                                        <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
-                                    {% endif %}
-                                </td>
-                                <td class="td_picture_compet">
-                                    {% if competiteur.avatar %}
-                                        <img class="picture_compet avatar" src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="60rem" height="60rem">
-                                    {% else %}
-                                        <img class="picture_compet avatar" src="{{ asset('images/account.png') }}" alt="Avatar" width="60rem" height="60rem">
-                                    {% endif %}
-                                </td>
-                                <td style="padding-top: 10px; padding-bottom: 10px;">{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                                <td>
-                                    {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
-                                        {% if competiteur.mail and competiteur.contactableMail %}
-                                            <a class="btn blue truncate" href="mailto:{{ competiteur.mail }}">
-                                                <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
-                                            </a><br>
+                <table class="striped centered responsive-table table_contact">
+                    <thead>
+                        <tr class="hide-on-med-and-down">
+                            <th></th>
+                            <th></th>
+                            <th>Nom</th>
+                            <th>E-mails</th>
+                            <th>Téléphones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="center" style="min-height: 395px;">
+                        {% for competiteur in competiteurs %}
+                            {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
+                                <tr>
+                                    <td style="padding-top: 8px; padding-bottom: 8px;">
+                                        {% if competiteur.isAdmin %}
+                                            <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                         {% endif %}
-                                        {% if competiteur.mail2 and competiteur.contactableMail2 %}
-                                            <a class="btn blue truncate" href="mailto:{{ competiteur.mail2 }}">
-                                                <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
-                                            </a>
+
+                                        {% if not competiteur.isLoisir %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
+                                        {% else %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                         {% endif %}
-                                    {% else %}
-                                        <p class="grey-text"><i>Non renseigné</i></p>
-                                    {% endif %}
-                                </td>
-                                <td class="td_buttons_contact_phone">
-                                    {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
-                                        {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
-                                            <div class="row center-align valign-wrapper" style="margin-bottom: 0;">
-                                                <div class="col l12 m6" style="width: 100%; margin: 0 !important;">
-                                                    <span class="phone_number_span">{{ competiteur.phoneNumber | split('', 2) | join(' ') }}</span>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber }}">
-                                                        <i class="material-icons">phone</i>
-                                                    </a>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber }}">
-                                                        <i class="material-icons">message</i>
-                                                    </a>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="whatsapp_btn btn truncate" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
-                                                        <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                    </a>
-                                                </div>
-                                            </div>
+
+                                        {% if competiteur.isCapitaine %}
                                             <br>
+                                            <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
                                         {% endif %}
-                                        {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
-                                            <div class="row center-align valign-wrapper">
-                                                <div class="col m12 l6" style="width: 100%; margin: 0 !important;">
-                                                    <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
-                                                        <i class="material-icons">phone</i>
-                                                    </a>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber2 }}">
-                                                        <i class="material-icons">message</i>
-                                                    </a>
-                                                </div>
-                                                <div class="col m2 hide-on-large-only">
-                                                    <a class="whatsapp_btn btn truncate" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
-                                                        <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                    </a>
-                                                </div>
-                                            </div>
+
+                                        {% if competiteur.isEntraineur %}
+                                            <br>
+                                            <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
                                         {% endif %}
-                                    {% else %}
-                                        <p class="grey-text"><i>Non renseigné</i></p>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="lobster_2 missingTitle">Il n'y a pas de compétiteurs enregistrés.</p>
-        {% endif %}
+                                    </td>
+                                    <td class="td_picture_compet">
+                                        {% if competiteur.avatar %}
+                                            <img class="picture_compet avatar" src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="60rem" height="60rem">
+                                        {% else %}
+                                            <img class="picture_compet avatar" src="{{ asset('images/account.png') }}" alt="Avatar" width="60rem" height="60rem">
+                                        {% endif %}
+                                    </td>
+                                    <td style="padding-top: 10px; padding-bottom: 10px;">{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                    <td>
+                                        {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
+                                            {% if competiteur.mail and competiteur.contactableMail %}
+                                                <a class="btn blue truncate" href="mailto:{{ competiteur.mail }}">
+                                                    <i class="material-icons">mail</i> <span>{{ competiteur.mail }}</span>
+                                                </a><br>
+                                            {% endif %}
+                                            {% if competiteur.mail2 and competiteur.contactableMail2 %}
+                                                <a class="btn blue truncate" href="mailto:{{ competiteur.mail2 }}">
+                                                    <i class="material-icons">mail</i> <span>{{ competiteur.mail2 }}</span>
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            <p class="grey-text"><i>Non renseigné</i></p>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td_buttons_contact_phone">
+                                        {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
+                                            {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
+                                                <div class="row center-align valign-wrapper" style="margin-bottom: 0;">
+                                                    <div class="col l12 m6" style="width: 100%; margin: 0 !important;">
+                                                        <span class="phone_number_span">{{ competiteur.phoneNumber | split('', 2) | join(' ') }}</span>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber }}">
+                                                            <i class="material-icons">phone</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber }}">
+                                                            <i class="material-icons">message</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="whatsapp_btn btn truncate" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
+                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                            {% endif %}
+                                            {% if (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
+                                                <div class="row center-align valign-wrapper">
+                                                    <div class="col m12 l6" style="width: 100%; margin: 0 !important;">
+                                                        <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="btn blue truncate" href="tel:{{ competiteur.phoneNumber2 }}">
+                                                            <i class="material-icons">phone</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="btn blue truncate" href="sms:{{ competiteur.phoneNumber2 }}">
+                                                            <i class="material-icons">message</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col m2 hide-on-large-only">
+                                                        <a class="whatsapp_btn btn truncate" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
+                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <p class="grey-text"><i>Non renseigné</i></p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h6 class="lobster_2">Il n'y a pas de compétiteurs enregistrés.</h6>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

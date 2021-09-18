@@ -158,21 +158,21 @@ i.iconPlace {
   background: #012242;
 }
 
-#menu_dropdown, #collapsible-sidenav {
+#menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
 }
-#menu_dropdown li, #collapsible-sidenav li {
+#menu_dropdown_champs li, #menu_dropdown_contact li, #collapsible-sidenav li {
   border-radius: 5px;
   margin: 2px 2px;
   white-space: nowrap;
   width: 98% !important;
 }
-#menu_dropdown li:hover, #collapsible-sidenav li:hover {
+#menu_dropdown_champs li:hover, #menu_dropdown_contact li:hover, #collapsible-sidenav li:hover {
   background-color: #1565c0;
 }
 
-#menu_dropdown {
+#menu_dropdown_champs, #menu_dropdown_contact {
   padding: 2px 2px;
   border-radius: 5px;
 }

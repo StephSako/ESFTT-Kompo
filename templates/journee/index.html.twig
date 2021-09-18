@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/composition.html.twig' as _composition %}
+{% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
 {% import 'macros/index.html.twig' as _index %}
@@ -224,9 +225,7 @@
                                     {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'edit', 'blue') }}
                                     {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
                                         {{ _index.btnAlertPlayers(compo.id) }}
-                                        {{ _index.modalAlertPlayers(
-                                            compo,
-                                            compo.getListContactSelectedPlayers(app.user.idCompetiteur)) }}
+                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'joueurs', {compo}) }}
                                     {% endif %}
                                     {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
                                 {% endif %}
