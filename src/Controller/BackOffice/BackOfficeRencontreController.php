@@ -69,7 +69,7 @@ class BackOfficeRencontreController extends AbstractController
                     $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
                     $rencontre->setAdversaire($rencontre->getAdversaire());
 
-                    /** Si la rencontre n'est pas ou plus reportée, la date redevient celle de la journée associée **/
+                    /** Si la rencontre n'est pas ou plus avancée/reportée, la date redevient celle de la journée associée **/
                     if ($rencontre->isReporte()) {
                         if ($rencontre->getDateReport() == $rencontre->getIdJournee()->getDateJournee()) throw new Exception('Renseignez une date de report différente de la date initiale', 12345);
 

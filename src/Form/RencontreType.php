@@ -84,7 +84,7 @@ class RencontreType extends AbstractType
                     'required' => false
                 ])
                 ->add('reporte', CheckboxType::class,[
-                    'label' => 'Match reporté au',
+                    'label' => 'Match avancé/reporté',
                     'required' => false
                 ])
                 ->add('dateReport', DateType::class,[

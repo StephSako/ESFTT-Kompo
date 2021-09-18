@@ -58,23 +58,14 @@ class BackOfficeJourneeController extends AbstractController
         $journees = $journee->getIdChampionnat()->getJournees()->toArray();
         $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
             return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-        }))[0];
+        }))[0]+=1;
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    /** On ne peut pas mélanger les dates */
-                    $nbJourneesBefore = count(array_filter($journees, function($journeeChamp) use ($journee) {
-                        return $journeeChamp->getDateJournee() < $journee->getDateJournee();
-                    }));
-
-                    if ($posJournee > $nbJourneesBefore) $this->addFlash('fail', 'La date ne peut pas être postèrieure ou égale à celles de journées précédentes');
-                    else if ($posJournee < $nbJourneesBefore) $this->addFlash('fail', 'La date ne peut pas être ultèrieure ou égale à celles de journées suivantes');
-                    else {
-                        $this->em->flush();
-                        $this->addFlash('success', 'Journée modifiée');
-                        return $this->redirectToRoute('backoffice.journees');
-                    }
+                    $this->em->flush();
+                    $this->addFlash('success', 'Journée modifiée');
+                    return $this->redirectToRoute('backoffice.journees');
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
@@ -86,7 +77,7 @@ class BackOfficeJourneeController extends AbstractController
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'iJournee' => $posJournee+=1,
+            'iJournee' => $posJournee,
             'championnat' => $journee->getIdChampionnat()->getNom()
         ]);
     }

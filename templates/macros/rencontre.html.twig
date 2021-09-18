@@ -46,12 +46,12 @@
                                             <i class="material-icons red-text">event_busy</i>
                                         {% else %}
                                             <div class="hide-on-small-only">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr')|title }}</span>
                                                 {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
                                                 {% endif %}
                                             </div>
                                             <div class="hide-on-med-and-up">
-                                                {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | date("d/m/Y") }}</span>
                                                 {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
                                                 {% endif %}
                                             </div>
