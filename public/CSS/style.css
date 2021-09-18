@@ -523,6 +523,11 @@ form h5 {
   margin-top: 25px;
 }
 
+.blured_data {
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+}
+
 .table_contact tr:last-child td:first-child {
   border-bottom-left-radius: 10px;
 }

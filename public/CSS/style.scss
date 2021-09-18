@@ -608,6 +608,11 @@ form {
   margin-top: 25px;
 }
 
+.blured_data {
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+}
+
 .table_contact {
   tr:last-child td:first-child {
     border-bottom-left-radius: 10px;
@@ -621,11 +626,6 @@ form {
     text-transform: none;
     margin-top: 2px;
     margin-bottom: 2px;
-
-    //span {
-    //filter: blur(4px);
-    //-webkit-filter: blur(4px);
-    //}
   }
 
   td{

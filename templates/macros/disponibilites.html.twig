@@ -218,15 +218,15 @@
                                                     {% endif %}
                                                 {% endif %}
                                             {% else %}
-                                                {% if not dispo.licence and dispo.classement_officiel %}
+                                                {% if not dispos.licence and dispos.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence indéfinie<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
-                                                {% elseif dispo.licence and not dispo.classement_officiel %}
+                                                {% elseif dispos.licence and not dispos.classement_officiel %}
                                                     <span class="red-text lighten-2">Classement indéfini<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
-                                                {% elseif not dispo.licence and not dispo.classement_officiel %}
+                                                {% elseif not dispos.licence and not dispos.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence et classement indéfinis<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
