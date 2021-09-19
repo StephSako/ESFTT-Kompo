@@ -54,10 +54,10 @@
                                     {% endif %}
 
                                     {% if not competiteur.isArchive %}
-                                        {% if not competiteur.isLoisir %}
+                                        {% if competiteur.isCompetiteur %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
-                                        {% else %}
+                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Compétiteur'></span>
+                                        {% elseif competiteur.isLoisir %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
                                             <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                         {% endif %}
@@ -94,7 +94,7 @@
                                 </td>
                                 <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
-                                        {% if competiteur.isLoisir %}
+                                        {% if not competiteur.isCompetiteur %}
                                             <i>Sans classement</i>
                                         {% else %}
                                             {% if competiteur.classementOfficiel %}
@@ -131,7 +131,7 @@
                                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                     <td>
                                         {% if not (onlyOneAdmin and competiteur.admin) %}
-                                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
+                                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
                                                 <input type='hidden' name='_method' value='DELETE'>
                                                 <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
                                                 <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>

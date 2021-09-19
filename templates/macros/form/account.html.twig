@@ -29,23 +29,30 @@
             </div>
 
             {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                <div class="row section" style="margin-bottom: 0;">
+                <div class="section" style="margin-bottom: 0;">
                     <h5 class="dark_blue" style="margin-top: 0;">Rôles dans le club</h5>
 
-                    <div class="col s12 m6 l3">
-                        {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
+                    <div class="row">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
+                        </div>
                     </div>
-                    <div class="col s12 m6 l3">
-                        {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
-                    </div>
-                    <div class="col s12 m6 l3">
-                        {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
-                    </div>
-                    <div class="col s12 m6 l3">
-                        {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
-                    </div>
-                    <div class="col s12">
-                        {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
+                    <div class="row">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -80,7 +87,7 @@
                                 {% endif %}
                             {% endif %}
                         {% else %}
-                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Joueur mineur</b> (certificat facultatif)</p>
+                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -154,7 +161,7 @@
                                 {% if app.user.classementOfficiel %}
                                     <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
                                 {% else %}
-                                    <p style="color: red">Classement indéfinie</p>
+                                    <p style="color: red">Classement indéfini</p>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
@@ -179,7 +186,7 @@
                             <i class="material-icons">delete</i>
                         </a>
                     {% endif %}
-                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du joueur">
+                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du membre">
                 </div>
             </div>
 
@@ -192,7 +199,7 @@
                 {% if editMode %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
-                class="btn waves-effect waves-light light-blue darken-1">{{ editMode ? 'Modifier' : 'Créer' }}
+                class="btn waves-effect waves-light light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>
         {{ form_end(form) }}
     </div>
@@ -201,6 +208,7 @@
         <script type="text/javascript">
             let isArchived = Boolean({{ options.isArchived ? 1 : 0 }});
             let isLoisir = Boolean({{ options.isLoisir ? 1 : 0 }});
+            let type = '{{ type }}';
         </script>
         <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.min.js') }}" defer></script>
     {% endif %}

@@ -78,7 +78,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     private function throwExceptionBOAccount(Exception $e, Competiteur $competiteur){
-        if ($e->getPrevious()->getCode() == "23000"){
+        if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
             if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
             else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse email doit être renseignée');
@@ -98,7 +98,8 @@ class BackOfficeCompetiteurController extends AbstractController
         $competiteur = new Competiteur();
         $competiteur
             ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
-            ->setDateNaissance(null);
+            ->setDateNaissance(null)
+            ->setIsCompetiteur(true);
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
@@ -161,7 +162,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
                     }
 
-                    /** ... et ses disponiblités sont supprimées */
+                    /** ... et ses disponibilités sont supprimées */
                     $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
                 }
 
@@ -237,7 +238,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->em->remove($competiteur);
             $this->em->flush();
             $this->addFlash('success', 'Compétiteur supprimé');
-        } else $this->addFlash('error', 'Le joueur n\'a pas pu être supprimé');
+        } else $this->addFlash('error', 'Le membre n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('backoffice.competiteurs');
     }

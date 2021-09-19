@@ -34,8 +34,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite d WHERE d.idJournee = :idJournee AND d.idChampionnat = :idChampionnat)")
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)
-            ->andWhere('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->andWhere('c.isCompetiteur = true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -70,8 +69,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
 
         $result = $result
-            ->where('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->where('c.isCompetiteur = true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -123,8 +121,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
-            ->where('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->where('c.isCompetiteur = true')
             ->orderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -205,8 +202,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->leftJoin('c.dispos', 'd')
             ->where('d.idChampionnat = :idChampionnat')
-            ->andWhere('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->andWhere('c.isCompetiteur = true')
             ->andWhere('d.idJournee = :idJournee')
             ->andWhere('d.disponibilite = 1');
         for ($j = 0; $j < $nbJoueurs; $j++) {
@@ -275,8 +271,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom')
-            ->where('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->where('c.isCompetiteur = true')
             ->andWhere('(SELECT COUNT(r.id) ' .
                        ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                        ' WHERE e.idDivision IS NOT NULL' .
@@ -328,8 +323,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('j.dateJournee')
             ->from('App:Journee', 'j')
             ->leftJoin('j.idChampionnat', 'champ')
-            ->where('c.isLoisir <> true')
-            ->andWhere('c.isArchive <> true')
+            ->where('c.isCompetiteur = true')
             ->orderBy('c.nom', 'ASC')
             ->addOrderBy('c.prenom', 'ASC')
             ->addOrderBy('j.idJournee', 'ASC')
@@ -384,37 +378,20 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Retourne une liste de joueurs selon le rôle passé en paramètre
-     * @param string $role Le paramètres correspond aux champs (boolean) dans la BDD
+     * @param string|null $role Le paramètres correspond aux champs (boolean) dans la BDD
      * @param int $idRedacteur
      * @return int|mixed|string
      */
-    public function findJoueursByRole(string $role, int $idRedacteur)
+    public function findJoueursByRole(?string $role, int $idRedacteur)
     {
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->select('c')
-            ->where('c.is' . $role . ' = 1')
-            ->andWhere('c.idCompetiteur <> :idRedacteur')
-            ->orderBy('c.nom', 'ASC')
-            ->addOrderBy('c.prenom', 'ASC')
-            ->setParameter('idRedacteur', $idRedacteur)
-            ->getQuery()
-            ->getResult();
+            ->where('c.idCompetiteur <> :idRedacteur');
 
-    }
+        if ($role) $query = $query->andWhere('c.is' . $role . ' = 1');
+        else $query = $query->andWhere('c.isArchive <> 1');
 
-    /**
-     * Retourne une liste des joueurs compétiteurs (non loisirs & non archivés)
-     * @param int $idRedacteur
-     * @return int|mixed|string
-     */
-    public function findJoueursCompetiteurs(int $idRedacteur)
-    {
-        return $this->createQueryBuilder('c')
-            ->select('c')
-            ->where('c.isArchive = 0')
-            ->andWhere('c.idCompetiteur <> :idRedacteur')
-            ->andWhere('c.isLoisir = 0')
-            ->orderBy('c.nom', 'ASC')
+        return $query->orderBy('c.nom', 'ASC')
             ->addOrderBy('c.prenom', 'ASC')
             ->setParameter('idRedacteur', $idRedacteur)
             ->getQuery()

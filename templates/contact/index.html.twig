@@ -24,18 +24,20 @@
                 <a style="margin-bottom: 10px" class="dropdown-trigger btn btn_form waves-effect waves-light light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
 
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'tous' }}">Tous</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'loisirs' }}">Loisirs</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'competiteurs' }}">Joueurs</a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'competiteurs' }}">Compétiteurs</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'capitaines' }}">Capitaines</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'entraineurs' }}">Entraîneurs</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'administrateurs' }}">Administrateurs</a></li>
                 </ul>
 
-                {{ _modalContact.modalAlertPlayers('loisirs', joueurs['loisirs'], 'loisirs', {}) }}
-                {{ _modalContact.modalAlertPlayers('competiteurs', joueurs['competiteurs'], 'competiteurs', {}) }}
-                {{ _modalContact.modalAlertPlayers('capitaines', joueurs['capitaines'], 'capitaines', {}) }}
-                {{ _modalContact.modalAlertPlayers('entraineurs', joueurs['entraineurs'], 'entraineurs', {}) }}
-                {{ _modalContact.modalAlertPlayers('administrateurs', joueurs['administrateurs'], 'administrateurs', {}) }}
+                {{ _modalContact.modalAlertPlayers('tous', joueurs['tous'], 'Contacter tout le monde') }}
+                {{ _modalContact.modalAlertPlayers('loisirs', joueurs['loisirs'], 'Contacter les loisirs') }}
+                {{ _modalContact.modalAlertPlayers('competiteurs', joueurs['competiteurs'], 'Contacter les competiteurs') }}
+                {{ _modalContact.modalAlertPlayers('capitaines', joueurs['capitaines'], 'Contacter les capitaines') }}
+                {{ _modalContact.modalAlertPlayers('entraineurs', joueurs['entraineurs'], 'Contacter les entraineurs') }}
+                {{ _modalContact.modalAlertPlayers('administrateurs', joueurs['administrateurs'], 'Contacter les administrateurs') }}
 
                 <table class="striped centered responsive-table table_contact">
                     <thead>
@@ -57,10 +59,10 @@
                                             <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
                                         {% endif %}
 
-                                        {% if not competiteur.isLoisir %}
+                                        {% if competiteur.isCompetiteur %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Joueur'></span>
-                                        {% else %}
+                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Compétiteur'></span>
+                                        {% elseif competiteur.isLoisir %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
                                             <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
                                         {% endif %}

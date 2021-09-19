@@ -67,6 +67,10 @@ class CompetiteurType extends AbstractType
                 ->add('isEntraineur', CheckboxType::class, [
                     'label' => 'Entraîneur',
                     'required' => false
+                ])
+                ->add('isCompetiteur', CheckboxType::class, [
+                    'label' => 'Compétiteur',
+                    'required' => false
                 ]);
         }
 

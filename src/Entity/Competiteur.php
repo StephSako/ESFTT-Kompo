@@ -241,6 +241,13 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_competiteur", nullable=false)
+     */
+    private $isCompetiteur = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="is_archive", nullable=false)
      */
     private $isArchive = false;
@@ -412,7 +419,7 @@ class Competiteur implements UserInterface, Serializable
             if ($this->isAdmin()) array_push($roles, 'ROLE_ADMIN');
             if (!$this->isLoisir()){
                 if ($this->isCapitaine()) array_push($roles, 'ROLE_CAPITAINE');
-                array_push($roles, 'ROLE_JOUEUR');
+                if ($this->isCompetiteur()) array_push($roles, 'ROLE_COMPETITEUR');
             } else array_push($roles, 'ROLE_LOISIR');
         } else array_push($roles, 'ROLE_ARCHIVE');
 
@@ -905,5 +912,23 @@ class Competiteur implements UserInterface, Serializable
         if ($this->getPhoneNumber() && $this->isContactablePhoneNumber()) return $this->getPhoneNumber();
         if ($this->getPhoneNumber2() && $this->isContactablePhoneNumber2()) return $this->getPhoneNumber2();
         return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompetiteur(): bool
+    {
+        return $this->isCompetiteur;
+    }
+
+    /**
+     * @param bool $isCompetiteur
+     * @return Competiteur
+     */
+    public function setIsCompetiteur(bool $isCompetiteur): self
+    {
+        $this->isCompetiteur = $isCompetiteur;
+        return $this;
     }
 }
