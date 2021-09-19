@@ -37,7 +37,7 @@
                         {% else %}
                             <img src="{{ asset('images/account.png') }}" alt="Avatar">
                         {% endif %}
-                        <span style="color: green">{{ joueurContactable.prenom ~ ' ' ~ joueurContactable.nom }}</span>
+                        <span class="truncate" style="color: green">{{ joueurContactable.prenom ~ ' ' ~ joueurContactable.nom }}</span>
                     </div>
                 </li>
             {% endfor %}

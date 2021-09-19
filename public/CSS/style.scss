@@ -594,9 +594,9 @@ form {
   }
 
   &.modal-alert {
-    margin-top: 6% !important;
-    width: 600px !important ;
-    height: 44% !important ;
+    margin-top: 5% !important;
+    width: 700px !important ;
+    height: 60% !important ;
 
     & .modal-content {
       padding: 2px;
@@ -854,6 +854,13 @@ button.btn_renouveler_certif_mobile {
   display: none;
 }
 
+#ckeditor-render {
+  figure.table {
+    width: 100%;
+    overflow-x: scroll;
+  }
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -932,24 +939,22 @@ button.btn_renouveler_certif_mobile {
   }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 720px) {
   .modal {
     &.modal-alert {
-      width: 90% !important;
+      width: 96% !important;
     }
   }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 601px) {
   .modal {
     &.modal-alert {
       margin-top: 0 !important;
       height: 85% !important ;
     }
   }
-}
 
-@media screen and (max-width: 601px) {
   th.th_picture_compet_table{
     height: 96px;
   }
@@ -966,6 +971,12 @@ button.btn_renouveler_certif_mobile {
 
   #settings-form {
     margin-left: 10px;
+  }
+
+  #ckeditor-render {
+    figure.table {
+      margin: 0 !important;
+    }
   }
 }
 
