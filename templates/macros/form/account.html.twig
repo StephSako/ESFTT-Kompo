@@ -155,8 +155,8 @@
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}
                         {% else %}
-                            {% if 'ROLE_LOISIR' in app.token.roleNames %}
-                                <p>Vous n'êtes pas compétiteur</p>
+                            {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
+                                <p><i>Vous n'êtes pas compétiteur</i></p>
                             {% else %}
                                 {% if app.user.classementOfficiel %}
                                     <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>

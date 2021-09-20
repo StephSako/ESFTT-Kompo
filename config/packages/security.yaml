@@ -24,6 +24,7 @@ security:
                 secret: '%kernel.secret%'
 
     role_hierarchy:
+        ROLE_ENTRAINEUR: ROLE_LOISIR
         ROLE_COMPETITEUR: ROLE_LOISIR
         ROLE_CAPITAINE: ROLE_COMPETITEUR
         ROLE_ADMIN: ROLE_CAPITAINE

@@ -4,7 +4,6 @@
 {% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
-{% import 'macros/index.html.twig' as _index %}
 
 {% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
 
@@ -213,15 +212,19 @@
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                {% if compo.isEmpty %}
-                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'add_circle_outline', 'green') }}
-                                {% else %}
-                                    {{ _index.btnCreateEditCompo(championnat.idChampionnat, compo.id, 'edit', 'blue') }}
+                                <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect waves-light green lighten-2">
+                                    <i class="material-icons">add_circle_outline</i>
+                                </a>
+                                {% if not compo.isEmpty %}
                                     {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
-                                        {{ _index.btnAlertPlayers(compo.id) }}
+                                        <a href="#modal{{ compo.id }}" class="center-align btn waves-effect waves-light blue lighten-2 modal-trigger">
+                                            <i class="material-icons">record_voice_over</i>
+                                        </a>
                                         {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo}) }}
                                     {% endif %}
-                                    {{ _index.btnEmptyCompo(compo.id, championnat.idChampionnat, idJournee) }}<br>
+                                    <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
+                                        <i class="material-icons">delete</i>
+                                    </a>
                                 {% endif %}
                             </div>
                         {% endif %}

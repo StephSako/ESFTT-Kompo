@@ -68,12 +68,12 @@
                                         {% endif %}
 
                                         {% if competiteur.isCapitaine %}
-                                            <br>
+                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir %}<br>{% endif %}
                                             <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
                                         {% endif %}
 
                                         {% if competiteur.isEntraineur %}
-                                            <br>
+                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir or competiteur.isCapitaine %}<br>{% endif %}
                                             <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
                                         {% endif %}
                                     </td>
