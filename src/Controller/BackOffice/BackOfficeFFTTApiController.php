@@ -220,7 +220,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
                                             $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                             $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                            $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
+                                            $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[6];
                                             $rencontreTemp['adversaireFFTT'] = $adversaire;
                                             $rencontreTemp['exempt'] = $isExempt;
                                             $rencontreTemp['domicileFFTT'] = $domicile;
@@ -245,7 +245,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                         $rencontreTemp['rencontre'] = $rencontreToCreate;
                                         $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                         $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                        $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
+                                        $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[6];
                                         $rencontreTemp['adversaireFFTT'] = $adversaire;
                                         $rencontreTemp['exempt'] = $isExempt;
                                         $rencontreTemp['domicileFFTT'] = $domicile;
@@ -268,7 +268,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $rencontreTemp['rencontre'] = $rencontreToAdd;
                                     $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                     $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                    $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[5];
+                                    $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[6];
                                     $rencontreTemp['adversaireFFTT'] = $adversaire;
                                     $rencontreTemp['exempt'] = $isExempt;
                                     $rencontreTemp['domicileFFTT'] = $domicile;
@@ -411,7 +411,8 @@ class BackOfficeFFTTApiController extends AbstractController
                     $this->em->refresh($championnat);
 
                     /** On supprime toutes les dispos du championnat sélectionné **/
-                    $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
+                    //TODO Mode pré-rentrée
+                    //$this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                     /** On fix/créé les rencontres **/
                     foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
@@ -442,12 +443,13 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
 
                     /** On reset les joueurs des compositions d'équipe */
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
-                        $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
-                        for ($i = 0; $i < $nbJoueursDiv; $i++){
-                            $rencontreKompo->setIdJoueurNToNull($i);
-                        }
-                    }
+                    //TODO Mode pré-rentrée
+                    //foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
+                    //$nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
+                    //for ($i = 0; $i < $nbJoueursDiv; $i++){
+                    //$rencontreKompo->setIdJoueurNToNull($i);
+                    //}
+                    //}
 
                     $this->em->flush();
                     $this->addFlash('success', 'Phase du championnat ' . $championnat->getNom() . ' mise à jour');
@@ -469,8 +471,8 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     function getLatestDate(Championnat $championnat): DateTime {
-        return max(array_map(function($renc) {
-            return $renc->getDateReport();
+        return max(array_map(function(Rencontre $renc) {
+            return ($renc->isReporte() && $renc->getDateReport() > $renc->getIdJournee()->getDateJournee() ? $renc->getDateReport() : $renc->getIdJournee()->getDateJournee());
             }, $championnat->getRencontres()->toArray())); //TODO Bug si pas d'équipes enregistrées dans Kompo
     }
 

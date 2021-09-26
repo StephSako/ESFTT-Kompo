@@ -204,11 +204,13 @@
         {{ form_end(form) }}
     </div>
 
+    <script type="text/javascript">
+        let type = '{{ type }}'
+    </script>
     {% if type == 'backoffice' %}
         <script type="text/javascript">
             let isArchived = Boolean({{ options.isArchived ? 1 : 0 }});
             let isLoisir = Boolean({{ options.isLoisir ? 1 : 0 }});
-            let type = '{{ type }}';
         </script>
         <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.min.js') }}" defer></script>
     {% endif %}
@@ -241,8 +243,5 @@
         </form>
     </div>
 
-    <script type="text/javascript">
-        let type = '{{ type }}'
-    </script>
     <script type="text/javascript" src="{{ asset('JS/accountEditPassword.min.js') }}" defer></script>
 {% endmacro %}

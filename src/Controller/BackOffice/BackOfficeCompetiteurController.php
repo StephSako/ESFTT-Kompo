@@ -85,7 +85,8 @@ class BackOfficeCompetiteurController extends AbstractController
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses email doivent être différentes');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        } else if ($e->getCode() == '1234') $this->addFlash('fail', $e->getMessage());
+        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
     }
 
     /**
@@ -156,6 +157,9 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             try {
+                /** On vérifie que le(s) rôle(s) du compétiteur sont cohérents */
+                $this->checkRoles($competiteur);
+
                 /** Un joueur devenant 'loisir' ou 'archivé' est désélectionné de toutes les compositions de chaque championnat ... **/
                 if ($competiteur->isLoisir() || $competiteur->isArchive()){
                     for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
@@ -359,5 +363,18 @@ class BackOfficeCompetiteurController extends AbstractController
         $response->headers->set('Content-Disposition', 'attachment;filename="competiteurs.xlsx"');
         $response->headers->set('Cache-Control','max-age=0');
         return $response;
+    }
+
+    /**
+     * @param Competiteur $competiteur
+     * @throws Exception
+     */
+    public function checkRoles(Competiteur $competiteur){
+        if ((($competiteur->isCompetiteur() || $competiteur->isCapitaine()) && ($competiteur->isLoisir() || $competiteur->isArchive())) ||
+            (($competiteur->isAdmin() || $competiteur->isEntraineur()) && $competiteur->isArchive()) ||
+            ($competiteur->isArchive() && ($competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
+            ($competiteur->isLoisir() && ($competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
+            throw new Exception('Les rôles sont incohérents', 1234);
+        }
     }
 }
