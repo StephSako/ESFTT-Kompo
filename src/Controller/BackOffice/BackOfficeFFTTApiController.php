@@ -323,10 +323,23 @@ class BackOfficeFFTTApiController extends AbstractController
                     /** On vérifie que la phase est terminée pour être reset **/
                     $allChampionnatsReset[$championnatActif->getNom()]["finished"] = $this->getLatestDate($championnatActif) < new DateTime();
 
-                    /** On vérifie que toutes les disponiblités seront supprimées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["countDispos"] = count($championnatActif->getDispos()->toArray());
+                    /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */ //TODO Séparer de la partie API pour le cas d'une erreur
+                    $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["emptyCompos"] = array_filter($preRentreeRencontres, function($compoToTestEmpty) {
+                        return !$compoToTestEmpty->getIsEmpty();
+                    });
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetRencontres"] = array_filter($preRentreeRencontres, function($rencToTestEmpty) {
+                        return $rencToTestEmpty->getAdversaire() || $rencToTestEmpty->getDomicile() || $rencToTestEmpty->isHosted() || $rencToTestEmpty->isReporte();
+                    });
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetEquipes"] = array_filter($championnatActif->getEquipes()->toArray(), function($eqToTestEmpty) {
+                        return $eqToTestEmpty->getIdPoule() || $eqToTestEmpty->getIdDivision();
+                    });
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetJournees"] = array_filter($championnatActif->getJournees()->toArray(), function($jourToTestEmpty) {
+                        return !$jourToTestEmpty->getUndefined();
+                    });
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["countDispos"] = count($championnatActif->getDispos()->toArray());
                 } else {
-                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Le club n'est pas encore affilié à ce championnat";
+                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Le club n'est pas affilié à ce championnat";
                 }
             }
 
@@ -343,121 +356,124 @@ class BackOfficeFFTTApiController extends AbstractController
                 $this->addFlash('success', 'Compétiteurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
             }
-            else if ($request->request->get('resetChampionnats') && $request->request->get('idChampionnat')) {
+            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (pré-rentrée ou phase) */
                 $idChampionnat = intval($request->request->get('idChampionnat'));
                 $championnatSearch = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
                     return $champ->getIdChampionnat() == $idChampionnat;
                 });
 
-                if (count($championnatSearch) == 1){
+                if (count($championnatSearch) == 1) {
                     $championnat = $championnatSearch[0];
 
-                    /** On fix les dates des journées */
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
-                        $dateIssuedToFix['journee']
-                            ->setDateJournee($dateIssuedToFix['dateFFTT'])
-                            ->setUndefined(false);
-                    }
-                    $this->em->flush();
-                    $this->em->refresh($championnat);
+                    /** Mode pré-rentrée */
+                    if ($request->request->get('preRentreeResetChampionnats')) {
+                        /** On supprime toutes les dispos du championnat sélectionné **/
+                        $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
-                    /** On fix le nombre de journées du championnat */
-                    if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()){
-                        $championnat->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
-
-                        /** On créé les journées inexistantes */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["missing"] as $dateMissingToCreate) {
-                            $this->em->persist($dateMissingToCreate);
+                        /** On reset les joueurs des compositions d'équipe */foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
+                            $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
+                            for ($i = 0; $i < $nbJoueursDiv; $i++){
+                                $rencontreKompo->setIdJoueurNToNull($i);
+                            }
                         }
-
-                        /** On supprime les dates en surplus */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["surplus"] as $dateSurplus) {
-                            $this->em->remove($dateSurplus);
-                            $this->em->flush();
+                    }
+                    /** Mode lancement de la phase */
+                    else if ($request->request->get('resetChampionnats')) {
+                        /** On fix les dates des journées */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
+                            $dateIssuedToFix['journee']
+                                ->setDateJournee($dateIssuedToFix['dateFFTT'])
+                                ->setUndefined(false);
                         }
                         $this->em->flush();
                         $this->em->refresh($championnat);
-                    }
 
-                    /** On fix les équipes */
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["issued"] as $equipeIssued) {
-                        /** On set la division et la poule à l'équipe */
-                        $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
-                        $equipeIssued['equipe']
-                            ->setIdDivision($arrayDivisionPoule[0])
-                            ->setIdPoule($arrayDivisionPoule[1]);
-                    }
-                    $this->em->refresh($championnat);
+                        /** On fix le nombre de journées du championnat */
+                        if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()){
+                            $championnat->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
 
-                    /** On supprime les équipes superflux */
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
-                        $this->em->remove($equipeToDelete);
-                        $this->em->flush();
-                    }
+                            /** On créé les journées inexistantes */
+                            foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["missing"] as $dateMissingToCreate) {
+                                $this->em->persist($dateMissingToCreate);
+                            }
 
-                    /** On créé les équipes inexistantes */
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {
-                        $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat);
-
-                        $newEquipe = new \App\Entity\Equipe();
-                        $newEquipe->setIdPoule($arrayDivisionPoule[1]);
-                        $newEquipe->setNumero($numero);
-                        $newEquipe->setIdChampionnat($championnat);
-                        $newEquipe->setIdDivision($arrayDivisionPoule[0]);
-                        $this->em->persist($newEquipe);
-                        $this->em->flush();
-                    }
-
-                    $this->em->refresh($championnat);
-
-                    /** On supprime toutes les dispos du championnat sélectionné **/
-                    //TODO Mode pré-rentrée
-                    //$this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
-
-                    /** On fix/créé les rencontres **/
-                    foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
-                        if ($rencontresParEquipe['recorded']) {
-                            /** On modifie les rencontres existantes ... */
-                            $rencontresParEquipe['rencontre']
-                                ->setAdversaire($rencontresParEquipe['adversaireFFTT'])
-                                ->setDomicile($rencontresParEquipe['domicileFFTT'])
-                                ->setHosted(false)
-                                ->setExempt($rencontresParEquipe['exempt'])
-                                ->setReporte(false)
-                                ->setDateReport($rencontresParEquipe['dateReelle']);
-                        } else {
-                            /** ... sinon on créé les rencontres inexistantes */
-                            $nbEquipe = $rencontresParEquipe['nbEquipe'];
-                            $equipeToSet = array_values(array_filter($championnat->getEquipes()->toArray(), function($eq) use ($nbEquipe) {
-                                return $eq->getNumero() == $nbEquipe;
-                            }))[0];
-                            $journeeToSet = ($championnat->getJournees()->toArray())[$rencontresParEquipe['journee'] - 1];
-
-                            $rencontresParEquipe['rencontre']
-                                ->setIdEquipe($equipeToSet)
-                                ->setIdJournee($journeeToSet)
-                                ->setDateReport($journeeToSet->getDateJournee());
-                            $this->em->persist($rencontresParEquipe['rencontre']);
+                            /** On supprime les dates en surplus */
+                            foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["surplus"] as $dateSurplus) {
+                                $this->em->remove($dateSurplus);
+                                $this->em->flush();
+                            }
+                            $this->em->flush();
+                            $this->em->refresh($championnat);
                         }
+
+                        /** On fix les équipes */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["issued"] as $equipeIssued) {
+                            /** On set la division et la poule à l'équipe */
+                            $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
+                            $equipeIssued['equipe']
+                                ->setIdDivision($arrayDivisionPoule[0])
+                                ->setIdPoule($arrayDivisionPoule[1]);
+                        }
+                        $this->em->refresh($championnat);
+
+                        /** On supprime les équipes superflux */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
+                            $this->em->remove($equipeToDelete);
+                            $this->em->flush();
+                        }
+
+                        /** On créé les équipes inexistantes */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {
+                            $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat);
+
+                            $newEquipe = new \App\Entity\Equipe();
+                            $newEquipe->setIdPoule($arrayDivisionPoule[1]);
+                            $newEquipe->setNumero($numero);
+                            $newEquipe->setIdChampionnat($championnat);
+                            $newEquipe->setIdDivision($arrayDivisionPoule[0]);
+                            $this->em->persist($newEquipe);
+                            $this->em->flush();
+                        }
+
+                        $this->em->refresh($championnat);
+
+                        /** On fix/créé les rencontres **/
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
+                            if ($rencontresParEquipe['recorded']) {
+                                /** On modifie les rencontres existantes ... */
+                                $rencontresParEquipe['rencontre']
+                                    ->setAdversaire($rencontresParEquipe['adversaireFFTT'])
+                                    ->setDomicile($rencontresParEquipe['domicileFFTT'])
+                                    ->setHosted(false)
+                                    ->setExempt($rencontresParEquipe['exempt'])
+                                    ->setReporte(false)
+                                    ->setDateReport($rencontresParEquipe['dateReelle']);
+                            } else {
+                                /** ... sinon on créé les rencontres inexistantes */
+                                $nbEquipe = $rencontresParEquipe['nbEquipe'];
+                                $equipeToSet = array_values(array_filter($championnat->getEquipes()->toArray(), function($eq) use ($nbEquipe) {
+                                    return $eq->getNumero() == $nbEquipe;
+                                }))[0];
+                                $journeeToSet = ($championnat->getJournees()->toArray())[$rencontresParEquipe['journee'] - 1];
+
+                                $rencontresParEquipe['rencontre']
+                                    ->setIdEquipe($equipeToSet)
+                                    ->setIdJournee($journeeToSet)
+                                    ->setDateReport($journeeToSet->getDateJournee());
+                                $this->em->persist($rencontresParEquipe['rencontre']);
+                            }
+                            $this->em->flush();
+                        }
+
                         $this->em->flush();
+                        $this->addFlash('success', 'Phase du championnat ' . $championnat->getNom() . ' mise à jour');
+                        return $this->redirectToRoute('backoffice.reset.phase');
                     }
 
-                    /** On reset les joueurs des compositions d'équipe */
-                    //TODO Mode pré-rentrée
-                    //foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
-                    //$nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
-                    //for ($i = 0; $i < $nbJoueursDiv; $i++){
-                    //$rencontreKompo->setIdJoueurNToNull($i);
-                    //}
-                    //}
-
-                    $this->em->flush();
-                    $this->addFlash('success', 'Phase du championnat ' . $championnat->getNom() . ' mise à jour');
-                    return $this->redirectToRoute('backoffice.reset.phase');
-                }
-                else $this->addFlash('fail', 'Championnat inconnu !');
+                } else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch(Exception $exception) {
+            dump($exception);
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }
