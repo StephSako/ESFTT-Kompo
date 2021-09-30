@@ -610,7 +610,7 @@ class Rencontre
     {
         $joueurs = array();
         for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            if ($this->getIdJoueurN($i))array_push($joueurs, $this->getIdJoueurN($i));
+            if ($this->getIdJoueurN($i)) array_push($joueurs, $this->getIdJoueurN($i));
         }
         return $joueurs;
     }

@@ -320,9 +320,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
-                    /** On vérifie que la phase est terminée pour être reset **/
-                    $allChampionnatsReset[$championnatActif->getNom()]["finished"] = $this->getLatestDate($championnatActif) < new DateTime();
-
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */ //TODO Séparer de la partie API pour le cas d'une erreur
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["emptyCompos"] = array_filter($preRentreeRencontres, function($compoToTestEmpty) {
@@ -484,12 +481,6 @@ class BackOfficeFFTTApiController extends AbstractController
             'errorMajJoueurs' => $errorMajJoueurs,
             'errorMajRencontresEquipes' => $errorMajRencontresEquipes
         ]);
-    }
-
-    function getLatestDate(Championnat $championnat): DateTime {
-        return max(array_map(function(Rencontre $renc) {
-            return ($renc->isReporte() && $renc->getDateReport() > $renc->getIdJournee()->getDateJournee() ? $renc->getDateReport() : $renc->getIdJournee()->getDateJournee());
-            }, $championnat->getRencontres()->toArray())); //TODO Bug si pas d'équipes enregistrées dans Kompo
     }
 
     /**

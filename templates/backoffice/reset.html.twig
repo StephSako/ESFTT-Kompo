@@ -93,64 +93,293 @@
             {% for nomChampionnat, data in allChampionnatsReset %}
                 <div id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
                     {% if data.recorded %}
-                        {% if data.finished %}
-                            <div class='backoffice-panel center card-panel'>
+                        <div class='backoffice-panel center card-panel'>
 
-                                <h3 style="margin-top: 10px;">Pré-rentrée</h3>
+                            <h3 style="margin-top: 10px;">Pré-rentrée</h3>
 
-                                {% if data.preRentree.countDispos > 0 and data.preRentree.emptyCompos|length > 0 and data.preRentree.resetEquipes|length > 0 and data.preRentree.resetJournees|length > 0 and data.preRentree.resetRencontres|length > 0 %}
-                                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
-                                        <input type="hidden" name="preRentreeResetChampionnats" value="1">
+                            {% if data.preRentree.countDispos > 0 and data.preRentree.emptyCompos|length > 0 and data.preRentree.resetEquipes|length > 0 and data.preRentree.resetJournees|length > 0 and data.preRentree.resetRencontres|length > 0 %}
+                                <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
+                                    <input type="hidden" name="preRentreeResetChampionnats" value="1">
+                                    <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+
+                                    <div class="center">
+                                        <h4>Les journées</h4>
+                                        {% if data.preRentree.resetJournees|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetJournees|length ~ ' dates seront réinitialisées' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les dates ont été réinitialisées</b></p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                    <div class="center">
+                                        <h4>Les équipes</h4>
+                                        {% if data.preRentree.resetEquipes|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetEquipes|length ~ ' équipes seront réinitialisées (divisions et poules)' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les équipes ont été réinitialisées</b></p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                    <div class="center">
+                                        <h4>Les disponibilités</h4>
+                                        {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                    <div class="center">
+                                        <h4>Les compositions</h4>
+                                        {% if data.preRentree.emptyCompos|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.emptyCompos|length ~ ' compositions d\'équipes seront remises à zéro' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les compositions d'équipes ont été remises à zéro</b></p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                    <div class="center">
+                                        <h4>Les rencontres</h4>
+                                        {% if data.preRentree.resetRencontres|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetRencontres|length ~ ' rencontres seront remises à zéro' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les rencontres ont été remises à zéro</b></p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="margin-top: 25px; margin-bottom: 35px;"></div>
+
+                                    <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
+
+                                    <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                        <div class="preloader-wrapper small active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
+                            {% endif %}
+                        </div>
+
+                        <div class='backoffice-panel center card-panel'>
+
+                            <h3 style="margin-top: 10px;">La phase</h3>
+
+                            <div class="center">
+                                <h4>Les journées</h4>
+                                {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
+                                {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
+                                {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
+                                {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
+
+                                {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
+                                    <table class="striped centered responsive-table">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Journée</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {% for dateIssued in data.dates.issued %}
+                                            <tr>
+                                                <td><i class="material-icons orange-text text-darken-2">edit</i></td>
+                                                <td><b>{{ dateIssued.nJournee }}</b></td>
+                                                <td>
+                                                    <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                    <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        {% for index, dateMissing in data.dates.missing %}
+                                            <tr>
+                                                <td><i class="material-icons green-text">add_circle</i></td>
+                                                <td><b>{{ index }}</b></td>
+                                                <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        {% for dateSurplus in data.dates.surplus %}
+                                            <tr>
+                                                <td><i class="material-icons red-text">delete</i></td>
+                                                <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
+                                                <td>
+                                                    {% if dateSurplus.undefined %}
+                                                        <i class='material-icons red-text'>event_busy</i>
+                                                    {% else %}
+                                                        {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+
+                            <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                            <div class="center">
+                                <h4>Les équipes</h4>
+                                {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p>{% endif %}
+                                {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p>{% endif %}
+                                {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p>{% endif %}
+                                {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p>{% endif %}
+
+                                {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
+                                    <table class="striped centered responsive-table">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Numéro</th>
+                                                <th>Division</th>
+                                                <th>Poule</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {% for equipe in data.teams.issued %}
+                                                <tr>
+                                                    <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
+                                                    <td><b>{{ equipe.equipe.numero }}</b></td>
+                                                    <td>
+                                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : 'Division indéfinie' }}</span>
+                                                        {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption=>Poule indéfinie</span>" }}</span>
+                                                        {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            {% for numero, equipe in data.teams.toCreate %}
+                                                <tr>
+                                                    <td><i class="material-icons green-text">add_circle</i></td>
+                                                    <td><b>{{ numero }}</b></td>
+                                                    <td>
+                                                        {{ equipe.divisionShortName }}
+                                                    </td>
+                                                    <td>
+                                                        {{ equipe.poule }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            {% for equipe in data.teams.toDelete %}
+                                                <tr>
+                                                    <td><i class="material-icons red-text">delete</i></td>
+                                                    <td><b>{{ equipe.numero }}</b></td>
+                                                    <td>
+                                                        {% if equipe.idDivision %}
+                                                            {{ equipe.idDivision.shortName }}
+                                                        {% else %}
+                                                            <span class="red-text lighten-2">Division indéfinie</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {{ equipe.idPoule.poule }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+
+                            <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                            <div class="center">
+                                <h4>Les rencontres</h4>
+
+                                {% if data.matches.issuedSorted %}
+                                    <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour. Toutes les compositions d\'équipe seront vidées.' }}</b></p>
+
+                                    {% for equipe, rencontres in data.matches.issuedSorted %}
+                                        <ul class="collapsible backoffice_disponibilites">
+                                            <li class="active">
+                                                <div class="collapsible-header">
+                                                    <div class="chip">
+                                                        <i class="material-icons" style="vertical-align: middle;">people</i>
+                                                        {{ equipe }}
+                                                    </div>
+                                                    <i class="caret material-icons">keyboard_arrow_down</i>
+                                                </div>
+
+                                                <div class="collapsible-body">
+                                                    <table class="striped centered responsive-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Journée</th>
+                                                                <th>Adversaire</th>
+                                                                <th>Lieu</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            {% for rencontre in rencontres %}
+                                                                <tr>
+                                                                    <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                    <td>{{ rencontre.journee }}</td>
+                                                                    <td>
+                                                                        {% if not rencontre.exempt %}
+                                                                            <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
+                                                                                {% if rencontre.rencontre.exempt %}
+                                                                                    <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                                {% elseif rencontre.rencontre.adversaire is null%}
+                                                                                    <span class="new badge red white-text" data-badge-caption=>Adversaire indéfini</span>
+                                                                                {% else %}
+                                                                                    {{ rencontre.rencontre.adversaire }}
+                                                                                {% endif %}
+                                                                            </span>
+                                                                            {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                                        {% else %}
+                                                                            <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        <span>
+                                                                            {% if rencontre.rencontre.domicile is null %}
+                                                                                <i class='material-icons red-text'>location_off</i>
+                                                                            {% else %}
+                                                                                {% if rencontre.rencontre.domicile %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>home</i>
+                                                                                {% else %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>directions_car</i>
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        </span>
+                                                                        {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    {% endfor %}
+                                {% else %}<p class="pastille blue reset"><b>Toutes les rencontres sont à jour</b></p>
+                                {% endif %}
+
+                                <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
+                                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
+                                        <input type="hidden" name="resetChampionnats" value="1">
                                         <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                                        <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
 
-                                        <div class="center">
-                                            <h4>Les journées</h4>
-                                            {% if data.preRentree.resetJournees|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetJournees|length ~ ' dates seront réinitialisées' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les dates ont été réinitialisées</b></p>
-                                            {% endif %}
-                                        </div>
-
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                        <div class="center">
-                                            <h4>Les équipes</h4>
-                                            {% if data.preRentree.resetEquipes|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetEquipes|length ~ ' équipes seront réinitialisées (divisions et poules)' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les équipes ont été réinitialisées</b></p>
-                                            {% endif %}
-                                        </div>
-
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                        <div class="center">
-                                            <h4>Les disponibilités</h4>
-                                            {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
-                                            {% endif %}
-                                        </div>
-
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                        <div class="center">
-                                            <h4>Les compositions</h4>
-                                            {% if data.preRentree.emptyCompos|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.emptyCompos|length ~ ' compositions d\'équipes seront remises à zéro' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les compositions d'équipes ont été remises à zéro</b></p>
-                                            {% endif %}
-                                        </div>
-
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                        <div class="center">
-                                            <h4>Les rencontres</h4>
-                                            {% if data.preRentree.resetRencontres|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetRencontres|length ~ ' rencontres seront remises à zéro' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les rencontres ont été remises à zéro</b></p>
-                                            {% endif %}
-                                        </div>
-
-                                        <div style="margin-top: 25px; margin-bottom: 35px;"></div>
-
-                                        <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
-
-                                        <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                        <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
                                             <div class="preloader-wrapper small active">
                                                 <div class="spinner-layer spinner-blue-only">
                                                     <div class="circle-clipper left">
@@ -168,242 +397,7 @@
                                     <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
                                 {% endif %}
                             </div>
-
-                            <div class='backoffice-panel center card-panel'>
-
-                                <h3 style="margin-top: 10px;">La phase</h3>
-
-                                <div class="center">
-                                    <h4>Les journées</h4>
-                                    {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
-                                    {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
-                                    {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
-                                    {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
-
-                                    {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
-                                        <table class="striped centered responsive-table">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Journée</th>
-                                                    <th>Date</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                            {% for dateIssued in data.dates.issued %}
-                                                <tr>
-                                                    <td><i class="material-icons orange-text text-darken-2">edit</i></td>
-                                                    <td><b>{{ dateIssued.nJournee }}</b></td>
-                                                    <td>
-                                                        <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                        <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-
-                                            {% for index, dateMissing in data.dates.missing %}
-                                                <tr>
-                                                    <td><i class="material-icons green-text">add_circle</i></td>
-                                                    <td><b>{{ index }}</b></td>
-                                                    <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
-                                                </tr>
-                                            {% endfor %}
-
-                                            {% for dateSurplus in data.dates.surplus %}
-                                                <tr>
-                                                    <td><i class="material-icons red-text">delete</i></td>
-                                                    <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
-                                                    <td>
-                                                        {% if dateSurplus.undefined %}
-                                                            <i class='material-icons red-text'>event_busy</i>
-                                                        {% else %}
-                                                            {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-                                </div>
-
-                                <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                <div class="center">
-                                    <h4>Les équipes</h4>
-                                    {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p>{% endif %}
-                                    {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p>{% endif %}
-                                    {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p>{% endif %}
-                                    {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p>{% endif %}
-
-                                    {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
-                                        <table class="striped centered responsive-table">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Numéro</th>
-                                                    <th>Division</th>
-                                                    <th>Poule</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                {% for equipe in data.teams.issued %}
-                                                    <tr>
-                                                        <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
-                                                        <td><b>{{ equipe.equipe.numero }}</b></td>
-                                                        <td>
-                                                            <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : 'Division indéfinie' }}</span>
-                                                            {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption=>Poule indéfinie</span>" }}</span>
-                                                            {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-
-                                                {% for numero, equipe in data.teams.toCreate %}
-                                                    <tr>
-                                                        <td><i class="material-icons green-text">add_circle</i></td>
-                                                        <td><b>{{ numero }}</b></td>
-                                                        <td>
-                                                            {{ equipe.divisionShortName }}
-                                                        </td>
-                                                        <td>
-                                                            {{ equipe.poule }}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-
-                                                {% for equipe in data.teams.toDelete %}
-                                                    <tr>
-                                                        <td><i class="material-icons red-text">delete</i></td>
-                                                        <td><b>{{ equipe.numero }}</b></td>
-                                                        <td>
-                                                            {% if equipe.idDivision %}
-                                                                {{ equipe.idDivision.shortName }}
-                                                            {% else %}
-                                                                <span class="red-text lighten-2">Division indéfinie</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            {{ equipe.idPoule.poule }}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-                                </div>
-
-                                <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                <div class="center">
-                                    <h4>Les rencontres</h4>
-
-                                    {% if data.matches.issuedSorted %}
-                                        <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour. Toutes les compositions d\'équipe seront vidées.' }}</b></p>
-
-                                        {% for equipe, rencontres in data.matches.issuedSorted %}
-                                            <ul class="collapsible backoffice_disponibilites">
-                                                <li class="active">
-                                                    <div class="collapsible-header">
-                                                        <div class="chip">
-                                                            <i class="material-icons" style="vertical-align: middle;">people</i>
-                                                            {{ equipe }}
-                                                        </div>
-                                                        <i class="caret material-icons">keyboard_arrow_down</i>
-                                                    </div>
-
-                                                    <div class="collapsible-body">
-                                                        <table class="striped centered responsive-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th></th>
-                                                                    <th>Journée</th>
-                                                                    <th>Adversaire</th>
-                                                                    <th>Lieu</th>
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody>
-                                                                {% for rencontre in rencontres %}
-                                                                    <tr>
-                                                                        <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
-                                                                        <td>{{ rencontre.journee }}</td>
-                                                                        <td>
-                                                                            {% if not rencontre.exempt %}
-                                                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
-                                                                                    {% if rencontre.rencontre.exempt %}
-                                                                                        <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
-                                                                                    {% elseif rencontre.rencontre.adversaire is null%}
-                                                                                        <span class="new badge red white-text" data-badge-caption=>Adversaire indéfini</span>
-                                                                                    {% else %}
-                                                                                        {{ rencontre.rencontre.adversaire }}
-                                                                                    {% endif %}
-                                                                                </span>
-                                                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
-                                                                            {% else %}
-                                                                                <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
-                                                                            {% endif %}
-                                                                        </td>
-                                                                        <td>
-                                                                            <span>
-                                                                                {% if rencontre.rencontre.domicile is null %}
-                                                                                    <i class='material-icons red-text'>location_off</i>
-                                                                                {% else %}
-                                                                                    {% if rencontre.rencontre.domicile %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>home</i>
-                                                                                    {% else %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>directions_car</i>
-                                                                                    {% endif %}
-                                                                                {% endif %}
-                                                                            </span>
-                                                                            {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
-                                                                        </td>
-                                                                    </tr>
-                                                                {% endfor %}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        {% endfor %}
-                                    {% else %}<p class="pastille blue reset"><b>Toutes les rencontres sont à jour</b></p>
-                                    {% endif %}
-
-                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                                    {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
-                                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
-                                            <input type="hidden" name="resetChampionnats" value="1">
-                                            <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
-
-                                            <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
-                                                <div class="preloader-wrapper small active">
-                                                    <div class="spinner-layer spinner-blue-only">
-                                                        <div class="circle-clipper left">
-                                                            <div class="circle"></div>
-                                                        </div><div class="gap-patch">
-                                                            <div class="circle"></div>
-                                                        </div><div class="circle-clipper right">
-                                                            <div class="circle"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    {% else %}
-                                        <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class='backoffice-panel center card-panel'>
-                                <p class="pastille orange darken-2 reset" style="margin-top: 20px; margin-bottom: 20px;">La phase de ce championnat est encore en cours ...</p>
-                            </div>
-                        {% endif %}
+                        </div>
                     {% else %}
                         <div class='backoffice-panel center card-panel'>
                             <p class="pastille red center reset">{{ data.messageChampionnat }}</p>
