@@ -107,6 +107,7 @@ class BackOfficeEquipeController extends AbstractController
                     $this->addFlash('success', 'Équipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
+                    dump($e);
                     if ($e->getPrevious()) {
                         if ($e->getPrevious()->getCode() == "23000") {
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
@@ -157,7 +158,7 @@ class BackOfficeEquipeController extends AbstractController
                         $this->addFlash('success', 'Équipe modifiée');
                         return $this->redirectToRoute('backoffice.equipes');
                     } catch(Exception $e){
-                        if ($e->getPrevious()->getCode() == "23000"){
+                        if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
                             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                         } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -218,10 +219,11 @@ class BackOfficeEquipeController extends AbstractController
     /**
      * Retourne le numéro de la prochaine équipe à créer du championnat
      * @param array $numEquipes
-     * @return int
+     * @return int|null
      */
-    public function getLastNumero(array $numEquipes): int {
-        return max(array_map(function($numero) { return $numero;}, $numEquipes)) + 1;
+    public function getLastNumero(array $numEquipes): ?int {
+        $lastNumero = array_map(function($numero) { return $numero;}, $numEquipes);
+        return $lastNumero ? max($lastNumero) + 1 : null;
     }
 
     /**
@@ -233,7 +235,7 @@ class BackOfficeEquipeController extends AbstractController
         $numEquipes = array_map(function ($numero) {
             return $numero;
         }, $numEquipes);
-        $range = range(1, max($numEquipes));
+        $range = range(1, $numEquipes ? max($numEquipes) : 1);
         return array_diff($range, $numEquipes);
     }
 }

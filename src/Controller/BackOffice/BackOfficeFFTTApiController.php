@@ -321,6 +321,9 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */ //TODO Séparer de la partie API pour le cas d'une erreur
+
+                    /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->getLatestDate($championnatActif);
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["emptyCompos"] = array_filter($preRentreeRencontres, function($compoToTestEmpty) {
                         return !$compoToTestEmpty->getIsEmpty();
@@ -481,6 +484,20 @@ class BackOfficeFFTTApiController extends AbstractController
             'errorMajJoueurs' => $errorMajJoueurs,
             'errorMajRencontresEquipes' => $errorMajRencontresEquipes
         ]);
+    }
+
+    /**
+     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la pré-rentrée
+     * @param Championnat $championnat
+     * @return array
+     */
+    function getLatestDate(Championnat $championnat): array {
+        $latestDate = array_map(function(Rencontre $renc) {
+                return $renc->getIdJournee()->getUndefined() ? null : max([$renc->getDateReport(), $renc->getIdJournee()->getDateJournee()]);
+            }, $championnat->getRencontres()->toArray());
+        if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
+        else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-rentrée prête à être lancée'];
+        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-rentrée'];
     }
 
     /**
