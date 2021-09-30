@@ -473,7 +473,6 @@ class BackOfficeFFTTApiController extends AbstractController
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch(Exception $exception) {
-            dump($exception);
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }

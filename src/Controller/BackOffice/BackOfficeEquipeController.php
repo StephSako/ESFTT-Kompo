@@ -107,7 +107,6 @@ class BackOfficeEquipeController extends AbstractController
                     $this->addFlash('success', 'Équipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    dump($e);
                     if ($e->getPrevious()) {
                         if ($e->getPrevious()->getCode() == "23000") {
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');

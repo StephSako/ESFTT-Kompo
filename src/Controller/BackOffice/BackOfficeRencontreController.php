@@ -62,6 +62,12 @@ class BackOfficeRencontreController extends AbstractController
         $form->handleRequest($request);
         $domicile = ($rencontre->getDomicile() ? "D" : "E");
 
+        $journees = $rencontre->getIdChampionnat()->getJournees()->toArray();
+        $journee = $rencontre->getIDJournee();
+        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+            return $journeeChamp->getDateJournee() == $journee->getDateJournee();
+        }))[0]+=1;
+
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
@@ -106,6 +112,7 @@ class BackOfficeRencontreController extends AbstractController
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'domicile' => $domicile,
+            'idJournee' => $posJournee,
             'rencontre' => $rencontre
         ]);
     }

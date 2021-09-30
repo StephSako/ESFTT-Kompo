@@ -1,12 +1,12 @@
-{% macro form(rencontre, form, domicile) %}
+{% macro form(rencontre, form, domicile, idJournee) %}
     <div class="card-panel center-align">
         <div class="hide-on-small-only">
-            <h4 class="titre">Journée {{ rencontre.idJournee.idJournee }} - Équipe {{ rencontre.idEquipe.numero }} - {{ rencontre.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h4>
+            <h4 class="titre">Journée {{ idJournee }} - Équipe {{ rencontre.idEquipe.numero }} - {{ rencontre.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h4>
             <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ rencontre.idChampionnat.nom }}</h5>
         </div>
 
         <div class="hide-on-med-and-up">
-            <h4 class="titre">J{{ rencontre.idJournee.idJournee }} - Équipe {{ rencontre.idEquipe.numero }}</h4>
+            <h4 class="titre">J{{ idJournee }} - Équipe {{ rencontre.idEquipe.numero }}</h4>
             <h5 style="margin-top: 0;">{{ rencontre.idChampionnat.nom }}</h5>
             <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ rencontre.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : rencontre.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h5>
         </div>
