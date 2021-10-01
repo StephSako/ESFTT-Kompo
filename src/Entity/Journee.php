@@ -118,6 +118,13 @@ class Journee
     }
 
     /**
+     * @return string
+     */
+    public function getDateJourneeFrench(): string {
+        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateJournee()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
+    }
+
+    /**
      * @param DateTime $dateJournee
      * @return Journee
      */

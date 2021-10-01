@@ -4,13 +4,8 @@
             <h5>{{ titre }}</h5>
             <div class="row">
                 <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter par SMS</i></p>
-                {% set message = options ? '&body=' ~ ('Salut, c\'est ' ~ (app.user.prenom|title) ~ '.%0D%0A%0D%0A' ~
-                    (options.compo.exempt ? 'Vous êtes sélectionnés en équipe ' ~ options.compo.idEquipe.numero ~ ' le ' ~ (options.compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) ~ '.%0D%0A%0D%0ACependant, l\'équipe ' ~ options.compo.idEquipe.numero ~ ' est exemptée pour cette journée ce qui signifie qu\'il n\'y aura donc pas match à cette date.%0D%0A%0D%0ABonne journée à vous.' :
-                    'Vous êtes sélectionnés pour jouer en compétition en équipe ' ~ options.compo.idEquipe.numero ~ (not options.compo.idJournee.undefined ? ' le ' ~ (not options.compo.reporte ? (options.compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) : (options.compo.dateReport|format_datetime('long', 'none', locale='fr'))) : ' à une date indéterminée pour le moment') ~ '.%0D%0A%0D%0A' ~
-                    'Les joueurs sélectionnés sont :%0D%0A' ~ (options.compo.listSelectedPlayers|map(j => "#{j.prenom} #{j.nom}")|join('%0D%0A')) ~ '.%0D%0A%0D%0A' ~
-                    'Vous avez rendez-vous à la ' ~ (not options.compo.hosted and options.compo.domicile ? 'salle Albert Marquet à 19h45' : 'gare de La Frette à 19h30') ~ ' et nous jouerons ' ~ (options.compo.domicile is not null ? ((not options.compo.domicile or options.compo.hosted) ? 'à l\'extérieur ' : 'à domicile ') : '') ~ 'contre ' ~ (options.compo.adversaire ?: 'une équipe indéterminée pour le moment') ~ '.%0D%0A%0D%0A' ~
-                    'Merci et à vendredi !')) : null %}
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', 'mailto:' ~ response['mail']['toString'] ~ (message ? '?subject=' ~ 'RDV Ping Compétition' ~ (not options.compo.idJournee.undefined ? ' - ' ~ (not options.compo.reporte ? (options.compo.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')) : (options.compo.dateReport|format_datetime('long', 'none', locale='fr'))) : '') ~ message : '')) }}
+                {% set message = options ? options.compo.messageAlertPlayers(app.user.prenom) : null %}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', 'mailto:' ~ response['mail']['toString'] ~ (message ? options.compo.objetAlertPlayers ~ message : '')) }}
                 {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', 'sms:' ~ response['sms']['toString'] ~ (message ? ';?' ~ message : null)) }}
             </div>
         </div>

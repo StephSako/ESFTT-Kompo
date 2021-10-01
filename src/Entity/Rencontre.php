@@ -575,6 +575,13 @@ class Rencontre
     }
 
     /**
+     * @return string
+     */
+    public function getDateReportFrench(): string {
+        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateReport()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
+    }
+
+    /**
      * @param DateTime $dateReport
      * @return Rencontre
      */
@@ -657,5 +664,59 @@ class Rencontre
         $response['nbJoueursWithoutMe'] = count($contactablesMails) + count($notContactablesMails) + count($notContactablesPhoneNumbers) + count($contactablesPhoneNumbers);
 
         return $response;
+    }
+
+    /**
+     * Retourne le message pour alerter les joueurs de leur sélection
+     * @return string
+     */
+    public function getObjetAlertPlayers(): string {
+        $objet = "?subject=" . "RDV Ping Compétition";
+
+        if (!$this->getIdJournee()->getUndefined()){
+            $objet .= ' - ';
+            $objet .= (!$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench());
+        }
+        return $objet;
+    }
+
+    /**
+     * Retourne le message pour alerter les joueurs de leur sélection
+     * @param string $prenomSender
+     * @return string
+     */
+    public function getMessageAlertPlayers(string $prenomSender): string {
+        setlocale (LC_TIME, 'fr_FR.utf8','fra');
+        date_default_timezone_set('Europe/Paris');
+        $message = "&body=Salut, c'est " . $prenomSender . ".%0D%0A%0D%0A";
+        $message .= "Vous êtes sélectionnés en équipe " . $this->getIdEquipe()->getNumero();
+
+        if (!$this->getIdJournee()->getUndefined()){
+            $message .= " le ";
+            if (!$this->isReporte()) $message .= $this->getIdJournee()->getDateJourneeFrench();
+            else $message .= $this->getDateReportFrench();
+        } else $message .= " à une date indéterminée pour le moment";
+        $message .= ".";
+
+        if ($this->isExempt()) $message .=  "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date.%0D%0A%0D%0ABonne journée à vous.";
+        else {
+            $message .= "%0D%0A%0D%0ALes joueurs sélectionnés sont :%0D%0A" . implode("%0D%0A", array_map(function($joueur){return $joueur->getPrenom() . ' ' . $joueur->getNom();}, $this->getListSelectedPlayers())) . ".%0D%0A%0D%0A";
+
+            $message .= "Vous avez rendez-vous à la ";
+
+            //TODO Gérer le hosted avec la ville d'hôte
+            if (!$this->isHosted() && $this->getDomicile()) $message .= "salle Albert Marquet à 19h45";
+            else $message .= "gare de La Frette à 19h30";
+
+            $message .= " et nous jouerons";
+            if ($this->getDomicile() !== null) $message .= ($this->getDomicile() == true ? " à domicile" : " à l'extérieur");
+            else $message .= " à un lieu indéterminé";
+
+            $message .= " contre " . ($this->getAdversaire() ?: " une équipe indéterminée pour le moment");
+
+            $message .= ".%0D%0A%0D%0AMerci et à Vendredi !";
+        }
+
+        return $message;
     }
 }
