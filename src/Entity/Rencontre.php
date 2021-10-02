@@ -168,6 +168,18 @@ class Rencontre
     private $hosted;
 
     /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 50,
+     *      maxMessage = "La ville hôte doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="ville_host", nullable=true, type="string", length=50)
+     */
+    private $villeHost;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="reporte", type="boolean", nullable=false)
@@ -718,5 +730,23 @@ class Rencontre
         }
 
         return $message;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVilleHost(): ?string
+    {
+        return $this->villeHost;
+    }
+
+    /**
+     * @param string|null $villeHost
+     * @return Rencontre
+     */
+    public function setVilleHost(?string $villeHost): self
+    {
+        $this->villeHost = $villeHost;
+        return $this;
     }
 }

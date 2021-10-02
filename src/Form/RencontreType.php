@@ -79,7 +79,7 @@ class RencontreType extends AbstractType
                     ]]
                 )
                 ->add('hosted', CheckboxType::class,[
-                    'label' => 'A. Marquet indisponible',
+                    'label' => 'Salle hôte indisponible',
                     'required' => false
                 ])
                 ->add('reporte', CheckboxType::class,[
@@ -91,8 +91,16 @@ class RencontreType extends AbstractType
                     'format' => 'd MMMM y'
                 ])
                 ->add('exempt', CheckboxType::class,[
-                    'label' => 'Pas de match',
+                    'label' => 'Equipe exemptée',
                     'required' => false
+                ])
+                ->add('villeHost', TextType::class,[
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 50,
+                        'placeholder' => 'Ville hôte'
+                    ]
                 ]);
         }
     }

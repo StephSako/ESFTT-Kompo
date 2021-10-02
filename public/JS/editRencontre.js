@@ -5,6 +5,7 @@ $(document).ready(function () {
     let exempt = $('#exempt');
     let adversaire = $('#adversaire');
     let hosted = $('#hosted');
+    let ville_host = $('#ville_host');
     let reported = $('#reporte');
 
     if (exterieur === "D") {
@@ -12,12 +13,16 @@ $(document).ready(function () {
         span_exterieur.css("font-weight", "normal");
     } else if (exterieur === "E") {
         lieu_rencontre.prop('checked', true);
-        hosted.prop('disabled', true);
         span_domicile.css("font-weight", "normal");
         span_exterieur.css("font-weight", "bold");
     }
 
-    if (reported.is(':checked') === false) $('.select-dropdown').prop('disabled', true);
+    if (!reported.is(':checked')) $('.select-dropdown').prop('disabled', true);
+
+    if (!hosted.is(':checked')){
+        ville_host.val("").attr('placeholder', "Pas de ville hôte");
+        ville_host.prop('disabled', true);
+    }
 
     if (exempt.is(':checked')) {
         reported.prop('disabled', true);
@@ -25,6 +30,8 @@ $(document).ready(function () {
         adversaire.prop('disabled', true);
         lieu_rencontre.prop('disabled', true);
         hosted.prop('disabled', true);
+        ville_host.val("").attr('placeholder', "Pas de ville hôte");
+        ville_host.prop('disabled', true);
         span_domicile.css("font-weight", "normal");
         span_exterieur.css("font-weight", "normal");
         span_domicile.css("color", "#a4a2a2");
@@ -39,6 +46,8 @@ $(document).ready(function () {
             hosted.prop('checked', false).prop('disabled', true);
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
             adversaire.prop('disabled', true);
+            ville_host.val("").attr('placeholder', "Pas de ville hôte");
+            ville_host.prop('disabled', true);
             span_domicile.css("font-weight", "normal");
             span_exterieur.css("font-weight", "normal");
             span_domicile.css("color", "#a4a2a2");
@@ -48,6 +57,8 @@ $(document).ready(function () {
             hosted.prop('checked', false).prop('disabled', false);
             adversaire.attr('placeholder', "Adversaire");
             adversaire.prop('disabled', false);
+            ville_host.attr('placeholder', "Pas de ville hôte");
+            ville_host.prop('disabled', true);
             lieu_rencontre.prop('disabled', false);
             span_domicile.css("font-weight", "bold");
             span_domicile.css("color", "#000000");
@@ -57,24 +68,27 @@ $(document).ready(function () {
     });
 
     reported.change(function () {
-        if (this.checked) {
-            exempt.prop('disabled', true);
-            $('.select-dropdown').prop('disabled', false);
-        } else {
-            exempt.prop('disabled', false);
-            $('.select-dropdown').prop('disabled', true);
-        }
+        if (this.checked) $('.select-dropdown').prop('disabled', false);
+        else $('.select-dropdown').prop('disabled', true);
     });
 
     lieu_rencontre.change(function () {
         if (this.checked) {
-            hosted.prop('checked', false).prop('disabled', true);
             span_domicile.css("font-weight", "normal");
             span_exterieur.css("font-weight", "bold");
         } else {
-            hosted.prop('disabled', false);
             span_domicile.css("font-weight", "bold");
             span_exterieur.css("font-weight", "normal");
+        }
+    });
+
+    hosted.change(function () {
+        if (this.checked) {
+            ville_host.attr('placeholder', "Ville hôte");
+            ville_host.prop('disabled', false);
+        } else {
+            ville_host.val("").attr('placeholder', "Pas de ville hôte");
+            ville_host.prop('disabled', true);
         }
     });
 });
