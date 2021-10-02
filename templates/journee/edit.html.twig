@@ -10,39 +10,46 @@
     {% include("components/navbar.html.twig") %}
 
     <div class="row main">
-        <ul class="collapsible hide-on-large-only" style="margin-top: 20px; margin-bottom: 0;">
-            <li>
-                <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
-                    <div class="chip" style="padding-left: 0; padding-right: 0;">
-                        <i class="red-text material-icons" style="vertical-align: middle; margin-right: 0;">whatshot</i>
-                        <span class="lobster" style="font-size: 115%;">Joueurs brûlés</span>
+        <div class="hide-on-large-only">
+            <ul class="collapsible" style="margin-top: 20px; margin-bottom: 0;">
+                <li>
+                    <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
+                        <div class="chip" style="padding-left: 0; padding-right: 0;">
+                            <i class="red-text material-icons" style="vertical-align: middle; margin-right: 0;">whatshot</i>
+                            <span class="lobster" style="font-size: 115%;">Joueurs brûlés</span>
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
-                </div>
-                <div class="collapsible-body">
-                    {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
-                </div>
-            </li>
-            <li>
-                <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
-                    <div class="chip" style="padding-left: 0; padding-right: 0;">
-                        <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i>
-                        <span class="lobster" style="font-size: 115%;">Sélectionnables & brûlage J+1</span>
+                    <div class="collapsible-body">
+                        {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
                     </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
+                </li>
+                <li>
+                    <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
+                        <div class="chip" style="padding-left: 0; padding-right: 0;">
+                            <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i>
+                            <span class="lobster" style="font-size: 115%;">Sélectionnables & brûlage J+1</span>
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
+                    </div>
+                    <div class="collapsible-body">
+                        {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
+                    </div>
+                </li>
+            </ul>
+
+            {% if compo.idEquipe.numero in idEquipesBrulagePrint and idJournee == 2 and championnat.j2Rule %}
+                <div class="card-panel center-align hide-on-large-only blue lighten-5" style="margin: 20px 10px 0 10px; padding: 8px 4px;">
+                    <span style="margin-top: 0; margin-bottom: 0;">En J2, un seul joueur marqué <i class="material-icons red-text">whatshot</i> dans <span class="truncate"><i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i><span class="lobster" style="font-size: 100%;">Sélectionnables & brûlage J+1</span></span> peut être sélectionné</span>
                 </div>
-                <div class="collapsible-body">
-                    {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
-                </div>
-            </li>
-        </ul>
+            {% endif %}
+        </div>
 
         <div class="col l2 hide-on-med-and-down">
             {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
         </div>
 
         <div class="col s12 l7">
-
             {% for message in app.flashes('fail') %}
                 {{ _flash.message(message, 'red') }}
             {% endfor %}

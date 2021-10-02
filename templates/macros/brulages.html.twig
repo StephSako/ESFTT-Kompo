@@ -68,8 +68,8 @@
 
 {% macro selectionnables(championnatJ2Rule, championnatLimiteBrulage, selectionnables, idEquipe, idJournee, idEquipes) %}
     {% if idEquipe in idEquipes and idJournee == 2 and championnatJ2Rule %}
-        <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
-            <span style="margin-top: 0; margin-bottom: 0;">En journée 2, un seul joueur marqué du symbole <i class="material-icons red-text">whatshot</i> peut être sélectionné</span>
+        <div class="card-panel center-align hide-on-med-and-down" style="margin-bottom: 0; padding: 8px 4px;">
+            <span style="margin-top: 0; margin-bottom: 0;"><span class="truncate">En J2, un seul joueur marqué <i class="material-icons red-text">whatshot</i></span><span class="truncate">peut être sélectionné</span></span>
         </div>
     {% endif %}
 
@@ -111,5 +111,11 @@
                 <p class="center">Aucun joueur sélectionnable</p>
             {% endif %}
         </div>
+    </div>
+{% endmacro %}
+
+{% macro messageBrulageJn() %}
+    <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
+        <span style="margin-top: 0; margin-bottom: 0;">En journée 2, un seul joueur marqué du symbole <i class="material-icons red-text">whatshot</i> dans <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i><span class="lobster" style="font-size: 100%;">Sélectionnables & brûlage J+1</span>  peut être sélectionné</span>
     </div>
 {% endmacro %}
