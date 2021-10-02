@@ -71,6 +71,9 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
+                    /** On vérifie que la ville de remplacement est bien renseignée si la salle hôte est indisponible */
+                    if ($rencontre->isHosted() && empty($rencontre->getVilleHost())) throw new Exception('Renseignez une ville de remplacement si la salle hôte est indisponible', 12345);
+
                     /** On récupère la valeur du switch du template **/
                     $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
                     $rencontre->setAdversaire($rencontre->getAdversaire());

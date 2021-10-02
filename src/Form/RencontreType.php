@@ -99,7 +99,7 @@ class RencontreType extends AbstractType
                     'required' => false,
                     'attr' => [
                         'maxlength' => 50,
-                        'placeholder' => 'Ville hôte'
+                        'placeholder' => 'Ville de remplacement'
                     ]
                 ]);
         }

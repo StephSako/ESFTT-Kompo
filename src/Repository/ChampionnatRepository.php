@@ -124,6 +124,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('r.adversaire')
             ->addSelect('r.domicile')
             ->addSelect('r.hosted')
+            ->addSelect('r.villeHost')
             ->addSelect('d.idDivision')
             ->addSelect('r.reporte')
             ->addSelect('r.exempt')

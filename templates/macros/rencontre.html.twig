@@ -30,7 +30,7 @@
                                 <th>Date</th>
                                 <th>Adversaire</th>
                                 <th>Lieu</th>
-                                <th>Salle dispo</th>
+                                <th>Salle hôte dispo</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -70,16 +70,16 @@
                                             {% if rencontre.domicile is null %}
                                                 <i class='material-icons red-text'>location_off</i>
                                             {% else %}
-                                                {% if rencontre.domicile %} <i class="material-icons">home</i>
-                                                {% else %} <i class="material-icons">directions_car</i>
+                                                {% if rencontre.domicile %} <i class="material-icons{% if rencontre.hosted %} red-text {% endif%}">home</i>
+                                                {% else %} <i class="material-icons{% if rencontre.hosted %} red-text {% endif%}">directions_car</i>
                                                 {% endif %}
                                             {% endif %}
                                         {% endif %}
                                     </td>
                                     <td style="height: 59px; padding-top: 8px;">
-                                        {% if not rencontre.exempt and rencontre.domicile %}
+                                        {% if not rencontre.exempt %}
                                             {% if not rencontre.hosted %} <i class="green-text material-icons">check</i>
-                                            {% else %} <i class="red-text material-icons">clear</i>
+                                            {% else %} <span class="red-text"><i class="material-icons">clear</i>(à {{ rencontre.villeHost }})</span>
                                             {% endif %}
                                         {% endif %}
                                     </td>

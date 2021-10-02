@@ -20,7 +20,7 @@ $(document).ready(function () {
     if (!reported.is(':checked')) $('.select-dropdown').prop('disabled', true);
 
     if (!hosted.is(':checked')){
-        ville_host.val("").attr('placeholder', "Pas de ville hôte");
+        ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
         ville_host.prop('disabled', true);
     }
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
         adversaire.prop('disabled', true);
         lieu_rencontre.prop('disabled', true);
         hosted.prop('disabled', true);
-        ville_host.val("").attr('placeholder', "Pas de ville hôte");
+        ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
         ville_host.prop('disabled', true);
         span_domicile.css("font-weight", "normal");
         span_exterieur.css("font-weight", "normal");
@@ -46,7 +46,7 @@ $(document).ready(function () {
             hosted.prop('checked', false).prop('disabled', true);
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
             adversaire.prop('disabled', true);
-            ville_host.val("").attr('placeholder', "Pas de ville hôte");
+            ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
             ville_host.prop('disabled', true);
             span_domicile.css("font-weight", "normal");
             span_exterieur.css("font-weight", "normal");
@@ -57,7 +57,7 @@ $(document).ready(function () {
             hosted.prop('checked', false).prop('disabled', false);
             adversaire.attr('placeholder', "Adversaire");
             adversaire.prop('disabled', false);
-            ville_host.attr('placeholder', "Pas de ville hôte");
+            ville_host.attr('placeholder', "Pas de ville de remplacement");
             ville_host.prop('disabled', true);
             lieu_rencontre.prop('disabled', false);
             span_domicile.css("font-weight", "bold");
@@ -84,10 +84,10 @@ $(document).ready(function () {
 
     hosted.change(function () {
         if (this.checked) {
-            ville_host.attr('placeholder', "Ville hôte");
+            ville_host.attr('placeholder', "Ville de remplacement");
             ville_host.prop('disabled', false);
         } else {
-            ville_host.val("").attr('placeholder', "Pas de ville hôte");
+            ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
             ville_host.prop('disabled', true);
         }
     });
