@@ -193,6 +193,11 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontresEquipeKompo = array_values(array_filter($rencontresKompo, function ($renc) use ($nbEquipe) {
                                     return $renc->getIdEquipe()->getNumero() == $nbEquipe;
                                 }));
+                                usort($rencontresEquipeKompo, function ($element1, $element2) {
+                                    $datetime1 = ($element1->getIdjournee()->getDateJournee())->getTimeStamp();
+                                    $datetime2 = ($element2->getIdjournee()->getDateJournee())->getTimeStamp();
+                                    return $datetime1 - $datetime2;
+                                } );
                             }
 
                             if (!$journeesFFTT) {
