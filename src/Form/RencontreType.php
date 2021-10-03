@@ -98,7 +98,7 @@ class RencontreType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'attr' => [
-                        'maxlength' => 50,
+                        'maxlength' => 200,
                         'placeholder' => 'Ville de remplacement'
                     ]
                 ]);

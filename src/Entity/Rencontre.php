@@ -171,7 +171,7 @@ class Rencontre
      * @var string|null
      *
      * @Assert\Length(
-     *      max = 50,
+     *      max = 200,
      *      maxMessage = "La ville hôte doit contenir au maximum {{ limit }} caractères"
      * )
      *
