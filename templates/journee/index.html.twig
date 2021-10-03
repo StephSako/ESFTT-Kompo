@@ -121,7 +121,7 @@
                             {% if compo.hosted %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                                     <i class="material-icons">error_outline</i>
-                                    <b>Salle hôte indisponible : rencontre à {{ compo.villeHost }}</b>
+                                    <b>Salle indisponible : rencontre à {{ compo.villeHost }}</b>
                                 </span>
                             {% endif %}
 
@@ -150,7 +150,7 @@
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
                                             {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                            {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                            {% else%} <i class="material-icons iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%}">directions_car</i>
                                         {% endif %}
                                         {% endif %}
                                     </h5>
@@ -164,7 +164,7 @@
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
                                             {% if compo.domicile%} <i class="iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                            {% else%} <i class="material-icons iconPlace">directions_car</i>
+                                            {% else%} <i class="material-icons iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%}">directions_car</i>
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}

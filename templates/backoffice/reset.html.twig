@@ -72,10 +72,12 @@
                         </tbody>
                     </table>
 
-                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
-                        <input type="hidden" name="resetPlayers" value="1">
-                        <button style="margin-top: 20px;" class='btn waves-effect waves-light green btn_gestion'>Mettre à jour</button>
-                    </form>
+                    {% if app.user.admin %}
+                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
+                            <input type="hidden" name="resetPlayers" value="1">
+                            <button style="margin-top: 20px;" class='btn waves-effect waves-light green btn_gestion'>Mettre à jour</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endif %}
@@ -101,71 +103,72 @@
                                 {% if data.preRentree.countDispos > 0 and data.preRentree.emptyCompos|length > 0 and data.preRentree.resetEquipes|length > 0 and data.preRentree.resetJournees|length > 0 and data.preRentree.resetRencontres|length > 0 %}
                                     <p class="pastille green white-text reset" style="margin-bottom: 25px;">{{ data.preRentree.finished['message'] }}</p>
 
-                                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
-                                        <input type="hidden" name="preRentreeResetChampionnats" value="1">
-                                        <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                                    <div class="center">
+                                        <h4>Les journées</h4>
+                                        {% if data.preRentree.resetJournees|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetJournees|length ~ ' dates seront réinitialisées' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les dates ont été réinitialisées</b></p>
+                                        {% endif %}
+                                    </div>
 
-                                        <div class="center">
-                                            <h4>Les journées</h4>
-                                            {% if data.preRentree.resetJournees|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetJournees|length ~ ' dates seront réinitialisées' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les dates ont été réinitialisées</b></p>
-                                            {% endif %}
-                                        </div>
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+                                    <div class="center">
+                                        <h4>Les équipes</h4>
+                                        {% if data.preRentree.resetEquipes|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetEquipes|length ~ ' équipes seront réinitialisées (divisions et poules)' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les équipes ont été réinitialisées</b></p>
+                                        {% endif %}
+                                    </div>
 
-                                        <div class="center">
-                                            <h4>Les équipes</h4>
-                                            {% if data.preRentree.resetEquipes|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetEquipes|length ~ ' équipes seront réinitialisées (divisions et poules)' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les équipes ont été réinitialisées</b></p>
-                                            {% endif %}
-                                        </div>
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+                                    <div class="center">
+                                        <h4>Les disponibilités</h4>
+                                        {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
+                                        {% endif %}
+                                    </div>
 
-                                        <div class="center">
-                                            <h4>Les disponibilités</h4>
-                                            {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
-                                            {% endif %}
-                                        </div>
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+                                    <div class="center">
+                                        <h4>Les compositions</h4>
+                                        {% if data.preRentree.emptyCompos|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.emptyCompos|length ~ ' compositions d\'équipes seront remises à zéro' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les compositions d'équipes ont été remises à zéro</b></p>
+                                        {% endif %}
+                                    </div>
 
-                                        <div class="center">
-                                            <h4>Les compositions</h4>
-                                            {% if data.preRentree.emptyCompos|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.emptyCompos|length ~ ' compositions d\'équipes seront remises à zéro' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les compositions d'équipes ont été remises à zéro</b></p>
-                                            {% endif %}
-                                        </div>
+                                    <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+                                    <div class="center">
+                                        <h4>Les rencontres</h4>
+                                        {% if data.preRentree.resetRencontres|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetRencontres|length ~ ' rencontres seront remises à zéro' }}</b></p>
+                                        {% else %}<p class="pastille reset blue"><b>Toutes les rencontres ont été remises à zéro</b></p>
+                                        {% endif %}
+                                    </div>
 
-                                        <div class="center">
-                                            <h4>Les rencontres</h4>
-                                            {% if data.preRentree.resetRencontres|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.resetRencontres|length ~ ' rencontres seront remises à zéro' }}</b></p>
-                                            {% else %}<p class="pastille reset blue"><b>Toutes les rencontres ont été remises à zéro</b></p>
-                                            {% endif %}
-                                        </div>
+                                    <div style="margin-top: 25px; margin-bottom: 35px;"></div>
 
-                                        <div style="margin-top: 25px; margin-bottom: 35px;"></div>
+                                    {% if app.user.admin %}
+                                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
+                                            <input type="hidden" name="preRentreeResetChampionnats" value="1">
+                                            <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                                            <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
 
-                                        <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
-
-                                        <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
-                                            <div class="preloader-wrapper small active">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
+                                            <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                                <div class="preloader-wrapper small active">
+                                                    <div class="spinner-layer spinner-blue-only">
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div><div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div><div class="circle-clipper right">
+                                                            <div class="circle"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    {% endif %}
                                 {% else %}
                                     <p class="pastille green white-text reset"><b>Toutes les données sont remises à zéro</b></p>
                                 {% endif %}
@@ -380,25 +383,27 @@
                                 <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                 {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
-                                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
-                                        <input type="hidden" name="resetChampionnats" value="1">
-                                        <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                        <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
+                                    {% if app.user.admin %}
+                                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
+                                            <input type="hidden" name="resetChampionnats" value="1">
+                                            <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
 
-                                        <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
-                                            <div class="preloader-wrapper small active">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
+                                            <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                                <div class="preloader-wrapper small active">
+                                                    <div class="spinner-layer spinner-blue-only">
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div><div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div><div class="circle-clipper right">
+                                                            <div class="circle"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    {% endif %}
                                 {% else %}
                                     <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
                                 {% endif %}

@@ -683,7 +683,7 @@ class Rencontre
      * @return string
      */
     public function getObjetAlertPlayers(): string {
-        $objet = "?subject=" . "RDV Ping Compétition";
+        $objet = "?subject=" . "RDV Ping Compétition " . $this->getIdChampionnat()->getNom();
 
         if (!$this->getIdJournee()->getUndefined()){
             $objet .= ' - ';
@@ -716,17 +716,19 @@ class Rencontre
 
             $message .= "Vous avez rendez-vous à la ";
 
-            //TODO Gérer le hosted avec la ville d'hôte
-            if (!$this->isHosted() && $this->getDomicile()) $message .= "salle Albert Marquet à 19h45";
+            if ($this->getDomicile() && !$this->isHosted()) $message .= "salle Albert Marquet à 19h45";
             else $message .= "gare de La Frette à 19h30";
 
             $message .= " et nous jouerons";
-            if ($this->getDomicile() !== null) $message .= ($this->getDomicile() == true ? " à domicile" : " à l'extérieur");
+            if ($this->getDomicile() !== null){
+                $message .= ($this->getDomicile() && !$this->isHosted() ? " à domicile" : " à l'extérieur");
+                if ($this->isHosted()) $message .= " (" . ($this->getDomicile() ? "notre" : "leur") . " salle est indisponible, nous jouerons à " . $this->getVilleHost() . ")";
+            }
             else $message .= " à un lieu indéterminé";
 
-            $message .= " contre " . ($this->getAdversaire() ?: " une équipe indéterminée pour le moment");
+            $message .= " contre " . ($this->getAdversaire() . "." ?: " une équipe indéterminée pour le moment.");
 
-            $message .= ".%0D%0A%0D%0AMerci et à Vendredi !";
+            $message .= "%0D%0A%0D%0AMerci et à Vendredi !";
         }
 
         return $message;
@@ -746,7 +748,7 @@ class Rencontre
      */
     public function setVilleHost(?string $villeHost): self
     {
-        $this->villeHost = $villeHost;
+        $this->villeHost = mb_convert_case($villeHost, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 }
