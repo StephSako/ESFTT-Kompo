@@ -90,7 +90,6 @@ class DisponibiliteController extends AbstractController
         $journee = $dispoJoueur->getIdJournee()->getIdJournee();
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-        //TODO Faire à la main sans requête
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
             $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);

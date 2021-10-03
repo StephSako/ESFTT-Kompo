@@ -1,6 +1,5 @@
 BalloonEditor.create(
     document.querySelector('#editor'),
-    //TODO Intégrer l'insert d'images
     {
         heading: {
             options: [
