@@ -67,6 +67,12 @@
                                         <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
                                     </a>
                                 {% endif %}
+                                {% if selection %}
+                                    <h6 class="lobster_2 pastille reset" style="margin-top: 14px; background-color: #0c3a69;">
+                                        <i class="material-icons" style="vertical-align: text-top;">info</i>
+                                        <span> Vous êtes sélectionné en équipe {{ selection }}</span>
+                                    </h6>
+                                {% endif %}
                             {% else %}
                                 <h5>Êtes-vous disponible pour cette journée ?</h5>
                                 <div class="row">
