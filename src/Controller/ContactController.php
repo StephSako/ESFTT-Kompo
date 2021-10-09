@@ -106,7 +106,7 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/login/contact/forgotten_password", name="contact.reset.password")
+     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @return Response
      */

@@ -73,6 +73,18 @@ class Equipe
     private $idPoule;
 
     /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Le lienDivision(FFTT) doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=100, name="lien_division", nullable=true)
+     */
+    private $lienDivision;
+
+    /**
      * @var Collection
      *
      * Liste des rencontres de l'équipe
@@ -185,6 +197,24 @@ class Equipe
     public function setNumero(int $numero): self
     {
         $this->numero = $numero;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLienDivision(): ?string
+    {
+        return $this->lienDivision;
+    }
+
+    /**
+     * @param string|null $lienDivision
+     * @return Equipe
+     */
+    public function setLienDivision(?string $lienDivision): self
+    {
+        $this->lienDivision = $lienDivision;
         return $this;
     }
 }

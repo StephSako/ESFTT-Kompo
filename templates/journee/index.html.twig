@@ -11,6 +11,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
     </header>
 
     <div class="row main">
@@ -19,6 +20,7 @@
         </div>
 
         <div class="col s12 l7">
+            <div id="testDeLaReponse"></div>
             {% for message in app.flashes('success') %}
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
@@ -68,7 +70,7 @@
                                     </a>
                                 {% endif %}
                                 {% if selection %}
-                                    <h6 class="lobster_2 pastille reset" style="margin-top: 14px; background-color: #0c3a69;">
+                                    <h6 class="lobster_2 pastille reset" style="padding-top: 7px; margin-top: 14px; background-color: #0c3a69;">
                                         <i class="material-icons" style="vertical-align: text-top;">info</i>
                                         <span> Vous êtes sélectionné en équipe {{ selection }}</span>
                                     </h6>
@@ -185,6 +187,29 @@
                                         <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
                                     {% else %}
                                         <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
+                                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
+                                        <a class="blue waves-effect waves-light btn modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons">fast_rewind</i></a>
+
+                                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert">
+                                            <div class="modal-content">
+                                                <div id="joueursAdv{{ compo.idEquipe.numero }}">
+                                                    <div class="preloader-wrapper small active">
+                                                        <div class="spinner-layer spinner-blue-only">
+                                                            <div class="circle-clipper left">
+                                                                <div class="circle"></div>
+                                                            </div><div class="gap-patch">
+                                                                <div class="circle"></div>
+                                                            </div><div class="circle-clipper right">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>

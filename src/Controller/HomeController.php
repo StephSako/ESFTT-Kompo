@@ -13,7 +13,9 @@ use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -417,5 +419,65 @@ class HomeController extends AbstractController
             'HTMLContent' => $data,
             'type' => $type
         ]);
+    }
+
+    /**
+     * Renvoie un template des anciennes compositions d'équipe de l'adversaire des précédentes journées
+     * @Route("/journee/last_compos_adversaire", name="index.lastComposAdversaire", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    function getPreviousComposAdversaire(Request $request): JsonResponse {
+        $journees = [];
+        $erreur = null;
+        $nomAdversaire = null;
+
+        try {
+            /** On récupère les paramètres d'Ajax */
+            $nomAdversaire = mb_convert_case($request->request->get('nomAdversaire'), MB_CASE_UPPER, "UTF-8");
+            $lienDivision = $request->request->get('lienDivision');
+
+            /** Objet API */
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+
+            /** On récupère l'ensemble des matches (antèrieurs à aujourd'hui) de la poule de l'adversaire */
+            $rencontresPoules = array_filter($api->getRencontrePouleByLienDivision($lienDivision), function($renc) use($nomAdversaire) {
+                return (mb_convert_case($renc->getNomEquipeA(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire || mb_convert_case($renc->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire) && $renc->getDatePrevue() < new DateTime();
+            });
+
+            /** On récupère toutes les équipes de la poule pour extraire le numéro du club adversaire */
+            $equipesPoules = $api->getClassementPouleByLienDivision($lienDivision);
+            $numeroClubAdversaire = array_filter($equipesPoules, function($equ) use ($nomAdversaire) {
+                return $equ->getNomEquipe() == $nomAdversaire;
+            });
+            $numeroClubAdversaire = count($numeroClubAdversaire) == 1 ? $numeroClubAdversaire[array_key_first($numeroClubAdversaire)]->getNumero() : null;
+
+            foreach ($rencontresPoules as $rencontrePoule){
+                $journee = [];
+                $domicile = mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire;
+
+                /** On récupère le numéro du club adversaire .... de notre adversaire */
+                $nomAdversaireBis = $domicile ? mb_convert_case($rencontrePoule->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") : mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8");
+                $numeroClubAdversaireBis = array_filter($equipesPoules, function($equ) use ($nomAdversaireBis) {
+                    return $equ->getNomEquipe() == $nomAdversaireBis;
+                });
+                $numeroClubAdversaireBis = count($numeroClubAdversaireBis) == 1 ? $numeroClubAdversaireBis[array_key_first($numeroClubAdversaireBis)]->getNumero() : null;
+
+                /** On récupère les détails des rencontres  de l'adversaire pour extraire les joueurs alignés lors des précédentes journées */
+                $detailsRencontre = $api->getDetailsRencontreByLien($rencontrePoule->getLien(), $numeroClubAdversaire, $numeroClubAdversaireBis);
+                $joueursAdversaire = $domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
+                $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
+                $journee['joueurs'] = $joueursAdversaire;
+                array_push($journees, $journee);
+            }
+        } catch(Exception $exception) {
+            $erreur = 'Liste des joueurs alignés par l\'adversaire lors des journées précédentes non disponible';
+        }
+
+        return new JsonResponse($this->render('macros/lastComposAdversaire.html.twig', [
+            'journees' => $journees,
+            'erreur' => $erreur,
+            'nomAdversaire' => mb_convert_case($nomAdversaire, MB_CASE_TITLE, "UTF-8")
+        ])->getContent());
     }
 }

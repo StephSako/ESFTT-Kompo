@@ -141,6 +141,8 @@ class BackOfficeFFTTApiController extends AbstractController
                         $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[0][0] . $libelleDivisionEquipeFFTT[1][0];
                         $equipeIssued = [];
 
+                        // TODO Vérifier si le champ lienDivision dans Equipe est correct
+
                         /** L'équipe est recensée des 2 côtés */
                         if (!in_array($idEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))){
                             $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($idEquipeFFTT) {
@@ -228,9 +230,8 @@ class BackOfficeFFTTApiController extends AbstractController
                                     if (in_array($nbEquipe, $equipesIDsCommon)) {
                                         /** On fix les rencontres existantes des équipes existantes */
                                         if (($isExempt != $rencontresEquipeKompo[$i]->isExempt()) || (!$isExempt &&
-                                            (($domicile && $rencontresEquipeKompo[$i]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeB(), MB_CASE_TITLE, "UTF-8")) ||
-                                            (!$domicile && $rencontresEquipeKompo[$i]->getAdversaire() != mb_convert_case($rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8")) ||
-                                            ($domicile != $rencontresEquipeKompo[$i]->getDomicile())))) {
+                                            ($rencontresEquipeKompo[$i]->getAdversaire() != $rencontreTemp['adversaireFFTT']) ||
+                                            ($domicile != $rencontresEquipeKompo[$i]->getDomicile()))) {
 
                                             $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
                                             $rencontreTemp['recorded'] = true;

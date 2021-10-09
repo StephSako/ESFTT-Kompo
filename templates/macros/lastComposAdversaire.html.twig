@@ -1,0 +1,20 @@
+{% if erreur %}
+    <p class="pastille red white-text">{{ erreur }}</p>
+{% else %}
+    <h6>Joueurs alignés par {{ nomAdversaire }} lors des précédentes journées</h6>
+    {% for journee in journees %}
+        <p>Journéee {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
+        {% if journee.joueurs|length > 0 %}
+            <table>
+                {% for joueur in journee.joueurs %}
+                    <tr>
+                        <td>{{ joueur.nom }} {{ joueur.prenom }}</td>
+                        <td>{{ joueur.points ? joueur.points ~ ' pts' : "<i class='material-icons block grey-text text-lighten-2'>block</i>" }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h6 class="center">Liste des joueurs alignés non disponible</h6>
+        {% endif %}
+    {% endfor %}
+{% endif %}
