@@ -941,6 +941,11 @@ button.btn_renouveler_certif_mobile {
   span.badge-role {
     margin-top: 12px;
   }
+
+  table.table-last-compos td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
 
 @media screen and (max-width: 720px) {

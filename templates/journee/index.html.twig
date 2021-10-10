@@ -119,6 +119,8 @@
                     <div class="center card-panel">
                         <div class="row header_compo">
 
+                            <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
+
                             {% if compo.reporte and not journee.undefined %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                                 <i class="material-icons">update</i>
@@ -187,29 +189,7 @@
                                         <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
                                     {% else %}
                                         <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
-                                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
                                         <a class="blue waves-effect waves-light btn modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons">fast_rewind</i></a>
-
-                                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert">
-                                            <div class="modal-content">
-                                                <div id="joueursAdv{{ compo.idEquipe.numero }}">
-                                                    <div class="preloader-wrapper small active">
-                                                        <div class="spinner-layer spinner-blue-only">
-                                                            <div class="circle-clipper left">
-                                                                <div class="circle"></div>
-                                                            </div><div class="gap-patch">
-                                                                <div class="circle"></div>
-                                                            </div><div class="circle-clipper right">
-                                                                <div class="circle"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
-                                            </div>
-                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -223,6 +203,7 @@
                                             <h5 class="lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
                                         {% else %}
                                             <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
+                                            <a class="blue waves-effect waves-light btn modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons">fast_rewind</i></a>
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -259,6 +240,29 @@
                                 {% endif %}
                             </div>
                         {% endif %}
+                    </div>
+
+                    <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                        <div class="modal-content">
+                            <div id="joueursAdv{{ compo.idEquipe.numero }}">
+                                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                    <div class="preloader-wrapper small active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                            <div class="circle-clipper left">
+                                                <div class="circle"></div>
+                                            </div><div class="gap-patch">
+                                                <div class="circle"></div>
+                                            </div><div class="circle-clipper right">
+                                                <div class="circle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
+                        </div>
                     </div>
                 {% endfor %}
             {% else %}

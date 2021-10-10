@@ -464,10 +464,40 @@ class HomeController extends AbstractController
                 $numeroClubAdversaireBis = count($numeroClubAdversaireBis) == 1 ? $numeroClubAdversaireBis[array_key_first($numeroClubAdversaireBis)]->getNumero() : null;
 
                 /** On récupère les détails des rencontres  de l'adversaire pour extraire les joueurs alignés lors des précédentes journées */
-                $detailsRencontre = $api->getDetailsRencontreByLien($rencontrePoule->getLien(), $numeroClubAdversaire, $numeroClubAdversaireBis);
+                $detailsRencontre = $api->getDetailsRencontreByLien($rencontrePoule->getLien(), $domicile ? $numeroClubAdversaire : $numeroClubAdversaireBis, $domicile ? $numeroClubAdversaireBis : $numeroClubAdversaire);
                 $joueursAdversaire = $domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
+                $joueursAdversaireBis = !$domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
+                $joueursAdversaireFormatted = [];
+
+                $journee['dataResultat'] = $detailsRencontre->getParties();
+                $parties = $detailsRencontre->getParties();
+
+                /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires */
+                foreach ($joueursAdversaire as $joueurAdversaire) {
+                    if (count($joueursAdversaire)){
+                        $matches = array_filter($parties, function($partie) use ($joueurAdversaire, $domicile) {
+                            return $domicile ? $partie->getAdversaireA() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom() : $partie->getAdversaireB() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom();
+                        } );
+                        $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
+                            $score = $domicile ? $match->getScoreA() : $match->getScoreB();
+                            $nomJoueurAdversaireBis = !$domicile ? $match->getAdversaireA() : $match->getAdversaireB();
+
+                            $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
+                                return $joueurAdversaireBis->getNom() . ' ' . $joueurAdversaireBis->getPrenom() == $nomJoueurAdversaireBis;
+                            }));
+
+                            return [
+                                'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
+                                'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : null
+                            ];
+                        }, $matches);
+                        $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['points'] = $joueurAdversaire->getPoints();
+                        $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['resultats'] = $resultatMatches;
+                    }
+                }
+
                 $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
-                $journee['joueurs'] = $joueursAdversaire;
+                $journee['joueurs'] = $joueursAdversaireFormatted;
                 array_push($journees, $journee);
             }
         } catch(Exception $exception) {

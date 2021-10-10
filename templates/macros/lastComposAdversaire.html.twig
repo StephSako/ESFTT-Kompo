@@ -1,18 +1,27 @@
 {% if erreur %}
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
-    <h6>Joueurs alignés par {{ nomAdversaire }} lors des précédentes journées</h6>
+    <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
     {% for journee in journees %}
-        <p>Journéee {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
+        <p style="margin-top: 20px; margin-bottom: 8px" class="pastille blue reset">Journéee {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
         {% if journee.joueurs|length > 0 %}
-            <table>
-                {% for joueur in journee.joueurs %}
-                    <tr>
-                        <td>{{ joueur.nom }} {{ joueur.prenom }}</td>
-                        <td>{{ joueur.points ? joueur.points ~ ' pts' : "<i class='material-icons block grey-text text-lighten-2'>block</i>" }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+                <table class="responsive-table striped centered table-last-compos">
+                    {% for nom, donnees in journee.joueurs %}
+                        <tr>
+                            <td>{{ nom }}</td>
+                            <td>{% if donnees.points %}
+                                    <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
+                                {% else %}
+                                    <i class='material-icons block grey-text text-lighten-2'>block</i>
+                                {% endif %}
+                            <td>
+                                {% for resultat in donnees.resultats %}
+                                    <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
         {% else %}
             <h6 class="center">Liste des joueurs alignés non disponible</h6>
         {% endif %}
