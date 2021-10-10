@@ -769,6 +769,27 @@ button.btn_renouveler_certif_mobile {
   overflow-x: scroll;
 }
 
+.hide-on-med-and-up.adversaireLine h5.advUndefined {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.hide-on-med-and-up.adversaireLine h5.pastille {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.hide-on-med-and-up.adversaireLine div.advDefined div {
+  padding-left: 0;
+  padding-right: 6px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.hide-on-med-and-up.adversaireLine div.advDefined div:first-child h5 {
+  margin-top: 8px;
+}
+.hide-on-med-and-up.adversaireLine div.advDefined i.material-icons {
+  font-size: 1.5rem;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -834,6 +855,10 @@ button.btn_renouveler_certif_mobile {
   table.table-last-compos td {
     padding-top: 10px;
     padding-bottom: 10px;
+  }
+  table.table-last-compos tr {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 @media screen and (max-width: 720px) {

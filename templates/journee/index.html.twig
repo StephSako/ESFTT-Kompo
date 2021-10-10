@@ -183,30 +183,48 @@
 
                             <div class="col m5 hide-on-small-only">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 11px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                                    <h5 style="margin-top: 11px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
                                     {% if compo.adversaire is null %}
                                         <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
                                     {% else %}
-                                        <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
-                                        <a class="blue waves-effect waves-light btn modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons">fast_rewind</i></a>
+                                        <div class="row" style="margin-top: 12px">
+                                            <div class="col offset-s3" style="padding-left: 0; padding-right: 6px;">
+                                                <h5 class="lobster_2" style="margin-top: 3px">
+                                                    {{ compo.adversaire | title }}
+                                                </h5>
+                                            </div>
+                                            <div class="col" style="padding-left: 0; padding-right: 0;">
+                                                <a class="btn-small btn-floating blue lighten-1 waves-effect waves-light modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">history</i></a>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>
+                        </div>
 
-                            <div class="hide-on-med-and-up" style="margin-bottom: 0;">
-                                <div class="col s12{% if not compo.exempt %} m5{% endif%}">
-                                    {% if compo.exempt %}
-                                        <h5 style="margin-top: 0; margin-bottom: 10px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                        <div class="hide-on-med-and-up adversaireLine center">
+                            <div class="{% if not compo.exempt %}m5{% endif%}">
+                                {% if compo.exempt %}
+                                    <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
+                                {% else %}
+                                    {% if compo.adversaire is null %}
+                                        <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
                                     {% else %}
-                                        {% if compo.adversaire is null %}
-                                            <h5 class="lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
-                                        {% else %}
-                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
-                                            <a class="blue waves-effect waves-light btn modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons">fast_rewind</i></a>
-                                        {% endif %}
+                                        <div class="advDefined">
+                                            <div>
+                                                <h5 class="lobster_2">
+                                                    {{ compo.adversaire | title }}
+                                                </h5>
+                                            </div>
+                                            <div>
+                                                <a class="btn-small btn-floating blue lighten-1 waves-effect waves-light modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                    <i class="material-icons">history</i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     {% endif %}
-                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -244,7 +262,7 @@
 
                     <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
                         <div class="modal-content">
-                            <div id="joueursAdv{{ compo.idEquipe.numero }}">
+                            <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
                                 <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
                                     <div class="preloader-wrapper small active">
                                         <div class="spinner-layer spinner-blue-only">
