@@ -472,6 +472,11 @@ class HomeController extends AbstractController
                 $journee['dataResultat'] = $detailsRencontre->getParties();
                 $parties = $detailsRencontre->getParties();
 
+                /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
+                $errorMatchSheet = count(array_filter($joueursAdversaire, function($joueur) {
+                    return !$joueur->getLicence() || !$joueur->getPoints();
+                })) > 0;
+
                 /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires */
                 foreach ($joueursAdversaire as $joueurAdversaire) {
                     if (count($joueursAdversaire)){
@@ -498,6 +503,7 @@ class HomeController extends AbstractController
 
                 $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
                 $journee['joueurs'] = $joueursAdversaireFormatted;
+                $journee['errorMatchSheet'] = $errorMatchSheet;
                 array_push($journees, $journee);
             }
         } catch(Exception $exception) {
