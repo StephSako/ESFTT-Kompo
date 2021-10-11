@@ -23,8 +23,8 @@
 
         <div class='card-panel backoffice-panel center'>
 
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect waves-light blue lighten-1 btn_gestion'>Créer un compétiteur</a>
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect waves-light green btn_gestion'>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un compétiteur</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
                 <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
             </a>
 
@@ -126,7 +126,7 @@
                                     {% endif %}
                                 </td>
                                 <td style="padding-bottom: 0; padding-top: 0;">
-                                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect waves-light blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                                 </td>
                                 {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                     <td>
@@ -134,7 +134,7 @@
                                             <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
                                                 <input type='hidden' name='_method' value='DELETE'>
                                                 <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
-                                                <button class='btn waves-effect waves-light red lighten-2 btn_gestion'>
+                                                <button class='btn waves-effect red lighten-2 btn_gestion'>
                                                     <i class='material-icons'>delete</i>
                                                 </button>
                                             </form>

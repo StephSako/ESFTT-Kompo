@@ -60,7 +60,7 @@
 {%- endblock -%}
 
 {% block button_widget -%}
-    {% set attr = attr|merge({class: (attr.class|default('waves-effect waves-light') ~ ' btn')|trim}) %}
+    {% set attr = attr|merge({class: (attr.class|default('waves-effect') ~ ' btn')|trim}) %}
     {{- parent() -}}
 {%- endblock %}
 

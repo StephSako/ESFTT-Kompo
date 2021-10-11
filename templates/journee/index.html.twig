@@ -61,12 +61,12 @@
                                 {% if disponible == 1 %}
                                     <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                                     <a {% if selection %}onclick="return confirm('Vous serez désélectionné de l\'équipe {{ selection }}. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
+                                        <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Se déclarer indisponible</button>
                                     </a>
                                 {% elseif disponible == 0 %}
                                     <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                                     <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
+                                        <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Se déclarer disponible</button>
                                     </a>
                                 {% endif %}
                                 {% if selection %}
@@ -80,12 +80,12 @@
                                 <div class="row">
                                     <div class="col s6">
                                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
-                                            <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
+                                            <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Disponible</button>
                                         </a>
                                     </div>
                                     <div class="col s6">
                                         <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
-                                            <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
+                                            <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Indisponible</button>
                                         </a>
                                     </div>
                                 </div>
@@ -118,8 +118,6 @@
                 {% for compo in compos %}
                     <div class="center card-panel">
                         <div class="row header_compo">
-
-                            <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
 
                             {% if compo.reporte and not journee.undefined %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
@@ -195,7 +193,7 @@
                                                 </h5>
                                             </div>
                                             <div class="col" style="padding-left: 0; padding-right: 0;">
-                                                <a class="btn-small btn-floating blue lighten-1 waves-effect waves-light modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">history</i></a>
+                                                <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">history</i></a>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -203,6 +201,7 @@
                             </div>
                         </div>
 
+                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
                         <div class="hide-on-med-and-up adversaireLine center">
                             <div class="{% if not compo.exempt %}m5{% endif%}">
                                 {% if compo.exempt %}
@@ -218,7 +217,7 @@
                                                 </h5>
                                             </div>
                                             <div>
-                                                <a class="btn-small btn-floating blue lighten-1 waves-effect waves-light modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                                     <i class="material-icons">history</i>
                                                 </a>
                                             </div>
@@ -242,17 +241,17 @@
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect waves-light green lighten-2">
+                                <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
                                     <i class="material-icons">add_circle_outline</i>
                                 </a>
                                 {% if not compo.isEmpty %}
                                     {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
-                                        <a href="#modal{{ compo.id }}" class="center-align btn waves-effect waves-light blue lighten-2 modal-trigger">
+                                        <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                             <i class="material-icons">record_voice_over</i>
                                         </a>
                                         {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo}) }}
                                     {% endif %}
-                                    <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect waves-light red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
+                                    <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
                                         <i class="material-icons">delete</i>
                                     </a>
                                 {% endif %}
@@ -279,7 +278,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect waves-green btn-flat grey-text">Annuler</a>
+                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Annuler</a>
                         </div>
                     </div>
                 {% endfor %}

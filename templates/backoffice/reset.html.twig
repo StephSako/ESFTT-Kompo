@@ -75,7 +75,7 @@
                     {% if app.user.admin %}
                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les compétiteurs ?')">
                             <input type="hidden" name="resetPlayers" value="1">
-                            <button style="margin-top: 20px;" class='btn waves-effect waves-light green btn_gestion'>Mettre à jour</button>
+                            <button style="margin-top: 20px;" class='btn waves-effect green btn_gestion'>Mettre à jour</button>
                         </form>
                     {% endif %}
                 {% endif %}
@@ -152,7 +152,7 @@
                                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
                                             <input type="hidden" name="preRentreeResetChampionnats" value="1">
                                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                            <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
+                                            <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer la pré-rentrée</button>
 
                                             <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
                                                 <div class="preloader-wrapper small active">
@@ -387,7 +387,7 @@
                                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
                                             <input type="hidden" name="resetChampionnats" value="1">
                                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect waves-light green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
+                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
 
                                             <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
                                                 <div class="preloader-wrapper small active">

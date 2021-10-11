@@ -20,7 +20,7 @@
                     {% endif %}
 
                     {% for i, journee in journees %}
-                        <li class="waves-light waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
+                        <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ i+1 }} -
@@ -50,7 +50,7 @@
                         <ul id="menu_dropdown_champs" class="dropdown-content">
                             {% for championnatList in allChampionnats %}
                                 {% if championnat.idChampionnat != championnatList.idChampionnat %}
-                                    <li class="waves-light waves-effect li_in_line">
+                                    <li class="waves-effect li_in_line">
                                         <a class="white-text" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
                                             <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
                                         </a>
@@ -86,7 +86,7 @@
                             <ul>
                                 {% for championnatList in allChampionnats %}
                                     {% if championnat.idChampionnat != championnatList.idChampionnat %}
-                                        <li class="waves-light waves-effect li_in_line">
+                                        <li class="waves-effect li_in_line">
                                             <a class="white-text center" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
                                                 <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
                                             </a>

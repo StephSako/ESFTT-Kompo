@@ -7,7 +7,10 @@
 
 {% block body %}
 
-    {% include("components/navbar.html.twig") %}
+    <header>
+        {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
+    </header>
 
     <div class="row main">
         <div class="hide-on-large-only">
@@ -73,19 +76,32 @@
                 <h4 class="hide-on-small-only" style="margin-bottom: 15px; margin-top: 0;">Journée {{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
                 <h4 class="hide-on-med-and-up" style="margin-bottom: 15px; margin-top: 0;">J{{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
 
-                <div class="row header_compo">
-                    <div class="s12 col hide-on-med-and-up lobster_2">
+                <div class="hide-on-med-and-up adversaireLine center">
+                    <div class="{% if not compo.exempt %}m5{% endif%}">
                         {% if compo.exempt %}
-                            <h5 style="margin-top: 0; margin-bottom: 10px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                            <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
                         {% else %}
                             {% if compo.adversaire is null %}
-                                <h5 class="red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
+                                <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
                             {% else %}
-                                <h5 style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
+                                <div class="advDefined">
+                                    <div>
+                                        <h5 class="lobster_2">
+                                            {{ compo.adversaire | title }}
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                            <i class="material-icons">history</i>
+                                        </a>
+                                    </div>
+                                </div>
                             {% endif %}
                         {% endif %}
                     </div>
+                </div>
 
+                <div class="row header_compo">
                     <div class="col s4 m2">
                         <h5>
                             <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
@@ -121,18 +137,52 @@
                         {% endif %}
                     </h5>
 
-                    <div class="hide-on-small-only col m5">
+                    <div class="col m5 hide-on-small-only">
                         {% if compo.exempt %}
-                            <h5 style="margin-top: 11px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                            <h5 style="margin-top: 11px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                         {% else %}
                             {% if compo.adversaire is null %}
-                                <h5 class="red-text">Adversaire indéfini</h5>
+                                <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
                             {% else %}
-                                <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
+                                <div class="row" style="margin-top: 12px">
+                                    <div class="col offset-s3" style="padding-left: 0; padding-right: 6px;">
+                                        <h5 class="lobster_2" style="margin-top: 3px">
+                                            {{ compo.adversaire | title }}
+                                        </h5>
+                                    </div>
+                                    <div class="col" style="padding-left: 0; padding-right: 0;">
+                                        <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">history</i></a>
+                                    </div>
+                                </div>
                             {% endif %}
                         {% endif %}
                     </div>
                 </div>
+
+                <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
+                <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                    <div class="modal-content">
+                        <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                            <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                <div class="preloader-wrapper small active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect btn-flat grey-text">Annuler</a>
+                    </div>
+                </div>
+
                 {{ form_start(form)}}
                     <div class="form_div_list">
                         {% for i in 0..(nbJoueursDivision - 1) %}
@@ -146,8 +196,8 @@
                     </div>
                     <br>
                     <div id="btnsEditCompo" style="height: 38px;">
-                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
-                        <button class="btn btn_form waves-effect waves-light blue lighten-2" onclick="preloaderConfirm()">Confirmer</button><br>
+                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                        <button class="btn btn_form waves-effect blue lighten-2" onclick="preloaderConfirm()">Confirmer</button><br>
                     </div>
 
                     <div id="preloaderSetDispo" hidden style="height: 38px;">

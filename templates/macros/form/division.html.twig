@@ -31,8 +31,8 @@
                 </div>
 
                 <br>
-                <a href="{{ path('backoffice.divisions') }}" class="btn waves-effect waves-light grey btn_gestion">Annuler</a>
-                <button class="btn btn_form waves-effect waves-light light-blue darken-1">{{ btnText }}</button>
+                <a href="{{ path('backoffice.divisions') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <button class="btn btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
             {{ form_end(form) }}
         </div>
     {% else %}
@@ -40,7 +40,7 @@
             <p class="lobster_2 missingTitle">Le formulaire de division est inaccessible car aucun championnat n'est enregistré</p>
 
             <a href="{{ path('backoffice.divisions') }}">
-                <button class="btn waves-effect blue lighten-2 waves-light center">Retour aux divisions</button>
+                <button class="btn waves-effect blue lighten-2 center">Retour aux divisions</button>
             </a>
         </div>
     {% endif %}

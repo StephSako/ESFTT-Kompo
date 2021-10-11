@@ -53,7 +53,7 @@
                 </tbody>
             </table>
 
-            <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect waves-light blue center-align center" href="#{{ nomModal }}">Tout afficher</a>
+            <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect blue center-align center" href="#{{ nomModal }}">Tout afficher</a>
         </div>
     </div>
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
@@ -62,7 +62,7 @@
         </div>
         <div class="modal-footer">
             <h6 class="valign-wrapper left">Toutes les disponibilités</h6>
-            <a href="#!" class="modal-close btn waves-effect waves-light blue lighten-2">OK</a>
+            <a href="#!" class="modal-close btn waves-effect blue lighten-2">OK</a>
         </div>
     </div>
 {% endmacro %}
@@ -194,12 +194,12 @@
                                                     <div class="row" style="margin-bottom: 0;">
                                                         <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
                                                             <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispos.idCompetiteur, journee: dispos.idJournee, dispo: 1}) }}">
-                                                                <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
+                                                                <button class="btn waves-effect green lighten-2 btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
                                                             </a>
                                                         </div>
                                                         <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
                                                             <a href="{{ path('backoffice.disponibilite.new', {idCompetiteur: dispos.idCompetiteur, journee: dispos.idJournee, dispo: 0}) }}">
-                                                                <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
+                                                                <button class="btn waves-effect red lighten-2 btn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -208,12 +208,12 @@
                                                         <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
                                                         <a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')"
                                                            href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispos.idCompetiteur, idDispo: dispos.idDisponibilite, dispo: 0}) }}">
-                                                            <button class="btn waves-effect red lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer indisponible</button>
+                                                            <button class="btn waves-effect red lighten-2 btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                                         </a>
                                                     {% else %}
                                                         <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
                                                         <a href="{{ path('backoffice.disponibilite.update', {idCompetiteur: dispos.idCompetiteur, idDispo: dispos.idDisponibilite, dispo: 1}) }}">
-                                                            <button class="btn waves-effect green lighten-2 waves-light btn_gestion" type="submit" name="action">Déclarer disponible</button>
+                                                            <button class="btn waves-effect green lighten-2 btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                         </a>
                                                     {% endif %}
                                                 {% endif %}

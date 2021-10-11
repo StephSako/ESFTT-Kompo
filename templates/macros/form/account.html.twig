@@ -72,7 +72,7 @@
                                 {% endif %}
                                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                     {% if anneeCertificatMedical != null %}
-                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect waves-light green lighten-2 btn_gestion'>
+                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green lighten-2 btn_gestion'>
                                             Renouveler
                                         </a>
                                     {% else %}
@@ -177,7 +177,7 @@
 
                 <div class="avatarSectionDelete">
                     {% if urlImage %}
-                        <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect waves-light red lighten-2'
+                        <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
                             {% if type == 'backoffice' %}
                                 href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
                             {% else %}
@@ -194,12 +194,12 @@
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 
-            <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect waves-light grey">Annuler</a>
+            <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect grey">Annuler</a>
             <button
                 {% if editMode %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
-                class="btn waves-effect waves-light light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
+                class="btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>
         {{ form_end(form) }}
     </div>
@@ -239,7 +239,7 @@
                     <label for="new_password_validate">Saisir de nouveau</label>
                 </div>
             </div>
-            <br><button id="btnEditPassword" class="btn btn_form waves-effect waves-light light-blue darken-1" disabled>Modifier</button>
+            <br><button id="btnEditPassword" class="btn btn_form waves-effect light-blue darken-1" disabled>Modifier</button>
         </form>
     </div>
 

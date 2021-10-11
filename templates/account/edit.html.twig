@@ -13,14 +13,15 @@
 
 {% block body %}
 
-    {% if type == 'general' %}
-        {% include("components/navbar.html.twig") %}
-    {% elseif type == 'backoffice' %}
-        {% include("components/navbar_backoffice.html.twig") %}
-    {% endif %}
+    <header>
+        {% if type == 'general' %}
+            {% include("components/navbar.html.twig") %}
+        {% elseif type == 'backoffice' %}
+            {% include("components/navbar_backoffice.html.twig") %}
+        {% endif %}
+    </header>
 
     <div class="container">
-
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
         {% endfor %}

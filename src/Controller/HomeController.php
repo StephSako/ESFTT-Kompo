@@ -469,35 +469,38 @@ class HomeController extends AbstractController
                 $joueursAdversaireBis = !$domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
                 $joueursAdversaireFormatted = [];
 
-                $journee['dataResultat'] = $detailsRencontre->getParties();
-                $parties = $detailsRencontre->getParties();
-
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
                 $errorMatchSheet = count(array_filter($joueursAdversaire, function($joueur) {
                     return !$joueur->getLicence() || !$joueur->getPoints();
                 })) > 0;
 
-                /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires */
-                foreach ($joueursAdversaire as $joueurAdversaire) {
-                    if (count($joueursAdversaire)){
-                        $matches = array_filter($parties, function($partie) use ($joueurAdversaire, $domicile) {
-                            return $domicile ? $partie->getAdversaireA() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom() : $partie->getAdversaireB() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom();
-                        } );
-                        $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
-                            $score = $domicile ? $match->getScoreA() : $match->getScoreB();
-                            $nomJoueurAdversaireBis = !$domicile ? $match->getAdversaireA() : $match->getAdversaireB();
+                /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
+                if (!$errorMatchSheet){
+                    foreach ($joueursAdversaire as $joueurAdversaire) {
+                        if (count($joueursAdversaire)){
+                            /** Liste des parties des joueurs lors de la rencontre */
+                            $parties = $detailsRencontre->getParties();
+                            $matches = array_filter($parties, function($partie) use ($joueurAdversaire, $domicile) {
+                                return $domicile ? $partie->getAdversaireA() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom() : $partie->getAdversaireB() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom();
+                            } );
 
-                            $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
-                                return $joueurAdversaireBis->getNom() . ' ' . $joueurAdversaireBis->getPrenom() == $nomJoueurAdversaireBis;
-                            }));
+                            $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
+                                $score = $domicile ? $match->getScoreA() : $match->getScoreB();
+                                $nomJoueurAdversaireBis = !$domicile ? $match->getAdversaireA() : $match->getAdversaireB();
 
-                            return [
-                                'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
-                                'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : null
-                            ];
-                        }, $matches);
-                        $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['points'] = $joueurAdversaire->getPoints();
-                        $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['resultats'] = $resultatMatches;
+                                $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
+                                    return $joueurAdversaireBis->getNom() . ' ' . $joueurAdversaireBis->getPrenom() == $nomJoueurAdversaireBis;
+                                }));
+
+                                return [
+                                    'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
+                                    'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : null
+                                ];
+                            }, $matches);
+
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['points'] = $joueurAdversaire->getPoints();
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['resultats'] = $resultatMatches;
+                        }
                     }
                 }
 

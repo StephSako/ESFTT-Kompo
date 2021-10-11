@@ -5,7 +5,9 @@
 
 {% block body %}
 
-    {% include("components/navbar.html.twig") %}
+    <header>
+        {% include("components/navbar.html.twig") %}
+    </header>
 
     <div style="margin-top: 40px;" class="container">
         <div class="card-panel center-align">
@@ -39,7 +41,7 @@
                     </div>
                 </div>
 
-                <button class="btn waves-effect waves-light blue lighten-2"><i class="material-icons prefix">check</i> C'est parti !</button>
+                <button class="btn waves-effect blue lighten-2"><i class="material-icons prefix">check</i> C'est parti !</button>
             </form>
 
             <br><a href="{{ path('login.forgotten.password') }}">Mot de passe oublié</a>
