@@ -2,32 +2,36 @@
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
     <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
-    {% for journee in journees %}
-        <p style="margin-top: 20px; margin-bottom: 8px" class="pastille blue reset">Journée {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
-        {% if not journee.errorMatchSheet %}
-            {% if journee.joueurs|length > 0 %}
-                    <table class="responsive-table striped centered table-last-compos">
-                        {% for nom, donnees in journee.joueurs %}
-                            <tr>
-                                <td>{{ nom }}</td>
-                                <td>{% if donnees.points %}
-                                        <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
-                                    {% else %}
-                                        <i class='material-icons block grey-text text-lighten-2'>block</i>
-                                    {% endif %}
-                                <td>
-                                    {% for resultat in donnees.resultats %}
-                                        <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire }}</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+    {% if journees|length > 0 %}
+        {% for journee in journees %}
+            <p style="margin-top: 20px; margin-bottom: 8px" class="pastille blue reset">Journée {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
+            {% if not journee.errorMatchSheet %}
+                {% if journee.joueurs|length > 0 %}
+                        <table class="responsive-table striped centered table-last-compos">
+                            {% for nom, donnees in journee.joueurs %}
+                                <tr>
+                                    <td>{{ nom }}</td>
+                                    <td>{% if donnees.points %}
+                                            <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
+                                        {% else %}
+                                            <i class='material-icons block grey-text text-lighten-2'>block</i>
+                                        {% endif %}
+                                    <td>
+                                        {% for resultat in donnees.resultats %}
+                                            <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire }}</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                {% else %}
+                    <h6 class="center">Liste des joueurs alignés non disponible</h6>
+                {% endif %}
             {% else %}
-                <h6 class="center">Liste des joueurs alignés non disponible</h6>
+                <p style="margin: 0; border-radius: 5px;" class="pastille grey darken-5">Feuille de feuille erronée</p>
             {% endif %}
-        {% else %}
-            <p style="margin: 0; border-radius: 5px;" class="pastille grey darken-5">Feuille de feuille erronée</p>
-        {% endif %}
-    {% endfor %}
+        {% endfor %}
+    {% else %}
+        <h6 class="center pastille reset orange">Aucune rencontre n'est enregistrée pour le moment</h6>
+    {% endif %}
 {% endif %}

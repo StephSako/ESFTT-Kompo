@@ -201,7 +201,6 @@
                             </div>
                         </div>
 
-                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
                         <div class="hide-on-med-and-up adversaireLine center">
                             <div class="{% if not compo.exempt %}m5{% endif%}">
                                 {% if compo.exempt %}
@@ -259,6 +258,9 @@
                         {% endif %}
                     </div>
 
+                    {% if not compo.exempt and compo.adversaire is not null %}
+                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
+                    {% endif %}
                     <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
                         <div class="modal-content">
                             <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
