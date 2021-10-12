@@ -513,7 +513,7 @@ class HomeController extends AbstractController
             $erreur = 'Liste des joueurs alignés par l\'adversaire lors des journées précédentes non disponible';
         }
 
-        return new JsonResponse($this->render('macros/lastComposAdversaire.html.twig', [
+        return new JsonResponse($this->render('ajax/lastComposAdversaire.html.twig', [
             'journees' => $journees,
             'erreur' => $erreur,
             'nomAdversaire' => mb_convert_case($nomAdversaire, MB_CASE_TITLE, "UTF-8")
