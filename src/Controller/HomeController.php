@@ -431,6 +431,7 @@ class HomeController extends AbstractController
         $journees = [];
         $erreur = null;
         $nomAdversaire = null;
+        set_time_limit(intval($this->getParameter('time_limit_last_compos_ajax')));
 
         try {
             /** On récupère les paramètres d'Ajax */
