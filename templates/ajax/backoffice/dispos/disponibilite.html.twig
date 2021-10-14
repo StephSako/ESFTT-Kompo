@@ -1,0 +1,8 @@
+{% if disponibiliteBoolean == 1 %}
+    <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="green-text"><b>disponible</b></span></i></p>
+    <!--a onclick="return confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?')"-->
+    <button onclick="updateDisponibilite('{{ idCompetiteur }}', '{{ idDisponibilite }}', 0, '{{ idJournee }}')" class="btn waves-effect red lighten-2 btn_gestion" type="submit" name="action">Déclarer indisponible</button>
+{% else %}
+    <p style="margin-top: 0; margin-bottom: 0;"><i>Joueur <span class="red-text"><b>indisponible</b></span></i></p>
+    <button onclick="updateDisponibilite('{{ idCompetiteur }}', '{{ idDisponibilite }}', 1, '{{ idJournee }}')" class="btn waves-effect green lighten-2 btn_gestion" type="submit" name="action">Déclarer disponible</button>
+{% endif %}

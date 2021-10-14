@@ -12,6 +12,8 @@ use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -64,67 +66,84 @@ class BackOfficeDisponibiliteController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/disponibilites/new/{idCompetiteur}/{journee}/{dispo}", name="backoffice.disponibilite.new")
-     * @param int $journee
-     * @param int $dispo
-     * @param int $idCompetiteur
+     * @Route("/backoffice/disponibilites/new", name="backoffice.disponibilite.new", methods={"POST"})
+     * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, int $dispo, int $idCompetiteur):Response
+    public function new(Request $request):Response
     {
-        if (!($journee = $this->journeeRepository->find($journee))) {
-            $this->addFlash('fail', 'Journée inexistante');
-            return $this->redirectToRoute('backoffice.disponibilites');
-        }
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
-            $this->addFlash('fail', 'Compétiteur inexistant');
-            return $this->redirectToRoute('backoffice.disponibilites');
-        }
+        /** On récupère les paramètres */
+        $idJournee = $request->request->get('idJournee');
+        $disponibiliteBoolean = $request->request->get('disponibiliteBoolean');
+        $idCompetiteur = $request->request->get('idCompetiteur');
+        /** Message d'erreur */
 
         try {
-            $disponibilite = new Disponibilite($competiteur, $journee, $dispo, $journee->getIdChampionnat());
+            if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Journée inexistante', 1234);
+            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Compétiteur inexistant', 1234);
+
+            $disponibilite = new Disponibilite($competiteur, $journee, $disponibiliteBoolean, $journee->getIdChampionnat());
 
             $this->em->persist($disponibilite);
             $this->em->flush();
-            $this->addFlash('success', 'Disponibilité enregistrée');
+            $idDisponibilite = $disponibilite->getIdDisponibilite();
         } catch (Exception $e) {
-            $this->addFlash('warning', 'Disponibilité déjà renseignée pour cette journée');
+            $response = new Response(json_encode($e->getCode() == 1234 ? $e->getMessage() : 'Disponibilité déjà renseignée pour cette journée'), 400);
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+            //TODO throw error message en vérifiant le code dans $previous->getMessage()
         }
 
-        return $this->redirectToRoute('backoffice.disponibilites');
+        return new JsonResponse($this->render('ajax/backoffice/dispos/disponibilite.html.twig', [
+            'idJournee' => $journee->getIdJournee(),
+            'idCompetiteur' => $idCompetiteur,
+            'idDisponibilite' => $idDisponibilite,
+            'disponibiliteBoolean' => $disponibiliteBoolean,
+        ])->getContent());
     }
 
     /**
-     * @Route("/backoffice/disponibilites/update/{idCompetiteur}/{idDispo}/{dispo}", name="backoffice.disponibilite.update")
-     * @param int $idCompetiteur
-     * @param int $idDispo
-     * @param bool $dispo
+     * @Route("/backoffice/disponibilites/update", name="backoffice.disponibilite.update", methods={"POST"})
+     * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function update(int $idCompetiteur, int $idDispo, bool $dispo) : Response
+    public function update(Request $request):Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
-            $this->addFlash('fail', 'Compétiteur inexistant');
-            return $this->redirectToRoute('backoffice.disponibilites');
+        /** On récupère les paramètres */
+        $idDisponibilite = $request->request->get('idDisponibilite');
+        $disponibiliteBoolean = $request->request->get('disponibiliteBoolean');
+        $idCompetiteur = $request->request->get('idCompetiteur');
+        $idJournee = $request->request->get('idJournee');
+        /** Message d'erreur */
+        $message = null;
+
+        try {
+            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Compétiteur inexistant', 1234);
+            if (!($dispoJoueur = $this->disponibiliteRepository->find($idDisponibilite))) throw new Exception('Disponibilité inexistante', 1234);
+
+            $dispoJoueur->setDisponibilite($disponibiliteBoolean);
+
+            /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
+            if (!$disponibiliteBoolean){
+                $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
+                $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+            }
+
+            $this->em->flush();
+        } catch (Exception $e) {
+            $response = new Response(json_encode($e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite"), 400);
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
         }
 
-        if (!($dispoJoueur = $this->disponibiliteRepository->find($idDispo))) {
-            $this->addFlash('fail', 'Disponibilité inexistante');
-            return $this->redirectToRoute('backoffice.disponibilites');
-        }
-        $dispoJoueur->setDisponibilite($dispo);
-
-        /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-        if (!$dispo){
-            $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
-            $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
-        }
-
-        $this->em->flush();
-        $this->addFlash('success', 'Disponibilité modifiée');
-
-        return $this->redirectToRoute('backoffice.disponibilites');
+        return new JsonResponse($this->render('ajax/backoffice/dispos/disponibilite.html.twig', [
+            'message' => $message,
+            'idJournee' => $idJournee,
+            'idDisponibilite' => $idDisponibilite,
+            'idCompetiteur' => $idCompetiteur,
+            'disponibiliteBoolean' => $disponibiliteBoolean,
+        ])->getContent());
     }
 }
