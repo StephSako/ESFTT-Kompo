@@ -213,6 +213,19 @@
                                                         {% endif %}
                                                     {% endif %}
                                                 </div>
+                                                <div id="preloader{{ dispos.idJournee ~ dispos.idCompetiteur }}" style="display: none; align-items: center; justify-content: center;">
+                                                    <div class="preloader-wrapper small active">
+                                                        <div class="spinner-layer spinner-blue-only">
+                                                            <div class="circle-clipper left">
+                                                                <div class="circle"></div>
+                                                            </div><div class="gap-patch">
+                                                                <div class="circle"></div>
+                                                            </div><div class="circle-clipper right">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             {% else %}
                                                 {% if not dispos.licence and dispos.classement_officiel %}
                                                     <span class="red-text lighten-2">Licence indéfinie<br>

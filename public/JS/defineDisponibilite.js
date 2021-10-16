@@ -15,35 +15,37 @@ function newDisponibilite(idJournee, disponibiliteBoolean, idCompetiteur) {
 }
 
 function updateDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolean, idJournee) {
-    sending(idJournee + idCompetiteur);
-    $.ajax({
-        url : '/backoffice/disponibilites/update',
-        type : 'POST',
-        data: {
-            idDisponibilite: idDisponibilite,
-            disponibiliteBoolean: disponibiliteBoolean,
-            idCompetiteur: idCompetiteur,
-            idJournee: idJournee
-        },
-        dataType : 'json',
-        success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
-        error : function(error) { endSending(error, null, false); }
-    });
+    let r;
+    if (disponibiliteBoolean === 0) r = confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?');
+    if ((disponibiliteBoolean === 0 && r) || disponibiliteBoolean === 1){
+        sending(idJournee + idCompetiteur);
+        $.ajax({
+            url : '/backoffice/disponibilites/update',
+            type : 'POST',
+            data: {
+                idDisponibilite: idDisponibilite,
+                disponibiliteBoolean: disponibiliteBoolean,
+                idCompetiteur: idCompetiteur,
+                idJournee: idJournee
+            },
+            dataType : 'json',
+            success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
+            error : function(error) { endSending(error, null, false); }
+        });
+    }
 }
 
-function sending(divSuffixe){ //TODO Afficher le preloader
-    //$("#preloaderResetPassword").show();
+function sending(divSuffixe){
+    $('#preloader' + divSuffixe).show();
     $('#dispoJoueur' + divSuffixe).hide();
 }
 
-function endSending(response, divSuffixe, isSuccess){ //TODO Cacher le preloader
+function endSending(response, divSuffixe, isSuccess){
     if (!isSuccess) M.toast({html: response.responseJSON});
-    let buttonDiv = $('#dispoJoueur' + divSuffixe);
-    buttonDiv.show();
-    buttonDiv.html(response);
-
-    /*$("#preloaderResetPassword").hide();
-    $('#buttonsResetPassword').show();
-    $('#email').prop('disabled', false);
-    $('#username').prop('disabled', false);*/
+    else {
+        let buttonDiv = $('#dispoJoueur' + divSuffixe);
+        buttonDiv.show();
+        buttonDiv.html(response);
+    }
+    $('#preloader' + divSuffixe).hide();
 }
