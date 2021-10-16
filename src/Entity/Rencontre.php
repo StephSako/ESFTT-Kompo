@@ -695,13 +695,12 @@ class Rencontre
     /**
      * Retourne le message pour alerter les joueurs de leur sélection
      * @param string $prenomSender
-     * @param bool $isPhone
      * @return string
      */
-    public function getMessageAlertPlayers(string $prenomSender, bool $isPhone): string {
+    public function getMessageAlertPlayers(string $prenomSender): string {
         setlocale (LC_TIME, 'fr_FR.utf8','fra');
         date_default_timezone_set('Europe/Paris');
-        $br = $isPhone ? '%0D%0A' : '%0D%0A%0D%0A';
+        $br = '%0D%0A%0D%0A';
         $message = "&body=Salut, c'est " . $prenomSender . '.' .  $br;
         $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero();
 

@@ -8,7 +8,7 @@ function getLastComposAdversaire(nomAdversaire, lienDivision, numeroEquipe) {
         },
         dataType : 'json',
         success : function(responseTemplate) { templating(numeroEquipe, responseTemplate); },
-        error : function() { templating(numeroEquipe, "<p style='margin-top: 10px' class='pastille reset red'>Une erreur s'est produite ... réessayez plus tard <b>(prévenez le développeur le plus tôt possible si vous voyez ce message svp !)</b></p>"); }
+        error : function() { templating(numeroEquipe, "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des lenteurs ... réessayez plus tard</p>"); }
     });
 }
 
