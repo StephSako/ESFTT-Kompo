@@ -695,40 +695,41 @@ class Rencontre
     /**
      * Retourne le message pour alerter les joueurs de leur sélection
      * @param string $prenomSender
+     * @param bool $isPhone
      * @return string
      */
-    public function getMessageAlertPlayers(string $prenomSender): string {
+    public function getMessageAlertPlayers(string $prenomSender, bool $isPhone): string {
         setlocale (LC_TIME, 'fr_FR.utf8','fra');
         date_default_timezone_set('Europe/Paris');
-        $message = "&body=Salut, c'est " . $prenomSender . ".%0D%0A%0D%0A";
-        $message .= "Vous êtes sélectionnés en équipe " . $this->getIdEquipe()->getNumero();
+        $br = $isPhone ? '%0D%0A' : '%0D%0A%0D%0A';
+        $message = "&body=Salut, c'est " . $prenomSender . '.' .  $br;
+        $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero();
 
         if (!$this->getIdJournee()->getUndefined()){
-            $message .= " le ";
+            $message .= ' le ';
             if (!$this->isReporte()) $message .= $this->getIdJournee()->getDateJourneeFrench();
             else $message .= $this->getDateReportFrench();
-        } else $message .= " à une date indéterminée pour le moment";
+        } else $message .= ' à une date indéterminée pour le moment';
         $message .= ".";
 
-        if ($this->isExempt()) $message .=  "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date.%0D%0A%0D%0ABonne journée à vous.";
+        if ($this->isExempt()) $message .=  "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . 'Bonne journée à vous.';
         else {
-            $message .= "%0D%0A%0D%0ALes joueurs sélectionnés sont :%0D%0A" . implode("%0D%0A", array_map(function($joueur){return $joueur->getPrenom() . ' ' . $joueur->getNom();}, $this->getListSelectedPlayers())) . ".%0D%0A%0D%0A";
+            $message .= $br . 'Les joueurs sélectionnés sont :%0D%0A' . implode('%0D%0A', array_map(function($joueur){return $joueur->getPrenom() . ' ' . $joueur->getNom();}, $this->getListSelectedPlayers())) . $br;
 
-            $message .= "Vous avez rendez-vous à la ";
+            $message .= 'Vous avez rendez-vous à la ';
 
-            if ($this->getDomicile() && !$this->isHosted()) $message .= "salle Albert Marquet à 19h45";
-            else $message .= "gare de La Frette à 19h30";
+            if ($this->getDomicile() && !$this->isHosted()) $message .= 'salle Albert Marquet à 19h45';
+            else $message .= 'gare de La Frette à 19h30';
 
             $message .= " et nous jouerons";
             if ($this->getDomicile() !== null){
                 $message .= ($this->getDomicile() && !$this->isHosted() ? " à domicile" : " à l'extérieur");
-                if ($this->isHosted()) $message .= " (" . ($this->getDomicile() ? "notre" : "leur") . " salle est indisponible, nous jouerons à " . $this->getVilleHost() . ")";
             }
             else $message .= " à un lieu indéterminé";
 
-            $message .= " contre " . ($this->getAdversaire() . "." ?: " une équipe indéterminée pour le moment.");
+            $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->isHosted() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
-            $message .= "%0D%0A%0D%0AMerci et à Vendredi !";
+            $message .= '.' . $br .'A Vendredi !';
         }
 
         return $message;
