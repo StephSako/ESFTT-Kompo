@@ -481,6 +481,14 @@ form h5 {
   border-radius: 15px;
 }
 
+.virtualPointsDiv {
+  display: flex;
+  justify-content: space-evenly;
+}
+.virtualPointsDiv span {
+  width: 15%;
+}
+
 .exempt {
   margin-left: 50px;
   margin-right: 50px;

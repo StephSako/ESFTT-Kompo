@@ -200,6 +200,7 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -219,7 +220,8 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            'allDisponibilites' => $allDisponibilites
+            'allDisponibilites' => $allDisponibilites,
+            'virtualPoints' => $api->getVirtualPoints($this->getUser()->getLicence())
         ]);
     }
 

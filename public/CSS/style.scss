@@ -557,6 +557,15 @@ form {
   }
 }
 
+.virtualPointsDiv {
+  display: flex;
+  justify-content: space-evenly;
+
+  & span {
+    width: 15%;
+  }
+}
+
 .exempt {
   margin-left: 50px;
   margin-right: 50px;

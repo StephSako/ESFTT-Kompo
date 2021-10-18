@@ -42,16 +42,6 @@
                 {% endif %}
             </div>
 
-            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
-                <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
-                    <h5 class="white-text"><i class="material-icons">check_circle</i> Compositions complètes</h5>
-                </div>
-            {% else %}
-                <div class="hide-on-large-only center-align">
-                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
-                </div>
-            {% endif %}
-
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
                 {% if journeeStillEditable(journee, compos) %}
                     <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
@@ -70,9 +60,8 @@
                                     </a>
                                 {% endif %}
                                 {% if selection %}
-                                    <h6 class="lobster_2 pastille reset" style="padding-top: 7px; margin-top: 14px; background-color: #0c3a69;">
-                                        <i class="material-icons" style="vertical-align: text-top;">info</i>
-                                        <span> Vous êtes sélectionné en équipe {{ selection }}</span>
+                                    <h6 class="lobster_2 pastille reset" style="padding: 10px; margin-top: 14px; background-color: #0c3a69;">
+                                        Vous êtes sélectionné en équipe {{ selection }}
                                     </h6>
                                 {% endif %}
                             {% else %}
@@ -112,6 +101,17 @@
                         <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                     </div>
                 {% endif %}
+            {% endif %}
+
+            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
+                <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
+                    <h5 class="white-text"><i class="material-icons">check_circle</i> Compositions complètes</h5>
+                </div>
+            {% else %}
+                <div class="hide-on-large-only center-align">
+                    {{ _disponibilites.labelVirtualPoints(virtualPoints) }}
+                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
+                </div>
             {% endif %}
 
             {% if compos|length %}
@@ -301,7 +301,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length), virtualPoints) }}
                 </div>
             </li>
             <li>
@@ -319,7 +319,7 @@
         </ul>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length), virtualPoints) }}
         </div>
     </div>
 {% endblock %}
