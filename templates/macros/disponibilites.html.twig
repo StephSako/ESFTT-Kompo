@@ -1,6 +1,6 @@
 {% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos, virtualPoints) %}
     <div class="center-align">
-        {{ _self.labelVirtualPoints(virtualPoints) }}
+        {{ _self.labelVirtualPoints(virtualPoints, 'left') }}
         {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
         <div class="card-panel dispos">
@@ -68,14 +68,16 @@
     </div>
 {% endmacro %}
 
-{% macro labelVirtualPoints(virtualPoints) %}
+{% macro labelVirtualPoints(virtualPoints, tooltipPosition) %}
+
     <div class="card-panel bottom_0" style="padding: 5px 0;">
+        <div class="circle-pulse"></div>
         <div class="virtualPointsDiv">
-            <span style="width: 15%"></span>
-            <p style="margin-top: 0; margin-bottom: 0; background-color: #0c3a69;" class="lobster_2 pastille reset">Points virtuels</p>
-            <span style="width: 15%"><i style="vertical-align: text-top;" class="material-icons blue-text text-darken-1 tooltipped" data-position="left" data-tooltip="Classement virtuel en temps réèl">help_outline</i></span>
+            <span></span>
+            <h6 class="lobster_2"><b>Points en temps réel</b></h6>
+            <span><i class="material-icons blue-text text-darken-1 tooltipped" data-position="{{ tooltipPosition }}" data-tooltip="Classement virtuel en temps réel, mis à jour à l'instant où les rencontres sont saisies sur SPID">help_outline</i></span>
         </div>
-        <p style="margin-top: 4px; margin-bottom: 4px;">{{ virtualPoints.virtualPoints }} pts<span style="margin-left: 10px" class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon }}</span></p>
+        <p style="margin-top: 4px; margin-bottom: 4px;">{{ virtualPoints.virtualPoints | round(1, 'floor') }} pts<span style="margin-left: 10px" class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon | round(1, 'floor') }} pts</span></p>
     </div>
 {% endmacro %}
 

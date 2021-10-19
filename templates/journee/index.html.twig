@@ -109,7 +109,7 @@
                 </div>
             {% else %}
                 <div class="hide-on-large-only center-align">
-                    {{ _disponibilites.labelVirtualPoints(virtualPoints) }}
+                    {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top') }}
                     {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}
