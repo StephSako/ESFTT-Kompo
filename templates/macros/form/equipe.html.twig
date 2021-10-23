@@ -13,18 +13,18 @@
             {{ form_start(form) }}
                 <div class="row">
                     <div class="col s12 m4">
+                        <b>Numéro</b>
                         {% if btnText == 'Créer' %}
-                            <span>Numéro</span>{{ form_row(form.numero) }}
+                            {{ form_row(form.numero) }}
                         {% else %}
-                            <span>Numéro</span>
                             <p><b>{{ form.vars.value.numero }}</b></p>
                         {% endif %}
                     </div>
                     <div class="col s12 m4 {% if btnText != 'Modifier' %}form_div_list{% endif %}">
-                        <span>Division</span>{{ form_row(form.idDivision) }}
+                        <b>Division</b>{{ form_row(form.idDivision) }}
                     </div>
                     <div class="col s12 m4 form_div_list">
-                        <span>Poule</span>{{ form_row(form.idPoule) }}
+                        <b>Poule</b>{{ form_row(form.idPoule) }}
                     </div>
                 </div>
 

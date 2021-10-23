@@ -66,7 +66,7 @@
                     </span>
                 {% endif %}
 
-                {% if compo.hosted %}
+                {% if compo.villeHost %}
                     <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                             <i class="material-icons">error_outline</i>
                             <b>Salle indisponible : rencontre à {{ compo.villeHost }}</b>
@@ -130,8 +130,8 @@
                             {% if compo.domicile is null %}
                                 <i class='material-icons red-text'>location_off</i>
                             {% else %}
-                                {% if compo.domicile %} <i class="iconPlace {% if compo.hosted %}orange-text{% endif%} material-icons">home</i>
-                                {% else %} <i class="material-icons iconPlace{% if compo.hosted %} orange-text darken-4 {% endif%}">directions_car</i>
+                                {% if compo.domicile %} <i class="iconPlace {% if compo.villeHost %}orange-text{% endif%} material-icons">home</i>
+                                {% else %} <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
                                 {% endif %}
                             {% endif %}
                         {% endif %}

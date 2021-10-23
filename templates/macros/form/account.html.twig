@@ -10,18 +10,18 @@
                 <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <span><i class="material-icons prefix">person</i> NOM <span style="color: red">*</span></span>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                    <b><i class="material-icons prefix">person</i> NOM <span style="color: red">*</span></b>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <span><i class="material-icons prefix">person</i> Prénom <span style="color: red">*</span></span>{{ form_row(form.prenom) }}
+                    <b><i class="material-icons prefix">person</i> Prénom <span style="color: red">*</span></b>{{ form_row(form.prenom) }}
                 </div>
                 {% if options.usernameEditable %}
                     <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                        <span><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></span>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                        <b><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></b>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                     </div>
                 {% endif %}
                 <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
-                    <span><i class="material-icons prefix">today</i> Date de  naissance</span>
+                    <b><i class="material-icons prefix">today</i> Date de  naissance</b>
                     <div class="titlecase">
                         {{ form_row(form.dateNaissance) }}
                     </div>
@@ -98,7 +98,7 @@
                         <p><i><span style="color: red">*</span> Une adresse email minimum requise</i></p>
 
                         <div class="col s12 m6 offset-m3">
-                            <span><i class="material-icons prefix">mail</i> Adresse mail principale</span>{{ form_row(form.mail, {'id': 'i_mail'}) }}
+                            <b><i class="material-icons prefix">mail</i> Adresse mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                         </div>
                         <div class="col s12 m3 left-align">
                             {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
@@ -106,7 +106,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12 m6 offset-m3">
-                            <span><i class="material-icons prefix">mail</i> Adresse mail secondaire</span>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
+                            <b><i class="material-icons prefix">mail</i> Adresse mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                         </div>
                         <div class="col s12 m3 left-align">
                             {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
@@ -114,7 +114,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12 m6 offset-m3">
-                            <span><i class="material-icons prefix">smartphone</i> Téléphone principal</span>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
+                            <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                         </div>
                         <div class="col s12 m3 left-align">
                             {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
@@ -122,7 +122,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12 m6 offset-m3">
-                            <span><i class="material-icons prefix">smartphone</i> Téléphone secondaire</span>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
+                            <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                         </div>
                         <div class="col s12 m3 left-align">
                             {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
@@ -139,7 +139,7 @@
                     <h5 class="dark_blue">Informations Ping</h5>
 
                     <div class="col s12 m6">
-                        <p><i class="material-icons prefix">payment</i> N° licence</p>
+                        <p><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
                         {% else %}
@@ -151,7 +151,7 @@
                         {% endif %}
                     </div>
                     <div class="col s12 m6">
-                        <p><i class="material-icons prefix">trending_up</i> Classement officiel</p>
+                        <p><b><i class="material-icons prefix">trending_up</i> Classement officiel</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}
                         {% else %}

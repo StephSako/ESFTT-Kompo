@@ -221,7 +221,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $api->getVirtualPoints($this->getUser()->getLicence())
+            'virtualPoints' => $api->getVirtualPoints($this->getUser()->getLicence())//'9536512'
         ]);
     }
 

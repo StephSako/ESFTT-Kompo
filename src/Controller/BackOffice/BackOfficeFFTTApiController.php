@@ -244,7 +244,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                         $rencontreToCreate
                                             ->setIdJournee($journeesKompo[$i])
                                             ->setDomicile($domicile)
-                                            ->setHosted(false)
+                                            ->setVilleHost(false)
                                             ->setDateReport($journeesKompo[$i]->getDateJournee())
                                             ->setReporte(false)
                                             ->setAdversaire($adversaire)
@@ -261,7 +261,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $rencontreKompo = new Rencontre($championnatActif);
                                     $rencontreKompo
                                         ->setDomicile($domicile)
-                                        ->setHosted(false)
+                                        ->setVilleHost(false)
                                         ->setReporte(false)
                                         ->setAdversaire($adversaire)
                                         ->setExempt($isExempt);
@@ -322,7 +322,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         return !$compoToTestEmpty->getIsEmpty();
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetRencontres"] = array_filter($preRentreeRencontres, function($rencToTestEmpty) {
-                        return $rencToTestEmpty->getAdversaire() || $rencToTestEmpty->getDomicile() || $rencToTestEmpty->isHosted() || $rencToTestEmpty->isReporte();
+                        return $rencToTestEmpty->getAdversaire() || $rencToTestEmpty->getDomicile() || $rencToTestEmpty->isVilleHost() || $rencToTestEmpty->isReporte();
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetEquipes"] = array_filter($championnatActif->getEquipes()->toArray(), function($eqToTestEmpty) {
                         return $eqToTestEmpty->getIdPoule() || $eqToTestEmpty->getIdDivision();
@@ -437,7 +437,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontresParEquipe['rencontre']
                                     ->setAdversaire($rencontresParEquipe['adversaireFFTT'])
                                     ->setDomicile($rencontresParEquipe['domicileFFTT'])
-                                    ->setHosted(false)
+                                    ->setVilleHost(false)
                                     ->setExempt($rencontresParEquipe['exempt'])
                                     ->setReporte(false)
                                     ->setDateReport($rencontresParEquipe['dateReelle']);

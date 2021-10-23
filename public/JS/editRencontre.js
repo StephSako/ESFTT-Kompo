@@ -4,7 +4,6 @@ $(document).ready(function () {
     let span_exterieur = $('#exterieur');
     let exempt = $('#exempt');
     let adversaire = $('#adversaire');
-    let hosted = $('#hosted');
     let ville_host = $('#ville_host');
     let reported = $('#reporte');
 
@@ -19,18 +18,12 @@ $(document).ready(function () {
 
     if (!reported.is(':checked')) $('.select-dropdown').prop('disabled', true);
 
-    if (!hosted.is(':checked')){
-        ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
-        ville_host.prop('disabled', true);
-    }
-
     if (exempt.is(':checked')) {
         reported.prop('disabled', true);
         adversaire.val("").attr('placeholder', "Pas d'adversaire");
         adversaire.prop('disabled', true);
         lieu_rencontre.prop('disabled', true);
-        hosted.prop('disabled', true);
-        ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
+        ville_host.val("").attr('placeholder', "Pas de délocalisation");
         ville_host.prop('disabled', true);
         span_domicile.css("font-weight", "normal");
         span_exterieur.css("font-weight", "normal");
@@ -43,10 +36,9 @@ $(document).ready(function () {
         if (this.checked) {
             reported.prop('checked', false).prop('disabled', true);
             lieu_rencontre.prop('checked', false).prop('disabled', true);
-            hosted.prop('checked', false).prop('disabled', true);
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
             adversaire.prop('disabled', true);
-            ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
+            ville_host.val("").attr('placeholder', "Pas de délocalisation");
             ville_host.prop('disabled', true);
             span_domicile.css("font-weight", "normal");
             span_exterieur.css("font-weight", "normal");
@@ -54,11 +46,10 @@ $(document).ready(function () {
             span_exterieur.css("color", "#a4a2a2");
             reported.prop('disabled', true);
         } else {
-            hosted.prop('checked', false).prop('disabled', false);
             adversaire.attr('placeholder', "Adversaire");
             adversaire.prop('disabled', false);
-            ville_host.attr('placeholder', "Pas de ville de remplacement");
-            ville_host.prop('disabled', true);
+            ville_host.attr('placeholder', "Pas de délocalisation");
+            ville_host.prop('disabled', false);
             lieu_rencontre.prop('disabled', false);
             span_domicile.css("font-weight", "bold");
             span_domicile.css("color", "#000000");
@@ -79,16 +70,6 @@ $(document).ready(function () {
         } else {
             span_domicile.css("font-weight", "bold");
             span_exterieur.css("font-weight", "normal");
-        }
-    });
-
-    hosted.change(function () {
-        if (this.checked) {
-            ville_host.attr('placeholder', "Ville de remplacement");
-            ville_host.prop('disabled', false);
-        } else {
-            ville_host.val("").attr('placeholder', "Pas de ville de remplacement");
-            ville_host.prop('disabled', true);
         }
     });
 });

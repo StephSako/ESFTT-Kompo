@@ -4,16 +4,8 @@
         {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
         <div class="card-panel dispos">
+            <h5>Les dispos</h5>
             <table class="striped">
-                <thead>
-                    <tr>
-                        <th class="center">
-                            <h5 class="center">Les dispos</h5>
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-
                 <tbody>
                 {% for dispo in dispos %}
                     <tr>

@@ -161,13 +161,6 @@ class Rencontre
     private $domicile;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="hosted", type="boolean", nullable=false)
-     */
-    private $hosted;
-
-    /**
      * @var string|null
      *
      * @Assert\Length(
@@ -527,24 +520,6 @@ class Rencontre
     /**
      * @return bool
      */
-    public function isHosted(): bool
-    {
-        return $this->hosted;
-    }
-
-    /**
-     * @param bool $hosted
-     * @return Rencontre
-     */
-    public function setHosted(bool $hosted): self
-    {
-        $this->hosted = $hosted;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isExempt(): bool
     {
         return $this->exempt;
@@ -717,16 +692,16 @@ class Rencontre
 
             $message .= 'Vous avez rendez-vous à la ';
 
-            if ($this->getDomicile() && !$this->isHosted()) $message .= 'salle Albert Marquet à 19h45';
+            if ($this->getDomicile() && !$this->getVilleHost()) $message .= 'salle Albert Marquet à 19h45';
             else $message .= 'gare de La Frette à 19h30';
 
             $message .= " et nous jouerons";
             if ($this->getDomicile() !== null){
-                $message .= ($this->getDomicile() && !$this->isHosted() ? " à domicile" : " à l'extérieur");
+                $message .= ($this->getDomicile() && !$this->getVilleHost() ? " à domicile" : " à l'extérieur");
             }
             else $message .= " à un lieu indéterminé";
 
-            $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->isHosted() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
+            $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
             $message .= '.' . $br .'A Vendredi !';
         }

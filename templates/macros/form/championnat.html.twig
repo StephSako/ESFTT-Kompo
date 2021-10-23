@@ -11,29 +11,29 @@
         {{ form_start(form) }}
             <div class="row">
                 <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">short_text</i> Nom</span>
+                    <b><i class="material-icons prefix">short_text</i> Nom</b>
                     {{ form_row(form.nom) }}
                 </div>
 
                 <div class="col s12 m6 l3">
-                    <span><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</span>
+                    <b><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</b>
                     {{ form_row(form.limiteBrulage) }}
                 </div>
 
                 <div class="col s12 m6 l3">
-                    <span><i class="material-icons prefix">date_range</i> Nombre de journées</span>
+                    <b><i class="material-icons prefix">date_range</i> Nombre de journées</b>
                     {{ form_row(form.nbJournees, {'id': 'i_nb_journees'}) }}
                 </div>
 
                 <div class="col s12 m6 l3 form_div_list">
-                    <span><i class="material-icons prefix ">star</i> Championnat</span>
+                    <b><i class="material-icons prefix ">star</i> Championnat</b>
                     {{ form_row(form.lienFfttApi) }}
                 </div>
             </div>
 
             <div class="row" style="margin-bottom: 0">
                 <div class="col s12">
-                    <span>Règle du brûlage de la J2 appliquée ?</span><br>
+                    <b>Règle du brûlage de la J2 appliquée ?</b><br>
                     <div style="margin-top: 15px;">{{ form_row(form.j2Rule, {'id': 'cb_regle_j2'}) }}</div>
                 </div>
             </div>

@@ -74,14 +74,9 @@ class RencontreType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'attr' => [
-                        'maxlength' => 50,
-                        'placeholder' => 'Adversaire + n° équipe'
+                        'maxlength' => 50
                     ]]
                 )
-                ->add('hosted', CheckboxType::class,[
-                    'label' => 'Salle hôte indisponible',
-                    'required' => false
-                ])
                 ->add('reporte', CheckboxType::class,[
                     'label' => 'Match avancé/reporté',
                     'required' => false
@@ -99,7 +94,7 @@ class RencontreType extends AbstractType
                     'required' => false,
                     'attr' => [
                         'maxlength' => 200,
-                        'placeholder' => 'Ville de remplacement'
+                        'placeholder' => 'Pas de délocalisation'
                     ]
                 ]);
         }

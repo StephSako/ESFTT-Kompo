@@ -170,7 +170,7 @@ class RencontreRepository extends ServiceEntityRepository
             ->set('r.reporte', false)
             ->set('r.dateReport', 'j.dateJournee')
             ->set('r.domicile', null)
-            ->set('r.hosted', false)
+            ->set('r.villeHost', false)
             ->set('r.exempt', false)
             ->set('r.adversaire', null)
             ->leftJoin('r.idJournee', 'j')
