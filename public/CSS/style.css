@@ -861,6 +861,15 @@ button.btn_renouveler_certif_mobile {
   font-size: 1.5rem;
 }
 
+table.table-last-compos td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+table.table-last-compos tr {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -922,15 +931,6 @@ button.btn_renouveler_certif_mobile {
   span.badge-role {
     margin-top: 12px;
   }
-
-  table.table-last-compos td {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  table.table-last-compos tr {
-    padding-left: 0;
-    padding-right: 0;
-  }
 }
 @media screen and (max-width: 720px) {
   .modal.modal-alert {
@@ -967,6 +967,14 @@ button.btn_renouveler_certif_mobile {
 @media screen and (max-width: 500px) {
   #settings-form {
     margin-left: 15px;
+  }
+}
+@media screen and (max-width: 460px) {
+  table.table-last-compos {
+    font-size: 85%;
+  }
+  table.table-last-compos td {
+    padding: 10px 0;
   }
 }
 @media screen and (max-width: 324px) {

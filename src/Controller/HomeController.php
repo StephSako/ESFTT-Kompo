@@ -221,7 +221,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $api->getVirtualPoints($this->getUser()->getLicence())//'9536512'
+            'virtualPoints' => $api->getJoueurVirtualPoints($this->getUser()->getLicence()) //9536512 7523490 9536212
         ]);
     }
 
@@ -501,8 +501,8 @@ class HomeController extends AbstractController
                                 ];
                             }, $matches);
 
-                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['points'] = $joueurAdversaire->getPoints();
-                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()]['resultats'] = $resultatMatches;
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom()]['points'] = $joueurAdversaire->getPoints();
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom()]['resultats'] = $resultatMatches;
                         }
                     }
                 }

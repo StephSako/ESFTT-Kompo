@@ -7,10 +7,10 @@
             <p style="margin-top: 20px; margin-bottom: 8px" class="pastille blue reset">Journée {{ loop.index }} contre {{ journee.nomAdversaireBis }}</p>
             {% if not journee.errorMatchSheet %}
                 {% if journee.joueurs|length > 0 %}
-                        <table class="responsive-table striped centered table-last-compos">
+                        <table class="striped centered table-last-compos">
                             {% for nom, donnees in journee.joueurs %}
                                 <tr>
-                                    <td>{{ nom }}</td>
+                                    <td style="max-width: 100px" class="tdShowedInPhone"><span class="truncate">{{ nom }}</span></td>
                                     <td>{% if donnees.points %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
                                         {% else %}
