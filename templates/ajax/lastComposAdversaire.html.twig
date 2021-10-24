@@ -10,7 +10,7 @@
                         <table class="striped centered table-last-compos">
                             {% for nom, donnees in journee.joueurs %}
                                 <tr>
-                                    <td style="max-width: 100px" class="tdShowedInPhone"><span class="truncate">{{ nom }}</span></td>
+                                    <td style="max-width: 50px" class="tdShowedInPhone"><span class="truncate">{{ nom }}</span></td>
                                     <td>{% if donnees.points %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
                                         {% else %}
