@@ -221,7 +221,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $api->getJoueurVirtualPoints($this->getUser()->getLicence()) //9536512 7523490 9536212
+            'virtualPoints' => $api->getJoueurVirtualPoints($this->getUser()->getLicence())
         ]);
     }
 
@@ -479,10 +479,10 @@ class HomeController extends AbstractController
 
                 /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
                 if (!$errorMatchSheet){
+                    /** Liste des parties des joueurs lors de la rencontre */
+                    $parties = $detailsRencontre->getParties();
                     foreach ($joueursAdversaire as $joueurAdversaire) {
                         if (count($joueursAdversaire)){
-                            /** Liste des parties des joueurs lors de la rencontre */
-                            $parties = $detailsRencontre->getParties();
                             $matches = array_filter($parties, function($partie) use ($joueurAdversaire, $domicile) {
                                 return $domicile ? $partie->getAdversaireA() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom() : $partie->getAdversaireB() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom();
                             } );
@@ -497,7 +497,7 @@ class HomeController extends AbstractController
 
                                 return [
                                     'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
-                                    'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : null
+                                    'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
                                 ];
                             }, $matches);
 

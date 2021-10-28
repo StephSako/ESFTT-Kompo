@@ -18,7 +18,7 @@
                                         {% endif %}
                                     <td>
                                         {% for resultat in donnees.resultats %}
-                                            <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire }}</span>
+                                            <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire | raw }}</span>
                                         {% endfor %}
                                     </td>
                                 </tr>
