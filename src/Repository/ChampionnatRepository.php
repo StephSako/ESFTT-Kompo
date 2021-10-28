@@ -61,6 +61,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->select('e.idEquipe')
             ->addSelect('e.numero')
             ->addSelect('p.poule')
+            ->addSelect('e.lienDivision')
             ->addSelect('d.shortName as divShortName')
             ->addSelect('c.nom')
             ->leftJoin('c.equipes', 'e')

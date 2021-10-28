@@ -253,6 +253,7 @@
                                                 <th>Numéro</th>
                                                 <th>Division</th>
                                                 <th>Poule</th>
+                                                <th>Liaison à la FFTT</th>
                                             </tr>
                                         </thead>
 
@@ -269,6 +270,10 @@
                                                         <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption=>Poule indéfinie</span>" }}</span>
                                                         {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
                                                     </td>
+                                                    <td>
+                                                        <span {% if not equipe.sameLienDivision %}class="red-text" {% endif %}>{{ equipe.equipe.lienDivision ? "<i class='material-icons orange-text'>update</i>" : "<i class='material-icons red-text'>phonelink_erase</i>" }}</span>
+                                                        {% if not equipe.sameLienDivision and not equipe.equipe.lienDivision %}<i class="material-icons black-text">arrow_forward</i><i class='material-icons green-text'>phonelink_ring</i>{% endif %}
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
 
@@ -282,6 +287,7 @@
                                                     <td>
                                                         {{ equipe.poule }}
                                                     </td>
+                                                    <td><i class='material-icons green-text'>phonelink_ring</i></td>
                                                 </tr>
                                             {% endfor %}
 
@@ -299,6 +305,7 @@
                                                     <td>
                                                         {{ equipe.idPoule.poule }}
                                                     </td>
+                                                    <td><i class='material-icons black-text'>phonelink_ring</i></td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -387,7 +394,7 @@
                                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
                                             <input type="hidden" name="resetChampionnats" value="1">
                                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer le championnat</button>
+                                            <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Mettre à jour</button>
 
                                             <div id="preloaderResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
                                                 <div class="preloader-wrapper small active">

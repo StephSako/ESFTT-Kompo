@@ -6,6 +6,7 @@
                     <th>N°</th>
                     <th>Division</th>
                     <th>Poule</th>
+                    <th>Liée à la FFTT</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -29,6 +30,11 @@
                                 {{ equipe.poule }}
                             {% else %}
                                 <span class="red-text lighten-2">Poule indéfinie</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if equipe.lienDivision %} <i class='material-icons green-text'>phonelink_ring</i>
+                            {% else %} <i class='material-icons red-text'>phonelink_erase</i>
                             {% endif %}
                         </td>
                         <td>
