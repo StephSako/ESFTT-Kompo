@@ -33,6 +33,15 @@ class BackOfficeFFTTApiController extends AbstractController
     private $divisionRepository;
     private $pouleRepository;
 
+    /** Position des données dans les chaînes de caractères reçues de l'API */
+    const JOURNEE_LABEL= 4;
+    const JOURNEE_NUMBER = 1;
+    const ORGANISME_PERE_LABEL = 1;
+    const ORGANISME_PERE_NUMBER = 2;
+    const DIVISION_PARTIE_UN = 0;
+    const DIVISION_PARTIE_DEUX = 1;
+    const POULE = 1;
+
     /**
      * ContactController constructor.
      */
@@ -102,7 +111,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 /** Gestion des équipes */
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
                 $equipesFFTT = array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
-                    $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[2])[1];
+                    $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[self::ORGANISME_PERE_NUMBER])[self::ORGANISME_PERE_LABEL];
                     return $organisme_pere == $championnatActif->getLienFfttApi();
                 });
 
@@ -137,8 +146,8 @@ class BackOfficeFFTTApiController extends AbstractController
                         $idEquipeFFTT = $index + 1;
                         $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
                         $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
-                        $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[0] . ' ' . $libelleDivisionEquipeFFTT[1], MB_CASE_TITLE, "UTF-8");
-                        $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[0][0] . $libelleDivisionEquipeFFTT[1][0];
+                        $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX], MB_CASE_TITLE, "UTF-8");
+                        $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN][0] . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX][0];
                         $equipeIssued = [];
 
                         /** L'équipe est recensée des 2 côtés */
@@ -189,9 +198,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     foreach ($equipesFFTT as $index => $equipe){
                         $nbEquipe = $index + 1;
 
-                        //TODO: Bug les rencontres de l'équipe 2 en sont pas créées lors de la validation
-                        dump(implode($equipesToCreateIDs, ',') . ' ' . implode($equipesIDsCommon, ',') . ' ' . implode(array_merge($equipesIDsCommon, $equipesToCreateIDs), ','));
-
                         if (in_array($nbEquipe, array_merge($equipesIDsCommon, $equipesToCreateIDs))) {
 
                             $rencontresFFTT = array_values(array_filter($api->getRencontrePouleByLienDivision($equipe->getLienDivision()), function ($rencontre) {
@@ -225,7 +231,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontreTemp = [];
                                 $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                 $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                $rencontreTemp['journee'] = explode(' ', $rencontre->getLibelle())[6];
+                                $rencontreTemp['journee'] = explode('?', explode(' ', $rencontre->getLibelle())[self::JOURNEE_LABEL])[self::JOURNEE_NUMBER];
                                 $rencontreTemp['adversaireFFTT'] = $adversaire;
                                 $rencontreTemp['exempt'] = $isExempt;
                                 $rencontreTemp['domicileFFTT'] = $domicile;
@@ -242,7 +248,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             $rencontreTemp['recorded'] = true;
                                             array_push($rencontresParEquipes, $rencontreTemp);
                                         }
-                                    } else if (in_array($nbEquipe, $equipesToCreateIDs)) { //TODO: See here
+                                    } else if (in_array($nbEquipe, $equipesToCreateIDs)) {
                                         /** On créé les nouvelles rencontres des nouvelles équipes */
                                         /** L'équipe sera associée à ses rencontres à la création */
                                         $rencontreToCreate = new Rencontre($championnatActif);
@@ -410,7 +416,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             $equipeIssued['equipe']
                                 ->setLienDivision($equipeIssued['lienDivision'])
                                 ->setIdDivision($arrayDivisionPoule[0])
-                                ->setIdPoule($arrayDivisionPoule[1]);
+                                ->setIdPoule($arrayDivisionPoule[self::POULE]);
                         }
                         $this->em->refresh($championnat);
 
@@ -425,7 +431,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat);
 
                             $newEquipe = new \App\Entity\Equipe();
-                            $newEquipe->setIdPoule($arrayDivisionPoule[1]);
+                            $newEquipe->setIdPoule($arrayDivisionPoule[self::POULE]);
                             $newEquipe->setNumero($numero);
                             $newEquipe->setIdChampionnat($championnat);
                             $newEquipe->setIdDivision($arrayDivisionPoule[0]);
@@ -472,7 +478,6 @@ class BackOfficeFFTTApiController extends AbstractController
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch(Exception $exception) {
-            dump($exception);
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }

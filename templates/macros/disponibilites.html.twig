@@ -67,7 +67,7 @@
         <div class="virtualPointsDiv">
             <span></span>
             <h6 class="lobster_2"><b>Points virtuels en live</b></h6>
-            <span><i class="material-icons blue-text text-darken-1 tooltipped" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculé dès que les rencontres sont saisies sur SPID">help_outline</i></span>
+            <span><i class="material-icons blue-text text-darken-1 tooltipped" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés dès que les rencontres sont saisies sur SPID">help_outline</i></span>
         </div>
         <p style="margin-top: 4px; margin-bottom: 4px;">{{ virtualPoints.virtualPoints | round(1, 'floor') }} pts<span style="margin-left: 10px" class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon | round(1, 'floor') }} pts</span></p>
     </div>
