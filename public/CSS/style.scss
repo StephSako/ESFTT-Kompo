@@ -186,6 +186,16 @@ i.iconPlace {
   color: $dark_blue;
 }
 
+.setDispoCard {
+  padding-top: 10px;
+  padding-bottom: 14px;
+
+  h5.unsetTitle {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
 .nav-extended, .sidenav, .title_journee {
   background: $dark_blue;
 }
@@ -578,6 +588,13 @@ form {
   }
 }
 
+p.virtualPoints {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .tooltipped {
   cursor: pointer;
 }
@@ -596,17 +613,17 @@ form {
     height: 250%;
     box-sizing: border-box;
     margin-left: -75%;
-    margin-top: -75%;
+    margin-top: -125%;
     border-radius: 45px;
     background-color: red;
     animation: pulse 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
-    top: 0;
+    top: -7px;
     display: block;
     width: 100%;
     height: 100%;
@@ -986,6 +1003,30 @@ table.table-last-compos {
   }
 }
 
+.virtualPointsCard {
+  padding: 5px 0;
+  margin-bottom: 10px;
+
+  p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+
+    span:first-child {
+      background-color: #0c3a69;
+    }
+
+    span:last-child {
+      padding: 0;
+      margin-left: 2px;
+    }
+  }
+}
+
+.brulageCard {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -1041,6 +1082,7 @@ table.table-last-compos {
   }
 }
 
+// md grid
 @media screen and (max-width: 992px) {
   th.th_picture_compet_table{
     height: 116px;
@@ -1062,6 +1104,18 @@ table.table-last-compos {
   span.badge-role {
     margin-top: 12px;
   }
+
+  .setDispoCard {
+    margin-bottom: 10px;
+  }
+
+  .virtualPointsCard {
+    margin-top: 10px;
+  }
+
+  .brulageCard {
+    margin-top: 10px;
+  }
 }
 
 @media screen and (max-width: 720px) {
@@ -1076,7 +1130,7 @@ table.table-last-compos {
   .modal {
     &.modal-alert {
       margin-top: 0 !important;
-      height: 85% !important ;
+      height: 85% !important;
     }
   }
 
@@ -1117,6 +1171,14 @@ table.table-last-compos {
 
     td {
       padding: 10px 0;
+    }
+  }
+}
+
+@media screen and (max-width: 381px) {
+  .setDispoCard {
+    h5.unsetTitle {
+      font-size: 1.45em;
     }
   }
 }

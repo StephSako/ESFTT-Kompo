@@ -20,7 +20,6 @@
         </div>
 
         <div class="col s12 l7">
-            <div id="testDeLaReponse"></div>
             {% for message in app.flashes('success') %}
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
@@ -44,17 +43,17 @@
 
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
                 {% if journeeStillEditable(journee, compos) %}
-                    <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
+                    <div class="card-panel center setDispoCard">
 
                         {% if app.user.licence and app.user.classementOfficiel %}
                             {% if disponible != -1 %}
                                 {% if disponible == 1 %}
-                                    <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
+                                    <h5 class="unsetTitle">Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                                     <a {% if selection %}onclick="return confirm('Vous serez désélectionné de l\'équipe {{ selection }}. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
                                         <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Se déclarer indisponible</button>
                                     </a>
                                 {% elseif disponible == 0 %}
-                                    <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
+                                    <h5 class="unsetTitle">Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                                     <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
                                         <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Se déclarer disponible</button>
                                     </a>
@@ -65,18 +64,14 @@
                                     </h6>
                                 {% endif %}
                             {% else %}
-                                <h5>Êtes-vous disponible pour cette journée ?</h5>
-                                <div class="row">
-                                    <div class="col s6">
-                                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
-                                            <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Disponible</button>
-                                        </a>
-                                    </div>
-                                    <div class="col s6">
-                                        <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
-                                            <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Indisponible</button>
-                                        </a>
-                                    </div>
+                                <h5 class="unsetTitle">Êtes-vous disponible pour cette journée ?</h5>
+                                <div style="display: flex; justify-content: space-evenly">
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
+                                        <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Disponible</button>
+                                    </a>
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
+                                        <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Indisponible</button>
+                                    </a>
                                 </div>
                             {% endif %}
                         {% else %}
