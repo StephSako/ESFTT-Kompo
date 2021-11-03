@@ -42,7 +42,7 @@
             </div>
 
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
-                {% if journeeStillEditable(journee, compos) %}
+                {% if journeeStillEditable(journee) %}
                     <div class="card-panel center setDispoCard">
 
                         {% if app.user.licence and app.user.classementOfficiel %}
@@ -84,7 +84,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                {% elseif not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
+                {% elseif not journeeStillEditable(journee) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
                     <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
                         <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
                     </div>

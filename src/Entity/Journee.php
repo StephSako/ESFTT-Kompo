@@ -151,4 +151,13 @@ class Journee
         $this->undefined = $undefined;
         return $this;
     }
+
+    /**
+     * Récupère la date au plus gtard entre la date de la journée et les dates de report de chacunes de ses rencontres
+     */
+    public function getLatestDate(): DateTime {
+        return max(max(array_map(function($rencontre) {
+            return $rencontre->getDateReport();
+        }, $this->getRencontres()->toArray())), $this->getDateJournee());
+    }
 }

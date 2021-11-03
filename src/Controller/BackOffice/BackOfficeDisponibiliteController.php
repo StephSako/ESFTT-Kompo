@@ -57,6 +57,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     /**
      * @Route("/backoffice/disponibilites", name="backoffice.disponibilites")
      * @return Response
+     * @throws Exception
      */
     public function index(): Response
     {

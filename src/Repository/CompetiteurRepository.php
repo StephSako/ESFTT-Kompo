@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -300,6 +301,7 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Liste des disponibilités de tous les joueurs
      * @param Championnat[] $allChampionnats
      * @return array
+     * @throws \Exception
      */
     public function findAllDisponibilites(array $allChampionnats): array
     {
@@ -321,6 +323,8 @@ class CompetiteurRepository extends ServiceEntityRepository
                               'WHERE c.idCompetiteur = d2.idCompetiteur ' .
                               'AND d2.idJournee = j.idJournee) AS disponibilite')
             ->addSelect('j.dateJournee')
+            ->addSelect('(SELECT MAX(pr.dateReport) FROM App\Entity\Rencontre pr ' .
+                'WHERE pr.idJournee = j.idJournee) as latestDate')
             ->from('App:Journee', 'j')
             ->leftJoin('j.idChampionnat', 'champ')
             ->where('c.isCompetiteur = true')
@@ -347,6 +351,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                     $queryFinal[$championnat->getNom()][$nom]['classement_officiel'] = $item['classement_officiel'];
                     $queryFinal[$championnat->getNom()][$nom]['licence'] = $item['licence'];
                 }
+                $item['latestDate'] = max(new DateTime($item['latestDate']), $item['dateJournee']);
                 array_push($dispos, $item);
                 $queryFinal[$championnat->getNom()][$nom]['dispos'] = $dispos;
             }

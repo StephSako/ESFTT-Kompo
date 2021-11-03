@@ -34,17 +34,11 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param Journee $journee
-     * @param Rencontre[] $rencontres
      * @return bool
      */
-    public function journeeStillEditable(Journee $journee, array $rencontres): bool
+    public function journeeStillEditable(Journee $journee): bool
     {
-        $nbRencontresReportees = count(array_filter($rencontres, function ($rencontre)
-            {
-                return ($rencontre->isReporte() && intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0 ? $rencontre : null);
-            }));
-        $dateDepassee = intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) >= 0;
-        return (($dateDepassee || $nbRencontresReportees > 0) || $journee->getUndefined());
+        return $journee->getLatestDate() >= new DateTime();
     }
 
     /**
