@@ -64,11 +64,10 @@
 
 {% macro labelVirtualPoints(virtualPoints, tooltipPosition) %}
     <div class="card-panel bottom_0 virtualPointsCard">
-        <div class="circle-pulse"></div>
         <div class="virtualPointsDiv">
-            <span><a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons" style="font-size: 1.5rem;">history</i></a></span>
+            <span><a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">equalizer</i></a></span>
             <h6 class="lobster_2"><b>Points virtuels</b></h6>
-            <span><i class="material-icons blue-text text-darken-1 tooltipped" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés dès que les rencontres sont saisies sur SPID">help_outline</i></span>
+            <span><i class="material-icons blue-text text-darken-1 tooltipped interaction" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés dès que les rencontres sont saisies sur SPID">help_outline</i></span>
         </div>
         {% if virtualPoints.virtualPoints %}
             <p>

@@ -550,6 +550,7 @@ class HomeController extends AbstractController
             }
             return [
                 "joueur" => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                "avatar" => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
                 'pointsVirtuels' => $virtualPoint
             ];
         }, $competiteurs);

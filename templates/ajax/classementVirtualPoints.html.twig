@@ -1,18 +1,28 @@
-<table class="striped">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Points virtuels</th>
-            <th>Progression</th>
-        </tr>
-    </thead>
-
+<table class="striped rankingVirtualPoints">
     <tbody>
         {% for joueur in classementPointsVirtuels %}
             <tr>
-                <td>{{ joueur["joueur"] }}</td>
-                <td>{{ joueur["pointsVirtuels"].virtualPoints }}</td>
-                <td>{{ joueur["pointsVirtuels"].pointsWon }}</td>
+                <td>
+                    <div class="chip">
+                        <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
+                        {% if loop.index <4 %}
+                            <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
+                        {% endif %}
+                        {{ joueur["joueur"] }}
+                    </div>
+                </td>
+                {% if joueur["pointsVirtuels"].virtualPoints %}
+                    <td class="points-td">
+                        <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuels"].virtualPoints | round(1, 'floor') }} pts</span>
+                    </td>
+                    <td class="progression-td">
+                        <span class="{% if joueur["pointsVirtuels"].pointsWon > 0 %}green{% elseif joueur["pointsVirtuels"].pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if joueur["pointsVirtuels"].pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur["pointsVirtuels"].pointsWon | round(1, 'floor') }}</span>
+                    </td>
+                {% else %}
+                    <td colspan="2" class="center">
+                        <span class="red-text text-lighten-1">Non licencié</span>
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>
