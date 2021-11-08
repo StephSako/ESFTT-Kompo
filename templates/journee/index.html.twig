@@ -44,18 +44,17 @@
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
                 {% if journeeStillEditable(journee) %}
                     <div class="card-panel center setDispoCard">
-
                         {% if app.user.licence and app.user.classementOfficiel %}
                             {% if disponible != -1 %}
                                 {% if disponible == 1 %}
                                     <h5 class="unsetTitle">Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                                     <a {% if selection %}onclick="return confirm('Vous serez désélectionné de l\'équipe {{ selection }}. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Se déclarer indisponible</button>
+                                        <button class="btn btn_form waves-effect red lighten-1" type="submit" name="action">Se déclarer indisponible</button>
                                     </a>
                                 {% elseif disponible == 0 %}
                                     <h5 class="unsetTitle">Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                                     <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Se déclarer disponible</button>
+                                        <button class="btn btn_form waves-effect green lighten-1" type="submit" name="action">Se déclarer disponible</button>
                                     </a>
                                 {% endif %}
                                 {% if selection %}
@@ -98,13 +97,16 @@
                 {% endif %}
             {% endif %}
 
+            <div class="hide-on-large-only center-align">
+                {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top') }}
+            </div>
+
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
                     <h5 class="white-text"><i class="material-icons">check_circle</i> Compositions complètes</h5>
                 </div>
             {% else %}
                 <div class="hide-on-large-only center-align">
-                    {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top') }}
                     {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}

@@ -70,11 +70,16 @@
             <h6 class="lobster_2"><b>Points virtuels</b></h6>
             <span><i class="material-icons blue-text text-darken-1 tooltipped" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés dès que les rencontres sont saisies sur SPID">help_outline</i></span>
         </div>
-        <p>
-            <span class="pastille reset virtualPoints">{{ virtualPoints.virtualPoints | round(1, 'floor') }} pts</span>
-            <span class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon | round(1, 'floor') }} pts</span>
-        </p>
+        {% if virtualPoints.virtualPoints %}
+            <p>
+                <span class="pastille reset virtualPoints">{{ virtualPoints.virtualPoints | round(1, 'floor') }} pts</span>
+                <span class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon | round(1, 'floor') }} pts</span>
+            </p>
+        {% else %}
+            <p class="red-text text-lighten-1"><b>Vous n'êtes pas licencié</b></p>
+        {% endif %}
     </div>
+
 {% endmacro %}
 
 {% macro recapitulatif(allDisponibilites, nomTab, championnat) %}
@@ -132,7 +137,7 @@
     <div class="card-panel bottom_0" style="padding: 5px 0; margin-top: 10px;">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
-            <div style="font-size: 100%; width: auto;" class="col s4 lobster
+            <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
                     {% if nbDispos >= nbTotalJoueurs %}
@@ -143,13 +148,13 @@
                         red
                     {% endif %}
                 {% endif %}">
-                {{ nbDispos }}/{{ nbTotalJoueurs }}
+                {{ nbDispos }}
             </div>
         </div>
 
         <div class="row bottom_0">
             <div class="col s7">Sélectionnés</div>
-            <div style="font-size: 100%; width: auto;" class="col s4 lobster
+            <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
                     {% if nbSelectedPlayers == nbTotalJoueurs %}

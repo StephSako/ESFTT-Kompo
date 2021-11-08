@@ -32,7 +32,7 @@
                 <div class="section" style="margin-bottom: 0;">
                     <h5 class="dark_blue" style="margin-top: 0;">Rôles dans le club</h5>
 
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 0">
                         <div class="col s12 m4">
                             {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
                         </div>
@@ -194,7 +194,6 @@
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 
-            <a href="{{ path(type == 'backoffice' ? 'backoffice.competiteurs' : 'index') }}" class="btn waves-effect grey">Annuler</a>
             <button
                 {% if editMode %}
                     onclick="alertBecomingLoisirOrArchived()"

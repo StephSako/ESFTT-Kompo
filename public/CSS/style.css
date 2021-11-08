@@ -127,6 +127,7 @@ div.scrollableTable tbody tr > :first-child {
   padding-top: 0;
   padding-bottom: 0;
   font-size: 100%;
+  margin-top: 10px;
 }
 .complete_compos h5 {
   font-size: 1.5rem;
@@ -297,14 +298,11 @@ i {
 }
 .li_in_line:hover {
   background-color: #1565c0;
-}
-.li_in_line.deconnexion > a {
-  color: white;
-  -webkit-transition: color 0.2s;
-  transition: color 0.2s;
+  border-radius: 5px;
 }
 .li_in_line.deconnexion > a:hover {
   background-color: #f15454;
+  border-radius: 5px;
 }
 
 .nav-wrapper .li_in_line {
@@ -408,6 +406,11 @@ p.lobster {
   width: 5px;
   border-radius: 50%;
   display: inline-block;
+}
+
+.pastilleDispos {
+  font-size: 100%;
+  max-width: 70px;
 }
 
 .dot1 {
@@ -887,7 +890,7 @@ table.table-last-compos tr {
 }
 
 .virtualPointsCard {
-  padding: 5px 0;
+  padding: 6px 0;
   margin-bottom: 10px;
 }
 .virtualPointsCard p {

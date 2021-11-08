@@ -11,7 +11,6 @@ use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\PouleRepository;
-use App\Repository\RencontreRepository;
 use Cocur\Slugify\Slugify;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +27,6 @@ class BackOfficeFFTTApiController extends AbstractController
 
     private $competiteurRepository;
     private $championnatRepository;
-    private $rencontreRepository;
     private $em;
     private $divisionRepository;
     private $pouleRepository;
@@ -47,14 +45,12 @@ class BackOfficeFFTTApiController extends AbstractController
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
-                                RencontreRepository $rencontreRepository,
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
                                 EntityManagerInterface $em)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->rencontreRepository = $rencontreRepository;
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
@@ -183,14 +179,13 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toDeleteIDs"] = $equipesToDeleteIDs;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreate"] = $equipesToCreate;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreateIDs"] = $equipesToCreateIDs;
+                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["kompo"] = $equipesKompo;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toUpdate"] = array_map(function($equipe) {
                         return $equipe["equipe"]->getNumero();
                     }, $equipesIssued);
 
                     /** Gestion des rencontres */
-                    $rencontresKompo = array_filter($this->rencontreRepository->findAll(), function ($renc) use ($championnatActif) {
-                        return $renc->getIdChampionnat()->getIdChampionnat() == $championnatActif->getIdChampionnat();
-                    });
+                    $rencontresKompo = $championnatActif->getRencontres()->toArray();
                     $rencontresParEquipes = [];
                     $journeesFFTT = [];
                     $rencontresEquipeKompo = null;
@@ -373,11 +368,17 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On supprime toutes les dispos du championnat sélectionné **/
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
-                        /** On reset les joueurs des compositions d'équipe */foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
+                        /** On reset les joueurs des compositions d'équipe */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
                             $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
                             for ($i = 0; $i < $nbJoueursDiv; $i++){
                                 $rencontreKompo->setIdJoueurNToNull($i);
                             }
+                        }
+
+                        /** On reset les lienDivision des équipes */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["kompo"] as $equipeKompo) {
+                            $equipeKompo->setLienDivision(null);
                         }
                     }
                     /** Mode lancement de la phase */

@@ -158,6 +158,7 @@ div.scrollableTable {
   padding-top: 0;
   padding-bottom: 0;
   font-size: 100%;
+  margin-top: 10px;
 
   & h5 {
     font-size: 1.5rem;
@@ -342,15 +343,13 @@ i {
 
   &:hover {
     background-color: $light_blue;
+    border-radius: 5px;
   }
 
-  &.deconnexion > a{
-    color: white;
-    -webkit-transition: color 0.2s;
-    transition: color 0.2s;
-
+  &.deconnexion > a {
     &:hover {
       background-color: #f15454;
+      border-radius: 5px;
     }
   }
 }
@@ -478,6 +477,11 @@ p.lobster {
   width: 5px;
   border-radius: 50%;
   display: inline-block;
+}
+
+.pastilleDispos {
+  font-size: 100%;
+  max-width: 70px;
 }
 
 .dot1 {
@@ -1004,7 +1008,7 @@ table.table-last-compos {
 }
 
 .virtualPointsCard {
-  padding: 5px 0;
+  padding: 6px 0;
   margin-bottom: 10px;
 
   p {
