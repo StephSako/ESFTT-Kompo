@@ -14,6 +14,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FFTTApi\FFTTApi;
+use FFTTApi\Model\VirtualPoints;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -200,7 +201,15 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
+        // Récupération des points virtuels de l'utilisateur
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $virtualPoints = new VirtualPoints(0, 0);
+        if ($this->getUser()->getLicence()) {
+            try {
+                $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+            } catch (Exception $e) {}
+        }
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -221,7 +230,7 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $api->getJoueurVirtualPoints($this->getUser()->getLicence())
+            'virtualPoints' => $virtualPoints
         ]);
     }
 
@@ -520,6 +529,33 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'erreur' => $erreur,
             'nomAdversaire' => mb_convert_case($nomAdversaire, MB_CASE_TITLE, "UTF-8")
+        ])->getContent());
+    }
+
+    /**
+     * Renvoie un template du classement des points virtuels de tous les joueurs du club
+     * @Route("/journee/classement-virtual-points", name="index.classementVirtualPoints", methods={"POST"})
+     * @return JsonResponse
+     */
+    function getClassementPointsVirtuelsClub(): JsonResponse {
+        $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $classementPointsVirtuels = array_map(function($joueur) use ($api) {
+            $virtualPoint = new VirtualPoints(0, 0);
+
+            if ($joueur->getLicence()) {
+                try {
+                    $virtualPoint = $api->getJoueurVirtualPoints($joueur->getLicence());
+                } catch (Exception $e) {}
+            }
+            return [
+                "joueur" => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                'pointsVirtuels' => $virtualPoint
+            ];
+        }, $competiteurs);
+
+        return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
+            'classementPointsVirtuels' => $classementPointsVirtuels,
         ])->getContent());
     }
 }

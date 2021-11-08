@@ -11,6 +11,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
     </header>
 
@@ -82,10 +83,6 @@
                                 <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités</h5>
                             {% endif %}
                         {% endif %}
-                    </div>
-                {% elseif not journeeStillEditable(journee) and app.user.licence and app.user.classementOfficiel and disponible == -1 %}
-                    <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-                        <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
                     </div>
                 {% endif %}
 
@@ -257,29 +254,29 @@
 
                     {% if not compo.exempt and compo.adversaire is not null %}
                         <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
-                    {% endif %}
-                    <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
-                        <div class="modal-content">
-                            <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                    <div class="preloader-wrapper small active">
-                                        <div class="spinner-layer spinner-blue-only">
-                                            <div class="circle-clipper left">
-                                                <div class="circle"></div>
-                                            </div><div class="gap-patch">
-                                                <div class="circle"></div>
-                                            </div><div class="circle-clipper right">
-                                                <div class="circle"></div>
+                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                            <div class="modal-content">
+                                <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                        <div class="preloader-wrapper small active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal-footer">
+                                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Annuler</a>
-                        </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             {% else %}
                 <div class="center card-panel">
@@ -317,6 +314,31 @@
 
         <div class="col l2 hide-on-med-and-down">
             {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length), virtualPoints) }}
+        </div>
+
+        {# Modale des classement des points virtuels #}
+        <script>getClassementVirtualPoints()</script>
+        <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-alert center">
+            <div class="modal-content">
+                <div id="rankingContent" style="padding-right: 4px; padding-left: 4px;">
+                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+            </div>
         </div>
     </div>
 {% endblock %}

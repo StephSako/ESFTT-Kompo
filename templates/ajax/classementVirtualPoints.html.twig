@@ -1,0 +1,19 @@
+<table class="striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Points virtuels</th>
+            <th>Progression</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for joueur in classementPointsVirtuels %}
+            <tr>
+                <td>{{ joueur["joueur"] }}</td>
+                <td>{{ joueur["pointsVirtuels"].virtualPoints }}</td>
+                <td>{{ joueur["pointsVirtuels"].pointsWon }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

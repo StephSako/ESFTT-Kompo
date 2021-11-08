@@ -384,21 +384,23 @@ class CompetiteurRepository extends ServiceEntityRepository
     /**
      * Retourne une liste de joueurs selon le rôle passé en paramètre
      * @param string|null $role Le paramètres correspond aux champs (boolean) dans la BDD
-     * @param int $idRedacteur
+     * @param int|null $idRedacteur ID de l'user actif
      * @return int|mixed|string
      */
-    public function findJoueursByRole(?string $role, int $idRedacteur)
+    public function findJoueursByRole(?string $role, ?int $idRedacteur)
     {
         $query = $this->createQueryBuilder('c')
-            ->select('c')
-            ->where('c.idCompetiteur <> :idRedacteur');
+            ->select('c');
+        if ($idRedacteur) $query = $query->where('c.idCompetiteur <> :idRedacteur');
 
         if ($role) $query = $query->andWhere('c.is' . $role . ' = 1');
         else $query = $query->andWhere('c.isArchive <> 1');
 
-        return $query->orderBy('c.nom', 'ASC')
-            ->addOrderBy('c.prenom', 'ASC')
-            ->setParameter('idRedacteur', $idRedacteur)
+        $query = $query
+            ->orderBy('c.nom', 'ASC')
+            ->addOrderBy('c.prenom', 'ASC');
+        if ($idRedacteur) $query = $query->setParameter('idRedacteur', $idRedacteur);
+        return $query
             ->getQuery()
             ->getResult();
     }
