@@ -675,7 +675,8 @@ table.rankingVirtualPoints {
   &.modal-alert {
     margin-top: 5% !important;
     width: 700px !important ;
-    height: 60% !important ;
+    height: 80% !important ;
+    top: 4% !important;
 
     & .modal-content {
       padding: 2px;
@@ -1107,7 +1108,8 @@ table.table-last-compos {
   .modal {
     &.modal-alert {
       margin-top: 0 !important;
-      height: 85% !important;
+      height: 89% !important;
+      top: 6% !important;
     }
   }
 

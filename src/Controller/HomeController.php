@@ -549,11 +549,18 @@ class HomeController extends AbstractController
                 } catch (Exception $e) {}
             }
             return [
-                "joueur" => $joueur->getNom() . ' ' . $joueur->getPrenom(),
-                "avatar" => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
+                'joueur' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                'avatar' => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
                 'pointsVirtuels' => $virtualPoint
             ];
         }, $competiteurs);
+
+        usort($classementPointsVirtuels, function ($a, $b) {
+            if ($a['pointsVirtuels']->getVirtualPoints() == $b['pointsVirtuels']->getVirtualPoints()) {
+                return $b['pointsVirtuels']->getPointsWon() - $a['pointsVirtuels']->getPointsWon();
+            }
+            return $b['pointsVirtuels']->getVirtualPoints() - $a['pointsVirtuels']->getVirtualPoints();
+        });
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
             'classementPointsVirtuels' => $classementPointsVirtuels,
