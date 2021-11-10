@@ -187,7 +187,9 @@
                                                 </h5>
                                             </div>
                                             <div class="col" style="padding-left: 0; padding-right: 0;">
-                                                <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">history</i></a>
+                                                <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                    <i class="material-icons" style="font-size: 1.5rem;">history</i>
+                                                </a>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -210,7 +212,7 @@
                                                 </h5>
                                             </div>
                                             <div>
-                                                <a class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                                     <i class="material-icons">history</i>
                                                 </a>
                                             </div>
@@ -253,7 +255,6 @@
                     </div>
 
                     {% if not compo.exempt and compo.adversaire is not null %}
-                        <script>getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')</script>
                         <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
                             <div class="modal-content">
                                 <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">

@@ -1,6 +1,6 @@
 function getClassementVirtualPoints() {
-    if (!alreadyCalled) {
-        alreadyCalled = true;
+    if (!alreadyCalledClassement) {
+        alreadyCalledClassement = true;
         $.ajax({
             url : '/journee/classement-virtual-points',
             type : 'POST',
@@ -15,4 +15,4 @@ function templatingClassementVirtualPoints(response){
     $('#rankingContent').html(response);
 }
 
-let alreadyCalled = false;
+let alreadyCalledClassement = false;
