@@ -36,7 +36,7 @@
                     <a class="white-text" href="{{ path("backoffice.equipes") }}"><i class="material-icons left">people</i>Équipe</a>
                 </li>
                 <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.competiteurs") }}"><i class="material-icons left">account_box</i>Compétiteur</a>
+                    <a class="white-text" href="{{ path("backoffice.competiteurs") }}"><i class="material-icons left">account_box</i>Joueur</a>
                 </li>
                 <li class="waves-effect li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.disponibilites") }}"><i class="material-icons left">feedback</i>Disponibilité</a>
@@ -78,7 +78,7 @@
         <a class="white-text center-align" href="{{ path("backoffice.equipes") }}"><i class="white-text material-icons left">people</i>Équipe</a>
     </li>
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/competiteur' %}active blue darken-3{% endif %}">
-        <a class="white-text center-align" href="{{ path("backoffice.competiteurs") }}"><i class="white-text material-icons left">account_box</i>Compétiteur</a>
+        <a class="white-text center-align" href="{{ path("backoffice.competiteurs") }}"><i class="white-text material-icons left">account_box</i>Joueur</a>
     </li>
     <li class="first_sidenav li_in_line {% if app.request.getPathInfo == '/backoffice/disponibilites' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.disponibilites") }}"><i class="white-text material-icons left">feedback</i>Disponibilité</a>
