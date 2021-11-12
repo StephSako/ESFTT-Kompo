@@ -540,7 +540,7 @@ class HomeController extends AbstractController
     function getClassementPointsVirtuelsClub(): JsonResponse {
         $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $classementPointsVirtuels = array_map(function($joueur) use ($api) {
+        $classementPointsVirtuelsMensuel = array_map(function($joueur) use ($api) {
             $virtualPoint = new VirtualPoints(0, 0);
 
             if ($joueur->getLicence()) {
@@ -549,21 +549,32 @@ class HomeController extends AbstractController
                 } catch (Exception $e) {}
             }
             return [
-                'joueur' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
                 'avatar' => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
-                'pointsVirtuels' => $virtualPoint
+                'pointsVirtuelsPointsWon' => $virtualPoint->getPointsWon(),
+                'pointsVirtuelsVirtualPoints' => $virtualPoint->getVirtualPoints(),
+                'pointsVirtuelsSaison' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
             ];
         }, $competiteurs);
+        $classementPointsVirtuelsPhase = $classementPointsVirtuelsMensuel;
 
-        usort($classementPointsVirtuels, function ($a, $b) {
-            if ($a['pointsVirtuels']->getVirtualPoints() == $b['pointsVirtuels']->getVirtualPoints()) {
-                return $b['pointsVirtuels']->getPointsWon() - $a['pointsVirtuels']->getPointsWon();
+        usort($classementPointsVirtuelsMensuel, function ($a, $b) {
+            if ($a['pointsVirtuelsPointsWon'] == $b['pointsVirtuelsPointsWon']) {
+                return $b['pointsVirtuelsVirtualPoints'] - $a['pointsVirtuelsVirtualPoints'];
             }
-            return $b['pointsVirtuels']->getVirtualPoints() - $a['pointsVirtuels']->getVirtualPoints();
+            return $b['pointsVirtuelsPointsWon'] - $a['pointsVirtuelsPointsWon'];
+        });
+
+        usort($classementPointsVirtuelsPhase, function ($a, $b) {
+            if ($a['pointsVirtuelsSaison'] == $b['pointsVirtuelsSaison']) {
+                return $b['pointsVirtuelsVirtualPoints'] - $a['pointsVirtuelsVirtualPoints'];
+            }
+            return $b['pointsVirtuelsSaison'] - $a['pointsVirtuelsSaison'];
         });
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
-            'classementPointsVirtuels' => $classementPointsVirtuels,
+            'classementPointsVirtuelsMensuel' => $classementPointsVirtuelsMensuel,
+            'classementPointsVirtuelsPhase' => $classementPointsVirtuelsPhase,
         ])->getContent());
     }
 }

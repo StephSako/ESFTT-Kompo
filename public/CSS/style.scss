@@ -597,13 +597,25 @@ span.virtualPoints {
   background-color: #0c3a69;
 }
 
+.switch.virtualPoints {
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
 table.rankingVirtualPoints {
+  font-size: 13px !important;
   td {
     padding-left: 0;
     padding-right: 0;
 
-    & .chip i {
-      vertical-align: middle;
+    & .chip{
+      i {
+        vertical-align: middle;
+      }
+
+      .nom {
+        font-size: 13px !important;
+      }
     }
 
     &.points-td {

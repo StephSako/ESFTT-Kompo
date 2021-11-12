@@ -1,29 +1,77 @@
+<div class="switch virtualPoints">
+    <label>
+        <span id="mode_mensuel">Mensuel</span>
+        <input type="checkbox" id="modeVirtualPoints">
+        <span class="lever"></span>
+        <span id="mode_phase">Phase</span>
+    </label>
+</div>
+
 <table class="striped rankingVirtualPoints">
-    <tbody>
-        {% for joueur in classementPointsVirtuels %}
-            <tr>
-                <td>
-                    <div class="chip">
-                        <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
-                        {% if loop.index <4 %}
-                            <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
-                        {% endif %}
-                        {{ joueur["joueur"] }}
-                    </div>
-                </td>
-                {% if joueur["pointsVirtuels"].virtualPoints %}
-                    <td class="points-td">
-                        <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuels"].virtualPoints | round(1, 'floor') }} pts</span>
-                    </td>
-                    <td class="progression-td">
-                        <span class="{% if joueur["pointsVirtuels"].pointsWon > 0 %}green{% elseif joueur["pointsVirtuels"].pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if joueur["pointsVirtuels"].pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur["pointsVirtuels"].pointsWon | round(1, 'floor') }}</span>
-                    </td>
-                {% else %}
-                    <td colspan="2" class="center">
-                        <span class="red-text text-lighten-1">Non licencié</span>
-                    </td>
-                {% endif %}
-            </tr>
-        {% endfor %}
+    <tbody id="classementPointsVirtuelsMensuel">
+        {{ _self.classement(classementPointsVirtuelsMensuel, 'pointsVirtuelsPointsWon') }}
+    </tbody>
+
+    <tbody id="classementPointsVirtuelsPhase" hidden>
+    {{ _self.classement(classementPointsVirtuelsPhase, 'pointsVirtuelsSaison') }}
     </tbody>
 </table>
+
+{% macro classement(classementPointsVirtuels, pointsWonField) %}
+    {% for joueur in classementPointsVirtuels %}
+        <tr>
+            <td>
+                <div class="chip">
+                    <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
+                    {% if loop.index <4 %}
+                        <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
+                    {% endif %}
+                    <span class="nom">{{ joueur["nom"] }}</span>
+                </div>
+            </td>
+            {% if joueur["pointsVirtuelsVirtualPoints"] %}
+                <td class="points-td">
+                    <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuelsVirtualPoints"] | round(1, 'floor') }} pts</span>
+                </td>
+                <td class="progression-td">
+                    <span class="{% if joueur[pointsWonField] > 0 %}green{% elseif joueur[pointsWonField] == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if joueur[pointsWonField] >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur[pointsWonField] | round(1, 'floor') }}</span>
+                </td>
+            {% else %}
+                <td colspan="2" class="center">
+                    <span class="red-text text-lighten-1">Non licencié</span>
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let span_mode_mensuel = $('span#mode_mensuel');
+        let span_mode_phase = $('span#mode_phase');
+        let tbody_mode_mensuel = $('tbody#classementPointsVirtuelsMensuel');
+        let tbody_mode_phase = $('tbody#classementPointsVirtuelsPhase');
+
+        span_mode_mensuel.css('color', 'black');
+        span_mode_phase.css('color', 'grey');
+        span_mode_mensuel.css('font-weight', 'bold');
+
+        $('input#modeVirtualPoints').change(function () {
+            if (this.checked) {
+                span_mode_mensuel.css('color', 'grey');
+                span_mode_phase.css('color', 'black');
+                span_mode_mensuel.css('font-weight', 'normal');
+                span_mode_phase.css('font-weight', 'bold');
+                tbody_mode_mensuel.toggle('hidden');
+                tbody_mode_phase.toggle('hidden');
+            } else {
+                span_mode_mensuel.css('color', 'black');
+                span_mode_phase.css('color', 'grey');
+                span_mode_phase.css('font-weight', 'normal');
+                span_mode_mensuel.css('font-weight', 'bold');
+                tbody_mode_mensuel.toggle('hidden');
+                tbody_mode_phase.toggle('hidden');
+            }
+        });
+    });
+</script>

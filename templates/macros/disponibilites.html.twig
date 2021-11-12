@@ -218,16 +218,16 @@
                                                                 </div>
                                                             </div>
                                                         {% else %}
-                                                            <p class="grey-text"><i>Disponibilité non signalée</i></p>
+                                                            <p class="grey-text" style="margin-top: 5px; margin-bottom: 5px;"><i>Disponibilité non signalée</i></p>
                                                         {% endif %}
                                                     {% else %}
                                                         {% if dispos.disponibilite == 1 %}
-                                                            <p style="margin-top: 0; margin-bottom: 0;">Joueur <span class="green-text"><b>disponible</b></span></p>
+                                                            <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="green-text"><b>disponible</b></span></p>
                                                             {% if dispos.latestDate >= date() %}
                                                                 <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 0, '{{ dispos.idJournee }}')" class="btn waves-effect red lighten-2 btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                                             {% endif %}
                                                         {% else %}
-                                                            <p style="margin-top: 0; margin-bottom: 0;">Joueur <span class="red-text"><b>indisponible</b></span></p>
+                                                            <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="red-text"><b>indisponible</b></span></p>
                                                             {% if dispos.latestDate >= date() %}
                                                                 <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 1, '{{ dispos.idJournee }}')" class="btn waves-effect green lighten-2 btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                             {% endif %}
