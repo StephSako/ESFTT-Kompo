@@ -23,12 +23,12 @@
                         <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
                                 <span style="font-family: 'Lora', serif;">J</span>
-                                {{ i+1 }} -
+                                {{ i+1 }}
                                 {% if not journeePassee(journee) %}
                                     {% if journee.undefined %}
                                         <i class="journee_passee material-icons red-text right">event_busy</i>
                                     {% else %}
-                                        {{ journee.dateJournee|date('d/m') }}
+                                        - {{ journee.dateJournee|date('d/m') }}
                                     {% endif %}
                                 {% else %}
                                     <i class="journee_passee material-icons green-text right">done</i>

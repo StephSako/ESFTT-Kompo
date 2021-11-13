@@ -523,6 +523,7 @@ class HomeController extends AbstractController
                 array_push($journees, $journee);
             }
         } catch(Exception $exception) {
+//            dump($exception);
             $erreur = 'Liste des joueurs adversaires indisponible';
         }
 
@@ -534,7 +535,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * Renvoie un template du classement des points virtuels de tous les joueurs du club
+     * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs
      * @Route("/journee/classement-virtual-points", name="index.classementVirtualPoints", methods={"POST"})
      * @return JsonResponse
      */
