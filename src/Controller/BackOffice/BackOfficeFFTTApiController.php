@@ -323,17 +323,17 @@ class BackOfficeFFTTApiController extends AbstractController
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->getLatestDate($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["emptyCompos"] = array_filter($preRentreeRencontres, function($compoToTestEmpty) {
-                        return !$compoToTestEmpty->getIsEmpty();
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
+                        return !$compoPreRentree->getIsEmpty();
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetRencontres"] = array_filter($preRentreeRencontres, function($rencToTestEmpty) {
-                        return $rencToTestEmpty->getAdversaire() || $rencToTestEmpty->getDomicile() || $rencToTestEmpty->getVilleHost() || $rencToTestEmpty->isReporte();
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["rencontres"] = array_filter($preRentreeRencontres, function($rencontrePreRentree) {
+                        return $rencontrePreRentree->getAdversaire() || $rencontrePreRentree->isExempt() || !$rencontrePreRentree->isDomicile() || $rencontrePreRentree->getVilleHost();
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetEquipes"] = array_filter($championnatActif->getEquipes()->toArray(), function($eqToTestEmpty) {
-                        return $eqToTestEmpty->getIdPoule() || $eqToTestEmpty->getIdDivision();
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["journees"] = array_filter($championnatActif->getJournees()->toArray(), function($journeePreRentree) {
+                        return !$journeePreRentree->getUndefined();
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["resetJournees"] = array_filter($championnatActif->getJournees()->toArray(), function($jourToTestEmpty) {
-                        return !$jourToTestEmpty->getUndefined();
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["teams"] = array_filter($championnatActif->getEquipes()->toArray(), function($equipePreRentree) {
+                        return $equipePreRentree->getIdDivision() || $equipePreRentree->getIdPoule();
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["countDispos"] = count($championnatActif->getDispos()->toArray());
                 } else {
@@ -368,18 +368,36 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On supprime toutes les dispos du championnat sélectionné **/
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
+                        /** On set les Journées comme étant indéfinies */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["resetJournees"] as $dateKompo) {
+                            $dateKompo->setUndefined(true);
+                        }
+                        $this->em->flush();
+
                         /** On reset les joueurs des compositions d'équipe */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
                             $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
                             for ($i = 0; $i < $nbJoueursDiv; $i++){
                                 $rencontreKompo->setIdJoueurNToNull($i);
                             }
+                            $rencontreKompo
+                                ->setExempt(false)
+                                ->setDomicile(null)
+                                ->setVilleHost(null)
+                                ->setDateReport($rencontreKompo->getIdJournee()->getDateJournee())
+                                ->setAdversaire(null);
                         }
+                        $this->em->flush();
 
-                        /** On reset les lienDivision des équipes */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["kompo"] as $equipeKompo) {
-                            $equipeKompo->setLienDivision(null);
+                        /** On reset les lienDivision, divisions et poules des équipes */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["teams"] as $equipeKompo) {
+                            $equipeKompo
+                                ->setLienDivision(null)
+                                ->setIdPoule(null)
+                                ->setIdDivision(null);
                         }
+                        $this->em->flush();
+                        $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
                     }
                     /** Mode lancement de la phase */
                     else if ($request->request->get('resetChampionnats')) {
@@ -472,13 +490,12 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
 
                         $this->em->flush();
-                        $this->addFlash('success', 'Phase du championnat ' . $championnat->getNom() . ' mise à jour');
-                        return $this->redirectToRoute('backoffice.reset.phase');
+                        $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' mise à jour');
                     }
-
+                    return $this->redirectToRoute('backoffice.reset.phase');
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }

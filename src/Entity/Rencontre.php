@@ -511,10 +511,12 @@ class Rencontre
     public function getIsEmpty(): bool
     {
         $isEmpty = array();
-        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            array_push($isEmpty, $this->getIdJoueurN($i));
-        }
-        return !in_array(true, $isEmpty);
+        if ($this->getIdEquipe()->getIdDivision()) {
+            for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+                array_push($isEmpty, $this->getIdJoueurN($i));
+            }
+            return !in_array(true, $isEmpty);
+        } else return true;
     }
 
     /**
