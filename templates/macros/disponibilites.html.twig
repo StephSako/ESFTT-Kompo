@@ -1,7 +1,7 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos, virtualPoints) %}
+{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos, virtualPoints, virtualPointsProgression) %}
     <div class="center-align">
         <div class="hide-on-med-and-down">
-            {{ _self.labelVirtualPoints(virtualPoints, 'left') }}
+            {{ _self.labelVirtualPoints(virtualPoints, 'left', virtualPointsProgression) }}
         </div>
         {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
@@ -62,17 +62,17 @@
     </div>
 {% endmacro %}
 
-{% macro labelVirtualPoints(virtualPoints, tooltipPosition) %}
+{% macro labelVirtualPoints(virtualPoints, tooltipPosition, virtualPointsProgression) %}
     <div class="card-panel bottom_0 virtualPointsCard">
         <div class="virtualPointsDiv">
             <span style="margin-left: 6px"><a onclick="getClassementVirtualPoints()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">leaderboard</i></a></span>
             <h6 class="lobster_2"><b style="vertical-align: sub">Points virtuels</b></h6>
             <span><i class="material-icons blue-text text-darken-1 tooltipped interaction" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés dès que les rencontres sont saisies sur SPID">help_outline</i></span>
         </div>
-        {% if virtualPoints.virtualPoints %}
+        {% if virtualPoints %}
             <p>
-                <span class="pastille reset virtualPoints">{{ virtualPoints.virtualPoints | round(1, 'floor') }} pts</span>
-                <span class="{% if virtualPoints.pointsWon > 0 %}green{% elseif virtualPoints.pointsWon == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPoints.pointsWon >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPoints.pointsWon | round(1, 'floor') }} pts</span>
+                <span class="pastille reset virtualPoints">{{ virtualPoints | round(1, 'floor') }} pts</span>
+                <span class="{% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
             </p>
         {% else %}
             <p class="red-text text-lighten-1"><b>Vous n'êtes pas licencié</b></p>

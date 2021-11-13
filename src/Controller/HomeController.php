@@ -230,7 +230,8 @@ class HomeController extends AbstractController
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $virtualPoints
+            'virtualPoints' => $virtualPoints->getVirtualPoints(),
+            'virtualPointsProgression' => $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel()
         ]);
     }
 

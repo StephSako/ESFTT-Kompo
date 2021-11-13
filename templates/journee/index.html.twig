@@ -95,7 +95,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top') }}
+                {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top', virtualPointsProgression) }}
             </div>
 
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
@@ -296,7 +296,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length), virtualPoints) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length), virtualPoints, virtualPointsProgression) }}
                 </div>
             </li>
             <li>
@@ -314,7 +314,7 @@
         </ul>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length), virtualPoints) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length), virtualPoints, virtualPointsProgression) }}
         </div>
 
         {# Modale des classement des points virtuels #}
