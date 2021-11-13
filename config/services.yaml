@@ -6,7 +6,7 @@ parameters:
     maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
     club_id: '%env(CLUB_ID)%'
     club_name: '%env(CLUB_NAME)%'
-    time_limit_last_compos_ajax: '%env(TIME_LIMIT_LAST_COMPOS_AJAX)%'
+    time_limit_ajax: '%env(TIME_LIMIT_AJAX)%'
 
 services:
     _defaults:

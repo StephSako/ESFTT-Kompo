@@ -1,21 +1,56 @@
-<div class="switch virtualPoints">
-    <label>
-        <span id="mode_mensuel">Mensuel</span>
-        <input type="checkbox" id="modeVirtualPoints">
-        <span class="lever"></span>
-        <span id="mode_phase">Phase</span>
-    </label>
-</div>
+{% if erreur %}
+    <p class="pastille red white-text">{{ erreur }}</p>
+{% else %}
+    <div class="switch virtualPoints">
+        <label>
+            <span id="mode_mensuel">Mensuel</span>
+            <input type="checkbox" id="modeVirtualPoints">
+            <span class="lever"></span>
+            <span id="mode_phase">Phase</span>
+        </label>
+    </div>
 
-<table class="striped rankingVirtualPoints">
-    <tbody id="classementPointsVirtuelsMensuel">
-        {{ _self.classement(classementPointsVirtuelsMensuel, 'pointsVirtuelsPointsWon') }}
-    </tbody>
+    <table class="striped rankingVirtualPoints">
+        <tbody id="classementPointsVirtuelsMensuel">
+            {{ _self.classement(classementPointsVirtuelsMensuel, 'pointsVirtuelsPointsWonMensuel') }}
+        </tbody>
 
-    <tbody id="classementPointsVirtuelsPhase" hidden>
-    {{ _self.classement(classementPointsVirtuelsPhase, 'pointsVirtuelsSaison') }}
-    </tbody>
-</table>
+        <tbody id="classementPointsVirtuelsPhase" hidden>
+        {{ _self.classement(classementPointsVirtuelsPhase, 'pointsVirtuelsPointsWonPhase') }}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let span_mode_mensuel = $('span#mode_mensuel');
+            let span_mode_phase = $('span#mode_phase');
+            let tbody_mode_mensuel = $('tbody#classementPointsVirtuelsMensuel');
+            let tbody_mode_phase = $('tbody#classementPointsVirtuelsPhase');
+
+            span_mode_mensuel.css('color', 'black');
+            span_mode_phase.css('color', 'grey');
+            span_mode_mensuel.css('font-weight', 'bold');
+
+            $('input#modeVirtualPoints').change(function () {
+                if (this.checked) {
+                    span_mode_mensuel.css('color', 'grey');
+                    span_mode_phase.css('color', 'black');
+                    span_mode_mensuel.css('font-weight', 'normal');
+                    span_mode_phase.css('font-weight', 'bold');
+                    tbody_mode_mensuel.toggle('hidden');
+                    tbody_mode_phase.toggle('hidden');
+                } else {
+                    span_mode_mensuel.css('color', 'black');
+                    span_mode_phase.css('color', 'grey');
+                    span_mode_phase.css('font-weight', 'normal');
+                    span_mode_mensuel.css('font-weight', 'bold');
+                    tbody_mode_mensuel.toggle('hidden');
+                    tbody_mode_phase.toggle('hidden');
+                }
+            });
+        });
+    </script>
+{% endif %}
 
 {% macro classement(classementPointsVirtuels, pointsWonField) %}
     {% for joueur in classementPointsVirtuels %}
@@ -44,34 +79,3 @@
         </tr>
     {% endfor %}
 {% endmacro %}
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        let span_mode_mensuel = $('span#mode_mensuel');
-        let span_mode_phase = $('span#mode_phase');
-        let tbody_mode_mensuel = $('tbody#classementPointsVirtuelsMensuel');
-        let tbody_mode_phase = $('tbody#classementPointsVirtuelsPhase');
-
-        span_mode_mensuel.css('color', 'black');
-        span_mode_phase.css('color', 'grey');
-        span_mode_mensuel.css('font-weight', 'bold');
-
-        $('input#modeVirtualPoints').change(function () {
-            if (this.checked) {
-                span_mode_mensuel.css('color', 'grey');
-                span_mode_phase.css('color', 'black');
-                span_mode_mensuel.css('font-weight', 'normal');
-                span_mode_phase.css('font-weight', 'bold');
-                tbody_mode_mensuel.toggle('hidden');
-                tbody_mode_phase.toggle('hidden');
-            } else {
-                span_mode_mensuel.css('color', 'black');
-                span_mode_phase.css('color', 'grey');
-                span_mode_phase.css('font-weight', 'normal');
-                span_mode_mensuel.css('font-weight', 'bold');
-                tbody_mode_mensuel.toggle('hidden');
-                tbody_mode_phase.toggle('hidden');
-            }
-        });
-    });
-</script>

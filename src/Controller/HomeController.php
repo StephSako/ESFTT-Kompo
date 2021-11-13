@@ -443,7 +443,7 @@ class HomeController extends AbstractController
         $journees = [];
         $erreur = null;
         $nomAdversaire = null;
-        set_time_limit(intval($this->getParameter('time_limit_last_compos_ajax')));
+        set_time_limit(intval($this->getParameter('time_limit_ajax')));
 
         try {
             /** On récupère les paramètres d'Ajax */
@@ -523,7 +523,7 @@ class HomeController extends AbstractController
                 array_push($journees, $journee);
             }
         } catch(Exception $exception) {
-            $erreur = 'Liste des joueurs alignés par l\'adversaire lors des journées précédentes non disponible';
+            $erreur = 'Liste des joueurs adversaires indisponible';
         }
 
         return new JsonResponse($this->render('ajax/lastComposAdversaire.html.twig', [
@@ -539,43 +539,58 @@ class HomeController extends AbstractController
      * @return JsonResponse
      */
     function getClassementPointsVirtuelsClub(): JsonResponse {
-        $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
-        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $classementPointsVirtuelsMensuel = array_map(function($joueur) use ($api) {
-            $virtualPoint = new VirtualPoints(0, 0);
+        set_time_limit(intval($this->getParameter('time_limit_ajax')));
+        $classementPointsVirtuelsMensuel = [];
+        $classementPointsVirtuelsPhase = [];
+        $erreur = null;
 
-            if ($joueur->getLicence()) {
-                try {
-                    $virtualPoint = $api->getJoueurVirtualPoints($joueur->getLicence());
-                } catch (Exception $e) {}
-            }
-            return [
-                'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
-                'avatar' => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
-                'pointsVirtuelsPointsWon' => $virtualPoint->getPointsWon(),
-                'pointsVirtuelsVirtualPoints' => $virtualPoint->getVirtualPoints(),
-                'pointsVirtuelsSaison' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
-            ];
-        }, $competiteurs);
-        $classementPointsVirtuelsPhase = $classementPointsVirtuelsMensuel;
+        try {
+            $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            $classementPointsVirtuelsMensuel = array_map(function($joueur) use ($api) {
+                $virtualPoint = null;
+                if ($joueur->getLicence()) {
+                    try {
+                        $virtualPoint = $api->getJoueurVirtualPoints($joueur->getLicence());
+                    } catch (Exception $e) {}
+                }
+                return [
+                    'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                    'avatar' => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
+                    'pointsVirtuelsPointsWonMensuel' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
+                    'pointsVirtuelsVirtualPoints' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getVirtualPoints() : null,
+                    'pointsVirtuelsPointsWonPhase' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
+                ];
+            }, $competiteurs);
+            $classementPointsVirtuelsPhase = $classementPointsVirtuelsMensuel;
 
-        usort($classementPointsVirtuelsMensuel, function ($a, $b) {
-            if ($a['pointsVirtuelsPointsWon'] == $b['pointsVirtuelsPointsWon']) {
-                return $b['pointsVirtuelsVirtualPoints'] - $a['pointsVirtuelsVirtualPoints'];
-            }
-            return $b['pointsVirtuelsPointsWon'] - $a['pointsVirtuelsPointsWon'];
-        });
+            usort($classementPointsVirtuelsMensuel, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
 
-        usort($classementPointsVirtuelsPhase, function ($a, $b) {
-            if ($a['pointsVirtuelsSaison'] == $b['pointsVirtuelsSaison']) {
-                return $b['pointsVirtuelsVirtualPoints'] - $a['pointsVirtuelsVirtualPoints'];
-            }
-            return $b['pointsVirtuelsSaison'] - $a['pointsVirtuelsSaison'];
-        });
+                if ($a['pointsVirtuelsPointsWonMensuel'] == $b['pointsVirtuelsPointsWonMensuel']) {
+                    return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+                }
+                return $b['pointsVirtuelsPointsWonMensuel'] > $a['pointsVirtuelsPointsWonMensuel'];
+            });
+
+            usort($classementPointsVirtuelsPhase, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsPointsWonPhase'] == $b['pointsVirtuelsPointsWonPhase']) {
+                    return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+                }
+                return $b['pointsVirtuelsPointsWonPhase'] > $a['pointsVirtuelsPointsWonPhase'];
+            });
+        } catch(Exception $exception) {
+            $erreur = 'Classement virtuel général indisponible.';
+        }
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
             'classementPointsVirtuelsMensuel' => $classementPointsVirtuelsMensuel,
             'classementPointsVirtuelsPhase' => $classementPointsVirtuelsPhase,
+            'erreur' => $erreur,
         ])->getContent());
     }
 }
