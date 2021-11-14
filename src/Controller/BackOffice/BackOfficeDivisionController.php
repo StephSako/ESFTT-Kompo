@@ -60,7 +60,8 @@ class BackOfficeDivisionController extends AbstractController
         $division = new Division();
         $listChamps = $this->championnatRepository->getAllChampionnats();
         $form = $this->createForm(DivisionType::class, $division, [
-            'listChamps' => $listChamps
+            'listChamps' => $listChamps,
+            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division')
         ]);
         $form->handleRequest($request);
 
@@ -104,7 +105,9 @@ class BackOfficeDivisionController extends AbstractController
         }
 
         $nbJoueurs = $division->getNbJoueurs();
-        $form = $this->createForm(DivisionType::class, $division);
+        $form = $this->createForm(DivisionType::class, $division, [
+            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division')
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

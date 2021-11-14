@@ -327,7 +327,10 @@ class BackOfficeFFTTApiController extends AbstractController
                         return !$compoPreRentree->getIsEmpty();
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["rencontres"] = array_filter($preRentreeRencontres, function($rencontrePreRentree) {
-                        return $rencontrePreRentree->getAdversaire() || $rencontrePreRentree->isExempt() || !$rencontrePreRentree->isDomicile() || $rencontrePreRentree->getVilleHost();
+                        return $rencontrePreRentree->getAdversaire() != null ||
+                               $rencontrePreRentree->isExempt() ||
+                               $rencontrePreRentree->getDomicile() != null ||
+                               $rencontrePreRentree->getVilleHost() != null;
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["journees"] = array_filter($championnatActif->getJournees()->toArray(), function($journeePreRentree) {
                         return !$journeePreRentree->getUndefined();
@@ -369,17 +372,22 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                         /** On set les Journées comme étant indéfinies */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["resetJournees"] as $dateKompo) {
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $dateKompo) {
                             $dateKompo->setUndefined(true);
                         }
                         $this->em->flush();
 
-                        /** On reset les joueurs des compositions d'équipe */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["kompo"] as $rencontreKompo) {
-                            $nbJoueursDiv = $rencontreKompo->getIdEquipe()->getIdDivision() ? $rencontreKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 9; /** Nombre de joueurs par défaut dans une division */
+                        /** On vide les compositions d'équipe */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["compositions"] as $compositionKompo) {
+                            $nbJoueursDiv = $compositionKompo->getIdEquipe()->getIdDivision() ? $compositionKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : $this->getParameter('nb_joueurs_default_division'); /** Nombre de joueurs par défaut dans une division */
                             for ($i = 0; $i < $nbJoueursDiv; $i++){
-                                $rencontreKompo->setIdJoueurNToNull($i);
+                                $compositionKompo->setIdJoueurNToNull($i);
                             }
+                        }
+                        $this->em->flush();
+
+                        /** On reset les informations des rencontres */
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["rencontres"] as $rencontreKompo) {
                             $rencontreKompo
                                 ->setExempt(false)
                                 ->setDomicile(null)
@@ -539,7 +547,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $division->setLongName($divisionLongName);
             $division->setShortName($divisionShortName);
             $division->setIdChampionnat($championnat);
-            $division->setNbJoueurs(9); /** Nombre de joueurs par défaut dans une division */
+            $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division')); /** Nombre de joueurs par défaut dans une division */
             $this->em->persist($division);
         }
         else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];

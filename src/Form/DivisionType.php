@@ -37,8 +37,8 @@ class DivisionType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'class' => 'validate',
-                    'min' => -1,
-                    'max' => 9
+                    'min' => 1,
+                    'max' => $options['nbMaxJoueurs']
                 ]
             ]);
 
@@ -54,6 +54,7 @@ class DivisionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'nbMaxJoueurs' => null,
             'data_class' => Division::class,
             'translation_domain' => 'forms',
             'listChamps' => null

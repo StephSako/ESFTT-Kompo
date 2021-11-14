@@ -263,11 +263,11 @@
                                                     <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
                                                     <td><b>{{ equipe.equipe.numero }}</b></td>
                                                     <td>
-                                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : 'Division indéfinie' }}</span>
+                                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
                                                         {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
                                                     </td>
                                                     <td>
-                                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption=>Poule indéfinie</span>" }}</span>
+                                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption>Poule indéfinie</span>" }}</span>
                                                         {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
                                                     </td>
                                                     <td>
@@ -319,7 +319,7 @@
                                 <h4>Les rencontres</h4>
 
                                 {% if data.matches.issuedSorted %}
-                                    <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour. Toutes les compositions d\'équipe seront vidées.' }}</b></p>
+                                    <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour' }}</b></p>
 
                                     {% for equipe, rencontres in data.matches.issuedSorted %}
                                         <ul class="collapsible backoffice_disponibilites">
@@ -352,16 +352,16 @@
                                                                         {% if not rencontre.exempt %}
                                                                             <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
                                                                                 {% if rencontre.rencontre.exempt %}
-                                                                                    <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                                    <span class="new badge red white-text" data-badge-caption>Exemptée</span>
                                                                                 {% elseif rencontre.rencontre.adversaire is null%}
-                                                                                    <span class="new badge red white-text" data-badge-caption=>Adversaire indéfini</span>
+                                                                                    <span class="new badge red white-text" data-badge-caption>Adversaire indéfini</span>
                                                                                 {% else %}
                                                                                     {{ rencontre.rencontre.adversaire }}
                                                                                 {% endif %}
                                                                             </span>
                                                                             {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
                                                                         {% else %}
-                                                                            <span class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                                                            <span class="new badge red white-text" data-badge-caption>Exemptée</span>
                                                                         {% endif %}
                                                                     </td>
                                                                     <td>
