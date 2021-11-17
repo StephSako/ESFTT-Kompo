@@ -485,7 +485,7 @@ class HomeController extends AbstractController
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
                 $errorMatchSheet = count(array_filter($joueursAdversaire, function($joueur) {
                     return !$joueur->getLicence() || !$joueur->getPoints();
-                })) > 0;
+                })) == count($joueursAdversaire);
 
                 /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
                 if (!$errorMatchSheet){
@@ -507,7 +507,7 @@ class HomeController extends AbstractController
 
                                 return [
                                     'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
-                                    'pointsJoueurAdversaire' => count($joueurAdversaireBis) ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
+                                    'pointsJoueurAdversaire' => count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints() ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
                                 ];
                             }, $matches);
 

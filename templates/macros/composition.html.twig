@@ -8,7 +8,7 @@
         </td>
         <td>
             {% if competiteur is not null %}
-                <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ competiteur.classementOfficiel }}</span>
+                {{ competiteur.classementOfficiel }} pts
             {% else %}
                 <span>&nbsp</span>
             {% endif %}
