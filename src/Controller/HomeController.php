@@ -485,7 +485,9 @@ class HomeController extends AbstractController
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
                 $errorMatchSheet = count(array_filter($joueursAdversaire, function($joueur) {
                     return !$joueur->getLicence() || !$joueur->getPoints();
-                })) == count($joueursAdversaire);
+                })) == count($joueursAdversaire) && count(array_filter($joueursAdversaireBis, function($joueur) {
+                        return !$joueur->getLicence() || !$joueur->getPoints();
+                    })) == count($joueursAdversaireBis);
 
                 /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
                 if (!$errorMatchSheet){
@@ -523,7 +525,6 @@ class HomeController extends AbstractController
                 array_push($journees, $journee);
             }
         } catch(Exception $exception) {
-//            dump($exception);
             $erreur = 'Liste des joueurs adversaires indisponible';
         }
 
@@ -591,6 +592,46 @@ class HomeController extends AbstractController
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
             'classementPointsVirtuelsMensuel' => $classementPointsVirtuelsMensuel,
             'classementPointsVirtuelsPhase' => $classementPointsVirtuelsPhase,
+            'erreur' => $erreur,
+        ])->getContent());
+    }
+
+    /**
+     * Renvoie un template du classement de la poule cliquée
+     * @Route("/journee/classement-poule", name="index.classementPoule", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    function getClassementPoule(Request $request): JsonResponse {
+        set_time_limit(intval($this->getParameter('time_limit_ajax')));
+        $classementPoule = [];
+        $erreur = null;
+
+        try {
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            $lienDivision = $request->request->get('lienDivision');
+            $classementPouleAPI = $api->getClassementPouleByLienDivision($lienDivision);
+            $points = null;
+            $classement = 0;
+
+            foreach ($classementPouleAPI as $equipe) {
+                if ($points != $equipe->getPoints()) {
+                    $classement++;
+                }
+                array_push($classementPoule, [
+                    'nom' => mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
+                    'points' => $equipe->getPoints(),
+                    'classement' => $points != $equipe->getPoints() ? $classement : null,
+                    'isOurClub' => str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? 'bold' : null
+                ]);
+                $points = $equipe->getPoints();
+            }
+        } catch(Exception $exception) {
+            $erreur = 'Classement de la poule indisponible';
+        }
+
+        return new JsonResponse($this->render('ajax/classementPoule.html.twig', [
+            'classementPoule' => $classementPoule,
             'erreur' => $erreur,
         ])->getContent());
     }

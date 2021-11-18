@@ -65,6 +65,10 @@ html, body {
   margin-bottom: 20px;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .dispos {
   border-radius: 10px;
   background-color: white;
@@ -696,6 +700,10 @@ td#noTeam {
 
 .progress .indeterminate {
   background-color: #63aaff;
+}
+
+table.classementPoule td {
+  padding: 14px 5px;
 }
 
 @-webkit-keyframes rainbow {
