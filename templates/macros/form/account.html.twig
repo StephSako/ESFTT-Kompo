@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, options) %}
+{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, options) %}
 
     <div class="card-panel center-align account-card">
 
@@ -142,6 +142,16 @@
 
                 <div class="row section" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Informations Ping</h5>
+
+                    {% if type != 'backoffice' %}
+                        <p>
+                            {% if isCritFed %}
+                                <i class="material-icons green-text">check</i> Je participe au critérium fédéral
+                            {% else%}
+                                <i class="material-icons red-text">clear</i> Je ne participe pas au critérium fédéral
+                            {% endif %}
+                        </p>
+                    {% endif %}
 
                     <div class="col s12 m4">
                         <p><b><i class="material-icons prefix">category</i> Catégorie d'âge

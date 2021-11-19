@@ -29,27 +29,31 @@
         <div class="card-panel" id="ckeditor-render">
             {% if showConcernedPlayers %}
                 <h4><b>Joueurs concernés</b></h4>
-                <table class="striped responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Catégorie</th>
-                            <th>N° licence</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for player in concernedPlayers %}
+                {% if concernedPlayers|length %}
+                    <table class="striped responsive-table">
+                        <thead>
                             <tr>
-                                <td>{{ player.nom }}</td>
-                                <td>{{ player.prenom }}</td>
-                                <td>{{ player.categorieAgeLabel }}</td>
-                                <td>{{ player.licence }}</td>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Catégorie</th>
+                                <th>N° licence</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {% for player in concernedPlayers %}
+                                <tr>
+                                    <td>{{ player.nom }}</td>
+                                    <td>{{ player.prenom }}</td>
+                                    <td>{{ player.categorieAgeLabel }}</td>
+                                    <td>{{ player.licence }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucun joueur ne participe au critérium fédéral pour le moment ...</p>
+                {% endif %}
             {% endif %}
             <p>{{ HTMLContent | raw }}</p>
         </div>

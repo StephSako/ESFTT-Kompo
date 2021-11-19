@@ -187,6 +187,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'age' => $competiteur->getAge(),
             'categorieAge' => $competiteur->getCategorieAgeLabel(),
+            'isCritFed' => $competiteur->isCritFed(),
             'path' => 'backoffice.password.edit',
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
