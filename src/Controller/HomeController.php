@@ -32,6 +32,13 @@ class HomeController extends AbstractController
     private $settingsRepository;
 
     /**
+     * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
+     */
+    const INFOS_CHAMP_ROLE_DISPLAY = [
+        'criterium' => 'CritFed'
+    ];
+
+    /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
@@ -423,12 +430,17 @@ class HomeController extends AbstractController
             }
         }
 
+        $showConcernedPlayers = in_array($type, array_keys(self::INFOS_CHAMP_ROLE_DISPLAY));
+        $concernedPlayers = $showConcernedPlayers ? $this->competiteurRepository->findJoueursByRole(self::INFOS_CHAMP_ROLE_DISPLAY[$type], null) : null;
+
         return $this->render('journee/infos.html.twig', [
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
             'HTMLContent' => $data,
+            'showConcernedPlayers' => $showConcernedPlayers,
+            'concernedPlayers' => $concernedPlayers,
             'type' => $type
         ]);
     }

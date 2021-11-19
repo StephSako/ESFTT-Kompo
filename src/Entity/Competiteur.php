@@ -241,6 +241,20 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_crit_fed", nullable=false)
+     */
+    private $isCritFed = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="categorie_age", nullable=false)
+     */
+    private $categorieAge = '';
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="is_competiteur", nullable=false)
      */
     private $isCompetiteur = false;
@@ -872,6 +886,24 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @return bool
+     */
+    public function isCritFed(): bool
+    {
+        return $this->isCritFed;
+    }
+
+    /**
+     * @param bool $isCritFed
+     * @return Competiteur
+     */
+    public function setIsCritFed(bool $isCritFed): self
+    {
+        $this->isCritFed = $isCritFed;
+        return $this;
+    }
+
+    /**
      * @return DateTime|null
      */
     public function getDateNaissance(): ?DateTime
@@ -928,6 +960,24 @@ class Competiteur implements UserInterface, Serializable
     public function setIsCompetiteur(bool $isCompetiteur): self
     {
         $this->isCompetiteur = $isCompetiteur;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategorieAge(): string
+    {
+        return $this->categorieAge;
+    }
+
+    /**
+     * @param string $categorieAge
+     * @return Competiteur
+     */
+    public function setCategorieAge(string $categorieAge): self
+    {
+        $this->categorieAge = $categorieAge;
         return $this;
     }
 }

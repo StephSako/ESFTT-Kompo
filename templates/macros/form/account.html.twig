@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, options) %}
+{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, options) %}
 
     <div class="card-panel center-align account-card">
 
@@ -21,7 +21,7 @@
                     </div>
                 {% endif %}
                 <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
-                    <b><i class="material-icons prefix">today</i> Date de  naissance</b>
+                    <b><i class="material-icons prefix">cake</i> Date de  naissance</b>
                     <div class="titlecase">
                         {{ form_row(form.dateNaissance) }}
                     </div>
@@ -43,7 +43,7 @@
                             {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 0">
                         <div class="col s12 m4">
                             {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
                         </div>
@@ -52,6 +52,11 @@
                         </div>
                         <div class="col s12 m4">
                             {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
                         </div>
                     </div>
                 </div>
@@ -138,7 +143,19 @@
                 <div class="row section" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Informations Ping</h5>
 
-                    <div class="col s12 m6">
+                    <div class="col s12 m4">
+                        <p><b><i class="material-icons prefix">category</i> Catégorie d'âge
+                            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                                <span style="color: red">*</span>
+                            {% endif %}
+                        </b></p>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.categorieAge) }}
+                        {% else %}
+                            <span class="pastille blue centered">{{ categorieAge }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="col s12 m4">
                         <p><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
@@ -150,8 +167,8 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <div class="col s12 m6">
-                        <p><b><i class="material-icons prefix">trending_up</i> Classement officiel</b></p>
+                    <div class="col s12 m4">
+                        <p><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}
                         {% else %}

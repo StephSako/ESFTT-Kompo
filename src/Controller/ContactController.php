@@ -56,6 +56,7 @@ class ContactController extends AbstractController
         $joueurs['tous'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur));
         $joueurs['loisirs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur));
         $joueurs['competiteurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur));
+        $joueurs['crit_fed'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur));
         $joueurs['capitaines'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur));
         $joueurs['entraineurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur));
         $joueurs['administrateurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur));

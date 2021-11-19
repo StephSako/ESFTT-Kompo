@@ -14,6 +14,7 @@ $(document).ready(function () {
     let cb_competiteur = $('#cb_competiteur');
     let cb_archive = $('#cb_archive');
     let cb_entraineur = $('#cb_entraineur');
+    let cb_crit_fed = $('#cb_crit_fed');
     let btn_modifier = $('#btn_modifier');
 
     /** Evènements liés aux checkbox Administrateur, Capitaine, Loisir, Entraineur et Archive **/
@@ -43,6 +44,8 @@ $(document).ready(function () {
     if (cb_competiteur.is(":checked")){
         cb_loisir.prop('checked', false).prop('disabled', true);
         cb_archive.prop('checked', false).prop('disabled', true);
+    } else {
+        cb_crit_fed.prop('checked', false).prop('disabled', true);
     }
 
     cb_archive.on('change', function () {
@@ -53,6 +56,7 @@ $(document).ready(function () {
             cb_capitaine.prop('disabled', false);
             cb_admin.prop('disabled', false);
             cb_competiteur.prop('disabled', false);
+            cb_crit_fed.prop('disabled', true);
         }
         else{
             btn_modifier.prop('disabled', false);
@@ -61,6 +65,7 @@ $(document).ready(function () {
             cb_capitaine.prop('disabled', true);
             cb_admin.prop('disabled', true);
             cb_competiteur.prop('disabled', true);
+            cb_crit_fed.prop('disabled', true);
         }
     });
 
@@ -113,18 +118,24 @@ $(document).ready(function () {
             cb_archive.prop('disabled', true);
             cb_competiteur.prop('disabled', true);
         }
+        cb_crit_fed.prop('disabled', true);
     });
 
     cb_competiteur.on('change', function () {
         if (!cb_competiteur.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
-            if (!cb_capitaine.is(":checked")) cb_loisir.prop('disabled', false);
-            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked")) cb_archive.prop('disabled', false);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_archive.is(":checked"))
+                btn_modifier.prop('disabled', true);
+            if (!cb_capitaine.is(":checked"))
+                cb_loisir.prop('disabled', false);
+            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked"))
+                cb_archive.prop('disabled', false);
+            cb_crit_fed.prop('checked', false).prop('disabled', true);
         }
         else{
             btn_modifier.prop('disabled', false);
             cb_loisir.prop('disabled', true);
             cb_archive.prop('disabled', true);
+            cb_crit_fed.prop('checked', false).prop('disabled', false);
         }
     });
 

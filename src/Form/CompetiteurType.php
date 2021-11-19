@@ -6,6 +6,7 @@ use App\Entity\Competiteur;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -71,7 +72,33 @@ class CompetiteurType extends AbstractType
                 ->add('isCompetiteur', CheckboxType::class, [
                     'label' => 'Compétiteur',
                     'required' => false
-                ]);
+                ])
+                ->add('isCritFed', CheckboxType::class, [
+                    'label' => 'Critérium fédéral',
+                    'required' => false
+                ])
+                ->add('categorieAge', ChoiceType::class, [
+                'label' => false,
+                'required' => true,
+                'choices' => [
+                    'Veteran 5' => 'V5',
+                    'Veteran 4' => 'V4',
+                    'Veteran 3' => 'V3',
+                    'Veteran 2' => 'V2',
+                    'Veteran 1' => 'V1',
+                    'Senior' => 'S',
+                    'Junior 3' => 'J3',
+                    'Junior 2' => 'J2',
+                    'Junior 1' => 'J1',
+                    'Cadet 2' => 'C2',
+                    'Cadet 1' => 'C1',
+                    'Minime 2' => 'M2',
+                    'Minime 1'  =>'M1',
+                    'Benjamin 2' => 'B2',
+                    'Benjamin 1' => 'B1',
+                    'Poussin' => 'P'
+                ]
+            ]);;
         }
 
         if ((($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) && !$options['isArchived']) {
