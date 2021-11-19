@@ -32,6 +32,28 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 class Competiteur implements UserInterface, Serializable
 {
     /**
+     * Tableau de conversion des labels et codes des catégories d'âge
+     */
+    const CATEGORIE_AGE_LABEL = [
+    'V5' => 'Vétéran 5',
+    'V4' => 'Vétéran 4',
+    'V3' => 'Vétéran 3',
+    'V2' => 'Vétéran 2',
+    'V1' => 'Vétéran 1',
+    'S' => 'Sénior',
+    'J3' => 'Junior 3',
+    'J2' => 'Junior 2',
+    'J1' => 'Junior 1',
+    'C2' => 'Cadet 2',
+    'C1' => 'Cadet 1',
+    'M2' => 'Minime 2',
+    'M1' => 'Minime 1',
+    'B2' => 'Benjamin 2',
+    'B1' => 'Benjamin 1',
+    'P' => 'Poussin'
+    ];
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_competiteur")
@@ -979,5 +1001,13 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->categorieAge = $categorieAge;
         return $this;
+    }
+
+    /**
+     * Renvoie la version longue de la catégorie d'âge
+     * @return string
+     */
+    public function getCategorieAgeLabel(): string {
+        return self::CATEGORIE_AGE_LABEL[$this->getCategorieAge()] ?? '-';
     }
 }

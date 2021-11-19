@@ -31,7 +31,7 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.categorieAge, {licence: app.user.licence, isArchived: false, usernameEditable: true}) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.categorieAgeLabel, {licence: app.user.licence, isArchived: false, usernameEditable: true}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
             {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, categorieAge, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable}) }}

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Competiteur;
+use PhpParser\Builder\Property;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -80,25 +81,8 @@ class CompetiteurType extends AbstractType
                 ->add('categorieAge', ChoiceType::class, [
                 'label' => false,
                 'required' => true,
-                'choices' => [
-                    'Veteran 5' => 'V5',
-                    'Veteran 4' => 'V4',
-                    'Veteran 3' => 'V3',
-                    'Veteran 2' => 'V2',
-                    'Veteran 1' => 'V1',
-                    'Senior' => 'S',
-                    'Junior 3' => 'J3',
-                    'Junior 2' => 'J2',
-                    'Junior 1' => 'J1',
-                    'Cadet 2' => 'C2',
-                    'Cadet 1' => 'C1',
-                    'Minime 2' => 'M2',
-                    'Minime 1'  =>'M1',
-                    'Benjamin 2' => 'B2',
-                    'Benjamin 1' => 'B1',
-                    'Poussin' => 'P'
-                ]
-            ]);;
+                'choices' => array_flip(Competiteur::CATEGORIE_AGE_LABEL)
+            ]);
         }
 
         if ((($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) && !$options['isArchived']) {
