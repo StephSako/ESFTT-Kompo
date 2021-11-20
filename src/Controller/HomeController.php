@@ -10,6 +10,7 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -35,7 +36,7 @@ class HomeController extends AbstractController
      * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
      */
     const INFOS_CHAMP_ROLE_DISPLAY = [
-        'criterium' => 'CritFed'
+        'critérium-fédéral' => 'CritFed'
     ];
 
     /**
@@ -396,7 +397,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/informations/{type}", name="informations")
      */
-    public function infos(Request $request, string $type): Response
+    public function getInformation(Request $request, string $type): Response
     {
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
@@ -413,9 +414,11 @@ class HomeController extends AbstractController
 
         $form = null;
         $isAdmin = $this->getUser()->isAdmin();
+        $label = $settings->getFormattedLabel(' ', $type);
+        $typeSluggedId = $settings->getFormattedLabel('', (new Slugify())->slugify($type));
         if ($isAdmin){
             $form = $this->createForm(SettingsType::class, $settings, [
-                'type_data' => $type
+                'type_data' => $typeSluggedId
             ]);
             $form->handleRequest($request);
 
@@ -441,7 +444,8 @@ class HomeController extends AbstractController
             'HTMLContent' => $data,
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
-            'type' => $type
+            'label' => $label,
+            'typeSluggedId' => $typeSluggedId
         ]);
     }
 

@@ -30,7 +30,7 @@
 
             {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                 <div class="section" style="margin-bottom: 0;">
-                    <h5 class="dark_blue" style="margin-top: 0;">Rôles dans le club</h5>
+                    <h5 class="dark_blue" style="margin-top: 0;">Statut(s) du joueur</h5>
 
                     <div class="row" style="margin-bottom: 0">
                         <div class="col s12 m4">
@@ -48,15 +48,15 @@
                             {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
                         </div>
                         <div class="col s12 m4">
-                            {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
+                            {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
                         </div>
                         <div class="col s12 m4">
-                            {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
+                            {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 0">
                         <div class="col s12 m4">
-                            {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
+                            {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
                         </div>
                     </div>
                 </div>
@@ -141,10 +141,10 @@
                 {% endif %}
 
                 <div class="row section" style="margin-bottom: 0;">
-                    <h5 class="dark_blue">Informations Ping</h5>
+                    <h5 class="dark_blue">Informations licence</h5>
 
                     {% if type != 'backoffice' %}
-                        <p>
+                        <p style="margin-bottom: 0">
                             {% if isCritFed %}
                                 <i class="material-icons green-text">check</i> Je participe au critérium fédéral
                             {% else%}

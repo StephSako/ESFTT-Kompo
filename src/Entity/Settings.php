@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SettingsRepository")
@@ -24,16 +23,16 @@ class Settings
     /**
      * @var string
      *
-     * @ORM\Column(type="text", name="informations_competition", nullable=false)
+     * @ORM\Column(type="text", name="informations_competition_departementale", nullable=false)
      */
-    private $informations_competition;
+    private $informationsCompetitionDepartementale;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="text", name="informations_criterium", nullable=false)
+     * @ORM\Column(type="text", name="informations_criterium_federal", nullable=false)
      */
-    private $informations_criterium;
+    private $informationsCriteriumFederal;
 
     /**
      * @return mixed
@@ -56,38 +55,38 @@ class Settings
     /**
      * @return string
      */
-    public function getInformationsCompetition(): string
+    public function getInformationsCompetitionDepartementale(): string
     {
-        return $this->informations_competition;
+        return $this->informationsCompetitionDepartementale;
     }
 
     /**
-     * @param string|null $informations_competition
+     * @param string|null $informationsCompetitionDepartementale
      * @return Settings
      */
-    public function setInformationsCompetition(?string $informations_competition = ''): self
+    public function setInformationsCompetitionDepartementale(?string $informationsCompetitionDepartementale = ''): self
     {
-        $informations_competition = $informations_competition ?: '';
-        $this->informations_competition = $informations_competition;
+        $informationsCompetitionDepartementale = $informationsCompetitionDepartementale ?: '';
+        $this->informationsCompetitionDepartementale = $informationsCompetitionDepartementale;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getInformationsCriterium(): string
+    public function getInformationsCriteriumFederal(): string
     {
-        return $this->informations_criterium;
+        return $this->informationsCriteriumFederal;
     }
 
     /**
-     * @param string|null $informations_criterium
+     * @param string|null $informationsCriteriumFederal
      * @return Settings
      */
-    public function setInformationsCriterium(?string $informations_criterium): self
+    public function setInformationsCriteriumFederal(?string $informationsCriteriumFederal): self
     {
-        $informations_criterium = $informations_criterium ?: '';
-        $this->informations_criterium = $informations_criterium;
+        $informationsCriteriumFederal = $informationsCriteriumFederal ?: '';
+        $this->informationsCriteriumFederal= $informationsCriteriumFederal;
         return $this;
     }
 
@@ -98,8 +97,19 @@ class Settings
      */
     public function getInformations(string $type): string
     {
-        if ($type == 'competition') return $this->getInformationsCompetition();
-        else if ($type == 'criterium') return $this->getInformationsCriterium();
+        if ($type == 'compétition-départementale') return $this->getInformationsCompetitionDepartementale();
+        else if ($type == 'critérium-fédéral') return $this->getInformationsCriteriumFederal();
         throw new Exception('Page inexistante', 404);
+    }
+
+    /**
+     * @param string $separator
+     * @param string $value
+     * @return string
+     */
+    public function getFormattedLabel(string $separator, string $value): string {
+        return join($separator, array_map(function ($typeItem) {
+            return mb_convert_case($typeItem, MB_CASE_TITLE, "UTF-8");
+        }, explode('-', $value)));
     }
 }

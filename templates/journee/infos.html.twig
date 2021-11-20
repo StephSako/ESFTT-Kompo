@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
 {% endblock %}
 
-{% block title %}Informations {{ type }}{% endblock %}
+{% block title %}Informations {{ label }}{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,7 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4 style="font-family: Lobster, cursive">Informations {{ type }}</h4>
+            <h4 style="font-family: Lobster, cursive">Informations {{ label }}</h4>
         </div>
 
         <div class="card-panel" id="ckeditor-render">
@@ -75,7 +75,7 @@
 
             <script type="text/javascript">
                 let ckeditor_content = '{{ HTMLContent }}';
-                let type = '{{ type|title }}';
+                let type = '{{ typeSluggedId }}';
             </script>
             <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Settings;
+use Cocur\Slugify\Slugify;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,10 +13,7 @@ class SettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['type_data'] == 'competition') $builder->add('informationsCompetition', HiddenType::class, [
-            'required' => false
-        ]);
-        else if ($options['type_data'] == 'criterium') $builder->add('informationsCriterium', HiddenType::class, [
+        $builder->add('informations' . $options['type_data'], HiddenType::class, [
             'required' => false
         ]);
     }
