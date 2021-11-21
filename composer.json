@@ -47,6 +47,7 @@
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
+        "league/commonmark": "^1.6",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpoffice/phpspreadsheet": "^1.18",
         "scienta/doctrine-json-functions": "~4.1",
@@ -79,8 +80,9 @@
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
         "symfony/yaml": "5.1.*",
-        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/extra-bundle": "^3.3",
         "twig/intl-extra": "^3.0",
+        "twig/markdown-extra": "^3.3",
         "twig/string-extra": "^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.15"

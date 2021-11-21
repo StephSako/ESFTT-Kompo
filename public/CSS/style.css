@@ -902,6 +902,19 @@ table.table-last-compos tr {
   padding-right: 0;
 }
 
+#aide_page h1 {
+  margin-top: 0;
+}
+#aide_page h1, #aide_page h2 {
+  font-family: Lobster, cursive;
+}
+#aide_page h4 {
+  font-family: "Lato", sans-serif;
+}
+#aide_page strong {
+  font-weight: bold;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;

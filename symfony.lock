@@ -168,6 +168,9 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.4"
     },
+    "league/commonmark": {
+        "version": "1.6.6"
+    },
     "league/uri": {
         "version": "6.4.0"
     },
@@ -733,6 +736,9 @@
     },
     "twig/intl-extra": {
         "version": "v3.0.4"
+    },
+    "twig/markdown-extra": {
+        "version": "v3.3.3"
     },
     "twig/string-extra": {
         "version": "v3.0.5"

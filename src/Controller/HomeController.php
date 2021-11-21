@@ -450,6 +450,24 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/aide", name="aide")
+     */
+    public function getHelpPage(): Response
+    {
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $allChampionnats = $this->championnatRepository->findAll();
+
+        return $this->render('aide.html.twig', [
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
+            'journees' => $journees
+        ]);
+    }
+
+    /**
      * Renvoie un template des anciennes compositions d'équipe de l'adversaire des précédentes journées
      * @Route("/journee/last_compos_adversaire", name="index.lastComposAdversaire", methods={"POST"})
      * @param Request $request
