@@ -460,10 +460,12 @@ class HomeController extends AbstractController
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
 
+        $markdown_data = file_get_contents(__DIR__ . '\..\..\README.md');
         return $this->render('aide.html.twig', [
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
-            'journees' => $journees
+            'journees' => $journees,
+            'markdown_data' => $markdown_data
         ]);
     }
 
