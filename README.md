@@ -20,8 +20,8 @@ Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 ### Page de connexion
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login.PNG" alt="login"></p>
+
 Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
-<br><br>
 
 > Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a>
 
@@ -74,6 +74,7 @@ Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux bou
 <p align="center"><img width="8%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/arrow_down.png" alt="arrow_down"></p>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_renseignée.PNG" alt="dispo_renseignée"></p>
+
 Vous pouvez modifier vos disponibilités n'importe quand.
 
 **❗ ATTENTION : vous ne pourrez pas être sélectionné dans une équipe sans avoir signalé votre disponibilité ! Même si vous n'êtes pas disponible, faites-le savoir !**
@@ -129,13 +130,13 @@ Le bouton bleu **TOUTES LES DISPOS** au dessus du tableau ouvre un panneau déta
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition.jpg" alt="composition"></p>
 
 Pour chaque équipe, est affiché :
-- l'identifiant du club (N° ESFTT);
-- la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
-- la division et la poule;
-- le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
-- l'adversaire;
-- un bouton permettant de vider rapidement et entièrement la composition;
-- un bouton permettant de modifier la composition.
+ - l'identifiant du club (N° ESFTT);
+ - la sélection des joueurs listés avec leurs classements **officiels** (début de phase), avatars, noms et licences. Cette hiérarchie entre joueurs permet de se projeter sur l'ordre à renseigner sur la feuille de match;
+ - la division et la poule;
+ - le lieu de la rencontre (une maison pour une rencontre à domicile et une voiture pour une rencontre à l'extérieur);
+ - l'adversaire;
+ - un bouton permettant de vider rapidement et entièrement la composition;
+ - un bouton permettant de modifier la composition.
 
 **Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.**
 

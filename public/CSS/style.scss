@@ -931,6 +931,13 @@ li {
   }
 }
 
+.markdown_content {
+  li::before {
+    padding-left: 8px;
+    content: "- ";
+  }
+}
+
 .avatarSectionDelete {
   width: 120px;
   height: 120px;

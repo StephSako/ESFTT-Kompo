@@ -14,8 +14,8 @@
             <h4 style="font-family: Lobster, cursive">Page d'aide de Kompo</h4>
         </div>
 
-        <div class="card-panel">
-                {{ markdown_data | markdown_to_html }}
+        <div class="card-panel markdown_content">
+            {{ markdown_data | markdown_to_html }}
         </div>
     </div>
 {% endblock %}
