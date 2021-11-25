@@ -573,19 +573,21 @@ class HomeController extends AbstractController
 
     /**
      * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs
-     * @Route("/journee/classement-virtual-points", name="index.classementVirtualPoints", methods={"POST"})
+     * @Route("/journee/classement-virtuel", name="index.classementVirtuel", methods={"POST"})
      * @return JsonResponse
      */
-    function getClassementPointsVirtuelsClub(): JsonResponse {
+    function getClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
-        $classementPointsVirtuelsMensuel = [];
-        $classementPointsVirtuelsPhase = [];
+        $classementProgressionMensuel = [];
+        $classementProgressionPhase = [];
+        $classementPointsMensuel = [];
+        $classementPointsPhase = [];
         $erreur = null;
 
         try {
             $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $classementPointsVirtuelsMensuel = array_map(function($joueur) use ($api) {
+            $classementProgressionMensuel = array_map(function($joueur) use ($api) {
                 $virtualPoint = null;
                 if ($joueur->getLicence()) {
                     try {
@@ -600,9 +602,12 @@ class HomeController extends AbstractController
                     'pointsVirtuelsPointsWonPhase' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
                 ];
             }, $competiteurs);
-            $classementPointsVirtuelsPhase = $classementPointsVirtuelsMensuel;
+            $classementProgressionPhase = $classementProgressionMensuel;
+            $classementPointsMensuel = $classementProgressionMensuel;
+            $classementPointsPhase = $classementProgressionMensuel;
 
-            usort($classementPointsVirtuelsMensuel, function ($a, $b) {
+            /** Classement mensuel selon les progressions */
+            usort($classementProgressionMensuel, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
                 else if (!$b['pointsVirtuelsVirtualPoints']) return false;
 
@@ -612,7 +617,8 @@ class HomeController extends AbstractController
                 return $b['pointsVirtuelsPointsWonMensuel'] > $a['pointsVirtuelsPointsWonMensuel'];
             });
 
-            usort($classementPointsVirtuelsPhase, function ($a, $b) {
+            /** Classement de phase selon les progressions */
+            usort($classementProgressionPhase, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
                 else if (!$b['pointsVirtuelsVirtualPoints']) return false;
 
@@ -621,13 +627,37 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsPointsWonPhase'] > $a['pointsVirtuelsPointsWonPhase'];
             });
+
+            /** Classement mensuel selon les points */
+            usort($classementPointsMensuel, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsVirtualPoints'] == $b['pointsVirtuelsVirtualPoints']) {
+                    return $b['pointsVirtuelsPointsWonMensuel'] > $a['pointsVirtuelsPointsWonMensuel'];
+                }
+                return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+            });
+
+            /** Classement de phase selon les points */
+            usort($classementPointsPhase, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsVirtualPoints'] == $b['pointsVirtuelsVirtualPoints']) {
+                    return $b['pointsVirtuelsPointsWonPhase'] > $a['pointsVirtuelsPointsWonPhase'];
+                }
+                return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+            });
         } catch(Exception $exception) {
             $erreur = 'Classement virtuel général indisponible.';
         }
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
-            'classementPointsVirtuelsMensuel' => $classementPointsVirtuelsMensuel,
-            'classementPointsVirtuelsPhase' => $classementPointsVirtuelsPhase,
+            'classementProgressionMensuel' => $classementProgressionMensuel,
+            'classementProgressionPhase' => $classementProgressionPhase,
+            'classementPointsMensuel' => $classementPointsMensuel,
+            'classementPointsPhase' => $classementPointsPhase,
             'erreur' => $erreur,
         ])->getContent());
     }

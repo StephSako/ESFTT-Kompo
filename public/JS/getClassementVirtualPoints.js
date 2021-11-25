@@ -1,17 +1,17 @@
-function getClassementVirtualPoints() {
+function getClassementVirtuel() {
     if (!alreadyCalledClassement) {
         alreadyCalledClassement = true;
         $.ajax({
-            url : '/journee/classement-virtual-points',
+            url : '/journee/classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : function(responseTemplate) { templatingClassementVirtualPoints(responseTemplate); },
-            error : function() { templatingClassementVirtualPoints("<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>"); }
+            success : function(responseTemplate) { templatingClassementVirtuel(responseTemplate); },
+            error : function() { templatingClassementVirtuel("<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>"); }
         });
     }
 }
 
-function templatingClassementVirtualPoints(response){
+function templatingClassementVirtuel(response){
     $('#rankingContent').html(response);
 }
 

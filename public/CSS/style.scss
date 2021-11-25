@@ -576,6 +576,11 @@ form {
   }
 }
 
+.virtualRankSwitches {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .virtualPointsDiv {
   display: flex;
   justify-content: space-between;
@@ -601,9 +606,17 @@ span.virtualPoints {
   background-color: #0c3a69;
 }
 
-.switch.virtualPoints {
+.switch.virtualClassement {
   margin-bottom: 8px;
   margin-top: 8px;
+
+  label {
+    padding: 0;
+
+    .lever {
+      margin: 0 2px;
+    }
+  }
 }
 
 table.rankingVirtualPoints {
@@ -1211,6 +1224,12 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 344px) {
+  .virtualRankSwitches  {
+    font-size: 13px;
+  }
+}
+
 @media screen and (max-width: 324px) {
   .noDivisionPillHeader {
     display: none;
@@ -1218,5 +1237,17 @@ table.table-last-compos {
 
   .noDivisionPillBody {
     display: block;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .virtualRankSwitches  {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 305px) {
+  .virtualRankSwitches  {
+    font-size: 11px;
   }
 }
