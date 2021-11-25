@@ -8,6 +8,7 @@ parameters:
     club_name: '%env(CLUB_NAME)%'
     time_limit_ajax: '%env(TIME_LIMIT_AJAX)%'
     nb_joueurs_default_division: '%env(NB_JOUEURS_DEFAULT_DIVISION)%'
+    read_md_path: '%env(READ_MD_PATH)%'
 
 services:
     _defaults:

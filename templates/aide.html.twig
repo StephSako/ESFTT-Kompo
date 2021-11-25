@@ -15,7 +15,11 @@
         </div>
 
         <div class="card-panel markdown_content">
-            {{ markdown_data | markdown_to_html }}
+            {% if not markdown_data %}
+                <p class="center pastille reset red">Le fichier de la notice de Kompo n'a pas été trouvé</p>
+            {% else %}
+                {{ markdown_data | markdown_to_html }}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
