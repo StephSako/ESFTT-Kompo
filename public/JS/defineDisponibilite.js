@@ -10,7 +10,7 @@ function newDisponibilite(idJournee, disponibiliteBoolean, idCompetiteur) {
         },
         dataType : 'json',
         success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
-        error : function(error) { endSending(error, null, false); }
+        error : function(error) { endSending(error, idJournee + idCompetiteur, false); }
     });
 }
 
@@ -30,7 +30,7 @@ function updateDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
             },
             dataType : 'json',
             success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
-            error : function(error) { endSending(error, null, false); }
+            error : function(error) { endSending(error, idJournee + idCompetiteur, false); }
         });
     }
 }
@@ -41,11 +41,9 @@ function sending(divSuffixe){
 }
 
 function endSending(response, divSuffixe, isSuccess){
+    let buttonDiv = $('#dispoJoueur' + divSuffixe);
+    buttonDiv.show();
     if (!isSuccess) M.toast({html: response.responseJSON});
-    else {
-        let buttonDiv = $('#dispoJoueur' + divSuffixe);
-        buttonDiv.show();
-        buttonDiv.html(response);
-    }
+    else buttonDiv.html(response);
     $('#preloader' + divSuffixe).hide();
 }

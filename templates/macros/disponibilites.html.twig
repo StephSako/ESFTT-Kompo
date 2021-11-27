@@ -75,7 +75,7 @@
                 <span class="{% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
             </p>
         {% else %}
-            <p class="red-text text-lighten-1"><b>Vous n'êtes pas licencié</b></p>
+            <p class="red-text text-lighten-1"><b>Matches introuvables</b></p>
         {% endif %}
     </div>
 
