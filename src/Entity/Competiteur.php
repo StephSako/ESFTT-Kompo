@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -32,25 +33,25 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 class Competiteur implements UserInterface, Serializable
 {
     /**
-     * Tableau de conversion des labels et codes des catégories d'âge
+     * Tableau des catégories d'âge en fonction des dates
      */
     const CATEGORIE_AGE_LABEL = [
-    'V5' => 'Vétéran 5',
-    'V4' => 'Vétéran 4',
-    'V3' => 'Vétéran 3',
-    'V2' => 'Vétéran 2',
-    'V1' => 'Vétéran 1',
-    'S' => 'Sénior',
-    'J3' => 'Junior 3',
-    'J2' => 'Junior 2',
-    'J1' => 'Junior 1',
-    'C2' => 'Cadet 2',
-    'C1' => 'Cadet 1',
-    'M2' => 'Minime 2',
-    'M1' => 'Minime 1',
-    'B2' => 'Benjamin 2',
-    'B1' => 'Benjamin 1',
-    'P' => 'Poussin'
+    ['libelle' => 'Vétéran 5',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 120, 'yearMaxGap' => 80],
+    ['libelle' => 'Vétéran 4',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 79, 'yearMaxGap' => 70],
+    ['libelle' => 'Vétéran 3',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 69, 'yearMaxGap' => 60],
+    ['libelle' => 'Vétéran 2',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 59, 'yearMaxGap' => 50],
+    ['libelle' => 'Vétéran 1',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 49, 'yearMaxGap' => 40],
+    ['libelle' => 'Sénior',     'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 39, 'yearMaxGap' => 18],
+    ['libelle' => 'Junior 3',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 17, 'yearMaxGap' => 17],
+    ['libelle' => 'Junior 2',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 16, 'yearMaxGap' => 16],
+    ['libelle' => 'Junior 1',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 15, 'yearMaxGap' => 15],
+    ['libelle' => 'Cadet 2',    'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 14, 'yearMaxGap' => 14],
+    ['libelle' => 'Cadet 1',    'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 13, 'yearMaxGap' => 13],
+    ['libelle' => 'Minime 2',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 12, 'yearMaxGap' => 12],
+    ['libelle' => 'Minime 1',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 11, 'yearMaxGap' => 11],
+    ['libelle' => 'Benjamin 2', 'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 10, 'yearMaxGap' => 10],
+    ['libelle' => 'Benjamin 1', 'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 9, 'yearMaxGap' => 9],
+    ['libelle' => 'Poussin',    'minDate' => '/01/01', 'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
     /**
@@ -266,13 +267,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="boolean", name="is_crit_fed", nullable=false)
      */
     private $isCritFed = false;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="categorie_age", nullable=false)
-     */
-    private $categorieAge = '';
 
     /**
      * @var boolean
@@ -986,28 +980,17 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
-     */
-    public function getCategorieAge(): string
-    {
-        return $this->categorieAge;
-    }
-
-    /**
-     * @param string $categorieAge
-     * @return Competiteur
-     */
-    public function setCategorieAge(string $categorieAge): self
-    {
-        $this->categorieAge = $categorieAge;
-        return $this;
-    }
-
-    /**
      * Renvoie la version longue de la catégorie d'âge
      * @return string
+     * @throws Exception
      */
     public function getCategorieAgeLabel(): string {
-        return self::CATEGORIE_AGE_LABEL[$this->getCategorieAge()] ?? '-';
+        $gap = date('m') < 7 ? 1 : 0;
+        $categorie = array_values(array_filter(self::CATEGORIE_AGE_LABEL, function($categorieRef) use($gap) {
+            $minYear = date('Y') - $categorieRef['yearMinGap'] - $gap;
+            $maxYear = date('Y') - $categorieRef['yearMaxGap'] - $gap;
+            return new DateTime($minYear . $categorieRef['minDate']) <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
+        }));
+        return count($categorie) ? $categorie[0]['libelle'] : '-';
     }
 }

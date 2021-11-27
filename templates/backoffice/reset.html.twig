@@ -42,7 +42,6 @@
                             <tr>
                                 <th>Licence</th>
                                 <th>Nom</th>
-                                <th>Catégorie</th>
                                 <th>Points officiels</th>
                             </tr>
                         </thead>
@@ -61,12 +60,6 @@
                                             <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</span>
                                             {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT ~ ' ' ~ joueur.prenomFFTT }}{% endif %}
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span {% if joueur.joueur.categorieAge != joueur.categorieAgeFFTT %}class="red-text"{% endif %}>{{ (joueur.joueur.categorieAge is not null ? joueur.joueur.categorieAge : "<i class='material-icons'>clear</i>") }}</span>
-                                        {% if joueur.joueur.categorieAge != joueur.categorieAgeFFTT %}
-                                            <i class="material-icons black-text">arrow_forward</i> {{ joueur.categorieAgeFFTT }}
-                                        {% endif %}
                                     </td>
                                     <td>
                                         <span {% if joueur.joueur.classementOfficiel != joueur.pointsFFTT %}class="red-text"{% endif %}>{{ (joueur.joueur.classementOfficiel is not null ? joueur.joueur.classementOfficiel : "<i class='material-icons'>clear</i>") }}</span>

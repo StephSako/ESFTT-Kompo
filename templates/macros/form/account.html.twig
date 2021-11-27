@@ -153,19 +153,22 @@
                         </p>
                     {% endif %}
 
-                    <div class="col s12 m4">
-                        <p><b><i class="material-icons prefix">category</i> Catégorie d'âge
-                            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                                <span style="color: red">*</span>
-                            {% endif %}
-                        </b></p>
+                    <div class="col m12 l4">
+                        <p>
+                            <b>
+                                Catégorie d'âge
+                                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                                    <span style="color: red">*</span>
+                                {% endif %}
+                            </b>
+                        </p>
                         {% if type == 'backoffice' %}
-                            {{ form_row(form.categorieAge) }}
+                            <i>Calculé sur la date de naissance</i>
                         {% else %}
                             <span class="pastille blue centered">{{ categorieAge }}</span>
                         {% endif %}
                     </div>
-                    <div class="col s12 m4">
+                    <div class="col s12 m6 l4">
                         <p><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
@@ -177,7 +180,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <div class="col s12 m4">
+                    <div class="col s12 m6 l4">
                         <p><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}

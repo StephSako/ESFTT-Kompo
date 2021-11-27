@@ -77,12 +77,7 @@ class CompetiteurType extends AbstractType
                 ->add('isCritFed', CheckboxType::class, [
                     'label' => 'Critérium fédéral',
                     'required' => false
-                ])
-                ->add('categorieAge', ChoiceType::class, [
-                'label' => false,
-                'required' => true,
-                'choices' => array_flip(Competiteur::CATEGORIE_AGE_LABEL)
-            ]);
+                ]);
         }
 
         if ((($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) && !$options['isArchived']) {
