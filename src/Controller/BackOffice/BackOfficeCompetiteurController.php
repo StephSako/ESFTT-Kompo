@@ -100,6 +100,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $competiteur
             ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
             ->setDateNaissance(null)
+            ->setClassementOfficiel($this->getParameter('default_nb_points'))
             ->setIsCompetiteur(true);
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),

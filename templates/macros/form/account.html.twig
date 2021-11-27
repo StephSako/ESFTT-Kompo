@@ -81,7 +81,7 @@
                                             Renouveler
                                         </a>
                                     {% else %}
-                                        <p style="margin-bottom: 0;"><b>Renseignez l'année à laquelle le certificat médical a été créé</b></p>
+                                        <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
 
                                         <div class="row" style="margin-bottom: 0;">
                                             <div class="col s12 m4 offset-m4" style="margin-top: 0;">
@@ -154,14 +154,7 @@
                     {% endif %}
 
                     <div class="col m12 l4">
-                        <p>
-                            <b>
-                                Catégorie d'âge
-                                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                                    <span style="color: red">*</span>
-                                {% endif %}
-                            </b>
-                        </p>
+                        <p><b>Catégorie d'âge</b></p>
                         {% if type == 'backoffice' %}
                             <i>Calculé sur la date de naissance</i>
                         {% else %}
