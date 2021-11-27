@@ -4,3 +4,4 @@ twig:
       default_password: '%env(DEFAULT_PASSWORD)%'
       club_id: '%env(CLUB_ID)%'
       club_name: '%env(CLUB_NAME)%'
+      club_diminutif: '%env(CLUB_DIMINUTIF)%'

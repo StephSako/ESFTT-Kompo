@@ -125,7 +125,6 @@ class BackOfficeCompetiteurController extends AbstractController
                     /** On envoie un mail de bienvenue */
                     try {
                         $this->contactController->$this->sendMail(
-                            new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
                             new Address($competiteur->getFirstContactableMail(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
                             true,
                             'Bienvenue sur Kompo !',

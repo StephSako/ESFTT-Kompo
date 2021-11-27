@@ -237,7 +237,7 @@
                         </div>
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
-                            <p class="center" style="margin: 0;"><b>N° ESFTT : {{ club_id }}</b></p>
+                            <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                         {% endif %}
 
                         <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">

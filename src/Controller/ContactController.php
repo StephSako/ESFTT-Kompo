@@ -135,7 +135,6 @@ class ContactController extends AbstractController
             $encryption = openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv);
 
             return $this->sendMail(
-                new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
                 new Address($mail, $nom),
                 true,
                 'Réinitialisation de votre mot de passe',
@@ -146,7 +145,6 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @param Address $addressSender
      * @param Address $addressReceiver
      * @param bool $importance
      * @param string $sujet
@@ -155,11 +153,11 @@ class ContactController extends AbstractController
      * @param array $options
      * @return Response
      */
-    public function sendMail(Address $addressSender, Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template, array $options): Response
+    public function sendMail(Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template, array $options): Response
     {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
-            ->from($addressSender)
+            ->from(new Address($this->getParameter('club_email'), 'Kompo - ' . $this->getParameter('club_diminutif')))
             ->to($addressReceiver)
             ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
