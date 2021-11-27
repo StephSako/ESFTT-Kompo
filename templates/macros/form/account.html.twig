@@ -102,6 +102,10 @@
                         <h5 class="dark_blue">Contact</h5>
                         <p><i><span style="color: red">*</span> Une adresse email minimum requise</i></p>
 
+                        {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
+                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
+                        {% endif %}
+
                         <div class="col s12 m6 offset-m3">
                             <b><i class="material-icons prefix">mail</i> Adresse mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                         </div>

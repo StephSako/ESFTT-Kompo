@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\ContactController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
@@ -33,6 +35,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $divisionRepository;
     private $uploadHandler;
     private $encoder;
+    private $contactController;
 
     /**
      * BackOfficeController constructor.
@@ -42,6 +45,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param DivisionRepository $divisionRepository
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
+     * @param ContactController $contactController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -50,6 +54,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 DivisionRepository $divisionRepository,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
+                                ContactController $contactController,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
@@ -59,6 +64,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->divisionRepository = $divisionRepository;
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
+        $this->contactController = $contactController;
     }
 
     /**
@@ -115,6 +121,21 @@ class BackOfficeCompetiteurController extends AbstractController
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
                     $this->em->persist($competiteur);
+
+                    /** On envoie un mail de bienvenue */
+                    try {
+                        $this->contactController->$this->sendMail(
+                            new Address('esf.la.frette.tennis.de.table@gmail.com', 'Kompo - ESFTT'),
+                            new Address($competiteur->getFirstContactableMail(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
+                            true,
+                            'Bienvenue sur Kompo !',
+                            'MESSAGE', // TODO
+                            'mail_templating/bienvenue.html.twig', // TODO
+                            []);
+                    } catch (Exception $e) {
+                        $this->addFlash('fail', 'Email de bienvenue non envoyé');
+                    }
+
                     $this->em->flush();
                     $this->addFlash('success', 'Compétiteur créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
