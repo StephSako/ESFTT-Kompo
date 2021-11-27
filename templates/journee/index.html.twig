@@ -240,7 +240,7 @@
                             <p class="center" style="margin: 0;"><b>N° ESFTT : {{ club_id }}</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table">
+                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
                             <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
                                     {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}

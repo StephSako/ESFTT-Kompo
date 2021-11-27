@@ -519,7 +519,7 @@ class HomeController extends AbstractController
                 $joueursAdversaireFormatted = [];
 
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
-                $errorMatchSheet = count(array_filter($joueursAdversaire, function($joueur) {
+                $errorMatchSheet = count($detailsRencontre->getParties()) && count(array_filter($joueursAdversaire, function($joueur) {
                     return !$joueur->getLicence() || !$joueur->getPoints();
                 })) == count($joueursAdversaire) && count(array_filter($joueursAdversaireBis, function($joueur) {
                         return !$joueur->getLicence() || !$joueur->getPoints();
