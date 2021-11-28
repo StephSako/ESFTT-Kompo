@@ -32,8 +32,8 @@
                     </ul>
                 </div>
 
-                {% if joueursIssued %}<p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;"><b>{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</b></p>
-                {% else %}<p class="col pastille blue reset"><b>Tous les joueurs sont à jour</b></p>
+                {% if joueursIssued %}<p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">{{ joueursIssued | length ~ ' joueurs seront mis à jour' }}</p>
+                {% else %}<p class="col pastille blue reset">Tous les joueurs sont à jour</p>
                 {% endif %}
 
                 {% if joueursIssued %}
@@ -105,8 +105,8 @@
 
                                     <div class="center">
                                         <h4>Les journées</h4>
-                                        {% if data.preRentree.journees|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.journees|length ~ ' dates seront réinitialisées' }}</b></p>
-                                        {% else %}<p class="pastille reset blue"><b>Toutes les dates ont été réinitialisées</b></p>
+                                        {% if data.preRentree.journees|length > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.journees|length ~ ' dates seront réinitialisées' }}</p>
+                                        {% else %}<p class="pastille reset blue">Toutes les dates ont été réinitialisées</p>
                                         {% endif %}
                                     </div>
 
@@ -114,8 +114,8 @@
 
                                     <div class="center">
                                         <h4>Les équipes</h4>
-                                        {% if data.preRentree.teams|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.teams|length ~ ' équipes seront réinitialisées' }}</b></p>
-                                        {% else %}<p class="pastille reset blue"><b>Toutes les équipes ont été réinitialisées</b></p>
+                                        {% if data.preRentree.teams|length > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.teams|length ~ ' équipes seront réinitialisées' }}</p>
+                                        {% else %}<p class="pastille reset blue">Toutes les équipes ont été réinitialisées</p>
                                         {% endif %}
                                     </div>
 
@@ -123,8 +123,8 @@
 
                                     <div class="center">
                                         <h4>Les disponibilités</h4>
-                                        {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</b></p>
-                                        {% else %}<p class="pastille reset blue"><b>Toutes les disponibilités de joueurs ont été supprimées</b></p>
+                                        {% if data.preRentree.countDispos > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.countDispos ~ ' disponibilités de joueurs seront supprimées' }}</p>
+                                        {% else %}<p class="pastille reset blue">Toutes les disponibilités de joueurs ont été supprimées</p>
                                         {% endif %}
                                     </div>
 
@@ -132,8 +132,8 @@
 
                                     <div class="center">
                                         <h4>Les compositions</h4>
-                                        {% if data.preRentree.compositions|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.compositions|length ~ ' compositions d\'équipes seront remises à zéro' }}</b></p>
-                                        {% else %}<p class="pastille reset blue"><b>Toutes les compositions d'équipes ont été remises à zéro</b></p>
+                                        {% if data.preRentree.compositions|length > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.compositions|length ~ ' compositions d\'équipes seront remises à zéro' }}</p>
+                                        {% else %}<p class="pastille reset blue">Toutes les compositions d'équipes ont été remises à zéro</p>
                                         {% endif %}
                                     </div>
 
@@ -141,8 +141,8 @@
 
                                     <div class="center">
                                         <h4>Les rencontres</h4>
-                                        {% if data.preRentree.rencontres|length > 0 %}<p class="pastille reset orange darken-2"><b>{{ data.preRentree.rencontres|length ~ ' rencontres seront remises à zéro' }}</b></p>
-                                        {% else %}<p class="pastille reset blue"><b>Toutes les rencontres ont été remises à zéro</b></p>
+                                        {% if data.preRentree.rencontres|length > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.rencontres|length ~ ' rencontres seront remises à zéro' }}</p>
+                                        {% else %}<p class="pastille reset blue">Toutes les rencontres ont été remises à zéro</p>
                                         {% endif %}
                                     </div>
 
@@ -170,10 +170,10 @@
                                         </form>
                                     {% endif %}
                                 {% else %}
-                                    <p class="pastille green white-text reset"><b>Toutes les données sont remises à zéro</b></p>
+                                    <p class="pastille green white-text reset">Toutes les données sont remises à zéro</p>
                                 {% endif %}
                             {% else %}
-                                <p class="pastille orange darken-2 white-text reset">{{ data.preRentree.finished['message'] }}</p>
+                                <p class="pastille blue white-text reset">{{ data.preRentree.finished['message'] }}</p>
                             {% endif %}
                         </div>
 
@@ -183,10 +183,10 @@
 
                             <div class="center">
                                 <h4>Les journées</h4>
-                                {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;"><b>Toutes les journées sont à jour</b></p>{% endif %}
-                                {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</b></p>{% endif %}
-                                {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.missing | length ~ ' dates seront créées' }}</b></p>{% endif %}
-                                {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</b></p>{% endif %}
+                                {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;">Toutes les journées sont à jour</p>{% endif %}
+                                {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.issued | length ~ ' dates seront mises à jour' }}</p>{% endif %}
+                                {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.missing | length ~ ' dates seront créées' }}</p>{% endif %}
+                                {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.surplus | length ~ ' dates seront supprimées' }}</p>{% endif %}
 
                                 {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
                                     <table class="striped centered responsive-table">
@@ -240,10 +240,10 @@
 
                             <div class="center">
                                 <h4>Les équipes</h4>
-                                {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset"><b>{{ data.teams.toUpdate|listeEquipeToManage(2) }}</b></p>{% endif %}
-                                {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</b></p>{% endif %}
-                                {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;"><b>{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</b></p>{% endif %}
-                                {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset"><b>Toutes les équipes sont à jour</b></p>{% endif %}
+                                {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset">{{ data.teams.toUpdate|listeEquipeToManage(2) }}</p>{% endif %}
+                                {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</p>{% endif %}
+                                {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</p>{% endif %}
+                                {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset">Toutes les équipes sont à jour</p>{% endif %}
 
                                 {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
                                     <table class="striped centered responsive-table">
@@ -319,7 +319,7 @@
                                 <h4>Les rencontres</h4>
 
                                 {% if data.matches.issuedSorted %}
-                                    <p class="pastille orange darken-2 reset"><b>{{ data.matches.issued | length ~ ' rencontres seront mises à jour' }}</b></p>
+                                    <p class="pastille orange darken-2 reset">{{ data.matches.issued | length ~ ' rencontres seront mises à jour' }}</p>
 
                                     {% for equipe, rencontres in data.matches.issuedSorted %}
                                         <ul class="collapsible backoffice_disponibilites">
@@ -384,7 +384,7 @@
                                             </li>
                                         </ul>
                                     {% endfor %}
-                                {% else %}<p class="pastille blue reset"><b>Toutes les rencontres sont à jour</b></p>
+                                {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
                                 {% endif %}
 
                                 <div style="margin-top: 45px; margin-bottom: 35px;"></div>
@@ -412,7 +412,7 @@
                                         </form>
                                     {% endif %}
                                 {% else %}
-                                    <p class="pastille green white-text reset"><b>Toutes les données sont à jour</b></p>
+                                    <p class="pastille green white-text reset">Toutes les données sont à jour</p>
                                 {% endif %}
                             </div>
                         </div>

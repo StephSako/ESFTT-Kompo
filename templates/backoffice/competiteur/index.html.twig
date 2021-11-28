@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Back-office - Les compétiteurs{% endblock %}
+{% block title %}Back-office - Les membres{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
 
 {% block body %}
@@ -23,7 +23,7 @@
 
         <div class='card-panel backoffice-panel center'>
 
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un compétiteur</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
             <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
                 <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
             </a>
@@ -152,7 +152,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class='lobster_2 missingTitle'>Aucun compétiteur enregistré</p>
+                <p class='lobster_2 missingTitle'>Aucun membre enregistré</p>
             {% endif %}
         </div>
     </div>

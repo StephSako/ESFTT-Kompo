@@ -118,25 +118,35 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
+                    /** Une adresse email minimum requise */
+                    if (!($competiteur->getMail() ?? $competiteur->getMail2())) throw new Exception('Au moins une adresse email doit être renseignée', 1234);
+
+                    /** On vérifie que le(s) rôle(s) du membre sont cohérents */
+                    $this->checkRoles($competiteur);
+
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
                     $this->em->persist($competiteur);
 
                     /** On envoie un mail de bienvenue */
                     try {
-                        $this->contactController->$this->sendMail(
-                            new Address($competiteur->getFirstContactableMail(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
+                        $this->contactController->sendMail(
+                            new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
                             true,
                             'Bienvenue sur Kompo !',
-                            'MESSAGE', // TODO
-                            'mail_templating/bienvenue.html.twig', // TODO
-                            []);
+                            null,
+                            'mail_templating/bienvenue.html.twig',
+                            [
+                                'prenom' => $competiteur->getPrenom(),
+                                'club_name' => mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
+                            ]);
+                        $this->addFlash('success', 'Email de bienvenue envoyé');
                     } catch (Exception $e) {
                         $this->addFlash('fail', 'Email de bienvenue non envoyé');
                     }
 
                     $this->em->flush();
-                    $this->addFlash('success', 'Compétiteur créé');
+                    $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
                     $this->throwExceptionBOAccount($e, $competiteur);
@@ -162,7 +172,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function edit(int $idCompetiteur, Request $request): Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
-            $this->addFlash('fail', 'Compétiteur inexistant');
+            $this->addFlash('fail', 'Membre inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
         $usernameEditable = !(($this->getUser()->isCapitaine() && !$this->getUser()->isAdmin()) && $competiteur->isAdmin() && $this->getUser()->getIdCompetiteur() != $competiteur->getIdCompetiteur());
@@ -178,7 +188,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             try {
-                /** On vérifie que le(s) rôle(s) du compétiteur sont cohérents */
+                /** On vérifie que le(s) rôle(s) du membre sont cohérents */
                 $this->checkRoles($competiteur);
 
                 /** Un joueur devenant 'loisir' ou 'archivé' est désélectionné de toutes les compositions de chaque championnat ... **/
@@ -195,7 +205,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 $competiteur->setNom($competiteur->getNom());
                 $competiteur->setPrenom($competiteur->getPrenom());
                 $this->em->flush();
-                $this->addFlash('success', 'Compétiteur modifié');
+                $this->addFlash('success', 'Membre modifié');
                 return $this->redirectToRoute('backoffice.competiteurs');
             } catch(Exception $e){
                 $this->throwExceptionBOAccount($e, $competiteur);
@@ -264,7 +274,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->em->remove($competiteur);
             $this->em->flush();
-            $this->addFlash('success', 'Compétiteur supprimé');
+            $this->addFlash('success', 'Membre supprimé');
         } else $this->addFlash('error', 'Le membre n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('backoffice.competiteurs');
@@ -394,10 +404,10 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function checkRoles(Competiteur $competiteur){
         if ((($competiteur->isCompetiteur() || $competiteur->isCapitaine()) && ($competiteur->isLoisir() || $competiteur->isArchive())) ||
-            (($competiteur->isAdmin() || $competiteur->isEntraineur()) && $competiteur->isArchive()) ||
-            ($competiteur->isArchive() && ($competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
-            ($competiteur->isLoisir() && ($competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
-            throw new Exception('Les rôles sont incohérents', 1234);
+            (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) ||
+            ($competiteur->isArchive() && ($competiteur->isCritFed() || $competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
+            ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
+            throw new Exception('Les statuts sont incohérents', 1234);
         }
     }
 }

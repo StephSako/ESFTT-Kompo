@@ -82,7 +82,7 @@ class BackOfficeDisponibiliteController extends AbstractController
 
         try {
             if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Journée inexistante', 1234);
-            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Compétiteur inexistant', 1234);
+            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Membre inexistant', 1234);
 
             $disponibilite = new Disponibilite($competiteur, $journee, $disponibiliteBoolean, $journee->getIdChampionnat());
 
@@ -93,7 +93,6 @@ class BackOfficeDisponibiliteController extends AbstractController
             $response = new Response(json_encode($e->getCode() == 1234 ? $e->getMessage() : 'Disponibilité déjà renseignée pour cette journée'), 400);
             $response->headers->set('Content-Type', 'application/json');
             return $response;
-            //TODO throw error message en vérifiant le code dans $previous->getMessage()
         }
 
         return new JsonResponse($this->render('ajax/backoffice/dispos/disponibilite.html.twig', [
@@ -121,7 +120,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         $message = null;
 
         try {
-            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Compétiteur inexistant', 1234);
+            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Membre inexistant', 1234);
             if (!($dispoJoueur = $this->disponibiliteRepository->find($idDisponibilite))) throw new Exception('Disponibilité inexistante', 1234);
 
             $dispoJoueur->setDisponibilite($disponibiliteBoolean);

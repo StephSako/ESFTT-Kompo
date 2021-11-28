@@ -3,7 +3,7 @@
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/form/account.html.twig' as _account %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
-{% block title %}Créer un compétiteur{% endblock %}
+{% block title %}Créer un membre{% endblock %}
 
 {% block body %}
 
@@ -20,7 +20,7 @@
 
         {{ form_errors(form) }}
 
-        {{ _account.edit_account('backoffice', 'Créer un compétiteur', form, null, false, -1, null, null, false, {isArchived: false, isLoisir: false, usernameEditable: true}) }}
+        {{ _account.edit_account('backoffice', 'Créer un membre', form, null, false, -1, null, null, false, {isArchived: false, isLoisir: false, usernameEditable: true}) }}
     </div>
 
 {% endblock %}
