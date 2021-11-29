@@ -7,6 +7,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
     </header>
 
     <div class="container">
@@ -107,7 +108,7 @@
                                         {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) or (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %}
                                             {% if (competiteur.phoneNumber and competiteur.contactablePhoneNumber) %}
                                                 <div class="row center-align valign-wrapper" style="margin-bottom: 0;">
-                                                    <div class="col{% if not (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %} responsive-phone-num"{% endif %}">
+                                                    <div class="col{% if not (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %} responsive-phone-num{% endif %}">
                                                         {{ competiteur.phoneNumber | split('', 2) | join(' ') }}
                                                     </div>
                                                     <div class="col m2 hide-on-large-only">
