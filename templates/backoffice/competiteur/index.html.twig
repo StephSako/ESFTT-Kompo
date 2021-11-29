@@ -18,7 +18,7 @@
         {% endfor %}
 
         <div class='card-panel center-align white-text title_journee'>
-            <h4>Les compétiteurs</h4>
+            <h4>Les membres</h4>
         </div>
 
         <div class='card-panel backoffice-panel center'>
@@ -29,7 +29,7 @@
             </a>
 
             {% if competiteurs|length %}
-                <table class='striped centered responsive-table backoffice-table'>
+                <table id="table-to-adapt-columns" class='striped centered responsive-table backoffice-table'>
                     <thead>
                         <tr class='hide-on-med-and-down'>
                             <th class='th_picture_compet_table'></th>
@@ -94,9 +94,7 @@
                                 </td>
                                 <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
-                                        {% if not competiteur.isCompetiteur %}
-                                            <i>Sans classement</i>
-                                        {% else %}
+                                        {% if competiteur.isCompetiteur %}
                                             {% if competiteur.classementOfficiel %}
                                                 {{ competiteur.classementOfficiel }} pts
                                             {% else %}
@@ -115,10 +113,10 @@
                                             {% else %}
                                                 <span>
                                                     {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                                        <i class="green-text material-icons" style="vertical-align: bottom;">done</i>
+                                                        <i class="green-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                                                         {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
                                                     {% else %}
-                                                        <i class="red-text material-icons" style="vertical-align: bottom;">clear</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                        <i class="red-text material-icons" style="vertical-align: bottom;">health_and_safety</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
                                                     {% endif %}
                                                 </span>
                                             {% endif %}

@@ -636,18 +636,13 @@ table.rankingVirtualPoints td.progression-td {
 .table_contact td.td_buttons_contact_phone {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
-  height: 100px !important;
-}
-.table_contact td.td_buttons_contact_phone .phone_number_span {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 }
 .table_contact td.td_buttons_contact_phone a {
   margin: 0;
 }
-.table_contact td:nth-last-child(2) {
-  min-height: 74px;
+
+.responsive-phone-num {
+  margin-top: 20px;
 }
 
 td#noTeam {
@@ -963,7 +958,7 @@ table.table-last-compos tr {
     display: block;
   }
 }
-@media screen and (max-width: 1110px) {
+@media screen and (max-width: 1128px) {
   .navbar-backoffice .left_items {
     display: none;
   }
@@ -1007,6 +1002,10 @@ table.table-last-compos tr {
 
   table.composition-equipe tbody td {
     padding: 6px 5px;
+  }
+
+  .responsive-phone-num {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 720px) {

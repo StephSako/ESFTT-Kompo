@@ -10,14 +10,17 @@
                 <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <b><i class="material-icons prefix">person</i> NOM <span style="color: red">*</span></b>{{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                    <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
+                    {{ form_row(form.nom, {'id': 'my_own_id'}) }}
                 </div>
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <b><i class="material-icons prefix">person</i> Prénom <span style="color: red">*</span></b>{{ form_row(form.prenom) }}
+                    <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
+                    {{ form_row(form.prenom) }}
                 </div>
                 {% if options.usernameEditable %}
                     <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                        <b><i class="material-icons prefix">account_circle</i> Pseudo <span style="color: red">*</span></b>{{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                        <b><i class="material-icons prefix">account_circle</i> Pseudo <span class="red-text">*</span></b>
+                        {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                     </div>
                 {% endif %}
                 <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
@@ -64,8 +67,8 @@
 
             {% if not options.isArchived %}
                 {% if anneeCertificatMedical != -1 %}
-                    <div class="section input_file" style="margin-bottom: 0;">
-                        <h5 class="dark_blue">Certificat médical</h5>
+                    <div style="margin-bottom: 0;">
+                        <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
                         {% if (age != null and age > 18) or age == null %}
                             {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
                                 <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement à la rentrée <br><b>{{ anneeCertificatMedical+3 }}-{{ anneeCertificatMedical+4 }}</b></p>
@@ -100,7 +103,7 @@
                 {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                     <div class="row section">
                         <h5 class="dark_blue">Contact</h5>
-                        <p><i><span style="color: red">*</span> Une adresse email minimum requise</i></p>
+                        <p class="red-text"><i>* Une adresse email minimum requise</i></p>
 
                         {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
                             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
@@ -157,7 +160,7 @@
                         </p>
                     {% endif %}
 
-                    <div class="col m12 l4">
+                    <div class="col s12 l4">
                         <p><b>Catégorie d'âge</b></p>
                         {% if type == 'backoffice' %}
                             <i>Calculée sur la date de naissance</i>

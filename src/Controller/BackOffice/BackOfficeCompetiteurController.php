@@ -137,6 +137,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             null,
                             'mail_templating/bienvenue.html.twig',
                             [
+                                'pseudo' => $competiteur->getUsername(),
                                 'prenom' => $competiteur->getPrenom(),
                                 'club_name' => mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
                             ]);
