@@ -398,6 +398,23 @@ p.lobster {
   background: $light_blue;
 }
 
+// On restylise le contenu du formulaire WYSIWYG
+
+#ckeditor-render {
+  word-wrap: break-word;
+  hyphens: auto;
+
+  figure.table {
+    width: 100%;
+    overflow-x: scroll;
+    margin-left: 0;
+  }
+
+  li {
+    padding-left: 0;
+  }
+}
+
 .collapsible {
   border: none;
   box-shadow: none!important;
@@ -967,13 +984,6 @@ li {
 
 button.btn_renouveler_certif_mobile {
   display: none;
-}
-
-#ckeditor-render {
-  figure.table {
-    width: 100%;
-    overflow-x: scroll;
-  }
 }
 
 .hide-on-med-and-up.adversaireLine {

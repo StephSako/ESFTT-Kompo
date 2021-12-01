@@ -345,6 +345,19 @@ p.lobster {
   background: #1565c0;
 }
 
+#ckeditor-render {
+  word-wrap: break-word;
+  hyphens: auto;
+}
+#ckeditor-render figure.table {
+  width: 100%;
+  overflow-x: scroll;
+  margin-left: 0;
+}
+#ckeditor-render li {
+  padding-left: 0;
+}
+
 .collapsible {
   border: none;
   box-shadow: none !important;
@@ -856,11 +869,6 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
 
 button.btn_renouveler_certif_mobile {
   display: none;
-}
-
-#ckeditor-render figure.table {
-  width: 100%;
-  overflow-x: scroll;
 }
 
 .hide-on-med-and-up.adversaireLine h5.advUndefined {
