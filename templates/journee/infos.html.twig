@@ -55,7 +55,11 @@
                     <p>Aucun joueur ne participe au critérium fédéral pour le moment ...</p>
                 {% endif %}
             {% endif %}
-            <p>{{ HTMLContent | raw }}</p>
+            <p {% if not HTMLContent %}class="center"{% endif %}>
+                {% if HTMLContent %}{{ HTMLContent | raw }}
+                {% else %}<i>il n'y a pas de contenu pour le moment ...</i>
+                {% endif %}
+            </p>
         </div>
 
         {% if 'ROLE_ADMIN' in app.token.roleNames %}
@@ -75,7 +79,7 @@
 
             <script type="text/javascript">
                 let ckeditor_content = '{{ HTMLContent }}';
-                let type = '{{ typeSluggedId }}';
+                let type = '{{ typeBDDed }}';
             </script>
             <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>

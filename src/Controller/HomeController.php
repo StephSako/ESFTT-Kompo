@@ -10,7 +10,6 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
-use Cocur\Slugify\Slugify;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -397,7 +396,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/informations/{type}", name="informations")
      */
-    public function getInformation(Request $request, string $type): Response
+    public function getInformations(Request $request, string $type): Response
     {
         if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
@@ -407,18 +406,19 @@ class HomeController extends AbstractController
 
         $settings = $this->settingsRepository->find(1);
         try {
-            $data = $settings->getInformations($type);
+            $data = $settings->getInfosType($type);
         } catch (Exception $e) {
             throw $this->createNotFoundException('Cette catégorie n\'existe pas');
         }
 
         $form = null;
+        $typeBDDed = null;
         $isAdmin = $this->getUser()->isAdmin();
-        $label = $settings->getFormattedLabel(' ', $type);
-        $typeSluggedId = $settings->getFormattedLabel('', (new Slugify())->slugify($type));
+        $label = $settings->getFormattedLabel($type);
         if ($isAdmin){
+            $typeBDDed = str_replace('-', '_', $type);
             $form = $this->createForm(SettingsType::class, $settings, [
-                'type_data' => $typeSluggedId
+                'type_data' => $typeBDDed
             ]);
             $form->handleRequest($request);
 
@@ -445,7 +445,7 @@ class HomeController extends AbstractController
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
             'label' => $label,
-            'typeSluggedId' => $typeSluggedId
+            'typeBDDed' => $typeBDDed
         ]);
     }
 

@@ -348,6 +348,7 @@ p.lobster {
 #ckeditor-render {
   word-wrap: break-word;
   hyphens: auto;
+  padding: 10px;
 }
 #ckeditor-render figure.table {
   width: 100%;
@@ -934,6 +935,10 @@ table.table-last-compos tr {
   font-weight: bold;
 }
 
+.lien_court {
+  display: none;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1047,6 +1052,15 @@ table.table-last-compos tr {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
+  }
+}
+@media screen and (max-width: 529px) {
+  .lien_long {
+    display: none;
+  }
+
+  .lien_court {
+    display: block;
   }
 }
 @media screen and (max-width: 500px) {

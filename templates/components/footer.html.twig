@@ -6,8 +6,15 @@
             <a class="center" href="https://www.facebook.com/groups/46831155736">Notre Facebook</a>
         </div>
         <div class="container center">
-            <a class="center" href="{{ path('informations', {type: 'compétition-départementale'}) }}">Compét. départ.</a><br>
-            <a class="center" href="{{ path('informations', {type: 'critérium-fédéral'}) }}">Critérium fédéral</a><br>
+            <div class="lien_long">
+                <a class="center" href="{{ path('informations', {type: 'championnat-departemental'}) }}">Championnat départemental</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris'}) }}">Championnat de Paris</a><br>
+            </div>
+            <div class="lien_court">
+                <a class="center" href="{{ path('informations', {type: 'championnat-departemental'}) }}">Champ. depart.</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris'}) }}">Champ. de Paris</a><br>
+            </div>
+            <a class="center" href="{{ path('informations', {type: 'criterium-federal'}) }}">Critérium fédéral</a><br>
         </div>
         <div class="container center">
             <a class="center" href="https://www.pingpocket.fr/">PingPocket</a><br>

@@ -13,6 +13,12 @@ use Exception;
  */
 class Settings
 {
+    const LABEL_CHAMPIONNAT_LABEL = [
+        'championnat-departemental' => 'Championnat départemental',
+        'criterium-federal' => 'Critérium fédéral',
+        'championnat-de-paris' => 'Championnat de Paris'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -21,18 +27,25 @@ class Settings
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text", name="informations_competition_departementale", nullable=false)
+     * @ORM\Column(type="text", name="infos_championnat_departemental", nullable=true)
      */
-    private $informationsCompetitionDepartementale;
+    private $infosChampionnatDepartemental;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(type="text", name="informations_criterium_federal", nullable=false)
+     * @ORM\Column(type="text", name="infos_criterium_federal", nullable=true)
      */
-    private $informationsCriteriumFederal;
+    private $infosCriteriumFederal;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="infos_championnat_de_paris", nullable=true)
+     */
+    private $infosChampionnatDeParis;
 
     /**
      * @return mixed
@@ -53,63 +66,77 @@ class Settings
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getInformationsCompetitionDepartementale(): string
+    public function getInfosChampionnatDepartemental(): ?string
     {
-        return $this->informationsCompetitionDepartementale;
+        return $this->infosChampionnatDepartemental;
     }
 
     /**
-     * @param string|null $informationsCompetitionDepartementale
+     * @param string|null $infosChampionnatDepartemental
      * @return Settings
      */
-    public function setInformationsCompetitionDepartementale(?string $informationsCompetitionDepartementale = ''): self
+    public function setInfosChampionnatDepartemental(?string $infosChampionnatDepartemental): self
     {
-        $informationsCompetitionDepartementale = $informationsCompetitionDepartementale ?: '';
-        $this->informationsCompetitionDepartementale = $informationsCompetitionDepartementale;
+        $this->infosChampionnatDepartemental = $infosChampionnatDepartemental;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getInformationsCriteriumFederal(): string
+    public function getInfosChampionnatDeParis(): ?string
     {
-        return $this->informationsCriteriumFederal;
+        return $this->infosChampionnatDeParis;
     }
 
     /**
-     * @param string|null $informationsCriteriumFederal
+     * @param string|null $infosChampionnatDeParis
      * @return Settings
      */
-    public function setInformationsCriteriumFederal(?string $informationsCriteriumFederal): self
+    public function setInfosChampionnatDeParis(?string $infosChampionnatDeParis): self
     {
-        $informationsCriteriumFederal = $informationsCriteriumFederal ?: '';
-        $this->informationsCriteriumFederal= $informationsCriteriumFederal;
+        $this->infosChampionnatDeParis = $infosChampionnatDeParis;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInfosCriteriumFederal(): ?string
+    {
+        return $this->infosCriteriumFederal;
+    }
+
+    /**
+     * @param string|null $infosCriteriumFederal
+     * @return Settings
+     */
+    public function setInfosCriteriumFederal(?string $infosCriteriumFederal): self
+    {
+        $this->infosCriteriumFederal= $infosCriteriumFederal;
         return $this;
     }
 
     /**
      * @param string $type
-     * @return string
+     * @return string|null
      * @throws Exception
      */
-    public function getInformations(string $type): string
+    public function getInfosType(string $type): ?string
     {
-        if ($type == 'compétition-départementale') return $this->getInformationsCompetitionDepartementale();
-        else if ($type == 'critérium-fédéral') return $this->getInformationsCriteriumFederal();
-        throw new Exception('Page inexistante', 404);
+        if ($type == 'championnat-departemental') return $this->getInfosChampionnatDepartemental();
+        else if ($type == 'criterium-federal') return $this->getInfosCriteriumFederal();
+        else if ($type == 'championnat-de-paris') return $this->getInfosChampionnatDeParis();
+        throw new Exception("Ce championnat n'existe pas", 404);
     }
 
     /**
-     * @param string $separator
-     * @param string $value
+     * @param string $type
      * @return string
      */
-    public function getFormattedLabel(string $separator, string $value): string {
-        return join($separator, array_map(function ($typeItem) {
-            return mb_convert_case($typeItem, MB_CASE_TITLE, "UTF-8");
-        }, explode('-', $value)));
+    public function getFormattedLabel(string $type): string {
+        return self::LABEL_CHAMPIONNAT_LABEL[$type];
     }
 }

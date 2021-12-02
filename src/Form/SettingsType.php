@@ -13,7 +13,7 @@ class SettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('informations' . $options['type_data'], HiddenType::class, [
+        $builder->add('infos' . $options['type_data'], HiddenType::class, [
             'required' => false
         ]);
     }
