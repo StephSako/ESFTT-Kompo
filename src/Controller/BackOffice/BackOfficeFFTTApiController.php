@@ -69,8 +69,6 @@ class BackOfficeFFTTApiController extends AbstractController
 
         /** Objet API */
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-
-        $api->getJoueurDetailsByLicence('9529825');
         try {
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isCompetiteur' => 1], ['nom' => 'ASC', 'prenom' => 'ASC']);
@@ -107,10 +105,10 @@ class BackOfficeFFTTApiController extends AbstractController
 
                 /** Gestion des équipes */
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
-                $equipesFFTT = array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
+                $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
                     $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[self::ORGANISME_PERE_NUMBER])[self::ORGANISME_PERE_LABEL];
                     return $organisme_pere == $championnatActif->getLienFfttApi();
-                });
+                }));
 
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
                 $allChampionnatsReset[$championnatActif->getNom()]["recorded"] = count($equipesFFTT) > 0;
@@ -366,7 +364,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 });
 
                 if (count($championnatSearch) == 1) {
-                    $championnat = $championnatSearch[0];
+                    $championnat = array_values($championnatSearch)[0];
 
                     /** Mode pré-rentrée */
                     if ($request->request->get('preRentreeResetChampionnats')) {

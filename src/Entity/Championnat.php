@@ -26,9 +26,8 @@ class Championnat
 
     /** idPere par organisme (API FFTT)*/
     const LINKS_CHAMPIONNATS = [
-        'Départemental Val d\'Oise' => 105,
-        'Régional Val d\'Oise' => 1008,
-        'National France' => 100001
+        'Ile de France' => 16,
+        'Départemental Val d\'Oise' => 105
     ];
 
     /**
