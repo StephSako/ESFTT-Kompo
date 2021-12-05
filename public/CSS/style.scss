@@ -264,10 +264,8 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   font-family: 'Lobster Two', cursive;
 }
 
-.sidenav {
-  li a, .chip-sidenav {
-    font-size: 17px;
-  }
+.sidenav li a, .chip-sidenav {
+  font-size: 17px;
 }
 
 .chip {
@@ -308,11 +306,9 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   }
 }
 
-.chip-mobile {
-  img {
-    margin-top: 6px!important;
-    margin-right: 25px!important;
-  }
+.chip-mobile img {
+  margin-top: 6px!important;
+  margin-right: 25px!important;
 }
 
 .select-dropdown li img {
@@ -340,6 +336,14 @@ i {
   }
 }
 
+#slide-out .collapsible .li_in_line {
+  background-color: $dark_blue;
+
+  &:hover {
+    background-color: $light_blue;
+  }
+}
+
 .li_in_line {
   border-radius: 5px;
   padding-left: 0;
@@ -356,25 +360,14 @@ i {
       border-radius: 5px;
     }
   }
-}
 
-.li_in_line {
   .nav-wrapper & {
     margin-left: 2px;
     margin-right: 2px;
   }
+
   .sidenav & {
     margin: 4px;
-  }
-}
-
-a {
-  .li_in_line & {
-    font-size: 18px;
-  }
-
-  nav ul & {
-    font-size: 18px;
   }
 }
 
@@ -446,14 +439,6 @@ p.lobster {
           margin-top: 0;
         }
       }
-    }
-  }
-}
-
-#slide-out {
-  .collapsible {
-    .li_in_line {
-      background-color: $dark_blue;
     }
   }
 }

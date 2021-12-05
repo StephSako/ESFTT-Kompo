@@ -112,6 +112,13 @@ class Championnat
     private $j2Rule;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", name="compo_sorted", nullable=false)
+     */
+    private $compoSorted;
+
+    /**
      * @var Rencontre[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
@@ -349,6 +356,24 @@ class Championnat
     public function setLienFfttApi(?int $lienFfttApi): self
     {
         $this->lienFfttApi = $lienFfttApi;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompoSorted(): bool
+    {
+        return $this->compoSorted;
+    }
+
+    /**
+     * @param bool $compoSorted
+     * @return Championnat
+     */
+    public function setCompoSorted(bool $compoSorted): self
+    {
+        $this->compoSorted = $compoSorted;
         return $this;
     }
 }

@@ -223,33 +223,34 @@ class Rencontre
     public function getSelectedPlayers(): array
     {
         $players = [];
-        if ($this->getIdJoueur0()) array_push($players, $this->getIdJoueur0()->getIdCompetiteur());
-        if ($this->getIdJoueur1()) array_push($players, $this->getIdJoueur1()->getIdCompetiteur());
-        if ($this->getIdJoueur2()) array_push($players, $this->getIdJoueur2()->getIdCompetiteur());
-        if ($this->getIdJoueur3()) array_push($players, $this->getIdJoueur3()->getIdCompetiteur());
-        if ($this->getIdJoueur4()) array_push($players, $this->getIdJoueur4()->getIdCompetiteur());
-        if ($this->getIdJoueur5()) array_push($players, $this->getIdJoueur5()->getIdCompetiteur());
-        if ($this->getIdJoueur6()) array_push($players, $this->getIdJoueur6()->getIdCompetiteur());
-        if ($this->getIdJoueur7()) array_push($players, $this->getIdJoueur7()->getIdCompetiteur());
-        if ($this->getIdJoueur8()) array_push($players, $this->getIdJoueur8()->getIdCompetiteur());
+        if ($this->getIdJoueur0()) $players[] = $this->getIdJoueur0()->getIdCompetiteur();
+        if ($this->getIdJoueur1()) $players[] = $this->getIdJoueur1()->getIdCompetiteur();
+        if ($this->getIdJoueur2()) $players[] = $this->getIdJoueur2()->getIdCompetiteur();
+        if ($this->getIdJoueur3()) $players[] = $this->getIdJoueur3()->getIdCompetiteur();
+        if ($this->getIdJoueur4()) $players[] = $this->getIdJoueur4()->getIdCompetiteur();
+        if ($this->getIdJoueur5()) $players[] = $this->getIdJoueur5()->getIdCompetiteur();
+        if ($this->getIdJoueur6()) $players[] = $this->getIdJoueur6()->getIdCompetiteur();
+        if ($this->getIdJoueur7()) $players[] = $this->getIdJoueur7()->getIdCompetiteur();
+        if ($this->getIdJoueur8()) $players[] = $this->getIdJoueur8()->getIdCompetiteur();
         return $players;
     }
 
     /**
      * @param int $n
+     * @param Competiteur|null $competiteur
      * @return Rencontre
      */
-    public function setIdJoueurNToNull(int $n): self
+    public function setIdJoueurN(int $n, ?Competiteur $competiteur): self
     {
-        if ($n == 0) return $this->setIdJoueur0(null);
-        else if ($n == 1) return $this->setIdJoueur1(null);
-        else if ($n == 2) return $this->setIdJoueur2(null);
-        else if ($n == 3) return $this->setIdJoueur3(null);
-        else if ($n == 4) return $this->setIdJoueur4(null);
-        else if ($n == 5) return $this->setIdJoueur5(null);
-        else if ($n == 6) return $this->setIdJoueur6(null);
-        else if ($n == 7) return $this->setIdJoueur7(null);
-        else if ($n == 8) return $this->setIdJoueur8(null);
+        if ($n == 0) return $this->setIdJoueur0($competiteur);
+        else if ($n == 1) return $this->setIdJoueur1($competiteur);
+        else if ($n == 2) return $this->setIdJoueur2($competiteur);
+        else if ($n == 3) return $this->setIdJoueur3($competiteur);
+        else if ($n == 4) return $this->setIdJoueur4($competiteur);
+        else if ($n == 5) return $this->setIdJoueur5($competiteur);
+        else if ($n == 6) return $this->setIdJoueur6($competiteur);
+        else if ($n == 7) return $this->setIdJoueur7($competiteur);
+        else if ($n == 8) return $this->setIdJoueur8($competiteur);
         else return $this;
     }
 
@@ -513,10 +514,16 @@ class Rencontre
         $isEmpty = array();
         if ($this->getIdEquipe()->getIdDivision()) {
             for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-                array_push($isEmpty, $this->getIdJoueurN($i));
+                $isEmpty[] = $this->getIdJoueurN($i);
             }
             return !in_array(true, $isEmpty);
         } else return true;
+    }
+
+    public function emptyCompo(): void {
+        for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+            $this->setIdJoueurN($i, null);
+        }
     }
 
     /**
@@ -606,7 +613,7 @@ class Rencontre
     {
         $joueurs = array();
         for ($i = 0; $i < $this->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            if ($this->getIdJoueurN($i)) array_push($joueurs, $this->getIdJoueurN($i));
+            if ($this->getIdJoueurN($i)) $joueurs[] = $this->getIdJoueurN($i);
         }
         return $joueurs;
     }
@@ -626,9 +633,9 @@ class Rencontre
         foreach ($joueurs as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->getFirstContactableMail()){
-                    array_push($contactablesMails, $joueur);
-                    array_push($mails, $joueur->getFirstContactableMail());
-                } else array_push($notContactablesMails, $joueur);
+                    $contactablesMails[] = $joueur;
+                    $mails[] = $joueur->getFirstContactableMail();
+                } else $notContactablesMails[] = $joueur;
             }
         }
         $response['mail']['toString'] = implode(',', $mails);
@@ -641,9 +648,9 @@ class Rencontre
         foreach ($joueurs as $joueur) {
             if ($joueur->getIdCompetiteur() != $idRedacteur){
                 if ($joueur->getFirstContactablePhoneNumber()){
-                    array_push($contactablesPhoneNumbers, $joueur);
-                    array_push($phoneNumbers, $joueur->getFirstContactablePhoneNumber());
-                } else array_push($notContactablesPhoneNumbers, $joueur);
+                    $contactablesPhoneNumbers[] = $joueur;
+                    $phoneNumbers[] = $joueur->getFirstContactablePhoneNumber();
+                } else $notContactablesPhoneNumbers[] = $joueur;
             }
         }
         $response['sms']['toString'] = implode(',', $phoneNumbers);

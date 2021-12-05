@@ -149,7 +149,7 @@
                     </div>
                 </div>
 
-                <div class="hide-on-med-and-up adversaireLine center">
+                <div class="hide-on-med-and-up adversaireLine center" style="margin-bottom: 8px">
                     <div class="{% if not compo.exempt %}m5{% endif%}">
                         {% if compo.exempt %}
                             <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
@@ -175,6 +175,10 @@
                         {% endif %}
                     </div>
                 </div>
+
+                {% if compo.idChampionnat.compoSorted %}
+                    <p class="blue pastille reset" style="margin-bottom: 8px; max-width: 590px;"><b>Joueurs triés automatiquement selon le classement</b> : ne vous embêtez pas à trier, sélectionnez les joueurs comme bon vous semble, même dans le désordre</p>
+                {% endif %}
 
                 {% if compo.idEquipe.lienDivision %}
                     {% if not compo.exempt and compo.adversaire is not null %}

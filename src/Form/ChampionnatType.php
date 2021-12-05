@@ -49,6 +49,10 @@ class ChampionnatType extends AbstractType
                 'choices' => Championnat::LINKS_CHAMPIONNATS,
                 'required' => false,
                 'placeholder' => 'Définir vide'
+            ])
+            ->add('compoSorted', CheckboxType::class,[
+                'label' => ' ',
+                'required' => false
             ]);
     }
 

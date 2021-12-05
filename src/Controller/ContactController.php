@@ -82,9 +82,9 @@ class ContactController extends AbstractController
         $notContactablesMails = [];
         foreach ($joueurs as $joueur) {
             if ($joueur->getFirstContactableMail()){
-                array_push($contactablesMails, $joueur);
-                array_push($mails, $joueur->getFirstContactableMail());
-            } else array_push($notContactablesMails, $joueur);
+                $contactablesMails[] = $joueur;
+                $mails[] = $joueur->getFirstContactableMail();
+            } else $notContactablesMails[] = $joueur;
         }
         $response['mail']['toString'] = implode(',', $mails);
         $response['mail']['contactables'] = $contactablesMails;
@@ -95,9 +95,9 @@ class ContactController extends AbstractController
         $notContactablesPhoneNumbers = [];
         foreach ($joueurs as $joueur) {
             if ($joueur->getFirstContactablePhoneNumber()){
-                array_push($contactablesPhoneNumbers, $joueur);
-                array_push($phoneNumbers, $joueur->getFirstContactablePhoneNumber());
-            } else array_push($notContactablesPhoneNumbers, $joueur);
+                $contactablesPhoneNumbers[] = $joueur;
+                $phoneNumbers[] = $joueur->getFirstContactablePhoneNumber();
+            } else $notContactablesPhoneNumbers[] = $joueur;
         }
         $response['sms']['toString'] = implode(',', $phoneNumbers);
         $response['sms']['contactables'] = $contactablesPhoneNumbers;

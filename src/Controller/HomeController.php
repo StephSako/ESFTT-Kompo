@@ -302,7 +302,6 @@ class HomeController extends AbstractController
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
 
             $nbJoueursBruleJ2 = 0;
@@ -333,6 +332,18 @@ class HomeController extends AbstractController
                             for ($j = 0; $j < $nbJoueursDivision; $j++) {
                                 if ($form->getData()->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $journeeToRecalculate->getIdJournee());
                             }
+                        }
+                    }
+
+                    if ($compo->getIdChampionnat()->isCompoSorted() && count($compo->getListSelectedPlayers())) {
+                        $compoToSort = $compo->getListSelectedPlayers();
+                        $compo->emptyCompo();
+                        usort($compoToSort, function ($joueur1, $joueur2) {
+                            return $joueur2->getClassementOfficiel() - $joueur1->getClassementOfficiel();
+                        });
+                        
+                        foreach ($compoToSort as $i => $joueur) {
+                            $compo->setIdJoueurN($i, $joueur);
                         }
                     }
 
@@ -381,10 +392,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $idJournee]);
         }
 
-        for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-            $compo->setIdJoueurNToNull($i);
-        }
-
+        $compo->emptyCompo();
         $this->em->flush();
         $this->addFlash('success', 'Composition vidée');
         return $this->redirectToRoute('journee.show', [
@@ -558,7 +566,7 @@ class HomeController extends AbstractController
                 $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
                 $journee['joueurs'] = $joueursAdversaireFormatted;
                 $journee['errorMatchSheet'] = $errorMatchSheet;
-                array_push($journees, $journee);
+                $journees[] = $journee;
             }
         } catch(Exception $exception) {
             $erreur = 'Liste des joueurs adversaires indisponible';
@@ -684,12 +692,12 @@ class HomeController extends AbstractController
                 if ($points != $equipe->getPoints()) {
                     $classement++;
                 }
-                array_push($classementPoule, [
+                $classementPoule[] = [
                     'nom' => mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
                     'points' => $equipe->getPoints(),
                     'classement' => $points != $equipe->getPoints() ? $classement : null,
                     'isOurClub' => str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? 'bold' : null
-                ]);
+                ];
                 $points = $equipe->getPoints();
             }
         } catch(Exception $exception) {

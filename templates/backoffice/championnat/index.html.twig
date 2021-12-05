@@ -36,6 +36,7 @@
                         <th class='hide-on-large-only'>Nb journées</th>
                         <th>Limite brûlage</th>
                         <th>Règle brûlage J2</th>
+                        <th>Tri auto.</th>
                         <th>Lié à la FFTT</th>
                         <th></th>
                         <th></th>
@@ -52,6 +53,9 @@
                             <td>{{ championnat.limiteBrulage }}</td>
                             <td>
                                 <i class='material-icons'>{% if championnat.j2Rule %}check{% else %}clear{% endif %}</i>
+                            </td>
+                            <td>
+                                <i class='material-icons'>{% if championnat.compoSorted %}check{% else %}clear{% endif %}</i>
                             </td>
                             <td>
                                 {% if championnat.lienFfttApi %} <i class='material-icons green-text'>leak_add</i>

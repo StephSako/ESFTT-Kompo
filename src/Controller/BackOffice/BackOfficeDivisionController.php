@@ -124,7 +124,7 @@ class BackOfficeDivisionController extends AbstractController
 
                         foreach($commposWithPlayerSuperflux as $compo){
                             for ($i = $form->getData()->getNbJoueurs(); $i < $nbJoueurs; $i++){
-                                $compo->setIdJoueurNToNull($i);
+                                $compo->setIdJoueurN($i, null);
                             }
                         }
                     }
@@ -168,7 +168,7 @@ class BackOfficeDivisionController extends AbstractController
             foreach ($division->getEquipes()->toArray() as $equipes){
                 foreach ($equipes->getRencontres() as $compo){
                     for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
-                        $compo->setIdJoueurNToNull($i);
+                        $compo->setIdJoueurN($i, null);
                     }
                 }
             }

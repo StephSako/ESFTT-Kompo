@@ -163,7 +163,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $equipeIssued['lienDivision'] = $equipe->getLienDivision();
                                 $equipeIssued['samePoule'] = $samePoule;
                                 $equipeIssued['sameLienDivision'] = $sameLienDivision;
-                                array_push($equipesIssued, $equipeIssued);
+                                $equipesIssued[] = $equipeIssued;
                             }
                         } else if (in_array($idEquipeFFTT, $equipesToCreateIDs)){
                             unset($equipesToCreate[$idEquipeFFTT]);
@@ -240,7 +240,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
                                             $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
                                             $rencontreTemp['recorded'] = true;
-                                            array_push($rencontresParEquipes, $rencontreTemp);
+                                            $rencontresParEquipes[] = $rencontreTemp;
                                         }
                                     } else if (in_array($nbEquipe, $equipesToCreateIDs)) {
                                         /** On créé les nouvelles rencontres des nouvelles équipes */
@@ -257,7 +257,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
                                         $rencontreTemp['rencontre'] = $rencontreToCreate;
                                         $rencontreTemp['recorded'] = false;
-                                        array_push($rencontresParEquipes, $rencontreTemp);
+                                        $rencontresParEquipes[] = $rencontreTemp;
                                     }
                                 } else {
                                     /** On créé les rencontres inexistantes (si champ->getNbJournees() < nb journées réèlles) */
@@ -273,7 +273,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $rencontreTemp = [];
                                     $rencontreTemp['rencontre'] = $rencontreKompo;
                                     $rencontreTemp['recorded'] = false;
-                                    array_push($rencontresParEquipes, $rencontreTemp);
+                                    $rencontresParEquipes[] = $rencontreTemp;
                                 }
                             }
                         }
@@ -301,7 +301,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $dateIssued['journee'] = $journeesKompo[$index];
                                 $dateIssued['nJournee'] = $index + 1;
                                 $dateIssued['dateFFTT'] = $dateJournee;
-                                array_push($datesIssued, $dateIssued);
+                                $datesIssued[] = $dateIssued;
                             }
                         } else {
                             $dateMissing = new Journee();
@@ -381,7 +381,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["compositions"] as $compositionKompo) {
                             $nbJoueursDiv = $compositionKompo->getIdEquipe()->getIdDivision() ? $compositionKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : $this->getParameter('nb_joueurs_default_division'); /** Nombre de joueurs par défaut dans une division */
                             for ($i = 0; $i < $nbJoueursDiv; $i++){
-                                $compositionKompo->setIdJoueurNToNull($i);
+                                $compositionKompo->setIdJoueurN($i, null);
                             }
                         }
                         $this->em->flush();
@@ -498,7 +498,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
 
                         $this->em->flush();
-                        $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' mise à jour');
+                        $this->addFlash('success', 'Championnat mis à jour');
                     }
                     return $this->redirectToRoute('backoffice.reset.phase');
                 } else $this->addFlash('fail', 'Championnat inconnu !');

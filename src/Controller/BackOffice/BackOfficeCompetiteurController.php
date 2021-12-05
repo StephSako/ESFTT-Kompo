@@ -322,7 +322,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
 
         foreach ($competiteurs as $user) {
-            array_push($competiteursList, $user->serializeToPDF());
+            $competiteursList[] = $user->serializeToPDF();
         }
         return $competiteursList;
     }

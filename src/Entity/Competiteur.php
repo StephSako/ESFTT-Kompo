@@ -445,12 +445,12 @@ class Competiteur implements UserInterface, Serializable
     {
         $roles = [];
         if (!$this->isArchive()){
-            if ($this->isEntraineur()) array_push($roles, 'ROLE_ENTRAINEUR');
-            if ($this->isAdmin()) array_push($roles, 'ROLE_ADMIN');
-            if ($this->isLoisir())  array_push($roles, 'ROLE_LOISIR');
-            if ($this->isCapitaine()) array_push($roles, 'ROLE_CAPITAINE');
-            if ($this->isCompetiteur()) array_push($roles, 'ROLE_COMPETITEUR');
-        } else array_push($roles, 'ROLE_ARCHIVE');
+            if ($this->isEntraineur()) $roles[] = 'ROLE_ENTRAINEUR';
+            if ($this->isAdmin()) $roles[] = 'ROLE_ADMIN';
+            if ($this->isLoisir())  $roles[] = 'ROLE_LOISIR';
+            if ($this->isCapitaine()) $roles[] = 'ROLE_CAPITAINE';
+            if ($this->isCompetiteur()) $roles[] = 'ROLE_COMPETITEUR';
+        } else $roles[] = 'ROLE_ARCHIVE';
 
         return $roles;
     }

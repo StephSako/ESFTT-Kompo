@@ -153,7 +153,7 @@ class Journee
     }
 
     /**
-     * Récupère la date au plus gtard entre la date de la journée et les dates de report de chacunes de ses rencontres
+     * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
      */
     public function getLatestDate(): DateTime {
         return max(max(array_map(function($rencontre) {

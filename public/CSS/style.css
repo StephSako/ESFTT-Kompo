@@ -227,7 +227,7 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   font-family: "Lobster Two", cursive;
 }
 
-.sidenav li a, .sidenav .chip-sidenav {
+.sidenav li a, .chip-sidenav {
   font-size: 17px;
 }
 
@@ -295,6 +295,13 @@ i {
   padding: 5px 8px;
 }
 
+#slide-out .collapsible .li_in_line {
+  background-color: #012242;
+}
+#slide-out .collapsible .li_in_line:hover {
+  background-color: #1565c0;
+}
+
 .li_in_line {
   border-radius: 5px;
   padding-left: 0;
@@ -308,20 +315,12 @@ i {
   background-color: #f15454;
   border-radius: 5px;
 }
-
 .nav-wrapper .li_in_line {
   margin-left: 2px;
   margin-right: 2px;
 }
 .sidenav .li_in_line {
   margin: 4px;
-}
-
-.li_in_line a {
-  font-size: 18px;
-}
-nav ul a {
-  font-size: 18px;
 }
 
 .header_compo, .form_div_list div:last-child, .bottom_0 {
@@ -386,10 +385,6 @@ p.lobster {
 }
 .collapsible.backoffice_disponibilites .collapsible-body .row:first-child {
   margin-top: 0;
-}
-
-#slide-out .collapsible .li_in_line {
-  background-color: #012242;
 }
 
 .tabs .tab a {

@@ -236,7 +236,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             $brulageJoueur = [];
             $brulageInt = [];
             foreach ($idEquipes as $equipe) {
-                array_push($brulageInt, intval($brulage['E'.$equipe]));
+                $brulageInt[] = intval($brulage['E' . $equipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
@@ -292,7 +292,7 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $joueursBrules = [];
         foreach ($query as $joueur){
-            array_push($joueursBrules, $joueur['nom'] . ' ' . $joueur['prenom']);
+            $joueursBrules[] = $joueur['nom'] . ' ' . $joueur['prenom'];
         }
         return $joueursBrules;
     }
@@ -352,7 +352,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                     $queryFinal[$championnat->getNom()][$nom]['licence'] = $item['licence'];
                 }
                 $item['latestDate'] = max(new DateTime($item['latestDate']), $item['dateJournee']);
-                array_push($dispos, $item);
+                $dispos[] = $item;
                 $queryFinal[$championnat->getNom()][$nom]['dispos'] = $dispos;
             }
         }
