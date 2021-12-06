@@ -993,4 +993,19 @@ class Competiteur implements UserInterface, Serializable
         }));
         return count($categorie) ? $categorie[0]['libelle'] : '-';
     }
+
+    /**
+     * Déterminé si le joueur est sélectionné dans une des compositions d'équipe d'une rencontre
+     * @param Rencontre[] $compos
+     * @return int|null
+     */
+    public function isSelectedIn(array $compos): ?int {
+        $selectionArray = array_values(array_filter(array_map(function($compo) {
+            return in_array($this->getIdCompetiteur(), $compo->getSelectedPlayers()) ? $compo : null;
+        }, $compos), function($compoFiltree){
+            return $compoFiltree != null;
+        }));
+
+        return count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
+    }
 }

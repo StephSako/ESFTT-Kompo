@@ -193,13 +193,7 @@ class HomeController extends AbstractController
         $disponible = ($dispoJoueur ? ($dispoJoueur->getDisponibilite() ? 1 : 0) : -1);
 
         // Si l'utilisateur est sélectionné pour la journée actuelle
-        $selectionArray = array_values(array_filter(array_map(function($compo) {
-            return in_array($this->getUser()->getIdCompetiteur(), $compo->getSelectedPlayers()) ? $compo : null;
-        }, $compos), function($compoFiltree){
-            return $compoFiltree != null;
-        }));
-
-        $selection = count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
+        $selection = $this->getUser()->isSelectedIn($compos);
 
         $allChampionnats = $this->championnatRepository->findAll();
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
@@ -328,24 +322,28 @@ class HomeController extends AbstractController
                     /**  Si pas en dernière journée ni en dernière équipe **/
                     if (max(array_map(function($eq) { return $eq->getNumero(); }, $equipes)) != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $compo->getIdJournee()->getIdJournee()){
                         $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                        $invalidCompos = [];
+
                         foreach ($journeesToRecalculate as $journeeToRecalculate) {
                             for ($j = 0; $j < $nbJoueursDivision; $j++) {
-                                if ($form->getData()->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $compo->getIdEquipe()->getNumero(), $journeeToRecalculate->getIdJournee());
+                                if ($form->getData()->getIdJoueurN($j)) {
+                                    $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
+                                    if ($invalidCompo){
+                                        array_push($invalidCompos, ...$invalidCompo);
+                                        $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
+                                    }
+                                }
                             }
+                        }
+
+                        /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
+                        foreach ($invalidCompos as $invalidCompo){
+                            if ($invalidCompo['compo']->getIdChampionnat()->isCompoSorted()) $invalidCompo['compo']->sortComposition();
                         }
                     }
 
-                    if ($compo->getIdChampionnat()->isCompoSorted() && count($compo->getListSelectedPlayers())) {
-                        $compoToSort = $compo->getListSelectedPlayers();
-                        $compo->emptyCompo();
-                        usort($compoToSort, function ($joueur1, $joueur2) {
-                            return $joueur2->getClassementOfficiel() - $joueur1->getClassementOfficiel();
-                        });
-                        
-                        foreach ($compoToSort as $i => $joueur) {
-                            $compo->setIdJoueurN($i, $joueur);
-                        }
-                    }
+                    /** On trie la composition d'équipe dans l'ordre décroissant des classements si le championnat possède cette règle */
+                    $compo->sortComposition();
 
                     $this->em->flush();
                     $this->addFlash('success', 'Composition modifiée');
@@ -355,6 +353,7 @@ class HomeController extends AbstractController
                         'id' => $compo->getIdJournee()->getIdJournee()
                     ]);
                 } catch (Exception $e) {
+                    dump($e);
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');

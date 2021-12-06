@@ -132,10 +132,11 @@ class BackOfficeChampionnatController extends AbstractController
 
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
-                            if ($rencontre->getIdEquipe()->getNumero() != max($numeroEquipes)){ /** Si ce n'est pas la dernière équipe **/
+                            /** Si ce n'est pas la dernière équipe **/
+                            if ($rencontre->getIdEquipe()->getNumero() != max($numeroEquipes)){
                                 for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
                                     if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
-                                }
+                                } //TODO: Re-trier les compos d'équipe dont un joueur est devenu brûlé
                             }
                         }
                     }

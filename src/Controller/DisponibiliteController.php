@@ -3,15 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Disponibilite;
-use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -22,20 +19,17 @@ class DisponibiliteController extends AbstractController
     private $disponibiliteRepository;
     private $rencontreRepository;
     private $invalidSelectionController;
-    private $competiteurRepository;
 
     /**
      * @param EntityManagerInterface $em
      * @param JourneeRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
-     * @param CompetiteurRepository $competiteurRepository
      * @param InvalidSelectionController $invalidSelectionController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
                                 JourneeRepository $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                CompetiteurRepository $competiteurRepository,
                                 InvalidSelectionController $invalidSelectionController,
                                 RencontreRepository $rencontreRepository)
     {
@@ -44,7 +38,6 @@ class DisponibiliteController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->invalidSelectionController = $invalidSelectionController;
-        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -99,7 +92,13 @@ class DisponibiliteController extends AbstractController
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
-            $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+            $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
+            $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
+
+            foreach ($invalidCompos as $compo){
+                /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
+                if ($compo['compo']->getIdChampionnat()->isCompoSorted()) $compo['compo']->sortComposition();
+            }
         }
 
         $this->em->flush();

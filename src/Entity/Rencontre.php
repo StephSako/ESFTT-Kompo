@@ -735,4 +735,22 @@ class Rencontre
         $this->villeHost = mb_convert_case($villeHost, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
+
+    /**
+     * Tri la composition d'équipe selon les classements dans l'ordre décroissant
+     * @return void
+     */
+    public function sortComposition(): void {
+        if ($this->getIdChampionnat()->isCompoSorted() && count($this->getListSelectedPlayers())) {
+            $compoToSort = $this->getListSelectedPlayers();
+            $this->emptyCompo();
+            usort($compoToSort, function ($joueur1, $joueur2) {
+                return $joueur2->getClassementOfficiel() - $joueur1->getClassementOfficiel();
+            });
+
+            foreach ($compoToSort as $i => $joueur) {
+                $this->setIdJoueurN($i, $joueur);
+            }
+        }
+    }
 }

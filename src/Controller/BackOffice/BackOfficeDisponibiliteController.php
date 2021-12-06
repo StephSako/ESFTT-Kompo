@@ -128,7 +128,13 @@ class BackOfficeDisponibiliteController extends AbstractController
             /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
             if (!$disponibiliteBoolean){
                 $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
-                $this->invalidSelectionController->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat()), $nbMaxJoueurs);
+                $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
+                $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+
+                foreach ($invalidCompos as $compo){
+                    /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
+                    if ($compo['compo']->getIdChampionnat()->isCompoSorted()) $compo['compo']->sortComposition();
+                }
             }
 
             $this->em->flush();

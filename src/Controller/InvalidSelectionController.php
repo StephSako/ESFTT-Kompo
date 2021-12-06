@@ -26,18 +26,19 @@ class InvalidSelectionController extends AbstractController
      * @param int $idJournee
      */
     public function checkInvalidSelection(int $limiteBrulage, int $idChampionnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
-        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs);
+        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs, $idJoueur);
     }
 
     /**
-     * @param $invalidCompos
+     * @param array $invalidCompos
      * @param int $nbJoueurs
+     * @param int $idCompetiteur
      */
-    public function deleteInvalidSelectedPlayers($invalidCompos, int $nbJoueurs){
+    public function deleteInvalidSelectedPlayers(array $invalidCompos, int $nbJoueurs, int $idCompetiteur){
         foreach ($invalidCompos as $compo){
             $i = 0;
             while($i != $nbJoueurs){
-                if (boolval($compo['isPlayer' . $i])){
+                if ($compo['isPlayer' . $i] == $idCompetiteur){
                     $compo['compo']->setIdJoueurN($i, null);
                     break;
                 }

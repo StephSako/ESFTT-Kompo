@@ -74,7 +74,7 @@ class RencontreRepository extends ServiceEntityRepository
                 $strP .= ' OR ';
                 $strRP .= ' OR ';
             }
-            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, ' . $idCompetiteur . ', 0) as isPlayer' . $i);
         }
         return $query
             ->from('App:Competiteur', 'c')
@@ -121,7 +121,7 @@ class RencontreRepository extends ServiceEntityRepository
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $str .= 'r.idJoueur' .$i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, 1, 0) as isPlayer' . $i);
+            $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, ' . $idCompetiteur . ', 0) as isPlayer' . $i);
         }
         return $query
             ->from('App:Competiteur', 'c')
