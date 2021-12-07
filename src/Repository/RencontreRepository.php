@@ -195,4 +195,26 @@ class RencontreRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Récupère les sélections d'un joueur dand un championnat dont le tri de ses compositions d'équipe est automatique
+     * @return array|string|null
+     */
+    public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs): array {
+        $str = '';
+        for ($i = 0; $i < $nbMaxJoueurs; $i++) {
+            $str .= 'r.idJoueur' . $i . ' = :idJoueur';
+            if ($i < $nbMaxJoueurs - 1) $str .= ' OR ';
+        }
+
+        $query = $this->createQueryBuilder('r')
+            ->select('r')
+            ->leftJoin('r.idChampionnat', 'ch')
+            ->where('ch.compoSorted = 1')
+            ->andWhere($str);
+
+        return $query->setParameter('idJoueur', $idJoueur)
+        ->getQuery()
+        ->getResult();
+    }
 }

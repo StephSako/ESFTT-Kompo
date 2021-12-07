@@ -176,6 +176,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('fail', 'Membre inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
+
         $usernameEditable = !(($this->getUser()->isCapitaine() && !$this->getUser()->isAdmin()) && $competiteur->isAdmin() && $this->getUser()->getIdCompetiteur() != $competiteur->getIdCompetiteur());
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
@@ -192,10 +193,16 @@ class BackOfficeCompetiteurController extends AbstractController
                 /** On vérifie que le(s) rôle(s) du membre sont cohérents */
                 $this->checkRoles($competiteur);
 
-                /** Un joueur devenant 'loisir' ou 'archivé' est désélectionné de toutes les compositions de chaque championnat ... **/
-                if ($competiteur->isLoisir() || $competiteur->isArchive()){
+                /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat ... **/
+                if (!$competiteur->isCompetiteur()){
+                    $selectionsToSort = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]);
                     for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
                         $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+                    }
+
+                    foreach ($selectionsToSort as $selectionToSort) {
+                        $this->em->refresh($selectionToSort);
+                        $selectionToSort->sortComposition();
                     }
 
                     /** ... et ses disponibilités sont supprimées */
