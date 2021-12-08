@@ -59,15 +59,15 @@
                                 <tr>
                                     <td>
                                         {% if competiteur.isAdmin %}
-                                            <span class='new badge red{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Administrateur'></span>
+                                            <span class='new badge red' data-badge-caption='Administrateur'></span>
                                         {% endif %}
 
                                         {% if competiteur.isCompetiteur %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge green{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Compétiteur'></span>
+                                            <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
                                         {% elseif competiteur.isLoisir %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge orange{% if not competiteur.isEntraineur and not competiteur.isCapitaine %} badge-role{% endif %}' data-badge-caption='Loisir'></span>
+                                            <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>
                                         {% endif %}
 
                                         {% if competiteur.isCapitaine %}

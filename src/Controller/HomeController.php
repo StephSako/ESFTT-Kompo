@@ -353,7 +353,6 @@ class HomeController extends AbstractController
                         'id' => $compo->getIdJournee()->getIdJournee()
                     ]);
                 } catch (Exception $e) {
-                    dump($e);
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
