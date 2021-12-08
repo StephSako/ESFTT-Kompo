@@ -12,6 +12,8 @@ parameters:
     default_nb_points: '%env(DEFAULT_NB_POINTS)%'
     club_diminutif: '%env(CLUB_DIMINUTIF)%'
     club_email: '%env(CLUB_EMAIL)%'
+    time_reset_password_hour: '%env(TIME_RESET_PASSWORD_HOUR)%'
+    time_init_password_day: '%env(TIME_INIT_PASSWORD_DAY)%'
 
 services:
     _defaults:

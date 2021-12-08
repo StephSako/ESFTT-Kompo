@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use DateInterval;
-use DateTime;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,18 +20,22 @@ class ContactController extends AbstractController
     private $competiteurRepository;
     private $championnatRepository;
     private $mailer;
+    private $securityController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
+     * @param SecurityController $securityController
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
+                                SecurityController $securityController,
                                 ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer)
     {
         $this->competiteurRepository = $competiteurRepository;
+        $this->securityController = $securityController;
         $this->mailer = $mailer;
         $this->championnatRepository = $championnatRepository;
     }
@@ -110,6 +112,7 @@ class ContactController extends AbstractController
      * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function contactResetPassword(Request $request): Response
     {
@@ -125,22 +128,16 @@ class ContactController extends AbstractController
                 return $response;
             }
 
-            $token = json_encode(
-                [
-                    'username' => $request->request->get('username'),
-                    'dateValidation' => (new DateTime())->add(new DateInterval('PT2H'))->getTimestamp()
-                ]);
-            $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
-            $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
-            $encryption = openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv);
-
             return $this->sendMail(
                 new Address($mail, $nom),
                 true,
-                'Réinitialisation de votre mot de passe',
-                base64_encode($encryption),
+                'Kompo - Réinitialisation de votre mot de passe',
+                null,
                 'mail_templating/forgotten_password.html.twig',
-                []);
+                [
+                    'time_reset_password_hour' => $this->getParameter('time_reset_password_hour'),
+                    'resetPasswordLink' => $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H')
+                ]);
         }
     }
 

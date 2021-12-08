@@ -3,6 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\ContactController;
+use App\Controller\SecurityController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
 use App\Repository\CompetiteurRepository;
@@ -36,6 +37,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $contactController;
+    private $securityController;
 
     /**
      * BackOfficeController constructor.
@@ -46,6 +48,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      * @param ContactController $contactController
+     * @param SecurityController $securityController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -55,6 +58,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
                                 ContactController $contactController,
+                                SecurityController $securityController,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
@@ -65,6 +69,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->contactController = $contactController;
+        $this->securityController = $securityController;
     }
 
     /**
@@ -137,7 +142,9 @@ class BackOfficeCompetiteurController extends AbstractController
                             null,
                             'mail_templating/bienvenue.html.twig',
                             [
+                                'initPasswordLink' => $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D'),
                                 'pseudo' => $competiteur->getUsername(),
+                                'time_init_password_day' => $this->getParameter('time_init_password_day'),
                                 'prenom' => $competiteur->getPrenom(),
                                 'club_name' => mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
                             ]);
