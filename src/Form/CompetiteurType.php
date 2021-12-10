@@ -109,23 +109,27 @@ class CompetiteurType extends AbstractType
                     'attr' => [
                         'maxlength' => 10
                     ]
-                ])
-                ->add('contactableMail', CheckboxType::class, [
-                    'label' => 'Contactable',
-                    'required' => false
-                ])
-                ->add('contactableMail2', CheckboxType::class, [
-                    'label' => 'Contactable',
-                    'required' => false
-                ])
-                ->add('contactablePhoneNumber', CheckboxType::class, [
-                    'label' => 'Contactable',
-                    'required' => false
-                ])
-                ->add('contactablePhoneNumber2', CheckboxType::class, [
-                    'label' => 'Contactable',
-                    'required' => false
                 ]);
+
+            if (!$options['createMode']) {
+                $builder
+                    ->add('contactableMail', CheckboxType::class, [
+                        'label' => 'Contactable',
+                        'required' => false
+                    ])
+                    ->add('contactableMail2', CheckboxType::class, [
+                        'label' => 'Contactable',
+                        'required' => false
+                    ])
+                    ->add('contactablePhoneNumber', CheckboxType::class, [
+                        'label' => 'Contactable',
+                        'required' => false
+                    ])
+                    ->add('contactablePhoneNumber2', CheckboxType::class, [
+                        'label' => 'Contactable',
+                        'required' => false
+                    ]);
+            }
         }
 
         if ($options['adminAccess'] && $options['isCertificatInvalid']) {
@@ -180,7 +184,8 @@ class CompetiteurType extends AbstractType
             'adminAccess' => false,
             'isArchived' => false,
             'dateNaissanceRequired' => false,
-            'usernameEditable' => true
+            'usernameEditable' => true,
+            'createMode' => false
         ]);
     }
 }

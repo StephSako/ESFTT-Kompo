@@ -109,36 +109,44 @@
                             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
                         {% endif %}
 
-                        <div class="col s12 m6 offset-m3">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
                             <b><i class="material-icons prefix">mail</i> Adresse mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                         </div>
-                        <div class="col s12 m3 left-align">
-                            {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
-                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="row">
-                        <div class="col s12 m6 offset-m3">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
                             <b><i class="material-icons prefix">mail</i> Adresse mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                         </div>
-                        <div class="col s12 m3 left-align">
-                            {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
-                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="row">
-                        <div class="col s12 m6 offset-m3">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
                             <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                         </div>
-                        <div class="col s12 m3 left-align">
-                            {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
-                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="row">
-                        <div class="col s12 m6 offset-m3">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
                             <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                         </div>
-                        <div class="col s12 m3 left-align">
-                            {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
-                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <script>

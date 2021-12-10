@@ -116,7 +116,8 @@ class BackOfficeCompetiteurController extends AbstractController
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
-            'dateNaissanceRequired' => false
+            'dateNaissanceRequired' => false,
+            'createMode' => true
         ]);
         $form->handleRequest($request);
 
@@ -131,6 +132,11 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
+                    $competiteur->setContactableMail((bool)$competiteur->getMail());
+                    $competiteur->setContactableMail2((bool)$competiteur->getMail2());
+                    $competiteur->setContactablePhoneNumber((bool)$competiteur->getPhoneNumber());
+                    $competiteur->setContactablePhoneNumber2((bool)$competiteur->getPhoneNumber2());
+
                     $this->em->persist($competiteur);
 
                     /** On envoie un mail de bienvenue */
