@@ -319,27 +319,24 @@ class HomeController extends AbstractController
                     $this->em->flush();
 
                     /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
-                    /**  Si pas en dernière journée ni en dernière équipe **/
-                    if (max(array_map(function($eq) { return $eq->getNumero(); }, $equipes)) != $compo->getIdEquipe()->getNumero() && end($journees)->getIdJournee() != $compo->getIdJournee()->getIdJournee()){
-                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
-                        $invalidCompos = [];
+                    $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                    $invalidCompos = [];
 
-                        foreach ($journeesToRecalculate as $journeeToRecalculate) {
-                            for ($j = 0; $j < $nbJoueursDivision; $j++) {
-                                if ($form->getData()->getIdJoueurN($j)) {
-                                    $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
-                                    if ($invalidCompo){
-                                        array_push($invalidCompos, ...$invalidCompo);
-                                        $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
-                                    }
+                    foreach ($journeesToRecalculate as $journeeToRecalculate) {
+                        for ($j = 0; $j < $nbJoueursDivision; $j++) {
+                            if ($form->getData()->getIdJoueurN($j)) {
+                                $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
+                                if ($invalidCompo){
+                                    array_push($invalidCompos, ...$invalidCompo);
+                                    $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
                                 }
                             }
                         }
+                    }
 
-                        /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
-                        foreach ($invalidCompos as $invalidCompo){
-                            if ($invalidCompo['compo']->getIdChampionnat()->isCompoSorted()) $invalidCompo['compo']->sortComposition();
-                        }
+                    /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
+                    foreach ($invalidCompos as $invalidCompo){
+                        $invalidCompo['compo']->sortComposition();
                     }
 
                     /** On trie la composition d'équipe dans l'ordre décroissant des classements si le championnat possède cette règle */
@@ -678,6 +675,7 @@ class HomeController extends AbstractController
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementPoule = [];
         $erreur = null;
+        $ourTeam = null;
 
         try {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
@@ -690,6 +688,9 @@ class HomeController extends AbstractController
                 if ($points != $equipe->getPoints()) {
                     $classement++;
                 }
+
+                if (!$ourTeam) $ourTeam = str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8") : null;
+
                 $classementPoule[] = [
                     'nom' => mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
                     'points' => $equipe->getPoints(),
@@ -705,6 +706,7 @@ class HomeController extends AbstractController
         return new JsonResponse($this->render('ajax/classementPoule.html.twig', [
             'classementPoule' => $classementPoule,
             'erreur' => $erreur,
+            'ourTeam' => $ourTeam
         ])->getContent());
     }
 }

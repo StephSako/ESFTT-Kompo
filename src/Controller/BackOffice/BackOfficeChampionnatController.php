@@ -120,11 +120,7 @@ class BackOfficeChampionnatController extends AbstractController
 
                 /** Si la limite du brûlage diminue, on recalcule tous les brûlages des joueurs */
                 if ($limiteBrulage > $championnat->getLimiteBrulage()){
-                    $numeroEquipes = array_map(function ($equipe) {
-                        return $equipe->getNumero();
-                    }, $championnat->getEquipes()->toArray());
-
-                    $journeesToRecalcul = array_slice($journees, 0, count($journees) - 1);
+                    $journeesToRecalcul = array_slice($journees, 0, count($journees));
 
                     $nbMaxJoueurs = max(array_map(function($division) {
                         return $division->getNbJoueurs();
@@ -132,12 +128,10 @@ class BackOfficeChampionnatController extends AbstractController
 
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
-                            /** Si ce n'est pas la dernière équipe **/
-                            if ($rencontre->getIdEquipe()->getNumero() != max($numeroEquipes)){
-                                for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
-                                    if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
-                                } //TODO: Re-trier les compos d'équipe dont un joueur est devenu brûlé
+                            for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
+                                if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
                             }
+                            $rencontre->sortComposition();
                         }
                     }
                 }

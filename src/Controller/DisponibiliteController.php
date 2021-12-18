@@ -97,7 +97,7 @@ class DisponibiliteController extends AbstractController
 
             foreach ($invalidCompos as $compo){
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
-                if ($compo['compo']->getIdChampionnat()->isCompoSorted()) $compo['compo']->sortComposition();
+                $compo['compo']->sortComposition();
             }
         }
 
