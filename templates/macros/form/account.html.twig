@@ -236,18 +236,18 @@
 
                 <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
 
-                {% if app.user.winner %}
-                    <p class="green-text"><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ! Félicitations !<span class="material-icons gold-color">emoji_events</span></p>
-                {% else %}
-                    <p><i>Vous n'avez pas encore trouvé tous les codes ... persévérez !</i></p>
-                {% endif %}
-
-                {% if app.user.fullWinner %}
-                    <p class="green-text"><span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ainsi que le ticket d'or ! Félicitations !<span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span></p>
-                {% endif %}
-
                 {% if app.user.cheating %}
                     <p class="red-text">Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</p>
+                {% else %}
+                    {% if app.user.winner %}
+                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ! Félicitations !<span class="material-icons gold-color">emoji_events</span></p>
+                    {% else %}
+                        <p><i>Vous n'avez pas encore trouvé tous les codes ... persévérez !</i></p>
+                    {% endif %}
+
+                    {% if app.user.fullWinner %}
+                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ainsi que le ticket d'or ! Félicitations !<span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span></p>
+                    {% endif %}
                 {% endif %}
 
                 <div class="col s8 offset-s2">
@@ -258,7 +258,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code1 %}
-                                {% if app.user.code1Correct %}
+                                {% if app.user.code1Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -276,7 +276,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code2 %}
-                                {% if app.user.code2Correct %}
+                                {% if app.user.code2Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -294,7 +294,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code3 %}
-                                {% if app.user.code3Correct %}
+                                {% if app.user.code3Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -312,7 +312,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code4 %}
-                                {% if app.user.code4Correct %}
+                                {% if app.user.code4Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -330,7 +330,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code5 %}
-                                {% if app.user.code5Correct %}
+                                {% if app.user.code5Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -348,7 +348,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code6 %}
-                                {% if app.user.code6Correct %}
+                                {% if app.user.code6Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -366,7 +366,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code7 %}
-                                {% if app.user.code7Correct %}
+                                {% if app.user.code7Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -384,7 +384,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code8 %}
-                                {% if app.user.code8Correct %}
+                                {% if app.user.code8Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -402,7 +402,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code9 %}
-                                {% if app.user.code9Correct %}
+                                {% if app.user.code9Correct and not app.user.cheating%}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -420,7 +420,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code10 %}
-                                {% if app.user.code10Correct %}
+                                {% if app.user.code10Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -438,7 +438,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code11 %}
-                                {% if app.user.code11Correct %}
+                                {% if app.user.code11Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -456,7 +456,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code12 %}
-                                {% if app.user.code12Correct %}
+                                {% if app.user.code12Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -474,7 +474,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code13 %}
-                                {% if app.user.code13Correct %}
+                                {% if app.user.code13Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
@@ -492,7 +492,7 @@
                         </div>
                         <div class="col s1">
                             {% if app.user.code14 %}
-                                {% if app.user.code14Correct %}
+                                {% if app.user.code14Correct and not app.user.cheating %}
                                     <i class="material-icons green-text">check</i>
                                 {% else %}
                                     <i class="material-icons red-text">clear</i>
