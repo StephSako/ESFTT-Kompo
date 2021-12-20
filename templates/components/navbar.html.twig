@@ -89,6 +89,9 @@
                                         <li class="waves-effect li_in_line">
                                             <a class="white-text center" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
                                                 <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                                {% if loop.index == 2 %}
+                                                    <span class="pastille reset christmas_code">K9LM0</span>
+                                                {% endif %}
                                             </a>
                                         </li>
                                     {% endif %}

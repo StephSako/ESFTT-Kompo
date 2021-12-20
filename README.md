@@ -1,7 +1,5 @@
 # Bienvenue sur Kompo !
 
-🚀 💡 Découvrez les <a href="https://github.com/StephSako/Kompo/blob/master/improvements.md">derniers ajouts de fonctionnalités</a> !
-
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG" alt="accueil"></p>
 
 <p align="center" style="font-size: 12px">~ Avec l'aide de <a href="https://github.com/carage34">carage34</a> ~</p>
@@ -85,6 +83,7 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 ### Les brûlages
 
+<span class="pastille reset christmas_code">WND8M</span><br>
 Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur.
 
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/tableau_brulage.PNG" alt="tableau_brulage"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>

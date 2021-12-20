@@ -54,6 +54,10 @@ class Competiteur implements UserInterface, Serializable
     ['libelle' => 'Poussin',    'minDate' => '/01/01', 'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
+    const SECRET_CODES = ['U8DX5', 'K9LM0', '1SD6F', '6PMD6', 'S35HF', 'PM9S5', '8LMPD',
+                          '13FHQ', '5WDDK', 'WND8M', 'WXC09', 'Q8NCJ', 'D8JCG'];
+    const GOLDEN_CODE = 'VB34H';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -357,6 +361,590 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $dispos;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir maximum 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code1", nullable=true)
+     */
+    private $code1;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code2", nullable=true)
+     */
+    private $code2;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code3", nullable=true)
+     */
+    private $code3;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code4", nullable=true)
+     */
+    private $code4;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code5", nullable=true)
+     */
+    private $code5;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code6", nullable=true)
+     */
+    private $code6;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code7", nullable=true)
+     */
+    private $code7;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code8", nullable=true)
+     */
+    private $code8;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code9", nullable=true)
+     */
+    private $code9;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code10", nullable=true)
+     */
+    private $code10;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code11", nullable=true)
+     */
+    private $code11;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code12", nullable=true)
+     */
+    private $code12;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code13", nullable=true)
+     */
+    private $code13;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "Le code doit contenir exactement 5 caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=5, name="code14", nullable=true)
+     */
+    private $code14;
+
+    public function isCheating(): bool {
+        $allFoundCodes = array_filter([
+            $this->code1,
+            $this->code2,
+            $this->code3,
+            $this->code4,
+            $this->code5,
+            $this->code6,
+            $this->code7,
+            $this->code8,
+            $this->code9,
+            $this->code10,
+            $this->code11,
+            $this->code12,
+            $this->code13,
+            $this->code14,
+        ], function($code) {
+            return $code != null;
+        });
+
+        if (count($allFoundCodes) != count(array_unique($allFoundCodes))) return true;
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isWinner(): bool
+    {
+        return in_array($this->code1, self::SECRET_CODES)
+        && in_array($this->code2, self::SECRET_CODES)
+        && in_array($this->code3, self::SECRET_CODES)
+        && in_array($this->code4, self::SECRET_CODES)
+        && in_array($this->code5, self::SECRET_CODES)
+        && in_array($this->code6, self::SECRET_CODES)
+        && in_array($this->code7, self::SECRET_CODES)
+        && in_array($this->code8, self::SECRET_CODES)
+        && in_array($this->code9, self::SECRET_CODES)
+        && in_array($this->code10, self::SECRET_CODES)
+        && in_array($this->code11, self::SECRET_CODES)
+        && in_array($this->code12, self::SECRET_CODES)
+        && in_array($this->code13, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFullWinner(): bool
+    {
+        return $this->isWinner() && $this->code14 == self::GOLDEN_CODE;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode1Correct(): bool
+    {
+        return in_array($this->code1, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode2Correct(): bool
+    {
+        return in_array($this->code2, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode3Correct(): bool
+    {
+        return in_array($this->code3, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode4Correct(): bool
+    {
+        return in_array($this->code4, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode5Correct(): bool
+    {
+        return in_array($this->code5, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode6Correct(): bool
+    {
+        return in_array($this->code6, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode7Correct(): bool
+    {
+        return in_array($this->code7, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode8Correct(): bool
+    {
+        return in_array($this->code8, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode9Correct(): bool
+    {
+        return in_array($this->code9, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode10Correct(): bool
+    {
+        return in_array($this->code10, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode11Correct(): bool
+    {
+        return in_array($this->code11, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode12Correct(): bool
+    {
+        return in_array($this->code12, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode13Correct(): bool
+    {
+        return in_array($this->code13, self::SECRET_CODES);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCode14Correct(): bool
+    {
+        return $this->code14 == self::GOLDEN_CODE;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode1(): ?string
+    {
+        return $this->code1;
+    }
+
+    /**
+     * @param string|null $code1
+     * @return Competiteur
+     */
+    public function setCode1(?string $code1): self
+    {
+        $this->code1 = $code1;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode2(): ?string
+    {
+        return $this->code2;
+    }
+
+    /**
+     * @param string|null $code2
+     * @return Competiteur
+     */
+    public function setCode2(?string $code2): self
+    {
+        $this->code2 = $code2;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode3(): ?string
+    {
+        return $this->code3;
+    }
+
+    /**
+     * @param string|null $code3
+     * @return Competiteur
+     */
+    public function setCode3(?string $code3): self
+    {
+        $this->code3 = $code3;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode4(): ?string
+    {
+        return $this->code4;
+    }
+
+    /**
+     * @param string|null $code4
+     * @return Competiteur
+     */
+    public function setCode4(?string $code4): self
+    {
+        $this->code4 = $code4;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode5(): ?string
+    {
+        return $this->code5;
+    }
+
+    /**
+     * @param string|null $code5
+     * @return Competiteur
+     */
+    public function setCode5(?string $code5): self
+    {
+        $this->code5 = $code5;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode6(): ?string
+    {
+        return $this->code6;
+    }
+
+    /**
+     * @param string|null $code6
+     * @return Competiteur
+     */
+    public function setCode6(?string $code6): self
+    {
+        $this->code6 = $code6;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode7(): ?string
+    {
+        return $this->code7;
+    }
+
+    /**
+     * @param string|null $code7
+     * @return Competiteur
+     */
+    public function setCode7(?string $code7): self
+    {
+        $this->code7 = $code7;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode8(): ?string
+    {
+        return $this->code8;
+    }
+
+    /**
+     * @param string|null $code8
+     * @return Competiteur
+     */
+    public function setCode8(?string $code8): self
+    {
+        $this->code8 = $code8;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode9(): ?string
+    {
+        return $this->code9;
+    }
+
+    /**
+     * @param string|null $code9
+     * @return Competiteur
+     */
+    public function setCode9(?string $code9): self
+    {
+        $this->code9 = $code9;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode10(): ?string
+    {
+        return $this->code10;
+    }
+
+    /**
+     * @param string|null $code10
+     * @return Competiteur
+     */
+    public function setCode10(?string $code10): self
+    {
+        $this->code10 = $code10;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode11(): ?string
+    {
+        return $this->code11;
+    }
+
+    /**
+     * @param string|null $code11
+     * @return Competiteur
+     */
+    public function setCode11(?string $code11): self
+    {
+        $this->code11 = $code11;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode12(): ?string
+    {
+        return $this->code12;
+    }
+
+    /**
+     * @param string|null $code12
+     * @return Competiteur
+     */
+    public function setCode12(?string $code12): self
+    {
+        $this->code12 = $code12;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode13(): ?string
+    {
+        return $this->code13;
+    }
+
+    /**
+     * @param string|null $code13
+     * @return Competiteur
+     */
+    public function setCode13(?string $code13): self
+    {
+        $this->code13 = $code13;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode14(): ?string
+    {
+        return $this->code14;
+    }
+
+    /**
+     * @param string|null $code14
+     * @return Competiteur
+     */
+    public function setCode14(?string $code14): self
+    {
+        $this->code14 = $code14;
+        return $this;
+    }
 
     /**
      * @return int

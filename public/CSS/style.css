@@ -934,6 +934,18 @@ table.table-last-compos tr {
   display: none;
 }
 
+.christmas_code {
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  margin: 6px 6px !important;
+  font-weight: bold;
+  background-color: red;
+}
+.christmas_code.golden {
+  background-color: gold !important;
+  color: black;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;

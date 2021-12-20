@@ -1,7 +1,7 @@
 {% if erreur %}
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
-    <h6><b>Classement de la poule</b></h6>
+    <h6><b>Classement de la poule - {{ ourTeam }}</b></h6>
     {% if classementPoule|length > 0 %}
         <table class="striped classementPoule">
             {% for equipe in classementPoule %}

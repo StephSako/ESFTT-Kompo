@@ -65,7 +65,7 @@
 {% macro labelVirtualPoints(virtualPoints, tooltipPosition, virtualPointsProgression) %}
     <div class="card-panel bottom_0 virtualPointsCard">
         <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getClassementVirtuel()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger pulse" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
+            <span style="margin-left: 6px"><a onclick="getClassementVirtuel()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
             <h6 class="lobster_2"><b style="vertical-align: sub">Points virtuels</b></h6>
             <span><i class="material-icons blue-text text-darken-1 tooltipped interaction" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés à partir des points mensuels des adversaires (légers écarts possibles), dès que les rencontres sont saisies sur SPID. Points réèls connus en début de mois.">help_outline</i></span>
         </div>
@@ -108,7 +108,9 @@
                         <td style="padding-top: 5px; padding-bottom: 5px;">
                             <div class="chip" style="margin-right: 0; margin-bottom: 0;">
                                 <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') }}" alt="Avatar">
-                                <span>{{ disponibilite.nom }} {{ disponibilite.prenom }}</span>
+                                <span>
+                                    {{ disponibilite.nom }} {{ disponibilite.prenom }}
+                                </span>
                             </div>
                         </td>
                         {% for i in 1..disponibilites["nbJournees"] %}
@@ -121,6 +123,10 @@
                                     {% endif %}
                                 {% else %}
                                     <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                {% endif %}
+
+                                {% if loop.index == 7 and disponibilite.prenom == 'Patrick' and nomChamp == 'Paris' %}
+                                    <span class="pastille reset christmas_code">6PMD6</span>
                                 {% endif %}
                             </td>
                         {% endfor %}

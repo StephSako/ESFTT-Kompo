@@ -25,7 +25,12 @@
                 {% if idEquipes|length %}
                     {% for nom, brulage in brulages %}
                         <tr>
-                            <td>{{ nom }}</td>
+                            <td>
+                                {% if loop.index == 11 %}
+                                    <span class="pastille reset christmas_code hide-on-med-and-up">1SD6F</span>
+                                {% endif %}
+                                {{ nom }}
+                            </td>
                             {% for brulageJournee in brulage['brulage'] %}
                                 <td class="center">
                                     {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
