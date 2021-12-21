@@ -35,7 +35,7 @@ class HomeController extends AbstractController
      * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
      */
     const INFOS_CHAMP_ROLE_DISPLAY = [
-        'critérium-fédéral' => 'CritFed'
+        'criterium-federal' => 'CritFed'
     ];
 
     /**
