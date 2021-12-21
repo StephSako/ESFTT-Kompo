@@ -176,8 +176,8 @@
                             {% if joueur.competiteur %}
                                 <tr>
                                     <td>
-                                        {% if joueur.winner %}<span class="material-icons red-text">emoji_events</span>{% endif %}
-                                        {% if joueur.fullWinner %}<span class="material-icons gold-color">emoji_events</span>{% endif %}
+                                        {% if joueur.winner %}<span class="material-icons red-text" style="vertical-align: bottom;">emoji_events</span>{% endif %}
+                                        {% if joueur.fullWinner %}<span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>{% endif %}
                                         {{ joueur.nom }} {{ joueur.prenom }}
                                     </td>
                                     <td>
@@ -187,7 +187,7 @@
                                             <i class="material-icons red-text">clear</i>
                                         {% endif %}
                                     </td>
-                                    <td><b>{{ joueur.ownCodes | length }}</b> / 13+1</td>
+                                    <td><b {% if joueur.winner %}class="green-text"{% endif %}>{{ joueur.ownCodes | length }}</b> / 13+1</td>
                                     <td>
                                         {% if joueur.code14Correct %}
                                             <i class="material-icons green-text">check</i>
