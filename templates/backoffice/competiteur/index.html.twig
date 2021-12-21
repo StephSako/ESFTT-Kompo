@@ -156,5 +156,51 @@
                 <p class='lobster_2 missingTitle'>Aucun membre enregistré</p>
             {% endif %}
         </div>
+
+        {% if app.user.isAdmin %}
+            <div class='card-panel backoffice-panel center'>
+                <h5>Résultats jeu de Noël</h5>
+
+                <table class="responsive-table striped">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Sans triche</th>
+                            <th>Codes corrects</th>
+                            <th>Code d'or</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for joueur in competiteurs %}
+                            {% if joueur.competiteur %}
+                                <tr>
+                                    <td>
+                                        {% if joueur.winner %}<span class="material-icons red-text">emoji_events</span>{% endif %}
+                                        {% if joueur.fullWinner %}<span class="material-icons gold-color">emoji_events</span>{% endif %}
+                                        {{ joueur.nom }} {{ joueur.prenom }}
+                                    </td>
+                                    <td>
+                                        {% if not joueur.cheating %}
+                                            <i class="material-icons green-text">check</i>
+                                        {% else %}
+                                            <i class="material-icons red-text">clear</i>
+                                        {% endif %}
+                                    </td>
+                                    <td><b>{{ joueur.ownCodes | length }}</b> / 13+1</td>
+                                    <td>
+                                        {% if joueur.code14Correct %}
+                                            <i class="material-icons green-text">check</i>
+                                        {% else %}
+                                            <i class="material-icons red-text">clear</i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -530,8 +530,8 @@ class Competiteur implements UserInterface, Serializable
      */
     private $code14;
 
-    public function isCheating(): bool {
-        $allFoundCodes = array_filter([
+    public function getOwnCodes(): array {
+        return array_filter([
             $this->code1,
             $this->code2,
             $this->code3,
@@ -547,8 +547,12 @@ class Competiteur implements UserInterface, Serializable
             $this->code13,
             $this->code14,
         ], function($code) {
-            return $code != null;
+            return $code != null && in_array($code, self::SECRET_CODES);
         });
+    }
+
+    public function isCheating(): bool {
+        $allFoundCodes = $this->getOwnCodes();
 
         if (count($allFoundCodes) != count(array_unique($allFoundCodes))) return true;
         return false;
