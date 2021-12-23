@@ -539,7 +539,7 @@ class HomeController extends AbstractController
                             } );
 
                             $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
-                                $score = $domicile ? $match->getScoreA() : $match->getScoreB();
+                                $isWinner = $domicile ? $match->getScoreA() > $match->getScoreB() : $match->getScoreB() > $match->getScoreA();
                                 $nomJoueurAdversaireBis = !$domicile ? $match->getAdversaireA() : $match->getAdversaireB();
 
                                 $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
@@ -547,7 +547,7 @@ class HomeController extends AbstractController
                                 }));
 
                                 return [
-                                    'resultat' => ($score == 2 ? 'green' : 'red lighten-1'),
+                                    'resultat' => ($isWinner ? 'green' : 'red lighten-1'),
                                     'pointsJoueurAdversaire' => count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints() ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
                                 ];
                             }, $matches);
