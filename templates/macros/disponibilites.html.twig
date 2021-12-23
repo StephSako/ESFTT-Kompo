@@ -125,7 +125,7 @@
                                     <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
                                 {% endif %}
 
-                                {% if loop.index == 7 and disponibilite.prenom == 'Patrick' and nomChamp == 'Paris' %}
+                                {% if loop.index == 7 and loop.parent.loop.index == 2 and nomChamp == 'Paris' %}
                                     <span class="pastille reset christmas_code">6PMD6</span>
                                 {% endif %}
                             </td>
