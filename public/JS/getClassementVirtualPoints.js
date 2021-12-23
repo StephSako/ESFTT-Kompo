@@ -1,18 +1,28 @@
-function getClassementVirtuel() {
+function getGeneralClassementsVirtuels() {
     if (!alreadyCalledClassement) {
         alreadyCalledClassement = true;
         $.ajax({
-            url : '/journee/classement-virtuel',
+            url : '/journee/general-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : function(responseTemplate) { templatingClassementVirtuel(responseTemplate); },
-            error : function() { templatingClassementVirtuel("<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>"); }
+            success : function(responseTemplate) { templating('#rankingContent', responseTemplate); },
+            error : function() { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>"); }
         });
     }
 }
 
-function templatingClassementVirtuel(response){
-    $('#rankingContent').html(response);
+let alreadyCalledClassement = false;
+
+function getPersonnalClassementVirtuel() {
+    $.ajax({
+        url : '/journee/personnal-classement-virtuel',
+        type : 'POST',
+        dataType : 'json',
+        success : function(responseTemplate) { templating('.preloader_personnal_virtual_rank', responseTemplate); },
+        error : function() { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
+    });
 }
 
-let alreadyCalledClassement = false;
+function templating(selector, response){
+    $(selector).html(response);
+}

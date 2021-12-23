@@ -1,7 +1,7 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos, virtualPoints, virtualPointsProgression) %}
+{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
     <div class="center-align">
         <div class="hide-on-med-and-down">
-            {{ _self.labelVirtualPoints(virtualPoints, 'left', virtualPointsProgression) }}
+            {{ _self.labelVirtualPoints('left') }}
         </div>
         {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
@@ -62,21 +62,26 @@
     </div>
 {% endmacro %}
 
-{% macro labelVirtualPoints(virtualPoints, tooltipPosition, virtualPointsProgression) %}
+{% macro labelVirtualPoints(tooltipPosition) %}
     <div class="card-panel bottom_0 virtualPointsCard">
         <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getClassementVirtuel()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
+            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
             <h6 class="lobster_2"><b style="vertical-align: sub">Points virtuels</b></h6>
             <span><i class="material-icons blue-text text-darken-1 tooltipped interaction" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés à partir des points mensuels des adversaires (légers écarts possibles), dès que les rencontres sont saisies sur SPID. Points réèls connus en début de mois.">help_outline</i></span>
         </div>
-        {% if virtualPoints %}
-            <p>
-                <span class="pastille reset virtualPoints">{{ virtualPoints | round(1, 'floor') }} pts</span>
-                <span class="{% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
-            </p>
-        {% else %}
-            <p class="red-text text-lighten-1"><b>Matches introuvables</b></p>
-        {% endif %}
+        <div class="preloader_personnal_virtual_rank">
+            <div class="preloader-wrapper active tiny">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endmacro %}
@@ -139,7 +144,7 @@
 {% endmacro %}
 
 {% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) %}
-    <div class="card-panel bottom_0" style="padding: 5px 0; margin-top: 10px;">
+    <div class="card-panel bottom_0" style="padding: 5px 0; margin-top: 5px;">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
             <div class="pastilleDispos col s4 lobster

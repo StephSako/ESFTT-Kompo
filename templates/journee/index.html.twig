@@ -11,7 +11,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
-        <script type="text/javascript" defer src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/getClassementRanking.min.js') }}"></script>
     </header>
@@ -96,7 +96,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelVirtualPoints(virtualPoints, 'top', virtualPointsProgression) }}
+                {{ _disponibilites.labelVirtualPoints('top') }}
             </div>
 
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
@@ -337,7 +337,7 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length), virtualPoints, virtualPointsProgression) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
                 </div>
             </li>
             <li>
@@ -355,7 +355,7 @@
         </ul>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length), virtualPoints, virtualPointsProgression) }}
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
         </div>
 
         {# Modale des classement des points virtuels #}
@@ -384,4 +384,8 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        getPersonnalClassementVirtuel();
+    </script>
 {% endblock %}

@@ -202,15 +202,6 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
-        // Récupération des points virtuels de l'utilisateur
-        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $virtualPoints = new VirtualPoints(0, 0);
-        if ($this->getUser()->getLicence()) {
-            try {
-                $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
-            } catch (Exception $e) {}
-        }
-
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -230,9 +221,7 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            'allDisponibilites' => $allDisponibilites,
-            'virtualPoints' => $virtualPoints->getVirtualPoints(),
-            'virtualPointsProgression' => $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel()
+            'allDisponibilites' => $allDisponibilites
         ]);
     }
 
@@ -576,7 +565,7 @@ class HomeController extends AbstractController
 
     /**
      * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs
-     * @Route("/journee/classement-virtuel", name="index.classementVirtuel", methods={"POST"})
+     * @Route("/journee/general-classement-virtuel", name="index.generalClassementsVirtuels", methods={"POST"})
      * @return JsonResponse
      */
     function getClassementVirtuelsClub(): JsonResponse {
@@ -661,6 +650,38 @@ class HomeController extends AbstractController
             'classementProgressionPhase' => $classementProgressionPhase,
             'classementPointsMensuel' => $classementPointsMensuel,
             'classementPointsPhase' => $classementPointsPhase,
+            'erreur' => $erreur,
+        ])->getContent());
+    }
+
+    /**
+     * Renvoie un template des points virtuels mensuels de l'utilisateur actif
+     * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
+     * @return JsonResponse
+     */
+    function getPersonnalClassementVirtuelsClub(): JsonResponse {
+        set_time_limit(intval($this->getParameter('time_limit_ajax')));
+        $erreur = null;
+        $virtualPoints = null;
+        $virtualPointsProgression = null;
+
+        try{
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            $virtualPoints = new VirtualPoints(0, 0);
+            if ($this->getUser()->getLicence()) {
+                try {
+                    $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+                    $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
+                    $virtualPoints = $virtualPoints->getVirtualPoints();
+                } catch (Exception $e) {}
+            }
+        } catch(Exception $exception) {
+            $erreur = 'Classement virtuel indisponible';
+        }
+
+        return new JsonResponse($this->render('ajax/personnalVirtualPoints.html.twig', [
+            'virtualPoints' => $virtualPoints,
+            'virtualPointsProgression' => $virtualPointsProgression,
             'erreur' => $erreur,
         ])->getContent());
     }

@@ -1014,6 +1014,7 @@ table.table-last-compos {
 .virtualPointsCard {
   padding: 6px 0;
   margin-bottom: 10px;
+  font-size: 14px;
 
   p {
     margin-top: 4px;
@@ -1025,6 +1026,10 @@ table.table-last-compos {
 
     span:last-child {
       padding: 0;
+    }
+
+    &.error {
+      margin: 5.5px 0;
     }
   }
 }
@@ -1068,6 +1073,11 @@ table.table-last-compos {
     background-color: gold !important;
     color: black;
   }
+}
+
+.preloader-wrapper.tiny {
+  width: 26.24px;
+  height: 26.24px;
 }
 
 @media screen and (max-width: 1466px) {
@@ -1127,7 +1137,7 @@ table.table-last-compos {
 
 // md grid
 @media screen and (max-width: 992px) {
-  th.th_picture_compet_table{
+  th.th_picture_compet_table {
     height: 116px;
   }
 

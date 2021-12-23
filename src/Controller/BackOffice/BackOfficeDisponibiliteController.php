@@ -95,7 +95,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             return $response;
         }
 
-        return new JsonResponse($this->render('ajax/backoffice/dispos/disponibilite.html.twig', [
+        return new JsonResponse($this->render('ajax/backoffice/disponibilite.html.twig', [
             'idJournee' => $journee->getIdJournee(),
             'idCompetiteur' => $idCompetiteur,
             'idDisponibilite' => $idDisponibilite,
@@ -144,7 +144,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             return $response;
         }
 
-        return new JsonResponse($this->render('ajax/backoffice/dispos/disponibilite.html.twig', [
+        return new JsonResponse($this->render('ajax/backoffice/disponibilite.html.twig', [
             'message' => $message,
             'idJournee' => $idJournee,
             'idDisponibilite' => $idDisponibilite,

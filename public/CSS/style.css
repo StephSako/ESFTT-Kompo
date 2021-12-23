@@ -900,6 +900,7 @@ table.table-last-compos tr {
 .virtualPointsCard {
   padding: 6px 0;
   margin-bottom: 10px;
+  font-size: 14px;
 }
 .virtualPointsCard p {
   margin-top: 4px;
@@ -910,6 +911,9 @@ table.table-last-compos tr {
 }
 .virtualPointsCard p span:last-child {
   padding: 0;
+}
+.virtualPointsCard p.error {
+  margin: 5.5px 0;
 }
 
 .brulageCard {
@@ -944,6 +948,11 @@ table.table-last-compos tr {
 .christmas_code.golden {
   background-color: gold !important;
   color: black;
+}
+
+.preloader-wrapper.tiny {
+  width: 26.24px;
+  height: 26.24px;
 }
 
 @media screen and (max-width: 1466px) {
