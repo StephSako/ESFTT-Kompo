@@ -70,16 +70,18 @@ class AppExtension extends AbstractExtension
     {
         $nbEquipes = count($numEquipes);
         $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+        $numEquipes = array_values($numEquipes);
+        sort($numEquipes);
 
-        foreach (array_values($numEquipes) as $i => $numEquipe) {
+        foreach ($numEquipes as $i => $numEquipe) {
             $str .= $numEquipe;
             if ($i == $nbEquipes - 2) $str .= ' et ';
             elseif ($i < $nbEquipes - 1) $str .= ', ';
         }
 
         $str .= $nbEquipes > 1 ? ' n\'ont ' : ' n\'a ';
-        $str .= 'pas de division' . ($nbEquipes > 1 ? 's':'') . ' affiliée' . ($nbEquipes > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder ';
-        $str .= $nbEquipes > 1 ? ' à leurs compositions d\'équipe.' : ' à ses compositions d\'équipe.';
+        $str .= 'pas de division' . ($nbEquipes > 1 ? 's':'') . ' affiliée' . ($nbEquipes > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder à';
+        $str .= ($nbEquipes > 1 ? ' leurs ' : ' ses ') . 'compositions d\'équipe';
 
         return $str;
     }

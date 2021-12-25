@@ -12,6 +12,8 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\PouleRepository;
 use Cocur\Slugify\Slugify;
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -320,7 +322,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->getLatestDate($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -342,7 +344,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Le club n'est pas affilié à ce championnat";
                 }
             }
-
             /** Si un des deux boutons de mise à jour est cliqué */
             /** Mise à jour des compétiteurs */
             if ($request->request->get('resetPlayers')) {
@@ -366,14 +367,17 @@ class BackOfficeFFTTApiController extends AbstractController
                 if (count($championnatSearch) == 1) {
                     $championnat = array_values($championnatSearch)[0];
 
-                    /** Mode pré-rentrée */
+                    /** Mode pré-rentrée lancé */
                     if ($request->request->get('preRentreeResetChampionnats')) {
                         /** On supprime toutes les dispos du championnat sélectionné **/
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
-                        /** On set les Journées comme étant indéfinies */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $dateKompo) {
-                            $dateKompo->setUndefined(true);
+                        /** On set les Journées comme étant indéfinies avec les dates maximum de la prochaine phase */
+                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
+                        foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
+                            $dateKompo
+                                ->setUndefined(true)
+                                ->setDateJournee($maxDatesNextPhase[$index]);
                         }
                         $this->em->flush();
 
@@ -401,8 +405,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["teams"] as $equipeKompo) {
                             $equipeKompo
                                 ->setLienDivision(null)
-                                ->setIdPoule(null)
-                                ->setIdDivision(null);
+                                ->setIdPoule(null);
                         }
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
@@ -521,13 +524,23 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param Championnat $championnat
      * @return array
      */
-    function getLatestDate(Championnat $championnat): array {
-        $latestDate = array_map(function(Rencontre $renc) {
-                return $renc->getIdJournee()->getUndefined() ? null : max([$renc->getDateReport(), $renc->getIdJournee()->getDateJournee()]);
-            }, $championnat->getRencontres()->toArray());
+    function isLaunchable(Championnat $championnat): array {
+        $latestDate = $this->getLastDates($championnat);
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
         else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-rentrée prête à être lancée'];
         else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-rentrée'];
+    }
+
+    /**
+     * Retourne les dates au plus tard de toutes les recontres du championnat sélectionné
+     * @param Championnat $championnat
+     * @return array
+     */
+    function getLastDates(Championnat $championnat): array
+    {
+        return array_unique(array_map(function(Rencontre $renc) {
+            return max([$renc->isReporte() ? $renc->getDateReport() : null, $renc->getIdJournee()->getDateJournee()]);
+        }, $championnat->getRencontres()->toArray()), SORT_REGULAR);
     }
 
     /**
@@ -547,7 +560,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $division->setLongName($divisionLongName);
             $division->setShortName($divisionShortName);
             $division->setIdChampionnat($championnat);
-            $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division')); /** Nombre de joueurs par défaut dans une division */
+            $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division'));
             $this->em->persist($division);
         }
         else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];
@@ -563,5 +576,28 @@ class BackOfficeFFTTApiController extends AbstractController
         else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
 
         return [$division, $poule];
+    }
+
+    /**
+     * Retourne les dates au plus tard de la prochaine phase :
+     *  - phase 1 (du 1er Juillet au 31 Décembre)
+     *  - phase 2 (du 1 Janvier au 30 Juin)
+     * @param DateTime $date
+     * @param int $nbJournees
+     * @return array
+     * @throws Exception
+     */
+    function maxDatesNextPhase(Datetime $date, int $nbJournees): array
+    {
+        if (new Datetime($date->format('Y') . '-' . '07-01') < $date && $date < new Datetime($date->format('Y') . '-' . '12-31')) {
+            $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '06-30'),'+1 day +1 year');
+        } else $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '12-31'),'+1 day');
+
+        $firstDay = clone $lastDay;
+        $firstDay->sub(new DateInterval('P' . $nbJournees . 'D'));
+        $start = $firstDay;
+        $end = $lastDay;
+        $interval = new DateInterval('P1D');
+        return iterator_to_array(new DatePeriod($start, $interval, $end));
     }
 }
