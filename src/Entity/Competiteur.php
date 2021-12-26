@@ -1494,6 +1494,20 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @return Competiteur
+     */
+    public function setIsTotallyArchive(): self
+    {
+        return $this->setIsArchive(true)
+            ->setIsAdmin(false)
+            ->setIsCapitaine(false)
+            ->setIsCompetiteur(false)
+            ->setIsCritFed(false)
+            ->setIsEntraineur(false)
+            ->setIsLoisir(false);
+    }
+
+    /**
      * @return bool
      */
     public function isCritFed(): bool

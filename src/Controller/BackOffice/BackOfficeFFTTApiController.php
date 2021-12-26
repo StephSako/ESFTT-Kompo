@@ -65,7 +65,9 @@ class BackOfficeFFTTApiController extends AbstractController
     public function index(Request $request): Response
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
-        $joueursIssued = []; /** Tableau où seront stockés tous les joueurs devant être mis à jour */
+        $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
+        $joueursIssued['issuedLicences']['to_archive'] = []; /** Tableau où seront stockés les joueurs non-licenciés devant être archivés */
+        $joueursIssued['issuedLicences']['to_update'] = []; /** Tableau où seront stockés les joueurs non-licenciés devant être mis à jour */
         $errorMajJoueurs = false;
         $errorMajRencontresEquipes = false;
 
@@ -75,6 +77,22 @@ class BackOfficeFFTTApiController extends AbstractController
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isCompetiteur' => 1], ['nom' => 'ASC', 'prenom' => 'ASC']);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
+
+            /** Gestion des joueurs non répertoriés dans l'API FFTT */
+            $allLicensesFFTT = array_map(function ($joueur) { return intval($joueur->getLicence()); }, $joueursFFTT);
+            $unarchivePlayers = array_filter($this->competiteurRepository->findBy(['isArchive' => 0], ['nom' => 'ASC', 'prenom' => 'ASC']), function($joueurIssuedToArchive) use ($allLicensesFFTT) {
+                return !in_array($joueurIssuedToArchive->getLicence(), $allLicensesFFTT);
+            });
+
+            foreach ($unarchivePlayers as $joueurIssuedLicence){
+                $joueurPotentiel = array_filter($joueursFFTT, function ($joueur) use ($joueurIssuedLicence) {
+                    return str_contains($joueur->getLicence(), strval($joueurIssuedLicence->getLicence()))
+                        && (new Slugify())->slugify($joueurIssuedLicence->getNom().$joueurIssuedLicence->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
+                });
+
+                if (!$joueurPotentiel) $joueursIssued['issuedLicences']['to_archive'][] = $joueurIssuedLicence;
+                else $joueursIssued['issuedLicences']['to_update'][array_values($joueurPotentiel)[0]->getLicence()] = $joueurIssuedLicence;
+            }
 
             foreach ($joueursKompo as $competiteur){
                 $joueurFFTT = array_filter($joueursFFTT,
@@ -86,11 +104,11 @@ class BackOfficeFFTTApiController extends AbstractController
                     $joueur = array_values($joueurFFTT)[0];
                     $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
                     if (($joueur->getPoints() != $competiteur->getClassementOfficiel() || !$sameName) && intval($joueur->getPoints()) > 0){ /** Si les classements ne concordent pas */
-                        $joueursIssued[$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
-                        $joueursIssued[$competiteur->getIdCompetiteur()]['pointsFFTT'] = intval($joueur->getPoints());
-                        $joueursIssued[$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom();
-                        $joueursIssued[$competiteur->getIdCompetiteur()]['prenomFFTT'] = $joueur->getPrenom();
-                        $joueursIssued[$competiteur->getIdCompetiteur()]['sameName'] = $sameName;
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['pointsFFTT'] = intval($joueur->getPoints());
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom();
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['prenomFFTT'] = $joueur->getPrenom();
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['sameName'] = $sameName;
                     }
                 }
             }
@@ -348,14 +366,41 @@ class BackOfficeFFTTApiController extends AbstractController
             /** Mise à jour des compétiteurs */
             if ($request->request->get('resetPlayers')) {
                 /** On met à jour les compétiteurs **/
-                foreach ($joueursIssued as $joueurIssued) {
-                    if (!$joueurIssued['sameName']) $joueurIssued['joueur']->setNom($joueurIssued['nomFFTT'])->setPrenom($joueurIssued['prenomFFTT']);
-                    $joueurIssued['joueur']
-                        ->setClassementOfficiel($joueurIssued['pointsFFTT']);
+                try {
+                    foreach ($joueursIssued['competition'] as $joueurIssued) {
+                        if (!$joueurIssued['sameName'])
+                            $joueurIssued['joueur']
+                                ->setNom($joueurIssued['nomFFTT'])
+                                ->setPrenom($joueurIssued['prenomFFTT']);
+                        $joueurIssued['joueur']
+                            ->setClassementOfficiel($joueurIssued['pointsFFTT']);
+                    }
+                    $this->em->flush();
+                } catch (Exception $exception) {
+                    $this->addFlash('fail', 'Compétiteurs non mis à jour');
                 }
-                $this->em->flush();
 
-                $this->addFlash('success', 'Compétiteurs mis à jour');
+                /** On archive les joueurs non-licenciés **/
+                try {
+                    foreach ($joueursIssued['issuedLicences']['to_archive'] as $joueurToArchive) {
+                        $joueurToArchive->setIsTotallyArchive();
+                    }
+                    $this->em->flush();
+                } catch (Exception $exception) {
+                    $this->addFlash('fail', 'Joueurs non répertoriés non archivés');
+                }
+
+                /** On met à jour les licences non répertoriées **/
+                try {
+                    foreach ($joueursIssued['issuedLicences']['to_update'] as $newLicence => $joueurToUpdate) {
+                        $joueurToUpdate->setLicence($newLicence);
+                    }
+                    $this->em->flush();
+                } catch (Exception $exception) {
+                    $this->addFlash('fail', 'Licences non répertoriées non mises à jour');
+                }
+
+                $this->addFlash('success', 'Joueurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
             }
             else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (pré-rentrée ou phase) */
