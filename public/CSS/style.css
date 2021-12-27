@@ -924,14 +924,26 @@ table.table-last-compos tr {
 #aide_page h1 {
   margin-top: 0;
 }
-#aide_page h1, #aide_page h2 {
+#aide_page h1, #aide_page h2, #aide_page h4 {
   font-family: Lobster, cursive;
 }
 #aide_page h4 {
-  font-family: "Lato", sans-serif;
+  font-size: 2rem;
 }
 #aide_page strong {
   font-weight: bold;
+}
+#aide_page ul > li {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+#aide_page ul > li > ul > li:before {
+  content: "▶ ";
+  font-size: 80%;
+  padding-left: 15px;
+}
+#aide_page .link_jumper {
+  cursor: pointer;
 }
 
 .lien_court {
