@@ -1,30 +1,27 @@
 {% if app.user %}
-    {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
-        <li class="li_in_line{% if app.request.getPathInfo == '/compte' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
-                <div class="chip chip-menu chip-mobile left">
-                    {% if app.user.avatar %}
-                        <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
-                    {% else %}
-                        <img src="{{ asset('images/account.png') }}" alt="Avatar">
-                    {% endif %}
-                </div>
-                Mon compte
-            </a>
-        </li>
-    {% endif %}
+    <li class="li_in_line{% if app.request.getPathInfo == '/compte' %} active blue darken-3{% endif %}">
+        <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
+            <div class="chip chip-menu chip-mobile left">
+                {% if app.user.avatar %}
+                    <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
+                {% else %}
+                    <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                {% endif %}
+            </div>
+            Mon compte
+        </a>
+    </li>
 
-    {% if 'ROLE_JOUEUR' in app.token.roleNames %}
-        <li class="li_in_line{% if app.request.getPathInfo starts with '/contact' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contact</a>
-        </li>
-    {% endif %}
+    <li class="li_in_line{% if app.request.getPathInfo starts with '/contact' %} active blue darken-3{% endif %}">
+        <a class="white-text center-align" href="{{ path('contact') }}"><i class="white-text material-icons left">perm_phone_msg</i>Contacter</a>
+    </li>
 
-    {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
+    {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
         <li class="li_in_line{% if app.request.getPathInfo starts with '/backoffice' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path('backoffice') }}"><i class="white-text material-icons left">format_list_bulleted</i>Gestion</a>
+            <a class="white-text center-align" href="{{ path('backoffice') }}"><i class="white-text material-icons left">tune</i>Gestion</a>
         </li>
     {% endif %}
 
     <li class="li_in_line deconnexion"><a class="white-text center-align" href="{{ path('logout') }}"><i class="white-text material-icons left">power_settings_new</i>Se déconnecter</a></li>
+    <li class="li_in_line center-align"><span class="pastille reset christmas_code">8LMPD</span></li>
 {% endif %}

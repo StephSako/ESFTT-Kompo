@@ -1,0 +1,45 @@
+{% macro form(form, btnText, champHasDivisions, options) %}
+    <style>
+        li {
+            color: red;
+        }
+    </style>
+
+    {% if champHasDivisions %}
+        <div class="card-panel center-align">
+            <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une équipe</h4>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if options %}{{ options.championnat }}{% endif %}</h5>
+
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col s12 m4">
+                        <b>Numéro</b>
+                        {% if btnText == 'Créer' %}
+                            {{ form_row(form.numero) }}
+                        {% else %}
+                            <p><b>{{ form.vars.value.numero }}</b></p>
+                        {% endif %}
+                    </div>
+                    <div class="col s12 m4 {% if btnText != 'Modifier' %}form_div_list{% endif %}">
+                        <b>Division</b>{{ form_row(form.idDivision) }}
+                    </div>
+                    <div class="col s12 m4 form_div_list">
+                        <b>Poule</b>{{ form_row(form.idPoule) }}
+                    </div>
+                </div>
+
+                <br>
+                <a href="{{ path('backoffice.equipes') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <button class="btn btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
+            {{ form_end(form) }}
+        </div>
+    {% else %}
+        <div class="center card-panel">
+            <p class="lobster_2 missingTitle">Le formulaire d'équipe est inaccessible car aucune division n'est enregistrée pour ce championnat</p>
+
+            <a href="{{ path('backoffice.equipes') }}">
+                <button class="btn waves-effect blue lighten-2 center">Retour aux équipes</button>
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}

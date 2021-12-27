@@ -2,19 +2,12 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Entity\EquipeDepartementale;
-use App\Entity\EquipeParis;
-use App\Entity\RencontreDepartementale;
-use App\Entity\RencontreParis;
-use App\Form\EquipeDepartementaleType;
-use App\Form\EquipeParisType;
+use App\Entity\Equipe;
+use App\Entity\Rencontre;
+use App\Form\EquipeType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\DivisionRepository;
-use App\Repository\EquipeDepartementaleRepository;
-use App\Repository\EquipeParisRepository;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\JourneeParisRepository;
-use App\Repository\RencontreDepartementaleRepository;
-use App\Repository\RencontreParisRepository;
+use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,213 +18,223 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeEquipeController extends AbstractController
 {
     private $em;
-    private $equipeDepartementaleRepository;
-    private $equipeParisRepository;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
-    private $rencontreDepartementalRepository;
-    private $rencontreParisRepository;
+    private $equipeRepository;
+    private $championnatRepository;
     private $divisionRepository;
 
     /**
      * BackOfficeController constructor.
-     * @param EquipeDepartementaleRepository $equipeDepartementaleRepository
-     * @param EquipeParisRepository $equipeParisRepository
-     * @param JourneeDepartementaleRepository $journeesDepartementaleRepository
-     * @param JourneeParisRepository $journeesParisRepository
-     * @param RencontreParisRepository $rencontreParisRepository
-     * @param RencontreDepartementaleRepository $rencontreDepartementalRepository
+     * @param EquipeRepository $equipeRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(EquipeDepartementaleRepository $equipeDepartementaleRepository,
-                                EquipeParisRepository $equipeParisRepository,
-                                JourneeDepartementaleRepository $journeesDepartementaleRepository,
-                                JourneeParisRepository $journeesParisRepository,
-                                RencontreParisRepository $rencontreParisRepository,
-                                RencontreDepartementaleRepository $rencontreDepartementalRepository,
+    public function __construct(EquipeRepository $equipeRepository,
+                                ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->equipeDepartementaleRepository = $equipeDepartementaleRepository;
-        $this->equipeParisRepository = $equipeParisRepository;
-        $this->journeeDepartementaleRepository = $journeesDepartementaleRepository;
-        $this->journeeParisRepository = $journeesParisRepository;
-        $this->rencontreParisRepository = $rencontreParisRepository;
+        $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
-        $this->rencontreDepartementalRepository = $rencontreDepartementalRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
-     * @Route("/backoffice/equipes", name="backoffice.equipes")
+     * @Route("/backoffice/equipes/{focusedTab?}", name="backoffice.equipes")
+     * @param string|null $focusedTab
      * @return Response
      */
-    public function indexEquipes(): Response
+    public function index(?string $focusedTab): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
-            'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
-            'equipesParis' => $this->equipeParisRepository->findAll()
+            'equipes' => $this->championnatRepository->getAllEquipes(),
+            'focusedTab' => $focusedTab
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/{type}/new", name="backoffice.equipe.new")
-     * @param string $type
+     * @Route("/backoffice/equipe/new/", name="backoffice.equipe.new")
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function new(string $type, Request $request): Response
+    public function new(Request $request): Response
     {
-        if ($type != 'departementale' && $type != 'paris') throw new Exception('Ce championnat est inexistant', 500);
-        $equipe = ($type == 'departementale' ? new EquipeDepartementale() : new EquipeParis());
-        $form = $this->createForm(($type == 'departementale' ? EquipeDepartementaleType::class : EquipeParisType::class), $equipe);
+        $equipe = new Equipe();
+        $divisions = $this->divisionRepository->getDivisionsOptgroup();
+        $form = $this->createForm(EquipeType::class, $equipe, [
+            'divisionsOptGroup' => $divisions,
+            'newEquipe' => true
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted() && $divisions){
             if ($form->isValid()){
                 try {
-                    $this->em->persist($equipe);
+                    if (!$equipe->getIdDivision()) throw new Exception('Renseignez une division', 12342);
+
+                    $numEquipesChamp = array_map(function ($eq) {
+                        return $eq->getNumero();
+                    }, $equipe->getIdDivision()->getIdChampionnat()->getEquipes()->toArray());
+                    $numerosManquants = $this->getAllowedNumbers($numEquipesChamp);
+                    $lastNumero = $this->getLastNumero($numEquipesChamp);
+
+                    /** On vérifie que le numéro ne soit pas déjà attribué */
+                    if (in_array($equipe->getNumero(), $numEquipesChamp))
+                        throw new Exception('Le numéro ' . $equipe->getNumero() . ' est déjà attribué', 12340);
+                    /** On vérifie qu'il ne manque pas des numéros d'équipes */
+                    else if ($numerosManquants && !in_array($equipe->getNumero(), $numerosManquants)) {
+                        $nbMissingEquipes = count($numerosManquants);
+                        $str = $nbMissingEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+
+                        foreach (array_values($numerosManquants) as $i => $numEquipe) {
+                            $str .= $numEquipe;
+                            if ($i == $nbMissingEquipes - 2) $str .= ' et ';
+                            elseif ($i < $nbMissingEquipes - 1) $str .= ', ';
+                        }
+
+                        $str .= $nbMissingEquipes > 1 ? ' doivent d\'abord être créées' : ' doit d\'abord être créée';
+                        throw new Exception($str, 12341);
+                    /** Sinon le numéro attribué doit être le suivant de la dernière équipe */
+                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants)
+                        throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12343);
+
+                        $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
+                    $this->createEquipeAndRencontres($equipe);
+
                     $this->em->flush();
-
-                    // Créer les rencontres de l'équipe créée
-                    if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-                    else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
-                    else throw new Exception('Ce championnat est inexistant', 500);
-                    $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-
-                    foreach ($journees as $journee){
-                        if ($type == 'departementale'){
-                            $rencontre = new RencontreDepartementale();
-                            $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampDepartementale() : $nbMaxJoueurs);
-                        }
-                        else if ($type == 'paris'){
-                            $rencontre = new RencontreParis();
-                            $nbJoueurs = ($equipe->getIdDivision() ? $equipe->getIdDivision()->getNbJoueursChampParis() : $nbMaxJoueurs);
-                        }
-                        else throw new Exception('Ce championnat est inexistant', 500);
-
-                        $rencontre
-                            ->setIdJournee($journee)
-                            ->setIdEquipe($equipe)
-                            ->setDomicile(true)
-                            ->setHosted(false)
-                            ->setDateReport($journee->getDateJournee())
-                            ->setReporte(false)
-                            ->setAdversaire(null)
-                            ->setExempt(false);
-
-                        for ($i = 0; $i < $nbJoueurs; $i++){
-                            $rencontre->setIdJoueurN($i, null);
-                        }
-                        $this->em->persist($rencontre);
-                    }
-                    $this->em->flush();
-                    $this->addFlash('success', 'Equipe créée avec succès !');
+                    $this->addFlash('success', 'Équipe créée');
                     return $this->redirectToRoute('backoffice.equipes');
                 } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/equipe/new.html.twig', [
-                        'form' => $form->createView()
-                    ]);
+                    if ($e->getPrevious()) {
+                        if ($e->getPrevious()->getCode() == "23000") {
+                            if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
+                            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else if (in_array($e->getCode(), ["12340", "12341", "12342", "12343"]))  $this->addFlash('fail', $e->getMessage());
                 }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/equipe/new.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'champHasDivisions' => count($divisions) > 0
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/edit/{type}/{idEquipe}", name="backoffice.equipe.edit")
-     * @param string $type
+     * @Route("/backoffice/equipe/edit/{idEquipe}", name="backoffice.equipe.edit", requirements={"idEquipe"="\d+"})
      * @param int $idEquipe
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function edit(string $type, int $idEquipe, Request $request): Response
+    public function edit(int $idEquipe, Request $request): Response
     {
-        $form = null;
-        if ($type == 'departementale'){
-            if (!($equipe = $this->equipeDepartementaleRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-            $form = $this->createForm(EquipeDepartementaleType::class, $equipe);
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Équipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
         }
-        else if ($type == 'paris'){
-            if (!($equipe = $this->equipeParisRepository->find($idEquipe))) throw new Exception('Cette équipe est inexistante', 500);
-            $form = $this->createForm(EquipeParisType::class, $equipe);
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
-
+        $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
+        $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $champHasDivisions) {
             if ($form->isValid()) {
-                // Désinscrire les joueurs superflus en cas de changement de division
-                if ($type == 'departementale') $rencontres = $this->rencontreDepartementalRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
-                else if ($type == 'paris') $rencontres = $this->rencontreParisRepository->findBy(['idEquipe' => $equipe->getIdEquipe()]);
-                else throw new Exception('Ce championnat est inexistant', 500);
-
-                try {
-                    $this->em->flush();
-                    if ($equipe->getIdDivision()){
-                        $nbMaxJoueurs = $this->divisionRepository->getMaxNbJoueursChamp($type);
-                        foreach ($rencontres as $rencontre){
-                            for ($i = $equipe->getIdDivision()->getNbJoueursChampParis() + 1; $i <= $nbMaxJoueurs; $i++){
-                                $rencontre->setIdJoueurN($i, null);
+                    try {
+                        $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
+                        /** Désinscrire les joueurs superflus en cas de changement de division **/
+                        if ($equipe->getIdDivision() && $lastNbJoueursDivision > $equipe->getIdDivision()->getNbJoueurs()){
+                            foreach ($equipe->getRencontres()->toArray() as $rencontre){
+                                for ($i = $equipe->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
+                                    $rencontre->setIdJoueurN($i, null);
+                                }
                             }
                         }
+
                         $this->em->flush();
+                        $this->addFlash('success', 'Équipe modifiée');
+                        return $this->redirectToRoute('backoffice.equipes');
+                    } catch(Exception $e){
+                        if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
+                            if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     }
-                    $this->addFlash('success', 'Equipe modifiée avec succès !');
-                    return $this->redirectToRoute('backoffice.equipes');
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000") $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('backoffice/equipe/edit.html.twig', [
-                        'equipe' => $equipe,
-                        'form' => $form->createView()
-                    ]);
-                }
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/equipe/edit.html.twig', [
-            'equipe' => $equipe,
-            'form' => $form->createView()
+            'championnat' => $equipe->getIdChampionnat()->getNom(),
+            'form' => $form->createView(),
+            'champHasDivisions' => $champHasDivisions
         ]);
     }
 
     /**
-     * @Route("/backoffice/equipe/delete/{type}/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE")
+     * @Route("/backoffice/equipe/delete/{idEquipe}", name="backoffice.equipe.delete", methods="DELETE", requirements={"idEquipe"="\d+"})
      * @param int $idEquipe
-     * @param string $type
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function delete(int $idEquipe, string $type, Request $request): Response
+    public function delete(int $idEquipe, Request $request): Response
     {
-        if ($type == 'departementale') $equipe = $this->equipeDepartementaleRepository->find($idEquipe);
-        else if ($type == 'paris') $equipe = $this->equipeParisRepository->find($idEquipe);
-        else throw new Exception('Ce championnat est inexistant', 500);
+        $equipe = $this->equipeRepository->find($idEquipe);
 
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
             $this->em->remove($equipe);
             $this->em->flush();
-            $this->addFlash('success', 'Équipe supprimée avec succès !');
+            $this->addFlash('success', 'Équipe supprimée');
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
-        return $this->render('backoffice/equipe/index.html.twig', [
-            'equipesDepartementales' => $this->equipeDepartementaleRepository->findAll(),
-            'equipesParis' => $this->equipeParisRepository->findAll()
-        ]);
+        return $this->redirectToRoute('backoffice.equipes');
+    }
+
+    /**
+     * @param Equipe $equipe
+     */
+    public function createEquipeAndRencontres(Equipe $equipe) {
+        $this->em->persist($equipe);
+
+        /** On créé toutes les rencontres de la nouvelle équipe **/
+        $journees = $equipe->getIdChampionnat()->getJournees()->toArray();
+        foreach ($journees as $journee){
+            $rencontre = new Rencontre($equipe->getIdChampionnat());
+            $rencontre
+                ->setIdJournee($journee)
+                ->setIdEquipe($equipe)
+                ->setDomicile(null)
+                ->setVilleHost(false)
+                ->setDateReport($journee->getDateJournee())
+                ->setReporte(false)
+                ->setAdversaire(null)
+                ->setExempt(false);
+            $this->em->persist($rencontre);
+        }
+    }
+
+    /**
+     * Retourne le numéro de la prochaine équipe à créer du championnat
+     * @param array $numEquipes
+     * @return int|null
+     */
+    public function getLastNumero(array $numEquipes): ?int {
+        $lastNumero = array_map(function($numero) { return $numero;}, $numEquipes);
+        return $lastNumero ? max($lastNumero) + 1 : null;
+    }
+
+    /**
+     * Retourne les numéros des équipes si y en a des manquantes
+     * @param array $numEquipes
+     * @return array
+     */
+    public function getAllowedNumbers(Array $numEquipes): array {
+        $numEquipes = array_map(function ($numero) {
+            return $numero;
+        }, $numEquipes);
+        $range = range(1, $numEquipes ? max($numEquipes) : 1);
+        return array_diff($range, $numEquipes);
     }
 }

@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/equipe.html.twig' as  %}
+{% import 'macros/form/equipe.html.twig' as _equipe %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
 
-{% block title %}Back-office - Les équipes{% endblock %}
+{% block title %}Créer une équipe{% endblock %}
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
     <div class="container">
         {% for message in app.flashes('fail') %}
@@ -15,7 +16,7 @@
 
         {{ form_errors(form) }}
 
-        {{ new.equipe(form, 'Créer') }}
+        {{ _equipe.form(form, 'Créer', champHasDivisions) }}
     </div>
 
 {% endblock %}

@@ -1,0 +1,26 @@
+{% if erreur %}
+    <p class="pastille red white-text">{{ erreur }}</p>
+{% else %}
+    <h6><b>Classement de la poule - {{ ourTeam }}</b></h6>
+    {% if classementPoule|length > 0 %}
+        <table class="striped classementPoule">
+            {% for equipe in classementPoule %}
+                <tr>
+                    <td style="max-width: 45px">
+                        {% if equipe.classement %}
+                            <span class="badge light-blue darken-2 white-text">{{ equipe.classement }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="{{ equipe.isOurClub }}" style="max-width: 160px; padding-left: 10px; font-size: 15px;">
+                        <span class="truncate">{{ equipe.nom }}</span>
+                    </td>
+                    <td>
+                        <span class="pastille reset virtualPoints truncate">{{ equipe.points }} pts</span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h6 class="center pastille reset orange">Aucune équipe n'est enregistrée pour le moment</h6>
+    {% endif %}
+{% endif %}

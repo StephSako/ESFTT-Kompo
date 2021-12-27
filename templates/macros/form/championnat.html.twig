@@ -1,0 +1,62 @@
+{% macro form(form, btnText) %}
+    <style>
+        li {
+            color: red;
+        }
+    </style>
+
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ btnText }} un championnat</h4>
+
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col s12 l4">
+                    <b><i class="material-icons prefix">short_text</i> Nom</b>
+                    {{ form_row(form.nom) }}
+                </div>
+
+                <div class="col s12  l4">
+                    <b><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</b>
+                    {{ form_row(form.limiteBrulage) }}
+                </div>
+
+                <div class="col s12 l4">
+                    <b><i class="material-icons prefix">date_range</i> Nombre de journées</b>
+                    {{ form_row(form.nbJournees, {'id': 'i_nb_journees'}) }}
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 0">
+                <div class="col s12  l4 form_div_list">
+                    <b><i class="material-icons prefix ">star</i> Championnat</b>
+                    {{ form_row(form.lienFfttApi) }}
+                </div>
+                <div class="col s12  l4">
+                    <b>Tri auto. des classements</b><br>
+                    <div style="margin-top: 15px;">{{ form_row(form.compoSorted) }}</div>
+                </div>
+
+                <div class="col s12  l4">
+                    <b>Règle du brûlage de la J2 appliquée ?</b><br>
+                    <div style="margin-top: 15px;">{{ form_row(form.j2Rule, {'id': 'cb_regle_j2'}) }}</div>
+                </div>
+            </div>
+
+            <a href="{{ path('backoffice.championnats') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+            <button class="btn btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
+        {{ form_end(form) }}
+    </div>
+
+    <script type="text/javascript">
+        let i_nb_journees = $('#i_nb_journees');
+        let cb_regle_j2 = $('#cb_regle_j2');
+
+        /** Evènements liés aux emails et numéros de téléphone **/
+        if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+
+        i_nb_journees.change(function () {
+            if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+            else cb_regle_j2.prop('disabled', false);
+        });
+    </script>
+{% endmacro %}

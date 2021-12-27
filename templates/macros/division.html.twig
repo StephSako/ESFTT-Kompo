@@ -1,0 +1,46 @@
+{% macro table(divisions) %}
+    {% if divisions|length %}
+        <table class="striped centered responsive-table backoffice-table">
+            <thead>
+                <tr>
+                    <th>Diminutif</th>
+                    <th>Nom</th>
+                    <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
+                    <th class="hide-on-large-only">Nb joueurs/compo</th>
+                    <th>Nombre d'équipes</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for division in divisions %}
+                <tr>
+                    <td>
+                        <b>{{ division.shortName }}</b>
+                    </td>
+                    <td>{{ division.longName }}</td>
+                    <td>{{ division.nbJoueurs }}</td>
+                    <td>{{ division.nbEquipes }}</td>
+                    <td>
+                        <a href="{{ path('backoffice.division.edit', {idDivision: division.idDivision}) }}" class="btn waves-effect blue lighten-2 btn_gestion">
+                            <i class="material-icons">edit</i>
+                        </a>
+                    </td>
+                    <td>
+                        <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                            <button class="btn waves-effect red lighten-2 btn_gestion">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="lobster_2 missingTitle">Aucune division enregistrée</p>
+    {% endif %}
+{% endmacro %}

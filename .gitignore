@@ -19,4 +19,7 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 .idea
-kompo.db
+kompo_refactored.db
+###> phpunit/phpunit ###
+phpunit.xml.dist
+###< phpunit/phpunit ###

@@ -1,0 +1,555 @@
+{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, options) %}
+
+    <div class="card-panel center-align account-card">
+
+        <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
+        <span style="color: red"><i>* Champs obligatoires</i></span>
+
+        {{ form_start(form) }}
+            <div class="row section" style="margin-bottom: 0;">
+                <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
+
+                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                    <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
+                    {{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                </div>
+                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                    <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
+                    {{ form_row(form.prenom) }}
+                </div>
+                {% if options.usernameEditable %}
+                    <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                        <b><i class="material-icons prefix">account_circle</i> Pseudo <span class="red-text">*</span></b>
+                        {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    </div>
+                {% endif %}
+                <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
+                    <b><i class="material-icons prefix">cake</i> Date de  naissance</b>
+                    <div class="titlecase">
+                        {{ form_row(form.dateNaissance) }}
+                    </div>
+                </div>
+            </div>
+
+            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                <div class="section" style="margin-bottom: 0;">
+                    <h5 class="dark_blue" style="margin-top: 0;">Statut(s) du joueur</h5>
+
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
+                        </div>
+                        <div class="col s12 m4">
+                            {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s12 m4">
+                            {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if not options.isArchived %}
+                {% if anneeCertificatMedical != -1 %}
+                    <div style="margin-bottom: 0;">
+                        <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
+                        {% if (age != null and age > 18) or age == null %}
+                            {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement à la rentrée <br><b>{{ anneeCertificatMedical+3 }}-{{ anneeCertificatMedical+4 }}</b></p>
+                            {% else %}
+                                {% if anneeCertificatMedical != null %}
+                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Renouvellement à la rentrée <br><b>{{ "now"|date('Y') }}-{{ "now"|date('Y')+1 }}</b></p>
+                                {% else %}
+                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                                {% endif %}
+                                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                                    {% if anneeCertificatMedical != null %}
+                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green lighten-2 btn_gestion'>
+                                            Renouveler
+                                        </a>
+                                    {% else %}
+                                        <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
+
+                                        <div class="row" style="margin-bottom: 0;">
+                                            <div class="col s12 m4 offset-m4" style="margin-top: 0;">
+                                                {{ form_row(form.anneeCertificatMedical) }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
+                    <div class="row section">
+                        <h5 class="dark_blue">Contact</h5>
+                        <p class="red-text"><i>* Une adresse email minimum requise</i></p>
+
+                        {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
+                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
+                        {% endif %}
+
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                            <b><i class="material-icons prefix">mail</i> Adresse mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
+                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                            <b><i class="material-icons prefix">mail</i> Adresse mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
+                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                            <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
+                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                            <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
+                        </div>
+                        {% if not options.createMode is defined %}
+                            <div class="col s12 m3 left-align">
+                                {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <script>
+                        $('#i_num').on('keypress', function(e) { if (e.which === 32) return false; });
+                        $('#i_num_2').on('keypress', function(e) { if (e.which === 32) return false; });
+                    </script>
+                {% endif %}
+
+                <div class="row section" style="margin-bottom: 0;">
+                    <h5 class="dark_blue">Informations licence</h5>
+
+                    {% if type != 'backoffice' %}
+                        <p style="margin-bottom: 0">
+                            {% if isCritFed %}
+                                <i class="material-icons green-text">check</i> Je participe au critérium fédéral
+                            {% else%}
+                                <i class="material-icons red-text">clear</i> Je ne participe pas au critérium fédéral
+                            {% endif %}
+                        </p>
+                    {% endif %}
+
+                    <div class="col s12 l4">
+                        <p><b>Catégorie d'âge</b></p>
+                        {% if type == 'backoffice' and not editMode %}
+                            <i>Calculée sur la date de naissance</i>
+                        {% else %}
+                            <span class="pastille blue centered">{{ categorieAge }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="col s12 m6 l4">
+                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.licence) }}
+                        {% else %}
+                            {% if options.licence %}
+                                <span class="pastille blue centered">{{ options.licence }}</span>
+                            {% else %}
+                                <p style="color: red">Licence indéfinie</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="col s12 m6 l4">
+                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.classementOfficiel) }}
+                        {% else %}
+                            {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
+                                <p><i>Vous n'êtes pas compétiteur</i></p>
+                            {% else %}
+                                {% if app.user.classementOfficiel %}
+                                    <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
+                                {% else %}
+                                    <p style="color: red">Classement indéfini</p>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="col m1 hide-on-small-and-down"></div>
+                </div>
+            {% endif %}
+
+            <div class="section input_file" style="margin-bottom: 0;">
+                <h5 class="dark_blue">Image de profil</h5>
+                <p style="margin-top: 0; margin-bottom: 0;"><i>Formats acceptés : <b>JPEG, PNG et GIF </b></i><span class="pastille reset christmas_code">U8DX5</span></p>
+                {{ form_row(form.imageFile) }}
+
+                <div class="avatarSectionDelete">
+                    {% if urlImage %}
+                        <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
+                            {% if type == 'backoffice' %}
+                                href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
+                            {% else %}
+                                href="{{ path('account.delete.avatar') }}"
+                            {% endif %}>
+                            <i class="material-icons">delete</i>
+                        </a>
+                    {% endif %}
+                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du membre">
+                </div>
+            </div>
+
+            {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
+                <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
+            {% endif %}
+
+            <div class="row" style="margin-bottom: 0; margin-top: 20px; font-size: 16px;;">
+
+                <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
+
+                {% if app.user.cheating %}
+                    <p class="red-text">Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</p>
+                {% else %}
+                    {% if app.user.winner %}
+                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ! Félicitations !<span class="material-icons gold-color">emoji_events</span></p>
+                    {% else %}
+                        <p><i>Vous n'avez pas encore trouvé tous les codes ... persévérez !</i></p>
+                    {% endif %}
+
+                    {% if app.user.fullWinner %}
+                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ainsi que le ticket d'or ! Félicitations !<span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span></p>
+                    {% endif %}
+                {% endif %}
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 1</b>
+                            {{ form_row(form.code1) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code1 %}
+                                {% if app.user.code1Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 2</b>
+                            {{ form_row(form.code2) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code2 %}
+                                {% if app.user.code2Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 3</b>
+                            {{ form_row(form.code3) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code3 %}
+                                {% if app.user.code3Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 4</b>
+                            {{ form_row(form.code4) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code4 %}
+                                {% if app.user.code4Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 5</b>
+                            {{ form_row(form.code5) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code5 %}
+                                {% if app.user.code5Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 6</b>
+                            {{ form_row(form.code6) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code6 %}
+                                {% if app.user.code6Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 7</b>
+                            {{ form_row(form.code7) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code7 %}
+                                {% if app.user.code7Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 8</b>
+                            {{ form_row(form.code8) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code8 %}
+                                {% if app.user.code8Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 9</b>
+                            {{ form_row(form.code9) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code9 %}
+                                {% if app.user.code9Correct and not app.user.cheating%}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 10</b>
+                            {{ form_row(form.code10) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code10 %}
+                                {% if app.user.code10Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 11</b>
+                            {{ form_row(form.code11) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code11 %}
+                                {% if app.user.code11Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 12</b>
+                            {{ form_row(form.code12) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code12 %}
+                                {% if app.user.code12Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11">
+                            <b><i class="material-icons prefix">key</i> Code 13</b>
+                            {{ form_row(form.code13) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code13 %}
+                                {% if app.user.code13Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s8 offset-s2">
+                    <div class="row">
+                        <div class="col s11 gold-color">
+                            <b><i class="material-icons prefix">key</i> Code d'or</b>
+                            {{ form_row(form.code14) }}
+                        </div>
+                        <div class="col s1">
+                            {% if app.user.code14 %}
+                                {% if app.user.code14Correct and not app.user.cheating %}
+                                    <i class="material-icons green-text">check</i>
+                                {% else %}
+                                    <i class="material-icons red-text">clear</i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                {% if editMode %}
+                    onclick="alertBecomingLoisirOrArchived()"
+                {% endif %}
+                class="btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
+            </button>
+        {{ form_end(form) }}
+    </div>
+
+    <script type="text/javascript">
+        let type = '{{ type }}'
+    </script>
+    {% if type == 'backoffice' %}
+        <script type="text/javascript">
+            let isArchived = Boolean({{ options.isArchived ? 1 : 0 }});
+            let isLoisir = Boolean({{ options.isLoisir ? 1 : 0 }});
+        </script>
+        <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.min.js') }}" defer></script>
+    {% endif %}
+
+    <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.min.js') }}" defer></script>
+{% endmacro %}
+
+{% macro edit_password(title, path, type, options) %}
+    <div class="card-panel center-align">
+        <h4 class="h4_form">{{ title }}</h4>
+
+        <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
+            <div class="row">
+                {% if type == 'general' %}
+                    <div class="input-field col s12 l4">
+                        <input name="actual_password" id="actual_password" type="password" class="validate" maxlength="100" required>
+                        <label for="actual_password">Mot de passe actuel</label>
+                    </div>
+                {% endif %}
+                <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
+                    <input name="new_password" id="new_password" type="password" class="validate" maxlength="100" required>
+                    <label for="new_password">Nouveau mot de passe</label>
+                </div>
+                <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
+                    <input name="new_password_validate" id="new_password_validate" type="password" maxlength="100" class="validate" required>
+                    <label for="new_password_validate">Saisir de nouveau</label>
+                </div>
+            </div>
+            <br><button id="btnEditPassword" class="btn btn_form waves-effect light-blue darken-1" disabled>Modifier</button>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="{{ asset('JS/accountEditPassword.min.js') }}" defer></script>
+{% endmacro %}

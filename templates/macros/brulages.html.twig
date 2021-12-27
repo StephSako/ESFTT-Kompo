@@ -1,5 +1,5 @@
-{% macro table(type, brulages, idEquipes) %}
-    <div class="card-panel bottom_0" style="padding-left: 0; padding-right: 0;">
+{% macro table(limiteBrulage, brulages, idEquipes) %}
+    <div class="card-panel bottom_0 brulageCard">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
             <div class="col s10">Brûlé dans l'équipe</div>
@@ -11,104 +11,116 @@
         </div>
     </div>
 
-    <table class="card-panel brulages">
-        <thead>
-            <tr>
-                <th class="center"><h5>Brûlages</h5></th>
-                {% for idEquipe in idEquipes %}
-                    <th class="center"><h5>{{ idEquipe }}</h5></th>
-                {% endfor %}
-            </tr>
-        </thead>
-
-        <tbody>
-        {% for nom, brulage in brulages %}
-            <tr>
-                <td class="left">{{ nom }}</td>
-                {% for brulageJournee in brulage['brulage'] %}
-                    <td class="center">
-                        {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
-                            <i class="red-text material-icons">highlight_off</i>
-                        {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
-                            <i class="orange-text material-icons">error_outline</i>
-                        {% endif %}
-                    </td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="scrollableTable card-panel">
+        <table class="striped {% if not idEquipes|length %} centered{% endif %}">
+            <thead>
+                <tr>
+                    <th class="center"><h5>Brûlages</h5></th>
+                    {% for idEquipe in idEquipes %}
+                        <th class="center"><h5>{{ idEquipe }}</h5></th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if idEquipes|length %}
+                    {% for nom, brulage in brulages %}
+                        <tr>
+                            <td>
+                                {% if loop.index == 11 %}
+                                    <span class="pastille reset christmas_code hide-on-med-and-up">1SD6F</span>
+                                {% endif %}
+                                {{ nom }}
+                            </td>
+                            {% for brulageJournee in brulage['brulage'] %}
+                                <td class="center">
+                                    {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
+                                        <i class="red-text material-icons">highlight_off</i>
+                                    {% elseif brulageCumule(brulage['brulage'], loop.index) == limiteBrulage - 1 %}
+                                        <i class="orange-text material-icons">error_outline</i>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td id="noTeam">2 équipes minimum requises</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endmacro %}
 
 {% macro joueursBrules(type, joueursBrules, idEquipe) %}
-    <table style="margin-top: 20px;" class="centered card-panel dispos brulage_edit">
-        <thead>
-            <tr>
-                <th>
-                    <h5>Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
-                </th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% if joueursBrules|length == 0 %}
-                <tr>
-                    <td>Aucun joueur brûlé</td>
-                </tr>
-            {% else %}
+    <div class="card-panel cardJoueursBrules">
+        <h5 class="center">Brûlés en {{ idEquipe }} <i class="red-text material-icons">whatshot</i></h5>
+        {% if joueursBrules|length %}
+        <table style="margin-top: 20px;" class="centered striped">
+            <tbody>
                 {% for joueur in joueursBrules %}
                     <tr>
                         <td>{{ joueur }}</td>
                     </tr>
                 {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+        {% else %}
+            <p class="center">Aucun joueur brûlé</p>
+        {% endif %}
+    </div>
 {% endmacro %}
 
-{% macro selectionnables(type, selectionnables, idEquipe, idJournee, idEquipes) %}
-    {% if min(idEquipes) - 1 != idEquipe and idJournee == 2 and type == 'departementale' %}
-        <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
-            <span class="red-text" style="margin-top: 0; margin-bottom: 0;"><i>En J2, 1 seul joueur orange peut être sélectionné</i></span>
+{% macro selectionnables(championnatJ2Rule, championnatLimiteBrulage, selectionnables, idEquipe, idJournee, idEquipes) %}
+    {% if idEquipe in idEquipes and idJournee == 2 and championnatJ2Rule %}
+        <div class="card-panel center-align hide-on-med-and-down" style="margin-bottom: 0; padding: 8px 4px;">
+            <span style="margin-top: 0; margin-bottom: 0;"><span class="truncate">En J2, un seul joueur marqué <i class="material-icons red-text">whatshot</i></span><span class="truncate">peut être sélectionné</span></span>
         </div>
     {% endif %}
 
-    <table style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %};" class="centered card-panel brulages">
-        <thead>
-            <tr>
-                <th class="center">
-                    <h6 class="lobster hide-on-small-only">Joueurs sélectionnables et brûlages à J+1</h6>
-                    <h6 class="lobster hide-on-med-and-up">Joueurs</h6>
-                </th>
-                {% for idEquipe in idEquipes %}
-                    <th class="center"><h5>{{ idEquipe }}</h5></th>
-                {% endfor %}
-            </tr>
-        </thead>
-
-        <tbody>
-            {% if selectionnables|length == 0 %}
-                <tr>
-                    <td class="center">Aucun joueur sélectionnable</td>
-                </tr>
-            {% else %}
-                {% for nom, brulage in selectionnables %}
+    <div class="card-panel" style="margin-top: {% if idEquipe > 1 and idJournee == 2 %}10px{% else %}20px{% endif %}; padding: 1px 0 0 0;">
+        <h6 style="padding-top: 10px; padding-right: 4px; padding-left: 4px;" class="center lobster hide-on-small-only">Joueurs sélectionnables et brûlages à J+1</h6>
+        <div class="scrollableTable">
+            {% if selectionnables|length %}
+            <table class="striped {% if not idEquipes|length %} centered{% endif %}">
+                <thead>
                     <tr>
-                        <td {% if brulage["bruleJ2"] == true %} class="orange lighten-4"{% endif %}>
-                            {{ nom }}
-                        </td>
-                        {% for brulageJournee in brulage['brulage'] %}
-                            <td class="center">
-                                {% if brulageCumule(brulage['brulage'], loop.index) >= (type == 'departementale' ? limite_brulage_departementale : limite_brulage_paris) %}
-                                    <i class="red-text material-icons">highlight_off</i>
-                                {% elseif brulageCumule(brulage['brulage'], loop.index) == (type == 'departementale' ? (limite_brulage_departementale - 1) : (limite_brulage_paris - 1)) %}
-                                    <i class="orange-text material-icons">error_outline</i>
-                                {% endif %}
-                            </td>
+                        <th class="center"></th>
+                        {% for idEquipe in idEquipes %}
+                            <th class="center"><h5 style="margin: 0">{{ idEquipe }}</h5></th>
                         {% endfor %}
                     </tr>
-                {% endfor %}
+                </thead>
+
+                <tbody>
+                    {% for nom, brulage in selectionnables %}
+                        <tr>
+                            <td>
+                                {% if brulage["bruleJ2"] == true %}<i class="material-icons red-text">whatshot</i>{% endif %}{{ nom }}
+                            </td>
+                            {% for brulageJournee in brulage['brulage'] %}
+                                <td class="center">
+                                    {% if brulageCumule(brulage['brulage'], loop.index) >= championnatLimiteBrulage %}
+                                        <i class="red-text material-icons">highlight_off</i>
+                                    {% elseif brulageCumule(brulage['brulage'], loop.index) == championnatLimiteBrulage - 1 %}
+                                        <i class="orange-text material-icons">error_outline</i>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+            {% else %}
+                <p class="center">Aucun joueur sélectionnable</p>
             {% endif %}
-        </tbody>
-    </table>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro messageBrulageJn() %}
+    <div class="card-panel center-align" style="margin-bottom: 0; padding: 8px 4px;">
+        <span style="margin-top: 0; margin-bottom: 0;">En journée 2, un seul joueur marqué du symbole <i class="material-icons red-text">whatshot</i> dans <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i><span class="lobster" style="font-size: 100%;">Sélectionnables & brûlage J+1</span>  peut être sélectionné</span>
+    </div>
 {% endmacro %}

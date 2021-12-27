@@ -1,5 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
-      limite_brulage_departementale: "%limite_brulage_departementale%"
-      limite_brulage_paris: "%limite_brulage_paris%"
+      default_password: '%env(DEFAULT_PASSWORD)%'
+      club_id: '%env(CLUB_ID)%'
+      club_name: '%env(CLUB_NAME)%'
+      club_diminutif: '%env(CLUB_DIMINUTIF)%'

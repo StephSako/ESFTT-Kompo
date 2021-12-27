@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Back-office - Les compétiteurs{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/account.html.twig' as new %}
+{% import 'macros/form/account.html.twig' as _account %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
+{% block title %}Créer un membre{% endblock %}
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
     <div class="container">
         {% for message in app.flashes('success') %}
@@ -20,7 +20,7 @@
 
         {{ form_errors(form) }}
 
-        {{ new.edit_account('backoffice', 'Créer un compétiteur', form, null, false) }}
+        {{ _account.edit_account('backoffice', 'Créer un membre', form, null, false, -1, null, null, false, {isArchived: false, isLoisir: false, usernameEditable: true, createMode: true}) }}
     </div>
 
 {% endblock %}

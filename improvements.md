@@ -4,7 +4,7 @@
 * Identifiant de l'ESFTT affiché pour chaque rencontre pour les capitaines (plus besoin d'aller sur PingPocket pour remplir la feuille de match 😉)
 
 ### 📅 Mars 2021
-* Back-office : Nouveau rôle "ADMINISTRATEUR" => seulement les administrateurs (et non plus les capitaines) peuvent modifier le mot de passe et les informations de contacts des membres (sauf leur propre compte), donner le rôle "CAPITAINE" et "VISITEUR" et supprimer les membres
+* Back-office : Nouveau rôle "ADMINISTRATEUR" => seulement les administrateurs (et non plus les capitaines) peuvent modifier le mot de passe et les informations de contacts des membres (sauf leur propre compte), donner le rôle "CAPITAINE" et "LOISIR" et supprimer les membres
 * Back-office : Supprimer un joueur
 * Back-office : Créer et supprimer une équipe de chaque championnat
 * Back-office : Lister, supprimer et créer les divisions d'équipes

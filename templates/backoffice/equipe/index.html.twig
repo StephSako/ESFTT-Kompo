@@ -6,9 +6,9 @@
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    {{ include('components/navbar_backoffice.html.twig') }}
 
-    <div class="container">
+    <div class='container center'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -18,25 +18,39 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
+        <div class='card-panel center-align white-text title_journee'>
             <h4>Les équipes</h4>
         </div>
 
-        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-            <li class="tab"><a href="#equipes_departementales" class="active">Départemental</a></li>
-            <li class="tab"><a href="#equipes_paris">Paris</a></li>
-        </ul>
+        {% if not equipes|length %}
+            <div class='card-panel center'>
+                <p class="lobster_2 center missingTitle">Aucun championnat enregistré</p>
 
-        <div class="card-panel center" id="equipes_departementales">
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-small-only">Créer une équipe départementale</a>
-            <a style="margin-bottom: 20px; font-size: 85%;" href="{{ path('backoffice.equipe.new', {type: 'departementale'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion hide-on-med-and-up">Créer une équipe départementale</a>
-            {{ _equipe.table(equipesDepartementales, 'departementale') }}
-        </div>
+                <a href='{{ path('backoffice.championnat.new') }}'
+                   class='btn waves-effect blue lighten-1 btn_gestion'>
+                    Créer un championnat
+                </a>
+            </div>
+        {% else %}
+            <a href='{{ path('backoffice.equipe.new') }}'
+               class='btn waves-effect blue lighten-1 btn_gestion'>
+                Créer une équipe
+            </a>
 
-        <div class="card-panel center" id="equipes_paris">
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.equipe.new', {type: 'paris'}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer une équipe Paris</a>
-            {{ _equipe.table(equipesParis, 'paris') }}
-        </div>
+            {% if equipes|length > 1 %}
+                <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+                    {% for nomChampionnat, renc_equipes in equipes %}
+                        <li class='tab'><a {% if nomChampionnat|customSlug == focusedTab %} class="active" {% endif %}href='{{ '#equipes_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% for nomChampionnat, renc_equipes in equipes %}
+                <div class='card-panel backoffice-panel center' id='{{ 'equipes_' ~ nomChampionnat|slug }}'>
+                    {{ _equipe.table(renc_equipes) }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
-{% import 'macros/edit/account.html.twig' as edit_account %}
+{% import 'macros/form/account.html.twig' as edit_account %}
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 
 {% block title %}
@@ -13,29 +13,34 @@
 
 {% block body %}
 
-    {% if type == 'general' %}
-        {% include("components/navbar.html.twig") %}
-    {% elseif type == 'backoffice' %}
-        {% include("components/navbar_backoffice.html.twig") %}
-    {% endif %}
+    <header>
+        {% if type == 'general' %}
+            {% include("components/navbar.html.twig") %}
+        {% elseif type == 'backoffice' %}
+            {% include("components/navbar_backoffice.html.twig") %}
+        {% endif %}
+    </header>
 
     <div class="container">
-
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
         {% endfor %}
 
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
+
+            {% if type == 'general' %}
+                <span class="pastille reset christmas_code golden">VB34H</span>
+            {% endif %}
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, urlImage, true) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.categorieAgeLabel, app.user.critFed, {licence: app.user.licence, isArchived: false, usernameEditable: true}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, {competiteurId: competiteur.idCompetiteur, idActualUser: idActualUser}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, categorieAge, isCritFed, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable}) }}
             {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteur.idCompetiteur}) }}
+                {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
             {% endif %}
         {% endif %}
     </div>

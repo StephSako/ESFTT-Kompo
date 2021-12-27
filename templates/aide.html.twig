@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'aide de Kompo{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar.html.twig") %}
+    </header>
+
+    <div class="container" id="aide_page">
+
+        <div class="card-panel center-align white-text title_journee">
+            <h4 style="font-family: Lobster, cursive">Page d'aide de Kompo</h4>
+        </div>
+
+        <div class="card-panel markdown_content">
+            {% if not markdown_data %}
+                <p class="center pastille reset red">Le fichier de la notice de Kompo n'a pas été trouvé</p>
+            {% else %}
+                {{ markdown_data | markdown_to_html }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

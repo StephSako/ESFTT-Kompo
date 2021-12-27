@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use App\Form\BackOfficeCompetiteurAdminType;
 use App\Form\CompetiteurType;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\JourneeParisRepository;
+use App\Repository\ChampionnatRepository;
+use App\Repository\CompetiteurRepository;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,26 +16,39 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class SecurityController extends AbstractController
 {
     private $em;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
+    private $championnatRepository;
+    private $utils;
+    private $uploadHandler;
+    private $encoder;
+    private $competiteurRepository;
 
     /**
      * SecurityController constructor.
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
-     * @param JourneeParisRepository $journeeParisRepository
+     * @param CompetiteurRepository $competiteurRepository
+     * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
+     * @param AuthenticationUtils $utils
+     * @param UploadHandler $uploadHandler
+     * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(JourneeDepartementaleRepository $journeeDepartementaleRepository,
-                                JourneeParisRepository $journeeParisRepository,
-                                EntityManagerInterface $em)
+    public function __construct(CompetiteurRepository $competiteurRepository,
+                                ChampionnatRepository $championnatRepository,
+                                EntityManagerInterface $em,
+                                AuthenticationUtils $utils,
+                                UploadHandler $uploadHandler,
+                                UserPasswordEncoderInterface $encoder)
     {
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
-        $this->journeeParisRepository = $journeeParisRepository;
         $this->em = $em;
+        $this->championnatRepository = $championnatRepository;
+        $this->utils = $utils;
+        $this->uploadHandler = $uploadHandler;
+        $this->encoder = $encoder;
+        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -44,9 +58,8 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $utils): Response
     {
-        if ($this->getUser() != null){
-            return $this->redirectToRoute('index');
-        } else {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
             return $this->render('account/login.html.twig', [
                 'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
@@ -58,94 +71,165 @@ class SecurityController extends AbstractController
      * @Route("/compte", name="account")
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function edit(Request $request){
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
 
+        $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) $form = $this->createForm(BackOfficeCompetiteurAdminType::class, $user);
-        else $form = $this->createForm(CompetiteurType::class, $user);
+        $form = $this->createForm(CompetiteurType::class, $user, [
+            'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    $user->setNom(strtoupper($user->getNom()));
-                    $user->setPrenom(ucwords(strtolower($user->getPrenom())));
+                    $user->setNom($user->getNom());
+                    $user->setPrenom($user->getPrenom());
+
                     $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées !');
+                    $this->addFlash('success', 'Informations modifiées');
                     return $this->redirectToRoute('account');
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $user->getLicence() . '\' est déjà attribuée');
-                        if (str_contains($e->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
-                        if (str_contains($e->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses emails doivent être différentes');
-                        if (str_contains($e->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    return $this->render('account/edit.html.twig', [
-                        'type' => 'general',
-                        'user' => $user,
-                        'urlImage' => $user->getAvatar(),
-                        'path' => 'account.update.password',
-                        'journees' => $journees,
-                        'form' => $form->createView()
-                    ]);
+                        if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse email doit être renseignée');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses email doivent être différentes');
+                        else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            }
-            else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('account/edit.html.twig', [
             'type' => 'general',
-            'user' => $user,
             'urlImage' => $user->getAvatar(),
+            'anneeCertificatMedical' => $user->getAnneeCertificatMedical(),
+            'age' => $user->getAge(),
             'path' => 'account.update.password',
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
             'journees' => $journees,
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * // TODO Refaire
      * @Route("/compte/update_password", name="account.update.password")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @return RedirectResponse|Response
+     * @return Response
      */
-    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder){
-        $journees = [];
-        if ($this->get('session')->get('type') == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($this->get('session')->get('type') == 'paris') $journees = $this->journeeParisRepository->findAll();
-
+    public function updatePassword(Request $request): Response
+    {
         $user = $this->getUser();
-
         $formCompetiteur = $this->createForm(CompetiteurType::class, $user);
         $formCompetiteur->handleRequest($request);
 
-        if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
-            $password = $encoder->encodePassword($user, $request->get('new_password'));
-            $user->setPassword($password);
+        if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate')) && strlen($request->request->get('actual_password'))) {
+            if ($this->encoder->isPasswordValid($user, $request->request->get('actual_password'))) {
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
+                    $user->setPassword($this->encoder->encodePassword($user, $request->get('new_password')));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Mot de passe modifié');
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+            } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
+        } else $this->addFlash('fail', 'Remplissez tous les champs');
+
+        return $this->redirectToRoute('account');
+    }
+
+    /**
+     * @Route("/compte/delete/avatar", name="account.delete.avatar")
+     * @return Response
+     */
+    public function deleteAvatar(): Response
+    {
+        if ($this->getUser() != null){
+            $this->uploadHandler->remove($this->getUser(), 'imageFile');
+            $this->getUser()->setAvatar(null);
+            $this->getUser()->setImageFile(null);
 
             $this->em->flush();
-            $this->addFlash('success', 'Mot de passe modifié !');
+            $this->addFlash('success', 'Avatar supprimé');
+        } else {
+            return $this->render('account/login.html.twig', [
+                'lastUsername' => $this->utils->getLastUsername(),
+                'error' => $this->utils->getLastAuthenticationError()
+            ]);
         }
-        else {
-            $this->addFlash('fail', 'Les mots de passe ne correspond pas');
-        }
+        return $this->redirectToRoute('account');
+    }
 
-        return $this->render('account/edit.html.twig', [
-            'user' => $user,
-            'type' => 'general',
-            'urlImage' => $user->getAvatar(),
-            'path' => 'account.update.password',
-            'journees' => $journees,
-            'form' => $formCompetiteur->createView()
-        ]);
+    /**
+     * @Route("/login/forgotten_password", name="login.forgotten.password")
+     * @return Response
+     */
+    public function forgottenPassword(): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else return $this->render('account/forgotten_password.html.twig', []);
+    }
+
+    /**
+     * @Route("/login/reset_password/{token}", name="login.reset.password")
+     * @param Request $request
+     * @param string $token
+     * @return Response
+     * @throws Exception
+     */
+    public function resetPassword(Request $request, string $token): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
+            $tokenDecoded = base64_decode($token);
+            $decryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+            $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
+
+            $username = json_decode($decryption, true)['username'];
+            $dateValid = json_decode($decryption, true)['dateValidation'];
+
+            /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
+            if ($dateValid < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
+
+            /**Formulaire soumis **/
+            if ($request->request->get('new_password') && $request->request->get('new_password_validate')) {
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
+                    $competiteur = $this->competiteurRepository->findBy(['username' => $username])[0];
+                    $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
+                    $this->em->flush();
+                    $this->addFlash('success', 'Mot de passe modifié');
+                    return $this->redirectToRoute('login');
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+            }
+
+            return $this->render('account/reset_password.html.twig', [
+                'token' => $token
+            ]);
+        }
+    }
+
+    /**
+     * Génère un token afin de modifier le mot de passe d'un utilisateur en passant l'username et le date changer (combien de temps
+     * le token est valide) en paramètre
+     * @param string $username
+     * @param string $dateChanger
+     * @return string
+     * @throws Exception
+     */
+    public function generateGeneratePasswordLink(string $username, string $dateChanger): string {
+        $token = json_encode(
+            [
+                'username' => $username,
+                'dateValidation' => (new DateTime())->add(new DateInterval($dateChanger))->getTimestamp()
+            ]);
+        $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
+        $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+        return 'https://www.prive.esftt.com/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
     }
 }

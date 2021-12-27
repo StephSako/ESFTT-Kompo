@@ -1,0 +1,54 @@
+:root {
+  --ck-z-default: 100;
+  --ck-z-modal: calc( var(--ck-z-default) + 999 );
+}
+
+#settings-page #editor {
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1) inset, 0 0;
+  background: white;
+  border: 1px solid #c7c7c7;
+  padding: calc(0.6em * 0.16) calc(0.6em * 0.8);
+  transition-property: box-shadow, border;
+  transition: 0.2s ease-in-out;
+  height: inherit;
+  width: inherit;
+  font-size: inherit;
+  margin: 0;
+  box-sizing: border-box;
+}
+#settings-page #editor:focus {
+  border: 1px solid #1f89e5;
+}
+
+#settings-page blockquote {
+  border-left: 5px solid #ee6e73;
+}
+
+#settings-page input.ck-input.ck-input-text:focus {
+  border: var(--ck-focus-ring);
+  box-shadow: var(--ck-focus-outer-shadow), var(--ck-inner-shadow);
+}
+
+#settings-page ul,
+#settings-page ul li {
+  list-style-type: inherit;
+}
+
+#settings-page strong {
+  font-weight: bold;
+}
+
+#settings-page h3, #settings-page h4, #settings-page h5 {
+  font-family: "Lato", sans-serif;
+}
+
+#settings-page ul {
+  padding-left: 40px;
+}
+
+.ck-button__icon {
+  background-color: white !important;
+  border-radius: 3px !important;
+}
+
+/*# sourceMappingURL=ckeditor.css.map */

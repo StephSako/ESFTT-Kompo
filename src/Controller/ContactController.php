@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\JourneeParisRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,42 +14,30 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 
 class ContactController extends AbstractController
 {
-    private $journeeParisRepository;
-    private $journeeDepartementaleRepository;
     private $competiteurRepository;
+    private $championnatRepository;
     private $mailer;
-    private $environment;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private $securityController;
 
     /**
      * ContactController constructor.
-     * @param JourneeDepartementaleRepository $journeeParisRepository
-     * @param JourneeParisRepository $journeeDepartementaleRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param EntityManagerInterface $em
+     * @param SecurityController $securityController
+     * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
-     * @param Environment $environment
      */
-    public function __construct(JourneeDepartementaleRepository $journeeParisRepository,
-                                JourneeParisRepository $journeeDepartementaleRepository,
-                                CompetiteurRepository $competiteurRepository,
-                                EntityManagerInterface $em,
-                                MailerInterface $mailer,
-                                Environment $environment)
+    public function __construct(CompetiteurRepository $competiteurRepository,
+                                SecurityController $securityController,
+                                ChampionnatRepository $championnatRepository,
+                                MailerInterface $mailer)
     {
-        $this->em = $em;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
         $this->competiteurRepository = $competiteurRepository;
+        $this->securityController = $securityController;
         $this->mailer = $mailer;
-        $this->environment = $environment;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -60,48 +46,126 @@ class ContactController extends AbstractController
      */
     public function index(): Response
     {
-        $type = ($this->get('session')->get('type') != null ? $this->get('session')->get('type') : 'departementale');
-        if ($type == 'departementale') $journees = $this->journeeDepartementaleRepository->findAll();
-        else if ($type == 'paris') $journees = $this->journeeParisRepository->findAll();
-        else throw new Exception('Ce championnat est inexistant', 500);
+        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
 
-        $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
+        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $allChampionnats = $this->championnatRepository->findAll();
+        $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
+
+        $idRedacteur = $this->getUser()->getIdCompetiteur();
+        $joueurs = [];
+        $joueurs['tous'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur));
+        $joueurs['loisirs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur));
+        $joueurs['competiteurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur));
+        $joueurs['crit_fed'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur));
+        $joueurs['capitaines'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur));
+        $joueurs['entraineurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur));
+        $joueurs['administrateurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur));
 
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
-            'journees' => $journees
+            'allChampionnats' => $allChampionnats,
+            'championnat' => $championnat,
+            'journees' => $journees,
+            'joueurs' => $joueurs
         ]);
     }
 
     /**
-     * @Route("/contact/message", name="contact.email")
+     * Formatte les joueurs contactables par rôle
+     * @param array $joueurs
+     * @return array
+     */
+    public function returnPlayersContact(array $joueurs): array
+    {
+        $mails = [];
+        $contactablesMails = [];
+        $notContactablesMails = [];
+        foreach ($joueurs as $joueur) {
+            if ($joueur->getFirstContactableMail()){
+                $contactablesMails[] = $joueur;
+                $mails[] = $joueur->getFirstContactableMail();
+            } else $notContactablesMails[] = $joueur;
+        }
+        $response['mail']['toString'] = implode(',', $mails);
+        $response['mail']['contactables'] = $contactablesMails;
+        $response['mail']['notContactables'] = $notContactablesMails;
+
+        $phoneNumbers = [];
+        $contactablesPhoneNumbers = [];
+        $notContactablesPhoneNumbers = [];
+        foreach ($joueurs as $joueur) {
+            if ($joueur->getFirstContactablePhoneNumber()){
+                $contactablesPhoneNumbers[] = $joueur;
+                $phoneNumbers[] = $joueur->getFirstContactablePhoneNumber();
+            } else $notContactablesPhoneNumbers[] = $joueur;
+        }
+        $response['sms']['toString'] = implode(',', $phoneNumbers);
+        $response['sms']['contactables'] = $contactablesPhoneNumbers;
+        $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
+
+        return $response;
+    }
+
+    /**
+     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function contact(Request $request): Response
+    public function contactResetPassword(Request $request): Response
     {
-        $addressReceiver = new Address($request->request->get('mailReceiver'), $request->request->get('nomReceiver'));
-        $addressSender = new Address($request->request->get('mailSender'), $this->getUser()->getNom() . ' ' . $this->getUser()->getPrenom());
-        $sujet = $request->request->get('sujet');
-        $message = $request->request->get('message');
-        $importance = $request->request->get('importance');
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
+            $mail = $request->request->get('mail');
+            $username = $request->request->get('username');
+            $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
 
+            if (!$nom){
+                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés', 'success' => false]));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+
+            return $this->sendMail(
+                new Address($mail, $nom),
+                true,
+                'Kompo - Réinitialisation de votre mot de passe',
+                null,
+                'mail_templating/forgotten_password.html.twig',
+                [
+                    'time_reset_password_hour' => $this->getParameter('time_reset_password_hour'),
+                    'resetPasswordLink' => $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H')
+                ]);
+        }
+    }
+
+    /**
+     * @param Address $addressReceiver
+     * @param bool $importance
+     * @param string $sujet
+     * @param string|null $message
+     * @param string $template
+     * @param array $options
+     * @return Response
+     */
+    public function sendMail(Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template, array $options): Response
+    {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         $email = (new TemplatedEmail())
-            ->from($addressSender)
+            ->from(new Address($this->getParameter('club_email'), 'Kompo - ' . $this->getParameter('club_diminutif')))
             ->to($addressReceiver)
-            ->priority(boolval($importance) ? Email::PRIORITY_HIGH : Email::PRIORITY_NORMAL)
+            ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
-            ->htmlTemplate('macros/email.html.twig')
-            ->context([
-                'message' => $message
-            ]);
+            ->htmlTemplate($template)
+            ->context(['message' => $message, 'options' => $options]);
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => 'Votre mail a été envoyé !']);
+            $json = json_encode(['message' => 'Le mail a été envoyé !', 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !']);
+            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false]);
         }
 
         $response = new Response($json);
@@ -109,87 +173,4 @@ class ContactController extends AbstractController
 
         return $response;
     }
-
-
-
-
-
-
-
-
-
-
-    // TODO Alerter les joueurs de leur sélection depuis journee.index
-    /*
-     * @Route("/notifySelectedPlayers/{type}/{idCompo}", name="notify.selectedPlayers")
-     * @param $type
-     * @param $idCompo
-     * @param ContactNotification $contactNotification
-     * @param Request $request
-     * @return Response
-     */
-    /*public function notifySelectedPlayersAction($type, $idCompo, ContactNotification $contactNotification, Request $request): Response
-    {
-        $titre = $request->request->get('titre');
-        $message = $request->request->get('message');
-
-        $compo = null;
-        if ($type == 'departementale') {
-            $compo = $this->rencontreDepartementaleRepository->find($idCompo);
-            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser())]);
-        }
-        else if ($type == 'paris') {
-            $compo = $this->rencontreParisRepository->find($idCompo);
-            $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser()->getIdCompetiteur());
-            $json = json_encode(['message' => $contactNotification->notify((new Contact())->setTitre($titre)->setMessage($message)->setCompetiteurs($compo->getListSelectedPlayers()), $this->getUser())]);
-        }
-        else $json = json_encode(['message' => 'Championnat inexistant ...']);
-
-        $response = new Response($json);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }*/
-
-    /*
-     * @param Contact $contact
-     * @param Competiteur $redacteur
-     * @return string
-     */
-    /*public function notify(Contact $contact, Competiteur $redacteur) {
-
-        if ($redacteur->isContactableMail() && $redacteur->getMail() && $redacteur->getMail() != "") $from = new Address($redacteur->getMail(), $redacteur->getNom());
-        else if($redacteur->isContactableMail2() && $redacteur->getMail2() && $redacteur->getMail2() != "") $from = new Address($redacteur->getMail2(), $redacteur->getNom());
-        else $from = new Address('stephen.sakovitch@orange.fr', 'SAKOVITCH Stephen');
-
-        $to = [];
-
-        foreach ($contact->getCompetiteurs() as $player) {
-            if ($player && $player->getIdCompetiteur() !== $redacteur->getIdCompetiteur()) {
-                if ($player->isContactableMail() && $player->getMail() && $player->getMail() != "") array_push($to, new Address($player->getMail(), $player->getNom()));
-                if ($player->isContactableMail2() && $player->getMail2() && $player->getMail2() != "") array_push($to, new Address($player->getMail2(), $player->getNom() . '_2'));
-            }
-        }
-        if (empty($to)) return 'Le mail n\'a pas été envoyé car il n\'y a que vous dans l\'équipe';
-
-        // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
-        $email = (new TemplatedEmail())
-            ->from($from)
-            ->cc(...$to)
-            ->priority(Email::PRIORITY_HIGH)
-            ->subject($contact->getTitre())
-            ->htmlTemplate('macros/email.html.twig')
-            ->context([
-                'title' => $contact->getTitre(),
-                'message' => $contact->getMessage()
-            ]);
-
-        try {
-            $this->mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
-            return 'Le mail n\'a pas pu être envoyé';
-        }
-
-        return 'Les joueurs sont prévenus !';
-    }*/
 }

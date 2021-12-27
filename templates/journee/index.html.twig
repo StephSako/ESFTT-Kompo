@@ -1,24 +1,27 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/composition.html.twig' as _composition %}
+{% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
-{% import 'macros/index.html.twig' as _index %}
 
-{% block title %}J{{ journee.idJournee}} - {{ journee.type }}{% endblock %}
+{% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
 
 {% block body %}
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/getClassementRanking.min.js') }}"></script>
     </header>
 
     <div class="row main">
-        <div class="col l3 hide-on-small-only">
-            {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+        <div class="col l3 hide-on-med-and-down">
+            {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
         </div>
 
-        <div class="col s12 m7">
+        <div class="col s12 l7">
             {% for message in app.flashes('success') %}
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
@@ -32,7 +35,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ journee.idJournee }} - {{ journee.type }}</h4>
+                <h4>Journée {{ idJournee }} - {{ championnat.nom }}</h4>
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
@@ -40,96 +43,94 @@
                 {% endif %}
             </div>
 
-            {% if selectedPlayers|length == nbTotalJoueurs %}
-                <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
-                    <h5 class="white-text"><i class="material-icons">check_circle</i> Kompositions complètes</h5>
-                </div>
-            {% else %}
-                <div class="hide-on-med-and-up">
-                    {{ _disponibilites.labelDispoSelec((selectedPlayers|length), journee.linkType, nbDispos, nbMinJoueurs, nbTotalJoueurs) }}
-                </div>
-            {% endif %}
-
-            {% if 'ROLE_VISITEUR' not in app.token.roleNames and journeeStillEditable(journee, compos) %}
-                <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-
-                    {% if app.user.licence and app.user.classementOfficiel %}
-                        {% if disponible is not null %}
-                            {% if disponible == 1 %}
-                                <h5>Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
-                                <a {% if selected %}onclick="return confirm('Vous risquez d\'être désélectionné. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 0}) }}">
-                                    <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Se déclarer indisponible</button>
-                                </a>
-                            {% elseif disponible == 0 %}
-                                <h5>Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
-                                <a href="{{ path('journee.disponibilite.update', {type: journee.linkType, dispoJoueur: dispoJoueur.idDisponibilite, dispo: 1}) }}">
-                                    <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Se déclarer disponible</button>
-                                </a>
+            {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
+                {% if journeeStillEditable(journee) %}
+                    <div class="card-panel center setDispoCard">
+                        {% if app.user.licence and app.user.classementOfficiel %}
+                            {% if disponible != -1 %}
+                                {% if disponible == 1 %}
+                                    <h5 class="unsetTitle">Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
+                                    <a {% if selection %}onclick="return confirm('Vous serez désélectionné de l\'équipe {{ selection }}. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
+                                        <button class="btn btn_form waves-effect red lighten-1" type="submit" name="action">Se déclarer indisponible</button>
+                                    </a>
+                                {% elseif disponible == 0 %}
+                                    <h5 class="unsetTitle">Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
+                                    <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
+                                        <button class="btn btn_form waves-effect green lighten-1" type="submit" name="action">Se déclarer disponible</button>
+                                    </a>
+                                {% endif %}
+                                {% if selection %}
+                                    <h6 class="lobster_2 pastille reset" style="padding: 10px; margin-top: 14px; background-color: #0c3a69;">
+                                        Vous êtes sélectionné en équipe {{ selection }}
+                                    </h6>
+                                {% endif %}
+                            {% else %}
+                                <h5 class="unsetTitle">Êtes-vous disponible pour cette journée ?</h5>
+                                <div style="display: flex; justify-content: space-evenly">
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
+                                        <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Disponible</button>
+                                    </a>
+                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
+                                        <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Indisponible</button>
+                                    </a>
+                                </div>
                             {% endif %}
                         {% else %}
-                            <h5>Êtes-vous disponible pour cette journée ?</h5>
-                            <div class="row">
-                                <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-2 waves-light" type="submit" name="action">Disponible</button>
-                                    </a>
-                                </div>
-                                <div class="col s6">
-                                    <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, type: journee.linkType, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-2 waves-light" type="submit" name="action">Indisponible</button>
-                                    </a>
-                                </div>
-                            </div>
+                            {% if app.user.licence and not app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités</h5>
+                            {% elseif not app.user.licence and app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités</h5>
+                            {% elseif not app.user.licence and not app.user.classementOfficiel %}
+                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités</h5>
+                            {% endif %}
                         {% endif %}
-                    {% else %}
-                        {% if app.user.licence and not app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% elseif not app.user.licence and app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                            <h5 class="red-text lighten-2" style="font-size: 130%;">Renseignez votre licence et classement dans <a href="{{ path('account') }}">votre compte</a> pour déclarer vos disponibilités</h5>
-                        {% endif %}
-                    {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and equipesSansDivision|length %}
+                    <div class="card-panel center cardTeamsWithoutDiv">
+                        <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
+                        <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <div class="hide-on-large-only center-align">
+                {{ _disponibilites.labelVirtualPoints('top') }}
+            </div>
+
+            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
+                <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
+                    <h5 class="white-text"><i class="material-icons">check_circle</i> Compositions complètes</h5>
                 </div>
-            {% elseif 'ROLE_VISITEUR' not in app.token.roleNames and not journeeStillEditable(journee, compos) and app.user.licence and app.user.classementOfficiel and disponible is null %}
-                <div class="card-panel center" style="padding-top: 4px; padding-bottom: 14px;">
-                    <h5>Vous n'avez pas déclaré votre disponibilité ...</h5>
+            {% else %}
+                <div class="hide-on-large-only center-align">
+                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
                 </div>
             {% endif %}
 
-            {% if 'ROLE_CAPITAINE' in app.token.roleNames and equipesSansDivision|length > 0 %}
-                <div class="card-panel center cardTeamsWithoutDiv">
-                    <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
-                    <a href="{{ path('backoffice.equipes') }}">Corriger</a>
-                </div>
-            {% endif %}
-
-            {% if compos|length > 0 %}
+            {% if compos|length %}
                 {% for compo in compos %}
-                    <div class="center card-panel"{% if compo.isFull %} style="border: green solid 4px" {% endif %}>
+                    <div class="center card-panel">
                         <div class="row header_compo">
 
-                            {% if compo.reporte %}
+                            {% if compo.reporte and not journee.undefined %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                                 <i class="material-icons">update</i>
-                                <b>Match reporté au {{ compo.dateReport | format_datetime('long', 'none', locale='fr') }}</b>
+                                <b>Match {{ journee.dateJournee > compo.dateReport ? 'avancé' : 'reporté' }} au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
                                 </span>
                             {% endif %}
 
-                            {% if compo.hosted %}
+                            {% if compo.villeHost %}
                                 <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
                                     <i class="material-icons">error_outline</i>
-                                    <b>Salle indisponible : rencontre à Herblay</b>
+                                    <b>Salle indisponible : rencontre à {{ compo.villeHost }}</b>
                                 </span>
                             {% endif %}
 
-                            <div class="col s4 m2">
+                            <div class="col s4 m2" style="padding-right: 0">
                                 <h5>
-                                {% if compo.idEquipe.idDivision %}
-                                    <span class="white-text bulle"{% if compo.idEquipe.idDivision.shortName|length == 1 %} style="padding-left: 16px; padding-right: 16px;"{% endif %}>{{ compo.idEquipe.idDivision.shortName }}</span><br>
-                                {% else %}
-                                    <span class="red-text bulle">&thinsp;&thinsp;?&thinsp;&thinsp;</span><br>
-                                {% endif %}
+                                    <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <p class="poule" style="margin-bottom: 0;">
                                     Poule
@@ -141,118 +142,250 @@
                                 </p>
                             </div>
 
-                            <div class="col s4 m3">
-                                <h5 class="lobster_2" style="margin-bottom: 0; margin-top: 14px;">Équipe {{ compo.idEquipe.numero }}</h5>
+                            <div class="col s5 m3" style="padding-left: 0; padding-right: 0;">
+                                <div class="row" style="margin-top: 12px">
+                                    <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
+                                        <h5 class="lobster_2" style="margin-top: 3px;">
+                                            Équipe {{ compo.idEquipe.numero }}
+                                        </h5>
+                                    </div>
+                                    {% if compo.idEquipe.lienDivision %}
+                                        <div class="col" style="padding-left: 0; padding-right: 0;">
+                                            <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                                <i class="material-icons">equalizer</i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
 
-                            {% if not compo.exempt %}
-                                <div class="col s4 hide-on-med-and-up">
-                                    <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} darken-4 material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
-                                        {% endif %}
-                                    </h5>
-                                </div>
-                            {% endif %}
-
-                            <div class="col s4 m2 hide-on-small-only">
+                            <div class="col s3 hide-on-med-and-up" style="padding-left: 0; padding-right: 0;">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                    {% if not compo.exempt %}
-                                        {% if compo.domicile%} <i style="font-size: 2.1rem;" class="{% if compo.hosted %}orange-text{% else %}green-text{% endif%} material-icons">home</i>
-                                        {% else%} <i style="font-size: 2.1rem;" class="green-text material-icons">directions_car</i>
+                                    {% if compo.domicile is null %}
+                                        <i class='material-icons red-text'>location_off</i>
+                                    {% else %}
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
+                                    {% endif %}
+                                    {% endif %}
+                                </h5>
+                            </div>
+
+                            <div class="col m2 hide-on-small-only">
+                                <h5 style="margin-top: 12px; margin-bottom: 0;">
+                                    {% if compo.domicile is null %}
+                                        <i class='material-icons red-text'>location_off</i>
+                                    {% else %}
+                                        {% if compo.domicile%} <i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i>
+                                        {% else%} <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
                                         {% endif %}
                                     {% endif %}
                                 </h5>
                             </div>
 
-                            <div class="col s12 m5 hide-on-small-only">
+                            <div class="col m5 hide-on-small-only">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 11px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                                    <h5 style="margin-top: 4px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
                                     {% if compo.adversaire is null %}
                                         <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
                                     {% else %}
-                                        <h5 class="lobster_2" style="margin-top: 14px; margin-bottom: 0;">{{ compo.adversaire | title }}</h5>
+                                        <div class="row" style="margin-top: 12px">
+                                            <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
+                                                <h5 class="lobster_2" style="margin-top: 3px">
+                                                    {{ compo.adversaire | title }}
+                                                </h5>
+                                            </div>
+                                            {% if compo.idEquipe.lienDivision %}
+                                                <div class="col" style="padding-left: 0; padding-right: 0;">
+                                                    <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                        <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>
+                        </div>
 
-                            <div class="row hide-on-med-and-up" style="margin-bottom: 0;">
-                                <div class="col s12{% if not compo.exempt %} m5{% endif%}">
-                                    {% if compo.exempt %}
-                                        <h5 style="margin-top: 0; margin-bottom: 10px;" class="lobster_2{% if compo.exempt %} pastille exempt red{% endif %}">Exemptée</h5>
+                        <div class="hide-on-med-and-up adversaireLine center">
+                            <div class="{% if not compo.exempt %}m5{% endif%}">
+                                {% if compo.exempt %}
+                                    <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
+                                {% else %}
+                                    {% if compo.adversaire is null %}
+                                        <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
                                     {% else %}
-                                        {% if compo.adversaire is null %}
-                                            <h5 class="lobster_2 red-text" style="margin-top: 0; margin-bottom: 10px;">Adversaire indéfini</h5>
-                                        {% else %}
-                                            <h5 class="lobster_2" style="margin-top: 0; margin-bottom: 10px;">{{ compo.adversaire | title }}</h5>
-                                        {% endif %}
+                                        <div class="advDefined">
+                                            <div>
+                                                <h5 class="lobster_2">
+                                                    {{ compo.adversaire | title }}
+                                                </h5>
+                                            </div>
+                                            {% if compo.idEquipe.lienDivision %}
+                                                <div>
+                                                    <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                        <i class="material-icons">format_list_bulleted</i>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     {% endif %}
-                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
-                            <p class="center" style="margin: 0;"><b>N° ESFTT : 08951331</b></p>
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                            <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                         {% endif %}
 
-                        <table class="{% if compo.idJournee.linkType == 'paris' %}paris_table {% endif%}responsive-table">
+                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
                             <tbody>
-                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType) - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i)) }}
+                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
                                 {% endfor %}
                             </tbody>
                         </table>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
-                                {% if compo.isEmpty %}
-                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Créer la compo', 'green') }}
-                                {% else %}
-                                    {{ _index.btnCreateEditCompo(journee.linkType, compo.id, 'Modifier la compo', 'blue') }}
-                                    {{ _index.btnEmptyCompo(journee.linkType, compo.id, compo.idEquipe.idDivision.getNbJoueursChamp(compo.idJournee.linkType)) }}<br>
+                                <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
+                                    <i class="material-icons">add_circle_outline</i>
+                                </a>
+                                {% if not compo.isEmpty %}
+                                    {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
+                                        <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
+                                            <i class="material-icons">record_voice_over</i>
+                                        </a>
+                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo}) }}
+                                    {% endif %}
+                                    <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
+                                        <i class="material-icons">delete</i>
+                                    </a>
                                 {% endif %}
                             </div>
                         {% endif %}
                     </div>
+
+                    {% if compo.idEquipe.lienDivision %}
+                        {% if not compo.exempt and compo.adversaire is not null %}
+                            <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                                <div class="modal-content">
+                                    <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                        <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                            <div class="preloader-wrapper small active">
+                                                <div class="spinner-layer spinner-blue-only">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div><div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div><div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="pastille reset christmas_code">S35HF</span>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                            <div class="modal-content">
+                                <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                        <div class="preloader-wrapper small active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="pastille reset christmas_code">PM9S5</span>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% else %}
-            <div class="center card-panel">
-                <span class="lobster_2" style="font-size: 20px;">Il n'y a pas d'équipes enregistrées</span>
-            </div>
+                <div class="center card-panel">
+                    <span class="lobster_2 missingTitle">Aucune équipe valide enregistrée</span>
+                </div>
             {% endif %}
         </div>
 
-        <ul class="collapsible hide-on-med-and-up">
+        <ul class="collapsible hide-on-large-only">
             <li>
                 <div class="collapsible-header">
                     <div class="chip">
-                        <i class="blue-text material-icons" style="vertical-align: middle;">people</i>
-                        Disponibilités
+                        <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
+                        <span class="lobster">Disponibilités</span>
                     </div>
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
                 </div>
             </li>
             <li>
                 <div class="collapsible-header">
                     <div class="chip">
-                        <i class="red-text material-icons" style="vertical-align: middle;">whatshot</i>
-                        Brûlage
+                        <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
+                        <span class="lobster">Brûlage</span>
                     </div>
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _brulage.table(journee.linkType, brulages, idEquipes) }}
+                    {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
                 </div>
             </li>
         </ul>
 
-        <div class="col s12 m2 hide-on-small-only">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilitesDepartementales, allDisponibiliteParis, journee.linkType, nbJournees, nbMinJoueurs, nbTotalJoueurs) }}
+        <div class="col l2 hide-on-med-and-down">
+            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+        </div>
+
+        {# Modale des classement des points virtuels #}
+        <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-alert center">
+            <div class="modal-content">
+                <h6><b>Meilleures progressions et points virtuels</b></h6>
+                <div id="rankingContent" style="padding-right: 4px; padding-left: 4px;">
+                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="pastille reset christmas_code">D8JCG</span>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+            </div>
         </div>
     </div>
 
+    <script type="text/javascript">
+        getPersonnalClassementVirtuel();
+    </script>
 {% endblock %}

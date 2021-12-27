@@ -1,89 +1,134 @@
-{% if app.request.getPathInfo == '/login' %}
-    {% set type = 'departementale' %}
-{% else %}
-    {% if app.session.get('type') is not null %}
-        {% set type = app.session.get('type') %}
-    {% else %}
-        {% set type = 'departementale' %}
-    {% endif %}
-{% endif %}
-
 {% set idJourneeCompo = (compo is defined ? compo.idJournee.idJournee : -1) %}
 
 <div class="navbar-fixed">
     <nav class="nav-extended">
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo hide-on-med-and-up"><img width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo ESFTT"></a>
-            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <div class="nav-wrapper navbar-general">
+            <div class="esftt_logo" {% if app.user %}hidden{% endif %}>
+                <img class="brand-logo center" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo {{ club_diminutif }}">
+            </div>
 
             {% if app.user %}
-                <ul class="left hide-on-med-and-down">
-                    {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
+                <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-general"><i class="material-icons">menu</i></a>
+            {% endif %}
 
-                    {% for journee in journees %}
-                        <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
-                            <a class="white-text" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">
+            {% if app.user %}
+                <ul class="left_items">
+                    {% if allChampionnats|length == 0 %}
+                        <li class="li_in_line{% if app.request.getPathInfo == '/' %} active blue darken-3{% endif %}">
+                            <a class="white-text center-align" href="{{ path('index') }}"><i class="white-text material-icons left">home</i>Accueil</a>
+                        </li>
+                    {% endif %}
+
+                    {% for i, journee in journees %}
+                        <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
+                            <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
                                 <span style="font-family: 'Lora', serif;">J</span>
-                                {{ journee.idJournee }} -
-                                {% if journee.undefined %}
-                                    <span class="red-text"><b>?/?</b></span>
+                                {{ i+1 }}
+                                {% if not journeePassee(journee) %}
+                                    {% if journee.undefined %}
+                                        <i class="journee_passee material-icons red-text right">event_busy</i>
+                                    {% else %}
+                                        - {{ journee.dateJournee|date('d/m') }}
+                                    {% endif %}
                                 {% else %}
-                                    {{ journee.dateJournee|date('d/m') }}
+                                    <i class="journee_passee material-icons green-text right">done</i>
                                 {% endif %}
                             </a>
                         </li>
                     {% endfor %}
 
-                    <li class="waves-light waves-effect li_in_line">
-                        <a class="white-text" href="{{ path("index.type", {type: (type == 'paris' ? 'departementale' : 'paris')}) }}">
-                            <i class="material-icons left green-text">swap_horiz</i>
-                            {% if type == 'paris' %}
-                                Champ. départemental
-                            {% elseif type == 'departementale' %}
-                                Champ. de Paris
-                            {% endif %}
-                        </a>
-                    </li>
+                    <!-- Dropdown Trigger -->
+                    {% if allChampionnats|length > 1 %}
+                        <li class="li_in_line">
+                            <a class="dropdown-trigger" href="#!" data-target="menu_dropdown_champs">
+                                {{ championnat.nom }}
+                                <i class="material-icons right">arrow_drop_down</i>
+                            </a>
+                        </li>
+
+                        <!-- Dropdown Structure -->
+                        <ul id="menu_dropdown_champs" class="dropdown-content">
+                            {% for championnatList in allChampionnats %}
+                                {% if championnat.idChampionnat != championnatList.idChampionnat %}
+                                    <li class="waves-effect li_in_line">
+                                        <a class="white-text" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
+                                            <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </ul>
             {% endif %}
 
-            {% include('components/navbar_common_pc.html.twig') %}
+            <div class="right_items_navbar_general">
+                {% include('components/navbar_common_pc.html.twig') %}
+            </div>
         </div>
     </nav>
 </div>
 
-<ul id="slide-out" class="sidenav">
-    {% if app.user %}
-        {% set otherType = (type == 'paris') ? 'departementale' : 'paris' %}
-
+{% if app.user %}
+<!-- SideNav Structure -->
+    <ul id="slide-out" class="sidenav">
         <div class="first_sidenav">
-            {% for journee in journees %}
-                <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ type ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
-                    <a class="white-text center-align" href="{{ path("journee.show", {type: type, id: journee.idJournee}) }}">
-                        Journée {{ journee.idJournee }} -
-                        {% if journee.undefined %}
-                            <span class="red-text"><b>?/?</b></span>
+            {% if allChampionnats|length > 1 %}
+                <ul class="collapsible collapsible-accordion">
+                    <li class="li_in_line center">
+                        <a class="collapsible-header collapsible-header-sidenav white-text center">
+                            <div class="chip white-text chip-sidenav">
+                                {{ championnat.nom }}
+                            </div>
+                            <i class="caret caret-sidenav material-icons white-text right">keyboard_arrow_down</i>
+                        </a>
+                        <div id="collapsible-sidenav" class="collapsible-body" style="padding: 0">
+                            <ul>
+                                {% for championnatList in allChampionnats %}
+                                    {% if championnat.idChampionnat != championnatList.idChampionnat %}
+                                        <li class="waves-effect li_in_line">
+                                            <a class="white-text center" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
+                                                <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                                {% if loop.index == 2 %}
+                                                    <span class="pastille reset christmas_code">K9LM0</span>
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            {% endif %}
+
+            {% for i, journee in journees %}
+                <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
+                    <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
+                        <span class="left">Journée {{ i+1 }}</span>
+                        {% if not journeePassee(journee) %}
+                            {% if journee.undefined %}
+                                <i class="material-icons red-text right" style="margin-right: 0;">event_busy</i>
+                            {% else %}
+                                <span class="right">{{ journee.dateJournee|date('d/m/Y') }}</span>
+                            {% endif %}
                         {% else %}
-                            {{ journee.dateJournee|date('d/m/Y') }}
+                            <i class="material-icons green-text right" style="margin-right: 0;">done</i>
                         {% endif %}
                     </a>
                 </li>
             {% endfor %}
         </div>
 
-        <li class="li_in_line">
-            <a class="white-text" href="{{ path("journee.show", {type: otherType, id: 1}) }}">
-                <i class="material-icons left green-text">swap_horiz</i>
-                {% if type == 'paris' %}
-                    Champ. départemental
-                {% elseif type == 'departementale' %}
-                    Champ. de Paris
-                {% endif %}
-            </a>
-        </li>
+        {% if allChampionnats|length > 0 %}
+            <li><div class="divider_custom"></div></li>
+        {% endif %}
+        {% if allChampionnats|length == 0 %}
+            <li class="li_in_line{% if app.request.getPathInfo == '/' %} active blue darken-3{% endif %}">
+                <a class="white-text center-align" href="{{ path('index') }}"><i class="white-text material-icons left">home</i>Accueil</a>
+            </li>
+        {% endif %}
 
-        <li><div class="divider_custom"></div></li>
-    {% endif %}
-
-    {% include('components/navbar_common_mobile.html.twig') %}
-</ul>
+        {% include('components/navbar_common_mobile.html.twig') %}
+    </ul>
+{% endif %}

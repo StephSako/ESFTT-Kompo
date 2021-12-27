@@ -2,10 +2,8 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Form\JourneeDepartementaleType;
-use App\Form\JourneeParisType;
-use App\Repository\JourneeDepartementaleRepository;
-use App\Repository\JourneeParisRepository;
+use App\Form\JourneeType;
+use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,73 +14,71 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeJourneeController extends AbstractController
 {
     private $em;
-    private $journeeDepartementaleRepository;
-    private $journeeParisRepository;
+    private $journeeRepository;
 
     /**
      * BackOfficeController constructor.
-     * @param JourneeParisRepository $journeeParisRepository
-     * @param JourneeDepartementaleRepository $journeeDepartementaleRepository
+     * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeParisRepository $journeeParisRepository,
-                                JourneeDepartementaleRepository $journeeDepartementaleRepository,
+    public function __construct(JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->journeeParisRepository = $journeeParisRepository;
-        $this->journeeDepartementaleRepository = $journeeDepartementaleRepository;
+        $this->journeeRepository = $journeeRepository;
     }
 
     /**
      * @Route("/backoffice/journees", name="backoffice.journees")
      * @return Response
      */
-    public function indexJournee(): Response
+    public function index(): Response
     {
         return $this->render('backoffice/journee/index.html.twig', [
-            'journeeDepartementales' => $this->journeeDepartementaleRepository->findAll(),
-            'journeeParis' => $this->journeeParisRepository->findAll()
+            'journees' => $this->journeeRepository->getAllJournees()
         ]);
     }
 
     /**
-     * @Route("/backoffice/journee/edit/{type}/journee/{idJournee}", name="backoffice.journee.edit")
-     * @param $idJournee
-     * @param $type
+     * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit", requirements={"idJournee"="\d+"})
+     * @param int $idJournee
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function editJournee($type, $idJournee, Request $request): Response
+    public function edit(int $idJournee, Request $request): Response
     {
-        $form = null;
-        if ($type == 'departementale'){
-            if (!($journee = $this->journeeDepartementaleRepository->find($idJournee))) throw new Exception('Cette journée est inexistanté', 500);
-            $form = $this->createForm(JourneeDepartementaleType::class, $journee);
+        if (!($journee = $this->journeeRepository->find($idJournee))) {
+            $this->addFlash('fail', 'Journée inexistante');
+            return $this->redirectToRoute('backoffice.journees');
         }
-        else if ($type == 'paris'){
-            if (!($journee = $this->journeeParisRepository->find($idJournee))) throw new Exception('Cette journée est inexistante', 500);
-            $form = $this->createForm(JourneeParisType::class, $journee);
-        }
-        else throw new Exception('Ce championnat est inexistant', 500);
 
+        $form = $this->createForm(JourneeType::class, $journee);
         $form->handleRequest($request);
+        $journees = $journee->getIdChampionnat()->getJournees()->toArray();
+        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+            return $journeeChamp->getDateJournee() == $journee->getDateJournee();
+        }))[0]+=1;
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $this->em->flush();
-                $this->addFlash('success', 'Journée modifiée avec succès !');
-                return $this->redirectToRoute('backoffice.journees');
-            } else {
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
+                try {
+                    $this->em->flush();
+                    $this->addFlash('success', 'Journée modifiée');
+                    return $this->redirectToRoute('backoffice.journees');
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000") {
+                        if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'type' => $type,
-            'idJournee' => $idJournee
+            'iJournee' => $posJournee,
+            'championnat' => $journee->getIdChampionnat()->getNom()
         ]);
     }
 }

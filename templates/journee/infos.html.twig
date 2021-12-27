@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
+{% endblock %}
+
+{% block title %}Informations {{ label }}{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar.html.twig") %}
+    </header>
+
+    <div class="container" id="settings-page">
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class="card-panel center-align white-text title_journee">
+            <h4 style="font-family: Lobster, cursive">Informations {{ label }}</h4>
+        </div>
+
+        <div class="card-panel" id="ckeditor-render">
+            {% if showConcernedPlayers %}
+                <h4><b>Compétiteurs concernés</b></h4>
+                {% if concernedPlayers|length %}
+                    <table class="striped responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Catégorie</th>
+                                <th>N° licence</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for player in concernedPlayers %}
+                                <tr>
+                                    <td>{{ player.nom }}</td>
+                                    <td>{{ player.prenom }}</td>
+                                    <td>{{ player.categorieAgeLabel }}</td>
+                                    <td>{{ player.licence }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="center"><i>Aucun joueur ne participe au {{ label | lower }} pour le moment ...</i></p>
+                {% endif %}
+            {% endif %}
+            <br>
+            <p {% if not HTMLContent %}class="center"{% endif %}>
+                {% if HTMLContent %}{{ HTMLContent | raw }}
+                {% else %}<i>Il n'y a pas de contenu pour le moment ...</i>
+                {% endif %}
+            </p>
+            {% if label == 'Critérium fédéral' %}
+                <span class="pastille reset christmas_code">5WDDK</span>
+            {% endif %}
+        </div>
+
+        {% if 'ROLE_ADMIN' in app.token.roleNames %}
+            <div class="card-panel" id="settings-form">
+                {{ form_start(form) }}
+                <div class="center">
+                    <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition</h5>
+                    <div id="editor"></div>
+
+                    <br>
+                    <button class="btn waves-effect blue lighten-2 btn_gestion">
+                        Modifier
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+
+            <script type="text/javascript">
+                let ckeditor_content = '{{ HTMLContent }}';
+                let type = '{{ typeBDDed }}';
+            </script>
+            <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
+        {% endif %}
+    </div>
+{% endblock %}

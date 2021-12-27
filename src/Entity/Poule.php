@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @ORM\Table(
  *     name="prive_poule",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_poule_poule", columns={"poule"})
+ *          @UniqueConstraint(name="UNIQ_poule", columns={"poule"})
  *     }
  * )
  * @UniqueEntity(
@@ -44,6 +44,31 @@ class Poule
      * @ORM\Column(type="string", name="poule", nullable=false, length=1)
      */
     private $poule;
+
+    /**
+     * @var Equipe[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idPoule")
+     */
+    protected $equipes;
+
+    /**
+     * @return Equipe[]|null
+     */
+    public function getEquipes(): ?array
+    {
+        return $this->equipes;
+    }
+
+    /**
+     * @param Equipe[]|null $equipes
+     * @return Poule
+     */
+    public function setEquipes(?array $equipes): self
+    {
+        $this->equipes = $equipes;
+        return $this;
+    }
 
     /**
      * @return mixed

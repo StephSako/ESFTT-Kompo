@@ -1,83 +1,27 @@
-<ul class="right_items_navbar right hide-on-med-and-down">
-    {% if app.user %}
-
-        {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
-            <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('account') }}">
-                    <div class="chip chip-menu">
-                        {% if app.user.avatar %}
-                            <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
-                        {% else %}
-                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
-                        {% endif %}
-                    </div>
-                    Mon compte
-                </a>
-            </li>
-        {% endif %}
-
-        {% if 'ROLE_JOUEUR' in app.token.roleNames %}
-            <li class="li_in_line waves-light waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('contact') }}">Contact</a>
-            </li>
-        {% endif %}
-
-        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-            <li class="waves-light waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
-            </li>
-        {% endif %}
-    {% endif %}
-
-    {% if app.user %}
-        <li class="waves-light waves-effect li_in_line deconnexion"><a href="{{ path('logout') }}"><i class="material-icons">power_settings_new</i></a></li>
-    {% endif %}
-</ul>
-
-<ul class="right">
-    <!-- Dropdown Trigger -->
-    <li>
-        <a hidden id="dropdowner" class="menu_navbar dropdown-trigger" href="#!" data-target="menu_dropdown">Menu<i class="material-icons right">arrow_drop_down</i></a>
-    </li>
-</ul>
-
-
-
-<!-- Dropdown Structure -->
-<ul id="menu_dropdown" class="dropdown-content">
-    {% if app.user %}
-
-        {% if 'ROLE_VISITEUR' not in app.token.roleNames %}
-            <li class="waves-light waves-effect {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('account') }}">
-                    <div class="chip chip-menu">
-                        {% if app.user.avatar %}
-                            <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
-                        {% else %}
-                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
-                        {% endif %}
-                    </div>
-                    Mon compte
-                </a>
-            </li>
-        {% endif %}
-
-        {% if 'ROLE_JOUEUR' in app.token.roleNames %}
-            <li class="waves-light waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('contact') }}">Contact</a>
-            </li>
-        {% endif %}
-
-        {% if 'ROLE_CAPITAINE' in app.token.roleNames %}
-            <li class="waves-light waves-effect {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
-                <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
-            </li>
-        {% endif %}
-    {% endif %}
-
-    {% if app.user %}
-        <li class="waves-light waves-effect deconnexion">
-            <a href="{{ path('logout') }}"><i class="material-icons">power_settings_new</i></a>
+{% if app.user %}
+    <ul class="right_items_navbar right">
+        <li class="waves-effect li_in_line {% if app.request.getPathInfo == '/compte' %}active blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path('account') }}">
+                <div class="chip chip-menu">
+                    {% if app.user.avatar %}
+                        <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
+                    {% else %}
+                        <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                    {% endif %}
+                </div>
+                Mon compte
+            </a>
         </li>
-    {% endif %}
-</ul>
+
+        <li class="li_in_line waves-effect {% if app.request.getPathInfo starts with '/contact' %}active blue darken-3{% endif %}">
+            <a class="white-text" href="{{ path('contact') }}">Contacter</a>
+        </li>
+
+        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+            <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
+                <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
+            </li>
+        {% endif %}
+        <li class="waves-effect li_in_line deconnexion"><a href="{{ path('logout') }}"><i class="material-icons">power_settings_new</i></a></li>
+    </ul>
+{% endif %}

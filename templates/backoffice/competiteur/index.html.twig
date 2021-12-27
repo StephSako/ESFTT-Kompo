@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Back-office - Les compétiteurs{% endblock %}
+{% block title %}Back-office - Les membres{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
 
 {% block body %}
 
-    {{ include("components/navbar_backoffice.html.twig") }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+        <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
+    </header>
 
-    <div class="container">
+    <div class='container'>
 
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
@@ -17,26 +20,27 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        <div class="card-panel center-align white-text title_journee">
-            <h4>Les compétiteurs</h4>
+        <div class='card-panel center-align white-text title_journee'>
+            <h4>Les membres</h4>
         </div>
 
-        <div class="card-panel center">
+        <div class='card-panel backoffice-panel center'>
 
-            <a style="margin-bottom: 20px;" href="{{ path('backoffice.competiteur.new') }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion">Créer un compétiteur</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
+            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
+                <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
+            </a>
 
-            {% if competiteurs|length > 0 %}
-                <table class="striped centered responsive-table table_competiteur_backoffice">
+            {% if competiteurs|length %}
+                <table id="table-to-adapt-columns" class='striped centered responsive-table backoffice-table'>
                     <thead>
-                        <tr>
-                            <th></th>
-                            <th class="hide-on-small-only">Avatar</th>
+                        <tr class='hide-on-med-and-down'>
+                            <th class='th_picture_compet_table'></th>
+                            <th>Avatar</th>
                             <th>Nom</th>
-                            <th>Pseudo</th>
-                            <th class="hide-on-small-only">Licence</th>
-                            <th class="hide-on-med-and-up">Lic.</th>
-                            <th class="hide-on-small-only">Classement</th>
-                            <th class="hide-on-med-and-up">Class.</th>
+                            <th>Licence</th>
+                            <th>Classement</th>
+                            <th class="truncate">Certificat médical</th>
                             <th></th>
                             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                                 <th></th>
@@ -45,73 +49,158 @@
                     </thead>
 
                     <tbody>
-                    {% for competiteur in competiteurs %}
-                        <tr>
-                            <td>
-                                {% if not competiteur.visitor %}
+                        {% for competiteur in competiteurs %}
+                            <tr>
+                                <td style="padding-top: 8px; padding-bottom: 8px;">
                                     {% if competiteur.isAdmin %}
-                                        <span class="new badge red" data-badge-caption="Administrateur"></span>
-                                    {% elseif competiteur.isCapitaine %}
-                                        <span class="new badge blue" data-badge-caption="Capitaine"></span>
-                                    {% else %}
-                                        <span class="new badge green" data-badge-caption="Joueur"></span>
+                                        <span class='new badge red' data-badge-caption='Administrateur'></span>
                                     {% endif %}
-                                {% else %}
-                                    <span class="new badge orange" data-badge-caption="Visiteur"></span>
-                                {% endif %}
-                            </td>
-                            <td class="hide-on-small-only">
-                                {% if competiteur.avatar %}
-                                    <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                                {% else %}
-                                    <img src="{{ asset('images/account.png') }}" alt="Avatar" width="80rem" height="80rem" style="object-fit:cover">
-                                {% endif %}
-                            </td>
-                            <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
-                            <td>{{ competiteur.username }}</td>
-                            <td>
-                                {% if competiteur.visitor %}
-                                    <i>Sans licence</i>
-                                {% else %}
-                                    {% if competiteur.licence %}
-                                        {{ competiteur.licence }}
+
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.isCompetiteur %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
+                                        {% elseif competiteur.isLoisir %}
+                                            {% if competiteur.isAdmin %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>
+                                        {% endif %}
+
+                                        {% if competiteur.isCapitaine %}
+                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
+                                        {% endif %}
+
+                                        {% if competiteur.isEntraineur %}
+                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir or competiteur.isCapitaine %}<br>{% endif %}
+                                            <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
+                                        {% endif %}
                                     {% else %}
-                                        <span class="red-text lighten-2">License indéfinie</span>
+                                        <span class="new badge grey lighten-1" data-badge-caption="Archivé"></span>
                                     {% endif %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if competiteur.visitor %}
-                                    <i>Sans classement</i>
-                                {% else %}
-                                    {% if competiteur.classementOfficiel %}
-                                        {{ competiteur.classementOfficiel }}
-                                    {% else %}
-                                        <span class="red-text lighten-2">Non renseigné</span>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                            </td>
-                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                <td>
-                                    <form method="post" action="{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer le joueur ?')">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}">
-                                        <button class="btn waves-effect waves-light red lighten-2 btn_gestion">
-                                            <i class="material-icons">delete</i>
-                                        </button>
-                                    </form>
                                 </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
+                                <td class="td_picture_compet">
+                                    {% if competiteur.avatar %}
+                                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
+                                    {% else %}
+                                        <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
+                                    {% endif %}
+                                </td>
+                                <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.licence %}
+                                            {{ competiteur.licence }}
+                                        {% else %}
+                                            <span class='red-text lighten-2'>Licence indéfinie</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.isCompetiteur %}
+                                            {% if competiteur.classementOfficiel %}
+                                                {{ competiteur.classementOfficiel }} pts
+                                            {% else %}
+                                                <span class='red-text lighten-2'>Classement indéfini</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
+                                    {% if not competiteur.isArchive %}
+                                        {% if competiteur.age != null and competiteur.age < 18 %}
+                                            <span style="color: grey"><i>Mineur (facultatif)</i></span>
+                                        {% else %}
+                                            {% if not competiteur.anneeCertificatMedical %}
+                                                <span class="red-text">Certificat indéfini</span>
+                                            {% else %}
+                                                <span>
+                                                    {% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                                                        <i class="green-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
+                                                        {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% else %}
+                                                        <i class="red-text material-icons" style="vertical-align: bottom;">health_and_safety</i>{{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td style="padding-bottom: 0; padding-top: 0;">
+                                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                                </td>
+                                {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                                    <td>
+                                        {% if not (onlyOneAdmin and competiteur.admin) %}
+                                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
+                                                <input type='hidden' name='_method' value='DELETE'>
+                                                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
+                                                <button class='btn waves-effect red lighten-2 btn_gestion'>
+                                                    <i class='material-icons'>delete</i>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <div class="tooltipped" data-position="top" data-tooltip="Vous êtes le seul administrateur">
+                                                <a class='btn red lighten-2 btn_gestion' disabled="">
+                                                    <i class='material-icons'>delete</i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de compétiteurs enregistrés.</p>
+                <p class='lobster_2 missingTitle'>Aucun membre enregistré</p>
             {% endif %}
         </div>
+
+        {% if app.user.isAdmin %}
+            <div class='card-panel backoffice-panel center'>
+                <h5>Résultats jeu de Noël</h5>
+
+                <table class="responsive-table striped">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Sans triche</th>
+                            <th>Codes corrects</th>
+                            <th>Code d'or</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for joueur in competiteurs %}
+                            {% if joueur.competiteur %}
+                                <tr>
+                                    <td>
+                                        {% if joueur.winner %}<span class="material-icons red-text" style="vertical-align: bottom;">emoji_events</span>{% endif %}
+                                        {% if joueur.fullWinner %}<span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>{% endif %}
+                                        {{ joueur.nom }} {{ joueur.prenom }}
+                                    </td>
+                                    <td>
+                                        {% if not joueur.cheating %}
+                                            <i class="material-icons green-text">check</i>
+                                        {% else %}
+                                            <i class="material-icons red-text">clear</i>
+                                        {% endif %}
+                                    </td>
+                                    <td><b {% if joueur.winner %}class="green-text"{% endif %}>{{ joueur.ownCodes | length }}</b> / 13+1</td>
+                                    <td>
+                                        {% if joueur.code14Correct %}
+                                            <i class="material-icons green-text">check</i>
+                                        {% else %}
+                                            <i class="material-icons red-text">clear</i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

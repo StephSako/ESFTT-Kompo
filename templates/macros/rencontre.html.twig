@@ -1,19 +1,24 @@
-{% macro table(rencontres, type) %}
-    {% if rencontres|length > 0 %}
+{% macro table(rencontres) %}
+    {% if rencontres|length %}
         {% for numero, matches in rencontres %}
             <ul class="collapsible backoffice_disponibilites">
                 <li>
-                    <div class="collapsible-header">
-                        <div class="chip">
+                    <div class="collapsible-header" style="padding: 6px 0 !important;">
+                        <div class="chip" style="padding: 0 !important;">
                             <i class="material-icons" style="vertical-align: middle;">people</i>
-                            Équipe {{ numero }}
+                            {{ club_name | title }} {{ numero }}
+                            {% if (rencontres[numero]|first)['idDivision'] is null %}
+                                <span class="center red-text noDivisionPill noDivisionPillHeader">
+                                    <b>Sans division</b>
+                                </span>
+                            {% endif %}
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
 
                         {% if(rencontres[numero]|first)['idDivision'] is null %}
-                            <p class="center red-text" style="background-color: rgba(241,35,35, 0.2); border-radius: 5px; padding: 5px 0;">
+                            <p class="center red-text noDivisionPill noDivisionPillBody" hidden>
                                 <b>Division non renseignée</b>
                             </p>
                         {% endif %}
@@ -25,7 +30,7 @@
                                 <th>Date</th>
                                 <th>Adversaire</th>
                                 <th>Lieu</th>
-                                <th>Salle dispo</th>
+                                <th>Salle hôte dispo</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -33,25 +38,27 @@
                             <tbody>
                             {% for rencontre in matches %}
                                 <tr>
-                                    <td>{{ rencontre.idJournee }}</td>
+                                    <td>
+                                        <b>{{ loop.index }}</b>
+                                    </td>
                                     <td>
                                         {% if rencontre.undefined %}
-                                            <span class="red-text">Date indéfinie</span>
+                                            <i class="material-icons red-text">event_busy</i>
                                         {% else %}
                                             <div class="hide-on-small-only">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> Reporté au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr') }}</span>
-                                                {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr') }}
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
                                                 {% endif %}
                                             </div>
                                             <div class="hide-on-med-and-up">
-                                                {% if rencontre.reporte %}<span class="orange-text">Reporté au {{ rencontre.dateReport | date("d/m/Y") }}</span>
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | date("d/m/Y") }}</span>
                                                 {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
                                                 {% endif %}
                                             </div>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Pas de match</span>
+                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Exemptée</span>
                                         {% else %}
                                             {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
                                             {% else %} <span class="red-text">Adversaire indéfini</span>
@@ -60,20 +67,24 @@
                                     </td>
                                     <td style="height: 59px;">
                                         {% if not rencontre.exempt %}
-                                            {% if rencontre.domicile %} <i class="material-icons">home</i>
-                                            {% else %} <i class="material-icons">directions_car</i>
+                                            {% if rencontre.domicile is null %}
+                                                <i class='material-icons red-text'>location_off</i>
+                                            {% else %}
+                                                {% if rencontre.domicile %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">home</i>
+                                                {% else %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">directions_car</i>
+                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
                                     </td>
                                     <td style="height: 59px; padding-top: 8px;">
-                                        {% if not rencontre.exempt and rencontre.domicile %}
-                                            {% if not rencontre.hosted %} <i class="green-text material-icons">check</i>
-                                            {% else %} <i class="red-text material-icons">clear</i>
+                                        {% if not rencontre.exempt %}
+                                            {% if not rencontre.villeHost %} <i class="green-text material-icons">check</i>
+                                            {% else %} <span class="red-text"><i class="material-icons">clear</i>(à {{ rencontre.villeHost }})</span>
                                             {% endif %}
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id, type: type}) }}" class="btn waves-effect waves-light blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                                        <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id}) }}" class="btn waves-effect blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -84,6 +95,6 @@
             </ul>
         {% endfor %}
     {% else %}
-        <p class="lobster_2" style="font-size: 20px;">Il n'y a pas de rencontres enregistrées.</p>
+        <p class="lobster_2 center missingTitle">Aucune équipe enregistrée</p>
     {% endif %}
 {% endmacro %}
