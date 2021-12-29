@@ -1,7 +1,5 @@
 # Bienvenue sur Kompo !
 
-<a href="http://kompo/aide#page_de_connexion">cliquer</a>
-
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG" alt="accueil"></p>
 
 <p align="center" style="font-size: 12px">~ Avec l'aide de <a href="https://github.com/carage34">carage34</a> ~</p>
@@ -32,6 +30,14 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
 <h3 id="barre_navigation">Barre de navigation</h3>
+
+<h4 id="les_journees">Les journées</h4>
+<h4 id="naviguer_championnats">Naviguer dans les championnats</h4>
+<h4 id="mon_compte">Mon compte</h4>
+<h4 id="contacter">Contacter</h4>
+<h4 id="gestion">Gestion - Back-office</h4>
+<h4 id="se_deconnecter">Se déconnecter</h4>
+<h4 id="sur_mobile">Sur mobile</h4>
 
 Sur le haut de la page sont listées toutes les journées de la phase, numérotées et datées. Il suffit de cliquer dessus pour accéder aux compositions de la journée correspondante.
 Le dernier item permet de <i>switcher</i> de championnat entre départemental et Paris.
@@ -66,9 +72,9 @@ Sur la droite, vous pouvez accéder :
 <p align="center"><img width="100%" style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_joueurs.PNG" alt="edit_joueurs"></p>
 
 <h3 id="pied_de_page">Pied de page</h3>
-<h4 id="nos_reseaux">Vers nos réseaux</h3>
-<h4 id="pages_information">Pages d'information</h3>
-<h4 id="liens_generaux">Liens généraux</h3>
+<h4 id="nos_reseaux">Vers nos réseaux</h4>
+<h4 id="pages_information">Pages d'information</h4>
+<h4 id="liens_generaux">Liens généraux</h4>
 
 <h3 id="signaler_disponibilite">Signaler sa disponibilité</h3>
 
@@ -89,10 +95,10 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 **❗ ATTENTION TER : si votre classement et/ou numéro de licence ne sont pas renseignés, vous ne pourrez pas déclarer vos disponibilités !**
 
-<h3 id="les_brulages">Les brûlages</h3>
+<h3 id="le_brulage">Le brûlage</h3>
 
 <span class="pastille reset christmas_code">WND8M</span><br>
-Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur.
+Sur la gauche est détaillé le brûlage et prévisions de brûlages pour chaque joueur.
 
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/tableau_brulage.PNG" alt="tableau_brulage"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
 
@@ -147,7 +153,7 @@ Pour chaque équipe, est affiché :
 
 **Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.**
 
-<h3 id="selection_joueurs">Sélectionner les joueurs</h3>
+<h4 id="selection_joueurs">Sélectionner les joueurs</h4>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition_equipe.PNG" alt="composition_equipe"></p>
 
@@ -162,6 +168,9 @@ Sont sélectionnables les joueurs :
 
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez définir un emplacement de joueur vide en cliquant sur le premier item.
 <br>N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
+
+<h4 id="alerter_joueurs">Alerter les joueurs sélectionnées</h4>
+<h4 id="reset_composition">Désélectionner tous les joueurs</h4>
 
 <h3 id="adaptation_mobiles">Adaptation sur mobiles</h3>
 
