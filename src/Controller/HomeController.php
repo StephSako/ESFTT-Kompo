@@ -588,7 +588,7 @@ class HomeController extends AbstractController
                 }
                 return [
                     'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
-                    'avatar' => 'images/profile_pictures/' . ($joueur->getAvatar() ?: 'images/account.png'),
+                    'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonMensuel' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
                     'pointsVirtuelsVirtualPoints' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getVirtualPoints() : null,
                     'pointsVirtuelsPointsWonPhase' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
