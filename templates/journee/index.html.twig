@@ -149,13 +149,11 @@
                                             Équipe {{ compo.idEquipe.numero }}
                                         </h5>
                                     </div>
-                                    {% if compo.idEquipe.lienDivision %}
-                                        <div class="col" style="padding-left: 0; padding-right: 0;">
-                                            <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                                <i class="material-icons">equalizer</i>
-                                            </a>
-                                        </div>
-                                    {% endif %}
+                                    <div class="col" style="padding-left: 0; padding-right: 0;">
+                                        <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                            <i class="material-icons">equalizer</i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -187,24 +185,20 @@
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 4px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
-                                    {% if compo.adversaire is null %}
-                                        <h5 class="lobster_2 red-text" style="margin-top: 14px; margin-bottom: 0;">Adversaire indéfini</h5>
-                                    {% else %}
-                                        <div class="row" style="margin-top: 12px">
-                                            <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
-                                                <h5 class="lobster_2" style="margin-top: 3px">
-                                                    {{ compo.adversaire | title }}
-                                                </h5>
-                                            </div>
-                                            {% if compo.idEquipe.lienDivision %}
-                                                <div class="col" style="padding-left: 0; padding-right: 0;">
-                                                    <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
-                                                        <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
-                                                    </a>
-                                                </div>
+                                    <div class="row" style="margin-top: 12px">
+                                        <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
+                                            {% if compo.adversaire is null %}
+                                                <h5 class="lobster_2 red-text" style="margin-top: 3px">Adversaire indéfini</h5>
+                                            {% else %}
+                                                <h5 class="lobster_2" style="margin-top: 3px">{{ compo.adversaire | title }}</h5>
                                             {% endif %}
                                         </div>
-                                    {% endif %}
+                                        <div class="col" style="padding-left: 0; padding-right: 0;">
+                                            <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -214,24 +208,20 @@
                                 {% if compo.exempt %}
                                     <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
-                                    {% if compo.adversaire is null %}
-                                        <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
-                                    {% else %}
-                                        <div class="advDefined">
-                                            <div>
-                                                <h5 class="lobster_2">
-                                                    {{ compo.adversaire | title }}
-                                                </h5>
-                                            </div>
-                                            {% if compo.idEquipe.lienDivision %}
-                                                <div>
-                                                    <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
-                                                        <i class="material-icons">format_list_bulleted</i>
-                                                    </a>
-                                                </div>
+                                    <div class="advDefined">
+                                        <div>
+                                            {% if compo.adversaire is null %}
+                                                <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
+                                            {% else %}
+                                                <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
                                             {% endif %}
                                         </div>
-                                    {% endif %}
+                                        <div>
+                                            <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                <i class="material-icons">format_list_bulleted</i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -268,36 +258,10 @@
                         {% endif %}
                     </div>
 
-                    {% if compo.idEquipe.lienDivision %}
-                        {% if not compo.exempt and compo.adversaire is not null %}
-                            <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
-                                <div class="modal-content">
-                                    <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                                        <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                            <div class="preloader-wrapper small active">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="pastille reset christmas_code">S35HF</span>
-                                </div>
-                                <div class="modal-footer">
-                                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                    {% if not compo.exempt %}
+                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
                             <div class="modal-content">
-                                <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
                                     <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
                                         <div class="preloader-wrapper small active">
                                             <div class="spinner-layer spinner-blue-only">
@@ -312,13 +276,38 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="pastille reset christmas_code">PM9S5</span>
+                                <span class="pastille reset christmas_code">S35HF</span>
                             </div>
                             <div class="modal-footer">
                                 <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
                             </div>
                         </div>
                     {% endif %}
+
+                    <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                        <div class="modal-content">
+                            <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                    <div class="preloader-wrapper small active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                            <div class="circle-clipper left">
+                                                <div class="circle"></div>
+                                            </div><div class="gap-patch">
+                                                <div class="circle"></div>
+                                            </div><div class="circle-clipper right">
+                                                <div class="circle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="pastille reset christmas_code">PM9S5</span>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                        </div>
+                    </div>
+
                 {% endfor %}
             {% else %}
                 <div class="center card-panel">
