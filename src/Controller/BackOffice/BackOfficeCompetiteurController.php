@@ -147,19 +147,31 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     /** On envoie un mail de bienvenue */
                     try {
+                        $settings = $this->settingsRepository->find(1);
+                        try {
+                            $data = $settings->getInfosType('mail-bienvenue');
+                        } catch (Exception $e) {
+                            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                        }
+
+                        $initPasswordLink = $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+                        $str_replacers = [
+                            'old' => ["[#initPasswordLink#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
+                            'new' => [
+                                "ce <a href=\"$initPasswordLink\">lien</a>",
+                                $competiteur->getUsername(),
+                                $this->getParameter('time_init_password_day'),
+                                $competiteur->getPrenom(),
+                                mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
+                            ]
+                        ];
+
                         $this->contactController->sendMail(
                             new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
                             true,
-                            'Bienvenue sur Kompo !',
-                            null,
-                            'mail_templating/bienvenue.html.twig',
-                            [
-                                'initPasswordLink' => $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D'),
-                                'pseudo' => $competiteur->getUsername(),
-                                'time_init_password_day' => $this->getParameter('time_init_password_day'),
-                                'prenom' => $competiteur->getPrenom(),
-                                'club_name' => mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
-                            ]);
+                            'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
+                            $data,
+                            $str_replacers);
                         $this->addFlash('success', 'Email de bienvenue envoyé');
                     } catch (Exception $e) {
                         $this->addFlash('fail', 'Email de bienvenue non envoyé');
@@ -439,7 +451,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/mail/edit/{type}", name="backoffice.mail.edit")
+     * @Route("/backoffice/competiteurs/mail/edit/{type}", name="backoffice.mail.edit")
      */
     public function editMailContent(Request $request, string $type): Response
     {

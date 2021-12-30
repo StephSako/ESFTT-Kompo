@@ -17,8 +17,8 @@ class Settings
         'championnat-departemental' => 'Championnat départemental',
         'criterium-federal' => 'Critérium fédéral',
         'championnat-de-paris' => 'Championnat de Paris',
-        'mail-bienvenue' => 'Mail de bienvenue',
-        'mail-mdp-oublie' => 'Mail de mot de passe oublié'
+        'mail-bienvenue' => 'mail de bienvenue',
+        'mail-mdp-oublie' => 'mail de mot de passe oublié'
     ];
 
     /**

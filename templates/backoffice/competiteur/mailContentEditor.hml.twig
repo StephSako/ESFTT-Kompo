@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
 {% endblock %}
 
-{% block title %}{{ label }}{% endblock %}
+{% block title %}Modifier le {{ label }}{% endblock %}
 
 {% block body %}
 
@@ -23,14 +23,15 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4 style="font-family: Lobster, cursive">{{ label }}</h4>
+            <h4 style="font-family: Lobster, cursive">Modifier le {{ label }}</h4>
         </div>
 
         <div class="card-panel" id="settings-form">
             {{ form_start(form) }}
                 <div class="center">
 
-                    <p style="margin-bottom: 10px" class="pastille reset red"><i style="font-size: 19px" class="material-icons white-text">warning</i> <b>Attention</b> : ne pas supprimer ni modifier les valeurs entre crochets</p>
+                    <p style="margin-bottom: 20px" class="pastille reset red">
+                        <i style="font-size: 19px" class="material-icons white-text">warning</i> <b>Attention</b> : vous pouvez déplacer les variables entre [#...#] dans le texte <b>mais ne pas les supprimer ni modifier leurs noms</b></p>
 
                     <div id="editor"></div>
 
