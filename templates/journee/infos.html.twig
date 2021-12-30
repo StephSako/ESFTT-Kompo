@@ -69,21 +69,21 @@
         {% if 'ROLE_ADMIN' in app.token.roleNames %}
             <div class="card-panel" id="settings-form">
                 {{ form_start(form) }}
-                <div class="center">
-                    <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition</h5>
-                    <div id="editor"></div>
+                    <div class="center">
+                        <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition</h5>
+                        <div id="editor"></div>
 
-                    <br>
-                    <button class="btn waves-effect blue lighten-2 btn_gestion">
-                        Modifier
-                    </button>
-                </div>
+                        <br>
+                        <button class="btn waves-effect blue lighten-2 btn_gestion">
+                            Modifier
+                        </button>
+                    </div>
                 {{ form_end(form) }}
             </div>
 
             <script type="text/javascript">
                 let ckeditor_content = '{{ HTMLContent }}';
-                let type = '{{ typeBDDed }}';
+                let type = 'infos{{ typeBDDed }}';
             </script>
             <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>

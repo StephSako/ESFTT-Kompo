@@ -13,10 +13,12 @@ use Exception;
  */
 class Settings
 {
-    const LABEL_CHAMPIONNAT_LABEL = [
+    const LABELS_DATA_TYPE = [
         'championnat-departemental' => 'Championnat départemental',
         'criterium-federal' => 'Critérium fédéral',
-        'championnat-de-paris' => 'Championnat de Paris'
+        'championnat-de-paris' => 'Championnat de Paris',
+        'mail-bienvenue' => 'Mail de bienvenue',
+        'mail-mdp-oublie' => 'Mail de mot de passe oublié'
     ];
 
     /**
@@ -46,6 +48,56 @@ class Settings
      * @ORM\Column(type="text", name="infos_championnat_de_paris", nullable=true)
      */
     private $infosChampionnatDeParis;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="mail_bienvenue", nullable=true)
+     */
+    private $mailBienvenue;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="mail_mdp_oublie", nullable=true)
+     */
+    private $mailMdpOublie;
+
+    /**
+     * @return string|null
+     */
+    public function getMailBienvenue(): ?string
+    {
+        return $this->mailBienvenue;
+    }
+
+    /**
+     * @param string|null $mailBievenue
+     * @return Settings
+     */
+    public function setMailBienvenue(?string $mailBievenue): self
+    {
+        $this->mailBienvenue = $mailBievenue;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMailMdpOublie(): ?string
+    {
+        return $this->mailMdpOublie;
+    }
+
+    /**
+     * @param string|null $mailMdpOublie
+     * @return Settings
+     */
+    public function setMailMdpOublie(?string $mailMdpOublie): self
+    {
+        $this->mailMdpOublie = $mailMdpOublie;
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -129,6 +181,8 @@ class Settings
         if ($type == 'championnat-departemental') return $this->getInfosChampionnatDepartemental();
         else if ($type == 'criterium-federal') return $this->getInfosCriteriumFederal();
         else if ($type == 'championnat-de-paris') return $this->getInfosChampionnatDeParis();
+        else if ($type == 'mail-bienvenue') return $this->getMailBienvenue();
+        else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
         throw new Exception("Ce championnat n'existe pas", 404);
     }
 
@@ -137,6 +191,6 @@ class Settings
      * @return string
      */
     public function getFormattedLabel(string $type): string {
-        return self::LABEL_CHAMPIONNAT_LABEL[$type];
+        return self::LABELS_DATA_TYPE[$type];
     }
 }

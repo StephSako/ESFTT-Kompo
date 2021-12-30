@@ -6,10 +6,12 @@ use App\Controller\ContactController;
 use App\Controller\SecurityController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
+use App\Form\SettingsType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreRepository;
+use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -38,6 +40,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $encoder;
     private $contactController;
     private $securityController;
+    private $settingsRepository;
 
     /**
      * BackOfficeController constructor.
@@ -50,6 +53,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param ContactController $contactController
      * @param SecurityController $securityController
      * @param RencontreRepository $rencontreRepository
+     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
@@ -59,7 +63,8 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UserPasswordEncoderInterface $encoder,
                                 ContactController $contactController,
                                 SecurityController $securityController,
-                                RencontreRepository $rencontreRepository)
+                                RencontreRepository $rencontreRepository,
+                                SettingsRepository $settingsRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
@@ -70,6 +75,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->encoder = $encoder;
         $this->contactController = $contactController;
         $this->securityController = $securityController;
+        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -430,5 +436,41 @@ class BackOfficeCompetiteurController extends AbstractController
             ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
             throw new Exception('Les statuts sont incohérents', 1234);
         }
+    }
+
+    /**
+     * @Route("/backoffice/mail/edit/{type}", name="backoffice.mail.edit")
+     */
+    public function editMailContent(Request $request, string $type): Response
+    {
+        $settings = $this->settingsRepository->find(1);
+        try {
+            $data = $settings->getInfosType($type);
+        } catch (Exception $e) {
+            throw $this->createNotFoundException('Ce mail n\'existe pas');
+        }
+
+        $isAdmin = $this->getUser()->isAdmin();
+        $label = $settings->getFormattedLabel($type);
+        $typeBDDed = str_replace('-', '_', $type);
+        $form = $this->createForm(SettingsType::class, $settings, [
+            'type_data' => $typeBDDed
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $this->em->flush();
+                $this->addFlash('success', 'Contenu du mail modifié');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        }
+
+        return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [
+            'form' => $isAdmin ? $form->createView() : null,
+            'HTMLContent' => $data,
+            'label' => $label,
+            'typeBDDed' => $typeBDDed
+        ]);
     }
 }
