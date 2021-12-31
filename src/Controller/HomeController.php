@@ -410,7 +410,7 @@ class HomeController extends AbstractController
         if ($isAdmin){
             $typeBDDed = str_replace('-', '_', $type);
             $form = $this->createForm(SettingsType::class, $settings, [
-                'type_data' => $typeBDDed
+                'type_data' => 'infos' . $typeBDDed
             ]);
             $form->handleRequest($request);
 

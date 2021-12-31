@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
+use App\Repository\SettingsRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,24 +21,28 @@ class ContactController extends AbstractController
     private $competiteurRepository;
     private $championnatRepository;
     private $mailer;
+    private $settingsRepository;
     private $securityController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
-     * @param SecurityController $securityController
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
+     * @param SecurityController $securityController
+     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
-                                SecurityController $securityController,
                                 ChampionnatRepository $championnatRepository,
-                                MailerInterface $mailer)
+                                MailerInterface $mailer,
+                                SecurityController $securityController,
+                                SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
-        $this->securityController = $securityController;
         $this->mailer = $mailer;
         $this->championnatRepository = $championnatRepository;
+        $this->settingsRepository = $settingsRepository;
+        $this->securityController = $securityController;
     }
 
     /**
@@ -128,16 +133,25 @@ class ContactController extends AbstractController
                 return $response;
             }
 
+            $settings = $this->settingsRepository->find(1);
+            try {
+                $data = $settings->getInfosType('mail-mdp-oublie');
+            } catch (Exception $e) {
+                throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+            }
+
+            $resetPasswordLink = $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $str_replacers = [
+                'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
+                'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
+            ];
+
             return $this->sendMail(
                 new Address($mail, $nom),
                 true,
                 'Kompo - Réinitialisation de votre mot de passe',
-                null,
-                'mail_templating/forgotten_password.html.twig',
-                [
-                    'time_reset_password_hour' => $this->getParameter('time_reset_password_hour'),
-                    'resetPasswordLink' => $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H')
-                ]);
+                $data,
+                $str_replacers);
         }
     }
 
@@ -145,21 +159,20 @@ class ContactController extends AbstractController
      * @param Address $addressReceiver
      * @param bool $importance
      * @param string $sujet
-     * @param string|null $message
-     * @param string $template
-     * @param array $options
+     * @param string $htmlContent
+     * @param array|null $str_replacers
      * @return Response
      */
-    public function sendMail(Address $addressReceiver, bool $importance, string $sujet, ?string $message, string $template, array $options): Response
+    public function sendMail(Address $addressReceiver, bool $importance, string $sujet, string $htmlContent, ?array $str_replacers): Response
     {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
+        if ($str_replacers) $htmlContent = str_replace($str_replacers['old'], $str_replacers['new'], $htmlContent);
         $email = (new TemplatedEmail())
             ->from(new Address($this->getParameter('club_email'), 'Kompo - ' . $this->getParameter('club_diminutif')))
             ->to($addressReceiver)
             ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
-            ->htmlTemplate($template)
-            ->context(['message' => $message, 'options' => $options]);
+            ->html($htmlContent);
 
         try {
             $this->mailer->send($email);

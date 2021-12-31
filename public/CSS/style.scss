@@ -1260,6 +1260,12 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 347px) {
+  a#bo_mail_mdp_oublie {
+    margin-top: 10px;
+  }
+}
+
 @media screen and (max-width: 344px) {
   .virtualRankSwitches  {
     font-size: 13px;

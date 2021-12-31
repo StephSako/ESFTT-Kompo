@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
+{% endblock %}
+
+{% block title %}Modifier le {{ label }}{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
+
+    <div class="container" id="settings-page">
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class="card-panel center-align white-text title_journee">
+            <h4 style="font-family: Lobster, cursive">Modifier le {{ label }}</h4>
+        </div>
+
+        <div class="card-panel" id="settings-form">
+            {{ form_start(form) }}
+                <div class="center">
+
+                    <p style="margin-bottom: 20px" class="pastille reset red">
+                        <i style="font-size: 19px" class="material-icons white-text">warning</i> <b>Attention</b> : vous pouvez déplacer les variables (les blocs [#...#]) dans le texte <b>mais ne pas les supprimer ni modifier leurs noms</b></p>
+
+                    <div id="editor"></div>
+
+                    <br>
+                    <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                    <button class="btn waves-effect blue lighten-2 btn_gestion">
+                        Modifier
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        <script type="text/javascript">
+            let ckeditor_content = '{{ HTMLContent }}';
+            let type = '{{ typeBDDed }}';
+        </script>
+        <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
+    </div>
+{% endblock %}

@@ -24,6 +24,14 @@
             <h4>Les membres</h4>
         </div>
 
+        {% if app.user.admin %}
+            <div class='card-panel backoffice-panel center'>
+                <h5 style="margin-top: 0">Modifier le contenu des mails automatiques de ...</h5>
+                <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue</a>
+                <a href='{{ path('backoffice.mail.edit', {type: 'mail-mdp-oublie'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Mot de passe oublié</a>
+            </div>
+        {% endif %}
+
         <div class='card-panel backoffice-panel center'>
 
             <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
@@ -85,7 +93,9 @@
                                         <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
                                     {% endif %}
                                 </td>
-                                <td>{{ competiteur.nom }} {{ competiteur.prenom }}</td>
+                                <td {% if competiteur.isArchive %}class="grey-text text-lighten-1"{% endif %}>
+                                    {{ competiteur.nom }} {{ competiteur.prenom }}
+                                </td>
                                 <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
                                     {% if not competiteur.isArchive %}
                                         {% if competiteur.licence %}

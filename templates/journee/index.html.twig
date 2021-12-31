@@ -51,12 +51,12 @@
                                 {% if disponible == 1 %}
                                     <h5 class="unsetTitle">Vous vous êtes déclaré <span class="green-text">disponible</span></h5>
                                     <a {% if selection %}onclick="return confirm('Vous serez désélectionné de l\'équipe {{ selection }}. Continuer ?')"{% endif %} href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-1" type="submit" name="action">Se déclarer indisponible</button>
+                                        <button class="btn btn_form waves-effect red" type="submit" name="action">Se déclarer indisponible</button>
                                     </a>
                                 {% elseif disponible == 0 %}
                                     <h5 class="unsetTitle">Vous vous êtes déclaré <span class="red-text">indisponible</span></h5>
                                     <a href="{{ path('journee.disponibilite.update', {dispoJoueur: dispoJoueur, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-1" type="submit" name="action">Se déclarer disponible</button>
+                                        <button class="btn btn_form waves-effect green" type="submit" name="action">Se déclarer disponible</button>
                                     </a>
                                 {% endif %}
                                 {% if selection %}
@@ -68,10 +68,10 @@
                                 <h5 class="unsetTitle">Êtes-vous disponible pour cette journée ?</h5>
                                 <div style="display: flex; justify-content: space-evenly">
                                     <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 1}) }}">
-                                        <button class="btn btn_form waves-effect green lighten-2" type="submit" name="action">Disponible</button>
+                                        <button class="btn btn_form waves-effect green" type="submit" name="action">Disponible</button>
                                     </a>
                                     <a href="{{ path('journee.disponibilite.new', {journee: journee.idJournee, dispo: 0}) }}">
-                                        <button class="btn btn_form waves-effect red lighten-2" type="submit" name="action">Indisponible</button>
+                                        <button class="btn btn_form waves-effect red" type="submit" name="action">Indisponible</button>
                                     </a>
                                 </div>
                             {% endif %}

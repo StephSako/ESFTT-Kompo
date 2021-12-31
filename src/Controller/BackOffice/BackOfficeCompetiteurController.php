@@ -6,10 +6,12 @@ use App\Controller\ContactController;
 use App\Controller\SecurityController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
+use App\Form\SettingsType;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreRepository;
+use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -38,6 +40,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $encoder;
     private $contactController;
     private $securityController;
+    private $settingsRepository;
 
     /**
      * BackOfficeController constructor.
@@ -50,6 +53,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param ContactController $contactController
      * @param SecurityController $securityController
      * @param RencontreRepository $rencontreRepository
+     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
@@ -59,7 +63,8 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UserPasswordEncoderInterface $encoder,
                                 ContactController $contactController,
                                 SecurityController $securityController,
-                                RencontreRepository $rencontreRepository)
+                                RencontreRepository $rencontreRepository,
+                                SettingsRepository $settingsRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
@@ -70,6 +75,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->encoder = $encoder;
         $this->contactController = $contactController;
         $this->securityController = $securityController;
+        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -141,19 +147,31 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     /** On envoie un mail de bienvenue */
                     try {
+                        $settings = $this->settingsRepository->find(1);
+                        try {
+                            $data = $settings->getInfosType('mail-bienvenue');
+                        } catch (Exception $e) {
+                            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                        }
+
+                        $initPasswordLink = $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+                        $str_replacers = [
+                            'old' => ["[#initPasswordLink#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
+                            'new' => [
+                                "ce <a href=\"$initPasswordLink\">lien</a>",
+                                $competiteur->getUsername(),
+                                $this->getParameter('time_init_password_day'),
+                                $competiteur->getPrenom(),
+                                mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
+                            ]
+                        ];
+
                         $this->contactController->sendMail(
                             new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
                             true,
-                            'Bienvenue sur Kompo !',
-                            null,
-                            'mail_templating/bienvenue.html.twig',
-                            [
-                                'initPasswordLink' => $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D'),
-                                'pseudo' => $competiteur->getUsername(),
-                                'time_init_password_day' => $this->getParameter('time_init_password_day'),
-                                'prenom' => $competiteur->getPrenom(),
-                                'club_name' => mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
-                            ]);
+                            'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
+                            $data,
+                            $str_replacers);
                         $this->addFlash('success', 'Email de bienvenue envoyé');
                     } catch (Exception $e) {
                         $this->addFlash('fail', 'Email de bienvenue non envoyé');
@@ -430,5 +448,41 @@ class BackOfficeCompetiteurController extends AbstractController
             ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
             throw new Exception('Les statuts sont incohérents', 1234);
         }
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/mail/edit/{type}", name="backoffice.mail.edit")
+     */
+    public function editMailContent(Request $request, string $type): Response
+    {
+        $settings = $this->settingsRepository->find(1);
+        try {
+            $data = $settings->getInfosType($type);
+        } catch (Exception $e) {
+            throw $this->createNotFoundException('Ce mail n\'existe pas');
+        }
+
+        $isAdmin = $this->getUser()->isAdmin();
+        $label = $settings->getFormattedLabel($type);
+        $typeBDDed = str_replace('-', '_', $type);
+        $form = $this->createForm(SettingsType::class, $settings, [
+            'type_data' => $typeBDDed
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $this->em->flush();
+                $this->addFlash('success', 'Contenu du mail modifié');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        }
+
+        return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [
+            'form' => $isAdmin ? $form->createView() : null,
+            'HTMLContent' => $data,
+            'label' => $label,
+            'typeBDDed' => $typeBDDed
+        ]);
     }
 }
