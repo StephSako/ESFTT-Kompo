@@ -4,7 +4,7 @@
 
 <p align="center" style="font-size: 12px">~ Avec l'aide de <a href="https://github.com/carage34">carage34</a> ~</p>
 
-### En résumé ...
+<h3 id="resume">En résumé ...</h3>
 
 <p align="center"><img width="30%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/logo_esftt.png" alt="logo_esftt"></p>
 
@@ -15,7 +15,7 @@ Enfin, **Kompo** étant entièrement adapté aux versions mobiles, il leur perme
 
 Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
-### Page de connexion
+<h3 id="page_de_connexion">Page de connexion</h3>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login.PNG" alt="login"></p>
 
@@ -23,13 +23,21 @@ Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont s
 
 > Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a>
 
-### Page d'accueil
+<h3 id="page_accueil">Page d'accueil</h3>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG" alt="accueil"><br><i><legend>Journée du championnat de Paris</legend></i></p>
 
 Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de la prochaine journée du championnat départemental.
 
-### Barre de navigation
+<h3 id="barre_navigation">Barre de navigation</h3>
+
+<h4 id="les_journees">Les journées</h4>
+<h4 id="naviguer_championnats">Naviguer dans les championnats</h4>
+<h4 id="mon_compte">Mon compte</h4>
+<h4 id="contacter">Contacter</h4>
+<h4 id="gestion">Gestion - Back-office</h4>
+<h4 id="se_deconnecter">Se déconnecter</h4>
+<h4 id="sur_mobile">Sur mobile</h4>
 
 Sur le haut de la page sont listées toutes les journées de la phase, numérotées et datées. Il suffit de cliquer dessus pour accéder aux compositions de la journée correspondante.
 Le dernier item permet de <i>switcher</i> de championnat entre départemental et Paris.
@@ -63,7 +71,13 @@ Sur la droite, vous pouvez accéder :
 * les compétiteurs :
 <p align="center"><img width="100%" style="margin-bottom: 18px; margin-top: 8px;" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/edit_joueurs.PNG" alt="edit_joueurs"></p>
 
-### Signaler sa disponibilité
+<h3 id="pied_de_page">Pied de page</h3>
+<h4 id="nos_reseaux">Vers nos réseaux</h4>
+<h4 id="pages_information">Pages d'information</h4>
+<h4 id="liens_generaux">Liens généraux</h4>
+
+<h3 id="signaler_disponibilite">Signaler sa disponibilité</h3>
+
 Pour signaler votre disponibilité, il suffit de choisir entre l'un des deux boutons **DISPONIBLE** ou **INDISPONIBLE**. Vous pouvez/devriez ainsi déclarer vos disponibilités à l'avance pour plusieurs dates.
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/dispo_non_renseignée.PNG" alt="dispo_non_renseignée"></p>
@@ -81,10 +95,10 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 **❗ ATTENTION TER : si votre classement et/ou numéro de licence ne sont pas renseignés, vous ne pourrez pas déclarer vos disponibilités !**
 
-### Les brûlages
+<h3 id="le_brulage">Le brûlage</h3>
 
 <span class="pastille reset christmas_code">WND8M</span><br>
-Sur la gauche sont détaillés les brûlages et prévisions de brûlages pour chaque joueur.
+Sur la gauche est détaillé le brûlage et prévisions de brûlages pour chaque joueur.
 
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/tableau_brulage.PNG" alt="tableau_brulage"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>
 
@@ -102,7 +116,7 @@ Exemple sur l'image ci-dessus :
 
 **Si un joueur est sélectionné dans une équipe en milieu / fin de phase, puis qu'il devient brûlé, il sera automatiquement supprimé des compositions des équipes dans lesquelles il est brûlé.**
 
-### Règle de la 2ème journée
+<h3 id="regle_2eme_journee">Règle de la 2ème journée</h3>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/brulage_J2.JPG" alt="brulage_J2"></p>
 
@@ -116,7 +130,7 @@ Un message d'erreur apparaît si au moins 2 joueurs brûlés de la J1 sont séle
 
 > Ca va ? On suit ? 😊 Alors on continue !
 
-### Tableau des disponibilités
+<h3 id="tableau_disponibilites">Tableau des disponibilités</h3>
 
 Le tableau sur la droite de la page liste toutes les disponibilités de chaque compétiteur pour la journée. Un joueur en vert est disponible, en rouge indisponible et en gris n'a pas déclaré sa disponibilité. Si un logo bleu suit un joueur, cela signifie qu'il est sélectionné dans une des équipes de la journée.
 
@@ -124,7 +138,7 @@ Le bouton bleu **TOUTES LES DISPOS** au dessus du tableau ouvre un panneau déta
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/toutes_les_dispos.PNG" alt="toutes_les_dispos"></p>
 
-### Composition d'équipe
+<h3 id="compositions_equipes">Compositions d'équipes</h3>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition.jpg" alt="composition"></p>
 
@@ -139,7 +153,7 @@ Pour chaque équipe, est affiché :
 
 **Le bouton pour créer / modifier une composition d'équipe n'est visible et accessible que par les capitaines.**
 
-### Composition d'équipe
+<h4 id="selection_joueurs">Sélectionner les joueurs</h4>
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/composition_equipe.PNG" alt="composition_equipe"></p>
 
@@ -155,7 +169,10 @@ Sont sélectionnables les joueurs :
 Sélectionnez les joueurs à l'aide des listes déroulantes. Vous pouvez définir un emplacement de joueur vide en cliquant sur le premier item.
 <br>N'oubliez pas de validez la composition avec le bouton **CONFIRMER**.
 
-### Responsive
+<h4 id="alerter_joueurs">Alerter les joueurs sélectionnées</h4>
+<h4 id="reset_composition">Désélectionner tous les joueurs</h4>
+
+<h3 id="adaptation_mobiles">Adaptation sur mobiles</h3>
 
 **Kompo** est entièrement adapté aux versions mobiles et tablettes. Voici quelques captures d'écran :
 
@@ -174,6 +191,17 @@ Sur mobile, la liste des joueurs se déroule de gauche à droite.
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_edit_compte.jpg" alt="res_edit_compte"><br><i><legend>Modifier son compte</legend></i></p><br>
 
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/res_edit_compo.jpg" alt="res_edit_compo"><br><i><legend>Modifier une compo</legend></i></p>
+
+<h3 id="gestion_backoffice">Gestion - Back-office</h3>
+
+<h4 id="gestion_mise_a_jour_donnees">Mise à jour des données</h4>
+<h4 id="gestion_championnats">Les championnats</h4>
+<h4 id="gestion_dates_journees">Les dates des journées</h4>
+<h4 id="gestion_rencontres">Les rencontres</h4>
+<h4 id="gestion_divisions">Les divisions</h4>
+<h4 id="gestion_equipes">Les équipes</h4>
+<h4 id="gestion_membres">Les membres</h4>
+<h4 id="gestion_disponibilites">Les disponibilités</h4>
 
 ##
 
