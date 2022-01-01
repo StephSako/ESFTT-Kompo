@@ -1095,6 +1095,12 @@ table.table-last-compos {
   height: 26.24px;
 }
 
+.editor_variable_highlighted {
+  background-color: #a7d6ff;
+  border-radius: 8px;
+  padding: 2px 2px 3px 2px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {

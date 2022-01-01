@@ -478,6 +478,17 @@ class BackOfficeCompetiteurController extends AbstractController
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
+        // On stylise les variables dans l'éditeur
+        preg_match_all('/\[\#(.*?)\#\]/', $data, $matches);
+        $str_replacers = ['old' => [], 'new' => []];
+
+        foreach ($matches[0] as $value) {
+            $str_replacers['old'][] = $value;
+            $str_replacers['new'][] = "<span class='editor_variable_highlighted'>$value</span>";
+        }
+
+        $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
+
         return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [
             'form' => $isAdmin ? $form->createView() : null,
             'HTMLContent' => $data,

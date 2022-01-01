@@ -1,6 +1,28 @@
+function AllowLinkTarget( editor ) {
+    editor.model.schema.extend('$text', {allowAttributes: 'editorVariableHighlighted'});
+    editor.conversion.for( 'downcast' ).attributeToElement({
+        model: 'editorVariableHighlighted',
+        view: (attributeValue, {writer}) => {
+            const linkElement = writer.createAttributeElement('span',{class: attributeValue}, {priority: 5});
+            writer.setCustomProperty('link', true, linkElement);
+            return linkElement;
+        },
+        converterPriority: 'low'
+    });
+    editor.conversion.for( 'upcast' ).attributeToAttribute( {
+        view: {
+            name: 'span',
+            key: 'class'
+        },
+        model: 'editorVariableHighlighted',
+        converterPriority: 'low'
+    });
+}
+
 BalloonEditor.create(
     document.querySelector('#editor'),
     {
+        extraPlugins: [AllowLinkTarget],
         heading: {
             options: [
                 {
