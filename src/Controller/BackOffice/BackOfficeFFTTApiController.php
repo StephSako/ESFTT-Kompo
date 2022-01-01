@@ -376,6 +376,18 @@ class BackOfficeFFTTApiController extends AbstractController
                             ->setClassementOfficiel($joueurIssued['pointsFFTT']);
                     }
                     $this->em->flush();
+
+                    /** On retrie les compositions d'équipes */
+                    //TODO que les journées qui ne sont pas encore jouées
+                    foreach (array_filter($allChampionnats, function($champ) {
+                        return $champ->isCompoSorted();
+                    }) as $championnatToSort){
+                        foreach ($championnatToSort->getRencontres()->toArray() as $rencontre){
+                            $rencontre->sortComposition();
+                        }
+                    }
+                    $this->em->flush();
+
                 } catch (Exception $exception) {
                     $this->addFlash('fail', 'Compétiteurs non mis à jour');
                 }
