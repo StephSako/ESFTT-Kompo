@@ -137,7 +137,7 @@ class ContactController extends AbstractController
             try {
                 $data = $settings->getInfosType('mail-mdp-oublie');
             } catch (Exception $e) {
-                throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                throw $this->createNotFoundException($e->getMessage());
             }
 
             $resetPasswordLink = $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');

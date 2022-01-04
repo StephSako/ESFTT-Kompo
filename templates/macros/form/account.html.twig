@@ -80,7 +80,7 @@
                                 {% endif %}
                                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                     {% if anneeCertificatMedical != null %}
-                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green lighten-2 btn_gestion'>
+                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green btn_gestion'>
                                             Renouveler
                                         </a>
                                     {% else %}

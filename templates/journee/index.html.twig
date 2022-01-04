@@ -76,13 +76,16 @@
                                 </div>
                             {% endif %}
                         {% else %}
-                            {% if app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% elseif not app.user.licence and app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% endif %}
+                            <p class="red-text lighten-2">
+                                <i class="material-icons red-text">dangerous</i>
+                                {% if app.user.licence and not app.user.classementOfficiel %}
+                                    Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
+                                {% elseif not app.user.licence and app.user.classementOfficiel %}
+                                    Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités
+                                {% elseif not app.user.licence and not app.user.classementOfficiel %}
+                                    Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités
+                                {% endif %}
+                            </p>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -93,6 +96,14 @@
                         <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                     </div>
                 {% endif %}
+            {% endif %}
+
+            {% if app.user.certifMedicalInvalid.status %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                        {{ app.user.certifMedicalInvalid.message }}
+                    </p>
+                </div>
             {% endif %}
 
             <div class="hide-on-large-only center-align">

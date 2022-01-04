@@ -151,7 +151,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         try {
                             $data = $settings->getInfosType('mail-bienvenue');
                         } catch (Exception $e) {
-                            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                            throw $this->createNotFoundException($e->getMessage());
                         }
 
                         $initPasswordLink = $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
@@ -459,7 +459,7 @@ class BackOfficeCompetiteurController extends AbstractController
         try {
             $data = $settings->getInfosType($type);
         } catch (Exception $e) {
-            throw $this->createNotFoundException('Ce mail n\'existe pas');
+            throw $this->createNotFoundException($e->getMessage());
         }
 
         $isAdmin = $this->getUser()->isAdmin();
@@ -495,5 +495,33 @@ class BackOfficeCompetiteurController extends AbstractController
             'label' => $label,
             'typeBDDed' => $typeBDDed
         ]);
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
+     */
+    public function alertCertifMedicPerimes(Request $request): Response
+    {
+
+        $settings = $this->settingsRepository->find(1);
+        try {
+            $data = $settings->getInfosType('mail-certif-medic-perim');
+            dump($data);
+        } catch (Exception $e) {
+            throw $this->createNotFoundException($e->getMessage());
+        }
+
+        try {
+//            $this->contactController->sendMail( //TODO Concaténer toutes les adresses en CCI
+//                new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
+//                true,
+//                'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
+//                $data,
+//                null);
+            $this->addFlash('success', "L'alerte a été envoyée");
+        } catch (Exception $e) {
+            $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
+        }
+        return $this->redirectToRoute('backoffice.competiteurs');
     }
 }

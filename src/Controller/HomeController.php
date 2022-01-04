@@ -400,7 +400,7 @@ class HomeController extends AbstractController
         try {
             $data = $settings->getInfosType($type);
         } catch (Exception $e) {
-            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+            throw $this->createNotFoundException($e->getMessage());
         }
 
         $form = null;

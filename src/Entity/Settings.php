@@ -18,7 +18,8 @@ class Settings
         'criterium-federal' => 'Critérium fédéral',
         'championnat-de-paris' => 'Championnat de Paris',
         'mail-bienvenue' => 'mail de bienvenue',
-        'mail-mdp-oublie' => 'mail de mot de passe oublié'
+        'mail-mdp-oublie' => 'mail de mot de passe oublié',
+        'mail-certif-medic-perim' => 'mail de certificat médical périmé'
     ];
 
     /**
@@ -62,6 +63,31 @@ class Settings
      * @ORM\Column(type="text", name="mail_mdp_oublie", nullable=true)
      */
     private $mailMdpOublie;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="mail_certif_medic_perim", nullable=true)
+     */
+    private $mailCertifMedicPerim;
+
+    /**
+     * @return string|null
+     */
+    public function getMailCertifMedicPerim(): ?string
+    {
+        return $this->mailCertifMedicPerim;
+    }
+
+    /**
+     * @param string|null $mailCertifMedicPerim
+     * @return Settings
+     */
+    public function setMailCertifMedicPerim(?string $mailCertifMedicPerim): self
+    {
+        $this->mailCertifMedicPerim = $mailCertifMedicPerim;
+        return $this;
+    }
 
     /**
      * @return string|null
@@ -183,7 +209,8 @@ class Settings
         else if ($type == 'championnat-de-paris') return $this->getInfosChampionnatDeParis();
         else if ($type == 'mail-bienvenue') return $this->getMailBienvenue();
         else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
-        throw new Exception("Ce championnat n'existe pas", 404);
+        else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
+        throw new Exception("Ce contenu n'existe pas", 404);
     }
 
     /**
