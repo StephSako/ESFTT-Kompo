@@ -2,6 +2,7 @@
 
 {% block title %}Back-office - Les membres{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/modalContact.html.twig' as _modalContact %}
 
 {% block body %}
 
@@ -38,10 +39,14 @@
             <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
             <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
                 <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
-            </a>
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.alert.certif-medic-perim') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Alert. certif. médic. périm.</a>
+            </a><br>
 
-            {% if competiteurs|length %}
+            {% if joueursInvalidCertifMedic|length %}
+                <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span class="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
+                {{ _modalContact.modalAlertPlayers('certif_medic_invalides', contactsJoueursInvalidCertifMedic, "Alerter les joueurs dont le certificat médical n'est plus valable à la rentrée", {bcc: '?bcc=', info: 'Pour raison de confidentialité, les joueurs sont destinataires du mail en copie cachée'}) }}
+            {% endif %}
+
+            {% if joueurs|length %}
                 <table id="table-to-adapt-columns" class='striped centered responsive-table backoffice-table'>
                     <thead>
                         <tr class='hide-on-med-and-down'>
@@ -59,7 +64,7 @@
                     </thead>
 
                     <tbody>
-                        {% for competiteur in competiteurs %}
+                        {% for competiteur in joueurs %}
                             <tr>
                                 <td style="padding-top: 8px; padding-bottom: 8px;">
                                     {% if competiteur.isAdmin %}
@@ -123,14 +128,10 @@
                                         {% if competiteur.age != null and competiteur.age < 18 %}
                                             <span style="color: grey"><i>Mineur (facultatif)</i></span>
                                         {% else %}
-                                            {% if not competiteur.anneeCertificatMedical %}
-                                                <span class="red-text">Certificat indéfini</span>
-                                            {% else %}
-                                                <span>
-                                                    <i class="{% if competiteur.anneeCertificatMedical >= "now"|date('Y')-2 %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
-                                                    {{ competiteur.anneeCertificatMedical+3 }} - {{ competiteur.anneeCertificatMedical+4 }}
-                                                </span>
-                                            {% endif %}
+                                            <span>
+                                                <i class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
+                                                {{ competiteur.certifMedicalInvalid.shortMessage }}
+                                            </span>
                                         {% endif %}
                                     {% endif %}
                                 </td>
@@ -180,7 +181,7 @@
                     </thead>
 
                     <tbody>
-                        {% for joueur in competiteurs %}
+                        {% for joueur in joueurs %}
                             {% if joueur.competiteur %}
                                 <tr>
                                     <td>

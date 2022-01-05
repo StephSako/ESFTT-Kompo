@@ -1436,19 +1436,25 @@ class Competiteur implements UserInterface, Serializable
         return $this;
     }
 
+    public function getLabelCertificatRentree(): string {
+        return ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . ' - ' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1));
+    }
+
     /**
      * @return string[]
      */
     public function isCertifMedicalInvalid(): array {
-        if (($this->getAge() == null || $this->getAge() >= 18) &&
-            ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2))
+        if ((new DateTime())->format('n') >= 7 && (($this->getAge() == null || $this->getAge() >= 18) &&
+            ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
             return [
                 'status' => true,
-                'message' => 'Certificat médical à renouveler à la rentrée ' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . ' - ' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1))
+                'message' => 'Certificat médical à renouveler à la rentrée ' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . ' - ' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1)),
+                'shortMessage' => $this->getLabelCertificatRentree()
             ];
         return [
             'status' => false,
-            'message' => null
+            'message' => null,
+            'shortMessage' => $this->getLabelCertificatRentree()
         ];
     }
 

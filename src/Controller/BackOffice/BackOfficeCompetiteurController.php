@@ -88,8 +88,15 @@ class BackOfficeCompetiteurController extends AbstractController
         $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
            return $joueur->isAdmin();
         })) == 1;
+        //TODO Afficher un message pour admin sur journee.index pour alerter + contenu en option + message dynamique dans account
+        $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
+            return $joueur->isCertifMedicalInvalid()['status'] && !$joueur->isArchive();
+        });
+
         return $this->render('backoffice/competiteur/index.html.twig', [
-            'competiteurs' => $joueurs,
+            'joueurs' => $joueurs,
+            'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
+            'contactsJoueursInvalidCertifMedic' => $this->contactController->returnPlayersContact($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin
         ]);
     }

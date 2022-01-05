@@ -259,7 +259,7 @@
                                         <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                             <i class="material-icons">record_voice_over</i>
                                         </a>
-                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo}) }}
+                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo: compo}) }}
                                     {% endif %}
                                     <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
                                         <i class="material-icons">delete</i>

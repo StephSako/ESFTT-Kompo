@@ -4,8 +4,13 @@
             <h5>{{ titre }}</h5>
             <div class="row">
                 <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter par SMS</i></p>
-                {% set message = options ? options.compo.messageAlertPlayers(app.user.prenom) : null %}
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', 'mailto:' ~ response['mail']['toString'] ~ (message ? options.compo.objetAlertPlayers ~ message : '')) }}
+
+                {% if options.info is defined %}
+                    <p class="blue-text"><i class="material-icons">info</i>{{ options.info }}</p>
+                {% endif %}
+
+                {% set message = options.compo is defined ? options.compo.messageAlertPlayers(app.user.prenom) : null %}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', 'mailto:' ~ (options.bcc is defined ? options.bcc :'') ~ response['mail']['toString'] ~ (message ? options.compo.objetAlertPlayers ~ message : '')) }}
                 {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', 'sms:' ~ response['sms']['toString'] ~ (message ? ';?' ~ message : null)) }}
             </div>
         </div>
