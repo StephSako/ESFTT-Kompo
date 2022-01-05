@@ -741,7 +741,8 @@ class Rencontre
      * @return void
      */
     public function sortComposition(): void {
-        if ($this->getIdChampionnat()->isCompoSorted() && count($this->getListSelectedPlayers())) {
+        if ($this->getIdChampionnat()->isCompoSorted() && count($this->getListSelectedPlayers())
+            && max($this->getDateReport(), $this->getIdJournee()->getDateJournee()) > new DateTime()) {
             $compoToSort = $this->getListSelectedPlayers();
             $this->emptyCompo();
             usort($compoToSort, function ($joueur1, $joueur2) {

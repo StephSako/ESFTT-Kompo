@@ -112,8 +112,8 @@
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
-                                    {% if not competiteur.isArchive %}
+                                <td {% if competiteur.isArchive or competiteur.isLoisir %}class="hide-on-med-and-down"{% endif %}>
+                                    {% if not competiteur.isArchive and not competiteur.isLoisir %}
                                         {% if competiteur.isCompetiteur %}
                                             {% if competiteur.classementOfficiel %}
                                                 {{ competiteur.classementOfficiel }} pts

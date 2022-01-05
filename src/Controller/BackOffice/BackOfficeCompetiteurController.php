@@ -459,12 +459,23 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs/mail/edit/{type}", name="backoffice.mail.edit")
+     * @throws Exception
      */
     public function editMailContent(Request $request, string $type): Response
     {
         $settings = $this->settingsRepository->find(1);
         try {
             $data = $settings->getInfosType($type);
+            // On stylise les variables dans l'éditeur
+            preg_match_all('/\[\#(.*?)\#\]/', $data, $matches);
+            $str_replacers = ['old' => [], 'new' => []];
+
+            foreach ($matches[0] as $value) {
+                $str_replacers['old'][] = $value;
+                $str_replacers['new'][] = "<span class='editor_variable_highlighted'>$value</span>";
+            }
+
+            $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
         } catch (Exception $e) {
             throw $this->createNotFoundException($e->getMessage());
         }
@@ -479,26 +490,23 @@ class BackOfficeCompetiteurController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $this->em->flush();
-                $this->addFlash('success', 'Contenu du mail modifié');
-                return $this->redirectToRoute('backoffice.competiteurs');
+
+                /** Si le nombre de variable augmente, on renvoie une erreur */
+                preg_match_all('/\[\#(.*?)\#\]/', $form->getData()->getInfosType($type), $input); // Regex depuis l'éditeur WYSIWYG
+
+                if (count($matches[0]) != count($input[0])) $this->addFlash('fail', 'Il y a une différence de ' . abs((count($input[0]) - count($matches[0]))) . ' variable' . (abs((count($input[0]) - count($matches[0]))) > 1 ? 's' : ''));
+                else {
+                    $this->em->flush();
+                    $this->addFlash('success', 'Contenu du mail modifié');
+                    return $this->redirectToRoute('backoffice.competiteurs');
+                }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
-
-        // On stylise les variables dans l'éditeur
-        preg_match_all('/\[\#(.*?)\#\]/', $data, $matches);
-        $str_replacers = ['old' => [], 'new' => []];
-
-        foreach ($matches[0] as $value) {
-            $str_replacers['old'][] = $value;
-            $str_replacers['new'][] = "<span class='editor_variable_highlighted'>$value</span>";
-        }
-
-        $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
 
         return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [
             'form' => $isAdmin ? $form->createView() : null,
             'HTMLContent' => $data,
+            'variables' => $matches[0],
             'label' => $label,
             'typeBDDed' => $typeBDDed
         ]);
