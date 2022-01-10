@@ -137,7 +137,7 @@ class ContactController extends AbstractController
             try {
                 $data = $settings->getInfosType('mail-mdp-oublie');
             } catch (Exception $e) {
-                throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                throw $this->createNotFoundException($e->getMessage());
             }
 
             $resetPasswordLink = $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
@@ -147,7 +147,7 @@ class ContactController extends AbstractController
             ];
 
             return $this->sendMail(
-                new Address($mail, $nom),
+                [new Address($mail, $nom)],
                 true,
                 'Kompo - Réinitialisation de votre mot de passe',
                 $data,
@@ -156,23 +156,26 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @param Address $addressReceiver
+     * @param Address[] $addressReceiver
      * @param bool $importance
      * @param string $sujet
      * @param string $htmlContent
      * @param array|null $str_replacers
+     * @param bool|null $isPrivate
      * @return Response
      */
-    public function sendMail(Address $addressReceiver, bool $importance, string $sujet, string $htmlContent, ?array $str_replacers): Response
+    public function sendMail(array $addressReceiver, bool $importance, string $sujet, string $htmlContent, ?array $str_replacers, ?bool $isPrivate = false): Response
     {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         if ($str_replacers) $htmlContent = str_replace($str_replacers['old'], $str_replacers['new'], $htmlContent);
         $email = (new TemplatedEmail())
             ->from(new Address($this->getParameter('club_email'), 'Kompo - ' . $this->getParameter('club_diminutif')))
-            ->to($addressReceiver)
             ->priority($importance ? Email::PRIORITY_HIGHEST : Email::PRIORITY_NORMAL)
             ->subject($sujet)
             ->html($htmlContent);
+
+        if ($isPrivate) $email->bcc(...$addressReceiver);
+        else $email->to(...$addressReceiver);
 
         try {
             $this->mailer->send($email);

@@ -44,91 +44,6 @@ class CompetiteurType extends AbstractType
             ->add('imageFile', FileType::class, [
                 'label' => false,
                 'required' => false
-            ])
-            ->add('code1', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code2', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code3', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code4', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code5', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code6', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code7', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code8', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code9', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code10', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code11', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code12', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code13', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
-            ])->add('code14', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 5
-                ]
             ]);
 
         if ($options['adminAccess']) {
@@ -255,6 +170,95 @@ class CompetiteurType extends AbstractType
                 ]
             ]);
         }
+
+        if ($options['displayCode']) {
+            $builder
+            ->add('code1', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code2', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code3', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code4', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code5', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code6', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code7', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code8', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code9', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code10', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code11', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code12', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code13', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ])->add('code14', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 5
+                ]
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -268,7 +272,8 @@ class CompetiteurType extends AbstractType
             'isArchived' => false,
             'dateNaissanceRequired' => false,
             'usernameEditable' => true,
-            'createMode' => false
+            'createMode' => false,
+            'displayCode' => false
         ]);
     }
 }

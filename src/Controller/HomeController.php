@@ -202,6 +202,10 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
+        $countJoueursCertifMedicPerim = count(array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
+            return $joueur->isCertifMedicalInvalid()['status'];
+        }));
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -221,7 +225,8 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
-            'allDisponibilites' => $allDisponibilites
+            'allDisponibilites' => $allDisponibilites,
+            'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim
         ]);
     }
 
@@ -400,7 +405,7 @@ class HomeController extends AbstractController
         try {
             $data = $settings->getInfosType($type);
         } catch (Exception $e) {
-            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+            throw $this->createNotFoundException($e->getMessage());
         }
 
         $form = null;

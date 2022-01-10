@@ -88,8 +88,15 @@ class BackOfficeCompetiteurController extends AbstractController
         $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
            return $joueur->isAdmin();
         })) == 1;
+        //TODO Envoyer un mail directement pour les certificats medicaux perimés avec route et message du bouton dynamiques + message dynamique dans account
+        $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
+            return $joueur->isCertifMedicalInvalid()['status'] && !$joueur->isArchive();
+        });
+
         return $this->render('backoffice/competiteur/index.html.twig', [
-            'competiteurs' => $joueurs,
+            'joueurs' => $joueurs,
+            'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
+            'contactsJoueursInvalidCertifMedic' => $this->contactController->returnPlayersContact($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin
         ]);
     }
@@ -123,7 +130,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'dateNaissanceRequired' => false,
-            'createMode' => true
+            'createMode' => true,
+            'displayCode' => false
         ]);
         $form->handleRequest($request);
 
@@ -151,7 +159,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         try {
                             $data = $settings->getInfosType('mail-bienvenue');
                         } catch (Exception $e) {
-                            throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+                            throw $this->createNotFoundException($e->getMessage());
                         }
 
                         $initPasswordLink = $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
@@ -167,7 +175,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         ];
 
                         $this->contactController->sendMail(
-                            new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
+                            [new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
                             true,
                             'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
                             $data,
@@ -215,7 +223,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
             'dateNaissanceRequired' => $competiteur->getDateNaissance() != null,
-            'usernameEditable' => $usernameEditable
+            'usernameEditable' => $usernameEditable,
+            'displayCode' => $this->getUser()->isAdmin() && !$competiteur->isArchive()
         ]);
         $form->handleRequest($request);
 
@@ -264,7 +273,10 @@ class BackOfficeCompetiteurController extends AbstractController
             'isAdmin' => $competiteur->isAdmin(),
             'competiteurId' => $idCompetiteur,
             'usernameEditable' => $usernameEditable,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'cheating' => $competiteur->isCheating(),
+            'winner' => $competiteur->isWinner(),
+            'fullWinner' => $competiteur->isFullWinner()
         ]);
     }
 
@@ -470,7 +482,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
         } catch (Exception $e) {
-            throw $this->createNotFoundException('Ce mail n\'existe pas');
+            throw $this->createNotFoundException($e->getMessage());
         }
 
         $isAdmin = $this->getUser()->isAdmin();
@@ -503,5 +515,44 @@ class BackOfficeCompetiteurController extends AbstractController
             'label' => $label,
             'typeBDDed' => $typeBDDed
         ]);
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
+     */
+    public function alertCertifMedicPerimes(Request $request): Response
+    {
+        $mails = array_map(function ($address) {
+                return new Address($address);
+            }, explode(',', $this->contactController->returnPlayersContact(
+                array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
+            return $joueur->isCertifMedicalInvalid()['status'];
+        }))['mail']['toString']));
+
+        $settings = $this->settingsRepository->find(1);
+        try {
+            $message = $settings->getInfosType('mail-certif-medic-perim');
+        } catch (Exception $e) {
+            throw $this->createNotFoundException($e->getMessage());
+        }
+
+        $str_replacers = [
+            'old' => ['[#annee_saison#]'],
+            'new' => [(new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)]
+        ];
+
+        try {
+            $this->contactController->sendMail(
+                $mails,
+                true,
+                'Kompo - Certificat médical à renouveler',
+                $message,
+                $str_replacers,
+                true);
+            $this->addFlash('success', "L'alerte a été envoyée");
+        } catch (Exception $e) {
+            $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
+        }
+        return $this->redirectToRoute('backoffice.competiteurs');
     }
 }

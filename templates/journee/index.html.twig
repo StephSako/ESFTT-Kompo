@@ -76,13 +76,16 @@
                                 </div>
                             {% endif %}
                         {% else %}
-                            {% if app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% elseif not app.user.licence and app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                                <h5 class="red-text lighten-2" style="font-size: 130%;">Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités</h5>
-                            {% endif %}
+                            <p class="red-text lighten-2">
+                                <i class="material-icons red-text">dangerous</i>
+                                {% if app.user.licence and not app.user.classementOfficiel %}
+                                    Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
+                                {% elseif not app.user.licence and app.user.classementOfficiel %}
+                                    Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités
+                                {% elseif not app.user.licence and not app.user.classementOfficiel %}
+                                    Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités
+                                {% endif %}
+                            </p>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -93,6 +96,23 @@
                         <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
                     </div>
                 {% endif %}
+            {% endif %}
+
+            {% if app.user.certifMedicalInvalid.status %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                        {{ app.user.certifMedicalInvalid.message }}
+                    </p>
+                </div>
+            {% endif %}
+
+            {% if app.user.admin and countJoueursCertifMedicPerim %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                        Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer/alerter ici</a>
+                    </p>
+                </div>
             {% endif %}
 
             <div class="hide-on-large-only center-align">
@@ -248,7 +268,15 @@
                                         <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                             <i class="material-icons">record_voice_over</i>
                                         </a>
-                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo}) }}
+                                        {{ _modalContact.modalAlertPlayers
+                                            (
+                                                compo.id,
+                                                compo.getListContactSelectedPlayers(app.user.idCompetiteur),
+                                                'Alerter les joueurs',
+                                                'mailto:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                'sms:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom)
+                                            )
+                                        }}
                                     {% endif %}
                                     <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
                                         <i class="material-icons">delete</i>

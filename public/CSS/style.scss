@@ -1101,6 +1101,13 @@ table.table-last-compos {
   padding: 2px 2px 3px 2px;
 }
 
+.badgeCertifInvalidButton {
+  padding: 2px 4px;
+  border-radius: 2px;
+  margin-left: 5px;
+  background-color: #ff6565;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -1238,6 +1245,12 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 550px) {
+  #bo_mail_certif_medic_perim {
+    margin-top: 5px;
+  }
+}
+
 @media screen and (max-width: 529px) {
   .lien_long {
     display: none;
@@ -1299,6 +1312,28 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 324px) {
+  .noDivisionPillHeader {
+    display: none;
+  }
+
+  .noDivisionPillBody {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .virtualRankSwitches  {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 305px) {
+  .virtualRankSwitches  {
+    font-size: 11px;
+  }
+}
+
 @media screen and (max-width: 307px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 16px;
@@ -1320,27 +1355,5 @@ table.table-last-compos {
 @media screen and (max-width: 237px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 10px;
-  }
-}
-
-@media screen and (max-width: 324px) {
-  .noDivisionPillHeader {
-    display: none;
-  }
-
-  .noDivisionPillBody {
-    display: block;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .virtualRankSwitches  {
-    font-size: 12px;
-  }
-}
-
-@media screen and (max-width: 305px) {
-  .virtualRankSwitches  {
-    font-size: 11px;
   }
 }

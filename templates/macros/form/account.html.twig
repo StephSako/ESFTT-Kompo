@@ -80,7 +80,7 @@
                                 {% endif %}
                                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                     {% if anneeCertificatMedical != null %}
-                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green lighten-2 btn_gestion'>
+                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green btn_gestion'>
                                             Renouveler
                                         </a>
                                     {% else %}
@@ -188,6 +188,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
+
                     <div class="col s12 m6 l4">
                         <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
                         {% if type == 'backoffice' %}
@@ -232,276 +233,40 @@
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 
-            <div class="row" style="margin-bottom: 0; margin-top: 20px; font-size: 16px;;">
+            {% if options.displayCode %}
+                <div class="row" style="margin-bottom: 0; margin-top: 20px; font-size: 16px;">
 
-                <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
+                    <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
 
-                {% if app.user.cheating %}
-                    <p class="red-text">Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</p>
-                {% else %}
-                    {% if app.user.winner %}
-                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ! Félicitations !<span class="material-icons gold-color">emoji_events</span></p>
+                    {% if options.cheating %}
+                        <p class="red-text">Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</p>
                     {% else %}
-                        <p><i>Vous n'avez pas encore trouvé tous les codes ... persévérez !</i></p>
+                        {% if options.isWinner %}
+                            <p class="green-text"><span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>Vous avez trouvé tous les codes ! Félicitations !<span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span></p>
+                        {% else %}
+                            <p><i>Vous n'avez pas encore trouvé tous les codes ... <b>persévérez !</b></i></p>
+                        {% endif %}
+
+                        {% if options.isFullWinner %}
+                            <p class="green-text"><span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span><span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>Vous avez trouvé tous les codes ainsi que le ticket d'or ! Félicitations !<span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span><span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span></p>
+                        {% endif %}
                     {% endif %}
 
-                    {% if app.user.fullWinner %}
-                        <p class="green-text"><span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span>Vous avez trouvé tous les codes ainsi que le ticket d'or ! Félicitations !<span class="material-icons gold-color">emoji_events</span><span class="material-icons gold-color">emoji_events</span></p>
-                    {% endif %}
-                {% endif %}
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 1</b>
-                            {{ form_row(form.code1) }}
+                    {% for i in 1..14 %}
+                        <div class="col s8 offset-s2">
+                            <div class="row">
+                                <div class="col s11">
+                                    <b><i class="material-icons prefix">key</i> Code {{ i }}</b>
+                                    {{ form_row(attribute(form,'code' ~ i)) }}
+                                </div>
+                                <div class="col s1">
+                                    {{ app.user.codeValidation(form.children['code' ~ i].vars.value, options.cheating, i) | raw }}
+                                </div>
+                            </div>
                         </div>
-                        <div class="col s1">
-                            {% if app.user.code1 %}
-                                {% if app.user.code1Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 2</b>
-                            {{ form_row(form.code2) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code2 %}
-                                {% if app.user.code2Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 3</b>
-                            {{ form_row(form.code3) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code3 %}
-                                {% if app.user.code3Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 4</b>
-                            {{ form_row(form.code4) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code4 %}
-                                {% if app.user.code4Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 5</b>
-                            {{ form_row(form.code5) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code5 %}
-                                {% if app.user.code5Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 6</b>
-                            {{ form_row(form.code6) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code6 %}
-                                {% if app.user.code6Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 7</b>
-                            {{ form_row(form.code7) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code7 %}
-                                {% if app.user.code7Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 8</b>
-                            {{ form_row(form.code8) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code8 %}
-                                {% if app.user.code8Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 9</b>
-                            {{ form_row(form.code9) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code9 %}
-                                {% if app.user.code9Correct and not app.user.cheating%}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 10</b>
-                            {{ form_row(form.code10) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code10 %}
-                                {% if app.user.code10Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 11</b>
-                            {{ form_row(form.code11) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code11 %}
-                                {% if app.user.code11Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 12</b>
-                            {{ form_row(form.code12) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code12 %}
-                                {% if app.user.code12Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11">
-                            <b><i class="material-icons prefix">key</i> Code 13</b>
-                            {{ form_row(form.code13) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code13 %}
-                                {% if app.user.code13Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s8 offset-s2">
-                    <div class="row">
-                        <div class="col s11 gold-color">
-                            <b><i class="material-icons prefix">key</i> Code d'or</b>
-                            {{ form_row(form.code14) }}
-                        </div>
-                        <div class="col s1">
-                            {% if app.user.code14 %}
-                                {% if app.user.code14Correct and not app.user.cheating %}
-                                    <i class="material-icons green-text">check</i>
-                                {% else %}
-                                    <i class="material-icons red-text">clear</i>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endif %}
 
             <button
                 {% if editMode %}
