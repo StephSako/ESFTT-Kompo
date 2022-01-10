@@ -88,7 +88,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
            return $joueur->isAdmin();
         })) == 1;
-        //TODO Afficher un message pour admin sur journee.index pour alerter + contenu en option + message dynamique dans account
+        //TODO Envoyer un mail directement pour les certificats medicaux perimés avec route et message du bouton dynamiques + message dynamique dans account
         $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'] && !$joueur->isArchive();
         });
@@ -174,7 +174,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         ];
 
                         $this->contactController->sendMail(
-                            new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
+                            [new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
                             true,
                             'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
                             $data,
@@ -517,22 +517,36 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function alertCertifMedicPerimes(Request $request): Response
     {
+        $mails = array_map(function ($address) {
+                return new Address($address);
+            }, explode(',', $this->contactController->returnPlayersContact(
+                array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
+            return $joueur->isCertifMedicalInvalid()['status'];
+        }))['mail']['toString']));
+
+        dump($mails);
 
         $settings = $this->settingsRepository->find(1);
         try {
-            $data = $settings->getInfosType('mail-certif-medic-perim');
-            dump($data);
+            $message = $settings->getInfosType('mail-certif-medic-perim');
+            dump($message);
         } catch (Exception $e) {
             throw $this->createNotFoundException($e->getMessage());
         }
 
+        $str_replacers = [
+            'old' => ['[#annee_saison#]'],
+            'new' => [(new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)]
+        ];
+
         try {
-//            $this->contactController->sendMail( //TODO Concaténer toutes les adresses en CCI
-//                new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom()),
-//                true,
-//                'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
-//                $data,
-//                null);
+            $this->contactController->sendMail(
+                $mails,
+                true,
+                'Kompo - Certificat médical à renouveler',
+                $message,
+                $str_replacers,
+                true);
             $this->addFlash('success', "L'alerte a été envoyée");
         } catch (Exception $e) {
             $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");

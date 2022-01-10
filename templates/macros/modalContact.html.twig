@@ -1,4 +1,4 @@
-{% macro modalAlertPlayers(id, response, titre, options) %}
+{% macro modalAlertPlayers(id, response, titre, linkMail, linkSMS, options) %}
     <div id="modal{{ id }}" class="modal modal-alert modal-fixed-footer">
         <div class="modal-content">
             <h5>{{ titre }}</h5>
@@ -9,9 +9,11 @@
                     <p class="blue-text"><i class="material-icons">info</i>{{ options.info }}</p>
                 {% endif %}
 
-                {% set message = options.compo is defined ? options.compo.messageAlertPlayers(app.user.prenom) : null %}
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', 'mailto:' ~ (options.bcc is defined ? options.bcc :'') ~ response['mail']['toString'] ~ (message ? options.compo.objetAlertPlayers ~ message : '')) }}
-                {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', 'sms:' ~ response['sms']['toString'] ~ (message ? ';?' ~ message : null)) }}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par mail', linkMail) }}
+
+                {% if not options.noSMS is defined %}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS) }}
+                {% endif %}
             </div>
         </div>
         <div class="modal-footer">
@@ -20,14 +22,14 @@
     </div>
 {% endmacro %}
 
-{% macro cardAlertPlayers(response, hideClass, media, link) %}
+{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link) %}
     <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
         {% if response['contactables']|length %}
             <a href="{{ link }}" class="center-align btn waves-effect blue lighten-2">
-                PAR {{ media }}
+                {{ btnTxt }}
             </a>
         {% else %}
-            <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable par {{ media }}</b></p>
+            <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable {{ media }}</b></p>
         {% endif %}
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}

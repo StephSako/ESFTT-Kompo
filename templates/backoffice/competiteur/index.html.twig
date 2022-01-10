@@ -43,7 +43,19 @@
 
             {% if joueursInvalidCertifMedic|length %}
                 <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span class="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
-                {{ _modalContact.modalAlertPlayers('certif_medic_invalides', contactsJoueursInvalidCertifMedic, "Alerter les joueurs dont le certificat médical n'est plus valable à la rentrée", {bcc: '?bcc=', info: 'Pour raison de confidentialité, les joueurs sont destinataires du mail en copie cachée'}) }}
+                {{ _modalContact.modalAlertPlayers(
+                    'certif_medic_invalides',
+                    contactsJoueursInvalidCertifMedic,
+                    'Alerter les joueurs dont le certificat médical n\'est plus valable à la rentrée',
+                    path('backoffice.alert.certif-medic-perim'),
+                    null,
+                    {
+                        noSMS: 1,
+                        linkPathMail: path('backoffice.alert.certif-medic-perim'),
+                        btnTxtMail: 'envoyer mail',
+                        info: 'Pour raison de confidentialité, les joueurs sont destinataires du mail en copie cachée. L\'alerte est envoyée au click sur le bouton \'ENVOYER MAIL\'.'
+                    })
+                }}
             {% endif %}
 
             {% if joueurs|length %}

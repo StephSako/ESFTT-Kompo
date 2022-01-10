@@ -106,6 +106,15 @@
                 </div>
             {% endif %}
 
+            {% if app.user.admin and countJoueursCertifMedicPerim %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                        Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer/alerter ici</a>
+                    </p>
+                </div>
+            {% endif %}
+
             <div class="hide-on-large-only center-align">
                 {{ _disponibilites.labelVirtualPoints('top') }}
             </div>
@@ -259,7 +268,15 @@
                                         <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                             <i class="material-icons">record_voice_over</i>
                                         </a>
-                                        {{ _modalContact.modalAlertPlayers(compo.id, compo.getListContactSelectedPlayers(app.user.idCompetiteur), 'Alerter les joueurs', {compo: compo}) }}
+                                        {{ _modalContact.modalAlertPlayers
+                                            (
+                                                compo.id,
+                                                compo.getListContactSelectedPlayers(app.user.idCompetiteur),
+                                                'Alerter les joueurs',
+                                                'mailto:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                'sms:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom)
+                                            )
+                                        }}
                                     {% endif %}
                                     <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
                                         <i class="material-icons">delete</i>

@@ -16,7 +16,7 @@
         </div>
 
         <div class="card-panel center-align hide-on-med-and-down" style="padding: 4px;">
-            <p><i class="material-icons blue-text">info</i><b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
+            <p><i class="material-icons blue-text">info</i> <b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
         </div>
 
         <div class="card-panel center-align">
@@ -34,13 +34,55 @@
                     <li><a class="white-text modal-trigger" href="#modal{{ 'administrateurs' }}">Administrateurs</a></li>
                 </ul>
 
-                {{ _modalContact.modalAlertPlayers('tous', joueurs['tous'], 'Contacter tout le monde') }}
-                {{ _modalContact.modalAlertPlayers('loisirs', joueurs['loisirs'], 'Contacter les loisirs') }}
-                {{ _modalContact.modalAlertPlayers('competiteurs', joueurs['competiteurs'], 'Contacter les competiteurs') }}
-                {{ _modalContact.modalAlertPlayers('crit_fed', joueurs['crit_fed'], 'Contacter les competiteurs du critérium fédéral') }}
-                {{ _modalContact.modalAlertPlayers('capitaines', joueurs['capitaines'], 'Contacter les capitaines') }}
-                {{ _modalContact.modalAlertPlayers('entraineurs', joueurs['entraineurs'], 'Contacter les entraineurs') }}
-                {{ _modalContact.modalAlertPlayers('administrateurs', joueurs['administrateurs'], 'Contacter les administrateurs') }}
+                {{ _modalContact.modalAlertPlayers(
+                    'tous',
+                    joueurs['tous'],
+                    'Contacter tout le monde',
+                    'mailto:' ~ joueurs['tous']['mail']['toString'],
+                    'sms:' ~ joueurs['tous']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'loisirs',
+                    joueurs['loisirs'],
+                    'Contacter les loisirs',
+                    'mailto:' ~ joueurs['loisirs']['mail']['toString'],
+                    'sms:' ~ joueurs['loisirs']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'competiteurs',
+                    joueurs['competiteurs'],
+                    'Contacter les competiteurs',
+                    'mailto:' ~ joueurs['competiteurs']['mail']['toString'],
+                    'sms:' ~ joueurs['competiteurs']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'crit_fed',
+                    joueurs['crit_fed'],
+                    'Contacter les competiteurs du critérium fédéral',
+                    'mailto:' ~ joueurs['crit_fed']['mail']['toString'],
+                    'sms:' ~ joueurs['crit_fed']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'capitaines',
+                    joueurs['capitaines'],
+                    'Contacter les capitaines',
+                    'mailto:' ~ joueurs['capitaines']['mail']['toString'],
+                    'sms:' ~ joueurs['capitaines']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'entraineurs',
+                    joueurs['entraineurs'],
+                    'Contacter les entraineurs',
+                    'mailto:' ~ joueurs['entraineurs']['mail']['toString'],
+                    'sms:' ~ joueurs['entraineurs']['sms']['toString'])
+                }}
+                {{ _modalContact.modalAlertPlayers(
+                    'administrateurs',
+                    joueurs['administrateurs'],
+                    'Contacter les administrateurs',
+                    'mailto:' ~ joueurs['administrateurs']['mail']['toString'],
+                    'sms:' ~ joueurs['administrateurs']['sms']['toString'])
+                }}
 
                 <table id="table-to-adapt-columns" class="striped centered responsive-table table_contact" style="font-size: 14px">
                     <thead>
