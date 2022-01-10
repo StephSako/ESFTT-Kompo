@@ -130,7 +130,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'dateNaissanceRequired' => false,
-            'createMode' => true
+            'createMode' => true,
+            'displayCode' => false
         ]);
         $form->handleRequest($request);
 
@@ -222,7 +223,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
             'dateNaissanceRequired' => $competiteur->getDateNaissance() != null,
-            'usernameEditable' => $usernameEditable
+            'usernameEditable' => $usernameEditable,
+            'displayCode' => $this->getUser()->isAdmin() && !$competiteur->isArchive()
         ]);
         $form->handleRequest($request);
 
@@ -271,7 +273,10 @@ class BackOfficeCompetiteurController extends AbstractController
             'isAdmin' => $competiteur->isAdmin(),
             'competiteurId' => $idCompetiteur,
             'usernameEditable' => $usernameEditable,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'cheating' => $competiteur->isCheating(),
+            'winner' => $competiteur->isWinner(),
+            'fullWinner' => $competiteur->isFullWinner()
         ]);
     }
 
@@ -524,12 +529,9 @@ class BackOfficeCompetiteurController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         }))['mail']['toString']));
 
-        dump($mails);
-
         $settings = $this->settingsRepository->find(1);
         try {
             $message = $settings->getInfosType('mail-certif-medic-perim');
-            dump($message);
         } catch (Exception $e) {
             throw $this->createNotFoundException($e->getMessage());
         }

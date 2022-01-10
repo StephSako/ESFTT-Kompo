@@ -30,7 +30,7 @@
                 <h5 style="margin-top: 0">Modifier le contenu des mails automatiques de ...</h5>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-mdp-oublie'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Mot de passe oublié</a>
-                <a href='{{ path('backoffice.mail.edit', {type: 'mail-certif-medic-perim'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Certif. médic. périm.</a>
+                <a href='{{ path('backoffice.mail.edit', {type: 'mail-certif-medic-perim'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_certif_medic_perim">Certif. médic. périm.</a>
             </div>
         {% endif %}
 
@@ -41,7 +41,7 @@
                 <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
             </a><br>
 
-            {% if joueursInvalidCertifMedic|length %}
+            {% if joueursInvalidCertifMedic|length and app.user.admin %}
                 <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span class="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
                 {{ _modalContact.modalAlertPlayers(
                     'certif_medic_invalides',
@@ -178,50 +178,48 @@
             {% endif %}
         </div>
 
-        {% if app.user.isAdmin %}
-            <div class='card-panel backoffice-panel center'>
-                <h5>Résultats jeu de Noël</h5>
+        <div class='card-panel backoffice-panel center'>
+            <h5>Résultats jeu de Noël</h5>
 
-                <table class="responsive-table striped">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Sans triche</th>
-                            <th>Codes corrects</th>
-                            <th>Code d'or</th>
-                        </tr>
-                    </thead>
+            <table class="responsive-table striped">
+                <thead>
+                    <tr>
+                        <th class="center">Nom</th>
+                        <th class="center">Sans triche</th>
+                        <th class="center">Codes corrects</th>
+                        <th class="center">Code d'or</th>
+                    </tr>
+                </thead>
 
-                    <tbody>
-                        {% for joueur in joueurs %}
-                            {% if joueur.competiteur %}
-                                <tr>
-                                    <td>
-                                        {% if joueur.winner %}<span class="material-icons red-text" style="vertical-align: bottom;">emoji_events</span>{% endif %}
-                                        {% if joueur.fullWinner %}<span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>{% endif %}
-                                        {{ joueur.nom }} {{ joueur.prenom }}
-                                    </td>
-                                    <td>
-                                        {% if not joueur.cheating %}
-                                            <i class="material-icons green-text">check</i>
-                                        {% else %}
-                                            <i class="material-icons red-text">clear</i>
-                                        {% endif %}
-                                    </td>
-                                    <td><b {% if joueur.winner %}class="green-text"{% endif %}>{{ joueur.ownCodes | length }}</b> / 13+1</td>
-                                    <td>
-                                        {% if joueur.code14Correct %}
-                                            <i class="material-icons green-text">check</i>
-                                        {% else %}
-                                            <i class="material-icons red-text">clear</i>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
+                <tbody>
+                    {% for joueur in joueurs %}
+                        {% if joueur.competiteur %}
+                            <tr>
+                                <td>
+                                    {% if joueur.winner %}<span class="material-icons red-text" style="vertical-align: bottom;">emoji_events</span>{% endif %}
+                                    {% if joueur.fullWinner %}<span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>{% endif %}
+                                    {{ joueur.nom }} {{ joueur.prenom }}
+                                </td>
+                                <td class="center">
+                                    {% if not joueur.cheating %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center"><b {% if joueur.winner %}class="green-text"{% endif %}>{{ joueur.ownCodes | length }}</b> / 13</td>
+                                <td class="center">
+                                    {% if joueur.code14Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

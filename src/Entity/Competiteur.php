@@ -589,110 +589,6 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return boolean
      */
-    public function getCode1Correct(): bool
-    {
-        return in_array($this->code1, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode2Correct(): bool
-    {
-        return in_array($this->code2, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode3Correct(): bool
-    {
-        return in_array($this->code3, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode4Correct(): bool
-    {
-        return in_array($this->code4, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode5Correct(): bool
-    {
-        return in_array($this->code5, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode6Correct(): bool
-    {
-        return in_array($this->code6, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode7Correct(): bool
-    {
-        return in_array($this->code7, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode8Correct(): bool
-    {
-        return in_array($this->code8, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode9Correct(): bool
-    {
-        return in_array($this->code9, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode10Correct(): bool
-    {
-        return in_array($this->code10, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode11Correct(): bool
-    {
-        return in_array($this->code11, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode12Correct(): bool
-    {
-        return in_array($this->code12, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCode13Correct(): bool
-    {
-        return in_array($this->code13, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
     public function getCode14Correct(): bool
     {
         return $this->code14 == self::GOLDEN_CODE;
@@ -948,6 +844,18 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->code14 = $code14;
         return $this;
+    }
+
+    /**
+     * Renvoie l'icon à afficher selon la validité du code passé en paramètre
+     * @param string $code
+     * @param bool $cheating
+     * @param int $i
+     * @return string
+     */
+    public function codeValidation(string $code, bool $cheating, int $i): string {
+        if ($i == count(self::SECRET_CODES)+1) return $code == self::GOLDEN_CODE ? '<i class="material-icons green-text">check</i>' : '<i class="material-icons red-text">clear</i>';
+        return !$cheating && in_array($code, self::SECRET_CODES) ? '<i class="material-icons green-text">check</i>' : '<i class="material-icons red-text">clear</i>';
     }
 
     /**
