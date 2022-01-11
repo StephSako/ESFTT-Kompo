@@ -334,13 +334,19 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                     }
 
-                    /** On supprime les journées en surplus */
+                    /** On supprime, ajoute et corrige les journées en surplus */
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["surplus"] = count($journeesKompo) > count($journeesFFTT) ? array_slice($journeesKompo, count($journeesFFTT), count($journeesKompo) - count($journeesFFTT)) : [];
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
+                    /** On détermine si la phase peux être mise à jour */
+                    if (!count($datesIssued)) $isLaunchable = true;
+                    else if (!count($championnatActif->getJournees()->toArray())) $isLaunchable = false;
+                    else $isLaunchable = $this->isPhaseLaunchable($championnatActif->getJournees()->toArray()[0]->getDateJournee(), $datesIssued[0]['dateFFTT']);
+                    $allChampionnatsReset[$championnatActif->getNom()]["launchable"] = $isLaunchable;
+
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -362,6 +368,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Le club n'est pas affilié à ce championnat";
                 }
             }
+
             /** Si un des deux boutons de mise à jour est cliqué */
             /** Mise à jour des compétiteurs */
             if ($request->request->get('resetPlayers')) {
@@ -378,7 +385,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     $this->em->flush();
 
                     /** On retrie les compositions d'équipes */
-                    //TODO que les journées qui ne sont pas encore jouées
                     foreach (array_filter($allChampionnats, function($champ) {
                         return $champ->isCompoSorted();
                     }) as $championnatToSort){
@@ -568,6 +574,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $errorMajRencontresEquipes = true;
         }
 
+        dump($allChampionnatsReset);
         return $this->render('backoffice/reset.html.twig', [
             'allChampionnatsReset' => $allChampionnatsReset,
             'joueursIssued' => $joueursIssued,
@@ -581,11 +588,33 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param Championnat $championnat
      * @return array
      */
-    function isLaunchable(Championnat $championnat): array {
+    function isPreRentreeLaunchable(Championnat $championnat): array {
         $latestDate = $this->getLastDates($championnat);
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
         else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-rentrée prête à être lancée'];
         else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-rentrée'];
+    }
+
+    /**
+     * Détermine si les dates reçues de l'API sont celles de la phase à venir/actuelle pour lancer la phase
+     * @param DateTime $firstDateKompo
+     * @param DateTime $firstDateAPI
+     * @return bool
+     */
+    function isPhaseLaunchable(DateTime $firstDateKompo, DateTime $firstDateAPI): bool {
+        //TODO Prendre en compte la particularité du champ. de Paris : prendre les dernières dates par défaut
+        $monthFirstDateAPI = $firstDateAPI->format('n');
+        $yearFirstDateAPI = $firstDateAPI->format('Y');
+
+        $monthFirstDateKompo = $firstDateKompo->format('n');
+        $yearFirstDateKompo = $firstDateKompo->format('Y');
+
+        if (((1 <= $monthFirstDateKompo && $monthFirstDateKompo <= 6 && 1 <= $monthFirstDateAPI && $monthFirstDateAPI <= 6) ||
+            (7 <= $monthFirstDateKompo && $monthFirstDateKompo <= 12 && 7 <= $monthFirstDateAPI && $monthFirstDateAPI <= 12)) &&
+            $yearFirstDateKompo == $yearFirstDateAPI
+        ) return true;
+
+        return false;
     }
 
     /**
