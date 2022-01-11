@@ -193,6 +193,7 @@ i.iconPlace {
 
 #collapsible-sidenav {
   padding: 0 !important;
+  border-radius: 5px;
 }
 
 .nav-extended {
@@ -298,7 +299,7 @@ i {
 #slide-out .collapsible .li_in_line {
   background-color: #012242;
 }
-#slide-out .collapsible .li_in_line:hover {
+#slide-out .collapsible .li_in_line a:hover {
   background-color: #1565c0;
 }
 
@@ -441,6 +442,9 @@ p.lobster {
 
 .first_sidenav {
   margin-top: 5px;
+}
+.first_sidenav .collapsible-header {
+  border-radius: 5px;
 }
 
 .titre_edit_journée {
