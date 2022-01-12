@@ -88,7 +88,6 @@ class BackOfficeCompetiteurController extends AbstractController
         $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
            return $joueur->isAdmin();
         })) == 1;
-        //TODO Envoyer un mail directement pour les certificats medicaux perimés avec route et message du bouton dynamiques + message dynamique dans account
         $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'] && !$joueur->isArchive();
         });
