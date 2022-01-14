@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\BackOffice\BackOfficeFFTTApiController;
 use App\Entity\Championnat;
 use App\Form\RencontreType;
 use App\Form\SettingsType;
@@ -30,6 +31,7 @@ class HomeController extends AbstractController
     private $rencontreRepository;
     private $invalidSelectionController;
     private $settingsRepository;
+    private $backOfficeFFTTApiController;
 
     /**
      * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
@@ -45,6 +47,7 @@ class HomeController extends AbstractController
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      * @param InvalidSelectionController $invalidSelectionController
+     * @param BackOfficeFFTTApiController $backOfficeFFTTApiController
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
@@ -53,6 +56,7 @@ class HomeController extends AbstractController
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository,
                                 InvalidSelectionController $invalidSelectionController,
+                                BackOfficeFFTTApiController $backOfficeFFTTApiController,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -62,6 +66,7 @@ class HomeController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->invalidSelectionController = $invalidSelectionController;
         $this->settingsRepository = $settingsRepository;
+        $this->backOfficeFFTTApiController = $backOfficeFFTTApiController;
     }
 
     /**
@@ -225,6 +230,7 @@ class HomeController extends AbstractController
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
+            'isPreRentreeLaunchable' => $this->backOfficeFFTTApiController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim
         ]);
