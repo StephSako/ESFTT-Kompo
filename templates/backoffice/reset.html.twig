@@ -265,7 +265,7 @@
 
                             <h3 style="margin-top: 10px;">La phase</h3>
 
-                            {% if data.launchable %}
+                            {% if not data.launchable or data.launchable %}
                                 <div class="center">
                                     <h4>Les journées</h4>
                                     {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;">Toutes les journées sont à jour</p>{% endif %}
@@ -388,7 +388,11 @@
                                                             {% endif %}
                                                         </td>
                                                         <td>
-                                                            {{ equipe.idPoule.poule }}
+                                                            {% if equipe.idPoule %}
+                                                                {{ equipe.idPoule.poule }}
+                                                            {% else %}
+                                                                <span class="red-text lighten-2">Poule indéfinie</span>
+                                                            {% endif %}
                                                         </td>
                                                         <td><i class='material-icons black-text'>leak_add</i></td>
                                                     </tr>

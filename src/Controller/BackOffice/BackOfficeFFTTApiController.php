@@ -124,10 +124,12 @@ class BackOfficeFFTTApiController extends AbstractController
                 $journeesKompo = $championnatActif->getJournees()->toArray();
 
                 /** Gestion des équipes */
+                $isPreRentreeLaunchable = $this->isPreRentreeLaunchable($championnatActif);
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
-                $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
+                $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif, $isPreRentreeLaunchable) {
                     $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[self::ORGANISME_PERE_NUMBER])[self::ORGANISME_PERE_LABEL];
-                    return $organisme_pere == $championnatActif->getLienFfttApi();
+                    $lib = explode(' ', $eq->getLibelle());
+                    return $organisme_pere == $championnatActif->getLienFfttApi() && array_pop($lib) == $this->getDatePhase(new DateTime());
                 }));
 
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
@@ -569,7 +571,6 @@ class BackOfficeFFTTApiController extends AbstractController
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch (Exception $exception) {
-            dump($exception);
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }
@@ -595,25 +596,24 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
+     * Détermine la phase d'une date passée en paramètre
+     * @param DateTime $date
+     * @return string
+     */
+    function getDatePhase(DateTime $date): string {
+        $monthDate = $date->format('n');
+        if (1 <= $monthDate && $monthDate <= 6) return "2";
+        return "1";
+    }
+
+    /**
      * Détermine si les dates passées en paramètre sont de même phase (ex: départemental) / saison (ex: Paris)
      * @param DateTime $dateKompo
      * @param DateTime $dateAPI
      * @return bool
      */
     function isDatesSamePhaseOuSaison(DateTime $dateKompo, DateTime $dateAPI): bool {
-        //TODO Prendre en compte la particularité du champ. de Paris : prendre les dernières dates par défaut
-        $monthFirstDateAPI = $dateAPI->format('n');
-        $yearFirstDateAPI = $dateAPI->format('Y');
-
-        $monthFirstDateKompo = $dateKompo->format('n');
-        $yearFirstDateKompo = $dateKompo->format('Y');
-
-        if (((1 <= $monthFirstDateKompo && $monthFirstDateKompo <= 6 && 1 <= $monthFirstDateAPI && $monthFirstDateAPI <= 6) ||
-            (7 <= $monthFirstDateKompo && $monthFirstDateKompo <= 12 && 7 <= $monthFirstDateAPI && $monthFirstDateAPI <= 12)) &&
-            $yearFirstDateKompo == $yearFirstDateAPI
-        ) return true;
-
-        return false;
+        return $this->getDatePhase($dateAPI) == $this->getDatePhase($dateKompo) && $dateAPI->format('Y') == $dateKompo->format('Y');
     }
 
     /**
@@ -623,7 +623,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @return bool
      */
     function isPhaseUpdatable($datesAPI, $datesKompo): bool {
-        return $this->isDatesSamePhaseOuSaison(array_pop($datesKompo)->getDateJournee(), array_pop($datesAPI)["dateFFTT"]) && $this->isDatesSamePhaseOuSaison(array_shift($datesKompo)->getDateJournee(), array_shift($datesAPI)["dateFFTT"]);
+        return $this->isDatesSamePhaseOuSaison($datesKompo[count($datesKompo)-1]->getDateJournee(), $datesAPI[count($datesAPI)-1]["dateFFTT"]) && $this->isDatesSamePhaseOuSaison($datesKompo[0]->getDateJournee(), $datesAPI[0]["dateFFTT"]);
     }
 
     /**
