@@ -25,7 +25,7 @@
                 <a style="margin-bottom: 10px" class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
 
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'tous' }}">Tous <span class="pastille reset christmas_code">WXC09</span></a></li>
+                    <li><a class="white-text modal-trigger" href="#modal{{ 'tous' }}">Tous</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'loisirs' }}">Loisirs</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'competiteurs' }}">Compétiteurs</a></li>
                     <li><a class="white-text modal-trigger" href="#modal{{ 'crit_fed' }}">Critérium fédéral</a></li>
@@ -126,9 +126,6 @@
                                         <img class="picture_compet avatar" src="{{ competiteur.avatar ? vich_uploader_asset(competiteur, 'imageFile') : asset('images/account.png') }}" alt="Avatar" width="55px" height="55px">
                                     </td>
                                     <td style="padding-top: 10px; padding-bottom: 10px;">
-                                        {% if competiteur.idCompetiteur == 8 %}
-                                            <span class="pastille reset christmas_code hide-on-med-and-up">Q8NCJ</span>
-                                        {% endif %}
                                         {{ competiteur.nom }} {{ competiteur.prenom }}
                                     </td>
                                     <td>
