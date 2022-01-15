@@ -119,6 +119,13 @@ class Championnat
     private $compoSorted;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", name="periodicite", nullable=false)
+     */
+    private $periodicite;
+
+    /**
      * @var Rencontre[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
@@ -374,6 +381,24 @@ class Championnat
     public function setCompoSorted(bool $compoSorted): self
     {
         $this->compoSorted = $compoSorted;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPeriodicite(): bool
+    {
+        return $this->periodicite;
+    }
+
+    /**
+     * @param bool $periodicite
+     * @return Championnat
+     */
+    public function setPeriodicite(bool $periodicite): self
+    {
+        $this->periodicite = $periodicite;
         return $this;
     }
 }

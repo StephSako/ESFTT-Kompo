@@ -127,7 +127,8 @@ class BackOfficeFFTTApiController extends AbstractController
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
                 $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
                     $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[self::ORGANISME_PERE_NUMBER])[self::ORGANISME_PERE_LABEL];
-                    return $organisme_pere == $championnatActif->getLienFfttApi();
+                    $lib = explode(' ', $eq->getLibelle());
+                    return $organisme_pere == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || array_pop($lib) == $this->getDatePhase(new DateTime()));
                 }));
 
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
@@ -334,13 +335,13 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                     }
 
-                    /** On supprime les journées en surplus */
+                    /** On supprime, ajoute et corrige les journées en surplus */
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["surplus"] = count($journeesKompo) > count($journeesFFTT) ? array_slice($journeesKompo, count($journeesFFTT), count($journeesKompo) - count($journeesFFTT)) : [];
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -359,9 +360,10 @@ class BackOfficeFFTTApiController extends AbstractController
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["countDispos"] = count($championnatActif->getDispos()->toArray());
                 } else {
-                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Le club n'est pas affilié à ce championnat";
+                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Les équipes ne sont pas encore connues pour ce championnat";
                 }
             }
+
             /** Si un des deux boutons de mise à jour est cliqué */
             /** Mise à jour des compétiteurs */
             if ($request->request->get('resetPlayers')) {
@@ -378,7 +380,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     $this->em->flush();
 
                     /** On retrie les compositions d'équipes */
-                    //TODO que les journées qui ne sont pas encore jouées
                     foreach (array_filter($allChampionnats, function($champ) {
                         return $champ->isCompoSorted();
                     }) as $championnatToSort){
@@ -581,11 +582,22 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param Championnat $championnat
      * @return array
      */
-    function isLaunchable(Championnat $championnat): array {
+    function isPreRentreeLaunchable(Championnat $championnat): array {
         $latestDate = $this->getLastDates($championnat);
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
         else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-rentrée prête à être lancée'];
         else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-rentrée'];
+    }
+
+    /**
+     * Détermine la phase d'une date passée en paramètre
+     * @param DateTime $date
+     * @return string
+     */
+    function getDatePhase(DateTime $date): string {
+        $monthDate = $date->format('n');
+        if (1 <= $monthDate && $monthDate <= 6) return "2";
+        return "1";
     }
 
     /**

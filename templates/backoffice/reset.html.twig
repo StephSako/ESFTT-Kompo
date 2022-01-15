@@ -262,7 +262,6 @@
                         </div>
 
                         <div class='backoffice-panel center card-panel'>
-
                             <h3 style="margin-top: 10px;">La phase</h3>
 
                             <div class="center">
@@ -387,7 +386,11 @@
                                                         {% endif %}
                                                     </td>
                                                     <td>
-                                                        {{ equipe.idPoule.poule }}
+                                                        {% if equipe.idPoule %}
+                                                            {{ equipe.idPoule.poule }}
+                                                        {% else %}
+                                                            <span class="red-text lighten-2">Poule indéfinie</span>
+                                                        {% endif %}
                                                     </td>
                                                     <td><i class='material-icons black-text'>leak_add</i></td>
                                                 </tr>
@@ -500,9 +503,10 @@
                                 {% endif %}
                             </div>
                         </div>
+
                     {% else %}
                         <div class='backoffice-panel center card-panel'>
-                            <p class="pastille red center reset" style="margin-top: 10px; margin-bottom: 10px;">{{ data.messageChampionnat }}</p>
+                            <p class="pastille orange center reset" style="margin-top: 10px; margin-bottom: 10px;">{{ data.messageChampionnat }}</p>
                         </div>
                     {% endif %}
                 </div>

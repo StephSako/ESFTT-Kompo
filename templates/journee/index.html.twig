@@ -106,26 +106,37 @@
                 </div>
             {% endif %}
 
-            {% if app.user.admin and countJoueursCertifMedicPerim %}
-                <div class="card-panel center setDispoCard">
-                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
-                        Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
-                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer/alerter ici</a>
-                    </p>
-                </div>
+            {% if app.user.admin %}
+                {% if countJoueursCertifMedicPerim %}
+                    <div class="card-panel center setDispoCard">
+                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                            Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer/alerter ici</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if isPreRentreeLaunchable %}
+                    <div class="card-panel center setDispoCard">
+                        <p class="green-text lighten-2"><i class="material-icons">done</i>
+                            La phase est terminée : lancez la pré-rentrée pour préparer la prochaine phase
+                            <br><a href="{{ path('backoffice.reset.phase') }}">Lancer la pré-rentrée ici</a>
+                        </p>
+                    </div>
+                {% endif %}
             {% endif %}
 
             <div class="hide-on-large-only center-align">
                 {{ _disponibilites.labelVirtualPoints('top') }}
             </div>
 
+            <div class="hide-on-large-only center-align">
+                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
+            </div>
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
-                    <h5 class="white-text"><i class="material-icons">check_circle</i> Compositions complètes</h5>
-                </div>
-            {% else %}
-                <div class="hide-on-large-only center-align">
-                    {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
+                    <h5 class="white-text"><i class="material-icons">check_circle</i>
+                        Compositions complètes</h5>
                 </div>
             {% endif %}
 
