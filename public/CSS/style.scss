@@ -422,6 +422,10 @@ p.lobster {
     margin-top: 6px;
     margin-bottom: 6px;
 
+    & button.btn {
+      margin-top: 0;
+    }
+
     .collapsible-header {
       padding-top: 6px;
       padding-bottom: 6px;
@@ -1205,6 +1209,16 @@ table.table-last-compos {
 
   .responsive-phone-num {
     margin-top: 0;
+  }
+
+  .backoffice_disponibilites {
+    & table td {
+      padding: 5px;
+    }
+
+    & .row {
+      width: min-content;
+    }
   }
 }
 

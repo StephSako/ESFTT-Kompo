@@ -99,7 +99,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             'idJournee' => $journee->getIdJournee(),
             'idCompetiteur' => $idCompetiteur,
             'idDisponibilite' => $idDisponibilite,
-            'disponibiliteBoolean' => $disponibiliteBoolean,
+            'disponibiliteBoolean' => $disponibiliteBoolean
         ])->getContent());
     }
 
@@ -149,7 +149,54 @@ class BackOfficeDisponibiliteController extends AbstractController
             'idJournee' => $idJournee,
             'idDisponibilite' => $idDisponibilite,
             'idCompetiteur' => $idCompetiteur,
-            'disponibiliteBoolean' => $disponibiliteBoolean,
+            'disponibiliteBoolean' => $disponibiliteBoolean
+        ])->getContent());
+    }
+
+    /**
+     * @Route("/backoffice/disponibilites/delete", name="backoffice.disponibilite.delete", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function delete(Request $request):Response
+    {
+        /** On récupère les paramètres */
+        $idDisponibilite = $request->request->get('idDisponibilite');
+        $idCompetiteur = $request->request->get('idCompetiteur');
+        $idJournee = $request->request->get('idJournee');
+        /** Message d'erreur */
+        $message = null;
+
+        try {
+            if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Membre inexistant', 1234);
+            if (!($dispoJoueur = $this->disponibiliteRepository->find($idDisponibilite))) throw new Exception('Disponibilité inexistante', 1234);
+
+            /** On supprime le joueur des compositions d'équipe de la journée actuelle */
+            $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
+            $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
+            $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+
+            foreach ($invalidCompos as $compo){
+                /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
+                $compo['compo']->sortComposition();
+            }
+
+            $this->em->remove($dispoJoueur); // TODO Optimizer dans une seule fonction
+
+            $this->em->flush();
+        } catch (Exception $e) {
+            $response = new Response(json_encode($e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite"), 400);
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        }
+
+        return new JsonResponse($this->render('ajax/backoffice/disponibilite.html.twig', [
+            'message' => $message,
+            'idJournee' => $idJournee,
+            'idDisponibilite' => $idDisponibilite,
+            'idCompetiteur' => $idCompetiteur,
+            'disponibiliteBoolean' => null
         ])->getContent());
     }
 }

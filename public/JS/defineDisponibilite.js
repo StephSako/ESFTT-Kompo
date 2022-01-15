@@ -35,6 +35,30 @@ function updateDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
     }
 }
 
+function deleteDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolean, idJournee) {
+    let r;
+    if (disponibiliteBoolean === 1) r = confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?');
+    if ((disponibiliteBoolean === 1 && r) || disponibiliteBoolean === 0) {
+        sending(idJournee + idCompetiteur);
+        $.ajax({
+            url: '/backoffice/disponibilites/delete',
+            type: 'POST',
+            data: {
+                idDisponibilite: idDisponibilite,
+                idCompetiteur: idCompetiteur,
+                idJournee: idJournee
+            },
+            dataType: 'json',
+            success: function (response) {
+                endSending(response, idJournee + idCompetiteur, true);
+            },
+            error: function (error) {
+                endSending(error, idJournee + idCompetiteur, false);
+            }
+        });
+    }
+}
+
 function sending(divSuffixe){
     $('#preloader' + divSuffixe).show();
     $('#dispoJoueur' + divSuffixe).hide();
