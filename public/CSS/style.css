@@ -1065,7 +1065,7 @@ table.table-last-compos tr {
     margin-top: 0;
   }
 
-  .backoffice_disponibilites table td {
+  .backoffice_disponibilites table.table-backoffice-disponibilites tbody td {
     padding: 5px;
   }
   .backoffice_disponibilites .row {
