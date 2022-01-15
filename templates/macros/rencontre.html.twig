@@ -7,6 +7,7 @@
                         <div class="chip" style="padding: 0 !important;">
                             <i class="material-icons" style="vertical-align: middle;">people</i>
                             {{ club_name | title }} {{ numero }}
+
                             {% if (rencontres[numero]|first)['idDivision'] is null %}
                                 <span class="center red-text noDivisionPill noDivisionPillHeader">
                                     <b>Sans division</b>
@@ -25,69 +26,69 @@
 
                         <table class="striped centered responsive-table">
                             <thead>
-                            <tr>
-                                <th>Journée</th>
-                                <th>Date</th>
-                                <th>Adversaire</th>
-                                <th>Lieu</th>
-                                <th>Salle hôte dispo</th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th>Journée</th>
+                                    <th>Date</th>
+                                    <th>Adversaire</th>
+                                    <th>Lieu</th>
+                                    <th>Salle hôte dispo</th>
+                                    <th></th>
+                                </tr>
                             </thead>
 
                             <tbody>
-                            {% for rencontre in matches %}
-                                <tr>
-                                    <td>
-                                        <b>{{ loop.index }}</b>
-                                    </td>
-                                    <td>
-                                        {% if rencontre.undefined %}
-                                            <i class="material-icons red-text">event_busy</i>
-                                        {% else %}
-                                            <div class="hide-on-small-only">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
-                                                {% endif %}
-                                            </div>
-                                            <div class="hide-on-med-and-up">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | date("d/m/Y") }}</span>
-                                                {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Exemptée</span>
-                                        {% else %}
-                                            {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
-                                            {% else %} <span class="red-text">Adversaire indéfini</span>
-                                            {% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td style="height: 59px;">
-                                        {% if not rencontre.exempt %}
-                                            {% if rencontre.domicile is null %}
-                                                <i class='material-icons red-text'>location_off</i>
+                                {% for rencontre in matches %}
+                                    <tr>
+                                        <td>
+                                            <b>{{ loop.index }}</b>
+                                        </td>
+                                        <td>
+                                            {% if rencontre.undefined %}
+                                                <i class="material-icons red-text">event_busy</i>
                                             {% else %}
-                                                {% if rencontre.domicile %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">home</i>
-                                                {% else %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">directions_car</i>
+                                                <div class="hide-on-small-only">
+                                                    {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                    {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="hide-on-med-and-up">
+                                                    {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | date("d/m/Y") }}</span>
+                                                    {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if rencontre.exempt %} <span style="margin-top: 0;" class="new badge red white-text" data-badge-caption=>Exemptée</span>
+                                            {% else %}
+                                                {% if rencontre.adversaire %} {{ rencontre.adversaire | title }}
+                                                {% else %} <span class="red-text">Adversaire indéfini</span>
                                                 {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td style="height: 59px; padding-top: 8px;">
-                                        {% if not rencontre.exempt %}
-                                            {% if not rencontre.villeHost %} <i class="green-text material-icons">check</i>
-                                            {% else %} <span class="red-text"><i class="material-icons">clear</i>(à {{ rencontre.villeHost }})</span>
+                                        </td>
+                                        <td style="height: 59px;">
+                                            {% if not rencontre.exempt %}
+                                                {% if rencontre.domicile is null %}
+                                                    <i class='material-icons red-text'>location_off</i>
+                                                {% else %}
+                                                    {% if rencontre.domicile %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">home</i>
+                                                    {% else %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">directions_car</i>
+                                                    {% endif %}
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id}) }}" class="btn waves-effect blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                        </td>
+                                        <td style="height: 59px; padding-top: 8px;">
+                                            {% if not rencontre.exempt %}
+                                                {% if not rencontre.villeHost %} <i class="green-text material-icons">check</i>
+                                                {% else %} <span class="red-text"><i class="material-icons">clear</i>(à {{ rencontre.villeHost }})</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('backoffice.rencontre.edit', {idRencontre: rencontre.id}) }}" class="btn waves-effect blue lighten-2 btn_gestion"><i class="material-icons">edit</i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
