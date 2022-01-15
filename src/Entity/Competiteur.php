@@ -1352,7 +1352,7 @@ class Competiteur implements UserInterface, Serializable
      * @return string[]
      */
     public function isCertifMedicalInvalid(): array {
-        if (((new DateTime())->format('n') >= 7 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-3) && (($this->getAge() == null || $this->getAge() >= 18) &&
+        if (((new DateTime())->format('n') >= 6 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-3) && (($this->getAge() == null || $this->getAge() >= 18) &&
             ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
             return [
                 'status' => true,
