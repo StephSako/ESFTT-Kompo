@@ -34,6 +34,7 @@
                         <th>Nom</th>
                         <th class='hide-on-med-and-down'>Nombre de journées</th>
                         <th class='hide-on-large-only'>Nb journées</th>
+                        <th>Périodicité</th>
                         <th>Limite brûlage</th>
                         <th>Règle brûlage J2</th>
                         <th>Tri auto.</th>
@@ -50,6 +51,7 @@
                                 <b>{{ championnat.nom }}</b>
                             </td>
                             <td>{{ championnat.nbJournees }}</td>
+                            <td>{{ championnat.periodicite ? 'Phase' : 'Saison' }}</td>
                             <td>{{ championnat.limiteBrulage }}</td>
                             <td>
                                 <i class='material-icons'>{% if championnat.j2Rule %}check{% else %}clear{% endif %}</i>

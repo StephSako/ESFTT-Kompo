@@ -53,6 +53,11 @@ class ChampionnatType extends AbstractType
             ->add('compoSorted', CheckboxType::class,[
                 'label' => ' ',
                 'required' => false
+            ])
+            ->add('periodicite', ChoiceType::class,[
+                'label' => ' ',
+                'choices' => Championnat::PERIODICITE,
+                'required' => true
             ]);
     }
 
