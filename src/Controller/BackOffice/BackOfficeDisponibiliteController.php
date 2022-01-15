@@ -182,7 +182,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                 $compo['compo']->sortComposition();
             }
 
-            $this->em->remove($dispoJoueur); // TODO Optimizer dans une seule fonction
+            $this->em->remove($dispoJoueur);
 
             $this->em->flush();
         } catch (Exception $e) {
