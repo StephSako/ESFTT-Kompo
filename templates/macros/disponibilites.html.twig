@@ -239,6 +239,9 @@
                                                                 <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 1, '{{ dispos.idJournee }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                             {% endif %}
                                                         {% endif %}
+                                                        {% if dispos.latestDate >= date() %}
+                                                            <button onclick="deleteDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', {{ dispos.disponibilite }}, '{{ dispos.idJournee }}')" class="btn waves-effect red lighten-1 btn_gestion"><i class="material-icons">close</i></button>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                                 <div id="preloader{{ dispos.idJournee ~ dispos.idCompetiteur }}" style="display: none; align-items: center; justify-content: center;">

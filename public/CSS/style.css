@@ -371,6 +371,9 @@ p.lobster {
   margin-top: 6px;
   margin-bottom: 6px;
 }
+.collapsible.backoffice_disponibilites button.btn {
+  margin-top: 0;
+}
 .collapsible.backoffice_disponibilites .collapsible-header {
   padding-top: 6px;
   padding-bottom: 6px;
@@ -1060,6 +1063,13 @@ table.table-last-compos tr {
 
   .responsive-phone-num {
     margin-top: 0;
+  }
+
+  .backoffice_disponibilites table td {
+    padding: 5px;
+  }
+  .backoffice_disponibilites .row {
+    width: min-content;
   }
 }
 @media screen and (max-width: 720px) {
