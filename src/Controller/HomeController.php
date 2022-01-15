@@ -508,7 +508,7 @@ class HomeController extends AbstractController
                 $journee = [];
                 $domicile = mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire;
 
-                /** On récupère le numéro du club adversaire .... de notre adversaire */
+                /** On récupère le numéro du club adversaire ... de notre adversaire */
                 $nomAdversaireBis = $domicile ? mb_convert_case($rencontrePoule->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") : mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8");
                 $numeroClubAdversaireBis = array_filter($equipesPoules, function($equ) use ($nomAdversaireBis) {
                     return $equ->getNomEquipe() == $nomAdversaireBis;
@@ -520,6 +520,18 @@ class HomeController extends AbstractController
                 $joueursAdversaire = $domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
                 $joueursAdversaireBis = !$domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
                 $joueursAdversaireFormatted = [];
+
+                /** Résultat de la rencontre */
+                $resultat = ['score' => $detailsRencontre->getScoreEquipeA() . ' - ' . $detailsRencontre->getScoreEquipeB()];
+                if ($domicile) {
+                    if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
+                    else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
+                    else $resultat['resultat'] = 'white';
+                } else {
+                    if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
+                    else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
+                    else $resultat['resultat'] = 'white';
+                }
 
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
                 $errorMatchSheet = count($detailsRencontre->getParties()) && count(array_filter($joueursAdversaire, function($joueur) {
@@ -559,6 +571,7 @@ class HomeController extends AbstractController
                 }
 
                 $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
+                $journee['resultat'] = $resultat;
                 $journee['joueurs'] = $joueursAdversaireFormatted;
                 $journee['errorMatchSheet'] = $errorMatchSheet;
                 $journees[] = $journee;
@@ -698,7 +711,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * Renvoie un template du classement de la poule cliquée
+     * Renvoie un template du classement de la poule de l'équipe cliquée
      * @Route("/journee/classement-poule", name="index.classementPoule", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
