@@ -97,7 +97,6 @@ Vous pouvez modifier vos disponibilités n'importe quand.
 
 <h3 id="le_brulage">Le brûlage</h3>
 
-<span class="pastille reset christmas_code">WND8M</span><br>
 Sur la gauche est détaillé le brûlage et prévisions de brûlages pour chaque joueur.
 
 <p align="center"><img width="35%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/tableau_brulage.PNG" alt="tableau_brulage"><br><i><legend>Exemple de brûlages à la J3</legend></i></p>

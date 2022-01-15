@@ -28,10 +28,6 @@
 
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
-
-            {% if type == 'general' %}
-                <span class="pastille reset christmas_code golden">VB34H</span>
-            {% endif %}
         {% endfor %}
 
         {% if type == 'general' %}

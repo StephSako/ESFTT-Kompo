@@ -26,9 +26,6 @@
                     {% for nom, brulage in brulages %}
                         <tr>
                             <td>
-                                {% if loop.index == 11 %}
-                                    <span class="pastille reset christmas_code hide-on-med-and-up">1SD6F</span>
-                                {% endif %}
                                 {{ nom }}
                             </td>
                             {% for brulageJournee in brulage['brulage'] %}
