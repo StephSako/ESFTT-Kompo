@@ -6,3 +6,52 @@
 {% else %}
     <p class="red-text text-lighten-1 error"><b>{{ erreur }}</b></p>
 {% endif %}
+
+<div class="row">
+    <div class="col m6">
+        <canvas id="historique" width="35vw" height="35vw" style="display: inline-block"></canvas>
+    </div>
+    <div class="col m6">
+        <canvas id="historique" width="35vw" height="35vw"></canvas>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        const annees = JSON.parse('{{ annees | json_encode | raw }}');
+        const points = JSON.parse('{{ points | json_encode | raw }}');
+        console.log(Math.random())
+        console.log('{{ test }}')
+        const ctx = document.getElementById('historique').getContext('2d');
+        const options = {
+            type: 'line',
+            data: {
+                labels: annees,
+                datasets: [{
+                    data: points,
+                    fill: false,
+                    borderColor: '#2196f3',
+                    tension: 0.3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales:{
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                }
+            },
+        };
+        const myChart = new Chart(ctx, options);
+    });
+</script>

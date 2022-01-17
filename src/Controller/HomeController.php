@@ -211,6 +211,11 @@ class HomeController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         }));
 
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -5);
+        dump(array_map(function($histo) {
+            return $histo->getPoints();
+        }, $historique));
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -681,13 +686,17 @@ class HomeController extends AbstractController
     /**
      * Renvoie un template des points virtuels mensuels de l'utilisateur actif
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
+     * @param Request $request
      * @return JsonResponse
      */
-    function getPersonnalClassementVirtuelsClub(): JsonResponse {
+    function getPersonnalClassementVirtuelsClub(Request $request): JsonResponse {
+        $test = $request->request->get('position');
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $erreur = null;
         $virtualPoints = null;
         $virtualPointsProgression = null;
+        $points = null;
+        $annees = null;
 
         try{
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
@@ -697,6 +706,13 @@ class HomeController extends AbstractController
                     $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
                     $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                     $virtualPoints = $virtualPoints->getVirtualPoints();
+                    $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -10);
+                    $points = array_map(function($histo) {
+                        return $histo->getPoints();
+                    }, $historique);
+                    $annees = array_map(function($histo) {
+                        return $histo->getAnneeFin();
+                    }, $historique);
                 } catch (Exception $e) {}
             }
         } catch(Exception $exception) {
@@ -707,6 +723,9 @@ class HomeController extends AbstractController
             'virtualPoints' => $virtualPoints,
             'virtualPointsProgression' => $virtualPointsProgression,
             'erreur' => $erreur,
+            'points' => $points,
+            'annees' => $annees,
+            'test' => $test
         ])->getContent());
     }
 

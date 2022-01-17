@@ -18,6 +18,9 @@ function getPersonnalClassementVirtuel() {
         url : '/journee/personnal-classement-virtuel',
         type : 'POST',
         dataType : 'json',
+        data: {
+            position: 'bonjour'
+        },
         success : function(responseTemplate) { templating('.preloader_personnal_virtual_rank', responseTemplate); },
         error : function() { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
     });
