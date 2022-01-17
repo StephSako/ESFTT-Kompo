@@ -41,6 +41,7 @@ class BackOfficeFFTTApiController extends AbstractController
     const DIVISION_PARTIE_UN = 0;
     const DIVISION_PARTIE_DEUX = 1;
     const POULE = 1;
+    const NUMERO_EQUIPE = 2;
 
     /**
      * ContactController constructor.
@@ -130,6 +131,10 @@ class BackOfficeFFTTApiController extends AbstractController
                     $lib = explode(' ', $eq->getLibelle());
                     return $organisme_pere == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || array_pop($lib) == $this->getDatePhase(new DateTime()));
                 }));
+                /** On ordonne les objets des Equipes selon leurs numéros */
+                usort($equipesFFTT, function ($equi1, $equi2) {
+                    return $this->getEquipeNumero($equi1->getLibelle()) - $this->getEquipeNumero($equi2->getLibelle());
+                });
 
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
                 $allChampionnatsReset[$championnatActif->getNom()]["recorded"] = count($equipesFFTT) > 0;
@@ -139,17 +144,17 @@ class BackOfficeFFTTApiController extends AbstractController
 
                     $equipesIssued = [];
 
-                    $equipesIDsFFTT = array_combine(range(0,count($equipesFFTT)-1),range(1,count($equipesFFTT)));
-                    $equipesIDsKompo = array_map(function ($equipe) {
-                        return $equipe->getNumero();
-                    }, $equipesKompo);
+                    $equipesIDsFFTT = array_map(function($equipeFFTT) { return $this->getEquipeNumero($equipeFFTT->getLibelle()); }, $equipesFFTT);
+                    $equipesIDsKompo = array_map(function ($equipe) { return $equipe->getNumero(); }, $equipesKompo);
 
                     $equipesToCreateIDs = array_diff($equipesIDsFFTT, $equipesIDsKompo);
                     $equipesToCreate = array_filter($equipesFFTT, function ($indexEquipeFFTT) use ($equipesToCreateIDs) {
-                        return in_array(($indexEquipeFFTT + 1), $equipesToCreateIDs);
-                    }, ARRAY_FILTER_USE_KEY);
-                    // On incrémente chaque key pour avoir le numéro juste de chaque équipe à créer
-                    $equipesToCreate = array_combine(array_map(function ($key) { return ++$key; }, array_keys($equipesToCreate)), $equipesToCreate);
+                        return in_array($this->getEquipeNumero($indexEquipeFFTT->getLibelle()), $equipesToCreateIDs);
+                    });
+
+                    $equipesToCreate = array_combine(array_map(function($equipeToEditIndex) {
+                        return preg_replace('/[^0-9]/', '', $this->getEquipeNumero($equipeToEditIndex->getLibelle()));
+                    }, $equipesToCreate), array_values($equipesToCreate));
 
                     $equipesToDeleteIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
                     $equipesToDelete = array_filter($equipesKompo, function ($equipeKompo) use ($equipesToDeleteIDs) {
@@ -158,8 +163,8 @@ class BackOfficeFFTTApiController extends AbstractController
 
                     $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo);
 
-                    foreach ($equipesFFTT as $index => $equipe) {
-                        $idEquipeFFTT = $index + 1;
+                    foreach ($equipesFFTT as $equipe) {
+                        $numeroEquipeFFTT = $this->getEquipeNumero($equipe->getLibelle());
                         $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
                         $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
                         $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX], MB_CASE_TITLE, "UTF-8");
@@ -167,9 +172,9 @@ class BackOfficeFFTTApiController extends AbstractController
                         $equipeIssued = [];
 
                         /** L'équipe est recensée des 2 côtés */
-                        if (!in_array($idEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))){
-                            $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($idEquipeFFTT) {
-                                return $equipe->getNumero() == $idEquipeFFTT;
+                        if (!in_array($numeroEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))){
+                            $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($numeroEquipeFFTT) {
+                                return $equipe->getNumero() == $numeroEquipeFFTT;
                             }))[0];
 
                             $sameDivision = $equipeKompo->getIdDivision() && $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTTShortName;
@@ -186,12 +191,12 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $equipeIssued['sameLienDivision'] = $sameLienDivision;
                                 $equipesIssued[] = $equipeIssued;
                             }
-                        } else if (in_array($idEquipeFFTT, $equipesToCreateIDs)){
-                            unset($equipesToCreate[$idEquipeFFTT]);
-                            $equipesToCreate[$idEquipeFFTT]["poule"] = $pouleEquipeFFTT;
-                            $equipesToCreate[$idEquipeFFTT]["lienDivision"] = $equipe->getLienDivision();
-                            $equipesToCreate[$idEquipeFFTT]["divisionShortName"] = $divisionEquipeFFTTShortName;
-                            $equipesToCreate[$idEquipeFFTT]["divisionLongName"] = $divisionEquipeFFTTLongName;
+                        } else if (in_array($numeroEquipeFFTT, $equipesToCreateIDs)){
+                            unset($equipesToCreate[$numeroEquipeFFTT]);
+                            $equipesToCreate[$numeroEquipeFFTT]["poule"] = $pouleEquipeFFTT;
+                            $equipesToCreate[$numeroEquipeFFTT]["lienDivision"] = $equipe->getLienDivision();
+                            $equipesToCreate[$numeroEquipeFFTT]["divisionShortName"] = $divisionEquipeFFTTShortName;
+                            $equipesToCreate[$numeroEquipeFFTT]["divisionLongName"] = $divisionEquipeFFTTLongName;
                         }
                     }
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["issued"] = $equipesIssued;
@@ -227,7 +232,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $datetime1 = ($element1->getIdjournee()->getDateJournee())->getTimeStamp();
                                     $datetime2 = ($element2->getIdjournee()->getDateJournee())->getTimeStamp();
                                     return $datetime1 - $datetime2;
-                                } );
+                                });
                             }
 
                             if (!$journeesFFTT) {
@@ -668,5 +673,14 @@ class BackOfficeFFTTApiController extends AbstractController
         $end = $lastDay;
         $interval = new DateInterval('P1D');
         return iterator_to_array(new DatePeriod($start, $interval, $end));
+    }
+
+    /**
+     * Retourn le numéro d'une équipe de l'API FFTT en passant son libellé en paramètre
+     * @param string $equipeLibelle
+     * @return int
+     */
+    function getEquipeNumero(string $equipeLibelle): int {
+        return intval(preg_replace('/[^0-9]/', '', explode(' ', $equipeLibelle)[self::NUMERO_EQUIPE]));
     }
 }
