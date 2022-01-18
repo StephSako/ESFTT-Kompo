@@ -706,7 +706,7 @@ class HomeController extends AbstractController
                     $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
                     $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                     $virtualPoints = $virtualPoints->getVirtualPoints();
-                    $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -10);
+                    $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -7);
                     $points = array_map(function($histo) {
                         return $histo->getPoints();
                     }, $historique);
