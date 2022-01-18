@@ -17,6 +17,7 @@ class Settings
         'championnat-departemental' => 'Championnat départemental',
         'criterium-federal' => 'Critérium fédéral',
         'championnat-de-paris' => 'Championnat de Paris',
+        'gymnase' => ' sur le gymnase',
         'mail-bienvenue' => 'mail de bienvenue',
         'mail-mdp-oublie' => 'mail de mot de passe oublié',
         'mail-certif-medic-perim' => 'mail de certificat médical périmé'
@@ -49,6 +50,13 @@ class Settings
      * @ORM\Column(type="text", name="infos_championnat_de_paris", nullable=true)
      */
     private $infosChampionnatDeParis;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="infos_gymnase", nullable=true)
+     */
+    private $infosGymnase;
 
     /**
      * @var string|null
@@ -182,6 +190,24 @@ class Settings
     /**
      * @return string|null
      */
+    public function getInfosGymnase(): ?string
+    {
+        return $this->infosGymnase;
+    }
+
+    /**
+     * @param string|null $infosGymnase
+     * @return Settings
+     */
+    public function setInfosGymnase(?string $infosGymnase): self
+    {
+        $this->infosGymnase = $infosGymnase;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getInfosCriteriumFederal(): ?string
     {
         return $this->infosCriteriumFederal;
@@ -207,6 +233,7 @@ class Settings
         if ($type == 'championnat-departemental') return $this->getInfosChampionnatDepartemental();
         else if ($type == 'criterium-federal') return $this->getInfosCriteriumFederal();
         else if ($type == 'championnat-de-paris') return $this->getInfosChampionnatDeParis();
+        else if ($type == 'gymnase') return $this->getInfosGymnase();
         else if ($type == 'mail-bienvenue') return $this->getMailBienvenue();
         else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
         else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
