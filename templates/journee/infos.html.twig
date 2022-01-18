@@ -55,7 +55,6 @@
                     <p class="center"><i>Aucun joueur ne participe au {{ label | lower }} pour le moment ...</i></p>
                 {% endif %}
             {% endif %}
-            <br>
             <p {% if not HTMLContent %}class="center"{% endif %}>
                 {% if HTMLContent %}{{ HTMLContent | raw }}
                 {% else %}<i>Il n'y a pas de contenu pour le moment ...</i>
