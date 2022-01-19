@@ -211,6 +211,8 @@ class HomeController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         }));
 
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -5);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -679,34 +681,43 @@ class HomeController extends AbstractController
     }
 
     /**
-     * Renvoie un template des points virtuels mensuels de l'utilisateur actif
+     * Renvoie un template des points virtuels mensuels de l'utilisateur actif avec un historique sur les 8 dernières phases
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
      * @return JsonResponse
      */
     function getPersonnalClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $erreur = null;
-        $virtualPoints = null;
         $virtualPointsProgression = null;
+        $points = null;
+        $annees = null;
 
-        try{
-            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $virtualPoints = new VirtualPoints(0, 0);
-            if ($this->getUser()->getLicence()) {
-                try {
-                    $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
-                    $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
-                    $virtualPoints = $virtualPoints->getVirtualPoints();
-                } catch (Exception $e) {}
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $virtualPoints = new VirtualPoints(0, 0);
+        if ($this->getUser()->getLicence()) {
+            try {
+                $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+                $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
+                $virtualPoints = $virtualPoints->getVirtualPoints();
+                $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
+                array_pop($historique);
+                $points = array_map(function($histo) {
+                    return $histo->getPoints();
+                }, $historique);
+                $annees = array_map(function($histo) {
+                    return $histo->getAnneeFin();
+                }, $historique);
+            } catch (Exception $e) {
+                $erreur = 'Points virtuels indisponible';
             }
-        } catch(Exception $exception) {
-            $erreur = 'Classement virtuel indisponible';
-        }
+        } else $erreur = 'Licence du joueur inexistante';
 
         return new JsonResponse($this->render('ajax/personnalVirtualPoints.html.twig', [
             'virtualPoints' => $virtualPoints,
             'virtualPointsProgression' => $virtualPointsProgression,
             'erreur' => $erreur,
+            'points' => $points,
+            'annees' => $annees
         ])->getContent());
     }
 
@@ -730,10 +741,7 @@ class HomeController extends AbstractController
             $classement = 0;
 
             foreach ($classementPouleAPI as $equipe) {
-                if ($points != $equipe->getPoints()) {
-                    $classement++;
-                }
-
+                if ($points != $equipe->getPoints()) $classement++;
                 if (!$ourTeam) $ourTeam = str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8") : null;
 
                 $classementPoule[] = [
