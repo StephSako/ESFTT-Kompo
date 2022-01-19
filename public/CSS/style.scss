@@ -1026,12 +1026,8 @@ table.table-last-compos {
   font-size: 14px;
 
   p {
-    margin-top: 4px;
-    margin-bottom: 4px;
-
-    span:first-child {
-      background-color: #0c3a69;
-    }
+    margin-top: -1px;
+    margin-bottom: 2px;
 
     span:last-child {
       padding: 0;
@@ -1117,6 +1113,14 @@ table.table-last-compos {
   background-color: #ff6565;
 }
 
+.preloader_personnal_virtual_rank {
+  canvas {
+    position: relative;
+    left: 5px;
+    top: 7px;
+  }
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -1197,6 +1201,11 @@ table.table-last-compos {
 
   .virtualPointsCard {
     margin-top: 10px;
+
+    p {
+      margin-top: -2px;
+      margin-bottom: 4px;
+    }
   }
 
   .brulageCard {

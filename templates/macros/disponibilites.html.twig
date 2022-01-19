@@ -1,55 +1,50 @@
 {% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
-    <div class="center-align">
-        <div class="hide-on-med-and-down">
-            {{ _self.labelVirtualPoints('left') }}
-        </div>
-        {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
+    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
-        <div class="card-panel dispos">
-            <h5>Les dispos</h5>
-            <table class="striped">
-                <tbody>
-                {% for dispo in dispos %}
-                    <tr>
-                        <td>
-                            <div class="valign-wrapper">
-                                {% if dispo.disponibilite == 1 %}
-                                    <span class="dot dot1 center">&nbsp;</span>
-                                {% elseif dispo.disponibilite == 0 %}
-                                    <span class="dot dot2 center">&nbsp;</span>
-                                {% else %}
-                                    <span class="dot dot3 center">&nbsp;</span>
-                                {% endif %}
-                                <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align material-icons">done</i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% for joueur in joueursNonDeclares %}
-                    <tr>
-                        <td>
-                            <div class="valign-wrapper">
+    <div class="card-panel dispos">
+        <h5>Les dispos</h5>
+        <table class="striped">
+            <tbody>
+            {% for dispo in dispos %}
+                <tr>
+                    <td>
+                        <div class="valign-wrapper">
+                            {% if dispo.disponibilite == 1 %}
+                                <span class="dot dot1 center">&nbsp;</span>
+                            {% elseif dispo.disponibilite == 0 %}
+                                <span class="dot dot2 center">&nbsp;</span>
+                            {% else %}
                                 <span class="dot dot3 center">&nbsp;</span>
-                                <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
-                            </div>
-                        </td>
-                        <td class="left">
-                            {% if joueur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align material-icons">playlist_add_check</i>
                             {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
+                            <i class="blue-text right-align material-icons">done</i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for joueur in joueursNonDeclares %}
+                <tr>
+                    <td>
+                        <div class="valign-wrapper">
+                            <span class="dot dot3 center">&nbsp;</span>
+                            <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
+                        </div>
+                    </td>
+                    <td class="left">
+                        {% if joueur.idCompetiteur in selectedPlayers %}
+                            <i class="blue-text right-align material-icons">playlist_add_check</i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-            <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect blue center-align center" href="#{{ nomModal }}">Tout afficher</a>
-        </div>
+        <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect blue center-align center" href="#{{ nomModal }}">Tout afficher</a>
     </div>
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
@@ -60,30 +55,6 @@
             <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
         </div>
     </div>
-{% endmacro %}
-
-{% macro labelVirtualPoints(tooltipPosition) %}
-    <div class="card-panel bottom_0 virtualPointsCard">
-        <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
-            <h6 class="lobster_2"><b style="vertical-align: sub">Points virtuels</b></h6>
-            <span><i class="material-icons blue-text text-darken-1 tooltipped interaction" data-position="{{ tooltipPosition }}" data-tooltip="Points virtuels en temps réel, calculés à partir des points mensuels des adversaires (légers écarts possibles), dès que les rencontres sont saisies sur SPID. Points réèls connus en début de mois.">help_outline</i></span>
-        </div>
-        <div class="preloader_personnal_virtual_rank">
-            <div class="preloader-wrapper active tiny">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div><div class="gap-patch">
-                        <div class="circle"></div>
-                    </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 {% endmacro %}
 
 {% macro recapitulatif(allDisponibilites, nomTab, championnat) %}

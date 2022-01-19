@@ -213,9 +213,6 @@ class HomeController extends AbstractController
 
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
         $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -5);
-        dump(array_map(function($histo) {
-            return $histo->getPoints();
-        }, $historique));
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -707,6 +704,7 @@ class HomeController extends AbstractController
                     $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                     $virtualPoints = $virtualPoints->getVirtualPoints();
                     $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -7);
+                    array_pop($historique);
                     $points = array_map(function($histo) {
                         return $histo->getPoints();
                     }, $historique);

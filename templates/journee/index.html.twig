@@ -4,6 +4,7 @@
 {% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
+{% import 'macros/virtualPointsClassement.html.twig' as _virtualPointsClassement %}
 
 {% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
 
@@ -128,7 +129,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelVirtualPoints('top') }}
+                {{ _virtualPointsClassement.labelVirtualPoints('top', 1) }}
             </div>
 
             <div class="hide-on-large-only center-align">
@@ -364,7 +365,9 @@
                     <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
                 <div class="collapsible-body">
-                    {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
+                    <div class="center-align">
+                        {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
+                    </div>
                 </div>
             </li>
             <li>
@@ -382,7 +385,12 @@
         </ul>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+            <div class="center-align">
+                <div class="hide-on-med-and-down">
+                    {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
+                </div>
+                {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+            </div>
         </div>
 
         {# Modale des classement des points virtuels #}

@@ -2,19 +2,11 @@
     <p>
         <span class="pastille reset virtualPoints">{{ virtualPoints | round(1, 'floor') }} pts</span>
         <span class="{% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
+        <span><canvas id="chart_js_historique_id" width="40vw" height="25vw" style="display: inline-block"></canvas></span>
     </p>
 {% else %}
     <p class="red-text text-lighten-1 error"><b>{{ erreur }}</b></p>
 {% endif %}
-
-<div class="row">
-    <div class="col m6">
-        <canvas id="historique" width="40vw" height="35vw" style="display: inline-block"></canvas>
-    </div>
-    <div class="col m6">
-        <canvas id="historique" width="35vw" height="35vw"></canvas>
-    </div>
-</div>
 
 <script>
     $(document).ready(function() {
@@ -22,15 +14,14 @@
         annees.push(1);
         const points = JSON.parse('{{ points | json_encode | raw }}');
         points.push({{ virtualPoints | round(1, 'floor') }});
-        console.log(Math.random())
-        const ctx = document.getElementById('historique').getContext('2d');
+        const ctx = document.getElementById('chart_js_historique_id').getContext('2d');
         const options = {
             type: 'line',
             data: {
                 labels: annees,
                 datasets: [{
                     data: points,
-                    fill: true,
+                    fill: false,
                     borderColor: '#2196f3',
                     tension: 0.3,
                     pointRadius: 0
@@ -48,11 +39,14 @@
                         display: false
                     },
                     y: {
-                        display: false
+                        display: false,
+                            beginAtZero: false,
+                            max: Math.max.apply(Math, points),
+                            min: Math.min.apply(Math, points)
                     }
                 }
             },
         };
-        const myChart = new Chart(ctx, options);
+        new Chart(ctx, options);
     });
 </script>

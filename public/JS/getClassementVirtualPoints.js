@@ -27,5 +27,8 @@ function getPersonnalClassementVirtuel() {
 }
 
 function templating(selector, response){
-    $(selector).html(response);
+    $(selector).each(function() {
+            $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
+        }
+    )
 }
