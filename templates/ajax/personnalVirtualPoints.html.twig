@@ -21,9 +21,10 @@
                 labels: annees,
                 datasets: [{
                     data: points,
+                    borderWidth: 2,
                     fill: false,
                     borderColor: '#2196f3',
-                    tension: 0.3,
+                    tension: 0,
                     pointRadius: 0
                 }]
             },
@@ -41,8 +42,8 @@
                     y: {
                         display: false,
                             beginAtZero: false,
-                            max: Math.max.apply(Math, points),
-                            min: Math.min.apply(Math, points)
+                            max: Math.max.apply(Math, points) + 30,
+                            min: Math.min.apply(Math, points) - 30
                     }
                 }
             },
