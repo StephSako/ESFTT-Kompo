@@ -20,7 +20,8 @@ class Settings
         'gymnase' => ' sur le gymnase',
         'mail-bienvenue' => 'mail de bienvenue',
         'mail-mdp-oublie' => 'mail de mot de passe oublié',
-        'mail-certif-medic-perim' => 'mail de certificat médical périmé'
+        'mail-certif-medic-perim' => 'mail de certificat médical périmé',
+        'mail-pre-phase' => 'mail de pré-phase'
     ];
 
     /**
@@ -78,6 +79,13 @@ class Settings
      * @ORM\Column(type="text", name="mail_certif_medic_perim", nullable=true)
      */
     private $mailCertifMedicPerim;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="mail_pre_phase", nullable=true)
+     */
+    private $mailPrePhase;
 
     /**
      * @return string|null
@@ -224,6 +232,24 @@ class Settings
     }
 
     /**
+     * @return string|null
+     */
+    public function getMailPrePhase(): ?string
+    {
+        return $this->mailPrePhase;
+    }
+
+    /**
+     * @param string|null $mailPrePhase
+     * @return Settings
+     */
+    public function setMailPrePhase(?string $mailPrePhase): self
+    {
+        $this->mailPrePhase = $mailPrePhase;
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @return string|null
      * @throws Exception
@@ -237,6 +263,7 @@ class Settings
         else if ($type == 'mail-bienvenue') return $this->getMailBienvenue();
         else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
         else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
+        else if ($type == 'mail-pre-phase') return $this->getMailPrePhase();
         throw new Exception("Ce contenu n'existe pas", 404);
     }
 

@@ -211,8 +211,6 @@ class HomeController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         }));
 
-        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -5);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,

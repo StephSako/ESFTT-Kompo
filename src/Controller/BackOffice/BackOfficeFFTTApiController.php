@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\ContactController;
 use App\Entity\Championnat;
 use App\Entity\Division;
 use App\Entity\Journee;
@@ -11,6 +12,7 @@ use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\PouleRepository;
+use App\Repository\SettingsRepository;
 use Cocur\Slugify\Slugify;
 use DateInterval;
 use DatePeriod;
@@ -22,6 +24,7 @@ use FFTTApi\Model\Equipe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeFFTTApiController extends AbstractController
@@ -32,6 +35,8 @@ class BackOfficeFFTTApiController extends AbstractController
     private $em;
     private $divisionRepository;
     private $pouleRepository;
+    private $settingsRepository;
+    private $contactController;
 
     /** Position des données dans les chaînes de caractères reçues de l'API */
     const JOURNEE_LABEL= 4;
@@ -44,19 +49,29 @@ class BackOfficeFFTTApiController extends AbstractController
     const NUMERO_EQUIPE = 2;
 
     /**
-     * ContactController constructor.
+     * @param CompetiteurRepository $competiteurRepository
+     * @param ChampionnatRepository $championnatRepository
+     * @param DivisionRepository $divisionRepository
+     * @param PouleRepository $pouleRepository
+     * @param EntityManagerInterface $em
+     * @param ContactController $contactController
+     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
-                                EntityManagerInterface $em)
+                                EntityManagerInterface $em,
+                                ContactController $contactController,
+                                SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
+        $this->settingsRepository = $settingsRepository;
+        $this->contactController = $contactController;
     }
 
     /**
@@ -345,7 +360,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
-                    /** Mode pré-rentrée où toutes les données des matches sont réinitialisées */
+                    /** Mode Pré-phase où toutes les données des matches sont réinitialisées */
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
@@ -421,7 +436,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 $this->addFlash('success', 'Joueurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
             }
-            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (pré-rentrée ou phase) */
+            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (Pré-phase ou phase) */
                 $idChampionnat = intval($request->request->get('idChampionnat'));
                 $championnatSearch = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
                     return $champ->getIdChampionnat() == $idChampionnat;
@@ -430,7 +445,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 if (count($championnatSearch) == 1) {
                     $championnat = array_values($championnatSearch)[0];
 
-                    /** Mode pré-rentrée lancé */
+                    /** Mode Pré-phase lancé */
                     if ($request->request->get('preRentreeResetChampionnats')) {
                         /** On supprime toutes les dispos du championnat sélectionné **/
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
@@ -472,6 +487,31 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
+
+                        // TODO SEND EMAIL
+                        $mails = array_map(function ($address) {
+                            return new Address($address);
+                        }, explode(',', $this->contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['toString']));
+
+                        $settings = $this->settingsRepository->find(1);
+                        try {
+                            $message = $settings->getInfosType('mail-pre-phase');
+                        } catch (Exception $e) {
+                            throw $this->createNotFoundException($e->getMessage());
+                        }
+
+                        try {
+                            $this->contactController->sendMail(
+                                $mails,
+                                true,
+                                'Kompo - Certificat médical à renouveler',
+                                $message,
+                                null,
+                                true);
+                            $this->addFlash('success', "L'alerte a été envoyée");
+                        } catch (Exception $e) {
+                            $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
+                        }
                     }
                     /** Mode lancement de la phase */
                     else if ($request->request->get('resetChampionnats')) {
@@ -583,15 +623,15 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
-     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la pré-rentrée
+     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la Pré-phase
      * @param Championnat $championnat
      * @return array
      */
     function isPreRentreeLaunchable(Championnat $championnat): array {
         $latestDate = $this->getLastDates($championnat);
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
-        else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-rentrée prête à être lancée'];
-        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-rentrée'];
+        else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la Pré-phase prête à être lancée'];
+        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la Pré-phase'];
     }
 
     /**
