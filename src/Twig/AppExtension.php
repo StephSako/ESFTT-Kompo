@@ -38,7 +38,7 @@ class AppExtension extends AbstractExtension
      */
     public function journeeStillEditable(Journee $journee): bool
     {
-        return $journee->getLatestDate() >= new DateTime();
+        return intval($journee->getLatestDate()->diff(new DateTime())->format('%R%a')) <= 0;
     }
 
     /**

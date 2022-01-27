@@ -526,11 +526,11 @@ class HomeController extends AbstractController
                 if ($domicile) {
                     if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
                     else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
-                    else $resultat['resultat'] = 'white';
+                    else $resultat['resultat'] = null;
                 } else {
                     if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
                     else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
-                    else $resultat['resultat'] = 'white';
+                    else $resultat['resultat'] = null;
                 }
 
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
@@ -698,7 +698,6 @@ class HomeController extends AbstractController
                 $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                 $virtualPoints = $virtualPoints->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
-                array_pop($historique);
                 $points = array_map(function($histo) {
                     return $histo->getPoints();
                 }, $historique);

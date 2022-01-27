@@ -68,12 +68,12 @@
 
     {% for nomChamp, disponibilites in allDisponibilites %}
         <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
-            <table class="centered responsive-table striped">
+            <table class="centered responsive-table striped recapitulatifDispos">
                 <thead>
                     <tr>
                         <th><span class="hide-on-small-only">Joueurs</span></th>
                         {% for i in 1..disponibilites["nbJournees"] %}
-                            <th style="width: 70px;">J{{ i }}</th>
+                            <th style="width: 60px;">J{{ i }}</th>
                         {% endfor %}
                     </tr>
                 </thead>

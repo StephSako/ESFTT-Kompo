@@ -4,7 +4,11 @@
     <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
     {% if journees|length > 0 %}
         {% for journee in journees %}
-            <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille blue reset"><b>J{{ loop.index }} :</b> {{ journee.nomAdversaireBis }} </span><i class="material-icons">chevron_right</i><span class="pastille {{ journee.resultat.resultat }} reset">{{ journee.resultat.score }}</span></p>
+            <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille blue reset"><b>J{{ loop.index }} :</b> {{ journee.nomAdversaireBis }}</span>
+                {% if journee.resultat.resultat %}
+                    <i class="material-icons">chevron_right</i><span class="pastille {{ journee.resultat.resultat }} reset">{{ journee.resultat.score }}</span>
+                {% endif %}
+            </p>
             {% if not journee.errorMatchSheet %}
                 {% if journee.joueurs|length > 0 %}
                         <table class="striped centered table-last-compos">
