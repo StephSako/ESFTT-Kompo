@@ -1229,6 +1229,10 @@ table.table-last-compos {
       width: min-content;
     }
   }
+
+  table.recapitulatifDispos tbody td {
+    height: 51px;
+  }
 }
 
 @media screen and (max-width: 720px) {

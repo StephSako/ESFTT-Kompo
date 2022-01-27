@@ -528,11 +528,11 @@ class HomeController extends AbstractController
                 if ($domicile) {
                     if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
                     else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
-                    else $resultat['resultat'] = 'white';
+                    else $resultat['resultat'] = null;
                 } else {
                     if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
                     else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
-                    else $resultat['resultat'] = 'white';
+                    else $resultat['resultat'] = null;
                 }
 
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
