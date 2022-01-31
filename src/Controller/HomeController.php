@@ -212,7 +212,6 @@ class HomeController extends AbstractController
         }));
 
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -5);
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -615,9 +614,9 @@ class HomeController extends AbstractController
                 return [
                     'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
-                    'pointsVirtuelsPointsWonMensuel' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
-                    'pointsVirtuelsVirtualPoints' => $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getVirtualPoints() : null,
-                    'pointsVirtuelsPointsWonPhase' => $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel()
+                    'pointsVirtuelsPointsWonMensuel' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
+                    'pointsVirtuelsVirtualPoints' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getVirtualPoints() : null,
+                    'pointsVirtuelsPointsWonPhase' => $joueur->getLicence() ? $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel() : null
                 ];
             }, $competiteurs);
             $classementProgressionPhase = $classementProgressionMensuel;
