@@ -46,7 +46,7 @@
             </div>
 
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
-                {% if journeeStillEditable(journee) %}
+                {% if journeeStillEditable(journee.latestDate) %}
                     <div class="card-panel center setDispoCard">
                         {% if app.user.licence and app.user.classementOfficiel %}
                             {% if disponible != -1 %}
