@@ -168,7 +168,7 @@
                         </p>
                     {% endif %}
 
-                    <div class="col s12 l4">
+                    <div class="col s12 l4 col_infos_licence">
                         <p><b>Catégorie d'âge</b></p>
                         {% if type == 'backoffice' and not editMode %}
                             <i>Calculée sur la date de naissance</i>
@@ -176,7 +176,7 @@
                             <span class="pastille blue centered">{{ categorieAge }}</span>
                         {% endif %}
                     </div>
-                    <div class="col s12 m6 l4">
+                    <div class="col s12 m6 l4 col_infos_licence">
                         <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
@@ -189,7 +189,7 @@
                         {% endif %}
                     </div>
 
-                    <div class="col s12 m6 l4">
+                    <div class="col s12 m6 l4 col_infos_licence">
                         <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}

@@ -186,7 +186,7 @@
                                             {% if dispos.classement_officiel and dispos.licence %}
                                                 <div id="dispoJoueur{{ dispos.idJournee ~ dispos.idCompetiteur }}">
                                                     {% if dispos.idDisponibilite is null %}
-                                                        {% if dispos.latestDate >= date() %}
+                                                        {% if journeeStillEditable(dispos.latestDate) %}
                                                             <div class="row" style="margin-bottom: 0;">
                                                                 <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
                                                                     <button onclick="newDisponibilite('{{ dispos.idJournee }}', 1, '{{ dispos.idCompetiteur }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
@@ -201,16 +201,16 @@
                                                     {% else %}
                                                         {% if dispos.disponibilite == 1 %}
                                                             <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="green-text"><b>disponible</b></span></p>
-                                                            {% if dispos.latestDate >= date() %}
+                                                            {% if journeeStillEditable(dispos.latestDate) %}
                                                                 <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 0, '{{ dispos.idJournee }}')" class="btn waves-effect red btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                                             {% endif %}
                                                         {% else %}
                                                             <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="red-text"><b>indisponible</b></span></p>
-                                                            {% if dispos.latestDate >= date() %}
+                                                            {% if journeeStillEditable(dispos.latestDate) %}
                                                                 <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 1, '{{ dispos.idJournee }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                             {% endif %}
                                                         {% endif %}
-                                                        {% if dispos.latestDate >= date() %}
+                                                        {% if journeeStillEditable(dispos.latestDate) %}
                                                             <button onclick="deleteDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', {{ dispos.disponibilite }}, '{{ dispos.idJournee }}')" class="btn waves-effect red lighten-1 btn_gestion"><i class="material-icons">close</i></button>
                                                         {% endif %}
                                                     {% endif %}

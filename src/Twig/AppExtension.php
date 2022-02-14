@@ -33,12 +33,12 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param Journee $journee
+     * @param DateTime $latestDate
      * @return bool
      */
-    public function journeeStillEditable(Journee $journee): bool
+    public function journeeStillEditable(DateTime $latestDate): bool
     {
-        return intval($journee->getLatestDate()->diff(new DateTime())->format('%R%a')) <= 0;
+        return intval($latestDate->diff(new DateTime())->format('%R%a')) <= 0;
     }
 
     /**

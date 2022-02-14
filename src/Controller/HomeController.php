@@ -523,15 +523,14 @@ class HomeController extends AbstractController
 
                 /** Résultat de la rencontre */
                 $resultat = ['score' => $detailsRencontre->getScoreEquipeA() . ' - ' . $detailsRencontre->getScoreEquipeB()];
-                if ($domicile) {
-                    if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
-                    else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
-                    else $resultat['resultat'] = null;
-                } else {
-                    if ($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'red';
-                    else if ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()) $resultat['resultat'] = 'green';
-                    else $resultat['resultat'] = null;
-                }
+
+                if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && !$domicile) || ($domicile && $detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()))
+                    $resultat['resultat'] = 'red';
+                else if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && $domicile) || ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB() && !$domicile))
+                    $resultat['resultat'] = 'green';
+                else if ($detailsRencontre->getScoreEquipeA() == $detailsRencontre->getScoreEquipeB())
+                    $resultat['resultat'] = 'grey darken-1';
+                else $resultat['resultat'] = null;
 
                 /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
                 $errorMatchSheet = count($detailsRencontre->getParties()) && count(array_filter($joueursAdversaire, function($joueur) {
