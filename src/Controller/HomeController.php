@@ -198,8 +198,12 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
-        $countJoueursCertifMedicPerim = count(array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
+        $allCompetiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
+        $countJoueursCertifMedicPerim = count(array_filter($allCompetiteurs, function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
+        }));
+        $countJoueursWithoutLicence = count(array_filter($allCompetiteurs, function ($joueur) {
+            return !$joueur->getLicence();
         }));
 
         return $this->render('journee/index.html.twig', [
@@ -223,7 +227,8 @@ class HomeController extends AbstractController
             'brulages' => $brulages,
             'isPreRentreeLaunchable' => $this->backOfficeFFTTApiController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
-            'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim
+            'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
+            'countJoueursWithoutLicence' => $countJoueursWithoutLicence
         ]);
     }
 

@@ -173,7 +173,11 @@
                         {% if type == 'backoffice' and not editMode %}
                             <i>Calculée sur la date de naissance</i>
                         {% else %}
-                            <span class="pastille blue centered">{{ categorieAge }}</span>
+                            {% if categorieAge %}
+                                <span class="pastille blue centered">{{ categorieAge }}</span>
+                            {% else %}
+                                <p style="color: red">Date de naissance indéfinie</p>
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="col s12 m6 l4 col_infos_licence">
