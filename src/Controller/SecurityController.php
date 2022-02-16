@@ -26,6 +26,7 @@ class SecurityController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $competiteurRepository;
+    private $homeController;
 
     /**
      * SecurityController constructor.
@@ -33,6 +34,7 @@ class SecurityController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      * @param AuthenticationUtils $utils
+     * @param HomeController $homeController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      */
@@ -40,6 +42,7 @@ class SecurityController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em,
                                 AuthenticationUtils $utils,
+                                HomeController $homeController,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder)
     {
@@ -49,6 +52,7 @@ class SecurityController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->competiteurRepository = $competiteurRepository;
+        $this->homeController = $homeController;
     }
 
     /**
@@ -74,8 +78,8 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     public function edit(Request $request){
-        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        if (!$this->get('session')->get('type')) $championnat = $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat());
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
 
         $allChampionnats = $this->championnatRepository->findAll();

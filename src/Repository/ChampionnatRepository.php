@@ -38,21 +38,6 @@ class ChampionnatRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne le premier championnat
-     * @return Championnat|string
-     */
-    public function getFirstChampionnatAvailable()
-    {
-        $firstChamp = $this->createQueryBuilder('c')
-            ->setMaxResults(1)
-            ->orderBy('c.nom')
-            ->getQuery()
-            ->getResult();
-
-        return count($firstChamp) ? $firstChamp[0] : null ;
-    }
-
-    /**
      * @return array
      */
     public function getAllEquipes(): array

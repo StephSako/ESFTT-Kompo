@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\BackOffice\BackOfficeFFTTApiController;
-use App\Entity\Championnat;
+use App\Entity\Journee;
 use App\Form\RencontreType;
 use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
@@ -70,23 +70,17 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @param Championnat $championnat
-     * @return int
+     * Retourne la prochaine journée à jouer depuis tous les championnats
+     * @return Journee
      */
-    public function getJourneeToPlay(Championnat $championnat): int
-    {
-        $journees = $championnat->getJournees()->toArray();
-        $IDsJournees = array_map(function($j) {
-            return $j->getIdJournee();
-        }, $journees);
-        $idJournee = 0;
-
-        /** Récupérer la prochaine journée à jouer */
-        while ($idJournee < $championnat->getNbJournees() - 1 && !$journees[$idJournee]->getUndefined() && (int) (new DateTime())->diff($journees[$idJournee]->getDateJournee())->format('%R%a') < 0){
-            $idJournee++;
-        }
-
-        return $IDsJournees[$idJournee];
+    public function nextJourneeToPlayAllChamps(): Journee {
+        $array = array_map(function($c) {
+            return $c->getNextJourneeToPlay();
+        }, $this->championnatRepository->findAll());
+        usort($array, function($a, $b) {
+            return $a->getDateJournee()->getTimestamp() - $b->getDateJournee()->getTimestamp();
+        });
+        return array_shift($array);
     }
 
     /**
@@ -95,13 +89,10 @@ class HomeController extends AbstractController
      */
     public function indexAction(): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
-
-        if ($championnat){
+        if ($this->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
-                'type' => $championnat->getIdChampionnat(),
-                'id' => $this->getJourneeToPlay($championnat)
+                'type' => $this->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
+                'id' => $this->nextJourneeToPlayAllChamps()->getIdJournee()
             ]);
         } else return $this->render('journee/noChamp.html.twig', [
             'allChampionnats' => null,
@@ -117,11 +108,11 @@ class HomeController extends AbstractController
      */
     public function indexTypeAction(int $type): Response
     {
-        $championnat = ($this->championnatRepository->find($type) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        $championnat = $this->championnatRepository->find($type);
         if ($championnat) {
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'id' => $this->getJourneeToPlay($championnat)
+                'id' => $championnat->getNextJourneeToPlay()->getIdJournee()
             ]);
         } else return $this->redirectToRoute('index', []);
     }
@@ -401,8 +392,8 @@ class HomeController extends AbstractController
      */
     public function getInformations(Request $request, string $type): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        if (!$this->get('session')->get('type')) $championnat = $this->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
@@ -457,8 +448,8 @@ class HomeController extends AbstractController
      */
     public function getHelpPage(): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->championnatRepository->getFirstChampionnatAvailable();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->championnatRepository->getFirstChampionnatAvailable());
+        if (!$this->get('session')->get('type')) $championnat = $this->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
