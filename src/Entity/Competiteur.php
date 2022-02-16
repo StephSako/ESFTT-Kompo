@@ -1356,7 +1356,7 @@ class Competiteur implements UserInterface, Serializable
             ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
             return [
                 'status' => true,
-                'message' => 'Certificat médical à renouveler à la rentrée ' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . ' - ' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1)),
+                'message' => 'Certificat médical à renouveler à la rentrée <b>' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . ' - ' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1)) . '</b>',
                 'shortMessage' => $this->getLabelCertificatRentree()
             ];
         return [
@@ -1523,21 +1523,21 @@ class Competiteur implements UserInterface, Serializable
 
     /**
      * Renvoie la version longue de la catégorie d'âge
-     * @return string
+     * @return string|null
      * @throws Exception
      */
-    public function getCategorieAgeLabel(): string {
+    public function getCategorieAgeLabel(): ?string {
         $gap = date('m') < 7 ? 1 : 0;
         $categorie = array_values(array_filter(self::CATEGORIE_AGE_LABEL, function($categorieRef) use($gap) {
             $minYear = date('Y') - $categorieRef['yearMinGap'] - $gap;
             $maxYear = date('Y') - $categorieRef['yearMaxGap'] - $gap;
             return new DateTime($minYear . $categorieRef['minDate']) <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
         }));
-        return count($categorie) ? $categorie[0]['libelle'] : '-';
+        return count($categorie) ? $categorie[0]['libelle'] : null;
     }
 
     /**
-     * Déterminé si le joueur est sélectionné dans une des compositions d'équipe d'une rencontre
+     * Déterminer si le joueur est sélectionné dans une des compositions d'équipe d'une rencontre
      * @param Rencontre[] $compos
      * @return int|null
      */

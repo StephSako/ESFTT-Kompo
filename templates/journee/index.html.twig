@@ -81,11 +81,11 @@
                             <p class="red-text lighten-2">
                                 <i class="material-icons red-text">dangerous</i>
                                 {% if app.user.licence and not app.user.classementOfficiel %}
-                                    Votre classement n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
+                                    Votre <b>classement</b> n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
                                 {% elseif not app.user.licence and app.user.classementOfficiel %}
-                                    Votre licence n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités
+                                    Votre <b>licence</b> n'est pas renseignée : vous ne pouvez pas déclarer vos disponibilités
                                 {% elseif not app.user.licence and not app.user.classementOfficiel %}
-                                    Votre classement et licence ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités
+                                    Votre <b>classement</b> et <b>licence</b> ne sont pas renseignés : vous ne pouvez pas déclarer vos disponibilités
                                 {% endif %}
                             </p>
                         {% endif %}
@@ -103,7 +103,7 @@
             {% if app.user.certifMedicalInvalid.status %}
                 <div class="card-panel center setDispoCard">
                     <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
-                        {{ app.user.certifMedicalInvalid.message }}
+                        {{ app.user.certifMedicalInvalid.message | raw }}
                     </p>
                 </div>
             {% endif %}
@@ -113,7 +113,16 @@
                     <div class="card-panel center setDispoCard">
                         <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
                             Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
-                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer/alerter ici</a>
+                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if countJoueursWithoutLicence %}
+                    <div class="card-panel center setDispoCard">
+                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                            Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
+                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
                         </p>
                     </div>
                 {% endif %}
