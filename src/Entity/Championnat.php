@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -406,5 +407,17 @@ class Championnat
     {
         $this->periodicite = $periodicite;
         return $this;
+    }
+
+    /**
+     * Retourne l'ID de la prochaine journée à jouer
+     * @return Journee
+     */
+    public function getNextJourneeToPlay(): Journee
+    {
+        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function($journee) {
+            return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
+        });
+        return array_shift($nextJourneeToPlay);
     }
 }
