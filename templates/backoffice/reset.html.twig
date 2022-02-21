@@ -56,7 +56,7 @@
                             {% for newLicence, joueur in joueursIssued.issuedLicences.to_update %}
                                 <tr>
                                     <td>
-                                        <span class="red-text">{{ joueur.licence }}</span><i class="material-icons black-text">arrow_forward</i> {{ newLicence }}
+                                        <span class="red-text">{{ joueur.licence ?: "<i class='material-icons'>cancel</i>" }}</span><i class="material-icons black-text">arrow_forward</i> {{ newLicence }}
                                     </td>
                                     <td>
                                         <div class="chip">
