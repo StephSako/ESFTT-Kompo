@@ -1369,6 +1369,7 @@ class Competiteur implements UserInterface, Serializable
     /**
      * Retourne les informations serializées pour l'export en PDF
      * @return array
+     * @throws Exception
      */
     public function serializeToPDF(): array {
         return [
@@ -1378,7 +1379,9 @@ class Competiteur implements UserInterface, Serializable
             $this->getDateNaissance() ? $this->getDateNaissance()->format('d/m/Y') : null,
             $this->getClassementOfficiel(),
             $this->getClassementOfficiel() ? intval($this->getClassementOfficiel()/100) : null,
-            !$this->isArchive() ? (!$this->getAnneeCertificatMedical() && (!$this->getAge() || $this->getAge() >= 18) ? 'Non présenté' : ($this->getAge() >= 18 ? $this->getAnneeCertificatMedical() : 'Mineur (facultatif)')) : null,
+            $this->isCritFed() ? 'Oui' : 'Non',
+            $this->getCategorieAgeLabel(),
+            $this->getAnneeCertificatMedical(),
             $this->getMail(),
             $this->getMail2(),
             $this->getPhoneNumber(),
