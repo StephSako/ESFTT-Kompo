@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -26,7 +25,7 @@ class SecurityController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $competiteurRepository;
-    private $homeController;
+    private $utilController;
 
     /**
      * SecurityController constructor.
@@ -34,7 +33,7 @@ class SecurityController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      * @param AuthenticationUtils $utils
-     * @param HomeController $homeController
+     * @param UtilController $utilController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      */
@@ -42,7 +41,7 @@ class SecurityController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em,
                                 AuthenticationUtils $utils,
-                                HomeController $homeController,
+                                UtilController $utilController,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder)
     {
@@ -52,7 +51,7 @@ class SecurityController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->competiteurRepository = $competiteurRepository;
-        $this->homeController = $homeController;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -78,8 +77,8 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     public function edit(Request $request){
-        if (!$this->get('session')->get('type')) $championnat = $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
 
         $allChampionnats = $this->championnatRepository->findAll();
@@ -217,24 +216,5 @@ class SecurityController extends AbstractController
                 'token' => $token
             ]);
         }
-    }
-
-    /**
-     * Génère un token afin de modifier le mot de passe d'un utilisateur en passant l'username et le date changer (combien de temps
-     * le token est valide) en paramètre
-     * @param string $username
-     * @param string $dateChanger
-     * @return string
-     * @throws Exception
-     */
-    public function generateGeneratePasswordLink(string $username, string $dateChanger): string {
-        $token = json_encode(
-            [
-                'username' => $username,
-                'dateValidation' => (new DateTime())->add(new DateInterval($dateChanger))->getTimestamp()
-            ]);
-        $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
-        $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
-        return 'https://www.prive.esftt.com/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\ContactController;
+use App\Controller\UtilController;
 use App\Entity\Championnat;
 use App\Entity\Division;
 use App\Entity\Journee;
@@ -36,6 +37,7 @@ class BackOfficeFFTTApiController extends AbstractController
     private $divisionRepository;
     private $pouleRepository;
     private $settingsRepository;
+    private $utilController;
     private $contactController;
 
     /** Position des données dans les chaînes de caractères reçues de l'API */
@@ -55,6 +57,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param PouleRepository $pouleRepository
      * @param EntityManagerInterface $em
      * @param ContactController $contactController
+     * @param UtilController $utilController
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -63,6 +66,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 PouleRepository $pouleRepository,
                                 EntityManagerInterface $em,
                                 ContactController $contactController,
+                                UtilController $utilController,
                                 SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
@@ -71,6 +75,7 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
         $this->settingsRepository = $settingsRepository;
+        $this->utilController = $utilController;
         $this->contactController = $contactController;
     }
 
@@ -361,7 +366,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode Pré-phase où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -451,7 +456,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                         /** On set les Journées comme étant indéfinies avec les dates maximum de la prochaine phase */
-                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
+                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
                             $dateKompo
                                 ->setUndefined(true)
@@ -623,18 +628,6 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
-     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la Pré-phase
-     * @param Championnat $championnat
-     * @return array
-     */
-    function isPreRentreeLaunchable(Championnat $championnat): array {
-        $latestDate = $this->getLastDates($championnat);
-        if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
-        else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la Pré-phase prête à être lancée'];
-        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la Pré-phase'];
-    }
-
-    /**
      * Détermine la phase d'une date passée en paramètre
      * @param DateTime $date
      * @return string
@@ -643,18 +636,6 @@ class BackOfficeFFTTApiController extends AbstractController
         $monthDate = $date->format('n');
         if (1 <= $monthDate && $monthDate <= 6) return "2";
         return "1";
-    }
-
-    /**
-     * Retourne les dates au plus tard de toutes les recontres du championnat sélectionné
-     * @param Championnat $championnat
-     * @return array
-     */
-    function getLastDates(Championnat $championnat): array
-    {
-        return array_unique(array_map(function(Rencontre $renc) {
-            return max([$renc->isReporte() ? $renc->getDateReport() : null, $renc->getIdJournee()->getDateJournee()]);
-        }, $championnat->getRencontres()->toArray()), SORT_REGULAR);
     }
 
     /**

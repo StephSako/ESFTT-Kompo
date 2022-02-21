@@ -3,7 +3,7 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\ContactController;
-use App\Controller\SecurityController;
+use App\Controller\UtilController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
 use App\Form\SettingsType;
@@ -39,8 +39,8 @@ class BackOfficeCompetiteurController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $contactController;
-    private $securityController;
     private $settingsRepository;
+    private $utilController;
 
     /**
      * BackOfficeController constructor.
@@ -51,7 +51,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      * @param ContactController $contactController
-     * @param SecurityController $securityController
+     * @param UtilController $utilController
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
@@ -62,7 +62,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
                                 ContactController $contactController,
-                                SecurityController $securityController,
+                                UtilController $utilController,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository)
     {
@@ -74,8 +74,8 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->contactController = $contactController;
-        $this->securityController = $securityController;
         $this->settingsRepository = $settingsRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -161,7 +161,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             throw $this->createNotFoundException($e->getMessage());
                         }
 
-                        $initPasswordLink = $this->securityController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+                        $initPasswordLink = $this->utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
                         $str_replacers = [
                             'old' => ["[#initPasswordLink#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
                             'new' => [
