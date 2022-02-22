@@ -571,6 +571,7 @@ class HomeController extends AbstractController
     function getClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
+        $classementProgressionSaison = [];
         $classementProgressionPhase = [];
         $classementPointsMensuel = [];
         $classementPointsPhase = [];
@@ -589,14 +590,27 @@ class HomeController extends AbstractController
                 return [
                     'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
+                    'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
                     'pointsVirtuelsPointsWonMensuel' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
                     'pointsVirtuelsVirtualPoints' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getVirtualPoints() : null,
                     'pointsVirtuelsPointsWonPhase' => $joueur->getLicence() ? $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel() : null
                 ];
             }, $competiteurs);
+            $classementProgressionSaison = $classementProgressionMensuel;
             $classementProgressionPhase = $classementProgressionMensuel;
             $classementPointsMensuel = $classementProgressionMensuel;
             $classementPointsPhase = $classementProgressionMensuel;
+
+            /** Classement sur la saison selon les progressions */
+            usort($classementProgressionSaison, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsPointsWonSaison'] == $b['pointsVirtuelsPointsWonSaison']) {
+                    return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+                }
+                return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
+            });
 
             /** Classement mensuel selon les progressions */
             usort($classementProgressionMensuel, function ($a, $b) {
@@ -646,6 +660,7 @@ class HomeController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
+            'classementProgressionSaison' => $classementProgressionSaison,
             'classementProgressionMensuel' => $classementProgressionMensuel,
             'classementProgressionPhase' => $classementProgressionPhase,
             'classementPointsMensuel' => $classementPointsMensuel,
@@ -667,10 +682,11 @@ class HomeController extends AbstractController
         $annees = null;
 
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $virtualPoints = new VirtualPoints(0, 0);
+        $virtualPoints = new VirtualPoints(0, 0, 0);
         if ($this->getUser()->getLicence()) {
             try {
                 $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+                dump($virtualPoints);
                 $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                 $virtualPoints = $virtualPoints->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);

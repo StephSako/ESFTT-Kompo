@@ -1,28 +1,25 @@
 {% if erreur %}
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
-    <div class="virtualRankSwitches">
-        <div class="switch virtualClassement">
-            <label>
-                <span id="mode_mensuel">Mensuel</span>
-                <input type="checkbox" id="input_mode_plage">
-                <span class="lever"></span>
-                <span id="mode_phase">Phase</span>
-            </label>
-        </div>
 
-        <div class="switch virtualClassement">
-            <label>
-                <span id="mode_progression">Progression</span>
-                <input type="checkbox" id="input_mode_type">
-                <span class="lever"></span>
-                <span id="mode_points">Points</span>
-            </label>
+    <div class="virtualRankButtons">
+        <div class="buttonGroup">
+            <button class="btn waves-effect firstBtnVirtualPoints withMiddle" type="submit" name="action" onclick="changePeriode('mois')" id="btnMois">Mois</button>
+            <button class="btn waves-effect" type="submit" name="action" onclick="changePeriode('phase')" id="btnPhase">Phase</button>
+            <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changePeriode('saison')" id="btnSaison">Saison</button>
+        </div>
+        <div class="buttonGroup" id="buttonType">
+            <button class="btn waves-effect firstBtnVirtualPoints" type="submit" name="action" onclick="changeType('progression')" id="btnProgression">Progression</button>
+            <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changeType('points')" id="btnPoints">Points</button>
         </div>
     </div>
 
     <table class="striped rankingVirtualPoints">
-        <tbody id="mode_progression_mensuel">
+        <tbody id="mode_progression_saison">
+            {{ _self.classement(classementProgressionSaison, 'pointsVirtuelsPointsWonSaison') }}
+        </tbody>
+
+        <tbody id="mode_progression_mensuel" hidden="hidden">
             {{ _self.classement(classementProgressionMensuel, 'pointsVirtuelsPointsWonMensuel') }}
         </tbody>
 
@@ -40,91 +37,106 @@
     </table>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            let input_mode_plage = $('input#input_mode_plage');
-            let input_mode_type = $('input#input_mode_type');
-            let span_mode_mensuel = $('span#mode_mensuel');
-            let span_mode_phase = $('span#mode_phase');
-            let span_mode_progression = $('span#mode_progression');
-            let span_mode_points = $('span#mode_points');
-            let tbody_mode_progression_mensuel = $('tbody#mode_progression_mensuel');
-            let tbody_mode_progression_phase = $('tbody#mode_progression_phase');
-            let tbody_mode_points_mensuel = $('tbody#mode_points_mensuel');
-            let tbody_mode_points_phase = $('tbody#mode_points_phase');
+        let periode = 'mois';
+        let type = 'progression';
 
-            span_mode_mensuel.css('color', 'black').css('font-weight', 'bold');
-            span_mode_phase.css('color', 'grey');
-            span_mode_progression.css('color', 'black').css('font-weight', 'bold');
-            span_mode_points.css('color', 'grey');
+        let tbody_mode_progression_saison = $('tbody#mode_progression_saison');
+        let tbody_mode_progression_mensuel = $('tbody#mode_progression_mensuel');
+        let tbody_mode_progression_phase = $('tbody#mode_progression_phase');
+        let tbody_mode_points_mensuel = $('tbody#mode_points_mensuel');
+        let tbody_mode_points_phase = $('tbody#mode_points_phase');
+        let divButtonPeriod = $('div#buttonType');
+        let btnMois = $('button#btnMois');
+        let btnPhase = $('button#btnPhase');
+        let btnSaison = $('button#btnSaison');
+        let btnProgression = $('button#btnProgression');
+        let btnPoints = $('button#btnPoints');
 
-            /** Click sur le switch de la plage de classement (mensuel | phase) */
-            input_mode_plage.change(function () {
-                /** Si le switch du type est désactivé, on cache les classements par points */
-                if (!input_mode_type.is(":checked")) {
-                    tbody_mode_points_mensuel.attr('hidden', '');
+        btnMois.css('background-color', '#64b5f6');
+        btnProgression.css('background-color', '#64b5f6');
+
+        function changePeriode(periode) {
+            this.periode = periode;
+
+            if (periode === 'saison') {
+                btnMois.css('background-color', '#2196f3');
+                btnPhase.css('background-color', '#2196f3');
+                btnSaison.css('background-color', '#64b5f6');
+                tbody_mode_progression_saison.removeAttr('hidden');
+                tbody_mode_points_phase.attr('hidden', '');
+                tbody_mode_progression_phase.attr('hidden', '');
+                tbody_mode_points_mensuel.attr('hidden', '');
+                tbody_mode_progression_mensuel.attr('hidden', '');
+                divButtonPeriod.attr('hidden', '');
+            } else if (periode === 'phase') {
+                btnMois.css('background-color', '#2196f3');
+                btnPhase.css('background-color', '#64b5f6');
+                btnSaison.css('background-color', '#2196f3');
+                tbody_mode_progression_saison.attr('hidden', '');
+                tbody_mode_points_mensuel.attr('hidden', '');
+                tbody_mode_progression_mensuel.attr('hidden', '');
+                divButtonPeriod.removeAttr('hidden');
+                if (type === 'progression') {
                     tbody_mode_points_phase.attr('hidden', '');
-                    if (this.checked) { /** On affiche le classement de phase par progression */
-                        span_mode_mensuel.css('color', 'grey').css('font-weight', 'normal');
-                        span_mode_phase.css('color', 'black').css('font-weight', 'bold');
-                        tbody_mode_progression_phase.removeAttr('hidden');
-                        tbody_mode_progression_mensuel.attr('hidden', '');
-                    } else { /** On affiche le classement mensuel par progression */
-                        span_mode_mensuel.css('color', 'black').css('font-weight', 'bold');
-                        span_mode_phase.css('color', 'grey').css('font-weight', 'normal');
-                        tbody_mode_progression_phase.attr('hidden', '');
-                        tbody_mode_progression_mensuel.removeAttr('hidden');
-                    }
-                } else { /** Sinon, on cache les classements par progression */
-                    tbody_mode_progression_mensuel.attr('hidden', '');
+                    tbody_mode_progression_phase.removeAttr('hidden');
+                } else if (type === 'points') {
                     tbody_mode_progression_phase.attr('hidden', '');
-                    if (this.checked) { /** On affiche le classement de phase par points */
-                        span_mode_mensuel.css('color', 'grey').css('font-weight', 'normal');
-                        span_mode_phase.css('color', 'black').css('font-weight', 'bold');
-                        tbody_mode_points_phase.removeAttr('hidden');
-                        tbody_mode_points_mensuel.attr('hidden', '');
-                    } else { /** On affiche le classement mensuel par points */
-                        span_mode_mensuel.css('color', 'black').css('font-weight', 'bold');
-                        span_mode_phase.css('color', 'grey').css('font-weight', 'normal');
-                        tbody_mode_points_phase.attr('hidden', '');
-                        tbody_mode_points_mensuel.removeAttr('hidden');
-                    }
+                    tbody_mode_points_phase.removeAttr('hidden');
                 }
-            });
-
-            /** Click sur le switch du type de classement (progression | points) */
-            input_mode_type.change(function () {
-                /** Si le switch de la plage est désactivé, on cache les classements de phase */
-                if (!input_mode_plage.is(":checked")) {
-                    tbody_mode_progression_phase.attr('hidden', '');
-                    tbody_mode_points_phase.attr('hidden', '');
-                    if (this.checked) { /** On affiche le classement mensuel par points */
-                        span_mode_progression.css('color', 'grey').css('font-weight', 'normal');
-                        span_mode_points.css('color', 'black').css('font-weight', 'bold');
-                        tbody_mode_points_mensuel.removeAttr('hidden');
-                        tbody_mode_progression_mensuel.attr('hidden', '');
-                    } else { /** On affiche le classement mensuel par progression */
-                        span_mode_progression.css('color', 'black').css('font-weight', 'bold');
-                        span_mode_points.css('color', 'grey').css('font-weight', 'normal');
-                        tbody_mode_progression_mensuel.removeAttr('hidden');
-                        tbody_mode_points_mensuel.attr('hidden', '');
-                    }
-                } else { /** Sinon, on cache les classements mensuels */
-                    tbody_mode_progression_mensuel.attr('hidden', '');
+            } else if (periode === 'mois') {
+                btnMois.css('background-color', '#64b5f6');
+                btnPhase.css('background-color', '#2196f3');
+                btnSaison.css('background-color', '#2196f3');
+                tbody_mode_progression_saison.attr('hidden', '');
+                tbody_mode_points_phase.attr('hidden', '');
+                tbody_mode_progression_phase.attr('hidden', '');
+                divButtonPeriod.removeAttr('hidden');
+                if (type === 'progression') {
                     tbody_mode_points_mensuel.attr('hidden', '');
-                    if (this.checked) { /** On affiche le classement de phase par points */
-                        span_mode_progression.css('color', 'grey').css('font-weight', 'normal');
-                        span_mode_points.css('color', 'black').css('font-weight', 'bold');
-                        tbody_mode_points_phase.removeAttr('hidden');
-                        tbody_mode_progression_phase.attr('hidden', '');
-                    } else { /** On affiche le classement de phase par progression */
-                        span_mode_progression.css('color', 'black').css('font-weight', 'bold');
-                        span_mode_points.css('color', 'grey').css('font-weight', 'normal');
-                        tbody_mode_points_phase.attr('hidden', '');
-                        tbody_mode_progression_phase.removeAttr('hidden');
-                    }
+                    tbody_mode_progression_mensuel.removeAttr('hidden');
+                } else if (type === 'points') {
+                    tbody_mode_progression_mensuel.attr('hidden', '');
+                    tbody_mode_points_mensuel.removeAttr('hidden');
                 }
-            });
-        });
+            }
+        }
+
+        function changeType(type) {
+            this.type = type;
+
+            if (type === 'progression') {
+                tbody_mode_points_phase.attr('hidden', '');
+                tbody_mode_points_mensuel.attr('hidden', '');
+                btnProgression.css('background-color', '#64b5f6');
+                btnPoints.css('background-color', '#2196f3');
+                if (periode === 'saison') {
+                    tbody_mode_progression_saison.removeAttr('hidden');
+                    tbody_mode_progression_phase.attr('hidden', '');
+                    tbody_mode_progression_mensuel.attr('hidden', '');
+                } else if (periode === 'phase') {
+                    tbody_mode_progression_saison.attr('hidden', '');
+                    tbody_mode_progression_phase.removeAttr('hidden');
+                    tbody_mode_progression_mensuel.attr('hidden', '');
+                } else if (periode === 'mois') {
+                    tbody_mode_progression_saison.attr('hidden', '');
+                    tbody_mode_progression_phase.attr('hidden', '');
+                    tbody_mode_progression_mensuel.removeAttr('hidden');
+                }
+            } else if (type === 'points') {
+                tbody_mode_progression_saison.attr('hidden', '');
+                tbody_mode_progression_mensuel.attr('hidden', '');
+                tbody_mode_progression_mensuel.attr('hidden', '');
+                btnProgression.css('background-color', '#2196f3');
+                btnPoints.css('background-color', '#64b5f6');
+                if (periode === 'phase') {
+                    tbody_mode_progression_mensuel.attr('hidden', '');
+                    tbody_mode_progression_phase.removeAttr('hidden');
+                } else if (periode === 'mois') {
+                    tbody_mode_progression_mensuel.removeAttr('hidden');
+                    tbody_mode_progression_phase.attr('hidden', '');
+                }
+            }
+        }
     </script>
 {% endif %}
 

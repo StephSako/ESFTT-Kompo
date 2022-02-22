@@ -514,7 +514,7 @@ form h5 {
   border-radius: 15px;
 }
 
-.virtualRankSwitches {
+.virtualRankButtons {
   display: flex;
   justify-content: space-evenly;
 }
@@ -537,17 +537,6 @@ form h5 {
 
 span.virtualPoints {
   background-color: #0c3a69;
-}
-
-.switch.virtualClassement {
-  margin-bottom: 8px;
-  margin-top: 8px;
-}
-.switch.virtualClassement label {
-  padding: 0;
-}
-.switch.virtualClassement label .lever {
-  margin: 0 2px;
 }
 
 table.rankingVirtualPoints {
@@ -990,6 +979,29 @@ table.table-last-compos tr {
   top: 7px;
 }
 
+.buttonGroup button {
+  height: 20px;
+  line-height: 20px;
+  border-radius: 0;
+  font-size: 80%;
+  padding: 0 7px;
+  margin: 10px 0;
+  background-color: #2196f3;
+}
+.buttonGroup button:hover {
+  background-color: #64b5f6 !important;
+}
+.buttonGroup button.firstBtnVirtualPoints {
+  border-radius: 8px 0 0 8px;
+}
+.buttonGroup button.firstBtnVirtualPoints.withMiddle {
+  right: -3px !important;
+}
+.buttonGroup button.lastBtnVirtualPoints {
+  left: -3px !important;
+  border-radius: 0 8px 8px 0;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1166,7 +1178,7 @@ table.table-last-compos tr {
   }
 }
 @media screen and (max-width: 344px) {
-  .virtualRankSwitches {
+  .virtualRankButtons {
     font-size: 13px;
   }
 }
@@ -1185,12 +1197,12 @@ table.table-last-compos tr {
   }
 }
 @media screen and (max-width: 320px) {
-  .virtualRankSwitches {
+  .virtualRankButtons {
     font-size: 12px;
   }
 }
 @media screen and (max-width: 305px) {
-  .virtualRankSwitches {
+  .virtualRankButtons {
     font-size: 11px;
   }
 }
