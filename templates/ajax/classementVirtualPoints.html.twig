@@ -8,19 +8,23 @@
             <button class="btn waves-effect" type="submit" name="action" onclick="changePeriode('phase')" id="btnPhase">Phase</button>
             <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changePeriode('saison')" id="btnSaison">Saison</button>
         </div>
-        <div class="buttonGroup" id="buttonType">
-            <button class="btn waves-effect firstBtnVirtualPoints" type="submit" name="action" onclick="changeType('progression')" id="btnProgression">Progression</button>
-            <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changeType('points')" id="btnPoints">Points</button>
+        <div class="buttonGroup">
+            <button class="btn waves-effect firstBtnVirtualPoints" type="submit" name="action" onclick="changeTri('progression')" id="btnProgression">Progression</button>
+            <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changeTri('points')" id="btnPoints">Points</button>
         </div>
     </div>
 
     <table class="striped rankingVirtualPoints">
-        <tbody id="mode_progression_saison">
+        <tbody id="mode_progression_mensuel">
+            {{ _self.classement(classementProgressionMensuel, 'pointsVirtuelsPointsWonMensuel') }}
+        </tbody>
+
+        <tbody id="mode_progression_saison" hidden="hidden">
             {{ _self.classement(classementProgressionSaison, 'pointsVirtuelsPointsWonSaison') }}
         </tbody>
 
-        <tbody id="mode_progression_mensuel" hidden="hidden">
-            {{ _self.classement(classementProgressionMensuel, 'pointsVirtuelsPointsWonMensuel') }}
+        <tbody id="mode_points_saison" hidden="hidden">
+            {{ _self.classement(classementPointsSaison, 'pointsVirtuelsPointsWonSaison') }}
         </tbody>
 
         <tbody id="mode_progression_phase" hidden="hidden">
@@ -38,14 +42,14 @@
 
     <script type="text/javascript">
         let periode = 'mois';
-        let type = 'progression';
+        let tri = 'progression';
 
         let tbody_mode_progression_saison = $('tbody#mode_progression_saison');
         let tbody_mode_progression_mensuel = $('tbody#mode_progression_mensuel');
         let tbody_mode_progression_phase = $('tbody#mode_progression_phase');
+        let tbody_mode_points_saison = $('tbody#mode_points_saison');
         let tbody_mode_points_mensuel = $('tbody#mode_points_mensuel');
         let tbody_mode_points_phase = $('tbody#mode_points_phase');
-        let divButtonPeriod = $('div#buttonType');
         let btnMois = $('button#btnMois');
         let btnPhase = $('button#btnPhase');
         let btnSaison = $('button#btnSaison');
@@ -55,31 +59,36 @@
         btnMois.css('background-color', '#64b5f6');
         btnProgression.css('background-color', '#64b5f6');
 
-        function changePeriode(periode) {
-            this.periode = periode;
+        function changePeriode(newPeriode) {
+            periode = newPeriode;
 
             if (periode === 'saison') {
                 btnMois.css('background-color', '#2196f3');
                 btnPhase.css('background-color', '#2196f3');
                 btnSaison.css('background-color', '#64b5f6');
-                tbody_mode_progression_saison.removeAttr('hidden');
                 tbody_mode_points_phase.attr('hidden', '');
                 tbody_mode_progression_phase.attr('hidden', '');
                 tbody_mode_points_mensuel.attr('hidden', '');
                 tbody_mode_progression_mensuel.attr('hidden', '');
-                divButtonPeriod.attr('hidden', '');
+                if (tri === 'progression') {
+                    tbody_mode_points_saison.attr('hidden', '');
+                    tbody_mode_progression_saison.removeAttr('hidden');
+                } else if (tri === 'points') {
+                    tbody_mode_progression_saison.attr('hidden', '');
+                    tbody_mode_points_saison.removeAttr('hidden');
+                }
             } else if (periode === 'phase') {
                 btnMois.css('background-color', '#2196f3');
                 btnPhase.css('background-color', '#64b5f6');
                 btnSaison.css('background-color', '#2196f3');
                 tbody_mode_progression_saison.attr('hidden', '');
+                tbody_mode_points_saison.attr('hidden', '');
                 tbody_mode_points_mensuel.attr('hidden', '');
                 tbody_mode_progression_mensuel.attr('hidden', '');
-                divButtonPeriod.removeAttr('hidden');
-                if (type === 'progression') {
+                if (tri === 'progression') {
                     tbody_mode_points_phase.attr('hidden', '');
                     tbody_mode_progression_phase.removeAttr('hidden');
-                } else if (type === 'points') {
+                } else if (tri === 'points') {
                     tbody_mode_progression_phase.attr('hidden', '');
                     tbody_mode_points_phase.removeAttr('hidden');
                 }
@@ -87,26 +96,27 @@
                 btnMois.css('background-color', '#64b5f6');
                 btnPhase.css('background-color', '#2196f3');
                 btnSaison.css('background-color', '#2196f3');
+                tbody_mode_points_saison.attr('hidden', '');
                 tbody_mode_progression_saison.attr('hidden', '');
                 tbody_mode_points_phase.attr('hidden', '');
                 tbody_mode_progression_phase.attr('hidden', '');
-                divButtonPeriod.removeAttr('hidden');
-                if (type === 'progression') {
+                if (tri === 'progression') {
                     tbody_mode_points_mensuel.attr('hidden', '');
                     tbody_mode_progression_mensuel.removeAttr('hidden');
-                } else if (type === 'points') {
+                } else if (tri === 'points') {
                     tbody_mode_progression_mensuel.attr('hidden', '');
                     tbody_mode_points_mensuel.removeAttr('hidden');
                 }
             }
         }
 
-        function changeType(type) {
-            this.type = type;
+        function changeTri(newTri) {
+            tri = newTri;
 
-            if (type === 'progression') {
+            if (tri === 'progression') {
                 tbody_mode_points_phase.attr('hidden', '');
                 tbody_mode_points_mensuel.attr('hidden', '');
+                tbody_mode_points_saison.attr('hidden', '');
                 btnProgression.css('background-color', '#64b5f6');
                 btnPoints.css('background-color', '#2196f3');
                 if (periode === 'saison') {
@@ -122,18 +132,24 @@
                     tbody_mode_progression_phase.attr('hidden', '');
                     tbody_mode_progression_mensuel.removeAttr('hidden');
                 }
-            } else if (type === 'points') {
+            } else if (tri === 'points') {
                 tbody_mode_progression_saison.attr('hidden', '');
                 tbody_mode_progression_mensuel.attr('hidden', '');
-                tbody_mode_progression_mensuel.attr('hidden', '');
+                tbody_mode_progression_phase.attr('hidden', '');
                 btnProgression.css('background-color', '#2196f3');
                 btnPoints.css('background-color', '#64b5f6');
                 if (periode === 'phase') {
-                    tbody_mode_progression_mensuel.attr('hidden', '');
-                    tbody_mode_progression_phase.removeAttr('hidden');
+                    tbody_mode_points_mensuel.attr('hidden', '');
+                    tbody_mode_points_phase.removeAttr('hidden');
+                    tbody_mode_points_saison.attr('hidden', '');
                 } else if (periode === 'mois') {
-                    tbody_mode_progression_mensuel.removeAttr('hidden');
-                    tbody_mode_progression_phase.attr('hidden', '');
+                    tbody_mode_points_mensuel.removeAttr('hidden');
+                    tbody_mode_points_phase.attr('hidden', '');
+                    tbody_mode_points_saison.attr('hidden', '');
+                } else if (periode === 'saison') {
+                    tbody_mode_points_saison.removeAttr('hidden');
+                    tbody_mode_points_phase.attr('hidden', '');
+                    tbody_mode_points_mensuel.attr('hidden', '');
                 }
             }
         }

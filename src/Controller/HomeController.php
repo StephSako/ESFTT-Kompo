@@ -571,6 +571,7 @@ class HomeController extends AbstractController
     function getClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
+        $classementPointsSaison = [];
         $classementProgressionSaison = [];
         $classementProgressionPhase = [];
         $classementPointsMensuel = [];
@@ -597,6 +598,7 @@ class HomeController extends AbstractController
                 ];
             }, $competiteurs);
             $classementProgressionSaison = $classementProgressionMensuel;
+            $classementPointsSaison = $classementProgressionMensuel;
             $classementProgressionPhase = $classementProgressionMensuel;
             $classementPointsMensuel = $classementProgressionMensuel;
             $classementPointsPhase = $classementProgressionMensuel;
@@ -610,6 +612,17 @@ class HomeController extends AbstractController
                     return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
                 }
                 return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
+            });
+
+            /** Classement sur la saison selon les points */
+            usort($classementPointsSaison, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsVirtualPoints'] == $b['pointsVirtuelsVirtualPoints']) {
+                    return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
+                }
+                return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
 
             /** Classement mensuel selon les progressions */
@@ -665,6 +678,7 @@ class HomeController extends AbstractController
             'classementProgressionPhase' => $classementProgressionPhase,
             'classementPointsMensuel' => $classementPointsMensuel,
             'classementPointsPhase' => $classementPointsPhase,
+            'classementPointsSaison' => $classementPointsSaison,
             'erreur' => $erreur,
         ])->getContent());
     }
