@@ -20,33 +20,29 @@ class ContactController extends AbstractController
 {
     private $competiteurRepository;
     private $championnatRepository;
-    private $mailer;
     private $settingsRepository;
-    private $securityController;
-    private $homeController;
+    private $mailer;
+    private $utilController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
-     * @param HomeController $homeController
-     * @param SecurityController $securityController
+     * @param UtilController $utilController
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer,
-                                HomeController $homeController,
-                                SecurityController $securityController,
+                                UtilController $utilController,
                                 SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
-        $this->mailer = $mailer;
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
-        $this->securityController = $securityController;
-        $this->homeController = $homeController;
+        $this->mailer = $mailer;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -55,8 +51,8 @@ class ContactController extends AbstractController
      */
     public function index(): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->homeController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
@@ -144,7 +140,7 @@ class ContactController extends AbstractController
                 throw $this->createNotFoundException($e->getMessage());
             }
 
-            $resetPasswordLink = $this->securityController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $resetPasswordLink = $this->utilController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
             $str_replacers = [
                 'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
                 'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]

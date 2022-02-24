@@ -130,8 +130,8 @@
                 {% if isPreRentreeLaunchable %}
                     <div class="card-panel center setDispoCard">
                         <p class="green-text lighten-2"><i class="material-icons">done</i>
-                            La phase est terminée : lancez la pré-rentrée pour préparer la prochaine phase
-                            <br><a href="{{ path('backoffice.reset.phase') }}">Lancer la pré-rentrée ici</a>
+                            La phase est terminée : lancez la Pré-phase pour préparer la prochaine phase
+                            <br><a href="{{ path('backoffice.reset.phase') }}">Lancer la Pré-phase ici</a>
                         </p>
                     </div>
                 {% endif %}
@@ -283,7 +283,7 @@
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
-                                    <i class="material-icons">add_circle_outline</i>
+                                    <i class="material-icons">group_add</i>
                                 </a>
                                 {% if not compo.isEmpty %}
                                     {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}

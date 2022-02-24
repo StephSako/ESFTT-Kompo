@@ -2,7 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Controller\InvalidSelectionController;
+use App\Controller\UtilController;
 use App\Entity\Disponibilite;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
@@ -25,7 +25,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $journeeRepository;
     private $rencontreRepository;
     private $championnatRepository;
-    private $invalidSelectionController;
+    private $utilController;
 
     /**
      * BackOfficeController constructor.
@@ -33,7 +33,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
-     * @param InvalidSelectionController $invalidSelectionController
+     * @param UtilController $utilController
      * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
@@ -41,7 +41,7 @@ class BackOfficeDisponibiliteController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em,
-                                InvalidSelectionController $invalidSelectionController,
+                                UtilController $utilController,
                                 ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository)
     {
@@ -51,7 +51,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->invalidSelectionController = $invalidSelectionController;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -129,7 +129,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             if (!$disponibiliteBoolean){
                 $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
                 $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-                $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+                $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
                 foreach ($invalidCompos as $compo){
                     /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
@@ -175,7 +175,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             /** On supprime le joueur des compositions d'équipe de la journée actuelle */
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-            $this->invalidSelectionController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+            $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
             foreach ($invalidCompos as $compo){
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */

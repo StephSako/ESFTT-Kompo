@@ -2,7 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
-use App\Controller\InvalidSelectionController;
+use App\Controller\UtilController;
 use App\Entity\Championnat;
 use App\Entity\Journee;
 use App\Entity\Rencontre;
@@ -23,24 +23,24 @@ class BackOfficeChampionnatController extends AbstractController
     private $em;
     private $championnatRepository;
     private $journeeRepository;
-    private $invalidSelectionController;
+    private $utilController;
 
     /**
      * BackOfficeChampionnatController constructor.
      * @param ChampionnatRepository $championnatRepository
-     * @param InvalidSelectionController $invalidSelectionController
+     * @param UtilController $utilController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
-                                InvalidSelectionController $invalidSelectionController,
+                                UtilController $utilController,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->journeeRepository = $journeeRepository;
-        $this->invalidSelectionController = $invalidSelectionController;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -129,7 +129,7 @@ class BackOfficeChampionnatController extends AbstractController
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
                             for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
-                                if ($rencontre->getIdJoueurN($j)) $this->invalidSelectionController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
+                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
                             }
                             $rencontre->sortComposition();
                         }

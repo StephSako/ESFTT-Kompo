@@ -381,8 +381,9 @@ p.lobster {
 }
 
 .btn_gestion {
-  margin-top: 0;
+  margin-top: 5px;
 }
+
 .rank.rank_blue, .light_blue {
   color: $light_blue;
 }
@@ -587,7 +588,7 @@ form {
   }
 }
 
-.virtualRankSwitches {
+.virtualRankButtons {
   display: flex;
   justify-content: space-evenly;
 }
@@ -615,19 +616,6 @@ form {
 
 span.virtualPoints {
   background-color: #0c3a69;
-}
-
-.switch.virtualClassement {
-  margin-bottom: 8px;
-  margin-top: 8px;
-
-  label {
-    padding: 0;
-
-    .lever {
-      margin: 0 2px;
-    }
-  }
 }
 
 table.rankingVirtualPoints {
@@ -1121,6 +1109,33 @@ table.table-last-compos {
   }
 }
 
+.buttonGroup button {
+  height: 20px;
+  line-height: 20px;
+  border-radius: 0;
+  font-size: 80%;
+  padding: 0 7px;
+  margin: 10px 0;
+  background-color: #2196f3;
+
+  &:hover {
+    background-color: #64b5f6 !important;
+  }
+
+  &.firstBtnVirtualPoints {
+    border-radius: 8px 0 0 8px;
+
+    &.withMiddle {
+      right: -3px !important;
+    }
+  }
+
+  &.lastBtnVirtualPoints{
+    left: -3px !important;
+    border-radius: 0 8px 8px 0;
+  }
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -1330,14 +1345,8 @@ table.table-last-compos {
   }
 }
 
-@media screen and (max-width: 347px) {
-  a#bo_mail_mdp_oublie {
-    margin-top: 10px;
-  }
-}
-
 @media screen and (max-width: 344px) {
-  .virtualRankSwitches  {
+  .virtualRankButtons  {
     font-size: 13px;
   }
 }
@@ -1359,13 +1368,13 @@ table.table-last-compos {
 }
 
 @media screen and (max-width: 320px) {
-  .virtualRankSwitches  {
+  .virtualRankButtons  {
     font-size: 12px;
   }
 }
 
 @media screen and (max-width: 305px) {
-  .virtualRankSwitches  {
+  .virtualRankButtons  {
     font-size: 11px;
   }
 }
