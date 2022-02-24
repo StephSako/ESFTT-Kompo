@@ -700,7 +700,6 @@ class HomeController extends AbstractController
         if ($this->getUser()->getLicence()) {
             try {
                 $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
-                dump($virtualPoints);
                 $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
                 $virtualPoints = $virtualPoints->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);

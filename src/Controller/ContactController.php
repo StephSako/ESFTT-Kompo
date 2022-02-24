@@ -22,23 +22,27 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $settingsRepository;
     private $mailer;
+    private $utilController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
+     * @param UtilController $utilController
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer,
+                                UtilController $utilController,
                                 SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
         $this->mailer = $mailer;
+        $this->utilController = $utilController;
     }
 
     /**

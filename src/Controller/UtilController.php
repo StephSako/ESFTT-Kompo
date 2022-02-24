@@ -37,7 +37,7 @@ class UtilController extends AbstractController
         $latestDate = $this->getLastDates($championnat);
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
         else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la Pré-phase prête à être lancée'];
-        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la Pré-phase'];
+        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-phase'];
     }
 
     /**

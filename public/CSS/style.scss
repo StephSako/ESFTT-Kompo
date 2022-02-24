@@ -381,8 +381,9 @@ p.lobster {
 }
 
 .btn_gestion {
-  margin-top: 0;
+  margin-top: 5px;
 }
+
 .rank.rank_blue, .light_blue {
   color: $light_blue;
 }
@@ -1341,12 +1342,6 @@ table.table-last-compos {
     h5.unsetTitle {
       font-size: 1.45em;
     }
-  }
-}
-
-@media screen and (max-width: 347px) {
-  a#bo_mail_mdp_oublie {
-    margin-top: 10px;
   }
 }
 

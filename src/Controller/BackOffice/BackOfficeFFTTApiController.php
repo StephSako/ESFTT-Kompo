@@ -493,10 +493,9 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
 
-                        // TODO SEND EMAIL
-                        $mails = array_map(function ($address) {
-                            return new Address($address);
-                        }, explode(',', $this->contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['toString']));
+                        $mails = array_map(function ($joueur) {
+                            return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
+                        }, $this->contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['contactables']);
 
                         $settings = $this->settingsRepository->find(1);
                         try {
@@ -513,7 +512,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $message,
                                 null,
                                 true);
-                            $this->addFlash('success', "L'alerte a été envoyée");
+                            $this->addFlash('success', "L'alerte de pré-phase a été envoyée");
                         } catch (Exception $e) {
                             $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
                         }
