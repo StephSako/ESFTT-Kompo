@@ -365,6 +365,9 @@ class BackOfficeCompetiteurController extends AbstractController
         ] : []);
     }
 
+    /**
+     * @throws Exception
+     */
     private function getDataForPDF(): array
     {
         $competiteursList = [];
@@ -390,13 +393,13 @@ class BackOfficeCompetiteurController extends AbstractController
         $sheet = $spreadsheet->getActiveSheet();
 
         /** On set les noms des colonnes */
-        $headers = ['Licence', 'Nom', 'Prénom', 'Date de naissance', 'Points officiels', 'Classement', 'Année certificat', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
-        for ($col = 'A', $i = 0; $col !== 'M'; $col++, $i++) {
+        $headers = ['Licence', 'Nom', 'Prénom', 'Date de naissance', 'Points officiels', 'Classement', 'Critérium fédéral', 'Catégorie', 'Certificat médical', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
+        for ($col = 'A', $i = 0; $col !== 'O'; $col++, $i++) {
             $sheet->setCellValue($col . '1', $headers[$i]);
         }
 
         /** On set le style des headers */
-        $sheet->getStyle('A1:L1')->applyFromArray(
+        $sheet->getStyle('A1:N1')->applyFromArray(
             array(
                 'fill' => array(
                     'fillType' => Fill::FILL_SOLID,
@@ -409,28 +412,9 @@ class BackOfficeCompetiteurController extends AbstractController
             )
         );
 
-        foreach ($dataCompetiteurs as $index => $competiteur) {
-            $date = explode('/', $competiteur[3]);
-            $date = implode('-', array_reverse($date));
-            if ($competiteur[11] != 'Archive' && (($competiteur[3] && (new DateTime())->diff(new DateTime($date))->y >= 18) || !$competiteur[3])){
-                $sheet->getStyle('G' . ($index + 2))->applyFromArray(
-                    array(
-                        'fill' => array(
-                            'fillType' => Fill::FILL_SOLID,
-                            'startColor' => array('rgb' => $competiteur[6] < ((new DateTime())->format('Y')) - 2 ? 'E94040' : '2DB009')
-                        ),
-                        'font'  => array(
-                            'bold'  =>  true,
-                            'color' => array('rgb' => 'FFFFFF' )
-                        )
-                    )
-                );
-            }
-        }
-
         $sheet->fromArray($dataCompetiteurs,'', 'A2', true);
         /** On resize automatiquement les colonnes */
-        for($col = 'A'; $col !== 'M'; $col++) {
+        for($col = 'A'; $col !== 'O'; $col++) {
             $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
         }
 
