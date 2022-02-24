@@ -55,7 +55,7 @@
 
             document.getElementById('editor').onkeyup = function() {
                 let passedArray = JSON.parse('{{ variables | json_encode | raw }}');
-                let variablesEditor = editor.html().match(/\[\#(.*?)\#\]/g);
+                let variablesEditor = editor.html().match(/\[\#(.*?)\#\]/g) ?? [];
                 passedArray.sort();
                 variablesEditor.sort();
                 let difference = passedArray.filter(value => !variablesEditor.includes(value)).length;
