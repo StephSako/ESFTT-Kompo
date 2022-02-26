@@ -19,10 +19,10 @@
             <p><i class="material-icons blue-text">info</i> <b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
         </div>
 
-        <div class="card-panel center-align">
+        <div class="card-panel center-align" style="padding: 15px 10px">
             {% if competiteurs|length %}
 
-                <a style="margin-bottom: 10px" class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
+                <a class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
 
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
                     <li><a class="white-text modal-trigger" href="#modal{{ 'tous' }}">Tous</a></li>
@@ -84,7 +84,7 @@
                     'sms:' ~ joueurs['administrateurs']['sms']['toString'])
                 }}
 
-                <table id="table-to-adapt-columns" class="striped centered responsive-table table_contact" style="font-size: 14px">
+                <table style="margin-top: 10px" id="table-to-adapt-columns" class="striped centered responsive-table table_contact">
                     <thead>
                         <tr class="hide-on-med-and-down">
                             <th></th>
@@ -128,7 +128,7 @@
                                     <td style="padding-top: 10px; padding-bottom: 10px;">
                                         {{ competiteur.nom }} {{ competiteur.prenom }}
                                     </td>
-                                    <td>
+                                    <td style="padding-top: 10px; padding-bottom: 10px;">
                                         {% if (competiteur.mail and competiteur.contactableMail) or (competiteur.mail2 and competiteur.contactableMail2) %}
                                             {% if competiteur.mail and competiteur.contactableMail %}
                                                 <a class="btn blue truncate" href="mailto:{{ competiteur.mail }}">
