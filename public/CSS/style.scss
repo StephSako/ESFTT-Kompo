@@ -1066,6 +1066,10 @@ table.table-last-compos {
   }
 }
 
+#title_points_virtuels {
+  vertical-align: sub
+}
+
 .lien_court {
   display: none;
 }
@@ -1160,6 +1164,12 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 1357px) {
+  .preloader_personnal_virtual_rank {
+    padding-top: 5px;
+  }
+}
+
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
@@ -1191,6 +1201,13 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 1090px) {
+  #title_points_virtuels {
+    font-size: 15px;
+    margin-left: 10px;
+  }
+}
+
 // md grid
 @media screen and (max-width: 992px) {
   th.th_picture_compet_table {
@@ -1208,6 +1225,7 @@ table.table-last-compos {
   td.td_picture_compet {
     padding-top: 0;
     padding-bottom: 0;
+    height: 55px;
   }
 
   .setDispoCard {
@@ -1278,6 +1296,7 @@ table.table-last-compos {
   td.td_picture_compet {
     padding-top: 0;
     padding-bottom: 0;
+    height: 40px;
 
     & img.picture_compet{
       width: 40px;
