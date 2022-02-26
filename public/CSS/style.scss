@@ -1164,7 +1164,7 @@ table.table-last-compos {
   }
 }
 
-@media screen and (max-width: 1357px) {
+@media screen and (min-width: 992px) and (max-width: 1357px) {
   .preloader_personnal_virtual_rank {
     padding-top: 5px;
   }
