@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "al37350/fftt-api",
-            "version": "1.9.2",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/al37350/ffttAPI.git",
-                "reference": "67eb618f7f5db5409301556c498f6ae87d56ac90"
+                "reference": "b5f3c2b9d712a3e87fbab3edb8e2f017563f2643"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/al37350%2FffttAPI/repository/archive.zip?sha=67eb618f7f5db5409301556c498f6ae87d56ac90",
-                "reference": "67eb618f7f5db5409301556c498f6ae87d56ac90",
+                "url": "https://gitlab.com/api/v4/projects/al37350%2FffttAPI/repository/archive.zip?sha=b5f3c2b9d712a3e87fbab3edb8e2f017563f2643",
+                "reference": "b5f3c2b9d712a3e87fbab3edb8e2f017563f2643",
                 "shasum": ""
             },
             "require": {
@@ -51,9 +51,10 @@
             ],
             "description": "Permet de consommer l'api FFTT",
             "support": {
-                "issues": "https://gitlab.com/api/v4/projects/3582279/issues"
+                "issues": "https://gitlab.com/al37350/ffttAPI/-/issues",
+                "source": "https://gitlab.com/al37350/ffttAPI/-/tree/1.10.0"
             },
-            "time": "2021-12-05T10:15:45+00:00"
+            "time": "2022-02-26T10:54:32+00:00"
         },
         {
             "name": "amphp/amp",
@@ -2674,12 +2675,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "HTMLPurifier": "library/"
-                },
                 "files": [
                     "library/HTMLPurifier.composer.php"
                 ],
+                "psr-0": {
+                    "HTMLPurifier": "library/"
+                },
                 "exclude-from-classmap": [
                     "/library/HTMLPurifier/Language/"
                 ]
@@ -9176,12 +9177,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\String\\": ""
-                },
                 "files": [
                     "Resources/functions.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Component\\String\\": ""
+                },
                 "exclude-from-classmap": [
                     "/Tests/"
                 ]
