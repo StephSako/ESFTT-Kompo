@@ -272,11 +272,12 @@
 {#                </div>#}
 {#            {% endif %}#}
 
+            <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
             <button
                 {% if editMode %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
-                class="btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
+                class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>
         {{ form_end(form) }}
     </div>

@@ -69,6 +69,8 @@ class BackOfficeChampionnatController extends AbstractController
                 $championnat->setNom($championnat->getNom());
                 $this->em->persist($championnat);
 
+                if ($championnat->getNbJournees() < 2) $championnat->setJ2Rule(false);
+
                 /** On créé les n journées du championnat */
                 for ($i = 0; $i < $championnat->getNbJournees(); $i++) {
                     $journee = new Journee();
@@ -136,6 +138,7 @@ class BackOfficeChampionnatController extends AbstractController
                     }
                 }
 
+                if ($championnat->getNbJournees() < 2) $championnat->setJ2Rule(false);
                 $championnat->setNom($championnat->getNom());
 
                 /** Si nbJournees diminue, on supprime les rencontres, sinon on en créé */

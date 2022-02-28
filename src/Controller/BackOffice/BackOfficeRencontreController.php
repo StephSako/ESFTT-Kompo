@@ -71,36 +71,50 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    /** On récupère la valeur du switch du template **/
-                    $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
-                    $rencontre->setAdversaire($rencontre->getAdversaire());
 
-                    /** Si la rencontre n'est pas ou plus avancée/reportée, la date redevient celle de la journée associée **/
-                    if ($rencontre->isReporte()) {
-                        if ($rencontre->getDateReport() == $rencontre->getIdJournee()->getDateJournee()) throw new Exception('Renseignez une date de report différente de la date initiale', 12345);
+                    /** Si l'équipe est exemptée, on remet les champs à zéro */
+                    if ($rencontre->isExempt()) {
+                        $rencontre->setDomicile(true);
+                        $rencontre->setAdversaire(null);
+                        $rencontre->setVilleHost(null);
+                        $rencontre->setReporte(false);
 
-                        /** On ne peut pas mélanger les dates */
-                        $journeesBefore = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
-                            return $rencChamp->getDateJournee() <= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
-                        });
-                        $journeesAfter = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
-                            return $rencChamp->getDateJournee() >= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
-                        });
-                        $journeeBefore = $journeesBefore ? end($journeesBefore) : null;
-                        $journeeAfter = $journeesAfter ? array_shift($journeesAfter) : null;
-
-                        if ($journeeBefore && $journeeBefore->getIdJournee() > $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être ultèrieure ou égale à la date de journées suivantes');
-                        else if ($journeeAfter && $journeeAfter->getIdJournee() < $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être postèrieure ou égale à la date de journées précédentes');
-                        else {
-                            $this->em->flush();
-                            $this->addFlash('success', 'Rencontre modifiée');
-                            return $this->redirectToRoute('backoffice.rencontres');
-                        }
-                    } else {
                         $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                         $this->em->flush();
                         $this->addFlash('success', 'Rencontre modifiée');
                         return $this->redirectToRoute('backoffice.rencontres');
+                    } else {
+                        /** On récupère la valeur du switch du template **/
+                        $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
+                        $rencontre->setAdversaire($rencontre->getAdversaire());
+
+                        /** Si la rencontre n'est pas ou plus avancée/reportée, la date redevient celle de la journée associée **/
+                        if ($rencontre->isReporte()) {
+                            if ($rencontre->getDateReport() == $rencontre->getIdJournee()->getDateJournee()) throw new Exception('Renseignez une date de report différente de la date initiale', 12345);
+
+                            /** On ne peut pas mélanger les dates */
+                            $journeesBefore = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
+                                return $rencChamp->getDateJournee() <= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
+                            });
+                            $journeesAfter = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
+                                return $rencChamp->getDateJournee() >= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
+                            });
+                            $journeeBefore = $journeesBefore ? end($journeesBefore) : null;
+                            $journeeAfter = $journeesAfter ? array_shift($journeesAfter) : null;
+
+                            if ($journeeBefore && $journeeBefore->getIdJournee() > $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être ultèrieure ou égale à la date de journées suivantes');
+                            else if ($journeeAfter && $journeeAfter->getIdJournee() < $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être postèrieure ou égale à la date de journées précédentes');
+                            else {
+                                $this->em->flush();
+                                $this->addFlash('success', 'Rencontre modifiée');
+                                return $this->redirectToRoute('backoffice.rencontres');
+                            }
+                        } else {
+                            $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
+                            $this->em->flush();
+                            $this->addFlash('success', 'Rencontre modifiée');
+                            return $this->redirectToRoute('backoffice.rencontres');
+                        }
                     }
                 } catch(Exception $e){
                     if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
