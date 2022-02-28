@@ -34,11 +34,11 @@
                         <b>Ville de remplacement</b><br><i>(en cas de salle indisponible)</i>{{ form_row(form.villeHost, {'id': 'ville_host'}) }}
                     </div>
                 </div>
-                <div class="issue row valign-wrapper">
-                    <div class="col s12 m6">
+                <div class="issue">
+                    <div>
                         {{ form_row(form.reporte, {'id': 'reporte'}) }}
                     </div>
-                    <div class="col s12 m6" style="padding-left: 0; padding-right: 0;">
+                    <div style="padding-left: 0; padding-right: 0;">
                         <div class="container titlecase">
                             {{ form_row(form.dateReport) }}
                         </div>
@@ -51,7 +51,7 @@
 
             <br>
             <a href="{{ path('backoffice.rencontres') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
-            <button class="btn btn_form waves-effect light-blue darken-1">Modifier</button>
+            <button class="btn btn_form waves-effect light-blue btn_gestion darken-1">Modifier</button>
         {{ form_end(form) }}
     </div>
 
