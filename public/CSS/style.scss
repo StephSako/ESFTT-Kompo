@@ -609,7 +609,7 @@ form {
 
     i.material-icons.interaction {
       vertical-align: text-top;
-      font-size:1.1rem;
+      font-size: 1.1rem;
     }
   }
 }
@@ -624,22 +624,22 @@ table.rankingVirtualPoints {
     padding-left: 0;
     padding-right: 0;
 
+    &.td-name {
+      display: none;
+    }
+
+    i {
+      vertical-align: middle;
+      font-size: 20px;
+    }
+
     & .chip{
-      i {
-        vertical-align: middle;
-      }
+      padding-right: 0;
+      margin-bottom: 0;
 
       .nom {
         font-size: 13px !important;
       }
-    }
-
-    &.points-td {
-      min-width: 86px;
-    }
-
-    &.progression-td {
-      min-width: 49px;
     }
   }
 }
@@ -1347,11 +1347,37 @@ table.table-last-compos {
   }
 }
 
-@media screen and (max-width: 406px) {
-  table.rankingVirtualPoints td .chip {
-    padding: 0;
-    img {
+@media screen and (max-width: 411px) {
+  table.rankingVirtualPoints td {
+    .chip {
+      padding: 0;
+      img {
+        display: none;
+      }
+    }
+
+    &.td-chip {
       display: none;
+    }
+
+    &.td-name {
+      display: table-cell;
+      max-width: 20px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &.points-td {
+      min-width: 82px;
+      max-width: 82px;
+      width: 82px;
+    }
+
+    &.progression-td {
+      min-width: 58px;
+      max-width: 58px;
+      width: 58px;
     }
   }
 }
@@ -1376,6 +1402,16 @@ table.table-last-compos {
   }
 }
 
+@media screen and (max-width: 325px) {
+  .virtualRankButtons  {
+    flex-direction: column;
+
+    .buttonGroup:first-child button {
+      margin-bottom: 0;
+    }
+  }
+}
+
 @media screen and (max-width: 324px) {
   .noDivisionPillHeader {
     display: none;
@@ -1383,18 +1419,6 @@ table.table-last-compos {
 
   .noDivisionPillBody {
     display: block;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .virtualRankButtons  {
-    font-size: 12px;
-  }
-}
-
-@media screen and (max-width: 305px) {
-  .virtualRankButtons  {
-    font-size: 11px;
   }
 }
 
