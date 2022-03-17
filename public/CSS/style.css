@@ -546,17 +546,19 @@ table.rankingVirtualPoints td {
   padding-left: 0;
   padding-right: 0;
 }
-table.rankingVirtualPoints td .chip i {
+table.rankingVirtualPoints td.td-name {
+  display: none;
+}
+table.rankingVirtualPoints td i {
   vertical-align: middle;
+  font-size: 20px;
+}
+table.rankingVirtualPoints td .chip {
+  padding-right: 0;
+  margin-bottom: 0;
 }
 table.rankingVirtualPoints td .chip .nom {
   font-size: 13px !important;
-}
-table.rankingVirtualPoints td.points-td {
-  min-width: 86px;
-}
-table.rankingVirtualPoints td.progression-td {
-  min-width: 49px;
 }
 
 .tooltipped {
@@ -1176,12 +1178,32 @@ table.table-last-compos tr {
     padding: 10px 0;
   }
 }
-@media screen and (max-width: 406px) {
+@media screen and (max-width: 411px) {
   table.rankingVirtualPoints td .chip {
     padding: 0;
   }
   table.rankingVirtualPoints td .chip img {
     display: none;
+  }
+  table.rankingVirtualPoints td.td-chip {
+    display: none;
+  }
+  table.rankingVirtualPoints td.td-name {
+    display: table-cell;
+    max-width: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  table.rankingVirtualPoints td.points-td {
+    min-width: 82px;
+    max-width: 82px;
+    width: 82px;
+  }
+  table.rankingVirtualPoints td.progression-td {
+    min-width: 58px;
+    max-width: 58px;
+    width: 58px;
   }
 }
 @media screen and (max-width: 381px) {
@@ -1199,6 +1221,14 @@ table.table-last-compos tr {
     font-size: 18px;
   }
 }
+@media screen and (max-width: 325px) {
+  .virtualRankButtons {
+    flex-direction: column;
+  }
+  .virtualRankButtons .buttonGroup:first-child button {
+    margin-bottom: 0;
+  }
+}
 @media screen and (max-width: 324px) {
   .noDivisionPillHeader {
     display: none;
@@ -1206,16 +1236,6 @@ table.table-last-compos tr {
 
   .noDivisionPillBody {
     display: block;
-  }
-}
-@media screen and (max-width: 320px) {
-  .virtualRankButtons {
-    font-size: 12px;
-  }
-}
-@media screen and (max-width: 305px) {
-  .virtualRankButtons {
-    font-size: 11px;
   }
 }
 @media screen and (max-width: 307px) {

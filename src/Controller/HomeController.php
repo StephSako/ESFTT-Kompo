@@ -589,7 +589,7 @@ class HomeController extends AbstractController
                     } catch (Exception $e) {}
                 }
                 return [
-                    'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                    'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
                     'pointsVirtuelsPointsWonMensuel' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
