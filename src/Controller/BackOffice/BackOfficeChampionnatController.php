@@ -131,7 +131,7 @@ class BackOfficeChampionnatController extends AbstractController
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
                             for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
-                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee());
+                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee(), $championnat->getMaxNumeroEquipes());
                             }
                             $rencontre->sortComposition();
                         }

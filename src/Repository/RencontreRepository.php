@@ -57,13 +57,12 @@ class RencontreRepository extends ServiceEntityRepository
      * Liste des compositions où le joueur est brûlé et sélectionné dans de futures compositions
      * @param int $idCompetiteur
      * @param int $idJournee
-     * @param int $idEquipe
      * @param int $limiteBrulage
      * @param int $nbJoueurs
      * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $idEquipe, int $limiteBrulage, int $nbJoueurs, int $type){
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $limiteBrulage, int $nbJoueurs, int $type){
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
         $strP = $strRP = '';
@@ -80,25 +79,20 @@ class RencontreRepository extends ServiceEntityRepository
             ->from('App:Competiteur', 'c')
             ->leftJoin('r.idEquipe', 'e')
             ->where('r.idJournee > :idJournee')
-            ->andWhere('e.numero > :idEquipe')
             ->andWhere('e.idChampionnat = :idChampionnat')
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->andWhere($strRP)
 
-            /** Nombre de macthes joués dans les équipes supèrieures depuis le début à aujourd'hui */
+            /** Nombre de matches joués dans les équipes supèrieures depuis le début à aujourd'hui */
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe e1 ' .
                        'WHERE (' . $strP . ') ' .
                        'AND p.idEquipe = e1.idEquipe ' .
-                       'AND e1.numero <= :idEquipe ' .
                        'AND p.idJournee <= :idJournee ' .
                        'AND p.idChampionnat = :idChampionnat ' .
                        'AND e1.idDivision IS NOT NULL ' .
-                       'AND e1.numero < (SELECT MAX(e2.numero) FROM App\Entity\Equipe e2 ' .
-                                        'WHERE e2.idChampionnat = :idChampionnat ' .
-                                        'AND e2.idDivision IS NOT NULL)) >= :limite')
+                       'AND e1.numero < e.numero) >= :limite')
             ->setParameter('idCompetiteur', $idCompetiteur)
-            ->setParameter('idEquipe', $idEquipe)
             ->setParameter('limite', $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)

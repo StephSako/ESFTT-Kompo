@@ -64,11 +64,10 @@ class UtilController extends AbstractController
      * @param int $idChampionnat
      * @param int $idJoueur
      * @param int $nbJoueurs
-     * @param int $numEquipe
      * @param int $idJournee
      */
-    public function checkInvalidSelection(int $limiteBrulage, int $idChampionnat, int $idJoueur, int $nbJoueurs, int $numEquipe, int $idJournee){
-        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $numEquipe, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs, $idJoueur);
+    public function checkInvalidSelection(int $limiteBrulage, int $idChampionnat, int $idJoueur, int $nbJoueurs, int $idJournee){
+        $this->deleteInvalidSelectedPlayers($this->rencontreRepository->getSelectedWhenBurnt($idJoueur, $idJournee, $limiteBrulage, $nbJoueurs, $idChampionnat), $nbJoueurs, $idJoueur);
     }
 
     /**

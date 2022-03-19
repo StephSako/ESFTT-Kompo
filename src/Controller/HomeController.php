@@ -302,7 +302,7 @@ class HomeController extends AbstractController
                     foreach ($journeesToRecalculate as $journeeToRecalculate) {
                         for ($j = 0; $j < $nbJoueursDivision; $j++) {
                             if ($form->getData()->getIdJoueurN($j)) {
-                                $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $compo->getIdEquipe()->getNumero(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
+                                $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
                                 if ($invalidCompo){
                                     array_push($invalidCompos, ...$invalidCompo);
                                     $this->utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
