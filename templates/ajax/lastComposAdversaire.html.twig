@@ -5,7 +5,7 @@
     {% if journees|length > 0 %}
         {% for journee in journees %}
             <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille blue reset"><b>J{{ loop.index }} :</b> {{ journee.nomAdversaireBis }}</span>
-                {% if journee.resultat.resultat %}
+                {% if journee.resultat.resultat and journee.joueurs|length > 0 %}
                     <i class="material-icons">chevron_right</i><span class="pastille {{ journee.resultat.resultat }} reset">{{ journee.resultat.score }}</span>
                 {% endif %}
             </p>
