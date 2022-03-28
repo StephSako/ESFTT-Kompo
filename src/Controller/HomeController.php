@@ -93,7 +93,7 @@ class HomeController extends AbstractController
         if ($championnat) {
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'id' => $championnat->getNextJourneeToPlay()->getIdJournee()
+                'id' => $championnat->getNextJourneeToPlay() ? $championnat->getNextJourneeToPlay()->getIdJournee() : $championnat->getJournees()->toArray()[0]->getIdJournee()
             ]);
         } else return $this->redirectToRoute('index', []);
     }
@@ -187,6 +187,8 @@ class HomeController extends AbstractController
             return !$joueur->getLicence();
         }));
 
+        $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -209,7 +211,8 @@ class HomeController extends AbstractController
             'isPreRentreeLaunchable' => $this->utilController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
-            'countJoueursWithoutLicence' => $countJoueursWithoutLicence
+            'countJoueursWithoutLicence' => $countJoueursWithoutLicence,
+            'linkNextJournee' => $linkNextJournee
         ]);
     }
 

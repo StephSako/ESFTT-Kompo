@@ -93,10 +93,20 @@ class UtilController extends AbstractController
      * @return Journee
      */
     public function nextJourneeToPlayAllChamps(): Journee {
-        $array = array_map(function($c) {
+        $allChamps = $this->championnatRepository->findAll();
+        $array = array_filter(array_map(function($c) {
             return $c->getNextJourneeToPlay();
-        }, $this->championnatRepository->findAll());
-        usort($array, function($a, $b) {
+        }, $allChamps), function($cNJTP) {
+            return $cNJTP;
+        });
+
+         /** Si toutes les dates de tous les championnats sont indéfinies */
+        if (!$array) return $allChamps[0]->getJournees()[0];
+
+        usort($array, function($a, $b) use ($allChamps) {
+            if (!$a && !$b) return $allChamps[0]->getJournees()[0]->getDateJournee()->getTimestamp();
+            if (!$a) return $b->getDateJournee()->getTimestamp();
+            if (!$b) return $a->getDateJournee()->getTimestamp();
             return $a->getDateJournee()->getTimestamp() - $b->getDateJournee()->getTimestamp();
         });
         return array_shift($array);

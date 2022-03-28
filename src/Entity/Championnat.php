@@ -411,13 +411,14 @@ class Championnat
 
     /**
      * Retourne l'ID de la prochaine journée à jouer
-     * @return Journee
+     * @return Journee|null
      */
-    public function getNextJourneeToPlay(): Journee
+    public function getNextJourneeToPlay():? Journee
     {
+        $journees = $this->getJournees()->toArray();
         $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function($journee) {
             return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });
-        return array_shift($nextJourneeToPlay);
+        return array_shift($nextJourneeToPlay) ?: null;
     }
 }

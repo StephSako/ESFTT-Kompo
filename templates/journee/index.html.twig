@@ -402,6 +402,14 @@
             </div>
         </div>
 
+        {% if linkNextJournee %}
+            <div class="fixed-action-btn">
+                <a class="btn-floating light-blue tooltipped pulse" href="{{ linkNextJournee }}" data-position="left" data-tooltip="Aller à la journée à venir">
+                    <i class="large material-icons">event</i>
+                </a>
+            </div>
+        {% endif %}
+
         {# Modale des classement des points virtuels #}
         <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-alert center">
             <div class="modal-content">
