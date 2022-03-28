@@ -24,4 +24,8 @@ $(document).ready(function() {
     $('.collapsible').collapsible({
         accordion : false
     });
+
+    $(document).ready(function(){
+        $('.fixed-action-btn').floatingActionButton();
+    });
 });

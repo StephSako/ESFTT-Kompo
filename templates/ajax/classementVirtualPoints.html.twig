@@ -165,14 +165,14 @@
                     {% if loop.index <4 %}
                         <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
                     {% endif %}
-                    <span class="nom{% if joueur["nom"] == app.user.nom ~ ' ' ~ app.user.prenom %} bold{% endif %}">{{ joueur["nom"] }}</span>
+                    <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
                 </div>
             </td>
             <td class="td-name">
                 {% if loop.index < 4 %}
                     <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
                 {% endif %}
-                <span class="nom{% if joueur["nom"] == app.user.nom ~ ' ' ~ app.user.prenom %} bold{% endif %}">{{ joueur["nom"] }}</span>
+                <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
             </td>
             {% if joueur["pointsVirtuelsVirtualPoints"] %}
                 <td class="points-td">

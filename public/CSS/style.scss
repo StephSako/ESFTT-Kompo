@@ -1270,6 +1270,11 @@ table.table-last-compos {
   .col_infos_licence {
     margin-top: 5px !important;
   }
+
+  .fixed-action-btn {
+    bottom: 0;
+    top: 2px;
+  }
 }
 
 @media screen and (max-width: 720px) {
@@ -1312,6 +1317,11 @@ table.table-last-compos {
     figure.table {
       margin: 0 !important;
     }
+  }
+
+  .fixed-action-btn {
+    bottom: 0;
+    top: -2px;
   }
 }
 

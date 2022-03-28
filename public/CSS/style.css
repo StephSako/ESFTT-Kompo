@@ -1116,6 +1116,11 @@ table.table-last-compos tr {
   .col_infos_licence {
     margin-top: 5px !important;
   }
+
+  .fixed-action-btn {
+    bottom: 0;
+    top: 2px;
+  }
 }
 @media screen and (max-width: 720px) {
   .modal.modal-alert {
@@ -1149,6 +1154,11 @@ table.table-last-compos tr {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
+  }
+
+  .fixed-action-btn {
+    bottom: 0;
+    top: -2px;
   }
 }
 @media screen and (max-width: 550px) {

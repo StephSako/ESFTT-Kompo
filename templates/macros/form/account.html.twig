@@ -280,6 +280,16 @@
                 class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
             </button>
         {{ form_end(form) }}
+
+        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and editMode %}
+            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: options.competiteurId}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
+                <input type='hidden' name='_method' value='DELETE'>
+                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ options.competiteurId) }}'>
+                <button class='btn waves-effect red lighten-2 btn_gestion'>
+                    Supprimer
+                </button>
+            </form>
+        {% endif %}
     </div>
 
     <script type="text/javascript">
