@@ -38,6 +38,7 @@ Dès lors que vous êtes connecté, vous arrivez automatiquement sur la page de 
 <h4 id="gestion">Gestion - Back-office</h4>
 <h4 id="se_deconnecter">Se déconnecter</h4>
 <h4 id="sur_mobile">Sur mobile</h4>
+<h4 id="journee_a_venir">Journée à venir</h4>
 
 Sur le haut de la page sont listées toutes les journées de la phase, numérotées et datées. Il suffit de cliquer dessus pour accéder aux compositions de la journée correspondante.
 Le dernier item permet de <i>switcher</i> de championnat entre départemental et Paris.
