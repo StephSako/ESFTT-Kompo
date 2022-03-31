@@ -88,6 +88,13 @@ class Settings
     private $mailPrePhase;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(type="text", name="message_sans_dispo", nullable=true)
+     */
+    private $messageSansDispo;
+
+    /**
      * @return string|null
      */
     public function getMailCertifMedicPerim(): ?string
@@ -250,6 +257,24 @@ class Settings
     }
 
     /**
+     * @return string|null
+     */
+    public function getMessageSansDispo(): ?string
+    {
+        return $this->messageSansDispo;
+    }
+
+    /**
+     * @param string|null $messageSansDispo
+     * @return Settings
+     */
+    public function setMessageSansDispo(?string $messageSansDispo): self
+    {
+        $this->messageSansDispo = $messageSansDispo;
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @return string|null
      * @throws Exception
@@ -264,6 +289,7 @@ class Settings
         else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
         else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
         else if ($type == 'mail-pre-phase') return $this->getMailPrePhase();
+        else if ($type == 'sans-dispo') return $this->getMessageSansDispo();
         throw new Exception("Ce contenu n'existe pas", 404);
     }
 

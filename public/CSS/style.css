@@ -78,6 +78,10 @@ html, body {
   padding: 0;
   width: 100%;
 }
+.dispos a.modalAlertNoDispoSet {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .dispos tr:first-child th {
   padding-top: 0;
   padding-bottom: 0;
@@ -279,6 +283,9 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
 
 i {
   vertical-align: bottom;
+}
+i.campaign {
+  font-size: 1.5rem;
 }
 
 .divisionBubble {
@@ -529,10 +536,6 @@ form h5 {
 }
 .virtualPointsDiv span {
   width: 15%;
-}
-.virtualPointsDiv i.material-icons.interaction {
-  vertical-align: text-top;
-  font-size: 1.1rem;
 }
 
 span.virtualPoints {
@@ -1035,6 +1038,11 @@ table.table-last-compos tr {
   .exempt {
     margin-left: 80px;
     margin-right: 80px;
+  }
+}
+@media screen and (min-width: 993px) and (max-width: 1171px) {
+  a#modalAlertNoDispoSetpcStyle {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 1167px) {

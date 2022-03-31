@@ -6,14 +6,14 @@
                 <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter par SMS</i></p>
 
                 {% if options.info is defined %}
-                    <p class="blue-text"><i class="material-icons">info</i>{{ options.info }}</p>
+                    <p class="blue-text"><i class="material-icons">info</i> {{ options.info }}</p>
                 {% endif %}
-
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par mail', linkMail) }}
 
                 {% if not options.noSMS is defined %}
                     {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS) }}
                 {% endif %}
+
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par mail', linkMail) }}
             </div>
         </div>
         <div class="modal-footer">

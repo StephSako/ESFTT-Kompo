@@ -29,6 +29,7 @@ class HomeController extends AbstractController
     private $rencontreRepository;
     private $settingsRepository;
     private $utilController;
+    private $contactController;
 
     /**
      * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
@@ -37,13 +38,13 @@ class HomeController extends AbstractController
         'criterium-federal' => 'CritFed'
     ];
 
-
     /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
+     * @param ContactController $contactController
      * @param EntityManagerInterface $em
      * @param UtilController $utilController
      */
@@ -52,6 +53,7 @@ class HomeController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository,
+                                ContactController $contactController,
                                 EntityManagerInterface $em,
                                 UtilController $utilController)
     {
@@ -62,6 +64,7 @@ class HomeController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
         $this->utilController = $utilController;
+        $this->contactController = $contactController;
     }
 
     /**
@@ -126,6 +129,7 @@ class HomeController extends AbstractController
 
         // Joueurs n'ayant pas déclaré leur disponibilité
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
+        $joueursNonDeclaresContact = $this->contactController->returnPlayersContact($joueursNonDeclares);
 
         // Compositions d'équipe
         $compos = $this->rencontreRepository->getRencontres($id, $type);
@@ -189,6 +193,8 @@ class HomeController extends AbstractController
 
         $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
 
+        $messageJoueursSansDispo = $this->settingsRepository->find(1)->getInfosType('sans-dispo');
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -205,6 +211,7 @@ class HomeController extends AbstractController
             'dispos' => $joueursDeclares,
             'disponible' => $disponible,
             'joueursNonDeclares' => $joueursNonDeclares,
+            'joueursNonDeclaresContact' => $joueursNonDeclaresContact,
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
@@ -212,6 +219,7 @@ class HomeController extends AbstractController
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
             'countJoueursWithoutLicence' => $countJoueursWithoutLicence,
+            'messageJoueursSansDispo' => $messageJoueursSansDispo,
             'linkNextJournee' => $linkNextJournee
         ]);
     }
