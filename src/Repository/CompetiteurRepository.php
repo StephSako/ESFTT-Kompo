@@ -29,9 +29,6 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findJoueursNonDeclares(int $idJournee, int $type): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c.nom')
-            ->addSelect('c.idCompetiteur')
-            ->addSelect('c.prenom')
             ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite d WHERE d.idJournee = :idJournee AND d.idChampionnat = :idChampionnat)")
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)

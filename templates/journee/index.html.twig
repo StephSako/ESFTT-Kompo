@@ -288,7 +288,7 @@
                                 {% if not compo.isEmpty %}
                                     {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
                                         <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
-                                            <i class="material-icons">record_voice_over</i>
+                                            <i class="material-icons campaign">campaign</i>
                                         </a>
                                         {{ _modalContact.modalAlertPlayers
                                             (
@@ -375,7 +375,7 @@
                 </div>
                 <div class="collapsible-body">
                     <div class="center-align">
-                        {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
+                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
                     </div>
                 </div>
             </li>
@@ -398,7 +398,7 @@
                 <div class="hide-on-med-and-down">
                     {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
                 </div>
-                {{ _disponibilites.table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
             </div>
         </div>
 

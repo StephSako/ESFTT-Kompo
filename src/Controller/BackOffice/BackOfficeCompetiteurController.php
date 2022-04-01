@@ -163,7 +163,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                         $initPasswordLink = $this->utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
                         $str_replacers = [
-                            'old' => ["[#initPasswordLink#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
+                            'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
                             'new' => [
                                 "ce <a href=\"$initPasswordLink\">lien</a>",
                                 $competiteur->getUsername(),

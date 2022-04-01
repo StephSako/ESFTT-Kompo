@@ -1,4 +1,5 @@
-{% macro table(joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+    {% import 'macros/modalContact.html.twig' as _modalContact %}
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
     <div class="card-panel dispos">
@@ -44,7 +45,11 @@
             </tbody>
         </table>
 
-        <a style="margin-top: 10px; margin-bottom: 10px;" class="card-panel modal-trigger btn waves-effect blue center-align center" href="#{{ nomModal }}">Tout afficher</a>
+        <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
+
+        {% if joueursNonDeclares|length > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+            <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
+        {% endif %}
     </div>
     <div id="{{ nomModal }}" class="modal modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
@@ -55,6 +60,19 @@
             <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
         </div>
     </div>
+
+    {% if joueursNonDeclaresContact|length > 0 %}
+        {{ _modalContact.modalAlertPlayers
+            (
+                'AlertNoDispoSet' ~ nomModal,
+                joueursNonDeclaresContact,
+                'Joueurs non déclarés',
+                'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
+                'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?' ~ messageJoueursSansDispo,
+                { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
+            )
+        }}
+    {% endif %}
 {% endmacro %}
 
 {% macro recapitulatif(allDisponibilites, nomTab, championnat) %}
