@@ -21,7 +21,8 @@ class Settings
         'mail-bienvenue' => 'mail de bienvenue',
         'mail-mdp-oublie' => 'mail de mot de passe oublié',
         'mail-certif-medic-perim' => 'mail de certificat médical périmé',
-        'mail-pre-phase' => 'mail de pré-phase'
+        'mail-pre-phase' => 'mail de pré-phase',
+        'mail-sans-dispo' => 'mail pour les joueurs non déclarés'
     ];
 
     /**
@@ -90,9 +91,9 @@ class Settings
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text", name="message_sans_dispo", nullable=true)
+     * @ORM\Column(type="text", name="mail_sans_dispo", nullable=true)
      */
-    private $messageSansDispo;
+    private $mailSansDispo;
 
     /**
      * @return string|null
@@ -259,18 +260,18 @@ class Settings
     /**
      * @return string|null
      */
-    public function getMessageSansDispo(): ?string
+    public function getMailSansDispo(): ?string
     {
-        return $this->messageSansDispo;
+        return $this->mailSansDispo;
     }
 
     /**
-     * @param string|null $messageSansDispo
+     * @param string|null $mailSansDispo
      * @return Settings
      */
-    public function setMessageSansDispo(?string $messageSansDispo): self
+    public function setMailSansDispo(?string $mailSansDispo): self
     {
-        $this->messageSansDispo = $messageSansDispo;
+        $this->mailSansDispo = $mailSansDispo;
         return $this;
     }
 
@@ -289,7 +290,7 @@ class Settings
         else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
         else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
         else if ($type == 'mail-pre-phase') return $this->getMailPrePhase();
-        else if ($type == 'sans-dispo') return $this->getMessageSansDispo();
+        else if ($type == 'mail-sans-dispo') return $this->getMailSansDispo();
         throw new Exception("Ce contenu n'existe pas", 404);
     }
 

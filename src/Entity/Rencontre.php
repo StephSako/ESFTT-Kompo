@@ -686,20 +686,20 @@ class Rencontre
         date_default_timezone_set('Europe/Paris');
         $br = '%0D%0A%0D%0A';
         $message = "&body=Salut, c'est " . $prenomSender . '.' .  $br;
-        $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero();
+        $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero() . ' pour le championnat : ' . $this->getIdChampionnat()->getNom();
 
         if (!$this->getIdJournee()->getUndefined()){
-            $message .= ' le ';
+            $message .= ', le ';
             if (!$this->isReporte()) $message .= $this->getIdJournee()->getDateJourneeFrench();
             else $message .= $this->getDateReportFrench();
-        } else $message .= ' à une date indéterminée pour le moment';
+        } else $message .= ', à une date indéterminée pour le moment';
         $message .= ".";
 
         if ($this->isExempt()) $message .=  "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . 'Bonne journée à vous.';
         else {
             $message .= $br . 'Les joueurs sélectionnés sont :%0D%0A' . implode('%0D%0A', array_map(function($joueur){return $joueur->getPrenom() . ' ' . $joueur->getNom();}, $this->getListSelectedPlayers())) . $br;
 
-            $message .= 'Vous avez rendez-vous à la ';
+            $message .= 'Merci de me confirmer votre disponibilité en réponse à ce message !%0D%0AVous avez rendez-vous à la ';
 
             if ($this->getDomicile() && !$this->getVilleHost()) $message .= 'salle Albert Marquet à 19h45';
             else $message .= 'gare de La Frette à 19h30';

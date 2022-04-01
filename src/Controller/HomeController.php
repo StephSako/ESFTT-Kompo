@@ -124,18 +124,37 @@ class HomeController extends AbstractController
         // Objet Disponibilité du joueur
         $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
 
+        // Numero de la journée
+        $numJournee = array_search($journee, $journees)+1;
+
         // Joueurs ayant déclaré leur disponibilité
         $joueursDeclares = $this->disponibiliteRepository->findJoueursDeclares($id, $type);
 
         // Joueurs n'ayant pas déclaré leur disponibilité
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
         $joueursNonDeclaresContact = $this->contactController->returnPlayersContact($joueursNonDeclares);
+        if (count($joueursNonDeclares)) {
+            $messageJoueursSansDispo = $this->settingsRepository->find(1)->getInfosType('mail-sans-dispo');
+
+            /** Formattage du message **/
+            setlocale (LC_TIME, 'fr_FR.utf8','fra');
+            date_default_timezone_set('Europe/Paris');
+            $str_replacers = [
+                'old' => ['[#n_journee#]', '[#date_journee#]', '[#nom_redacteur#]', '[#nom_championnat#]'],
+                'new' => [$numJournee, $journee->getDateJourneeFrench(), $this->getUser()->getPrenom() . ' ' . $this->getUser()->getNom(), $championnat->getNom()]
+            ];
+            $objetJoueursSansDispos = 'Disponibilité non déclarée - J' . $numJournee . ' - ' . $championnat->getNom() . ' - ' . $journee->getDateJournee()->format('d/m/Y');
+            $messageJoueursSansDispo = str_replace($str_replacers['old'], $str_replacers['new'], $messageJoueursSansDispo);
+            $messageJoueursSansDispo = str_replace('</p><p>', '%0D%0A%0D%0A', $messageJoueursSansDispo);
+            $messageJoueursSansDispo = str_replace('<p>', '', $messageJoueursSansDispo);
+            $messageJoueursSansDispo = str_replace('</p>', '', $messageJoueursSansDispo);
+            $messageJoueursSansDispo = strip_tags($messageJoueursSansDispo);
+        } else {
+            $messageJoueursSansDispo = $objetJoueursSansDispos = null;
+        }
 
         // Compositions d'équipe
         $compos = $this->rencontreRepository->getRencontres($id, $type);
-
-        // Numero de la journée
-        $numJournee = array_search($journee, $journees)+1;
 
         // Joueurs sélectionnées
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
@@ -193,8 +212,6 @@ class HomeController extends AbstractController
 
         $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
 
-        $messageJoueursSansDispo = $this->settingsRepository->find(1)->getInfosType('sans-dispo');
-
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -220,6 +237,7 @@ class HomeController extends AbstractController
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
             'countJoueursWithoutLicence' => $countJoueursWithoutLicence,
             'messageJoueursSansDispo' => $messageJoueursSansDispo,
+            'objetJoueursSansDispos' => $objetJoueursSansDispos,
             'linkNextJournee' => $linkNextJournee
         ]);
     }
@@ -721,7 +739,7 @@ class HomeController extends AbstractController
                     return $histo->getAnneeFin();
                 }, $historique);
             } catch (Exception $e) {
-                $erreur = 'Points virtuels indisponible';
+                $erreur = 'Points virtuels indisponibles';
             }
         } else $erreur = 'Licence du joueur inexistante';
 

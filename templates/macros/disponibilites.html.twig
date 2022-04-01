@@ -1,4 +1,4 @@
-{% macro table(messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
@@ -47,7 +47,7 @@
 
         <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
-        {% if joueursNonDeclaresContact|length > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+        {% if joueursNonDeclares|length > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
             <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
         {% endif %}
     </div>
@@ -67,7 +67,7 @@
                 'AlertNoDispoSet' ~ nomModal,
                 joueursNonDeclaresContact,
                 'Joueurs non déclarés',
-                'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - Disponibilité non renseignée&body=' ~ messageJoueursSansDispo,
+                'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
                 'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?' ~ messageJoueursSansDispo,
                 { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
             )
