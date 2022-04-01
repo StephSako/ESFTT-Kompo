@@ -20,69 +20,24 @@
         </div>
 
         <div class="card-panel center-align" style="padding: 15px 10px">
+
             {% if competiteurs|length %}
-
                 <a class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
-
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'tous' }}">Tous</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'loisirs' }}">Loisirs</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'competiteurs' }}">Compétiteurs</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'crit_fed' }}">Critérium fédéral</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'capitaines' }}">Capitaines</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'entraineurs' }}">Entraîneurs</a></li>
-                    <li><a class="white-text modal-trigger" href="#modal{{ 'administrateurs' }}">Administrateurs</a></li>
+                    {% for nom, categorie in categories %}
+                        <li><a class="white-text modal-trigger" href="#modal{{ nom }}">{{ categorie['titleItem'] }}</a></li>
+                    {% endfor %}
                 </ul>
 
-                {{ _modalContact.modalAlertPlayers(
-                    'tous',
-                    joueurs['tous'],
-                    'Contacter tout le monde',
-                    'mailto:' ~ joueurs['tous']['mail']['toString'],
-                    'sms:' ~ joueurs['tous']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'loisirs',
-                    joueurs['loisirs'],
-                    'Contacter les loisirs',
-                    'mailto:' ~ joueurs['loisirs']['mail']['toString'],
-                    'sms:' ~ joueurs['loisirs']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'competiteurs',
-                    joueurs['competiteurs'],
-                    'Contacter les competiteurs',
-                    'mailto:' ~ joueurs['competiteurs']['mail']['toString'],
-                    'sms:' ~ joueurs['competiteurs']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'crit_fed',
-                    joueurs['crit_fed'],
-                    'Contacter les compétiteurs du critérium fédéral',
-                    'mailto:' ~ joueurs['crit_fed']['mail']['toString'],
-                    'sms:' ~ joueurs['crit_fed']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'capitaines',
-                    joueurs['capitaines'],
-                    'Contacter les capitaines',
-                    'mailto:' ~ joueurs['capitaines']['mail']['toString'],
-                    'sms:' ~ joueurs['capitaines']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'entraineurs',
-                    joueurs['entraineurs'],
-                    'Contacter les entraineurs',
-                    'mailto:' ~ joueurs['entraineurs']['mail']['toString'],
-                    'sms:' ~ joueurs['entraineurs']['sms']['toString'])
-                }}
-                {{ _modalContact.modalAlertPlayers(
-                    'administrateurs',
-                    joueurs['administrateurs'],
-                    'Contacter les administrateurs',
-                    'mailto:' ~ joueurs['administrateurs']['mail']['toString'],
-                    'sms:' ~ joueurs['administrateurs']['sms']['toString'])
-                }}
+                {% for nom, categorie in categories %}
+                    {{ _modalContact.modalAlertPlayers(
+                        nom,
+                        categorie['joueurs'],
+                        categorie['titleModale'],
+                        'mailto:' ~ categorie['joueurs']['mail']['toString'],
+                        'sms:' ~ categorie['joueurs']['sms']['toString'])
+                    }}
+                {% endfor %}
 
                 <table style="margin-top: 10px" id="table-to-adapt-columns" class="striped centered responsive-table table_contact">
                     <thead>
