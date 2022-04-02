@@ -59,21 +59,20 @@ class ContactController extends AbstractController
         $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
 
         $idRedacteur = $this->getUser()->getIdCompetiteur();
-        $joueurs = [];
-        $joueurs['tous'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur));
-        $joueurs['loisirs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur));
-        $joueurs['competiteurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur));
-        $joueurs['crit_fed'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur));
-        $joueurs['capitaines'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur));
-        $joueurs['entraineurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur));
-        $joueurs['administrateurs'] = $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur));
+        $categories['tous'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur)), 'titleItem' => 'Tous', 'titleModale' => ' tout le monde'];
+        $categories['loisirs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur)), 'titleItem' => 'Loisirs', 'titleModale' => 'les loisirs'];
+        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur)), 'titleItem' => 'Compétiteurs', 'titleModale' => 'les competiteurs'];
+        $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur)), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'les compétiteurs du critérium fédéral'];
+        $categories['capitaines'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur)), 'titleItem' => 'Capitaines', 'titleModale' => 'les capitaines'];
+        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur)), 'titleItem' => 'Entraineurs', 'titleModale' => 'les entraineurs'];
+        $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'les administrateurs'];
 
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'journees' => $journees,
-            'joueurs' => $joueurs
+            'categories' => $categories
         ]);
     }
 

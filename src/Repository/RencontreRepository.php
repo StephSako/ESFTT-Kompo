@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Rencontre;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -133,33 +134,17 @@ class RencontreRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $idCompetiteur
-     * @param int $idJoueurColumn
-     * @return int|mixed|string
-     */
-    public function setDeletedCompetiteurToNull(int $idCompetiteur, int $idJoueurColumn)
-    {
-        return $this->createQueryBuilder('r')
-            ->update('App\Entity\Rencontre', 'r')
-            ->set('r.idJoueur' . $idJoueurColumn, 'NULL')
-            ->where('r.idJoueur' . $idJoueurColumn . ' = :idCompetiteur')
-            ->setParameter('idCompetiteur', $idCompetiteur)
-            ->getQuery()
-            ->execute();
-    }
-
-    /**
      * Réinitialise les rencontres pour une nouvelle phase
      * @param int $nbJoueurs
      * @return int|mixed|string
      */
     public function reset(int $nbJoueurs)
     {
-        $query = $this->createQueryBuilder('r')
-            ->update('App\Entity\Rencontre', 'r');
+        $query = $this->createQueryBuilder('r')->update('App\Entity\Rencontre', 'r');
         for ($i = 0; $i < $nbJoueurs; $i++){
             $query = $query->set('r.idJoueur' . $i, null);
         }
+
         return $query
             ->set('r.reporte', false)
             ->set('r.dateReport', 'j.dateJournee')
@@ -191,10 +176,13 @@ class RencontreRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les sélections d'un joueur dand un championnat dont le tri de ses compositions d'équipe est automatique
+     * Récupère les sélections d'un joueur pour les dates ultèrieures à aujourd'hui inclus
+     * @param int $idJoueur
+     * @param int $nbMaxJoueurs
+     * @param bool $inFutureCompos Récupérer les sélections de futures journées
      * @return array|string|null
      */
-    public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs): array {
+    public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs, bool $inFutureCompos): array {
         $str = '';
         for ($i = 0; $i < $nbMaxJoueurs; $i++) {
             $str .= 'r.idJoueur' . $i . ' = :idJoueur';
@@ -203,9 +191,10 @@ class RencontreRepository extends ServiceEntityRepository
 
         $query = $this->createQueryBuilder('r')
             ->select('r')
+            ->leftJoin('r.idJournee', 'j')
             ->leftJoin('r.idChampionnat', 'ch')
-            ->where('ch.compoSorted = 1')
-            ->andWhere($str);
+            ->where($str);
+            if ($inFutureCompos) $query = $query->andWhere("j.dateJournee >= DATE('" . (new DateTime())->format('Y-m-d') . "')");
 
         return $query->setParameter('idJoueur', $idJoueur)
         ->getQuery()

@@ -86,7 +86,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Brûlages en championnat départemental
+     * Liste du brûlage
      * @param int $type
      * @param int $idJournee
      * @param array $idEquipes
@@ -141,7 +141,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Brûlage des joueurs sélectionnables dans une compo
+     * Brûlage des joueurs sélectionnables dans une composition d'équipe
      * @param Championnat $championnat
      * @param int $numero
      * @param int $idJournee
