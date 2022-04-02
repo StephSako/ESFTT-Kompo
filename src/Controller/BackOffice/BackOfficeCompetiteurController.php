@@ -5,6 +5,7 @@ namespace App\Controller\BackOffice;
 use App\Controller\ContactController;
 use App\Controller\UtilController;
 use App\Entity\Competiteur;
+use App\Entity\Rencontre;
 use App\Form\CompetiteurType;
 use App\Form\SettingsType;
 use App\Repository\CompetiteurRepository;
@@ -203,14 +204,14 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
-     * @param int $idCompetiteur
+     * @param Competiteur $competiteur
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function edit(int $idCompetiteur, Request $request): Response
+    public function edit(Competiteur $competiteur, Request $request): Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
+        if (!($competiteur = $this->competiteurRepository->find($competiteur->getIdCompetiteur()))) {
             $this->addFlash('fail', 'Membre inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }
@@ -232,14 +233,18 @@ class BackOfficeCompetiteurController extends AbstractController
                 /** On vérifie que le(s) rôle(s) du membre sont cohérents */
                 $this->checkRoles($competiteur);
 
-                /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat ... **/
+                /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
                 if (!$competiteur->isCompetiteur()){
-                    $selectionsToSort = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]);
-                    for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
-                        $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
-                    }
+                    $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
 
-                    foreach ($selectionsToSort as $selectionToSort) {
+                    /** On supprime le joueur des compos d'équipe ... */
+                    $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
+
+                    /** ... on trie les compos qui ont un tri automatique ... */
+                    $rencontresToSort = array_filter($rencontres, function($rencontre) {
+                        return $rencontre->getIdChampionnat()->isCompoSorted();
+                    });
+                    foreach ($rencontresToSort as $selectionToSort) {
                         $this->em->refresh($selectionToSort);
                         $selectionToSort->sortComposition();
                     }
@@ -270,7 +275,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
             'isAdmin' => $competiteur->isAdmin(),
-            'competiteurId' => $idCompetiteur,
+            'competiteurId' => $competiteur->getIdCompetiteur(),
             'usernameEditable' => $usernameEditable,
             'form' => $form->createView(),
             'cheating' => $competiteur->isCheating(),
@@ -317,9 +322,18 @@ class BackOfficeCompetiteurController extends AbstractController
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
-            /** On set à NULL ses sélections dans les compositions d'équipe */
-            for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
-                $this->rencontreRepository->setDeletedCompetiteurToNull($competiteur->getIdCompetiteur(), $i);
+            $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], false);
+
+            /** On supprime le joueur des compos d'équipe ... */
+            $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
+
+            /** ... on trie les compos qui ont un tri automatique pour les futures journées uniquement */
+            $rencontresToSort = array_filter($rencontres, function($rencontre) {
+                return $rencontre->getIdChampionnat()->isCompoSorted() && $rencontre->getIdJournee()->getDateJournee() >= new DateTime();
+            });
+            foreach ($rencontresToSort as $selectionToSort) {
+                $this->em->refresh($selectionToSort);
+                $selectionToSort->sortComposition();
             }
 
             $this->em->remove($competiteur);
@@ -501,9 +515,28 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * On supprime le joueur des compos d'équipe des journées ultèrieures à aujourd'hui inclus
+     * @param array $rencontres
+     * @param int $idCompetiteur
+     * @return void
+     * @throws NonUniqueResultException
+     */
+    public function deletePlayerInSelections(array $rencontres, int $idCompetiteur): void {
+        /** On supprime le joueur des compos d'équipe ... */
+        foreach ($rencontres as $rencontre) {
+            for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
+                if ($rencontre->getIdJoueurN($i) && $rencontre->getIdJoueurN($i)->getIdCompetiteur() == $idCompetiteur){
+                    $rencontre->setIdJoueurN($i, null);
+                    $this->em->flush();
+                }
+            }
+        }
+    }
+
+    /**
      * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
      */
-    public function alertCertifMedicPerimes(Request $request): Response
+    public function alertCertifMedicPerimes(): Response
     {
         $mails = array_map(function ($address) {
                 return new Address($address);

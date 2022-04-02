@@ -2,7 +2,7 @@ function alertBecomingLoisirOrArchived(){
     let becomingLoisir = $('#cb_loisir').is(":checked") && !isLoisir && !isArchived;
     let becomingArchive = $('#cb_archive').is(":checked") && !isArchived;
     if (becomingLoisir || becomingArchive){
-        let r = confirm('Membre déclaré ' + (becomingArchive ? 'archivé' : 'loisir') + ' : ' + (becomingArchive ? 'son certificat médical deviendra invalide' + (!isLoisir ? ', ' : '') : '') + (!isLoisir ? 'ses disponibilités seront supprimées et il sera désélectionné de toutes compositions' : '') + '. Êtes-vous sûr ?');
+        let r = confirm('Membre déclaré ' + (becomingArchive ? 'archivé' : 'loisir') + ' : ' + (becomingArchive ? 'son certificat médical deviendra invalide' + (!isLoisir ? ', ' : '') : '') + (!isLoisir ? "ses disponibilités seront supprimées et il sera désélectionné de toutes compositions ultèrieures à aujourd'hui INCLUS" : '') + '. Êtes-vous sûr ?');
         if (r !== true) event.preventDefault();
     } else return false;
 }

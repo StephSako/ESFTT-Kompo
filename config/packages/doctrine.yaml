@@ -18,3 +18,4 @@ doctrine:
             string_functions:
                 IF: DoctrineExtensions\Query\Sqlite\IfElse
                 IFNULL: DoctrineExtensions\Query\Sqlite\IfNull
+                DATE: DoctrineExtensions\Query\Sqlite\Date
