@@ -24,13 +24,6 @@ use Doctrine\Common\Collections\Collection;
  */
 class Championnat
 {
-
-    /** idPere par organisme (API FFTT) */
-    const LINKS_CHAMPIONNATS = [
-        'Ile de France' => 16,
-        'Départemental Val d\'Oise' => 105
-    ];
-
     /** Périodicités d'un championnat */
     const PERIODICITE = [
         'Phase' => true,
@@ -415,7 +408,6 @@ class Championnat
      */
     public function getNextJourneeToPlay():? Journee
     {
-        $journees = $this->getJournees()->toArray();
         $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function($journee) {
             return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });

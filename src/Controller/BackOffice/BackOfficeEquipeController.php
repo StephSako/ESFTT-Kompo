@@ -97,10 +97,9 @@ class BackOfficeEquipeController extends AbstractController
                         $str .= $nbMissingEquipes > 1 ? ' doivent d\'abord être créées' : ' doit d\'abord être créée';
                         throw new Exception($str, 12341);
                     /** Sinon le numéro attribué doit être le suivant de la dernière équipe */
-                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants)
-                        throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12343);
+                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants) throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12343);
 
-                        $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
+                    $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $this->createEquipeAndRencontres($equipe);
 
                     $this->em->flush();

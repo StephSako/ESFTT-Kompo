@@ -149,4 +149,21 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Retourne la liste formattée des organismes de Ligue et Départementaux
+     * @param array $groupesOrganismes
+     * @return array
+     */
+    public function getOrganismesFormatted(array $groupesOrganismes): array {
+        $organismes = [];
+        foreach ($groupesOrganismes as $nomGroupeOrganismes => $groupeOrganismes) {
+            $organismesGroupe = [];
+            foreach ($groupeOrganismes as $organisme) {
+                $organismesGroupe[mb_convert_case($organisme->getLibelle(), MB_CASE_UPPER, "UTF-8")] = $organisme->getId();
+            }
+            $organismes[$nomGroupeOrganismes] = $organismesGroupe;
+        }
+        return $organismes;
+    }
 }
