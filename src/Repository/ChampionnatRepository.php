@@ -158,6 +158,10 @@ class ChampionnatRepository extends ServiceEntityRepository
     public function getOrganismesFormatted(array $groupesOrganismes): array {
         $organismes = [];
         foreach ($groupesOrganismes as $nomGroupeOrganismes => $groupeOrganismes) {
+            usort($groupeOrganismes, function ($orga1, $orga2) {
+                return $orga1->getLibelle() > $orga2->getLibelle();
+            });
+
             $organismesGroupe = [];
             foreach ($groupeOrganismes as $organisme) {
                 $organismesGroupe[mb_convert_case($organisme->getLibelle(), MB_CASE_UPPER, "UTF-8")] = $organisme->getId();
