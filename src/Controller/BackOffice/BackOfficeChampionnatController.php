@@ -12,6 +12,10 @@ use App\Repository\JourneeRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use FFTTApi\Exception\InvalidURIParametersException;
+use FFTTApi\Exception\NoFFTTResponseException;
+use FFTTApi\Exception\URIPartNotValidException;
+use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,11 +61,23 @@ class BackOfficeChampionnatController extends AbstractController
      * @Route("/backoffice/championnat/new", name="backoffice.championnat.new")
      * @param Request $request
      * @return Response
+     * @throws InvalidURIParametersException
+     * @throws NoFFTTResponseException
+     * @throws URIPartNotValidException
      */
     public function new(Request $request): Response
     {
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $organismes = $this->championnatRepository->getOrganismesFormatted(
+            [
+                'Ligue' => $api->getOrganismes('L'),
+                'Département' => $api->getOrganismes('D')
+            ]);
+
         $championnat = new Championnat();
-        $form = $this->createForm(ChampionnatType::class, $championnat);
+        $form = $this->createForm(ChampionnatType::class, $championnat, [
+            'organismesOptGroup' => $organismes
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
@@ -113,7 +129,16 @@ class BackOfficeChampionnatController extends AbstractController
             return $this->redirectToRoute('backoffice.championnats');
         }
         $limiteBrulage = $championnat->getLimiteBrulage();
-        $form = $this->createForm(ChampionnatType::class, $championnat);
+
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+        $organismes = $this->championnatRepository->getOrganismesFormatted(
+            [
+                'Ligue' => $api->getOrganismes('L'),
+                'Département' => $api->getOrganismes('D')
+            ]);
+        $form = $this->createForm(ChampionnatType::class, $championnat, [
+            'organismesOptGroup' => $organismes
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -131,7 +156,7 @@ class BackOfficeChampionnatController extends AbstractController
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
                             for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
-                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $rencontre->getIdEquipe()->getNumero(), $journee->getIdJournee(), $championnat->getMaxNumeroEquipes());
+                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $journee->getIdJournee());
                             }
                             $rencontre->sortComposition();
                         }

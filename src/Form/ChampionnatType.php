@@ -46,7 +46,7 @@ class ChampionnatType extends AbstractType
             ])
             ->add('lienFfttApi', ChoiceType::class,[
                 'label' => ' ',
-                'choices' => Championnat::LINKS_CHAMPIONNATS,
+                'choices' => $options['organismesOptGroup'],
                 'required' => false,
                 'placeholder' => 'Définir vide'
             ])
@@ -65,7 +65,8 @@ class ChampionnatType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Championnat::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'organismesOptGroup' => null
         ]);
     }
 }
