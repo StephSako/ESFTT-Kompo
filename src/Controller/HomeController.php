@@ -549,11 +549,12 @@ class HomeController extends AbstractController
                 if (!$errorMatchSheet){
                     /** Liste des parties des joueurs lors de la rencontre */
                     $parties = $detailsRencontre->getParties();
-                    foreach ($joueursAdversaire as $joueurAdversaire) {
+
+                    foreach ($joueursAdversaire as $nomJoueurAdversaire => $joueurAdversaire) {
                         if (count($joueursAdversaire)){
-                            $matches = array_filter($parties, function($partie) use ($joueurAdversaire, $domicile) {
-                                return $domicile ? $partie->getAdversaireA() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom() : $partie->getAdversaireB() == $joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom();
-                            } );
+                            $matches = array_filter($parties, function($partie) use ($nomJoueurAdversaire, $domicile) {
+                                return $domicile ? $partie->getAdversaireA() == $nomJoueurAdversaire : $partie->getAdversaireB() == $nomJoueurAdversaire;
+                            });
 
                             $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
                                 $isWinner = $domicile ? $match->getScoreA() > $match->getScoreB() : $match->getScoreB() > $match->getScoreA();
@@ -568,9 +569,10 @@ class HomeController extends AbstractController
                                     'pointsJoueurAdversaire' => count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints() ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
                                 ];
                             }, $matches);
+//                            dump($resultatMatches);
 
-                            $joueursAdversaireFormatted[$joueurAdversaire->getNom()]['points'] = $joueurAdversaire->getPoints();
-                            $joueursAdversaireFormatted[$joueurAdversaire->getNom()]['resultats'] = $resultatMatches;
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
+                            $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
                         }
                     }
                 }

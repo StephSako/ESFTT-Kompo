@@ -11,16 +11,18 @@
             </p>
             {% if not journee.errorMatchSheet %}
                 {% if journee.joueurs|length > 0 %}
-                        <table class="striped centered table-last-compos">
-                            {% for nom, donnees in journee.joueurs %}
+                    <table class="striped centered table-last-compos">
+                        {% for nom, donnees in journee.joueurs %}
+                            {% set nomFormatted = nom|split('#')[0] %}
+                            {% if nomFormatted %}
                                 <tr>
                                     <td style="max-width: 50px">
-                                        <span class="truncate">{{ nom }}</span>
+                                        <span class="truncate">{{ nomFormatted }}</span>
                                     </td>
                                     <td>{% if donnees.points %}
                                             <span class="new badge light-blue darken-3" data-badge-caption="pts">{{ donnees.points }}</span>
                                         {% else %}
-                                            <i class='material-icons block grey-text text-lighten-2'>block</i>
+                                            <i style="font-size: 1.5em" class="material-icons tiny grey-text text-lighten-1">help_outline</i>
                                         {% endif %}
                                     <td>
                                         {% for resultat in donnees.resultats %}
@@ -28,8 +30,9 @@
                                         {% endfor %}
                                     </td>
                                 </tr>
-                            {% endfor %}
-                        </table>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
                 {% else %}
                     <h6 class="center">En attente des résulats ... patience 😊</h6>
                 {% endif %}
