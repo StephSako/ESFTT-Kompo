@@ -282,7 +282,6 @@ class HomeController extends AbstractController
         $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
 
         /** Numéros des équipes valides pour le brûlage */
-        $equipes = $championnat->getEquipes()->toArray();
         $equipesBrulage = array_map(function($equipe){
             return $equipe->getNumero();
         }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
