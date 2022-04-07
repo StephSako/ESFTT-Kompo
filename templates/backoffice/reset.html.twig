@@ -37,82 +37,7 @@
             </div>
 
             <div class='card-panel center'>
-                <h4>Les licences non répertoriées</h4>
-
-                {% if joueursIssued.issuedLicences.to_archive or joueursIssued.issuedLicences.to_update %}
-
-                    {% if joueursIssued.issuedLicences.to_update %}
-                        <h5>Licences à mettre à jour</h5>
-                        <p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">{{ joueursIssued.issuedLicences.to_update|length ~ ' licence' ~ (joueursIssued.issuedLicences.to_update|length == 1 ? ' sera mise à jour' : 's seront mises à jour') }}</p>
-                        <table class="striped centered responsive-table">
-                            <thead>
-                                <tr>
-                                    <th>Licence</th>
-                                    <th>Nom</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                            {% for newLicence, joueur in joueursIssued.issuedLicences.to_update %}
-                                <tr>
-                                    <td>
-                                        <span class="red-text">{{ joueur.licence ?: "<i class='material-icons'>cancel</i>" }}</span><i class="material-icons black-text">arrow_forward</i> {{ newLicence }}
-                                    </td>
-                                    <td>
-                                        <div class="chip">
-                                            {% if joueur.avatar %}
-                                                <img src="{{ vich_uploader_asset(joueur, 'imageFile') }}" alt="Avatar">
-                                            {% else %}
-                                                <img src="{{ asset('images/account.png') }}" alt="Avatar">
-                                            {% endif %}
-                                            <span >{{ joueur.nom ~ ' ' ~ joueur.prenom }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
-
-                    {% if joueursIssued.issuedLicences.to_archive %}
-                        <h5 style="margin-top: 30px;">Joueurs à archiver</h5>
-                        <p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">{{ joueursIssued.issuedLicences.to_archive|length ~ ' joueur' ~ (joueursIssued.issuedLicences.to_archive|length == 1 ? ' sera archivé' : 's seront archivés') }}</p>
-                        <table class="striped centered responsive-table">
-                            <thead>
-                                <tr>
-                                    <th>Licence</th>
-                                    <th>Nom</th>
-                                    <th>Rôle(s)</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                            {% for joueur in joueursIssued.issuedLicences.to_archive %}
-                                <tr>
-                                    <td>{{ joueur.licence }}</td>
-                                    <td>
-                                        <div class="chip">
-                                            {% if joueur.avatar %}
-                                                <img src="{{ vich_uploader_asset(joueur, 'imageFile') }}" alt="Avatar">
-                                            {% else %}
-                                                <img src="{{ asset('images/account.png') }}" alt="Avatar">
-                                            {% endif %}
-                                            <span >{{ joueur.nom ~ ' ' ~ joueur.prenom }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="red-text">{{ joueur.getRolesFormatted() }}</span><i class="material-icons black-text">arrow_forward</i> Archivé
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
-
-                {% else %}<p class="col pastille blue reset">Toutes les licences non répertoriées ont été traitées</p>
-                {% endif %}
-
-                <h4 style="margin-bottom: 15px; margin-top: 30px;">Les compétiteurs</h4>
+                <h4 style="margin-bottom: 15px;">Les compétiteurs</h4>
 
                 <div style="padding-top: 8px; padding-bottom: 8px; margin-bottom: 10px;" class="col pastille blue lighten-1 reset"><i class="material-icons white-text">info</i> Avant de mettre à jour les joueurs compétiteurs, pensez à :
                     <ul style="margin-bottom: 0;">
@@ -161,7 +86,7 @@
                 {% else %}<p class="col pastille blue reset">Tous les joueurs sont à jour</p>
                 {% endif %}
 
-                {% if app.user.admin and (joueursIssued.competition or joueursIssued.issuedLicences.to_archive or joueursIssued.issuedLicences.to_update) %}
+                {% if app.user.admin and (joueursIssued.competition) %}
                     <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
                         <input type="hidden" name="resetPlayers" value="1">
                         <button style="margin-top: 20px;" class='btn waves-effect green btn_gestion'>Mettre à jour</button>
@@ -334,7 +259,7 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Numéro</th>
-                                                <th>Division</th>
+                                                <th>Libellé division</th>
                                                 <th>Poule</th>
                                                 <th>Liaison à la FFTT</th>
                                             </tr>

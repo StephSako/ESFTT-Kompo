@@ -87,8 +87,6 @@ class BackOfficeFFTTApiController extends AbstractController
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
         $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
-        $joueursIssued['issuedLicences']['to_archive'] = []; /** Tableau où seront stockés les joueurs non-licenciés devant être archivés */
-        $joueursIssued['issuedLicences']['to_update'] = []; /** Tableau où seront stockés les joueurs non-licenciés devant être mis à jour */
         $errorMajJoueurs = false;
         $errorMajRencontresEquipes = false;
 
@@ -104,16 +102,6 @@ class BackOfficeFFTTApiController extends AbstractController
             $unarchivePlayers = array_filter($this->competiteurRepository->findBy(['isArchive' => 0], ['nom' => 'ASC', 'prenom' => 'ASC']), function($joueurIssuedToArchive) use ($allLicensesFFTT) {
                 return !in_array($joueurIssuedToArchive->getLicence(), $allLicensesFFTT);
             });
-
-            foreach ($unarchivePlayers as $joueurIssuedLicence){
-                $joueurPotentiel = array_filter($joueursFFTT, function ($joueur) use ($joueurIssuedLicence) {
-                    return str_contains($joueur->getLicence(), strval($joueurIssuedLicence->getLicence()))
-                        && (new Slugify())->slugify($joueurIssuedLicence->getNom().$joueurIssuedLicence->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
-                });
-
-                if (!$joueurPotentiel) $joueursIssued['issuedLicences']['to_archive'][] = $joueurIssuedLicence;
-                else $joueursIssued['issuedLicences']['to_update'][array_values($joueurPotentiel)[0]->getLicence()] = $joueurIssuedLicence;
-            }
 
             foreach ($joueursKompo as $competiteur){
                 $joueurFFTT = array_filter($joueursFFTT,
@@ -418,26 +406,6 @@ class BackOfficeFFTTApiController extends AbstractController
                     $this->addFlash('fail', 'Compétiteurs non mis à jour');
                 }
 
-                /** On archive les joueurs non-licenciés **/
-                try {
-                    foreach ($joueursIssued['issuedLicences']['to_archive'] as $joueurToArchive) {
-                        $joueurToArchive->setIsTotallyArchive();
-                    }
-                    $this->em->flush();
-                } catch (Exception $exception) {
-                    $this->addFlash('fail', 'Joueurs non répertoriés non archivés');
-                }
-
-                /** On met à jour les licences non répertoriées **/
-                try {
-                    foreach ($joueursIssued['issuedLicences']['to_update'] as $newLicence => $joueurToUpdate) {
-                        $joueurToUpdate->setLicence($newLicence);
-                    }
-                    $this->em->flush();
-                } catch (Exception $exception) {
-                    $this->addFlash('fail', 'Licences non répertoriées non mises à jour');
-                }
-
                 $this->addFlash('success', 'Joueurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
             }
@@ -505,12 +473,17 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
 
                         try {
+                            $str_replacers = [
+                                'old' => ["[#nom_phase#]"],
+                                'new' => [$championnat->getNom()]
+                            ];
+
                             $this->contactController->sendMail(
                                 $mails,
                                 true,
-                                'Kompo - Certificat médical à renouveler',
+                                'Kompo - Phase terminée',
                                 $message,
-                                null,
+                                $str_replacers,
                                 true);
                             $this->addFlash('success', "L'alerte de pré-phase a été envoyée");
                         } catch (Exception $e) {
