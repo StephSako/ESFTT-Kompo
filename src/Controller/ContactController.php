@@ -180,7 +180,9 @@ class ContactController extends AbstractController
             $this->mailer->send($email);
             $json = json_encode(['message' => 'Le mail a été envoyé !', 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false]);
+            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
+        } catch (Exception $e) {
+            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
         }
 
         $response = new Response($json);
