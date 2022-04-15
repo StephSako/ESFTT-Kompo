@@ -17,6 +17,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use FFTTApi\FFTTApi;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -138,6 +139,17 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
+
+                    /** On vérifie l'existence de la licence */
+                    if (strlen($competiteur->getLicence())) {
+                        try {
+                            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+                            $api->getJoueurDetailsByLicence($competiteur->getLicence());
+                        } catch (Exception $e) {
+                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas', '1234');
+                        }
+                    }
+
                     /** Une adresse email minimum requise */
                     if (!($competiteur->getMail() ?? $competiteur->getMail2())) throw new Exception('Au moins une adresse email doit être renseignée', 1234);
 
@@ -152,6 +164,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $competiteur->setContactablePhoneNumber2((bool)$competiteur->getPhoneNumber2());
 
                     $this->em->persist($competiteur);
+                    $this->em->flush();
 
                     /** On envoie un mail de bienvenue */
                     try {
@@ -185,7 +198,6 @@ class BackOfficeCompetiteurController extends AbstractController
                         $this->addFlash('fail', 'Email de bienvenue non envoyé');
                     }
 
-                    $this->em->flush();
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
@@ -229,39 +241,51 @@ class BackOfficeCompetiteurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            try {
-                /** On vérifie que le(s) rôle(s) du membre sont cohérents */
-                $this->checkRoles($competiteur);
-
-                /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
-                if (!$competiteur->isCompetiteur()){
-                    $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
-
-                    /** On supprime le joueur des compos d'équipe ... */
-                    $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
-
-                    /** ... on trie les compos qui ont un tri automatique ... */
-                    $rencontresToSort = array_filter($rencontres, function($rencontre) {
-                        return $rencontre->getIdChampionnat()->isCompoSorted();
-                    });
-                    foreach ($rencontresToSort as $selectionToSort) {
-                        $this->em->refresh($selectionToSort);
-                        $selectionToSort->sortComposition();
+            if ($form->isValid()){
+                try {
+                    /** On vérifie l'existence de la licence */
+                    if (strlen($competiteur->getLicence())) {
+                        try {
+                            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+                            $api->getJoueurDetailsByLicence($competiteur->getLicence());
+                        } catch (Exception $e) {
+                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas', '1234');
+                        }
                     }
 
-                    /** ... et ses disponibilités sont supprimées */
-                    $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
-                }
+                    /** On vérifie que le(s) rôle(s) du membre sont cohérents */
+                    $this->checkRoles($competiteur);
 
-                if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
-                $competiteur->setNom($competiteur->getNom());
-                $competiteur->setPrenom($competiteur->getPrenom());
-                $this->em->flush();
-                $this->addFlash('success', 'Membre modifié');
-                return $this->redirectToRoute('backoffice.competiteurs');
-            } catch(Exception $e){
-                $this->throwExceptionBOAccount($e, $competiteur);
-            }
+                    /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
+                    if (!$competiteur->isCompetiteur()){
+                        $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
+
+                        /** On supprime le joueur des compos d'équipe ... */
+                        $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
+
+                        /** ... on trie les compos qui ont un tri automatique ... */
+                        $rencontresToSort = array_filter($rencontres, function($rencontre) {
+                            return $rencontre->getIdChampionnat()->isCompoSorted();
+                        });
+                        foreach ($rencontresToSort as $selectionToSort) {
+                            $this->em->refresh($selectionToSort);
+                            $selectionToSort->sortComposition();
+                        }
+
+                        /** ... et ses disponibilités sont supprimées */
+                        $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
+                    }
+
+                    if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
+                    $competiteur->setNom($competiteur->getNom());
+                    $competiteur->setPrenom($competiteur->getPrenom());
+                    $this->em->flush();
+                    $this->addFlash('success', 'Membre modifié');
+                    return $this->redirectToRoute('backoffice.competiteurs');
+                } catch(Exception $e){
+                    $this->throwExceptionBOAccount($e, $competiteur);
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('account/edit.html.twig', [
