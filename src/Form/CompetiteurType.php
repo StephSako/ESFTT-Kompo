@@ -143,7 +143,7 @@ class CompetiteurType extends AbstractType
 
         if (($options['adminAccess'] || $options['capitaineAccess']) && !$options['isArchived']) {
             $builder
-                ->add('licence', IntegerType::class, [
+                ->add('licence', TelType::class, [
                     'label' => false,
                     'required' => false,
                     'attr' => [
@@ -154,8 +154,8 @@ class CompetiteurType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'attr' => [
-                        'min' => 500,
-                        'max' => 20000
+                        'min' => 300,
+                        'max' => 40000
                     ]
                 ]);
         }

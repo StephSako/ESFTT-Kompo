@@ -36,22 +36,22 @@ class Competiteur implements UserInterface, Serializable
      * Tableau des catégories d'âge en fonction des dates
      */
     const CATEGORIE_AGE_LABEL = [
-    ['libelle' => 'Vétéran 5',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 120, 'yearMaxGap' => 80],
-    ['libelle' => 'Vétéran 4',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 79, 'yearMaxGap' => 70],
-    ['libelle' => 'Vétéran 3',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 69, 'yearMaxGap' => 60],
-    ['libelle' => 'Vétéran 2',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 59, 'yearMaxGap' => 50],
-    ['libelle' => 'Vétéran 1',  'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 49, 'yearMaxGap' => 40],
-    ['libelle' => 'Sénior',     'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 39, 'yearMaxGap' => 18],
-    ['libelle' => 'Junior 3',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 17, 'yearMaxGap' => 17],
-    ['libelle' => 'Junior 2',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 16, 'yearMaxGap' => 16],
-    ['libelle' => 'Junior 1',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 15, 'yearMaxGap' => 15],
-    ['libelle' => 'Cadet 2',    'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 14, 'yearMaxGap' => 14],
-    ['libelle' => 'Cadet 1',    'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 13, 'yearMaxGap' => 13],
-    ['libelle' => 'Minime 2',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 12, 'yearMaxGap' => 12],
-    ['libelle' => 'Minime 1',   'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 11, 'yearMaxGap' => 11],
-    ['libelle' => 'Benjamin 2', 'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 10, 'yearMaxGap' => 10],
-    ['libelle' => 'Benjamin 1', 'minDate' => '/01/01', 'maxDate' => '/12/31', 'yearMinGap' => 9, 'yearMaxGap' => 9],
-    ['libelle' => 'Poussin',    'minDate' => '/01/01', 'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
+        ['libelle' => 'Vétéran 5', 'maxDate' => '/12/31', 'yearMinGap' => 120, 'yearMaxGap' => 80],
+        ['libelle' => 'Vétéran 4', 'maxDate' => '/12/31', 'yearMinGap' => 79, 'yearMaxGap' => 70],
+        ['libelle' => 'Vétéran 3', 'maxDate' => '/12/31', 'yearMinGap' => 69, 'yearMaxGap' => 60],
+        ['libelle' => 'Vétéran 2', 'maxDate' => '/12/31', 'yearMinGap' => 59, 'yearMaxGap' => 50],
+        ['libelle' => 'Vétéran 1', 'maxDate' => '/12/31', 'yearMinGap' => 49, 'yearMaxGap' => 40],
+        ['libelle' => 'Sénior',    'maxDate' => '/12/31', 'yearMinGap' => 39, 'yearMaxGap' => 18],
+        ['libelle' => 'Junior 3',  'maxDate' => '/12/31', 'yearMinGap' => 17, 'yearMaxGap' => 17],
+        ['libelle' => 'Junior 2',  'maxDate' => '/12/31', 'yearMinGap' => 16, 'yearMaxGap' => 16],
+        ['libelle' => 'Junior 1',  'maxDate' => '/12/31', 'yearMinGap' => 15, 'yearMaxGap' => 15],
+        ['libelle' => 'Cadet 2',   'maxDate' => '/12/31', 'yearMinGap' => 14, 'yearMaxGap' => 14],
+        ['libelle' => 'Cadet 1',   'maxDate' => '/12/31', 'yearMinGap' => 13, 'yearMaxGap' => 13],
+        ['libelle' => 'Minime 2',  'maxDate' => '/12/31', 'yearMinGap' => 12, 'yearMaxGap' => 12],
+        ['libelle' => 'Minime 1',  'maxDate' => '/12/31', 'yearMinGap' => 11, 'yearMaxGap' => 11],
+        ['libelle' => 'Benjamin 2','maxDate' => '/12/31', 'yearMinGap' => 10, 'yearMaxGap' => 10],
+        ['libelle' => 'Benjamin 1', 'maxDate' => '/12/31', 'yearMinGap' => 9, 'yearMaxGap' => 9],
+        ['libelle' => 'Poussin',    'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
     const SECRET_CODES = ['U8DX5', 'K9LM0', '1SD6F', '6PMD6', 'S35HF', 'PM9S5', '8LMPD',
@@ -66,14 +66,19 @@ class Competiteur implements UserInterface, Serializable
     private $idCompetiteur;
 
     /**
-     * @var int
+     * @var string
      *
      * @Assert\Length(
      *      max = 11,
      *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
      * )
      *
-     * @ORM\Column(name="licence", type="integer", length=11, nullable=true)
+     * @Assert\Regex(
+     *     pattern="/^[0-9]{0,11}$/",
+     *     message="La licence ne doit contenir que des chiffres"
+     * )
+     *
+     * @ORM\Column(name="licence", type="string", length=11, nullable=true)
      */
     private $licence;
 
@@ -81,13 +86,13 @@ class Competiteur implements UserInterface, Serializable
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
-     *     value = 500,
+     *     value = 300,
      *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
-     *     value = 20000,
-     *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
+     *     value = 40000,
+     *     message = "Le classement doit être inférieur à {{ value }}"
      * )
      *
      * @ORM\Column(name="classement_officiel", type="integer", nullable=true)
@@ -211,12 +216,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/"
-     * )
-     *
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres."
+     *     pattern="/[0-9]{10}/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres"
      * )
      */
     private $phoneNumber;
@@ -227,12 +228,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number2", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/"
-     * )
-     *
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Le numéro de téléphone doit contenir exactement {{ limit }} chiffres."
+     *     pattern="/[0-9]{10}/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres"
      * )
      */
     private $phoneNumber2;
@@ -867,18 +864,18 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getLicence(): ?int
+    public function getLicence(): ?string
     {
         return $this->licence;
     }
 
     /**
-     * @param int|null $licence
+     * @param string|null $licence
      * @return $this
      */
-    public function setLicence(?int $licence): self
+    public function setLicence(?string $licence): self
     {
         $this->licence = $licence;
         return $this;
@@ -1534,7 +1531,7 @@ class Competiteur implements UserInterface, Serializable
         $categorie = array_values(array_filter(self::CATEGORIE_AGE_LABEL, function($categorieRef) use($gap) {
             $minYear = date('Y') - $categorieRef['yearMinGap'] - $gap;
             $maxYear = date('Y') - $categorieRef['yearMaxGap'] - $gap;
-            return new DateTime($minYear . $categorieRef['minDate']) <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
+            return new DateTime($minYear . '/01/01') <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
         }));
         return count($categorie) ? $categorie[0]['libelle'] : null;
     }
