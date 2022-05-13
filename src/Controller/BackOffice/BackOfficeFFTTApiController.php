@@ -353,7 +353,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
-                    /** Mode Pré-phase où toutes les données des matches sont réinitialisées */
+                    /** Mode pré-phase où toutes les données des matches sont réinitialisées */
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
@@ -409,7 +409,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 $this->addFlash('success', 'Joueurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
             }
-            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (Pré-phase ou phase) */
+            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (pré-phase ou phase) */
                 $idChampionnat = intval($request->request->get('idChampionnat'));
                 $championnatSearch = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
                     return $champ->getIdChampionnat() == $idChampionnat;
@@ -418,7 +418,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 if (count($championnatSearch) == 1) {
                     $championnat = array_values($championnatSearch)[0];
 
-                    /** Mode Pré-phase lancé */
+                    /** Mode pré-phase lancé */
                     if ($request->request->get('preRentreeResetChampionnats')) {
                         /** On supprime toutes les dispos du championnat sélectionné **/
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
