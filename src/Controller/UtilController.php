@@ -29,14 +29,17 @@ class UtilController extends AbstractController
     }
 
     /**
-     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la Pré-phase
+     * Retourne un message selon que le championnat est terminé ou pas pour autoriser la pré-phase
      * @param Championnat $championnat
      * @return array
+     * @throws Exception
      */
     function isPreRentreeLaunchable(Championnat $championnat): array {
         $latestDate = $this->getLastDates($championnat);
+        $latestDateMax = new DateTime(date_format((max($latestDate)->add(new DateInterval('P1D'))), 'Y-m-d'));
+        $today = new DateTime();
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
-        else if (max($latestDate) < new DateTime()) return ['launchable' => true, 'message' => 'La phase est terminée et la Pré-phase prête à être lancée'];
+        else if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase prête à être lancée'];
         else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-phase'];
     }
 
