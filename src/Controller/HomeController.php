@@ -291,10 +291,11 @@ class HomeController extends AbstractController
         $idEquipesBrulageVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
         $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
 
+        $joueursSelectionnables = $this->competiteurRepository->getJoueursSelectionnablesOptGroup($nbMaxJoueurs, $championnat->getLimiteBrulage(), $compo);
         $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
         $form = $this->createForm(RencontreType::class, $compo, [
-            'nbMaxJoueurs' => $nbMaxJoueurs,
-            'limiteBrulage' => $championnat->getLimiteBrulage()
+            'joueursSelectionnables' => $joueursSelectionnables,
+            'editCompoMode' => true
         ]);
 
         $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
@@ -568,7 +569,6 @@ class HomeController extends AbstractController
                                     'pointsJoueurAdversaire' => count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints() ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
                                 ];
                             }, $matches);
-//                            dump($resultatMatches);
 
                             $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
                             $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
@@ -730,7 +730,7 @@ class HomeController extends AbstractController
         if ($this->getUser()->getLicence()) {
             try {
                 $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
-                $virtualPointsProgression = $virtualPoints->getVirtualPoints() - $this->getUser()->getClassementOfficiel();
+                $virtualPointsProgression = $virtualPoints->getSeasonlyPointsWon();
                 $virtualPoints = $virtualPoints->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
                 $points = array_map(function($histo) {

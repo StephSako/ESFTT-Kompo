@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
+use App\Entity\Rencontre;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -400,5 +401,57 @@ class CompetiteurRepository extends ServiceEntityRepository
         return $query
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Retourne la liste des joueurs sélectionnables pour la compo d'équipe avec opt groupe
+     * @param int $nbMaxJoueurs
+     * @param int $limiteBrulage
+     * @param Rencontre $compo
+     */
+    public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, int $limiteBrulage, Rencontre $compo)
+    {
+        $request = $this->createQueryBuilder('c')
+            ->leftJoin('c.dispos', 'd')
+            ->where('d.idJournee = :idJournee')
+            ->andWhere('d.disponibilite = 1')
+            ->andWhere('d.idChampionnat = :idChampionnat')
+            ->andWhere('c.isCompetiteur = true');
+        $str = '';
+        for ($i = 0; $i < $nbMaxJoueurs; $i++) {
+            $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
+            if ($i < $nbMaxJoueurs - 1) $str .= ' OR ';
+            $request = $request
+                ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
+                    ' FROM App\Entity\Rencontre p' . $i . ', App\Entity\Equipe e' . $i .'e' .
+                    ' WHERE p' . $i . '.idJournee = d.idJournee' .
+                    ' AND p' . $i . '.idEquipe = e' . $i .'e.idEquipe'.
+                    ' AND e' . $i .'e.numero <> :numero'.
+                    ' AND p' . $i . '.idChampionnat = :idChampionnat)');
+        }
+        $request = $request
+            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
+                ' WHERE (' . $str . ')' .
+                ' AND p.idJournee < :idJournee' .
+                ' AND p.idEquipe = eBis.idEquipe' .
+                ' AND eBis.numero < :numero ' .
+                ' AND p.idChampionnat = :idChampionnat) < ' . $limiteBrulage)
+            ->setParameter('idJournee', $compo->getIdJournee()->getIdJournee())
+            ->setParameter('numero', $compo->getIdEquipe()->getNumero())
+            ->setParameter('idChampionnat', $compo->getIdChampionnat()->getIdChampionnat())
+            ->orderBy('c.nom')
+            ->addOrderBy('c.prenom')
+            ->getQuery()->getResult();
+
+        $nonSelectionnes = array_filter($request, function($joueur) use($compo) {
+            return !in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
+        });
+        $querySorted['Non sélectionné' . (count($nonSelectionnes) > 1 ? 's' : '')] = $nonSelectionnes;
+        $selectionnes = array_filter($request, function($joueur) use($compo) {
+            return in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
+        });
+        $querySorted['Sélectionné' . (count($selectionnes) > 1 ? 's' : '') . ' dans l\'équipe'] = $selectionnes;
+
+        return $querySorted;
     }
 }
