@@ -443,12 +443,14 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addOrderBy('c.prenom')
             ->getQuery()->getResult();
 
-        $querySorted['Non sélectionnés'] = array_filter($request, function($joueur) use($compo) {
+        $nonSelectionnes = array_filter($request, function($joueur) use($compo) {
             return !in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
         });
-        $querySorted['Déjà sélectionnés'] = array_filter($request, function($joueur) use($compo) {
+        $querySorted['Non sélectionné' . (count($nonSelectionnes) > 1 ? 's' : '')] = $nonSelectionnes;
+        $selectionnes = array_filter($request, function($joueur) use($compo) {
             return in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
         });
+        $querySorted['Sélectionné' . (count($selectionnes) > 1 ? 's' : '') . ' dans l\'équipe'] = $selectionnes;
 
         return $querySorted;
     }

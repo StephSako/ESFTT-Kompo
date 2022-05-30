@@ -26,7 +26,7 @@ class RencontreType extends AbstractType
                         return $competiteur->getSelect();
                     },
                     'required' => false,
-                    'placeholder' => 'Définir vide',
+                    'placeholder' => 'Joueur WO',
                     'empty_data' => null,
                     'label' => false,
                     'choices' => $options['joueursSelectionnables']
