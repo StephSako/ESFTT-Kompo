@@ -1146,8 +1146,8 @@ table.table-last-compos {
 
 a.reload_ranking {
   position: absolute;
-  right: 12px;
-  top: 12px;
+  right: 8px;
+  top: 8px;
 }
 
 @media screen and (max-width: 1466px) {
@@ -1416,7 +1416,14 @@ a.reload_ranking {
   }
 }
 
-@media screen and (max-width: 355px) {
+@media screen and (min-width: 351px) and (max-width: 430px) {
+  a.reload_ranking {
+    top: 6px;
+    right: 6px;
+  }
+}
+
+@media screen and (max-width: 350px) {
   a.reload_ranking {
     display: none;
   }
