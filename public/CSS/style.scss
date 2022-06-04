@@ -1416,6 +1416,13 @@ a.reload_ranking {
   }
 }
 
+@media screen and (min-width: 351px) and (max-width: 430px) {
+  a.reload_ranking {
+    top: 6px;
+    right: 6px;
+  }
+}
+
 @media screen and (max-width: 350px) {
   a.reload_ranking {
     display: none;
