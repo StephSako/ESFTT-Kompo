@@ -1144,6 +1144,12 @@ table.table-last-compos {
   }
 }
 
+a.reload_ranking {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {

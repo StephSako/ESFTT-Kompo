@@ -1011,6 +1011,12 @@ table.table-last-compos tr {
   border-radius: 0 8px 8px 0;
 }
 
+a.reload_ranking {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;

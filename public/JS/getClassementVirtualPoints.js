@@ -1,12 +1,17 @@
-function getGeneralClassementsVirtuels() {
-    if (!alreadyCalledClassement) {
+function getGeneralClassementsVirtuels(forceReaload = null) {
+    if (!alreadyCalledClassement || forceReaload) {
         alreadyCalledClassement = true;
+        if (forceReaload) {
+            $('a.reload_ranking').addClass('hide');
+            $('div#rankingContentLoader').removeClass('hide');
+            $('div#rankingContent').addClass('hide');
+        }
         $.ajax({
             url : '/journee/general-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : function(responseTemplate) { templating('#rankingContent', responseTemplate); },
-            error : function() { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>"); }
+            success : function(responseTemplate) { templating('#rankingContent', responseTemplate, true); },
+            error : function() { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true); }
         });
     }
 }
@@ -23,9 +28,13 @@ function getPersonnalClassementVirtuel() {
     });
 }
 
-function templating(selector, response){
+function templating(selector, response, general = false){
     $(selector).each(function() {
-            $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
+        if (general) {
+            $('a.reload_ranking').removeClass('hide');
+            $('div#rankingContentLoader').addClass('hide');
+            $('div#rankingContent').removeClass('hide');
         }
-    )
+        $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
+    })
 }

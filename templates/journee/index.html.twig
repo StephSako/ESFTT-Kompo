@@ -413,8 +413,13 @@
         {# Modale des classement des points virtuels #}
         <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-alert center">
             <div class="modal-content">
+                <p hidden="hidden" class="test">TEST</p>
+                <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
+                    <i class="material-icons">refresh</i>
+                </a>
                 <h6><b>Meilleures progressions et points virtuels</b></h6>
-                <div id="rankingContent" style="padding-right: 4px; padding-left: 4px;">
+                <div id="rankingContent"></div>
+                <div id="rankingContentLoader" style="padding-right: 4px; padding-left: 4px;">
                     <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
                         <div class="preloader-wrapper small active">
                             <div class="spinner-layer spinner-blue-only">
