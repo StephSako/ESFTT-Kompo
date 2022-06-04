@@ -1416,6 +1416,12 @@ a.reload_ranking {
   }
 }
 
+@media screen and (max-width: 355px) {
+  a.reload_ranking {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 344px) {
   .virtualRankButtons  {
     font-size: 13px;
