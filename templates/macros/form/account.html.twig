@@ -228,10 +228,19 @@
                             {% endif %}>
                             <i class="material-icons">delete</i>
                         </a>
+
+                        <script type="text/javascript">
+                            $('a.deleteAvatar').on('click', () => {
+                                $('span.christmas_code').removeClass('hide');
+                            })
+                        </script>
+
                     {% endif %}
                     <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du membre">
                 </div>
             </div>
+
+            <span class="reset pastille christmas_code hide">434PJ</span>
 
             {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>

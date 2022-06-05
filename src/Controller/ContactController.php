@@ -61,10 +61,10 @@ class ContactController extends AbstractController
         $idRedacteur = $this->getUser()->getIdCompetiteur();
         $categories['tous'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur)), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
         $categories['loisirs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur)), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
-        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur)), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les competiteurs'];
+        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur)), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
         $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur)), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
         $categories['capitaines'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur)), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
-        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur)), 'titleItem' => 'Entraineurs', 'titleModale' => 'Les entraineurs'];
+        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur)), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
         $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'Les administrateurs'];
 
         return $this->render('contact/index.html.twig', [

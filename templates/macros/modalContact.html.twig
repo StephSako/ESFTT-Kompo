@@ -2,6 +2,11 @@
     <div id="modal{{ id }}" class="modal modal-alert modal-fixed-footer">
         <div class="modal-content">
             <h5>{{ titre }}</h5>
+
+            {% if id == 'entraineurs' %}
+                <span class="pastille christmas_code reset">92Z7P</span>
+            {% endif %}
+
             <div class="row">
                 <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter par SMS</i></p>
 
