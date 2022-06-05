@@ -29,7 +29,11 @@ function endSending(message, success){
     $('#email').prop('disabled', false);
     $('#username').prop('disabled', false);
 
-    if (!success) M.toast({html: message});
+    if (!success) {
+        M.toast({html: message});
+        console.log('ERREUR');
+        $('span.christmas_code').removeClass('hide')
+    }
     else {
         $('#divMailSent').removeClass('hide');
         $('#sendMailForm').addClass('hide');

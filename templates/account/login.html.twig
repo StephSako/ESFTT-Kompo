@@ -37,6 +37,8 @@
                             <span>Rester connecté</span>
                         </label>
                     </div>
+
+                    <span class="hide pastille reset christmas_code">2B5Q7</span>
                 </div>
 
                 <button class="btn waves-effect blue lighten-2"><i class="material-icons prefix">check</i> C'est parti !</button>
@@ -45,5 +47,14 @@
             <br><a href="{{ path('login.forgotten.password') }}">Mot de passe oublié</a>
         </div>
     </div>
+
+    <script type="application/javascript">
+        let checkboxRememberMe = $("input[name='_remember_me']");
+        let christmasCode = $("span.christmas_code");
+        checkboxRememberMe.on('change', function () {
+            if (!checkboxRememberMe.is(":checked")) christmasCode.addClass('hide');
+            else christmasCode.removeClass('hide');
+        });
+    </script>
 
 {% endblock %}

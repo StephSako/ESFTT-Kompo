@@ -54,9 +54,9 @@ class Competiteur implements UserInterface, Serializable
         ['libelle' => 'Poussin',    'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
-    const SECRET_CODES = ['U8DX5', 'K9LM0', '1SD6F', '6PMD6', 'S35HF', 'PM9S5', '8LMPD',
-                          '13FHQ', '5WDDK', 'WND8M', 'WXC09', 'Q8NCJ', 'D8JCG'];
-    const GOLDEN_CODE = 'VB34H';
+    const SECRET_CODES = ['2B5Q7', 'H35H5', '92Z7P', '5SF85', '3U98K', '59D7K', '434PJ',
+                          '4E93Y', 'M36S3', '238KR', 'Z76E3', '74WR7', 'XV282'];
+    const GOLDEN_CODE = '4B25K';
 
     /**
      * @ORM\Id()
