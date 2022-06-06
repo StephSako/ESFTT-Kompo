@@ -29,8 +29,14 @@
             {% endfor %}
 
             {% for message in app.flashes('christmas_code') %}
-                <div class="card-panel center-align" style="background-color: transparent; box-shadow: none;">
+                <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
                     <span class="reset pastille christmas_code">3U98K</span>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('christmas_code_2') %}
+                <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
+                    <span class="reset pastille christmas_code">74WR7</span>
                 </div>
             {% endfor %}
 

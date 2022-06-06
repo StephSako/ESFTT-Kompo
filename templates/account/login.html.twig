@@ -19,6 +19,12 @@
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
 
+            {% for message in app.flashes('christmas_code') %}
+                <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
+                    <span class="reset pastille christmas_code">M36S3</span>
+                </div>
+            {% endfor %}
+
             <form action="{{ path('login') }}" method="POST">
                 <div class="container">
                     <div class="input-field">

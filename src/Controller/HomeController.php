@@ -69,10 +69,12 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="index")
-     * @throws Exception
+     * @param Request $request
+     * @return Response
      */
-    public function indexAction(): Response
+    public function indexAction(Request $request): Response
     {
+        if ($request->query->get('code') != null) $this->addFlash('christmas_code_2', null);
         if ($this->utilController->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
                 'type' => $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),

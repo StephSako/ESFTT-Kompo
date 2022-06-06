@@ -30,6 +30,19 @@
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
+        {% for message in app.flashes('christmas_code_2') %}
+            <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
+                {{ _flash.message(message, 'red') }}
+                <span class="reset pastille christmas_code">Z76E3</span>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('christmas_code') %}
+            <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
+                <span class="reset pastille christmas_code">238KR</span>
+            </div>
+        {% endfor %}
+
         {% if type == 'general' %}
             {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.categorieAgeLabel, app.user.critFed, {licence: app.user.licence, isArchived: false, usernameEditable: true, displayCode: true, cheating: app.user.cheating, isWinner: app.user.winner, isFullWinner: app.user.fullWinner}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}

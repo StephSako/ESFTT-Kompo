@@ -93,12 +93,14 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    $user->setNom($user->getNom());
-                    $user->setPrenom($user->getPrenom());
-
-                    $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées');
-                    return $this->redirectToRoute('account');
+                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('christmas_code_2', 'Date de naissance dans le futur');
+                    else {
+                        $user->setNom($user->getNom());
+                        $user->setPrenom($user->getPrenom());
+                        $this->em->flush();
+                        $this->addFlash('success', 'Informations modifiées');
+                        return $this->redirectToRoute('account');
+                    }
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
@@ -141,7 +143,10 @@ class SecurityController extends AbstractController
                     $user->setPassword($this->encoder->encodePassword($user, $request->get('new_password')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
-                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                } else {
+                    $this->addFlash('christmas_code', null);
+                    $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                }
             } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
         } else $this->addFlash('fail', 'Remplissez tous les champs');
 
@@ -208,6 +213,7 @@ class SecurityController extends AbstractController
                     $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
+                    $this->addFlash('christmas_code', null);
                     return $this->redirectToRoute('login');
                 } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             }

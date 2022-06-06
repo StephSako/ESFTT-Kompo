@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Competiteur;
+use DateTime;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,6 +19,8 @@ class CompetiteurType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $year = intval((new DateTime())->format('Y'));
+        $range = range($year - 120, $year + 1);
         $builder
             ->add('nom', TextType::class, [
                 'label' => false,
@@ -39,6 +42,8 @@ class CompetiteurType extends AbstractType
                 'required' => $options['dateNaissanceRequired'],
                 'invalid_message' => 'Cette date de naissance est invalide',
                 'label' => false,
+                'widget' => 'choice',
+                'years' => $range,
                 'format' => 'd MMMM y',
             ])
             ->add('imageFile', FileType::class, [

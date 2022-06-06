@@ -31,7 +31,6 @@ function endSending(message, success){
 
     if (!success) {
         M.toast({html: message});
-        console.log('ERREUR');
         $('span.christmas_code').removeClass('hide')
     }
     else {
