@@ -272,7 +272,7 @@
 {#                </div>#}
 {#            {% endif %}#}
 
-            <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+            <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index") }}" class="btn waves-effect grey btn_gestion">Annuler</a>
             <button
                 {% if editMode %}
                     onclick="alertBecomingLoisirOrArchived()"
