@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('christmas_code_2', 'Date de naissance dans le futur');
+                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('christmas_code', 'Date de naissance dans le futur');
                     else {
                         $user->setNom($user->getNom());
                         $user->setPrenom($user->getPrenom());
@@ -143,10 +143,7 @@ class SecurityController extends AbstractController
                     $user->setPassword($this->encoder->encodePassword($user, $request->get('new_password')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
-                } else {
-                    $this->addFlash('christmas_code', null);
-                    $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
-                }
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             } else $this->addFlash('fail', 'Mot de passe actuel incorrect');
         } else $this->addFlash('fail', 'Remplissez tous les champs');
 
@@ -215,7 +212,10 @@ class SecurityController extends AbstractController
                     $this->addFlash('success', 'Mot de passe modifié');
                     $this->addFlash('christmas_code', null);
                     return $this->redirectToRoute('login');
-                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                } else {
+                    $this->addFlash('christmas_code', null);
+                    $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                }
             }
 
             return $this->render('account/reset_password.html.twig', [
