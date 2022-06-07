@@ -1098,6 +1098,11 @@ a.reload_ranking {
     display: block;
   }
 }
+@media screen and (min-width: 1168px) {
+  .navbar-general .esftt_logo {
+    display: none;
+  }
+}
 @media screen and (max-width: 1128px) {
   .navbar-backoffice .left_items {
     display: none;
