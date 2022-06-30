@@ -30,6 +30,7 @@ class JourneeRepository extends ServiceEntityRepository
             ->addSelect('j.dateJournee')
             ->addSelect('j.undefined')
             ->addSelect('c.nom')
+            ->addSelect('c.idChampionnat')
             ->leftJoin('j.idChampionnat', 'c')
             ->orderBy('c.nom')
             ->getQuery()
@@ -37,7 +38,10 @@ class JourneeRepository extends ServiceEntityRepository
 
         $querySorted = [];
         foreach ($query as $key => $item) {
-            $querySorted[$item['nom']][$key] = $item;
+            if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
+            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
+            if (!array_key_exists('journees', $querySorted[$item['nom']])) $querySorted[$item['nom']]['journees'] = [];
+            $querySorted[$item['nom']]['journees'][$key] = $item;
         }
         return $querySorted;
     }

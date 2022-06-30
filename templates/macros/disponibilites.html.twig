@@ -79,7 +79,7 @@
     {% if allDisponibilites|length > 1 %}
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="margin-bottom: 2px">
             {% for nomChamp, disponibilites in allDisponibilites %}
-                <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" id="{{ nomChamp|slug|lower }} {{ championnat|lower }}" {% if nomChamp|slug|lower == championnat|lower %} class="active"{% endif %}>{{ nomChamp }}</a></li>
+                <li class="tab"><a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" id="{{ nomChamp|slug|lower }}" {% if nomChamp|slug|lower == championnat|lower %} class="active"{% endif %}>{{ nomChamp }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -184,7 +184,7 @@
                     <div class="collapsible-body">
                         <table class="centered striped responsive-table table-backoffice-disponibilites">
                             <tbody>
-                                {% for i, dispos in infos.dispos %}
+                                {% for i, dispos in infos.disponibilites %}
                                     <tr>
                                         <td class="hide-on-med-and-down">
                                             <div class="chip">

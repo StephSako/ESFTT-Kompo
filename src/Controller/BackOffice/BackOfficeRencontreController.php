@@ -35,12 +35,14 @@ class BackOfficeRencontreController extends AbstractController
 
     /**
      * @Route("/backoffice/rencontres", name="backoffice.rencontres")
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->render('backoffice/rencontre/index.html.twig', [
-            'rencontres' => $this->championnatRepository->getAllRencontres()
+            'rencontres' => $this->championnatRepository->getAllRencontres(),
+            'active' => $request->query->get('active')
         ]);
     }
 
@@ -82,7 +84,9 @@ class BackOfficeRencontreController extends AbstractController
                         $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                         $this->em->flush();
                         $this->addFlash('success', 'Rencontre modifiée');
-                        return $this->redirectToRoute('backoffice.rencontres');
+                        return $this->redirectToRoute('backoffice.rencontres', [
+                            'active' => $rencontre->getIdChampionnat()->getIdChampionnat()
+                        ]);
                     } else {
                         /** On récupère la valeur du switch du template **/
                         $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
@@ -107,13 +111,17 @@ class BackOfficeRencontreController extends AbstractController
                             else {
                                 $this->em->flush();
                                 $this->addFlash('success', 'Rencontre modifiée');
-                                return $this->redirectToRoute('backoffice.rencontres');
+                                return $this->redirectToRoute('backoffice.rencontres', [
+                                    'active' => $rencontre->getIdChampionnat()->getIdChampionnat()
+                                ]);
                             }
                         } else {
                             $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                             $this->em->flush();
                             $this->addFlash('success', 'Rencontre modifiée');
-                            return $this->redirectToRoute('backoffice.rencontres');
+                            return $this->redirectToRoute('backoffice.rencontres', [
+                                'active' => $rencontre->getIdChampionnat()->getIdChampionnat()
+                            ]);
                         }
                     }
                 } catch(Exception $e){
@@ -126,8 +134,7 @@ class BackOfficeRencontreController extends AbstractController
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
             'domicile' => $domicile,
-            'idJournee' => $posJournee,
-            'rencontre' => $rencontre
+            'idJournee' => $posJournee
         ]);
     }
 }

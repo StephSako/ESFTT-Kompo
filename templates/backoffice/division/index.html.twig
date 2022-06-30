@@ -39,15 +39,17 @@
 
             {% if divisions|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
-                    {% for nomChampionnat, divisions_champ in divisions %}
-                        <li class='tab'><a href='{{ '#divisions_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% for nomChampionnat, id_et_divisions in divisions %}
+                        <li class='tab'>
+                            <a href='{{ '#divisions_' ~ id_et_divisions.idChampionnat }}' {% if id_et_divisions.idChampionnat == active %} class="active" {% endif %}>{{ nomChampionnat }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
-            {% for nomChampionnat, divisions_champ in divisions %}
-                <div class='card-panel backoffice-panel center' id='{{ 'divisions_' ~ nomChampionnat|slug }}'>
-                    {{ _division.table(divisions_champ) }}
+            {% for nomChampionnat, id_et_divisions in divisions %}
+                <div class='card-panel backoffice-panel center' id='{{ 'divisions_' ~ id_et_divisions.idChampionnat }}'>
+                    {{ _division.table(id_et_divisions.divisions) }}
                 </div>
             {% endfor %}
         {% endif %}

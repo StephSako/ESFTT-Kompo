@@ -41,12 +41,14 @@ class BackOfficeDivisionController extends AbstractController
 
     /**
      * @Route("/backoffice/divisions", name="backoffice.divisions")
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->championnatRepository->getAllDivisions()
+            'divisions' => $this->championnatRepository->getAllDivisions(),
+            'active' => $request->query->get('active')
         ]);
     }
 
@@ -73,7 +75,9 @@ class BackOfficeDivisionController extends AbstractController
                     $this->em->persist($division);
                     $this->em->flush();
                     $this->addFlash('success', 'Division créée');
-                    return $this->redirectToRoute('backoffice.divisions');
+                    return $this->redirectToRoute('backoffice.divisions', [
+                        'active' => $division->getIdChampionnat()->getIdChampionnat()
+                    ]);
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
@@ -131,7 +135,9 @@ class BackOfficeDivisionController extends AbstractController
 
                     $this->em->flush();
                     $this->addFlash('success', 'Division modifiée');
-                    return $this->redirectToRoute('backoffice.divisions');
+                    return $this->redirectToRoute('backoffice.divisions', [
+                        'active' => $division->getIdChampionnat()->getIdChampionnat()
+                    ]);
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
@@ -143,7 +149,6 @@ class BackOfficeDivisionController extends AbstractController
         }
 
         return $this->render('backoffice/division/edit.html.twig', [
-            'championnat' => $division->getIdChampionnat()->getNom(),
             'form' => $form->createView(),
         ]);
     }
@@ -181,6 +186,8 @@ class BackOfficeDivisionController extends AbstractController
             $this->addFlash('success', 'Division supprimée');
         } else $this->addFlash('error', 'La division n\'a pas pu être supprimée');
 
-        return $this->redirectToRoute('backoffice.divisions');
+        return $this->redirectToRoute('backoffice.divisions', [
+            'active' => $division->getIdChampionnat()->getIdChampionnat()
+        ]);
     }
 }
