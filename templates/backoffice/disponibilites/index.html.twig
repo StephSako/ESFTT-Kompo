@@ -38,15 +38,17 @@
         {% else %}
             {% if disponibilites|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
-                    {% for nomChampionnat, disponibilites_champ in disponibilites %}
-                        <li class='tab'><a href='{{ '#disponibilites_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% for nomChampionnat, id_et_joueurs in disponibilites %}
+                        <li class='tab'>
+                            <a {% if id_et_joueurs.idChampionnat == active %} class="active" {% endif %} href='{{ '#disponibilites_' ~ id_et_joueurs.idChampionnat }}'>{{ nomChampionnat }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
-            {% for nomChampionnat, disponibilites_champ in disponibilites %}
-                <div id='{{ 'disponibilites_' ~ nomChampionnat|slug }}' class='card-panel backoffice-panel'>
-                    {{ _disponibilites.backoffice(disponibilites_champ) }}
+            {% for nomChampionnat, id_et_joueurs in disponibilites %}
+                <div id='{{ 'disponibilites_' ~ id_et_joueurs.idChampionnat }}' class='card-panel backoffice-panel'>
+                    {{ _disponibilites.backoffice(id_et_joueurs.joueurs) }}
                 </div>
             {% endfor %}
         {% endif %}

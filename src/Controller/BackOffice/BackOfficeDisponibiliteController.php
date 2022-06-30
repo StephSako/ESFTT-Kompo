@@ -56,13 +56,15 @@ class BackOfficeDisponibiliteController extends AbstractController
 
     /**
      * @Route("/backoffice/disponibilites", name="backoffice.disponibilites")
+     * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->render('backoffice/disponibilites/index.html.twig', [
-            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($this->championnatRepository->findAll())
+            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($this->championnatRepository->findAll()),
+            'active' => $request->query->get('active')
         ]);
     }
 
@@ -78,7 +80,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         $idJournee = $request->request->get('idJournee');
         $disponibiliteBoolean = $request->request->get('disponibiliteBoolean');
         $idCompetiteur = $request->request->get('idCompetiteur');
-        /** Message d'erreur */
 
         try {
             if (!($journee = $this->journeeRepository->find($idJournee))) throw new Exception('Journée inexistante', 1234);
@@ -116,8 +117,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         $disponibiliteBoolean = $request->request->get('disponibiliteBoolean');
         $idCompetiteur = $request->request->get('idCompetiteur');
         $idJournee = $request->request->get('idJournee');
-        /** Message d'erreur */
-        $message = null;
 
         try {
             if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Membre inexistant', 1234);
@@ -145,7 +144,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/backoffice/disponibilite.html.twig', [
-            'message' => $message,
             'idJournee' => $idJournee,
             'idDisponibilite' => $idDisponibilite,
             'idCompetiteur' => $idCompetiteur,
@@ -165,8 +163,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         $idDisponibilite = $request->request->get('idDisponibilite');
         $idCompetiteur = $request->request->get('idCompetiteur');
         $idJournee = $request->request->get('idJournee');
-        /** Message d'erreur */
-        $message = null;
 
         try {
             if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) throw new Exception('Membre inexistant', 1234);
@@ -192,7 +188,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/backoffice/disponibilite.html.twig', [
-            'message' => $message,
             'idJournee' => $idJournee,
             'idDisponibilite' => $idDisponibilite,
             'idCompetiteur' => $idCompetiteur,

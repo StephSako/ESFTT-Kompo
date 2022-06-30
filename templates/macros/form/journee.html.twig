@@ -1,7 +1,7 @@
-{% macro form(form, idJournee, championnat) %}
+{% macro form(form, idJournee) %}
     <div class="card-panel center-align">
         <h4 class="h4_form">Date de la journée</h4>
-        <h5>Journée n°{{ idJournee }} - {{ championnat }}</h5><br>
+        <h5>Journée n°{{ idJournee }} - {{ form.vars.value.idChampionnat.nom }}</h5><br>
 
         {{ form_start(form) }}
             <div class="container titlecase">
@@ -9,7 +9,8 @@
             </div>
 
             {{ form_row(form.undefined, {'id': 'journee_undefined'}) }}
-            <a href="{{ path('backoffice.journees') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+
+            <a href="{{ path('backoffice.journees', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
             <button class="btn btn_form waves-effect light-blue darken-1 btn_gestion">Modifier</button>
         {{ form_end(form) }}
     </div>

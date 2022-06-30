@@ -191,11 +191,13 @@
                                             Équipe {{ compo.idEquipe.numero }}
                                         </h5>
                                     </div>
-                                    <div class="col" style="padding-left: 0; padding-right: 0;">
-                                        <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                            <i class="material-icons">equalizer</i>
-                                        </a>
-                                    </div>
+                                    {% if compo.idEquipe.lienDivision %}
+                                        <div class="col" style="padding-left: 0; padding-right: 0;">
+                                            <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                                <i class="material-icons">equalizer</i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -235,11 +237,13 @@
                                                 <h5 class="lobster_2" style="margin-top: 3px">{{ compo.adversaire | title }}</h5>
                                             {% endif %}
                                         </div>
-                                        <div class="col" style="padding-left: 0; padding-right: 0;">
-                                            <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
-                                                <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
-                                            </a>
-                                        </div>
+                                        {% if compo.idEquipe.lienDivision %}
+                                            <div class="col" style="padding-left: 0; padding-right: 0;">
+                                                <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                    <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             </div>
@@ -258,11 +262,13 @@
                                                 <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
                                             {% endif %}
                                         </div>
-                                        <div>
-                                            <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
-                                                <i class="material-icons">format_list_bulleted</i>
-                                            </a>
-                                        </div>
+                                        {% if compo.idEquipe.lienDivision %}
+                                            <div>
+                                                <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                    <i class="material-icons">format_list_bulleted</i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             </div>

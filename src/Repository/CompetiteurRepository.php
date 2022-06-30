@@ -341,17 +341,17 @@ class CompetiteurRepository extends ServiceEntityRepository
             $queryFinal[$championnat->getNom()] = [];
             foreach ($queryTest[$championnat->getNom()] as $item) {
                 $nom = $item['nom'] . ' ' . $item['prenom'];
-                if (!array_key_exists($nom, $queryFinal[$championnat->getNom()])){
-                    $dispos = [];
-                    $queryFinal[$championnat->getNom()][$nom] = [];
-                    $queryFinal[$championnat->getNom()][$nom]['avatar'] = $item['avatar'];
-                    $queryFinal[$championnat->getNom()][$nom]['idCompetiteur'] = $item['idCompetiteur'];
-                    $queryFinal[$championnat->getNom()][$nom]['classement_officiel'] = $item['classement_officiel'];
-                    $queryFinal[$championnat->getNom()][$nom]['licence'] = $item['licence'];
+                if (!array_key_exists($championnat->getNom(), $queryFinal)) $querySorted[$championnat->getNom()] = [];
+                if (!array_key_exists('idChampionnat', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['idChampionnat'] = $item['idChampionnat'];
+                if (!array_key_exists('joueurs', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['joueurs'] = [];
+                if (!array_key_exists($nom, $queryFinal[$championnat->getNom()]['joueurs'])){
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom] = [];
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom]['avatar'] = $item['avatar'];
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom]['idCompetiteur'] = $item['idCompetiteur'];
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom]['disponibilites'] = [];
                 }
                 $item['latestDate'] = max(new DateTime($item['latestDate']), $item['dateJournee']);
-                $dispos[] = $item;
-                $queryFinal[$championnat->getNom()][$nom]['dispos'] = $dispos;
+                $queryFinal[$championnat->getNom()]['joueurs'][$nom]['disponibilites'][] = $item;
             }
         }
         return $queryFinal;
