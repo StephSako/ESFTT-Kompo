@@ -30,12 +30,14 @@ class BackOfficeJourneeController extends AbstractController
 
     /**
      * @Route("/backoffice/journees", name="backoffice.journees")
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return $this->render('backoffice/journee/index.html.twig', [
-            'journees' => $this->journeeRepository->getAllJournees()
+            'journees' => $this->journeeRepository->getAllJournees(),
+            'active' => $request->query->get('active')
         ]);
     }
 
@@ -65,7 +67,9 @@ class BackOfficeJourneeController extends AbstractController
                 try {
                     $this->em->flush();
                     $this->addFlash('success', 'Journée modifiée');
-                    return $this->redirectToRoute('backoffice.journees');
+                    return $this->redirectToRoute('backoffice.journees', [
+                        'active' => $journee->getIdChampionnat()->getIdChampionnat()
+                    ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
@@ -77,8 +81,7 @@ class BackOfficeJourneeController extends AbstractController
 
         return $this->render('backoffice/journee/edit.html.twig', [
             'form' => $form->createView(),
-            'iJournee' => $posJournee,
-            'championnat' => $journee->getIdChampionnat()->getNom()
+            'iJournee' => $posJournee
         ]);
     }
 }

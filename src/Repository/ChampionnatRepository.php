@@ -49,6 +49,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('e.lienDivision')
             ->addSelect('d.shortName as divShortName')
             ->addSelect('c.nom')
+            ->addSelect('c.idChampionnat')
             ->leftJoin('c.equipes', 'e')
             ->leftJoin('e.idDivision', 'd')
             ->leftJoin('e.idPoule', 'p')
@@ -60,7 +61,9 @@ class ChampionnatRepository extends ServiceEntityRepository
         $querySorted = [];
         foreach ($query as $key => $item) {
             if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if ($item['numero']) $querySorted[$item['nom']][$key] = $item;
+            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
+            if (!array_key_exists('equipes', $querySorted[$item['nom']])) $querySorted[$item['nom']]['equipes'] = [];
+            $querySorted[$item['nom']]['equipes'][$key] = $item;
         }
         return $querySorted;
     }
@@ -90,7 +93,9 @@ class ChampionnatRepository extends ServiceEntityRepository
         $querySorted = [];
         foreach ($query as $key => $item) {
             if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if ($item['longName']) $querySorted[$item['nom']][$key] = $item;
+            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
+            if (!array_key_exists('divisions', $querySorted[$item['nom']])) $querySorted[$item['nom']]['divisions'] = [];
+            $querySorted[$item['nom']]['divisions'][$key] = $item;
         }
         return $querySorted;
     }
@@ -105,6 +110,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->select('e.numero')
             ->addSelect('j.idJournee')
             ->addSelect('c.nom')
+            ->addSelect('c.idChampionnat')
             ->addSelect('j.dateJournee')
             ->addSelect('j.undefined')
             ->addSelect('r.adversaire')
@@ -129,7 +135,9 @@ class ChampionnatRepository extends ServiceEntityRepository
         $querySorted = [];
         foreach ($query as $key => $item) {
             if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if ($item['id']) $querySorted[$item['nom']][$item['numero']][$key] = $item;
+            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
+            if (!array_key_exists('rencontres', $querySorted[$item['nom']])) $querySorted[$item['nom']]['rencontres'] = [];
+            $querySorted[$item['nom']]['rencontres'][$item['numero']][$key] = $item;
         }
         return $querySorted;
     }

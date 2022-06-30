@@ -1,4 +1,4 @@
-{% macro form(form, btnText, editMode, hasChampionnats, options) %}
+{% macro form(form, btnText, editMode, hasChampionnats) %}
     <style>
         li {
             color: red;
@@ -8,7 +8,7 @@
     {% if hasChampionnats %}
         <div class="card-panel center-align">
             <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une division</h4>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if options %}{{ options.championnat }}{% endif %}</h5>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.nom }}{% endif %}</h5>
 
             {{ form_start(form) }}
                 <div class="row">
@@ -31,7 +31,7 @@
                 </div>
 
                 <br>
-                <a href="{{ path('backoffice.divisions') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <a href="{{ path('backoffice.divisions', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
                 <button class="btn btn_gestion btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
             {{ form_end(form) }}
         </div>
@@ -39,7 +39,7 @@
         <div class="center card-panel">
             <p class="lobster_2 missingTitle">Le formulaire de division est inaccessible car aucun championnat n'est enregistré</p>
 
-            <a href="{{ path('backoffice.divisions') }}">
+            <a href="{{ path('backoffice.divisions', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat } : {}) }}">
                 <button class="btn waves-effect blue lighten-2 center">Retour aux divisions</button>
             </a>
         </div>

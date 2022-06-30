@@ -34,15 +34,17 @@
         {% else %}
             {% if journees|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
-                    {% for nomChampionnat, renc_equipes in journees %}
-                        <li class="tab"><a href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                    {% for nomChampionnat, id_et_journees in journees %}
+                        <li class="tab">
+                            <a {% if active == id_et_journees.idChampionnat %} class="active"{% endif %} href='{{ '#journees_' ~ id_et_journees.idChampionnat }}'>{{ nomChampionnat }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
-            {% for nomChampionnat, journees_champ in journees %}
-                <div class='card-panel backoffice-panel center' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
-                    {{ _journee.table(journees_champ) }}
+            {% for nomChampionnat, id_et_journees in journees %}
+                <div class='card-panel backoffice-panel center' id='{{ 'journees_' ~ id_et_journees.idChampionnat }}'>
+                    {{ _journee.table(id_et_journees.journees) }}
                 </div>
             {% endfor %}
         {% endif %}

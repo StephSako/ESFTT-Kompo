@@ -41,15 +41,15 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipes/{focusedTab?}", name="backoffice.equipes")
-     * @param string|null $focusedTab
+     * @Route("/backoffice/equipes", name="backoffice.equipes")
+     * @param Request $request
      * @return Response
      */
-    public function index(?string $focusedTab): Response
+    public function index(Request $request): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
             'equipes' => $this->championnatRepository->getAllEquipes(),
-            'focusedTab' => $focusedTab
+            'active' => $request->query->get('active')
         ]);
     }
 
@@ -104,7 +104,9 @@ class BackOfficeEquipeController extends AbstractController
 
                     $this->em->flush();
                     $this->addFlash('success', 'Équipe créée');
-                    return $this->redirectToRoute('backoffice.equipes');
+                    return $this->redirectToRoute('backoffice.equipes', [
+                        'active' => $equipe->getIdChampionnat()->getIdChampionnat()
+                    ]);
                 } catch(Exception $e){
                     if ($e->getPrevious()) {
                         if ($e->getPrevious()->getCode() == "23000") {
@@ -154,7 +156,9 @@ class BackOfficeEquipeController extends AbstractController
 
                         $this->em->flush();
                         $this->addFlash('success', 'Équipe modifiée');
-                        return $this->redirectToRoute('backoffice.equipes');
+                        return $this->redirectToRoute('backoffice.equipes', [
+                            'active' => $equipe->getIdChampionnat()->getIdChampionnat()
+                        ]);
                     } catch(Exception $e){
                         if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
                             if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
@@ -180,7 +184,10 @@ class BackOfficeEquipeController extends AbstractController
      */
     public function delete(int $idEquipe, Request $request): Response
     {
-        $equipe = $this->equipeRepository->find($idEquipe);
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Equipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
 
         if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->get('_token'))) {
             $this->em->remove($equipe);
@@ -188,7 +195,9 @@ class BackOfficeEquipeController extends AbstractController
             $this->addFlash('success', 'Équipe supprimée');
         } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
 
-        return $this->redirectToRoute('backoffice.equipes');
+        return $this->redirectToRoute('backoffice.equipes', [
+            'active' => $equipe->getIdChampionnat()->getIdChampionnat()
+        ]);
     }
 
     /**
