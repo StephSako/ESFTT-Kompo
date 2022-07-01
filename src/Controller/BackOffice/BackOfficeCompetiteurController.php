@@ -5,7 +5,6 @@ namespace App\Controller\BackOffice;
 use App\Controller\ContactController;
 use App\Controller\UtilController;
 use App\Entity\Competiteur;
-use App\Entity\Rencontre;
 use App\Form\CompetiteurType;
 use App\Form\SettingsType;
 use App\Repository\CompetiteurRepository;

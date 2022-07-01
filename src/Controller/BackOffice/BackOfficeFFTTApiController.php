@@ -97,12 +97,6 @@ class BackOfficeFFTTApiController extends AbstractController
             $joueursKompo = $this->competiteurRepository->findBy(['isCompetiteur' => 1], ['nom' => 'ASC', 'prenom' => 'ASC']);
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
 
-            /** Gestion des joueurs non répertoriés dans l'API FFTT */
-            $allLicensesFFTT = array_map(function ($joueur) { return intval($joueur->getLicence()); }, $joueursFFTT);
-            $unarchivePlayers = array_filter($this->competiteurRepository->findBy(['isArchive' => 0], ['nom' => 'ASC', 'prenom' => 'ASC']), function($joueurIssuedToArchive) use ($allLicensesFFTT) {
-                return !in_array($joueurIssuedToArchive->getLicence(), $allLicensesFFTT);
-            });
-
             foreach ($joueursKompo as $competiteur){
                 $joueurFFTT = array_filter($joueursFFTT,
                     function($joueurFFTT) use ($competiteur) {
@@ -161,7 +155,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     });
 
                     $equipesToCreate = array_combine(array_map(function($equipeToEditIndex) {
-                        return preg_replace('/[^0-9]/', '', $this->getEquipeNumero($equipeToEditIndex->getLibelle()));
+                        return preg_replace('/\D/', '', $this->getEquipeNumero($equipeToEditIndex->getLibelle()));
                     }, $equipesToCreate), array_values($equipesToCreate));
 
                     $equipesToDeleteIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
@@ -669,11 +663,11 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
-     * Retourn le numéro d'une équipe de l'API FFTT en passant son libellé en paramètre
+     * Retourne le numéro d'une équipe de l'API FFTT en passant son libellé en paramètre
      * @param string $equipeLibelle
      * @return int
      */
     function getEquipeNumero(string $equipeLibelle): int {
-        return intval(preg_replace('/[^0-9]/', '', explode(' ', $equipeLibelle)[self::NUMERO_EQUIPE]));
+        return intval(preg_replace('/\D/', '', explode(' ', $equipeLibelle)[self::NUMERO_EQUIPE]));
     }
 }
