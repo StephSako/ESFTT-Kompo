@@ -1,4 +1,4 @@
-{% macro form(form, domicile, idJournee) %}
+{% macro form(form, idJournee) %}
     <div class="card-panel center-align">
         <div class="hide-on-small-only">
             <h4 class="titre">Journée {{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }} - {{ form.vars.value.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h4>
@@ -17,15 +17,9 @@
                     <div class="col s10 offset-s1 m4 offset-m2">
                         <b>Adversaire + n° équipe</b>{{ form_row(form.adversaire, {'id': 'adversaire'}) }}
                     </div>
-                    <div class="col s12 m6" style="margin-top: 20px;">
-                        <div class="switch">
-                            <label>
-                                <span id="domicile">Domicile</span>
-                                <input type="checkbox" name="lieu_rencontre" class="validate" id="lieu_rencontre">
-                                <span class="lever"></span>
-                                <span id="exterieur">Extérieur</span>
-                            </label>
-                        </div>
+                    <div class="col s10 offset-s1 m4 lieu_rencontre">
+                        <b>Lieu de la rencontre</b><br>
+                        {{ form_row(form.domicile, {'id': 'lieu_rencontre'}) }}
                     </div>
                 </div>
 
@@ -56,7 +50,7 @@
     </div>
 
     <script type="text/javascript">
-        let exterieur = "{{ domicile }}";
+        let lieu_rencontre_value = "{{ form.vars.value.domicile is not null ? (form.vars.value.domicile == true ? 1 : 2) : 0 }}";
     </script>
     <script type="text/javascript" src="{{ asset('JS/editRencontre.min.js') }}" defer></script>
 {% endmacro %}

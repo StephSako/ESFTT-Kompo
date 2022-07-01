@@ -60,9 +60,7 @@ class BackOfficeRencontreController extends AbstractController
             return $this->redirectToRoute('backoffice.rencontres');
         }
         $form = $this->createForm(RencontreType::class, $rencontre);
-
         $form->handleRequest($request);
-        $domicile = ($rencontre->getDomicile() ? "D" : "E");
 
         $journees = $rencontre->getIdChampionnat()->getJournees()->toArray();
         $journee = $rencontre->getIDJournee();
@@ -73,7 +71,6 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-
                     /** Si l'équipe est exemptée, on remet les champs à zéro */
                     if ($rencontre->isExempt()) {
                         $rencontre->setDomicile(true);
@@ -88,8 +85,6 @@ class BackOfficeRencontreController extends AbstractController
                             'active' => $rencontre->getIdChampionnat()->getIdChampionnat()
                         ]);
                     } else {
-                        /** On récupère la valeur du switch du template **/
-                        $rencontre->setDomicile(($request->get('lieu_rencontre') == 'on' ? 0 : 1 ));
                         $rencontre->setAdversaire($rencontre->getAdversaire());
 
                         /** Si la rencontre n'est pas ou plus avancée/reportée, la date redevient celle de la journée associée **/
@@ -133,7 +128,6 @@ class BackOfficeRencontreController extends AbstractController
 
         return $this->render('backoffice/rencontre/edit.html.twig', [
             'form' => $form->createView(),
-            'domicile' => $domicile,
             'idJournee' => $posJournee
         ]);
     }

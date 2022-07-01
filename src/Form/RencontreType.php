@@ -34,6 +34,11 @@ class RencontreType extends AbstractType
             }
         } else {
             $builder
+                ->add('domicile', ChoiceType::class,[
+                    'label' => ' ',
+                    'choices' => Rencontre::LIEU_RENCONTRE,
+                    'required' => true
+                ])
                 ->add('adversaire', TextType::class,[
                     'label' => false,
                     'required' => false,

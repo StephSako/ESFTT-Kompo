@@ -33,6 +33,12 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Rencontre
 {
+    /** Lieu d'une rencontre */
+    const LIEU_RENCONTRE = [
+        'Indéfini' => null,
+        'Domicile' => true,
+        'Extérieur' => false
+    ];
 
     /**
      * Rencontre constructor.
