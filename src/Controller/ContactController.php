@@ -22,37 +22,34 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $settingsRepository;
     private $mailer;
-    private $utilController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param MailerInterface $mailer
-     * @param UtilController $utilController
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 MailerInterface $mailer,
-                                UtilController $utilController,
                                 SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
         $this->mailer = $mailer;
-        $this->utilController = $utilController;
     }
 
     /**
      * @Route("/contact", name="contact")
-     * @throws Exception
+     * @param UtilController $utilController
+     * @return Response
      */
-    public function index(): Response
+    public function index(UtilController $utilController): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
@@ -115,10 +112,11 @@ class ContactController extends AbstractController
     /**
      * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      * @throws Exception
      */
-    public function contactResetPassword(Request $request): Response
+    public function contactResetPassword(Request $request, UtilController $utilController): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
@@ -139,7 +137,7 @@ class ContactController extends AbstractController
                 throw $this->createNotFoundException($e->getMessage());
             }
 
-            $resetPasswordLink = $this->utilController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $resetPasswordLink =$utilController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
             $str_replacers = [
                 'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
                 'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]

@@ -19,6 +19,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use ErrorException;
 use Exception;
 use FFTTApi\FFTTApi;
 use FFTTApi\Model\Equipe;
@@ -37,8 +38,6 @@ class BackOfficeFFTTApiController extends AbstractController
     private $divisionRepository;
     private $pouleRepository;
     private $settingsRepository;
-    private $utilController;
-    private $contactController;
 
     /** Position des données dans les chaînes de caractères reçues de l'API */
     const JOURNEE_LABEL= 4;
@@ -56,8 +55,6 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param DivisionRepository $divisionRepository
      * @param PouleRepository $pouleRepository
      * @param EntityManagerInterface $em
-     * @param ContactController $contactController
-     * @param UtilController $utilController
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -65,8 +62,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
                                 EntityManagerInterface $em,
-                                ContactController $contactController,
-                                UtilController $utilController,
                                 SettingsRepository $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
@@ -75,15 +70,13 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
         $this->settingsRepository = $settingsRepository;
-        $this->utilController = $utilController;
-        $this->contactController = $contactController;
     }
 
     /**
      * @Route("/backoffice/new_phase", name="backoffice.reset.phase")
      * @throws Exception
      */
-    public function index(Request $request): Response
+    public function index(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
         $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
@@ -115,10 +108,11 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
                 }
             }
-        } catch(Exception $exception) {
+        } catch (ErrorException $exception) {
             $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
             $errorMajJoueurs = true;
         }
+
         try {
             $allChampionnats = $this->championnatRepository->findAll();
 
@@ -348,7 +342,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-phase où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -396,7 +390,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
                     $this->em->flush();
 
-                } catch (Exception $exception) {
+                } catch (ErrorException $exception) {
                     $this->addFlash('fail', 'Compétiteurs non mis à jour');
                 }
 
@@ -418,7 +412,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                         /** On set les Journées comme étant indéfinies avec les dates maximum de la prochaine phase */
-                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
+                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
                             $dateKompo
                                 ->setUndefined(true)
@@ -457,7 +451,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         $mails = array_map(function ($joueur) {
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                        }, $this->contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['contactables']);
+                        }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['contactables']);
 
                         $settings = $this->settingsRepository->find(1);
                         try {
@@ -472,7 +466,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 'new' => [$championnat->getNom()]
                             ];
 
-                            $this->contactController->sendMail(
+                            $contactController->sendMail(
                                 $mails,
                                 true,
                                 'Kompo - Phase terminée',
@@ -480,7 +474,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $str_replacers,
                                 true);
                             $this->addFlash('success', "L'alerte de pré-phase a été envoyée");
-                        } catch (Exception $e) {
+                        } catch (ErrorException $e) {
                             $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
                         }
                     }
@@ -580,7 +574,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     return $this->redirectToRoute('backoffice.reset.phase');
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
-        } catch (Exception $exception) {
+        } catch (ErrorException $exception) {
             $this->addFlash('fail', 'Mise à jour des rencontres et équipes impossible : API de la FFTT indisponible pour le moment');
             $errorMajRencontresEquipes = true;
         }
