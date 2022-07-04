@@ -18,26 +18,22 @@ class DisponibiliteController extends AbstractController
     private $journeeRepository;
     private $disponibiliteRepository;
     private $rencontreRepository;
-    private $utilController;
 
     /**
      * @param EntityManagerInterface $em
      * @param JourneeRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
-     * @param UtilController $utilController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
                                 JourneeRepository $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                UtilController $utilController,
                                 RencontreRepository $rencontreRepository)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->rencontreRepository = $rencontreRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -79,7 +75,7 @@ class DisponibiliteController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function update(int $dispoJoueur, bool $dispo) : Response
+    public function update(int $dispoJoueur, bool $dispo, UtilController $utilController) : Response
     {
         if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) {
             $this->addFlash('fail', 'Disponibilité inexistante');
@@ -93,7 +89,7 @@ class DisponibiliteController extends AbstractController
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-            $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
+            $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
 
             foreach ($invalidCompos as $compo){
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */

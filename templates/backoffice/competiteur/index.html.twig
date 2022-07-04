@@ -2,6 +2,7 @@
 
 {% block title %}Back-office - Les membres{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/membre.html.twig' as _membre %}
 {% import 'macros/modalContact.html.twig' as _modalContact %}
 
 {% block body %}
@@ -61,122 +62,28 @@
             {% endif %}
 
             {% if joueurs|length %}
-                <table id="table-to-adapt-columns" class='striped centered responsive-table backoffice-table'>
-                    <thead>
-                        <tr class='hide-on-med-and-down'>
-                            <th class='th_picture_compet_table'></th>
-                            <th>Avatar</th>
-                            <th>Nom</th>
-                            <th>Licence</th>
-                            <th>Classement</th>
-                            <th class="truncate">Certificat médical</th>
-                            <th></th>
-                            {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                <th></th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for competiteur in joueurs %}
-                            <tr>
-                                <td style="padding-top: 8px; padding-bottom: 8px;">
-                                    {% if competiteur.isAdmin %}
-                                        <span class='new badge red' data-badge-caption='Administrateur'></span>
-                                    {% endif %}
-
-                                    {% if not competiteur.isArchive %}
-                                        {% if competiteur.isCompetiteur %}
-                                            {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
-                                        {% elseif competiteur.isLoisir %}
-                                            {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>
-                                        {% endif %}
-
-                                        {% if competiteur.isCapitaine %}
-                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
-                                        {% endif %}
-
-                                        {% if competiteur.isEntraineur %}
-                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir or competiteur.isCapitaine %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="new badge grey lighten-1" data-badge-caption="Archivé"></span>
-                                    {% endif %}
-                                </td>
-                                <td class="td_picture_compet">
-                                    {% if competiteur.avatar %}
-                                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
-                                    {% else %}
-                                        <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
-                                    {% endif %}
-                                </td>
-                                <td {% if competiteur.isArchive %}class="grey-text text-lighten-1"{% endif %}>
-                                    {{ competiteur.nom }} {{ competiteur.prenom }}
-                                </td>
-                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
-                                    {% if not competiteur.isArchive %}
-                                        {% if competiteur.licence %}
-                                            {{ competiteur.licence }}
-                                        {% else %}
-                                            <span class='red-text lighten-2'>Licence indéfinie</span>
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                                <td {% if competiteur.isArchive or competiteur.isLoisir %}class="hide-on-med-and-down"{% endif %}>
-                                    {% if not competiteur.isArchive and not competiteur.isLoisir %}
-                                        {% if competiteur.isCompetiteur %}
-                                            {% if competiteur.classementOfficiel %}
-                                                {{ competiteur.classementOfficiel }} pts
-                                            {% else %}
-                                                <span class='red-text lighten-2'>Classement indéfini</span>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                                <td {% if competiteur.isArchive %}class="hide-on-med-and-down"{% endif %}>
-                                    {% if not competiteur.isArchive %}
-                                        {% if competiteur.age != null and competiteur.age < 18 %}
-                                            <span style="color: grey"><i>Mineur (facultatif)</i></span>
-                                        {% else %}
-                                            <span>
-                                                <i class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
-                                                {{ competiteur.certifMedicalInvalid.shortMessage }}
-                                            </span>
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                                <td style="padding-bottom: 0; padding-top: 0;">
-                                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
-                                </td>
-                                {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                                    <td>
-                                        {% if not (onlyOneAdmin and competiteur.admin) %}
-                                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
-                                                <input type='hidden' name='_method' value='DELETE'>
-                                                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
-                                                <button class='btn waves-effect red lighten-2 btn_gestion'>
-                                                    <i class='material-icons'>delete</i>
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <div class="tooltipped" data-position="top" data-tooltip="Vous êtes le seul administrateur">
-                                                <a class='btn red lighten-2 btn_gestion' disabled="">
-                                                    <i class='material-icons'>delete</i>
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {{ _membre.tableActifs(joueurs, onlyOneAdmin ) }}
             {% else %}
                 <p class='lobster_2 missingTitle'>Aucun membre enregistré</p>
+            {% endif %}
+
+            {% if joueursArchives|length %}
+                <ul class="collapsible backoffice_archives" style="margin-top: 15px">
+                    <li>
+                        <div class="collapsible-header">
+                            <div class="chip">
+                                <i class="material-icons" style="vertical-align: middle;">inventory</i>
+                                {{ joueursArchives|length }} joueur{{ joueursArchives|length > 1 ? 's' : '' }} archivé{{ joueursArchives|length > 1 ? 's' : '' }}
+                            </div>
+                            <i class="caret material-icons">keyboard_arrow_down</i>
+                        </div>
+                        <div class="collapsible-body">
+                            {{ _membre.tableArchives(joueursArchives, onlyOneAdmin ) }}
+                        </div>
+                    </li>
+                </ul>
+            {% else %}
+                <p class='lobster_2 missingTitle'>Aucun membre archivé</p>
             {% endif %}
         </div>
 
