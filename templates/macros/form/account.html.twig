@@ -71,10 +71,10 @@
                         <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
                         {% if (age != null and age > 18) or age == null %}
                             {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}-{{ anneeCertificatMedical+4 }}</b></p>
+                                <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
                             {% else %}
                                 {% if anneeCertificatMedical != null %}
-                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Renouvellement à la rentrée <br><b>{{ "now"|date('Y') }}-{{ "now"|date('Y')+1 }}</b></p>
+                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                                 {% else %}
                                     <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
                                 {% endif %}
