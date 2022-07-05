@@ -381,20 +381,27 @@ p.lobster {
 .collapsible.backoffice_disponibilites button.btn {
   margin-top: 0;
 }
-.collapsible.backoffice_disponibilites .collapsible-header {
+.collapsible.backoffice_archives img {
+  opacity: 60%;
+}
+.collapsible.backoffice_disponibilites, .collapsible.backoffice_archives {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.collapsible.backoffice_disponibilites .collapsible-header, .collapsible.backoffice_archives .collapsible-header {
   padding-top: 6px;
   padding-bottom: 6px;
 }
-.collapsible.backoffice_disponibilites .collapsible-header .chip {
+.collapsible.backoffice_disponibilites .collapsible-header .chip, .collapsible.backoffice_archives .collapsible-header .chip {
   margin: 0;
 }
-.collapsible.backoffice_disponibilites .collapsible-body {
+.collapsible.backoffice_disponibilites .collapsible-body, .collapsible.backoffice_archives .collapsible-body {
   background-color: white;
 }
-.collapsible.backoffice_disponibilites .collapsible-body .row {
+.collapsible.backoffice_disponibilites .collapsible-body .row, .collapsible.backoffice_archives .collapsible-body .row {
   margin: 0 10px 0 0;
 }
-.collapsible.backoffice_disponibilites .collapsible-body .row:first-child {
+.collapsible.backoffice_disponibilites .collapsible-body .row:first-child, .collapsible.backoffice_archives .collapsible-body .row:first-child {
   margin-top: 0;
 }
 

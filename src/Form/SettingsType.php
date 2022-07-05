@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Settings;
-use Cocur\Slugify\Slugify;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;

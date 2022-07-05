@@ -8,6 +8,7 @@ use App\Entity\Rencontre;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Competiteur|null find($id, $lockMode = null, $lockVersion = null)
@@ -299,7 +300,7 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Liste des disponibilités de tous les joueurs
      * @param Championnat[] $allChampionnats
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function findAllDisponibilites(array $allChampionnats): array
     {
@@ -341,7 +342,6 @@ class CompetiteurRepository extends ServiceEntityRepository
             $queryFinal[$championnat->getNom()] = [];
             foreach ($queryTest[$championnat->getNom()] as $item) {
                 $nom = $item['nom'] . ' ' . $item['prenom'];
-                if (!array_key_exists($championnat->getNom(), $queryFinal)) $querySorted[$championnat->getNom()] = [];
                 if (!array_key_exists('idChampionnat', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['idChampionnat'] = $item['idChampionnat'];
                 if (!array_key_exists('joueurs', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['joueurs'] = [];
                 if (!array_key_exists($nom, $queryFinal[$championnat->getNom()]['joueurs'])){
@@ -408,8 +408,9 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $nbMaxJoueurs
      * @param int $limiteBrulage
      * @param Rencontre $compo
+     * @return array
      */
-    public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, int $limiteBrulage, Rencontre $compo)
+    public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, int $limiteBrulage, Rencontre $compo): array
     {
         $request = $this->createQueryBuilder('c')
             ->leftJoin('c.dispos', 'd')
