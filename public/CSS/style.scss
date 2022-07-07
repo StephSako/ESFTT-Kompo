@@ -1096,8 +1096,18 @@ table.table-last-compos {
   font-weight: bold;
   background-color: red;
 
-  &.golden {
-    background-color: gold !important;
+  &.diamant {
+    background-color: #b9f2ff !important;
+    color: black;
+  }
+
+  &.saphir {
+    background-color: #0131b4 !important;
+    color: white;
+  }
+
+  &.rubis {
+    background-color: #e0115f !important;
     color: black;
   }
 }

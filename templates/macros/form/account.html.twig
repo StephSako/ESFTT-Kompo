@@ -293,18 +293,18 @@
                             <div class="row">
                                 <div class="col s11">
                                     <b><i class="material-icons prefix" style="color: {% if i == 12 %}
-                                            #6977a1
-                                        {% elseif i == 13 %}
-                                            #e0115f
-                                        {% elseif i == 14 %}
                                             #b9f2ff
+                                        {% elseif i == 13 %}
+                                            #0131b4
+                                        {% elseif i == 14 %}
+                                            #e0115f
                                         {% endif %}">diamond</i> Code
                                         {% if i == 12 %}
-                                            Saphir
+                                            Diamant <i>(+1 point)</i>
                                         {% elseif i == 13 %}
-                                            Rubis
+                                            Saphir <i>(+2 points)</i>
                                         {% elseif i == 14 %}
-                                            Diamant
+                                            Rubis <i>(+3 points)</i>
                                         {% endif %}
                                     </b>
                                     {{ form_row(attribute(form,'code' ~ i)) }}

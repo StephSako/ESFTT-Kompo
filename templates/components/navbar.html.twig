@@ -12,7 +12,7 @@
                             <img class="brand-logo center" width="180px" height="70px" src="https://www.esftt.com/images/logo-new.png" alt="logo {{ club_diminutif }}">
                         </div>
                         <div class="flip-box-back">
-                            <span class="pastille reset christmas_code">XV282</span>
+                            <span class="pastille reset christmas_code diamant">XV282</span>
                         </div>
                     </div>
                 </div>
@@ -59,11 +59,14 @@
 
                         <!-- Dropdown Structure -->
                         <ul id="menu_dropdown_champs" class="dropdown-content">
-                            {% for championnatList in allChampionnats %}
+                            {% for i, championnatList in allChampionnats %}
                                 {% if championnat.idChampionnat != championnatList.idChampionnat %}
                                     <li class="waves-effect li_in_line">
                                         <a class="white-text" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
                                             <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                            {% if i == 1 %}
+                                                <span class="reset pastille christmas_code">FG8KD</span>
+                                            {% endif %}
                                         </a>
                                     </li>
                                 {% endif %}
