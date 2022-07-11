@@ -448,6 +448,6 @@
     </div>
 
     <script type="text/javascript">
-        getPersonnalClassementVirtuel();
+        getPersonnalClassementVirtuel({{ app.user.licence ?: 'null' }});
     </script>
 {% endblock %}

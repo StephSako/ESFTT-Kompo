@@ -385,20 +385,24 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/renouveler/certificat/{id}/{routeToRedirect}", name="backoffice.competiteur.renouveler.certificat")
+     * @Route("/backoffice/competiteur/renouveler/certificat/{competiteur}", name="backoffice.competiteur.renouveler.certificat", methods={"POST"})
      * @param Competiteur $competiteur
-     * @param string $routeToRedirect
      * @return Response
      */
-    public function renouvelerCertificat(Competiteur $competiteur, string $routeToRedirect): Response
+    public function renouvelerCertificat(Competiteur $competiteur): Response
     {
-        $competiteur->renouvelerAnneeCertificatMedical();
+        try {
+            $competiteur->renouvelerAnneeCertificatMedical();
+            $json = json_encode(['status' => true, 'message' => $competiteur->isCertifMedicalInvalid()['shortMessage']]);
+            $this->em->flush();
+        } catch (Exception $e) {
+            $json = json_encode(['status' => false, 'message' => 'Une erreur est survenue']);
+        }
 
-        $this->em->flush();
-        $this->addFlash('success', 'Certificat médical renouvelé' . ($routeToRedirect != 'backoffice.competiteur.edit' ? ' pour ' . $competiteur->getPrenom() . ' ' . $competiteur->getNom() : null));
-        return $this->redirectToRoute($routeToRedirect, $routeToRedirect == 'backoffice.competiteur.edit' ? [
-            'idCompetiteur' => $competiteur->getIdCompetiteur()
-        ] : []);
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**

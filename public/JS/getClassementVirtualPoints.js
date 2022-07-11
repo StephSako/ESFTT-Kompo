@@ -18,14 +18,17 @@ function getGeneralClassementsVirtuels(forceReaload = null) {
 
 let alreadyCalledClassement = false;
 
-function getPersonnalClassementVirtuel() {
-    $.ajax({
-        url : '/journee/personnal-classement-virtuel',
-        type : 'POST',
-        dataType : 'json',
-        success : function(responseTemplate) { templating('.preloader_personnal_virtual_rank', responseTemplate); },
-        error : function() { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
-    });
+function getPersonnalClassementVirtuel(licence) {
+    if (!licence) templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
+    else {
+        $.ajax({
+            url : '/journee/personnal-classement-virtuel',
+            type : 'POST',
+            dataType : 'json',
+            success : function(responseTemplate) { templating('.preloader_personnal_virtual_rank', responseTemplate); },
+            error : function() { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
+        });
+    }
 }
 
 function templating(selector, response, general = false){
