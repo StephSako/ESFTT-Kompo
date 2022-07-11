@@ -72,9 +72,26 @@
                         <span style="color: grey"><i>Mineur (facultatif)</i></span>
                     {% else %}
                         <span>
-                            <i class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
-                            {{ competiteur.certifMedicalInvalid.shortMessage }}
+                            <i id="icon-renew-certif{{ competiteur.idCompetiteur }}" class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
+                            <span class="label-renew-certif{{ competiteur.idCompetiteur }}">{{ competiteur.certifMedicalInvalid.shortMessage }}</span>
                         </span>
+                        {% if competiteur.certifMedicalInvalid.status %}
+                            <br><button id="btnCertif{{ competiteur.idCompetiteur }}" onclick="renouvelerCertifMedical({{ competiteur.idCompetiteur }}, '{{ competiteur.prenom }}', true)" class="btn-small btn-floating green renew_certif_table"><i class="material-icons">autorenew</i></button>
+
+                            <div hidden id="loaderCertif{{ competiteur.idCompetiteur }}">
+                                <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
+                                    <div class="spinner-layer spinner-blue-only">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td style="padding-bottom: 0; padding-top: 0;">
@@ -103,6 +120,7 @@
         {% endfor %}
         </tbody>
     </table>
+    <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
 {% endmacro %}
 
 {% macro tableArchives(joueursArchives, onlyOneAdmin) %}

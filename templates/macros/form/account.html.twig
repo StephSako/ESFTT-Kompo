@@ -74,15 +74,31 @@
                                 <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
                             {% else %}
                                 {% if anneeCertificatMedical != null %}
-                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
+                                    <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                                 {% else %}
                                     <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
                                 {% endif %}
                                 {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                     {% if anneeCertificatMedical != null %}
-                                        <a href="{{ path('backoffice.competiteur.renouveler.certificat', {id: options.competiteurId, routeToRedirect: 'backoffice.competiteur.edit'}) }}" onclick="return confirm('Renouveler le certificat médical ?')" class='btn waves-effect green btn_gestion'>
+                                        <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
                                             Renouveler
-                                        </a>
+                                        </button>
+
+                                        <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
+                                            <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
+                                                <div class="spinner-layer spinner-blue-only">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div><div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div><div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
                                     {% else %}
                                         <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
 

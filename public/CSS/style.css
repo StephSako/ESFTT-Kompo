@@ -347,6 +347,16 @@ p.lobster {
   color: #1565c0;
 }
 
+button.renew_certif_table {
+  width: 27px !important;
+  height: 27px !important;
+}
+button.renew_certif_table i {
+  font-size: 14px;
+  top: -2px;
+  position: relative;
+}
+
 .divider_custom {
   height: 0.15em;
   background: #1565c0;
