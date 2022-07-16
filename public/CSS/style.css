@@ -165,7 +165,7 @@ i.iconPlace {
 
 .setDispoCard {
   padding-top: 10px;
-  padding-bottom: 14px;
+  padding-bottom: 10px;
 }
 .setDispoCard h5.unsetTitle {
   margin-top: 0;
@@ -992,7 +992,7 @@ table.table-last-compos tr {
   padding: 2px 2px 3px 2px;
 }
 
-.badgeCertifInvalidButton {
+#badgeCertifInvalidButton {
   padding: 2px 4px;
   border-radius: 2px;
   margin-left: 5px;
@@ -1110,7 +1110,7 @@ a.reload_ranking {
   }
 
   .setDispoCard {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .virtualPointsCard {

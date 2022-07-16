@@ -45,7 +45,7 @@
             </a><br>
 
             {% if joueursInvalidCertifMedic|length and app.user.admin %}
-                <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span class="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
+                <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
                 {{ _modalContact.modalAlertPlayers(
                     'certif_medic_invalides',
                     contactsJoueursInvalidCertifMedic,

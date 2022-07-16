@@ -33,7 +33,7 @@
         {% endif %}
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}
-                <li class="green-text lighten-1 col s12 m6">
+                <li class="green-text lighten-1 col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurContactable.avatar %}
                             <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') }}" alt="Avatar">
@@ -45,7 +45,7 @@
                 </li>
             {% endfor %}
             {% for joueurNotContactable in response['notContactables'] %}
-                <li class="col s12 m6">
+                <li class="col s12 m6" id="notContactables_{{ joueurNotContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurNotContactable.avatar %}
                             <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') }}" alt="Avatar">
