@@ -125,7 +125,7 @@
                                         }
                                         else {
                                             $('.isCritFed').removeAttr('hidden');
-                                            $('span#nbJoueurs').text(nbJoueursAll + ' joueurs seront mis à jour')
+                                            $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
                                             if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
                                             else $('button#updateJoueursIssued').prop('disabled', false);
                                         }
