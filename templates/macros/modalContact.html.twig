@@ -29,7 +29,7 @@
                 {{ btnTxt }}
             </a>
         {% else %}
-            <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable {{ media }}</b></p>
+            <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable par {{ media }}</b></p>
         {% endif %}
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}

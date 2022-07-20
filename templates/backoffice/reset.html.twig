@@ -47,19 +47,25 @@
                 </div>
 
                 {% if joueursIssued.competition %}
-                    <p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">{{ joueursIssued.competition|length ~ ' joueur' ~ (joueursIssued.competition|length == 1 ? ' sera' : 's seront') ~' mis à jour' }}</p>
-                    <table class="striped centered responsive-table">
+                    <p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">
+                        <span id="nbJoueurs">
+                            {{ ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) ~ ' joueur' ~ (((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) <= 1 ? ' sera' : 's seront') ~' mis à jour' }}
+                        </span>
+                    </p>
+
+                    <table class="striped centered responsive-table" id="joueursIssued">
                         <thead>
                             <tr>
                                 <th>Licence</th>
                                 <th class="th_mobile_nom">Nom</th>
                                 <th class="th_mobile_pts_off">Points officiels</th>
+                                <th class="th_mobile_pts_off isCritFed" hidden>Critérium fédéral</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {% for joueur in joueursIssued.competition %}
-                                <tr>
+                                <tr {% if joueur.sameName and joueur.sameClassement and joueur.isCritFed %}hidden class="isCritFed"{% endif %}>
                                     <td>{{ joueur.joueur.licence }}</td>
                                     <td>
                                         <div class="chip">
@@ -73,9 +79,14 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span {% if joueur.joueur.classementOfficiel != joueur.pointsFFTT %}class="red-text"{% endif %}>{{ (joueur.joueur.classementOfficiel is not null ? joueur.joueur.classementOfficiel : "<i class='material-icons'>clear</i>") }}</span>
-                                        {% if joueur.joueur.classementOfficiel != joueur.pointsFFTT %}
+                                        <span {% if not joueur.sameClassement %}class="red-text"{% endif %}>{{ (joueur.joueur.classementOfficiel is not null ? joueur.joueur.classementOfficiel : "<i class='material-icons'>clear</i>") }}</span>
+                                        {% if not joueur.sameClassement %}
                                             <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="isCritFed test" hidden>
+                                        {% if joueur.joueur.critFed %}
+                                            <i class="material-icons green-text">done</i><i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i><i class="material-icons red-text">clear</i>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -83,13 +94,48 @@
                         </tbody>
                     </table>
 
-                {% else %}<p class="col pastille blue reset">Tous les joueurs sont à jour</p>
+                {% else %}
+                    <p class="col pastille blue reset">Tous les joueurs sont à jour</p>
                 {% endif %}
 
                 {% if app.user.admin and (joueursIssued.competition) %}
                     <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
+                        {% if joueursIssued.nbJoueursCritFed > 0 %}
+                            <p style="margin-top: 25px; margin-bottom: 10px;">
+                                <label>
+                                    <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
+                                    <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
+                                </label>
+
+                                <script type="text/javascript">
+                                    const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
+                                    const nbJoueursAll = {{ joueursIssued.competition|length }};
+                                    const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
+
+                                    $(document).ready(function () {
+                                        if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                    })
+
+                                    $('#showCritFed').change(function () {
+                                        if (!this.checked) {
+                                            $('.isCritFed').attr('hidden', '');
+                                            $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
+                                            if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                            else $('button#updateJoueursIssued').prop('disabled', false);
+                                        }
+                                        else {
+                                            $('.isCritFed').removeAttr('hidden');
+                                            $('span#nbJoueurs').text(nbJoueursAll + ' joueurs seront mis à jour')
+                                            if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                            else $('button#updateJoueursIssued').prop('disabled', false);
+                                        }
+                                    })
+                                </script>
+                            </p>
+                        {% endif %}
+
                         <input type="hidden" name="resetPlayers" value="1">
-                        <button style="margin-top: 20px;" class='btn waves-effect green btn_gestion'>Mettre à jour</button>
+                        <button class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
                     </form>
                 {% endif %}
             </div>
