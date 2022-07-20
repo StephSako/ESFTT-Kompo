@@ -214,14 +214,14 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
-     * @param Competiteur $competiteur
+     * @param int $idCompetiteur
      * @param Request $request
      * @return Response
      * @throws Exception
      */
-    public function edit(Competiteur $competiteur, Request $request): Response
+    public function edit(int $idCompetiteur, Request $request): Response
     {
-        if (!($competiteur = $this->competiteurRepository->find($competiteur->getIdCompetiteur()))) {
+        if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
             $this->addFlash('fail', 'Membre inexistant');
             return $this->redirectToRoute('backoffice.competiteurs');
         }

@@ -417,7 +417,8 @@ class HomeController extends AbstractController
         try {
             $data = $settings->getInfosType($type);
         } catch (Exception $e) {
-            throw $this->createNotFoundException($e->getMessage());
+            $this->addFlash('fail', 'Page d\'information inexistante');
+            return $this->redirectToRoute('index.type', ['type' => $championnat->getIdChampionnat()]);
         }
 
         $form = null;

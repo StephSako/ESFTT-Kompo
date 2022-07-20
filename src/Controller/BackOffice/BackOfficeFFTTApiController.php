@@ -88,6 +88,9 @@ class BackOfficeFFTTApiController extends AbstractController
         try {
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isCompetiteur' => 1], ['nom' => 'ASC', 'prenom' => 'ASC']);
+            $joueursIssued['nbJoueursCritFed'] = count(array_filter($joueursKompo, function($joueur){
+                return $joueur->isCritFed();
+            }));
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
 
             foreach ($joueursKompo as $competiteur){
@@ -98,16 +101,22 @@ class BackOfficeFFTTApiController extends AbstractController
 
                 if (count($joueurFFTT)){ /** Si la licence correspond bien */
                     $joueur = array_values($joueurFFTT)[0];
-                    $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom());
-                    if (($joueur->getPoints() != $competiteur->getClassementOfficiel() || !$sameName) && intval($joueur->getPoints()) > 0){ /** Si les classements ne concordent pas */
+                    $isCritFed = $competiteur->isCritFed(); /** Si le joueur est inscrit au critérium fédéral */
+                    $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom()); /** Si les noms/prénoms ne concordent pas */
+                    $sameClassement = $joueur->getPoints() == $competiteur->getClassementOfficiel(); /** Si les classements ne concordent pas */
+                    if ((!$sameClassement || !$sameName || $isCritFed) && intval($joueur->getPoints()) > 0){
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['pointsFFTT'] = intval($joueur->getPoints());
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom();
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['prenomFFTT'] = $joueur->getPrenom();
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['sameName'] = $sameName;
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['sameClassement'] = $sameClassement;
+                        $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['isCritFed'] = $isCritFed;
                     }
                 }
             }
+            $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function($joueur) { return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement']; }));
+
         } catch (ErrorException $exception) {
             $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
             $errorMajJoueurs = true;
@@ -127,6 +136,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $lib = explode(' ', $eq->getLibelle());
                     return $organisme_pere == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || array_pop($lib) == $this->getDatePhase(new DateTime()));
                 }));
+
                 /** On ordonne les objets des Equipes selon leurs numéros */
                 usort($equipesFFTT, function ($equi1, $equi2) {
                     return $this->getEquipeNumero($equi1->getLibelle()) - $this->getEquipeNumero($equi2->getLibelle());
@@ -371,12 +381,13 @@ class BackOfficeFFTTApiController extends AbstractController
                 /** On met à jour les compétiteurs **/
                 try {
                     foreach ($joueursIssued['competition'] as $joueurIssued) {
-                        if (!$joueurIssued['sameName'])
+                        if (!$joueurIssued['sameName'] || !$joueurIssued['sameClassement'])
                             $joueurIssued['joueur']
                                 ->setNom($joueurIssued['nomFFTT'])
                                 ->setPrenom($joueurIssued['prenomFFTT']);
-                        $joueurIssued['joueur']
-                            ->setClassementOfficiel($joueurIssued['pointsFFTT']);
+                            /** On désinscris tous les joueurs du critérium fédéral si la case est cochée */
+                            $joueurIssued['joueur']->setIsCritFed($request->request->get('unsubCritFedplayers') == 'on' ? false : $joueurIssued['joueur']->isCritFed());
+                            $joueurIssued['joueur']->setClassementOfficiel($joueurIssued['pointsFFTT']);
                     }
                     $this->em->flush();
 
