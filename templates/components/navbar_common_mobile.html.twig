@@ -1,5 +1,5 @@
 {% if app.user %}
-    <li class="li_in_line{% if app.request.getPathInfo == '/compte' %} active blue darken-3{% endif %}">
+    <li class="li_in_line{% if app.request.getPathInfo starts with '/compte' %} active blue darken-3{% endif %}">
         <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
             <div class="chip chip-menu chip-mobile left">
                 {% if app.user.avatar %}
