@@ -62,6 +62,9 @@
                                         {% if competiteur.isCompetiteur %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
                                             <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
+                                            {% if competiteur.isCritFed %}
+                                                <br><span style="margin-top: 2px" class='new badge purple' data-badge-caption='Crit. féd.'></span>
+                                            {% endif %}
                                         {% elseif competiteur.isLoisir %}
                                             {% if competiteur.isAdmin %}<br>{% endif %}
                                             <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>

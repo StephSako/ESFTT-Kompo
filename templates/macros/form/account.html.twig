@@ -119,10 +119,20 @@
                 {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                     <div class="row section">
                         <h5 class="dark_blue">Contact</h5>
+
+                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
+                            <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
+                            <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer le mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
+                                <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
+                            </button>
+                        {% endif %}
+
                         <p class="red-text"><i>* Une adresse email minimum requise</i></p>
 
-                        {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
-                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
+                        {% if app.request.getPathInfo ends with '/new' %}
+                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
+                                <i class="material-icons">info</i> Un email de bienvenue sera envoyé !
+                            </p>
                         {% endif %}
 
                         <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
@@ -174,6 +184,14 @@
                 <div class="row section" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Informations licence</h5>
 
+                    {% if app.request.getPathInfo ends with '/new' %}
+                        <div class="col s12 hide-on-med-and-down">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié et laissez le champ <b>N° licence</b> vide pour l'instant
+                            </p>
+                        </div>
+                    {% endif %}
+
                     {% if type != 'backoffice' %}
                         <p style="margin-bottom: 0">
                             {% if isCritFed %}
@@ -196,6 +214,15 @@
                             {% endif %}
                         {% endif %}
                     </div>
+
+                    {% if app.request.getPathInfo ends with '/new' %}
+                        <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié et laissez le champ <b>N° licence</b> vide pour l'instant
+                            </p>
+                        </div>
+                    {% endif %}
+
                     <div class="col s12 m6 l4 col_infos_licence">
                         <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
@@ -249,7 +276,7 @@
                 </div>
             </div>
 
-            {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
+            {% if app.request.getPathInfo ends with '/new' %}
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 

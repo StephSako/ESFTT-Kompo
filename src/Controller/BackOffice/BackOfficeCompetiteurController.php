@@ -139,7 +139,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 try {
 
                     /** On vérifie l'existence de la licence */
-                    if (strlen($competiteur->getLicence())) {
+                    if (strlen($competiteur->getLicence()) && !$competiteur->isArchive()) {
                         try {
                             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
                             $api->getJoueurDetailsByLicence($competiteur->getLicence());
@@ -165,36 +165,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->flush();
 
                     /** On envoie un mail de bienvenue */
-                    try {
-                        $settings = $this->settingsRepository->find(1);
-                        try {
-                            $data = $settings->getInfosType('mail-bienvenue');
-                        } catch (Exception $e) {
-                            throw $this->createNotFoundException($e->getMessage());
-                        }
-
-                        $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
-                        $str_replacers = [
-                            'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
-                            'new' => [
-                                "ce <a href=\"$initPasswordLink\">lien</a>",
-                                $competiteur->getUsername(),
-                                $this->getParameter('time_init_password_day'),
-                                $competiteur->getPrenom(),
-                                mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
-                            ]
-                        ];
-
-                        $contactController->sendMail(
-                            [new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
-                            true,
-                            'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
-                            $data,
-                            $str_replacers);
-                        $this->addFlash('success', 'Email de bienvenue envoyé');
-                    } catch (Exception $e) {
-                        $this->addFlash('fail', 'Email de bienvenue non envoyé');
-                    }
+                    $this->sendWelcomeMail($utilController, $contactController, $competiteur, true);
 
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
@@ -210,6 +181,85 @@ class BackOfficeCompetiteurController extends AbstractController
         return $this->render('backoffice/competiteur/new.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @param UtilController $utilController
+     * @param ContactController $contactController
+     * @param Competiteur $competiteur
+     * @param bool $isCreation
+     * @return void
+     * @throws Exception
+     */
+    public function sendWelcomeMail(UtilController $utilController, ContactController $contactController, Competiteur $competiteur, bool $isCreation): void {
+        try {
+            $settings = $this->settingsRepository->find(1);
+            try {
+                $data = $settings->getInfosType('mail-bienvenue');
+            } catch (Exception $e) {
+                throw $this->createNotFoundException($e->getMessage());
+            }
+
+            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+            $str_replacers = [
+                'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
+                'new' => [
+                    "ce <a href=\"$initPasswordLink\">lien</a>",
+                    $competiteur->getUsername(),
+                    $this->getParameter('time_init_password_day'),
+                    $competiteur->getPrenom(),
+                    mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
+                ]
+            ];
+
+            /** On contacte les administrateurs à la création **/
+            if ($isCreation) {
+                $adminsCopy = array_map(function ($joueur) {
+                    return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
+                }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
+            } else $adminsCopy = null;
+
+            $contactController->sendMail(
+                [new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
+                true,
+                'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
+                $data,
+                $str_replacers,
+                false,
+                $adminsCopy);
+
+            if ($isCreation) $this->addFlash('success', 'Email de bienvenue envoyé');
+        } catch (Exception $e) {
+            if ($isCreation) $this->addFlash('fail', 'Email de bienvenue non envoyé');
+            else throw new Exception('Email de bienvenue non renvoyé', '1234');
+        }
+    }
+
+    /**
+     * @Route("/backoffice/competiteur/resend-welcome-mail", name="backoffice.competiteur.resend-welcome-mail", requirements={"idCompetiteur"="\d+"})
+     * @param Request $request
+     * @param UtilController $utilController
+     * @param ContactController $contactController
+     * @return Response
+     */
+    public function resendWelcomeMail(Request $request, UtilController $utilController, ContactController $contactController): Response
+    {
+        try {
+            if (!($competiteur = $this->competiteurRepository->find($request->request->get('idCompetiteur')))) {
+                $this->addFlash('fail', 'Membre inexistant');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            }
+
+            $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
+
+            $json = json_encode(['message' => 'Email de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
+        } catch (Exception $e) {
+            $json = json_encode(['message' => $e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite", 'success' => false]);
+        }
+
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
