@@ -129,6 +129,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'dateNaissanceRequired' => false,
+            'isCertificatInvalid' => true,
             'createMode' => true,
             'displayCode' => false
         ]);
