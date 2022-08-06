@@ -75,7 +75,11 @@
                             {% if anneeCertificatMedical != null %}
                                 <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                             {% else %}
-                                <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                                {% if editMode %}
+                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                                {% else %}
+                                    <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
+                                {% endif %}
                             {% endif %}
                             {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                 {% if anneeCertificatMedical != null %}
@@ -185,7 +189,7 @@
                     {% if app.request.getPathInfo ends with '/new' %}
                         <div class="col s12 hide-on-med-and-down">
                             <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié et laissez le champ <b>N° licence</b> vide pour l'instant
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
                             </p>
                         </div>
                     {% endif %}
@@ -216,7 +220,7 @@
                     {% if app.request.getPathInfo ends with '/new' %}
                         <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
                             <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié et laissez le champ <b>N° licence</b> vide pour l'instant
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
                             </p>
                         </div>
                     {% endif %}
