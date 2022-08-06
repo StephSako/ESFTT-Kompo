@@ -66,55 +66,53 @@
             {% endif %}
 
             {% if not options.isArchived %}
-                {% if anneeCertificatMedical != -1 %}
-                    <div style="margin-bottom: 0;">
-                        <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
-                        {% if (age != null and age > 18) or age == null %}
-                            {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                <div style="margin-bottom: 0;">
+                    <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
+                    {% if (age != null and age > 18) or age == null %}
+                        {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
+                            <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                        {% else %}
+                            {% if anneeCertificatMedical != null %}
+                                <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                             {% else %}
+                                <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                            {% endif %}
+                            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
                                 {% if anneeCertificatMedical != null %}
-                                    <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
-                                {% else %}
-                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
-                                {% endif %}
-                                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                                    {% if anneeCertificatMedical != null %}
-                                        <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
-                                            Renouveler
-                                        </button>
+                                    <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
+                                        Renouveler
+                                    </button>
 
-                                        <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
-                                            <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
-                                                    </div>
+                                    <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
+                                        <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
-                                    {% else %}
-                                        <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
+                                    <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
+                                {% else %}
+                                    <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
 
-                                        <div class="row" style="margin-bottom: 0;">
-                                            <div class="col s12 m4 offset-m4" style="margin-top: 0;">
-                                                {{ form_row(form.anneeCertificatMedical) }}
-                                            </div>
+                                    <div class="row" style="margin-bottom: 0;">
+                                        <div class="col s12 m4 offset-m4" style="margin-top: 0;">
+                                            {{ form_row(form.anneeCertificatMedical) }}
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 {% endif %}
                             {% endif %}
-                        {% else %}
-                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
                         {% endif %}
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
+                    {% endif %}
+                </div>
 
                 {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                     <div class="row section">
