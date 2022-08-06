@@ -45,7 +45,7 @@
                                 <tr>
                                     <td>{{ player.nom }}</td>
                                     <td>{{ player.prenom }}</td>
-                                    <td>{{ player.categorieAgeLabel }}</td>
+                                    <td {% if player.categorieAgeLabel is null %}class="red-text"{% endif %}>{{ player.categorieAgeLabel ?: 'Âge indéfini' }}</td>
                                     <td>{{ player.licence }}</td>
                                 </tr>
                             {% endfor %}
