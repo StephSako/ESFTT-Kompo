@@ -15,10 +15,10 @@
                 {% endif %}
 
                 {% if not options.noSMS is defined %}
-                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS) }}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
                 {% endif %}
 
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par mail', linkMail) }}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par mail', linkMail, id) }}
             </div>
         </div>
         <div class="modal-footer">
@@ -27,12 +27,24 @@
     </div>
 {% endmacro %}
 
-{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link) %}
+{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id) %}
     <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
         {% if response['contactables']|length %}
-            <a href="{{ link }}" class="center-align btn waves-effect blue lighten-2">
+            <a href="{{ link }}" class="center-align btn blue lighten-2" id="btn_{{ media }}_{{ id }}">
                 {{ btnTxt }}
             </a>
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    let btnSendMail = $('a#btn_{{ media }}_{{ id }}');
+                    if (btnSendMail.length && !btnSendMail.attr('href').includes('mailto:') && !btnSendMail.attr('href').includes('sms:')) {
+                        btnSendMail.click(function() {
+                            btnSendMail.addClass('disabled').html("<i class='material-icons rotating-icon'>sync</i>")
+                        });
+                    }
+                });
+            </script>
+
         {% else %}
             <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable par {{ media }}</b></p>
         {% endif %}

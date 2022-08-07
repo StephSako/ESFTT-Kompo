@@ -66,63 +66,75 @@
             {% endif %}
 
             {% if not options.isArchived %}
-                {% if anneeCertificatMedical != -1 %}
-                    <div style="margin-bottom: 0;">
-                        <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
-                        {% if (age != null and age > 18) or age == null %}
-                            {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
-                                <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                <div style="margin-bottom: 0;">
+                    <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
+                    {% if (age != null and age > 18) or age == null %}
+                        {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
+                            <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                        {% else %}
+                            {% if anneeCertificatMedical != null %}
+                                <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                             {% else %}
-                                {% if anneeCertificatMedical != null %}
-                                    <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
-                                {% else %}
+                                {% if editMode %}
                                     <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                                {% else %}
+                                    <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
                                 {% endif %}
-                                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                                    {% if anneeCertificatMedical != null %}
-                                        <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
-                                            Renouveler
-                                        </button>
+                            {% endif %}
+                            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                                {% if anneeCertificatMedical != null %}
+                                    <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
+                                        Renouveler
+                                    </button>
 
-                                        <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
-                                            <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
-                                                    </div>
+                                    <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
+                                        <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
-                                    {% else %}
-                                        <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
+                                    <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
+                                {% else %}
+                                    <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
 
-                                        <div class="row" style="margin-bottom: 0;">
-                                            <div class="col s12 m4 offset-m4" style="margin-top: 0;">
-                                                {{ form_row(form.anneeCertificatMedical) }}
-                                            </div>
+                                    <div class="row" style="margin-bottom: 0;">
+                                        <div class="col s12 m4 offset-m4" style="margin-top: 0;">
+                                            {{ form_row(form.anneeCertificatMedical) }}
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 {% endif %}
                             {% endif %}
-                        {% else %}
-                            <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
                         {% endif %}
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
+                    {% endif %}
+                </div>
 
                 {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
                     <div class="row section">
                         <h5 class="dark_blue">Contact</h5>
+
+                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
+                            <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
+                            <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer le mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
+                                <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
+                            </button>
+                        {% endif %}
+
                         <p class="red-text"><i>* Une adresse email minimum requise</i></p>
 
-                        {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
-                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Un email de bienvenue sera envoyé</p>
+                        {% if app.request.getPathInfo ends with '/new' %}
+                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
+                                <i class="material-icons">info</i> Un email de bienvenue sera envoyé !
+                            </p>
                         {% endif %}
 
                         <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
@@ -174,6 +186,14 @@
                 <div class="row section" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Informations licence</h5>
 
+                    {% if app.request.getPathInfo ends with '/new' %}
+                        <div class="col s12 hide-on-med-and-down">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                            </p>
+                        </div>
+                    {% endif %}
+
                     {% if type != 'backoffice' %}
                         <p style="margin-bottom: 0">
                             {% if isCritFed %}
@@ -196,6 +216,15 @@
                             {% endif %}
                         {% endif %}
                     </div>
+
+                    {% if app.request.getPathInfo ends with '/new' %}
+                        <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                            </p>
+                        </div>
+                    {% endif %}
+
                     <div class="col s12 m6 l4 col_infos_licence">
                         <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
                         {% if type == 'backoffice' %}
@@ -258,7 +287,7 @@
 
             <span class="reset pastille christmas_code hide">434PJ</span>
 
-            {% if app.request.getPathInfo == '/backoffice/competiteur/new' %}
+            {% if app.request.getPathInfo ends with '/new' %}
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 

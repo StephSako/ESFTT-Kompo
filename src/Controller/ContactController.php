@@ -159,9 +159,10 @@ class ContactController extends AbstractController
      * @param string $htmlContent
      * @param array|null $str_replacers
      * @param bool|null $isPrivate
+     * @param array|null $addressCopy
      * @return Response
      */
-    public function sendMail(array $addressReceiver, bool $importance, string $sujet, string $htmlContent, ?array $str_replacers, ?bool $isPrivate = false): Response
+    public function sendMail(array $addressReceiver, bool $importance, string $sujet, string $htmlContent, ?array $str_replacers, ?bool $isPrivate = false, ?array $addressCopy = null): Response
     {
         // maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         if ($str_replacers) $htmlContent = str_replace($str_replacers['old'], $str_replacers['new'], $htmlContent);
@@ -173,6 +174,8 @@ class ContactController extends AbstractController
 
         if ($isPrivate) $email->bcc(...$addressReceiver);
         else $email->to(...$addressReceiver);
+
+        if ($addressCopy) $email->cc(...$addressCopy);
 
         try {
             $this->mailer->send($email);

@@ -788,7 +788,7 @@ table.classementPoule td {
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(-360deg);
   }
 }
 li .collapsible-header {
@@ -827,7 +827,7 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   padding-right: 0;
 }
 
-.navbar-backoffice .rotating-icon, .sidenav .rotating-icon {
+.rotating-icon {
   animation-name: spin;
   animation-duration: 1000ms;
   animation-iteration-count: infinite;
