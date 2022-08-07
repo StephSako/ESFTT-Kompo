@@ -35,7 +35,7 @@
                         <th class='hide-on-med-and-down'>Nombre de journées</th>
                         <th class='hide-on-large-only'>Nb journées</th>
                         <th>Périodicité</th>
-                        <th>Limite brûlage</th>
+                        <th>Brûlage</th>
                         <th>Règle brûlage J2</th>
                         <th>Tri auto.</th>
                         <th>Lié à la FFTT</th>
@@ -50,9 +50,9 @@
                             <td>
                                 <b>{{ championnat.nom }}</b>
                             </td>
-                            <td>{{ championnat.nbJournees }}</td>
+                            <td>{{ championnat.nbJournees }} journée{% if championnat.nbJournees > 1 %}s{% endif %}</td>
                             <td>{{ championnat.periodicite ? 'Phase' : 'Saison' }}</td>
-                            <td>{{ championnat.limiteBrulage }}</td>
+                            <td>Après {{ championnat.limiteBrulage }} journée{% if championnat.nbJournees > 1 %}s{% endif %}</td>
                             <td>
                                 <i class='material-icons'>{% if championnat.j2Rule %}check{% else %}clear{% endif %}</i>
                             </td>
