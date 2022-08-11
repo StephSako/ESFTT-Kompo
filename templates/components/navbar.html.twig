@@ -22,11 +22,22 @@
                     {% for i, journee in journees %}
                         <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
+                                <span class="dot
+                                    {% if journee.idJournee in disposJoueur|keys %}
+                                        {% if disposJoueur[journee.idJournee] %}
+                                            dot1
+                                        {% else %}
+                                            dot2
+                                        {% endif %}
+                                    {% else %}
+                                        dot3
+                                    {% endif %}
+                                 center">&nbsp;</span>
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ i+1 }}
                                 {% if not journeePassee(journee) %}
                                     {% if journee.undefined %}
-                                        <i class="journee_passee material-icons red-text right">event_busy</i>
+                                        <i class="journee_passee material-icons red-text right" style="padding-top: 2px">event_busy</i>
                                     {% else %}
                                         - {{ journee.dateJournee|date('d/m') }}
                                     {% endif %}
@@ -100,18 +111,29 @@
             {% endif %}
 
             {% for i, journee in journees %}
-                <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
-                    <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
-                        <span class="left">Journée {{ i+1 }}</span>
+                <li class="journee li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
+                        <span>Journée {{ i+1 }}</span>
                         {% if not journeePassee(journee) %}
                             {% if journee.undefined %}
-                                <i class="material-icons red-text right" style="margin-right: 0;">event_busy</i>
+                                <i class="material-icons red-text">event_busy</i>
                             {% else %}
-                                <span class="right">{{ journee.dateJournee|date('d/m/Y') }}</span>
+                                <span>{{ journee.dateJournee|date('d/m/Y') }}</span>
                             {% endif %}
                         {% else %}
-                            <i class="material-icons green-text right" style="margin-right: 0;">done</i>
+                            <i class="material-icons green-text">done</i>
                         {% endif %}
+                        <span class="dot
+                            {% if journee.idJournee in disposJoueur|keys %}
+                                {% if disposJoueur[journee.idJournee] %}
+                                    dot1
+                                {% else %}
+                                    dot2
+                                {% endif %}
+                            {% else %}
+                                dot3
+                            {% endif %}
+                         center">&nbsp;</span>
                     </a>
                 </li>
             {% endfor %}
