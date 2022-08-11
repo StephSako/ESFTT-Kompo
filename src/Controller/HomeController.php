@@ -115,8 +115,20 @@ class HomeController extends AbstractController
 
         $this->get('session')->set('type', $type);
 
-        // Objet Disponibilité du joueur
-        $dispoJoueur = $this->disponibiliteRepository->findOneBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idJournee' => $id]);
+        // Disponibilité du joueur
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
+        array_filter($disposJoueur, function($dispo) use ($id) {
+            return $dispo->getIdJournee()->getIdJournee() == $id;
+        });
+
+        $dispoJoueur = array_values(array_filter($disposJoueur, function($dispo) use ($id) {
+            return $dispo->getIdJournee()->getIdJournee() == $id;
+        }));
+        $dispoJoueur = count($dispoJoueur) ? $dispoJoueur[0] : null;
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
 
         // Numero de la journée
         $numJournee = array_search($journee, $journees)+1;
@@ -224,6 +236,7 @@ class HomeController extends AbstractController
             'joueursNonDeclares' => $joueursNonDeclares,
             'joueursNonDeclaresContact' => $joueursNonDeclaresContact,
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
+            'disposJoueur' => $disposJoueurFormatted,
             'nbDispos' => $nbDispos,
             'brulages' => $brulages,
             'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
