@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
+use App\Repository\DisponibiliteRepository;
 use App\Repository\SettingsRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -22,16 +23,19 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $settingsRepository;
     private $mailer;
+    private $disponibiliteRepository;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
      * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
+                                DisponibiliteRepository $disponibiliteRepository,
                                 MailerInterface $mailer,
                                 SettingsRepository $settingsRepository)
     {
@@ -39,6 +43,7 @@ class ContactController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
         $this->mailer = $mailer;
+        $this->disponibiliteRepository = $disponibiliteRepository;
     }
 
     /**
@@ -55,6 +60,14 @@ class ContactController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
 
+        // Disponibilités du joueur
+        $id = $championnat->getIdChampionnat();
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+
         $idRedacteur = $this->getUser()->getIdCompetiteur();
         $categories['tous'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur)), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
         $categories['loisirs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur)), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
@@ -68,6 +81,7 @@ class ContactController extends AbstractController
             'competiteurs' => $competiteurs,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
+            'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
             'categories' => $categories
         ]);
