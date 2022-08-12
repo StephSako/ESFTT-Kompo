@@ -117,10 +117,6 @@ class HomeController extends AbstractController
 
         // Disponibilité du joueur
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
-        array_filter($disposJoueur, function($dispo) use ($id) {
-            return $dispo->getIdJournee()->getIdJournee() == $id;
-        });
-
         $dispoJoueur = array_values(array_filter($disposJoueur, function($dispo) use ($id) {
             return $dispo->getIdJournee()->getIdJournee() == $id;
         }));
@@ -417,6 +413,14 @@ class HomeController extends AbstractController
         if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
+        // Disponibilités du joueur
+        $id = $championnat->getIdChampionnat();
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
 
@@ -458,6 +462,7 @@ class HomeController extends AbstractController
             'championnat' => $championnat,
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
+            'disposJoueur' => $disposJoueurFormatted,
             'HTMLContent' => $data,
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
@@ -474,6 +479,14 @@ class HomeController extends AbstractController
         if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
+        // Disponibilités du joueur
+        $id = $championnat->getIdChampionnat();
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();
 
@@ -481,6 +494,7 @@ class HomeController extends AbstractController
         return $this->render('aide.html.twig', [
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
+            'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
             'markdown_data' => $markdown_data
         ]);

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
+use App\Repository\DisponibiliteRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -25,6 +26,7 @@ class SecurityController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $competiteurRepository;
+    private $disponibiliteRepository;
 
     /**
      * SecurityController constructor.
@@ -33,6 +35,7 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface $em
      * @param AuthenticationUtils $utils
      * @param UploadHandler $uploadHandler
+     * @param DisponibiliteRepository $disponibiliteRepository
      * @param UserPasswordEncoderInterface $encoder
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
@@ -40,6 +43,7 @@ class SecurityController extends AbstractController
                                 EntityManagerInterface $em,
                                 AuthenticationUtils $utils,
                                 UploadHandler $uploadHandler,
+                                DisponibiliteRepository $disponibiliteRepository,
                                 UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
@@ -48,6 +52,7 @@ class SecurityController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->competiteurRepository = $competiteurRepository;
+        $this->disponibiliteRepository = $disponibiliteRepository;
     }
 
     /**
@@ -75,7 +80,16 @@ class SecurityController extends AbstractController
     public function edit(Request $request, UtilController $utilController){
         if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+
+        // Disponibilités du joueur
+        $id = $championnat->getIdChampionnat();
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
 
         $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
@@ -115,6 +129,7 @@ class SecurityController extends AbstractController
             'path' => 'account.update.password',
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
+            'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
             'form' => $form->createView()
         ]);
