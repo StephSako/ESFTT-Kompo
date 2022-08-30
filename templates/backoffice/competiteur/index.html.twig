@@ -39,10 +39,16 @@
 
         <div class='card-panel backoffice-panel center'>
 
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
                 <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
             </a><br>
+
+            {% if countJoueursWithoutLicence %}
+                <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                    Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
+                </p>
+            {% endif %}
 
             {% if joueursInvalidCertifMedic|length and app.user.admin %}
                 <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>

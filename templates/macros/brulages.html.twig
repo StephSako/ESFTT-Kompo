@@ -1,5 +1,5 @@
 {% macro table(limiteBrulage, brulages, idEquipes) %}
-    <div class="card-panel bottom_0 brulageCard">
+    <div class="card-panel bottom_0 brulageCard merged_cards up">
         <div class="row bottom_0">
             <div class="col s2"><i class="red-text material-icons">highlight_off</i></div>
             <div class="col s10">Brûlé dans l'équipe</div>
@@ -11,11 +11,11 @@
         </div>
     </div>
 
-    <div class="scrollableTable card-panel">
+    <div class="scrollableTable card-panel merged_cards bottom">
         <table class="striped {% if not idEquipes|length %} centered{% endif %}">
             <thead>
                 <tr>
-                    <th class="center"><h5>Brûlages</h5></th>
+                    <th class="center"><h5 class="hide-on-med-and-down">Brûlages</h5></th>
                     {% for idEquipe in idEquipes %}
                         <th class="center"><h5>{{ idEquipe }}</h5></th>
                     {% endfor %}

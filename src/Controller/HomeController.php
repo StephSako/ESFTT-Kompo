@@ -368,6 +368,13 @@ class HomeController extends AbstractController
             }
         }
 
+        // Disponibilités du joueur
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
@@ -378,7 +385,8 @@ class HomeController extends AbstractController
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'idJournee' => $idJournee,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'disposJoueur' => $disposJoueurFormatted
         ]);
     }
 

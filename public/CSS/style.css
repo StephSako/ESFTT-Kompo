@@ -276,11 +276,6 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   margin-right: 25px !important;
 }
 
-.select-dropdown li img {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
 i {
   vertical-align: bottom;
 }
@@ -725,6 +720,7 @@ td#noTeam {
 
 .avatar {
   object-fit: cover;
+  border-radius: 50%;
 }
 
 #span_passwords_matching, #span_passwords_not_matching {
@@ -1173,6 +1169,20 @@ a.reload_ranking {
   .fixed-action-btn {
     bottom: 0;
     top: 2px;
+  }
+
+  .merged_cards {
+    -webkit-box-shadow: none;
+  }
+  .merged_cards.up {
+    border-radius: 10px 10px 0 0 !important;
+  }
+  .merged_cards.bottom {
+    border-radius: 0 0 10px 10px !important;
+    margin-top: 0 !important;
+  }
+  .merged_cards.bottom table thead th h5 {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 720px) {

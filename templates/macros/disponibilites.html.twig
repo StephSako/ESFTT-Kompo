@@ -2,8 +2,8 @@
     {% import 'macros/modalContact.html.twig' as _modalContact %}
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
-    <div class="card-panel dispos">
-        <h5>Les dispos</h5>
+    <div class="card-panel dispos merged_cards bottom">
+        <h5 class="hide-on-med-and-down">Les dispos</h5>
         <table class="striped">
             <tbody>
             {% for dispo in dispos %}
@@ -129,7 +129,7 @@
 {% endmacro %}
 
 {% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) %}
-    <div class="card-panel bottom_0" style="padding: 5px 0; margin-top: 5px;">
+    <div class="card-panel bottom_0 merged_cards up" style="padding: 5px 0; margin-top: 5px;">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
             <div class="pastilleDispos col s4 lobster
