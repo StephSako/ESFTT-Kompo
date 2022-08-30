@@ -86,9 +86,12 @@ class SecurityController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $allChampionnats = $this->championnatRepository->findAll();

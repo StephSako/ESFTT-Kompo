@@ -121,9 +121,12 @@ class HomeController extends AbstractController
             return $dispo->getIdJournee()->getIdJournee() == $id;
         }));
         $dispoJoueur = count($dispoJoueur) ? $dispoJoueur[0] : null;
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         // Numero de la journée
@@ -424,9 +427,12 @@ class HomeController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
@@ -490,9 +496,12 @@ class HomeController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+            if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);

@@ -35,7 +35,7 @@ security:
         - { path: ^/backoffice, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
         - { path: ^/journee, roles: ROLE_LOISIR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/aide, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/aide, roles: ROLE_LOISIR }
         - { path: ^/contact, roles: ROLE_LOISIR }
         - { path: ^/informations, roles: ROLE_LOISIR }
 
