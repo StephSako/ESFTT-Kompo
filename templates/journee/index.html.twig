@@ -142,7 +142,7 @@
             </div>
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
+                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length), true) }}
             </div>
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
