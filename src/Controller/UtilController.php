@@ -59,7 +59,7 @@ class UtilController extends AbstractController
                 'dateValidation' => (new DateTime())->add(new DateInterval($dateChanger))->getTimestamp()
             ]);
         $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
-        $encryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+        $encryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
         return 'https://www.prive.esftt.com/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
     }
 

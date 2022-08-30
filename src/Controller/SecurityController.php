@@ -203,7 +203,7 @@ class SecurityController extends AbstractController
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
             $tokenDecoded = base64_decode($token);
-            $decryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+            $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
             $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
 
             $username = json_decode($decryption, true)['username'];
