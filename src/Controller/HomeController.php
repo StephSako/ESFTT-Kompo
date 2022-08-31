@@ -658,6 +658,7 @@ class HomeController extends AbstractController
                     } catch (Exception $e) {}
                 }
                 return [
+                    'idCompetiteur' => $joueur->getIdCompetiteur(),
                     'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
@@ -683,6 +684,26 @@ class HomeController extends AbstractController
                 return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
             });
 
+            /** Table de référence pour le calcul des gaps */
+            $referenceTable = array_map(function($joueur) {
+                $joueur['pointsVirtuelsVirtualPoints'] = $joueur['pointsVirtuelsVirtualPoints'] - $joueur['pointsVirtuelsPointsWonSaison'];
+                return $joueur;
+            }, $classementProgressionSaison);
+
+            usort($referenceTable, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsVirtualPoints'] == $b['pointsVirtuelsVirtualPoints']) {
+                    return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
+                }
+                return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+            });
+
+            $referenceTable = array_map(function ($joueur) {
+                return $joueur['idCompetiteur'];
+            }, $referenceTable);
+
             /** Classement sur la saison selon les points */
             usort($classementPointsSaison, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
@@ -693,6 +714,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+            $classementPointsSaison = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsSaison);
 
             /** Classement mensuel selon les progressions */
             usort($classementProgressionMensuel, function ($a, $b) {
@@ -726,6 +748,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+            $classementPointsMensuel = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsMensuel);
 
             /** Classement de phase selon les points */
             usort($classementPointsPhase, function ($a, $b) {
@@ -737,6 +760,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+            $classementPointsPhase = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsPhase);
         } catch(Exception $exception) {
             $erreur = 'Classement virtuel général indisponible.';
         }
@@ -750,6 +774,35 @@ class HomeController extends AbstractController
             'classementPointsSaison' => $classementPointsSaison,
             'erreur' => $erreur,
         ])->getContent());
+    }
+
+    /**
+     * On inclut les places gagnées/perdues des joueurs au cours de la saison entière
+     * @param array $referenceTable
+     * @param array $classements
+     * @param array $classementToGap
+     * @return array
+     */
+    function getClassementVirtuelsClubGaps(array $referenceTable, array $classements, array $classementToGap): array {
+        $gaps = [];
+
+        foreach ($classements as $key => $joueur){
+            $gap = (array_keys(array_filter($referenceTable, function ($idCompetiteur) use($joueur) {
+                    return $idCompetiteur == $joueur['idCompetiteur'];
+                }))[0]) - $key;
+
+            if ($gap == 0) $gaps[$joueur['idCompetiteur']] = ['color' => 'grey', 'gap' => 0, 'increase' => false];
+            else $gaps[$joueur['idCompetiteur']] = [
+                'color' => $gap > 0 ? 'green' : 'red',
+                'gap' => $gap,
+                'increase' => $gap > 0
+            ];
+        }
+
+        return array_map(function($classement) use ($gaps) {
+            $classement['gap'] = $gaps[$classement['idCompetiteur']];
+            return $classement;
+        }, $classementToGap);
     }
 
     /**

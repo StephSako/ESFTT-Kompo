@@ -674,6 +674,7 @@ table.rankingVirtualPoints {
     & .chip{
       padding-right: 0;
       margin-bottom: 0;
+      margin-left: 4px;
 
       .nom {
         font-size: 13px !important;
@@ -1453,9 +1454,12 @@ a.reload_ranking {
     }
 
     &.progression-td {
-      min-width: 58px;
-      max-width: 58px;
-      width: 58px;
+      width: 48px;
+      padding-left: 0;
+
+      &:nth-child(1) {
+        width: 39px;
+      }
     }
   }
 }

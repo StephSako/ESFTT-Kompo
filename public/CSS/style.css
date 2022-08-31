@@ -585,6 +585,7 @@ table.rankingVirtualPoints td i {
 table.rankingVirtualPoints td .chip {
   padding-right: 0;
   margin-bottom: 0;
+  margin-left: 4px;
 }
 table.rankingVirtualPoints td .chip .nom {
   font-size: 13px !important;
@@ -1267,9 +1268,11 @@ a.reload_ranking {
     width: 82px;
   }
   table.rankingVirtualPoints td.progression-td {
-    min-width: 58px;
-    max-width: 58px;
-    width: 58px;
+    width: 48px;
+    padding-left: 0;
+  }
+  table.rankingVirtualPoints td.progression-td:nth-child(1) {
+    width: 39px;
   }
 }
 @media screen and (max-width: 381px) {
