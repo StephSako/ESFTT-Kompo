@@ -108,33 +108,31 @@
                 </div>
             {% endif %}
 
-            {% if app.user.admin %}
-                {% if countJoueursCertifMedicPerim %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
-                            Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
-                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if countJoueursCertifMedicPerim and app.user.admin %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                        Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
+                    </p>
+                </div>
+            {% endif %}
 
-                {% if countJoueursWithoutLicence %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
-                            Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
-                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if countJoueursWithoutLicence and (app.user.admin or app.user.capitaine) %}
+                <div class="card-panel center setDispoCard">
+                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                        Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
+                    </p>
+                </div>
+            {% endif %}
 
-                {% if isPreRentreeLaunchable %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="green-text lighten-2"><i class="material-icons">done</i>
-                            La phase est terminée
-                            <br><a href="{{ path('backoffice.reset.phase') }}">Préparer la prochaine phase ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if isPreRentreeLaunchable and app.user.admin %}
+                <div class="card-panel center setDispoCard">
+                    <p class="green-text lighten-2"><i class="material-icons">done</i>
+                        La phase est terminée
+                        <br><a href="{{ path('backoffice.reset.phase') }}">Préparer la prochaine phase ici</a>
+                    </p>
+                </div>
             {% endif %}
 
             <div class="hide-on-large-only center-align">
