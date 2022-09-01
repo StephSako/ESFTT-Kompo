@@ -161,7 +161,9 @@
         <tr>
             {% if joueur["gap"] is defined %}
                 <td class="progression-td">
-                    <i class="material-icons {{ joueur["gap"]["color"] }}-text">{% if joueur["gap"]["gap"] > 0 %}keyboard_arrow_up{% elseif joueur["gap"]["gap"] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur["gap"]["color"] }}-text">{{ joueur["gap"]["gap"] | abs }}</span>
+                    {% if joueur["hasLicence"] %}
+                        <i class="material-icons {{ joueur["gap"]["color"] }}-text">{% if joueur["gap"]["gap"] > 0 %}keyboard_arrow_up{% elseif joueur["gap"]["gap"] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur["gap"]["color"] }}-text">{{ joueur["gap"]["gap"] | abs }}</span>
+                    {% endif %}
                 </td>
             {% endif %}
             <td class="td-chip">
@@ -173,10 +175,10 @@
                     <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
                 </div>
             </td>
-            <td class="td-name">
+            <td class="td-name{% if joueur["gap"] is not defined %} pl5{% endif %}">
                 <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
             </td>
-            {% if joueur["pointsVirtuelsVirtualPoints"] %}
+            {% if joueur["hasLicence"] %}
                 <td class="points-td">
                     <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuelsVirtualPoints"] | round(1, 'floor') }} pts</span>
                 </td>

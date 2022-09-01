@@ -980,6 +980,10 @@ table.table-last-compos tr {
   display: none;
 }
 
+.merged_cards.up {
+  margin-top: 10px;
+}
+
 .christmas_code {
   font-family: "Lato", sans-serif;
   font-size: 12px;
@@ -1261,6 +1265,9 @@ a.reload_ranking {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  table.rankingVirtualPoints td.td-name.pl5 {
+    padding-left: 5px;
   }
   table.rankingVirtualPoints td.points-td {
     min-width: 82px;

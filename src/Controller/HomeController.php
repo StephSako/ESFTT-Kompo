@@ -660,6 +660,7 @@ class HomeController extends AbstractController
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
                     'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
+                    'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
                     'pointsVirtuelsPointsWonMensuel' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
@@ -714,7 +715,11 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
-            $classementPointsSaison = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsSaison);
+
+            /** Tableau général des gaps */
+            $gaps = $this->getGaps($referenceTable, $classementPointsSaison);
+
+            $classementPointsSaison = $this->getClassementVirtuelClubGapped($gaps, $classementPointsSaison);
 
             /** Classement mensuel selon les progressions */
             usort($classementProgressionMensuel, function ($a, $b) {
@@ -748,7 +753,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
-            $classementPointsMensuel = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsMensuel);
+            $classementPointsMensuel = $this->getClassementVirtuelClubGapped($gaps, $classementPointsMensuel);
 
             /** Classement de phase selon les points */
             usort($classementPointsPhase, function ($a, $b) {
@@ -760,7 +765,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
-            $classementPointsPhase = $this->getClassementVirtuelsClubGaps($referenceTable, $classementPointsSaison, $classementPointsPhase);
+            $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
         } catch(Exception $exception) {
             $erreur = 'Classement virtuel général indisponible.';
         }
@@ -777,13 +782,12 @@ class HomeController extends AbstractController
     }
 
     /**
-     * On inclut les places gagnées/perdues des joueurs au cours de la saison entière
+     * Retourne les gaps des joueurs (places gagnées/perdues des joueurs au cours de la saison)
      * @param array $referenceTable
      * @param array $classements
-     * @param array $classementToGap
      * @return array
      */
-    function getClassementVirtuelsClubGaps(array $referenceTable, array $classements, array $classementToGap): array {
+    function getGaps(array $referenceTable, array $classements): array {
         $gaps = [];
 
         foreach ($classements as $key => $joueur){
@@ -799,6 +803,16 @@ class HomeController extends AbstractController
             ];
         }
 
+        return $gaps;
+    }
+
+    /**
+     * Retourne le classement virtuel gappé
+     * @param array $gaps
+     * @param array $classementToGap
+     * @return array
+     */
+    function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array {
         return array_map(function($classement) use ($gaps) {
             $classement['gap'] = $gaps[$classement['idCompetiteur']];
             return $classement;

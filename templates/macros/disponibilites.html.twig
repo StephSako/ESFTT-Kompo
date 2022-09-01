@@ -129,7 +129,7 @@
 {% endmacro %}
 
 {% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos, isAlone) %}
-    <div class="card-panel bottom_0 {% if not isAlone %}merged_cards up{% endif %}" style="padding: 5px 0; margin-top: 5px;">
+    <div class="card-panel bottom_0 {% if not isAlone %}merged_cards up{% endif %}" style="padding: 5px 0;{% if isAlone %}margin-top: 10px;{% endif %}">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
             <div class="pastilleDispos col s4 lobster

@@ -100,16 +100,20 @@
                 {% endif %}
             {% endif %}
 
-            {% if app.user.certifMedicalInvalid.status %}
-                <div class="card-panel center setDispoCard">
+            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
+            {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
+            {% set hasJoueursWithoutLicence = countJoueursWithoutLicence and (app.user.admin or app.user.capitaine) %}
+
+            {% if userCertifMedicalInvalid %}
+                <div class="card-panel center setDispoCard" {% if hasJoueursCertifMedicPerim or hasJoueursWithoutLicence %}style="margin-bottom: 10px;" {% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
                         {{ app.user.certifMedicalInvalid.message | raw }}
                     </p>
                 </div>
             {% endif %}
 
-            {% if countJoueursCertifMedicPerim and app.user.admin %}
-                <div class="card-panel center setDispoCard">
+            {% if hasJoueursCertifMedicPerim %}
+                <div class="card-panel center setDispoCard" {% if userCertifMedicalInvalid or hasJoueursWithoutLicence %}style="{% if userCertifMedicalInvalid %}margin-top: 10px;{% endif %}{% if hasJoueursWithoutLicence %}margin-bottom: 10px;{% endif %}"{% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
                         Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
@@ -117,8 +121,8 @@
                 </div>
             {% endif %}
 
-            {% if countJoueursWithoutLicence and (app.user.admin or app.user.capitaine) %}
-                <div class="card-panel center setDispoCard">
+            {% if hasJoueursWithoutLicence %}
+                <div class="card-panel center setDispoCard" {% if userCertifMedicalInvalid or hasJoueursCertifMedicPerim %}style="margin-top: 10px;" {% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
                         Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
