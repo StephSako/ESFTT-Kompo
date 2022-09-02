@@ -5,6 +5,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/togglePasswordField.min.js') }}"></script>
     </header>
 
     <div style="margin-top: 40px;" class="container">
@@ -29,6 +30,7 @@
                     <div class="input-field">
                         <i class="material-icons prefix">lock</i>
                         <input id="password" name="_password" type="password" class="validate" required>
+                        <span id="toggle_password" ontoggle="#password" class="field-icon toggle-password"><span class="material-icons">visibility</span></span>
                         <label for="password">Mot de passe</label>
                     </div>
                     <div class="checkbox">

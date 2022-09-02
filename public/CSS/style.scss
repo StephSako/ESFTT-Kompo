@@ -1116,6 +1116,15 @@ table.table-last-compos {
   margin-top: 10px;
 }
 
+span.field-icon {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 2;
+}
+
 .christmas_code {
   font-family: "Lato", sans-serif;
   font-size: 12px;

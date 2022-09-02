@@ -352,6 +352,7 @@
 {% endmacro %}
 
 {% macro edit_password(title, path, type, options) %}
+    <script type="text/javascript" src="{{ asset('JS/togglePasswordField.min.js') }}"></script>
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
 
@@ -360,15 +361,18 @@
                 {% if type == 'general' %}
                     <div class="input-field col s12 l4">
                         <input name="actual_password" id="actual_password" type="password" class="validate" maxlength="100" required>
+                        <span id="toggle_actual_password" ontoggle="#actual_password" class="field-icon toggle-password"><span class="material-icons">visibility</span></span>
                         <label for="actual_password">Mot de passe actuel</label>
                     </div>
                 {% endif %}
                 <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
                     <input name="new_password" id="new_password" type="password" class="validate" maxlength="100" required>
+                    <span id="toggle_new_password" ontoggle="#new_password" class="field-icon toggle-password"><span class="material-icons">visibility</span></span>
                     <label for="new_password">Nouveau mot de passe</label>
                 </div>
                 <div class="input-field col s12 {% if type == 'general' %}l4{% elseif type == 'backoffice' %}m6{% endif %}">
                     <input name="new_password_validate" id="new_password_validate" type="password" maxlength="100" class="validate" required>
+                    <span id="toggle_new_password_validate" ontoggle="#new_password_validate" class="field-icon toggle-password"><span class="material-icons">visibility</span></span>
                     <label for="new_password_validate">Saisir de nouveau</label>
                 </div>
             </div>
