@@ -142,7 +142,7 @@ class ContactController extends AbstractController
             $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
 
             if (!$nom){
-                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés', 'success' => false]));
+                $response = new Response(json_encode(['message' => 'Ce pseudo et cet e-mail ne sont pas associés', 'success' => false]));
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
             }
@@ -196,11 +196,11 @@ class ContactController extends AbstractController
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => 'Le mail a été envoyé !', 'success' => true]);
+            $json = json_encode(['message' => 'L\'e-mail a été envoyé !', 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
+            $json = json_encode(['message' => 'L\'emai n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
         } catch (Exception $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
+            $json = json_encode(['message' => 'L\'emai n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
         }
 
         $response = new Response($json);

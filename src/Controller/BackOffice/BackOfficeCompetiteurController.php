@@ -107,8 +107,8 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
             if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
             else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
-            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse email doit être renseignée');
-            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses email doivent être différentes');
+            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
+            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
             else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         } else if ($e->getCode() == '1234') $this->addFlash('fail', $e->getMessage());
@@ -154,8 +154,8 @@ class BackOfficeCompetiteurController extends AbstractController
                         }
                     }
 
-                    /** Une adresse email minimum requise */
-                    if (!($competiteur->getMail() ?? $competiteur->getMail2())) throw new Exception('Au moins une adresse email doit être renseignée', 1234);
+                    /** Une adresse e-mail minimum requise */
+                    if (!($competiteur->getMail() ?? $competiteur->getMail2())) throw new Exception('Au moins une adresse e-mail doit être renseignée', 1234);
 
                     /** On vérifie que le(s) rôle(s) du membre sont cohérents */
                     $this->checkRoles($competiteur);
@@ -170,7 +170,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->persist($competiteur);
                     $this->em->flush();
 
-                    /** On envoie un mail de bienvenue */
+                    /** On envoie un e-mail de bienvenue */
                     $this->sendWelcomeMail($utilController, $contactController, $competiteur, true);
 
                     $this->addFlash('success', 'Membre créé');
@@ -234,10 +234,10 @@ class BackOfficeCompetiteurController extends AbstractController
                 false,
                 $adminsCopy);
 
-            if ($isCreation) $this->addFlash('success', 'Email de bienvenue envoyé');
+            if ($isCreation) $this->addFlash('success', 'E-mail de bienvenue envoyé');
         } catch (Exception $e) {
-            if ($isCreation) $this->addFlash('fail', 'Email de bienvenue non envoyé');
-            else throw new Exception('Email de bienvenue non renvoyé', '1234');
+            if ($isCreation) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
+            else throw new Exception('E-mail de bienvenue non renvoyé', '1234');
         }
     }
 
@@ -258,7 +258,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
 
-            $json = json_encode(['message' => 'Email de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
+            $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {
             $json = json_encode(['message' => $e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite", 'success' => false]);
         }
@@ -358,7 +358,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'form' => $form->createView(),
             'cheating' => $competiteur->isCheating(),
             'winner' => $competiteur->isWinner(),
-            'fullWinner' => $competiteur->isFullWinner()
+            'fullWinner' => $competiteur->isFullWinner(),
+            'profileCompletion' => $competiteur->profileCompletion()
         ]);
     }
 
@@ -489,7 +490,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $sheet = $spreadsheet->getActiveSheet();
 
         /** On set les noms des colonnes */
-        $headers = ['Licence', 'Nom', 'Prénom', 'Date de naissance', 'Points officiels', 'Classement', 'Critérium fédéral', 'Catégorie', 'Certificat médical', 'Mail n°1', 'Mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
+        $headers = ['Licence', 'Nom', 'Prénom', 'Date de naissance', 'Points officiels', 'Classement', 'Critérium fédéral', 'Catégorie', 'Certificat médical', 'E-mail n°1', 'E-mail n°2', 'Téléphone n°1', 'Téléphone n°2', 'Rôles'];
         for ($col = 'A', $i = 0; $col !== 'O'; $col++, $i++) {
             $sheet->setCellValue($col . '1', $headers[$i]);
         }
@@ -581,7 +582,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 if (count($matches[0]) != count($input[0])) $this->addFlash('fail', 'Il y a une différence de ' . abs((count($input[0]) - count($matches[0]))) . ' variable' . (abs((count($input[0]) - count($matches[0]))) > 1 ? 's' : ''));
                 else {
                     $this->em->flush();
-                    $this->addFlash('success', 'Contenu du mail modifié');
+                    $this->addFlash('success', 'Contenu de l\'e-mail modifié');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');

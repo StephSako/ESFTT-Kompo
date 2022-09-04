@@ -28,7 +28,7 @@
 
         {% if app.user.admin %}
             <div class='card-panel backoffice-panel center'>
-                <h5 style="margin-top: 0">Modifier le contenu des mails automatiques de ...</h5>
+                <h5 style="margin-top: 0">Modifier le contenu des emails automatiques de ...</h5>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-mdp-oublie'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Mot de passe oublié</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-certif-medic-perim'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_certif_medic_perim">Certif. médic. périm.</a>
@@ -61,8 +61,8 @@
                         {
                             noSMS: 1,
                             linkPathMail: path('backoffice.alert.certif-medic-perim'),
-                            btnTxtMail: 'envoyer mail',
-                            info: 'Pour raison de confidentialité, les joueurs sont destinataires du mail en copie cachée. L\'alerte est envoyée au click sur le bouton \'ENVOYER MAIL\'.'
+                            btnTxtMail: 'envoyer e-mail',
+                            info: 'Pour raison de confidentialité, les joueurs sont destinataires de l\'e-mail en copie cachée. L\'alerte est envoyée au click sur le bouton ENVOYER E-MAIL.'
                         })
                     }}
                 </div>

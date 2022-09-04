@@ -1,5 +1,5 @@
 function resetPassword() {
-    if (!$('#username').val() || !$('#email').val()) M.toast({html: 'Renseignez votre pseudo et votre adresse mail'});
+    if (!$('#username').val() || !$('#email').val()) M.toast({html: 'Renseignez votre pseudo et votre adresse e-mail'});
     else {
         sending();
         $.ajax({

@@ -625,7 +625,7 @@ class Rencontre
     }
 
     /**
-     * Liste des adresses mail et numéros de téléphone des joueurs sélectionnés et contactables
+     * Liste des adresses e-mail et numéros de téléphone des joueurs sélectionnés et contactables
      * @param int $idRedacteur
      * @return array
      */
