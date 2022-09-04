@@ -206,7 +206,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 throw $this->createNotFoundException($e->getMessage());
             }
 
-            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
             $str_replacers = [
                 'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
                 'new' => [

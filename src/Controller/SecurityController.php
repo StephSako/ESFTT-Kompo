@@ -208,16 +208,16 @@ class SecurityController extends AbstractController
             $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
             $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
 
-            $username = json_decode($decryption, true)['username'];
+            $idCompetiteur = json_decode($decryption, true)['idCompetiteur'];
             $dateValid = json_decode($decryption, true)['dateValidation'];
 
             /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
             if ($dateValid < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
 
-            /**Formulaire soumis **/
+            /** Formulaire soumis **/
             if ($request->request->get('new_password') && $request->request->get('new_password_validate')) {
                 if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
-                    $competiteur = $this->competiteurRepository->findBy(['username' => $username])[0];
+                    $competiteur = $this->competiteurRepository->find($idCompetiteur);
                     $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');

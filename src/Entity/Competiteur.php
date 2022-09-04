@@ -312,6 +312,14 @@ class Competiteur implements UserInterface, Serializable
     private $contactablePhoneNumber2 = false;
 
     /**
+     * Permet de rendre les liens d'init/reset password invalides si password déjà initialisé/reset et liens re-cliqués encore dans le délai
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_password_resetting", nullable=false)
+     */
+    private $isPasswordResetting = false;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
@@ -1604,5 +1612,23 @@ class Competiteur implements UserInterface, Serializable
             "champsManquants" => $champsManquants,
             "completude" => round(((9 - $completude) * 100) / 9)
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordResetting(): bool
+    {
+        return $this->isPasswordResetting;
+    }
+
+    /**
+     * @param bool $isPasswordResetting
+     * @return Competiteur
+     */
+    public function setIsPasswordResetting(bool $isPasswordResetting): self
+    {
+        $this->isPasswordResetting = $isPasswordResetting;
+        return $this;
     }
 }

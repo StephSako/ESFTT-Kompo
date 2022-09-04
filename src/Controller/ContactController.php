@@ -139,9 +139,9 @@ class ContactController extends AbstractController
         else {
             $mail = $request->request->get('mail');
             $username = $request->request->get('username');
-            $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
+            $competiteurInfos = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
 
-            if (!$nom){
+            if (!$competiteurInfos){
                 $response = new Response(json_encode(['message' => 'Ce pseudo et cet e-mail ne sont pas associés', 'success' => false]));
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
@@ -154,14 +154,14 @@ class ContactController extends AbstractController
                 throw $this->createNotFoundException($e->getMessage());
             }
 
-            $resetPasswordLink =$utilController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteurInfos['idCompetiteur'], 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
             $str_replacers = [
                 'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
                 'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
             ];
 
             return $this->sendMail(
-                [new Address($mail, $nom)],
+                [new Address($mail, $competiteurInfos['nom'])],
                 true,
                 'Kompo - Réinitialisation de votre mot de passe',
                 $data,
