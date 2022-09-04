@@ -19,7 +19,7 @@ Le voici, le voilà : <a href="https://www.prive.esftt.com/"> Kompo</a> !
 
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/login.PNG" alt="login"></p>
 
-Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par mail ou durant l'entraînement.
+Afin de vous connecter, saisissez votre pseudo et votre mot de passe. Ils vont seront communiqués par e-mail ou durant l'entraînement.
 
 > Si vous éprouvez des difficultés pour vous connecter ou si vous avez oublié vos identifiants, contactez-moi à </i><a href="mailto:stephen.sakovitch@orange.fr">stephen.sakovitch@orange.fr</a>
 

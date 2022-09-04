@@ -1,5 +1,5 @@
 function renvoyerMailBienvenue(idCompetiteur, prenom) {
-    let r = confirm('Renvoyer le mail de bienvenue à ' + prenom + ' ?')
+    let r = confirm('Renvoyer l\'e-mail de bienvenue à ' + prenom + ' ?')
     if (r) {
         sending();
         $.ajax({

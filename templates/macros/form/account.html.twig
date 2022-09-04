@@ -1,8 +1,33 @@
-{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, options) %}
+{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, profileCompletion, options) %}
 
     <div class="card-panel center-align account-card">
 
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
+
+        {% if profileCompletion and profileCompletion.completude < 100 %}
+            <div class="row">
+                <div class="col m8 offset-m2 s12 l6 offset-l3 divProfileCompletionCol">
+                    <div class="divProfileCompletion orange-text text-darken-3">
+                        <p><i class="material-icons red-text">rule</i><b>Profil complété à {{ profileCompletion.completude }}%</b></p>
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <div class="progress white center" style="width: 90%">
+                                <div class="determinate orange" style="width: {{ profileCompletion.completude }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="champsManquants">
+                            <p><b>Champ{{ profileCompletion.champsManquants|length > 1 ? 's' : '' }} manquant{{ profileCompletion.champsManquants|length > 1 ? 's' : '' }}</b></p>
+                            <ul>
+                                {% for champ in profileCompletion.champsManquants %}
+                                    <li><b>-</b> {{ champ }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <span style="color: red"><i>* Champs obligatoires</i></span>
 
         {{ form_start(form) }}
@@ -124,21 +149,21 @@
 
                         {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
                             <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
-                            <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer le mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
+                            <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
                                 <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
                             </button>
                         {% endif %}
 
-                        <p class="red-text"><i>* Une adresse email minimum requise</i></p>
+                        <p class="red-text"><i>* Une adresse e-mail minimum requise</i></p>
 
                         {% if app.request.getPathInfo ends with '/new' %}
                             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
-                                <i class="material-icons">info</i> Un email de bienvenue sera envoyé !
+                                <i class="material-icons">info</i> Un e-mail de bienvenue sera envoyé !
                             </p>
                         {% endif %}
 
                         <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">mail</i> Adresse mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
+                            <b><i class="material-icons prefix">mail</i> Adresse e-mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                         </div>
                         {% if not options.createMode is defined %}
                             <div class="col s12 m3 left-align">
@@ -148,7 +173,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">mail</i> Adresse mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
+                            <b><i class="material-icons prefix">mail</i> Adresse e-mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                         </div>
                         {% if not options.createMode is defined %}
                             <div class="col s12 m3 left-align">

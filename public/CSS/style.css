@@ -984,6 +984,31 @@ table.table-last-compos tr {
   margin-top: 10px;
 }
 
+.divProfileCompletionCol {
+  margin-top: 0 !important;
+}
+.divProfileCompletionCol .divProfileCompletion {
+  background-color: #ffebd7;
+  border: 1px solid #fc780b;
+  border-radius: 10px;
+}
+.divProfileCompletionCol .divProfileCompletion .progress {
+  margin-bottom: 7px;
+}
+.divProfileCompletionCol .divProfileCompletion p {
+  font-size: 15px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.divProfileCompletionCol .divProfileCompletion ul {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+.divProfileCompletionCol .divProfileCompletion .champsManquants p, .divProfileCompletionCol .divProfileCompletion .champsManquants li {
+  font-size: 13px;
+  margin: 0;
+}
+
 span.field-icon {
   float: right;
   position: absolute;

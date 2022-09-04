@@ -185,11 +185,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères."
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail '{{ value }}' n'est pas valide."
      * )
      */
     private $mail;
@@ -201,11 +201,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères."
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail '{{ value }}' n'est pas valide."
      * )
      */
     private $mail2;
@@ -1549,5 +1549,60 @@ class Competiteur implements UserInterface, Serializable
         }));
 
         return count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
+    }
+
+    /**
+     * Retourne les champs incomplétés du profil d'un joueur
+     * @return array
+     */
+    public function profileCompletion(): array
+    {
+        $champsManquants = [];
+        $completude = 0;
+
+        foreach (
+            [
+                $this->getNom(), $this->getPrenom(), $this->getUsername(), $this->getDateNaissance(),
+                $this->getAnneeCertificatMedical(), $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
+                $this->getLicence(), $this->getAvatar()
+            ] as $index => $field) {
+            if (!$field){
+                switch ($index) {
+                    case 0:
+                        $champsManquants[] = 'Nom';
+                        break;
+                    case 1:
+                        $champsManquants[] = 'Prénom';
+                        break;
+                    case 2:
+                        $champsManquants[] = 'Pseudo';
+                        break;
+                    case 3:
+                        $champsManquants[] = 'Date de naissance';
+                        break;
+                    case 4:
+                        $champsManquants[] = 'Année du certificat médical';
+                        break;
+                    case 5:
+                        $champsManquants[] = 'Une adresse e-mail contactable';
+                        break;
+                    case 6:
+                        $champsManquants[] = 'Un numéro de téléphone contactable';
+                        break;
+                    case 7:
+                        $champsManquants[] = 'Licence';
+                        break;
+                    case 8:
+                        $champsManquants[] = 'Photo de profil';
+                        break;
+                }
+                $completude++;
+            }
+        }
+
+        return [
+            "champsManquants" => $champsManquants,
+            "completude" => round(((9 - $completude) * 100) / 9)
+        ];
     }
 }

@@ -1116,6 +1116,38 @@ table.table-last-compos {
   margin-top: 10px;
 }
 
+.divProfileCompletionCol {
+  margin-top: 0 !important;
+
+  .divProfileCompletion {
+    background-color: #ffebd7;
+    border: 1px solid #fc780b;
+    border-radius: 10px;
+
+    .progress {
+      margin-bottom: 7px;
+    }
+
+    p {
+      font-size: 15px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+
+    .champsManquants {
+      p, li {
+        font-size: 13px;
+        margin: 0;
+      }
+    }
+  }
+}
+
 span.field-icon {
   float: right;
   position: absolute;
