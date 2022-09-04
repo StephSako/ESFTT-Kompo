@@ -100,41 +100,43 @@
                 {% endif %}
             {% endif %}
 
-            {% if app.user.certifMedicalInvalid.status %}
-                <div class="card-panel center setDispoCard">
+            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
+            {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
+            {% set hasJoueursWithoutLicence = countJoueursWithoutLicence and (app.user.admin or app.user.capitaine) %}
+
+            {% if userCertifMedicalInvalid %}
+                <div class="card-panel center setDispoCard" {% if hasJoueursCertifMedicPerim or hasJoueursWithoutLicence %}style="margin-bottom: 10px;" {% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
                         {{ app.user.certifMedicalInvalid.message | raw }}
                     </p>
                 </div>
             {% endif %}
 
-            {% if app.user.admin %}
-                {% if countJoueursCertifMedicPerim %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
-                            Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
-                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if hasJoueursCertifMedicPerim %}
+                <div class="card-panel center setDispoCard" {% if userCertifMedicalInvalid or hasJoueursWithoutLicence %}style="{% if userCertifMedicalInvalid %}margin-top: 10px;{% endif %}{% if hasJoueursWithoutLicence %}margin-bottom: 10px;{% endif %}"{% endif %}>
+                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                        Il y a <b>{{ countJoueursCertifMedicPerim }} joueur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
+                    </p>
+                </div>
+            {% endif %}
 
-                {% if countJoueursWithoutLicence %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
-                            Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
-                            <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if hasJoueursWithoutLicence %}
+                <div class="card-panel center setDispoCard" {% if userCertifMedicalInvalid or hasJoueursCertifMedicPerim %}style="margin-top: 10px;" {% endif %}>
+                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                        Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
+                        <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
+                    </p>
+                </div>
+            {% endif %}
 
-                {% if isPreRentreeLaunchable %}
-                    <div class="card-panel center setDispoCard">
-                        <p class="green-text lighten-2"><i class="material-icons">done</i>
-                            La phase est terminée
-                            <br><a href="{{ path('backoffice.reset.phase') }}">Préparer la prochaine phase ici</a>
-                        </p>
-                    </div>
-                {% endif %}
+            {% if isPreRentreeLaunchable and app.user.admin %}
+                <div class="card-panel center setDispoCard">
+                    <p class="green-text lighten-2"><i class="material-icons">done</i>
+                        La phase est terminée
+                        <br><a href="{{ path('backoffice.reset.phase') }}">Préparer la prochaine phase ici</a>
+                    </p>
+                </div>
             {% endif %}
 
             <div class="hide-on-large-only center-align">
@@ -142,7 +144,7 @@
             </div>
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length)) }}
+                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length), true) }}
             </div>
             {% if compos and selectedPlayers|length == nbTotalJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
@@ -423,7 +425,7 @@
                 <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
                     <i class="material-icons">refresh</i>
                 </a>
-                <h6><b>Meilleures progressions et points virtuels</b></h6>
+                <h6><b>Progressions et points virtuels</b></h6>
                 <div id="rankingContent"></div>
                 <div id="rankingContentLoader" style="padding-right: 4px; padding-left: 4px;">
                     <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">

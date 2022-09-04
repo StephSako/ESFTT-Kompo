@@ -65,7 +65,6 @@ class SecurityController extends AbstractController
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
             return $this->render('account/login.html.twig', [
-                'lastUsername' => $utils->getLastUsername(),
                 'error' => $utils->getLastAuthenticationError()
             ]);
         }
@@ -86,9 +85,12 @@ class SecurityController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $allChampionnats = $this->championnatRepository->findAll();
@@ -203,7 +205,7 @@ class SecurityController extends AbstractController
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
             $tokenDecoded = base64_decode($token);
-            $decryption_key = openssl_digest(php_uname(), 'MD5', TRUE);
+            $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
             $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
 
             $username = json_decode($decryption, true)['username'];

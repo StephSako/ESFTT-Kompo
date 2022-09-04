@@ -86,15 +86,20 @@ class BackOfficeCompetiteurController extends AbstractController
         })) == 1;
 
         $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
-            return $joueur->isCertifMedicalInvalid()['status'] && !$joueur->isArchive();
+            return $joueur->isCertifMedicalInvalid()['status'];
         });
+
+        $countJoueursWithoutLicence = count(array_filter($joueurs, function($joueur) {
+            return !$joueur->getLicence();
+        }));
 
         return $this->render('backoffice/competiteur/index.html.twig', [
             'joueurs' => $joueurs,
             'joueursArchives' => $joueursArchives,
             'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
             'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContact($joueursInvalidCertifMedic),
-            'onlyOneAdmin' => $onlyOneAdmin
+            'onlyOneAdmin' => $onlyOneAdmin,
+            'countJoueursWithoutLicence' => $countJoueursWithoutLicence
         ]);
     }
 

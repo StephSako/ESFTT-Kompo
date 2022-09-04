@@ -121,9 +121,12 @@ class HomeController extends AbstractController
             return $dispo->getIdJournee()->getIdJournee() == $id;
         }));
         $dispoJoueur = count($dispoJoueur) ? $dispoJoueur[0] : null;
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         // Numero de la journée
@@ -368,6 +371,13 @@ class HomeController extends AbstractController
             }
         }
 
+        // Disponibilités du joueur
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
+        $disposJoueurFormatted = [];
+        foreach($disposJoueur as $dispo) {
+            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        }
+
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
@@ -378,7 +388,8 @@ class HomeController extends AbstractController
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
             'idJournee' => $idJournee,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'disposJoueur' => $disposJoueurFormatted
         ]);
     }
 
@@ -416,9 +427,12 @@ class HomeController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
@@ -482,9 +496,12 @@ class HomeController extends AbstractController
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
-            $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        $disposJoueurFormatted = null;
+            if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
         }
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
@@ -641,7 +658,9 @@ class HomeController extends AbstractController
                     } catch (Exception $e) {}
                 }
                 return [
+                    'idCompetiteur' => $joueur->getIdCompetiteur(),
                     'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
+                    'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
                     'pointsVirtuelsPointsWonMensuel' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getPointsWon() : null,
@@ -666,6 +685,26 @@ class HomeController extends AbstractController
                 return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
             });
 
+            /** Table de référence pour le calcul des gaps */
+            $referenceTable = array_map(function($joueur) {
+                $joueur['pointsVirtuelsVirtualPoints'] = $joueur['pointsVirtuelsVirtualPoints'] - $joueur['pointsVirtuelsPointsWonSaison'];
+                return $joueur;
+            }, $classementProgressionSaison);
+
+            usort($referenceTable, function ($a, $b) {
+                if (!$a['pointsVirtuelsVirtualPoints']) return true;
+                else if (!$b['pointsVirtuelsVirtualPoints']) return false;
+
+                if ($a['pointsVirtuelsVirtualPoints'] == $b['pointsVirtuelsVirtualPoints']) {
+                    return $b['pointsVirtuelsPointsWonSaison'] > $a['pointsVirtuelsPointsWonSaison'];
+                }
+                return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
+            });
+
+            $referenceTable = array_map(function ($joueur) {
+                return $joueur['idCompetiteur'];
+            }, $referenceTable);
+
             /** Classement sur la saison selon les points */
             usort($classementPointsSaison, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
@@ -676,6 +715,11 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+
+            /** Tableau général des gaps */
+            $gaps = $this->getGaps($referenceTable, $classementPointsSaison);
+
+            $classementPointsSaison = $this->getClassementVirtuelClubGapped($gaps, $classementPointsSaison);
 
             /** Classement mensuel selon les progressions */
             usort($classementProgressionMensuel, function ($a, $b) {
@@ -709,6 +753,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+            $classementPointsMensuel = $this->getClassementVirtuelClubGapped($gaps, $classementPointsMensuel);
 
             /** Classement de phase selon les points */
             usort($classementPointsPhase, function ($a, $b) {
@@ -720,6 +765,7 @@ class HomeController extends AbstractController
                 }
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
+            $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
         } catch(Exception $exception) {
             $erreur = 'Classement virtuel général indisponible.';
         }
@@ -733,6 +779,44 @@ class HomeController extends AbstractController
             'classementPointsSaison' => $classementPointsSaison,
             'erreur' => $erreur,
         ])->getContent());
+    }
+
+    /**
+     * Retourne les gaps des joueurs (places gagnées/perdues des joueurs au cours de la saison)
+     * @param array $referenceTable
+     * @param array $classements
+     * @return array
+     */
+    function getGaps(array $referenceTable, array $classements): array {
+        $gaps = [];
+
+        foreach ($classements as $key => $joueur){
+            $gap = (array_keys(array_filter($referenceTable, function ($idCompetiteur) use($joueur) {
+                    return $idCompetiteur == $joueur['idCompetiteur'];
+                }))[0]) - $key;
+
+            if ($gap == 0) $gaps[$joueur['idCompetiteur']] = ['color' => 'grey', 'gap' => 0, 'increase' => false];
+            else $gaps[$joueur['idCompetiteur']] = [
+                'color' => $gap > 0 ? 'green' : 'red',
+                'gap' => $gap,
+                'increase' => $gap > 0
+            ];
+        }
+
+        return $gaps;
+    }
+
+    /**
+     * Retourne le classement virtuel gappé
+     * @param array $gaps
+     * @param array $classementToGap
+     * @return array
+     */
+    function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array {
+        return array_map(function($classement) use ($gaps) {
+            $classement['gap'] = $gaps[$classement['idCompetiteur']];
+            return $classement;
+        }, $classementToGap);
     }
 
     /**

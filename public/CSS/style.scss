@@ -317,11 +317,6 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   margin-right: 25px!important;
 }
 
-.select-dropdown li img {
-  border-radius: 50%;
-  object-fit:cover;
-}
-
 i {
   vertical-align: bottom;
 
@@ -679,6 +674,7 @@ table.rankingVirtualPoints {
     & .chip{
       padding-right: 0;
       margin-bottom: 0;
+      margin-left: 4px;
 
       .nom {
         font-size: 13px !important;
@@ -838,6 +834,7 @@ td#noTeam {
 
 .avatar {
   object-fit:cover;
+  border-radius: 50%;
 }
 
 #span_passwords_matching, #span_passwords_not_matching {
@@ -1115,6 +1112,19 @@ table.table-last-compos {
   display: none;
 }
 
+.merged_cards.up {
+  margin-top: 10px;
+}
+
+span.field-icon {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 2;
+}
+
 .christmas_code {
   font-family: "Lato", sans-serif;
   font-size: 12px;
@@ -1137,13 +1147,6 @@ table.table-last-compos {
   background-color: #a7d6ff;
   border-radius: 8px;
   padding: 2px 2px 3px 2px;
-}
-
-#badgeCertifInvalidButton {
-  padding: 2px 4px;
-  border-radius: 2px;
-  margin-left: 5px;
-  background-color: #ff6565;
 }
 
 .preloader_personnal_virtual_rank {
@@ -1338,6 +1341,22 @@ a.reload_ranking {
     bottom: 0;
     top: 2px;
   }
+
+  .merged_cards {
+    -webkit-box-shadow: none;
+    &.up {
+      border-radius: 10px 10px 0 0 !important;
+    }
+
+    &.bottom {
+      border-radius: 0 0 10px 10px !important;
+      margin-top: 0 !important;
+
+      table thead th h5 {
+        margin-top: 0;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 720px) {
@@ -1439,6 +1458,10 @@ a.reload_ranking {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      &.pl5 {
+        padding-left: 5px;
+      }
     }
 
     &.points-td {
@@ -1448,9 +1471,12 @@ a.reload_ranking {
     }
 
     &.progression-td {
-      min-width: 58px;
-      max-width: 58px;
-      width: 58px;
+      width: 48px;
+      padding-left: 0;
+
+      &:nth-child(1) {
+        width: 39px;
+      }
     }
   }
 }

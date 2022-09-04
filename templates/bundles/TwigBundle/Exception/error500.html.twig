@@ -9,9 +9,13 @@
             <i class="red-text darken-2 large material-icons">sentiment_dissatisfied</i>
             <h5>Oups ... {{ exception.code != 0 ? exception.message : 'Une erreur est survenue ...' }}</h5>
 
-            <a href="{{ path('index') }}">
-                <button class="btn waves-effect blue lighten-2 center">Retour à l'accueil</button>
-            </a>
+            {% if exception.code == 500 %}
+                <p>Vous devez le réinitialiser en cliquant <a href="{{ path('login.forgotten.password') }}">ici</a></p>
+            {% else %}
+                <a href="{{ path('index') }}">
+                    <button class="btn waves-effect blue lighten-2 center">Retour à l'accueil</button>
+                </a>
+            {% endif %}
         </div>
     </div>
 

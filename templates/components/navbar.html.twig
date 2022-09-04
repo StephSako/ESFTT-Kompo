@@ -22,17 +22,19 @@
                     {% for i, journee in journees %}
                         <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
-                                <span class="dot
-                                    {% if journee.idJournee in disposJoueur|keys %}
-                                        {% if disposJoueur[journee.idJournee] %}
-                                            dot1
+                                {% if disposJoueur is not null %}
+                                    <span class="dot
+                                        {% if journee.idJournee in disposJoueur|keys %}
+                                            {% if disposJoueur[journee.idJournee] %}
+                                                dot1
+                                            {% else %}
+                                                dot2
+                                            {% endif %}
                                         {% else %}
-                                            dot2
+                                            dot3
                                         {% endif %}
-                                    {% else %}
-                                        dot3
-                                    {% endif %}
-                                 center">&nbsp;</span>
+                                     center">&nbsp;</span>
+                                {% endif %}
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ i+1 }}
                                 {% if not journeePassee(journee) %}
@@ -123,17 +125,19 @@
                         {% else %}
                             <i class="material-icons green-text">done</i>
                         {% endif %}
-                        <span class="dot
-                            {% if journee.idJournee in disposJoueur|keys %}
-                                {% if disposJoueur[journee.idJournee] %}
-                                    dot1
+                        {% if disposJoueur is not null %}
+                            <span class="dot
+                                {% if journee.idJournee in disposJoueur|keys %}
+                                    {% if disposJoueur[journee.idJournee] %}
+                                        dot1
+                                    {% else %}
+                                        dot2
+                                    {% endif %}
                                 {% else %}
-                                    dot2
+                                    dot3
                                 {% endif %}
-                            {% else %}
-                                dot3
-                            {% endif %}
-                         center">&nbsp;</span>
+                             center">&nbsp;</span>
+                        {% endif %}
                     </a>
                 </li>
             {% endfor %}
