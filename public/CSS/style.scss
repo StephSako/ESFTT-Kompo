@@ -1128,14 +1128,10 @@ table.table-last-compos {
       margin-bottom: 7px;
     }
 
-    p:nth-child(1) {
+    p {
       font-size: 15px;
       margin-top: 6px;
       margin-bottom: 6px;
-    }
-
-    p:nth-child(2) {
-      margin: 0;
     }
 
     ul {
@@ -1143,15 +1139,10 @@ table.table-last-compos {
       margin-bottom: 6px;
     }
 
-    .champsManquants * {
-      font-size: 13px;
-
-      p {
+    .champsManquants {
+      p, li {
+        font-size: 13px;
         margin: 0;
-      }
-
-      i {
-        font-size: 20px;
       }
     }
   }
