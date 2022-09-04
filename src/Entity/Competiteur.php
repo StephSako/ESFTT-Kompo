@@ -311,13 +311,13 @@ class Competiteur implements UserInterface, Serializable
      */
     private $contactablePhoneNumber2 = false;
 
-    /**
-     * Permet de rendre les liens d'init/reset password invalides si password déjà initialisé/reset et liens re-cliqués encore dans le délai
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean", name="is_password_resetting", nullable=false)
-     */
-    private $isPasswordResetting = false;
+//    /**
+//     * Permet de rendre les liens d'init/reset password invalides si password déjà initialisé/reset et liens re-cliqués encore dans le délai
+//     * @var boolean
+//     *
+//     * @ORM\Column(type="boolean", name="is_password_resetting", nullable=false)
+//     */
+//    private $isPasswordResetting = false;
 
     /**
      * @var string|null
@@ -1614,21 +1614,21 @@ class Competiteur implements UserInterface, Serializable
         ];
     }
 
-    /**
-     * @return bool
-     */
-    public function isPasswordResetting(): bool
-    {
-        return $this->isPasswordResetting;
-    }
-
-    /**
-     * @param bool $isPasswordResetting
-     * @return Competiteur
-     */
-    public function setIsPasswordResetting(bool $isPasswordResetting): self
-    {
-        $this->isPasswordResetting = $isPasswordResetting;
-        return $this;
-    }
+//    /**
+//     * @return bool
+//     */
+//    public function isPasswordResetting(): bool
+//    {
+//        return $this->isPasswordResetting;
+//    }
+//
+//    /**
+//     * @param bool $isPasswordResetting
+//     * @return Competiteur
+//     */
+//    public function setIsPasswordResetting(bool $isPasswordResetting): self
+//    {
+//        $this->isPasswordResetting = $isPasswordResetting;
+//        return $this;
+//    }
 }

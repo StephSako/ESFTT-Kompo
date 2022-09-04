@@ -211,9 +211,24 @@ class HomeController extends AbstractController
         $countJoueursCertifMedicPerim = count(array_filter($allCompetiteurs, function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
         }));
+
+        /** Joueurs sans licence définie */
         $countJoueursWithoutLicence = count(array_filter($allCompetiteurs, function ($joueur) {
             return !$joueur->getLicence();
         }));
+        $joueursWithoutLicence = [
+            'count' => $countJoueursWithoutLicence,
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+        ];
+
+        /** Compétiteurs sans classement officiel défini */
+        $countCompetiteursWithoutClassement = count(array_filter($allCompetiteurs, function ($joueur) {
+            return !$joueur->getClassementOfficiel() && $joueur->isCompetiteur();
+        }));
+        $competiteursWithoutClassement = [
+            'count' => $countCompetiteursWithoutClassement,
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . '</b> compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . ' dont le classement officiel n\'est pas défini' : ''
+        ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
 
@@ -241,7 +256,8 @@ class HomeController extends AbstractController
             'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
-            'countJoueursWithoutLicence' => $countJoueursWithoutLicence,
+            'joueursWithoutLicence' => $joueursWithoutLicence,
+            'competiteursWithoutClassement' => $competiteursWithoutClassement,
             'messageJoueursSansDispo' => $messageJoueursSansDispo,
             'objetJoueursSansDispos' => $objetJoueursSansDispos,
             'linkNextJournee' => $linkNextJournee

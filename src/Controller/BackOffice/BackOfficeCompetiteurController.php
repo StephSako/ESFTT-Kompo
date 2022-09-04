@@ -89,9 +89,23 @@ class BackOfficeCompetiteurController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         });
 
-        $countJoueursWithoutLicence = count(array_filter($joueurs, function($joueur) {
+        /** Joueurs sans licence définie */
+        $countJoueursWithoutLicence = count(array_filter($joueurs, function ($joueur) {
             return !$joueur->getLicence();
         }));
+        $joueursWithoutLicence = [
+            'count' => $countJoueursWithoutLicence,
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+        ];
+
+        /** Compétiteurs sans classement officiel défini */
+        $countCompetiteursWithoutClassement = count(array_filter($joueurs, function ($joueur) {
+            return !$joueur->getClassementOfficiel() && $joueur->isCompetiteur();
+        }));
+        $competiteursWithoutClassement = [
+            'count' => $countCompetiteursWithoutClassement,
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . '</b> compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . ' dont le classement officiel n\'est pas défini' : ''
+        ];
 
         return $this->render('backoffice/competiteur/index.html.twig', [
             'joueurs' => $joueurs,
@@ -99,7 +113,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
             'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContact($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin,
-            'countJoueursWithoutLicence' => $countJoueursWithoutLicence
+            'joueursWithoutLicence' => $joueursWithoutLicence,
+            'competiteursWithoutClassement' => $competiteursWithoutClassement
         ]);
     }
 
