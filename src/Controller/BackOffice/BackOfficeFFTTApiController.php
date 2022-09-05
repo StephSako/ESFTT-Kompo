@@ -117,7 +117,7 @@ class BackOfficeFFTTApiController extends AbstractController
             }
             $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function($joueur) { return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement']; }));
 
-        } catch (ErrorException $exception) {
+        } catch (Exception $exception) {
             $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
             $errorMajJoueurs = true;
         }
@@ -485,7 +485,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $str_replacers,
                                 true);
                             $this->addFlash('success', "L'alerte de pré-phase a été envoyée");
-                        } catch (ErrorException $e) {
+                        } catch (Exception $e) {
                             $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
                         }
                     }

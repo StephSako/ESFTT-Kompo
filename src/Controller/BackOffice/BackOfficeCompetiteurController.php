@@ -89,9 +89,23 @@ class BackOfficeCompetiteurController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         });
 
-        $countJoueursWithoutLicence = count(array_filter($joueurs, function($joueur) {
+        /** Joueurs sans licence définie */
+        $countJoueursWithoutLicence = count(array_filter($joueurs, function ($joueur) {
             return !$joueur->getLicence();
         }));
+        $joueursWithoutLicence = [
+            'count' => $countJoueursWithoutLicence,
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+        ];
+
+        /** Compétiteurs sans classement officiel défini */
+        $countCompetiteursWithoutClassement = count(array_filter($joueurs, function ($joueur) {
+            return !$joueur->getClassementOfficiel() && $joueur->isCompetiteur();
+        }));
+        $competiteursWithoutClassement = [
+            'count' => $countCompetiteursWithoutClassement,
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . '</b> compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . ' dont le classement officiel n\'est pas défini' : ''
+        ];
 
         return $this->render('backoffice/competiteur/index.html.twig', [
             'joueurs' => $joueurs,
@@ -99,7 +113,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
             'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContact($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin,
-            'countJoueursWithoutLicence' => $countJoueursWithoutLicence
+            'joueursWithoutLicence' => $joueursWithoutLicence,
+            'competiteursWithoutClassement' => $competiteursWithoutClassement
         ]);
     }
 
@@ -126,6 +141,7 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         $competiteur = new Competiteur();
         $competiteur
+            ->setIsPasswordResetting(true)
             ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
             ->setDateNaissance(null)
             ->setClassementOfficiel($this->getParameter('default_nb_points'))
@@ -206,7 +222,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 throw $this->createNotFoundException($e->getMessage());
             }
 
-            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getUsername(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
             $str_replacers = [
                 'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
                 'new' => [
@@ -257,6 +273,9 @@ class BackOfficeCompetiteurController extends AbstractController
             }
 
             $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
+
+            $competiteur->setIsPasswordResetting(true);
+            $this->em->flush();
 
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {

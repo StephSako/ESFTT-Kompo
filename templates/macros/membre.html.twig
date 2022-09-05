@@ -62,12 +62,10 @@
                     {% endif %}
                 </td>
                 <td {% if competiteur.isLoisir %}class="hide-on-med-and-down"{% endif %}>
-                    {% if competiteur.isCompetiteur %}
-                        {% if competiteur.classementOfficiel %}
-                            {{ competiteur.classementOfficiel }} pts
-                        {% else %}
-                            <span class='red-text lighten-2'>Classement indéfini</span>
-                        {% endif %}
+                    {% if competiteur.classementOfficiel %}
+                        {{ competiteur.classementOfficiel }} pts
+                    {% else %}
+                        <span class='red-text lighten-2'>{% if competiteur.isCompetiteur %}Classement indéfini{% endif %}</span>
                     {% endif %}
                 </td>
                 <td>

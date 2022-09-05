@@ -47,15 +47,15 @@ class UtilController extends AbstractController
     /**
      * Génère un token afin de modifier le mot de passe d'un utilisateur en passant l'username et le date changer (combien de temps
      * le token est valide) en paramètre
-     * @param string $username
+     * @param int $idCompetiteur
      * @param string $dateChanger
      * @return string
      * @throws Exception
      */
-    public function generateGeneratePasswordLink(string $username, string $dateChanger): string {
+    public function generateGeneratePasswordLink(int $idCompetiteur, string $dateChanger): string {
         $token = json_encode(
             [
-                'username' => $username,
+                'idCompetiteur' => $idCompetiteur,
                 'dateValidation' => (new DateTime())->add(new DateInterval($dateChanger))->getTimestamp()
             ]);
         $encryption_iv = hex2bin($this->getParameter('encryption_iv'));

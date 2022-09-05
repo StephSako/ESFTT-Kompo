@@ -68,9 +68,9 @@
                 </div>
             {% endif %}
 
-            {% if countJoueursWithoutLicence %}
+            {% if joueursWithoutLicence.count or competiteursWithoutClassement.count %}
                 <p class="red-text lighten-2" style="margin-top: 8px; margin-bottom: 20px;"><i class="material-icons">dangerous</i>
-                    Il y a <b>{{ countJoueursWithoutLicence }} joueur{{ countJoueursWithoutLicence > 1 ? 's' : '' }}</b> dont la licence n'est pas définie
+                    {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
                 </p>
             {% endif %}
 
