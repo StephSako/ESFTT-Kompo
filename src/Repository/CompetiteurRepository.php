@@ -363,19 +363,17 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param string $mail
      * @return array|null
      */
-    public function findJoueurResetPassword(string $username, string $mail): ?array
+    public function findJoueurResetPassword(string $username, string $mail): ?Competiteur
     {
         $query = $this->createQueryBuilder('c')
-            ->select('c.nom')
-            ->addSelect('c.prenom')
-            ->addSelect('c.idCompetiteur')
+            ->select('c')
             ->where('c.username = :username')
             ->andWhere('c.mail = :mail OR c.mail2 = :mail')
             ->setParameter('username', $username)
             ->setParameter('mail', $mail)
             ->getQuery()
             ->getResult();
-        return $query ? ['nom' => $query[0]['nom'] . ' ' . $query[0]['prenom'], 'idCompetiteur' => $query[0]['idCompetiteur']] : null;
+        return $query[0] ?? null;
     }
 
     /**

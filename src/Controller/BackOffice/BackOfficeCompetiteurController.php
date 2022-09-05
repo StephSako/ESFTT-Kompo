@@ -141,6 +141,7 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         $competiteur = new Competiteur();
         $competiteur
+            ->setIsPasswordResetting(true)
             ->setPassword($this->encoder->encodePassword($competiteur, $this->getParameter('default_password')))
             ->setDateNaissance(null)
             ->setClassementOfficiel($this->getParameter('default_nb_points'))
@@ -272,6 +273,9 @@ class BackOfficeCompetiteurController extends AbstractController
             }
 
             $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
+
+            $competiteur->setIsPasswordResetting(true);
+            $this->em->flush();
 
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {

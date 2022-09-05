@@ -6,6 +6,7 @@ use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -13,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -27,13 +29,17 @@ class SecurityController extends AbstractController
     private $encoder;
     private $competiteurRepository;
     private $disponibiliteRepository;
+    private $contactController;
+    private $settingsRepository;
 
     /**
      * SecurityController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
+     * @param SettingsRepository $settingsRepository
      * @param AuthenticationUtils $utils
+     * @param ContactController $contactController
      * @param UploadHandler $uploadHandler
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param UserPasswordEncoderInterface $encoder
@@ -41,7 +47,9 @@ class SecurityController extends AbstractController
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 EntityManagerInterface $em,
+                                SettingsRepository $settingsRepository,
                                 AuthenticationUtils $utils,
+                                ContactController $contactController,
                                 UploadHandler $uploadHandler,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 UserPasswordEncoderInterface $encoder)
@@ -53,6 +61,8 @@ class SecurityController extends AbstractController
         $this->encoder = $encoder;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->contactController = $contactController;
+        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -184,6 +194,52 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
+     * @param Request $request
+     * @param UtilController $utilController
+     * @return Response
+     * @throws Exception
+     */
+    public function contactResetPassword(Request $request, UtilController $utilController): Response
+    {
+        if ($this->getUser() != null) return $this->redirectToRoute('index');
+        else {
+            $mail = $request->request->get('mail');
+            $username = $request->request->get('username');
+            $competiteur = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
+
+            if (!$competiteur){
+                $response = new Response(json_encode(['message' => 'Ce pseudo et cet e-mail ne sont pas associés', 'success' => false]));
+                $response->headers->set('Content-Type', 'application/json');
+                return $response;
+            }
+
+            $settings = $this->settingsRepository->find(1);
+            try {
+                $data = $settings->getInfosType('mail-mdp-oublie');
+            } catch (Exception $e) {
+                throw $this->createNotFoundException($e->getMessage());
+            }
+
+            $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $str_replacers = [
+                'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
+                'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
+            ];
+
+            $competiteur->setIsPasswordResetting(true);
+            $this->em->flush();
+
+            return $this->contactController->sendMail(
+                [new Address($mail, $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
+                true,
+                'Kompo - Réinitialisation de votre mot de passe',
+                $data,
+                $str_replacers);
+        }
+    }
+
+    /**
      * @Route("/login/forgotten_password", name="login.forgotten.password")
      * @return Response
      */
@@ -209,16 +265,24 @@ class SecurityController extends AbstractController
             $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
 
             $idCompetiteur = json_decode($decryption, true)['idCompetiteur'];
+            $competiteur = $this->competiteurRepository->find($idCompetiteur);
             $dateValid = json_decode($decryption, true)['dateValidation'];
 
             /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
-            if ($dateValid < (new DateTime())->getTimestamp()) throw new Exception('Ce lien n\'est plus actif', 500);
+            if ($dateValid <= (new DateTime())->getTimestamp()){
+                $competiteur->setIsPasswordResetting(false);
+                $this->em->flush();
+                throw new Exception('Ce lien n\'est plus actif', 500);
+            }
+            /** Si le mot de passe a déjà été changé et que l'user est toujours dans les délais */
+            else if (!$competiteur->isPasswordResetting()) throw new Exception('Le mot de passe a déjà été changé', 500);
 
             /** Formulaire soumis **/
             if ($request->request->get('new_password') && $request->request->get('new_password_validate')) {
                 if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
-                    $competiteur = $this->competiteurRepository->find($idCompetiteur);
-                    $competiteur->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
+                    $competiteur
+                        ->setIsPasswordResetting(false)
+                        ->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
                     return $this->redirectToRoute('login');

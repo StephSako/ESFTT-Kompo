@@ -5,10 +5,8 @@ namespace App\Controller;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\SettingsRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -21,7 +19,6 @@ class ContactController extends AbstractController
 {
     private $competiteurRepository;
     private $championnatRepository;
-    private $settingsRepository;
     private $mailer;
     private $disponibiliteRepository;
 
@@ -31,17 +28,14 @@ class ContactController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
-     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                MailerInterface $mailer,
-                                SettingsRepository $settingsRepository)
+                                MailerInterface $mailer)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->settingsRepository = $settingsRepository;
         $this->mailer = $mailer;
         $this->disponibiliteRepository = $disponibiliteRepository;
     }
@@ -124,49 +118,6 @@ class ContactController extends AbstractController
         $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
 
         return $response;
-    }
-
-    /**
-     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
-     * @param Request $request
-     * @param UtilController $utilController
-     * @return Response
-     * @throws Exception
-     */
-    public function contactResetPassword(Request $request, UtilController $utilController): Response
-    {
-        if ($this->getUser() != null) return $this->redirectToRoute('index');
-        else {
-            $mail = $request->request->get('mail');
-            $username = $request->request->get('username');
-            $competiteurInfos = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
-
-            if (!$competiteurInfos){
-                $response = new Response(json_encode(['message' => 'Ce pseudo et cet e-mail ne sont pas associés', 'success' => false]));
-                $response->headers->set('Content-Type', 'application/json');
-                return $response;
-            }
-
-            $settings = $this->settingsRepository->find(1);
-            try {
-                $data = $settings->getInfosType('mail-mdp-oublie');
-            } catch (Exception $e) {
-                throw $this->createNotFoundException($e->getMessage());
-            }
-
-            $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteurInfos['idCompetiteur'], 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
-            $str_replacers = [
-                'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
-                'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
-            ];
-
-            return $this->sendMail(
-                [new Address($mail, $competiteurInfos['nom'])],
-                true,
-                'Kompo - Réinitialisation de votre mot de passe',
-                $data,
-                $str_replacers);
-        }
     }
 
     /**
