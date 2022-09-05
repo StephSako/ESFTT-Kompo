@@ -274,9 +274,6 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
 
-            $competiteur->setIsPasswordResetting(true);
-            $this->em->flush();
-
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {
             $json = json_encode(['message' => $e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite", 'success' => false]);
