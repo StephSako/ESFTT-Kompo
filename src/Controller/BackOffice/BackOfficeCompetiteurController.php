@@ -118,6 +118,11 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Exception $e
+     * @param Competiteur $competiteur
+     * @return void
+     */
     private function throwExceptionBOAccount(Exception $e, Competiteur $competiteur){
         if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
             if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
@@ -215,12 +220,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function sendWelcomeMail(UtilController $utilController, ContactController $contactController, Competiteur $competiteur, bool $isCreation): void {
         try {
-            $settings = $this->settingsRepository->find(1);
-            try {
-                $data = $settings->getInfosType('mail-bienvenue');
-            } catch (Exception $e) {
-                throw $this->createNotFoundException($e->getMessage());
-            }
+            $data = $this->settingsRepository->find('mail-bienvenue')->getContent();
 
             $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
             $str_replacers = [
@@ -482,6 +482,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * @return array
      * @throws Exception
      */
     private function getDataForPDF(): array
@@ -563,40 +564,41 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs/mail/edit/{type}", name="backoffice.mail.edit")
-     * @throws Exception
+     * @param Request $request
+     * @param string $type
+     * @return Response
      */
     public function editMailContent(Request $request, string $type): Response
     {
-        $settings = $this->settingsRepository->find(1);
-        try {
-            $data = $settings->getInfosType($type);
-            // On stylise les variables dans l'éditeur
-            preg_match_all('/\[\#(.*?)\#\]/', $data, $matches);
-            $str_replacers = ['old' => [], 'new' => []];
-
-            foreach ($matches[0] as $value) {
-                $str_replacers['old'][] = $value;
-                $str_replacers['new'][] = "<span class='editor_variable_highlighted'>$value</span>";
-            }
-
-            $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
-        } catch (Exception $e) {
-            throw $this->createNotFoundException($e->getMessage());
+        $setting = $this->settingsRepository->find($type);
+        if (!$setting) {
+            $this->addFlash('fail', 'Page du mail inexistant');
+            return $this->redirectToRoute('backoffice.competiteurs');
         }
 
-        $isAdmin = $this->getUser()->isAdmin();
-        $label = $settings->getFormattedLabel($type);
+        $data = $setting->getContent();
+        $title = $setting->getTitle();
+
+        // On stylise les variables dans l'éditeur
+        preg_match_all('/\[\#(.*?)\#\]/', $data, $matches);
+        $str_replacers = ['old' => [], 'new' => []];
+
+        foreach ($matches[0] as $value) {
+            $str_replacers['old'][] = $value;
+            $str_replacers['new'][] = "<span class='editor_variable_highlighted'>$value</span>";
+        }
+
+        $data = str_replace($str_replacers['old'], $str_replacers['new'], $data);
+
         $typeBDDed = str_replace('-', '_', $type);
-        $form = $this->createForm(SettingsType::class, $settings, [
-            'type_data' => $typeBDDed
-        ]);
+        $form = $this->createForm(SettingsType::class, $setting);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
 
                 /** Si le nombre de variable augmente, on renvoie une erreur */
-                preg_match_all('/\[\#(.*?)\#\]/', $form->getData()->getInfosType($type), $input); // Regex depuis l'éditeur WYSIWYG
+                preg_match_all('/\[\#(.*?)\#\]/', $form->getData()->getContent(), $input); // Regex depuis l'éditeur WYSIWYG
 
                 if (count($matches[0]) != count($input[0])) $this->addFlash('fail', 'Il y a une différence de ' . abs((count($input[0]) - count($matches[0]))) . ' variable' . (abs((count($input[0]) - count($matches[0]))) > 1 ? 's' : ''));
                 else {
@@ -608,10 +610,10 @@ class BackOfficeCompetiteurController extends AbstractController
         }
 
         return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [
-            'form' => $isAdmin ? $form->createView() : null,
+            'form' => $this->getUser()->isAdmin() ? $form->createView() : null,
             'HTMLContent' => $data,
             'variables' => $matches[0],
-            'label' => $label,
+            'title' => $title,
             'typeBDDed' => $typeBDDed
         ]);
     }
@@ -637,6 +639,8 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
+     * @param ContactController $contactController
+     * @return Response
      */
     public function alertCertifMedicPerimes(ContactController $contactController): Response
     {
@@ -647,12 +651,7 @@ class BackOfficeCompetiteurController extends AbstractController
             return $joueur->isCertifMedicalInvalid()['status'];
         }))['mail']['toString']));
 
-        $settings = $this->settingsRepository->find(1);
-        try {
-            $message = $settings->getInfosType('mail-certif-medic-perim');
-        } catch (Exception $e) {
-            throw $this->createNotFoundException($e->getMessage());
-        }
+        $message = $this->settingsRepository->find('mail-certif-medic-perim')->getContent();
 
         $str_replacers = [
             'old' => ['[#annee_saison#]'],

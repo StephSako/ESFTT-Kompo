@@ -30,13 +30,6 @@ class HomeController extends AbstractController
     private $settingsRepository;
 
     /**
-     * Championnat dont nous devons afficher les joueurs associés au rôle dans la page d'information
-     */
-    const INFOS_CHAMP_ROLE_DISPLAY = [
-        'criterium-federal' => 'CritFed'
-    ];
-
-    /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
@@ -139,7 +132,7 @@ class HomeController extends AbstractController
         $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
         $joueursNonDeclaresContact = $contactController->returnPlayersContact($joueursNonDeclares);
         if (count($joueursNonDeclares)) {
-            $messageJoueursSansDispo = $this->settingsRepository->find(1)->getInfosType('mail-sans-dispo');
+            $messageJoueursSansDispo = $this->settingsRepository->find('mail-sans-dispo')->getContent();
 
             /** Formattage du message **/
             setlocale (LC_TIME, 'fr_FR.utf8','fra');
@@ -440,6 +433,12 @@ class HomeController extends AbstractController
         if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
         else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
+        $setting = $this->settingsRepository->find($type);
+        if (!$setting) {
+            $this->addFlash('fail', 'Page d\'information inexistante');
+            return $this->redirectToRoute('index.type', ['type' => $championnat->getIdChampionnat()]);
+        }
+
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
@@ -451,25 +450,15 @@ class HomeController extends AbstractController
             }
         }
 
-        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $journees = $championnat->getJournees()->toArray();
         $allChampionnats = $this->championnatRepository->findAll();
-
-        $settings = $this->settingsRepository->find(1);
-        try {
-            $data = $settings->getInfosType($type);
-        } catch (Exception $e) {
-            $this->addFlash('fail', 'Page d\'information inexistante');
-            return $this->redirectToRoute('index.type', ['type' => $championnat->getIdChampionnat()]);
-        }
+        $setting = $this->settingsRepository->find($type);
 
         $form = null;
-        $typeBDDed = null;
         $isAdmin = $this->getUser()->isAdmin();
-        $label = $settings->getFormattedLabel($type);
         if ($isAdmin){
-            $typeBDDed = str_replace('-', '_', $type);
-            $form = $this->createForm(SettingsType::class, $settings, [
-                'type_data' => 'infos' . $typeBDDed
+            $form = $this->createForm(SettingsType::class, $setting, [
+                'show_title_form' => true
             ]);
             $form->handleRequest($request);
 
@@ -484,8 +473,8 @@ class HomeController extends AbstractController
             }
         }
 
-        $showConcernedPlayers = in_array($type, array_keys(self::INFOS_CHAMP_ROLE_DISPLAY));
-        $concernedPlayers = $showConcernedPlayers ? $this->competiteurRepository->findJoueursByRole(self::INFOS_CHAMP_ROLE_DISPLAY[$type], null) : null;
+        $showConcernedPlayers = $setting->getDisplayTableRole();
+        $concernedPlayers = $showConcernedPlayers ? $this->competiteurRepository->findJoueursByRole($showConcernedPlayers, null) : null;
 
         return $this->render('journee/infos.html.twig', [
             'allChampionnats' => $allChampionnats,
@@ -493,11 +482,11 @@ class HomeController extends AbstractController
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
             'disposJoueur' => $disposJoueurFormatted,
-            'HTMLContent' => $data,
+            'HTMLContent' => $setting->getContent(),
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
-            'label' => $label,
-            'typeBDDed' => $typeBDDed
+            'title' => $setting->getTitle(),
+            'label' => $setting->getLabel()
         ]);
     }
 
@@ -520,7 +509,7 @@ class HomeController extends AbstractController
             }
         }
 
-        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $journees = $championnat->getJournees()->toArray();
         $allChampionnats = $this->championnatRepository->findAll();
 
         $markdown_data = file_get_contents(__DIR__ . $this->getParameter('read_md_path'));

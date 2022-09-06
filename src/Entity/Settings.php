@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SettingsRepository")
@@ -13,155 +13,72 @@ use Exception;
  */
 class Settings
 {
-    const LABELS_DATA_TYPE = [
-        'championnat-departemental' => 'Championnat départemental',
-        'criterium-federal' => 'Critérium fédéral',
-        'championnat-de-paris' => 'Championnat de Paris',
-        'gymnase' => ' sur le gymnase',
-        'mail-bienvenue' => 'mail de bienvenue',
-        'mail-mdp-oublie' => 'mail de mot de passe oublié',
-        'mail-certif-medic-perim' => 'mail de certificat médical périmé',
-        'mail-pre-phase' => 'mail de pré-phase',
-        'mail-sans-dispo' => 'mail pour les joueurs non déclarés'
-    ];
 
     /**
+     * @var string
+     *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id", nullable=false)
+     * @ORM\Column(type="text", name="id", nullable=false)
      */
     private $id;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text", name="infos_championnat_departemental", nullable=true)
+     * @ORM\Column(type="text", name="display_table_role", nullable=true)
      */
-    private $infosChampionnatDepartemental;
+    private $displayTableRole;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="title", nullable=false)
+     *
+     * @Assert\NotBlank(
+     *     normalizer="trim"
+     *)
+     *
+     * @Assert\Length(
+     *      max = 80,
+     *      maxMessage = "Le titre doit contenir au maximum {{ limit }} caractères"
+     * )
+     */
+    private $title;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text", name="infos_criterium_federal", nullable=true)
+     * @ORM\Column(type="text", name="content", nullable=true)
      */
-    private $infosCriteriumFederal;
+    private $content;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", name="label", nullable=false)
+     */
+    private $label;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text", name="infos_championnat_de_paris", nullable=true)
+     * @ORM\Column(type="text", name="type", nullable=false)
      */
-    private $infosChampionnatDeParis;
+    private $type;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="infos_gymnase", nullable=true)
+     * @return string
      */
-    private $infosGymnase;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="mail_bienvenue", nullable=true)
-     */
-    private $mailBienvenue;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="mail_mdp_oublie", nullable=true)
-     */
-    private $mailMdpOublie;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="mail_certif_medic_perim", nullable=true)
-     */
-    private $mailCertifMedicPerim;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="mail_pre_phase", nullable=true)
-     */
-    private $mailPrePhase;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", name="mail_sans_dispo", nullable=true)
-     */
-    private $mailSansDispo;
-
-    /**
-     * @return string|null
-     */
-    public function getMailCertifMedicPerim(): ?string
-    {
-        return $this->mailCertifMedicPerim;
-    }
-
-    /**
-     * @param string|null $mailCertifMedicPerim
-     * @return Settings
-     */
-    public function setMailCertifMedicPerim(?string $mailCertifMedicPerim): self
-    {
-        $this->mailCertifMedicPerim = $mailCertifMedicPerim;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMailBienvenue(): ?string
-    {
-        return $this->mailBienvenue;
-    }
-
-    /**
-     * @param string|null $mailBievenue
-     * @return Settings
-     */
-    public function setMailBienvenue(?string $mailBievenue): self
-    {
-        $this->mailBienvenue = $mailBievenue;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMailMdpOublie(): ?string
-    {
-        return $this->mailMdpOublie;
-    }
-
-    /**
-     * @param string|null $mailMdpOublie
-     * @return Settings
-     */
-    public function setMailMdpOublie(?string $mailMdpOublie): self
-    {
-        $this->mailMdpOublie = $mailMdpOublie;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param string $id
      * @return Settings
      */
-    public function setId($id): self
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
@@ -170,135 +87,90 @@ class Settings
     /**
      * @return string|null
      */
-    public function getInfosChampionnatDepartemental(): ?string
+    public function getDisplayTableRole(): ?string
     {
-        return $this->infosChampionnatDepartemental;
+        return $this->displayTableRole;
     }
 
     /**
-     * @param string|null $infosChampionnatDepartemental
+     * @param string|null $displayTableRole
      * @return Settings
      */
-    public function setInfosChampionnatDepartemental(?string $infosChampionnatDepartemental): self
+    public function setDisplayTableRole(?string $displayTableRole): self
     {
-        $this->infosChampionnatDepartemental = $infosChampionnatDepartemental;
+        $this->displayTableRole = $displayTableRole;
         return $this;
     }
 
     /**
-     * @return string|null
-     */
-    public function getInfosChampionnatDeParis(): ?string
-    {
-        return $this->infosChampionnatDeParis;
-    }
-
-    /**
-     * @param string|null $infosChampionnatDeParis
-     * @return Settings
-     */
-    public function setInfosChampionnatDeParis(?string $infosChampionnatDeParis): self
-    {
-        $this->infosChampionnatDeParis = $infosChampionnatDeParis;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getInfosGymnase(): ?string
-    {
-        return $this->infosGymnase;
-    }
-
-    /**
-     * @param string|null $infosGymnase
-     * @return Settings
-     */
-    public function setInfosGymnase(?string $infosGymnase): self
-    {
-        $this->infosGymnase = $infosGymnase;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getInfosCriteriumFederal(): ?string
-    {
-        return $this->infosCriteriumFederal;
-    }
-
-    /**
-     * @param string|null $infosCriteriumFederal
-     * @return Settings
-     */
-    public function setInfosCriteriumFederal(?string $infosCriteriumFederal): self
-    {
-        $this->infosCriteriumFederal= $infosCriteriumFederal;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMailPrePhase(): ?string
-    {
-        return $this->mailPrePhase;
-    }
-
-    /**
-     * @param string|null $mailPrePhase
-     * @return Settings
-     */
-    public function setMailPrePhase(?string $mailPrePhase): self
-    {
-        $this->mailPrePhase = $mailPrePhase;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMailSansDispo(): ?string
-    {
-        return $this->mailSansDispo;
-    }
-
-    /**
-     * @param string|null $mailSansDispo
-     * @return Settings
-     */
-    public function setMailSansDispo(?string $mailSansDispo): self
-    {
-        $this->mailSansDispo = $mailSansDispo;
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     * @return string|null
-     * @throws Exception
-     */
-    public function getInfosType(string $type): ?string
-    {
-        if ($type == 'championnat-departemental') return $this->getInfosChampionnatDepartemental();
-        else if ($type == 'criterium-federal') return $this->getInfosCriteriumFederal();
-        else if ($type == 'championnat-de-paris') return $this->getInfosChampionnatDeParis();
-        else if ($type == 'gymnase') return $this->getInfosGymnase();
-        else if ($type == 'mail-bienvenue') return $this->getMailBienvenue();
-        else if ($type == 'mail-mdp-oublie') return $this->getMailMdpOublie();
-        else if ($type == 'mail-certif-medic-perim') return $this->getMailCertifMedicPerim();
-        else if ($type == 'mail-pre-phase') return $this->getMailPrePhase();
-        else if ($type == 'mail-sans-dispo') return $this->getMailSansDispo();
-        throw new Exception("Ce contenu n'existe pas", 404);
-    }
-
-    /**
-     * @param string $type
      * @return string
      */
-    public function getFormattedLabel(string $type): string {
-        return self::LABELS_DATA_TYPE[$type];
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return Settings
+     */
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     * @return Settings
+     */
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string|null $content
+     * @return Settings
+     */
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     * @return Settings
+     */
+    public function setLabel(string $label): self
+    {
+        $this->label = $label;
+        return $this;
     }
 }

@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
 {% endblock %}
 
-{% block title %}Modifier le {{ label }}{% endblock %}
+{% block title %}Modifier - {{ title }}{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,7 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4 style="font-family: Lobster, cursive">Modifier le {{ label }}</h4>
+            <h4 style="font-family: Lobster, cursive">Modifier - {{ title }}</h4>
         </div>
 
         <div class="card-panel" id="settings-form">
@@ -72,6 +72,6 @@
             }
         </script>
         <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/ckeditor5.js') }}"></script>
     </div>
 {% endblock %}
