@@ -158,9 +158,9 @@
             </div>
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, (compos|length), true) }}
+                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, (compos|length), true, nbMaxPotentielPlayers) }}
             </div>
-            {% if compos and selectedPlayers|length == nbTotalJoueurs %}
+            {% if compos and selectedPlayers|length == nbMaxSelectedJoueurs %}
                 <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
                     <h5 class="white-text"><i class="material-icons">check_circle</i>
                         Compositions complètes</h5>
@@ -397,7 +397,7 @@
                 </div>
                 <div class="collapsible-body">
                     <div class="center-align">
-                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'mobile', (compos|length)) }}
+                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos|length), nbMaxPotentielPlayers) }}
                     </div>
                 </div>
             </li>
@@ -420,7 +420,7 @@
                 <div class="hide-on-med-and-down">
                     {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
                 </div>
-                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbTotalJoueurs, 'pc', (compos|length)) }}
+                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos|length), nbMaxPotentielPlayers) }}
             </div>
         </div>
 
