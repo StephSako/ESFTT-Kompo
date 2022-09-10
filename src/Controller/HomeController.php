@@ -158,7 +158,7 @@ class HomeController extends AbstractController
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
 
         // Nombre maximal de joueurs pour les compos du championnat sélectionné
-        $nbTotalJoueurs = array_sum(array_map(function($compo) use ($type) {
+        $nbMaxSelectedJoueurs = array_sum(array_map(function($compo) use ($type) {
             return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
         }, $compos));
 
@@ -200,13 +200,13 @@ class HomeController extends AbstractController
         $divisions = $championnat->getDivisions()->toArray();
         $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
-        $allCompetiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
-        $countJoueursCertifMedicPerim = count(array_filter($allCompetiteurs, function ($joueur) {
+        $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
+        $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
         }));
 
         /** Joueurs sans licence définie */
-        $countJoueursWithoutLicence = count(array_filter($allCompetiteurs, function ($joueur) {
+        $countJoueursWithoutLicence = count(array_filter($allValidPlayers, function ($joueur) {
             return !$joueur->getLicence();
         }));
         $joueursWithoutLicence = [
@@ -215,7 +215,7 @@ class HomeController extends AbstractController
         ];
 
         /** Compétiteurs sans classement officiel défini */
-        $countCompetiteursWithoutClassement = count(array_filter($allCompetiteurs, function ($joueur) {
+        $countCompetiteursWithoutClassement = count(array_filter($allValidPlayers, function ($joueur) {
             return !$joueur->getClassementOfficiel() && $joueur->isCompetiteur();
         }));
         $competiteursWithoutClassement = [
@@ -230,7 +230,8 @@ class HomeController extends AbstractController
             'idJournee' => $numJournee,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
-            'nbTotalJoueurs' => $nbTotalJoueurs,
+            'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
+            'nbMaxPotentielPlayers' => count($joueursNonDeclares) + count($joueursDeclares),
             'nbMinJoueurs' => $nbMinJoueurs,
             'allChampionnats' => $allChampionnats,
             'selection' => $selection,

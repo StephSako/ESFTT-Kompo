@@ -1,5 +1,5 @@
 function renvoyerMailBienvenue(idCompetiteur, prenom) {
-    let r = confirm('Renvoyer l\'e-mail de bienvenue à ' + prenom + ' ?')
+    let r = confirm('Renvoyer l\'e-mail de bienvenue à ' + prenom + ' ? Le lien du mot de passe sera inutilisable si le mot de passe a déjà été initialisé.')
     if (r) {
         sending();
         $.ajax({

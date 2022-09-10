@@ -1,6 +1,6 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
-    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos, false) }}
+    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
 
     <div class="card-panel dispos merged_cards bottom">
         <h5 class="hide-on-med-and-down">Les dispos</h5>
@@ -128,14 +128,14 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos, isAlone) %}
+{% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, isAlone, nbMaxPotentielPlayers) %}
     <div class="card-panel bottom_0 {% if not isAlone %}merged_cards up{% endif %}" style="padding: 5px 0;{% if isAlone %}margin-top: 10px;{% endif %}">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
             <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
-                    {% if nbDispos >= nbTotalJoueurs %}
+                    {% if nbDispos >= nbMaxSelectedJoueurs %}
                         rainbow
                     {% elseif nbDispos >= nbMinJoueurs %}
                         orange darken-2
@@ -143,7 +143,7 @@
                         red
                     {% endif %}
                 {% endif %}">
-                {{ nbDispos }}
+                {{ nbDispos }}/{{ nbMaxPotentielPlayers }}
             </div>
         </div>
 
@@ -152,7 +152,7 @@
             <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
-                    {% if nbSelectedPlayers == nbTotalJoueurs %}
+                    {% if nbSelectedPlayers == nbMaxSelectedJoueurs %}
                         rainbow
                     {% elseif nbSelectedPlayers >= nbMinJoueurs %}
                         orange darken-2
@@ -160,7 +160,7 @@
                         red
                     {% endif %}
                 {% endif %}">
-                {{ nbSelectedPlayers }}/{{ nbTotalJoueurs }}
+                {{ nbSelectedPlayers }}/{{ nbMaxSelectedJoueurs }}
             </div>
         </div>
     </div>
