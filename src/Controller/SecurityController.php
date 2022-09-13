@@ -29,7 +29,6 @@ class SecurityController extends AbstractController
     private $encoder;
     private $competiteurRepository;
     private $disponibiliteRepository;
-    private $contactController;
     private $settingsRepository;
 
     /**
@@ -39,7 +38,6 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      * @param AuthenticationUtils $utils
-     * @param ContactController $contactController
      * @param UploadHandler $uploadHandler
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param UserPasswordEncoderInterface $encoder
@@ -49,7 +47,6 @@ class SecurityController extends AbstractController
                                 EntityManagerInterface $em,
                                 SettingsRepository $settingsRepository,
                                 AuthenticationUtils $utils,
-                                ContactController $contactController,
                                 UploadHandler $uploadHandler,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 UserPasswordEncoderInterface $encoder)
@@ -61,7 +58,6 @@ class SecurityController extends AbstractController
         $this->encoder = $encoder;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
-        $this->contactController = $contactController;
         $this->settingsRepository = $settingsRepository;
     }
 
@@ -197,10 +193,11 @@ class SecurityController extends AbstractController
      * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @param UtilController $utilController
+     * @param ContactController $contactController
      * @return Response
      * @throws Exception
      */
-    public function contactResetPassword(Request $request, UtilController $utilController): Response
+    public function contactResetPassword(Request $request, UtilController $utilController, ContactController $contactController): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
@@ -214,13 +211,7 @@ class SecurityController extends AbstractController
                 return $response;
             }
 
-            $settings = $this->settingsRepository->find(1);
-            try {
-                $data = $settings->getInfosType('mail-mdp-oublie');
-            } catch (Exception $e) {
-                throw $this->createNotFoundException($e->getMessage());
-            }
-
+            $data = $this->settingsRepository->find('mail-mdp-oublie')->getContent();
             $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
             $str_replacers = [
                 'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
@@ -230,7 +221,7 @@ class SecurityController extends AbstractController
             $competiteur->setIsPasswordResetting(true);
             $this->em->flush();
 
-            return $this->contactController->sendMail(
+            return $contactController->sendMail(
                 [new Address($mail, $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
                 true,
                 'Kompo - Réinitialisation de votre mot de passe',
