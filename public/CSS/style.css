@@ -980,7 +980,7 @@ table.table-last-compos tr {
   display: none;
 }
 
-.merged_cards.up {
+.merged_cards.up.leftOne {
   margin-top: 10px;
 }
 

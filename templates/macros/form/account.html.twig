@@ -352,13 +352,21 @@
         {{ form_end(form) }}
 
         {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and editMode %}
-            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: options.competiteurId}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
-                <input type='hidden' name='_method' value='DELETE'>
-                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ options.competiteurId) }}'>
-                <button class='btn waves-effect red lighten-2 btn_gestion'>
-                    Supprimer
-                </button>
-            </form>
+            {% if options.onlyOneAdmin is defined and options.onlyOneAdmin and form.vars.value.isAdmin %}
+                <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
+                    <button class='btn red lighten-2 btn_gestion' disabled="">
+                        Supprimer
+                    </button>
+                </div>
+            {% else %}
+                <form method='post' action='{{ path('backoffice.competiteur.delete', {id: options.competiteurId}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
+                    <input type='hidden' name='_method' value='DELETE'>
+                    <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ options.competiteurId) }}'>
+                    <button class='btn waves-effect red lighten-2 btn_gestion'>
+                        Supprimer
+                    </button>
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 
