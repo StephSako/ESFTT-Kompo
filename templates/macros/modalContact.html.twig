@@ -52,7 +52,7 @@
                         {% else %}
                             <img src="{{ asset('images/account.png') }}" alt="Avatar">
                         {% endif %}
-                        <span class="truncate" style="color: green">{{ joueurContactable.prenom ~ ' ' ~ joueurContactable.nom }}</span>
+                        <span class="truncate" style="color: green">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
                     </div>
                 </li>
             {% endfor %}
@@ -64,7 +64,7 @@
                         {% else %}
                             <img src="{{ asset('images/account.png') }}" alt="Avatar">
                         {% endif %}
-                        <span style="color: red">{{ joueurNotContactable.prenom ~ ' ' ~ joueurNotContactable.nom }}</span>
+                        <span style="color: red">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
                     </div>
                 </li>
             {% endfor %}
