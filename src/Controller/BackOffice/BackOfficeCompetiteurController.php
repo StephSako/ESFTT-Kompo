@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
 
@@ -349,6 +350,12 @@ class BackOfficeCompetiteurController extends AbstractController
                     if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
+
+                    /** On met ses rôles à jour dans le token de session pour ne pas être déconnecté */
+                    if ($competiteur->getIdCompetiteur() === $this->getUser()->getIdCompetiteur()) {
+                        $this->get('security.token_storage')->setToken(new UsernamePasswordToken($competiteur, null, 'main', $competiteur->getRoles()));
+                    }
+
                     $this->em->flush();
                     $this->addFlash('success', 'Membre modifié');
                     return $this->redirectToRoute('backoffice.competiteurs');
