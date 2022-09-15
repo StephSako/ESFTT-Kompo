@@ -34,7 +34,7 @@
             {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.categorieAgeLabel, app.user.critFed, app.user.profileCompletion, {licence: app.user.licence, isArchived: false, usernameEditable: true, displayCode: true, cheating: app.user.cheating, isWinner: app.user.winner, isFullWinner: app.user.fullWinner}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, categorieAge, isCritFed, profileCompletion, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable, displayCode: app.user.admin and not isArchived, cheating: cheating, isWinner: winner, isFullWinner: fullWinner}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, categorieAge, isCritFed, profileCompletion, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable, displayCode: app.user.admin and not isArchived, cheating: cheating, isWinner: winner, isFullWinner: fullWinner, onlyOneAdmin: onlyOneAdmin}) }}
             {% if 'ROLE_ADMIN' in app.token.roleNames %}
                 {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
             {% endif %}

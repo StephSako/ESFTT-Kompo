@@ -7,6 +7,7 @@ use App\Controller\UtilController;
 use App\Entity\Competiteur;
 use App\Form\CompetiteurType;
 use App\Form\SettingsType;
+use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
 
@@ -40,6 +42,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $uploadHandler;
     private $encoder;
     private $settingsRepository;
+    private $championnatRepository;
 
     /**
      * BackOfficeController constructor.
@@ -49,6 +52,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param DivisionRepository $divisionRepository
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
+     * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
@@ -58,6 +62,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 DivisionRepository $divisionRepository,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
+                                ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository)
     {
@@ -69,6 +74,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->uploadHandler = $uploadHandler;
         $this->encoder = $encoder;
         $this->settingsRepository = $settingsRepository;
+        $this->championnatRepository = $championnatRepository;
     }
 
     /**
@@ -169,9 +175,9 @@ class BackOfficeCompetiteurController extends AbstractController
                     if (strlen($competiteur->getLicence()) && !$competiteur->isArchive()) {
                         try {
                             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-                            $api->getJoueurDetailsByLicence($competiteur->getLicence());
+                            $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
                         } catch (Exception $e) {
-                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas', '1234');
+                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas à ' . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
                         }
                     }
 
@@ -274,9 +280,6 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->sendWelcomeMail($utilController, $contactController, $competiteur, false);
 
-            $competiteur->setIsPasswordResetting(true);
-            $this->em->flush();
-
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {
             $json = json_encode(['message' => $e->getCode() == 1234 ? $e->getMessage() : "Une erreur s'est produite", 'success' => false]);
@@ -291,10 +294,11 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
      * @param int $idCompetiteur
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      * @throws Exception
      */
-    public function edit(int $idCompetiteur, Request $request): Response
+    public function edit(int $idCompetiteur, Request $request, UtilController $utilController): Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
             $this->addFlash('fail', 'Membre inexistant');
@@ -313,52 +317,90 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
         $form->handleRequest($request);
 
+        /** Variable permettant de controler le fait qu'il doit y avoir minimum un administrateur restant */
+        $onlyOneAdmin = count($this->competiteurRepository->findJoueursByRole('Admin', null)) == 1;
+
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    /** On vérifie l'existence de la licence */
-                    if (strlen($competiteur->getLicence())) {
-                        try {
-                            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-                            $api->getJoueurDetailsByLicence($competiteur->getLicence());
-                        } catch (Exception $e) {
-                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas', '1234');
-                        }
-                    }
-
-                    /** On vérifie que le(s) rôle(s) du membre sont cohérents */
-                    $this->checkRoles($competiteur);
-
-                    /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
-                    if (!$competiteur->isCompetiteur()){
-                        $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
-
-                        /** On supprime le joueur des compos d'équipe ... */
-                        $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
-
-                        /** ... on trie les compos qui ont un tri automatique ... */
-                        $rencontresToSort = array_filter($rencontres, function($rencontre) {
-                            return $rencontre->getIdChampionnat()->isCompoSorted();
-                        });
-                        foreach ($rencontresToSort as $selectionToSort) {
-                            $this->em->refresh($selectionToSort);
-                            $selectionToSort->sortComposition();
+                    /** On vérifie qu'il y aie au minimum un administrateur restant parmi les membres actifs si l'utilisateur admin actuel est le dernier administrateur souhaitant ne plus l'être */
+                    if ($onlyOneAdmin && !in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                        $competiteur->setIsArchive(false);
+                        $competiteur->setIsAdmin(true);
+                        $this->addFlash('fail', 'Un administrateur minimum requis');
+                    } else {
+                        /** On vérifie l'existence de la licence */
+                        if (strlen($competiteur->getLicence())) {
+                            try {
+                                $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+                                $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
+                            } catch (Exception $e) {
+                                throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas à ' . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
+                            }
                         }
 
-                        /** ... et ses disponibilités sont supprimées */
-                        $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
-                    }
+                        /** On vérifie que le(s) rôle(s) du membre sont cohérents */
+                        $this->checkRoles($competiteur);
 
-                    if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
-                    $competiteur->setNom($competiteur->getNom());
-                    $competiteur->setPrenom($competiteur->getPrenom());
-                    $this->em->flush();
-                    $this->addFlash('success', 'Membre modifié');
-                    return $this->redirectToRoute('backoffice.competiteurs');
+                        /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
+                        if (!$competiteur->isCompetiteur()){
+                            $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
+
+                            /** On supprime le joueur des compos d'équipe ... */
+                            $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
+
+                            /** ... on trie les compos qui ont un tri automatique ... */
+                            $rencontresToSort = array_filter($rencontres, function($rencontre) {
+                                return $rencontre->getIdChampionnat()->isCompoSorted();
+                            });
+                            foreach ($rencontresToSort as $selectionToSort) {
+                                $this->em->refresh($selectionToSort);
+                                $selectionToSort->sortComposition();
+                            }
+
+                            /** ... et ses disponibilités sont supprimées */
+                            $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
+                        }
+
+                        if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
+                        $competiteur->setNom($competiteur->getNom());
+                        $competiteur->setPrenom($competiteur->getPrenom());
+
+                        $isCurrentAdminTheEditedUser = $competiteur->getIdCompetiteur() === $this->getUser()->getIdCompetiteur();
+                        /** On met ses rôles à jour dans le token de session pour ne pas être déconnecté */
+                        if ($isCurrentAdminTheEditedUser) {
+                            $this->get('security.token_storage')->setToken(new UsernamePasswordToken($competiteur, null, 'main', $competiteur->getRoles()));
+                        }
+
+                        $this->em->flush();
+                        $this->addFlash('success', 'Membre modifié');
+
+                        /** Si l'user n'est plus admin ni capitaine suite à la modification de ses rôles, ... */
+                        if ($isCurrentAdminTheEditedUser && !in_array('ROLE_ADMIN', $this->getUser()->getRoles()) && !in_array('ROLE_CAPITAINE', $this->getUser()->getRoles())) {
+                            if ($competiteur->isArchive()) {
+                                /** ... et qu'il devient archivé, on le déconnecte et on le redirige vers la page de connexion */
+                                $this->get('security.token_storage')->setToken();
+                                $this->get('session')->invalidate();
+                                return $this->redirectToRoute('logout');
+                            }
+                            else {
+                                /** ... on le redirige vers la page d'accueil */
+                                return $this->redirectToRoute('index.type', [
+                                    'type' => $this->get('session')->get('type') ? $this->championnatRepository->find($this->get('session')->get('type'))->getIdChampionnat() : $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat()
+                                ]);
+                            }
+                        }
+
+                        return $this->redirectToRoute('backoffice.competiteurs');
+                    }
                 } catch(Exception $e){
+                    $competiteur->setIsArchive(false);
                     $this->throwExceptionBOAccount($e, $competiteur);
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else {
+                $competiteur->setIsArchive(false);
+                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            }
         }
 
         return $this->render('account/edit.html.twig', [
@@ -372,6 +414,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
             'isAdmin' => $competiteur->isAdmin(),
+            'onlyOneAdmin' => $onlyOneAdmin,
             'competiteurId' => $competiteur->getIdCompetiteur(),
             'usernameEditable' => $usernameEditable,
             'form' => $form->createView(),
@@ -434,9 +477,18 @@ class BackOfficeCompetiteurController extends AbstractController
                 $selectionToSort->sortComposition();
             }
 
+            $idDeleted = $competiteur->getIdCompetiteur();
+            $currentUserId = $this->getUser()->getIdCompetiteur();
+
             $this->em->remove($competiteur);
             $this->em->flush();
             $this->addFlash('success', 'Membre supprimé');
+
+            if ($idDeleted == $currentUserId) {
+                $this->get('security.token_storage')->setToken();
+                $this->get('session')->invalidate();
+                return $this->redirectToRoute('logout');
+            }
         } else $this->addFlash('error', 'Le membre n\'a pas pu être supprimé');
 
         return $this->redirectToRoute('backoffice.competiteurs');
@@ -554,11 +606,12 @@ class BackOfficeCompetiteurController extends AbstractController
      * @throws Exception
      */
     public function checkRoles(Competiteur $competiteur){
+        if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
         if ((($competiteur->isCompetiteur() || $competiteur->isCapitaine()) && ($competiteur->isLoisir() || $competiteur->isArchive())) ||
             (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) ||
             ($competiteur->isArchive() && ($competiteur->isCritFed() || $competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
             ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
-            throw new Exception('Les statuts sont incohérents', 1234);
+            throw new Exception('Les rôles sont incohérents', 1234);
         }
     }
 
