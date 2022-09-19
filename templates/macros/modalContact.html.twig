@@ -72,58 +72,72 @@
     </div>
 {% endmacro %}
 
-{% macro modalGPS(id, adresse, siteWeb, telephone) %}
+{% macro modalGPS(id, adresse, complementAdresse, hrefMapsAdresse, hrefWazeAdresse, siteWeb, telephone) %}
     <script type="text/javascript" defer src="{{ asset('JS/copyPaste.min.js') }}"></script>
     <div id="modalGPS{{ id }}" class="modal modal-small modal-fixed-footer">
         <div class="modal-content modal-gps center">
             <h5>Contact de l'adversaire</h5>
 
-            <h6>Adresse</h6>
+            <h6><i class="material-icons red-text">place</i>Adresse</h6>
             <div class="btn-gps">
                 <div class="row_btns row">
                     <div class="card grey lighten-3 z-depth-0 col m4">
-                        <h6>Google Maps</h6>
-                        <a href="https://www.google.fr/maps" class="btn-small btn-floating white waves-effect modal-trigger">
-                            <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
-                        </a>
+                        <div><h6>Google Maps</h6></div>
+                        <div>
+                            <a href="https://www.google.fr/maps?q={{ hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
+                            </a>
+                        </div>
                     </div>
                     <div class="card grey lighten-3 z-depth-0 col m4">
-                        <h6>Waze</h6>
-                        <a href="https://www.waze.com/fr/live-map/" class="btn-small btn-floating white waves-effect modal-trigger">
-                            <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
-                        </a>
+                        <div><h6>Waze</h6></div>
+                        <div>
+                            <a href="https://waze.com/ul?q={{ hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
+                            </a>
+                        </div>
                     </div>
                     <div class="card grey lighten-3 z-depth-0 col m4">
-                        <h6>Copier-coller</h6>
-                        <button onclick="copyPaste('{{ id }}')" class="btn-small btn-floating white waves-effect modal-trigger">
-                            <i class="material-icons white black-text">content_copy</i>
-                        </button>
+                        <div><h6>Copier-coller</h6></div>
+                        <div>
+                            <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                <i class="material-icons white black-text">content_copy</i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <p class="adresse_{{ id }}">{{ adresse }}</p>
+                <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>
+
+                {% if complementAdresse %}
+                    <p class="complAdr adresse_{{ id }}"><i>Indications :</i> {{ complementAdresse }}</p>
+                {% endif %}
             </div>
             <br>
 
-            <h6>Site Internet</h6>
-            <a href="{{ siteWeb }}">{{ siteWeb }}</a><br><br>
+            {% if telephone %}
+                <h6><i class="material-icons green-text">contact_phone</i> Numéro de téléphone</h6>
+                <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter</i></p>
+                <div class="valign-wrapper telephoneDiv">
+                    <div>
+                        <span>{{ telephone | split('', 2) | join(' ') }}</span>
+                    </div>
+                    <div class="hide-on-med-and-up">
+                        <a class="btn blue phone" href="tel:{{ telephone }}">
+                            <i class="material-icons">phone</i>
+                        </a>
+                    </div>
+                    <div class="hide-on-med-and-up">
+                        <a class="btn blue phone" href="sms:{{ telephone }}">
+                            <i class="material-icons">message</i>
+                        </a>
+                    </div>
+                </div><br>
+            {% endif %}
 
-            <h6>Numéro de téléphone</h6>
-            <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter</i></p>
-            <div class="valign-wrapper telephoneDiv">
-                <div>
-                    <span>{{ telephone | split('', 2) | join(' ') }}</span>
-                </div>
-                <div class="hide-on-med-and-up">
-                    <a class="btn blue phone" href="tel:{{ telephone }}">
-                        <i class="material-icons">phone</i>
-                    </a>
-                </div>
-                <div class="hide-on-med-and-up">
-                    <a class="btn blue phone" href="sms:{{ telephone }}">
-                        <i class="material-icons">message</i>
-                    </a>
-                </div>
-            </div>
+            {% if siteWeb %}
+                <h6><i class="material-icons blue-text lighten-3">language</i> Site Internet</h6>
+                <a href="{{ siteWeb }}">{{ siteWeb }}</a>
+            {% endif %}
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Fermer</a>

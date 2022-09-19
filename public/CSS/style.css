@@ -658,13 +658,19 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal.modal-small .modal-gps h5 {
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .modal.modal-small .modal-gps h6 {
   font-size: 20px;
 }
 .modal.modal-small .modal-gps a.btn.phone {
   margin-top: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.complAdr, .modal.modal-small .modal-gps .btn-gps p.adr {
+  margin: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.adr {
+  margin-top: 4px;
 }
 .modal.modal-small .modal-gps .btn-gps .row_btns {
   display: flex;
@@ -677,6 +683,10 @@ table.rankingVirtualPoints td .chip .nom {
 .modal.modal-small .modal-gps .btn-gps .row_btns .card.grey {
   padding: 5px 10px 10px 10px;
   margin: 5px 10px;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .modal.modal-small .modal-gps .btn-gps .row_btns .card.grey button.btn-small {
   margin-top: 8px;
@@ -1272,8 +1282,13 @@ a.reload_ranking {
     margin-top: 0;
   }
 }
+@media screen and (max-width: 850px) {
+  .modal.modal-small {
+    width: 96% !important;
+  }
+}
 @media screen and (max-width: 720px) {
-  .modal.modal-medium, .modal.modal-small {
+  .modal.modal-medium {
     width: 96% !important;
   }
 }

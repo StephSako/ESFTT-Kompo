@@ -193,6 +193,18 @@ class Rencontre
     /**
      * @var string|null
      *
+     * @Assert\Length(
+     *      max = 300,
+     *      maxMessage = "Le complément d'adresse doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="complement_adresse", nullable=true, type="string", length=300)
+     */
+    private $complementAdresse;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="telephone", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
@@ -801,6 +813,22 @@ class Rencontre
     }
 
     /**
+     * @return string|null
+     */
+    public function getHrefMapsAdresse(): ?string
+    {
+        return str_replace(' ', '+', $this->getAdresse());
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHrefWazeAdresse(): ?string
+    {
+        return str_replace(' ', '%20', $this->getAdresse());
+    }
+
+    /**
      * @param string|null $adresse
      * @return Rencontre
      */
@@ -843,6 +871,24 @@ class Rencontre
     public function setSite(?string $site): self
     {
         $this->site = $site;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getComplementAdresse(): ?string
+    {
+        return $this->complementAdresse;
+    }
+
+    /**
+     * @param string|null $complementAdresse
+     * @return Rencontre
+     */
+    public function setComplementAdresse(?string $complementAdresse): self
+    {
+        $this->complementAdresse = $complementAdresse;
         return $this;
     }
 }

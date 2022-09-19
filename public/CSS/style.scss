@@ -761,7 +761,7 @@ table.rankingVirtualPoints {
     & .modal-gps{
       h5 {
         margin-top: 0;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
       }
 
       h6 {
@@ -773,6 +773,14 @@ table.rankingVirtualPoints {
       }
 
       .btn-gps{
+        p.complAdr, p.adr {
+          margin: 0;
+        }
+
+        p.adr {
+          margin-top: 4px;
+        }
+
         .row_btns {
           display: flex;
           justify-content: center;
@@ -785,6 +793,10 @@ table.rankingVirtualPoints {
           .card.grey {
             padding: 5px 10px 10px 10px;
             margin: 5px 10px;
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
 
             button.btn-small {
               margin-top: 8px;
@@ -1463,21 +1475,23 @@ a.reload_ranking {
   }
 }
 
+@media screen and (max-width: 850px) {
+  .modal.modal-small {
+    width: 96% !important;
+  }
+}
+
 @media screen and (max-width: 720px) {
-  .modal {
-    &.modal-medium, &.modal-small {
-      width: 96% !important;
-    }
+  .modal.modal-medium {
+    width: 96% !important;
   }
 }
 
 @media screen and (max-width: 601px) {
-  .modal {
-    &.modal-medium, &.modal-small {
-      margin-top: 0 !important;
-      height: 89% !important;
-      top: 6% !important;
-    }
+  .modal.modal-medium, .modal.modal-small {
+    margin-top: 0 !important;
+    height: 89% !important;
+    top: 6% !important;
   }
 
   th.th_picture_compet_table{

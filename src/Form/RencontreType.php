@@ -66,8 +66,7 @@ class RencontreType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'attr' => [
-                        'maxlength' => 300,
-                        'placeholder' => 'Pas d\'adresse'
+                        'maxlength' => 300
                     ]
                 ])->add('telephone', TelType::class, [
                     'label' => false,
@@ -80,6 +79,12 @@ class RencontreType extends AbstractType
                     'required' => false,
                     'attr' => [
                         'maxlength' => 100
+                    ]
+                ])->add('complementAdresse', TextareaType::class,[
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 300
                     ]
                 ]);
         }
