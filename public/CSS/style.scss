@@ -192,8 +192,13 @@ thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
 }
 
 i.iconPlace {
-  font-size: 2.1rem;
+  font-size: 30px;
   color: $dark_blue;
+
+  .btn-small & {
+    font-size: 25px;
+    color: white;
+  }
 }
 
 .setDispoCard {
@@ -739,7 +744,7 @@ table.rankingVirtualPoints {
     }
   }
 
-  &.modal-alert {
+  &.modal-medium {
     margin-top: 5% !important;
     width: 700px !important ;
     height: 80% !important ;
@@ -747,6 +752,65 @@ table.rankingVirtualPoints {
 
     & .modal-content {
       padding: 2px;
+    }
+  }
+
+  &.modal-small {
+    width: 45% !important;
+
+    & .modal-gps{
+      h5 {
+        margin-top: 0;
+        margin-bottom: 15px;
+      }
+
+      h6 {
+        font-size: 20px;
+      }
+
+      a.btn.phone {
+        margin-top: 0;
+      }
+
+      .btn-gps{
+        .row_btns {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 0;
+
+          p {
+            margin-top: 5px;
+          }
+
+          .card.grey {
+            padding: 5px 10px 10px 10px;
+            margin: 5px 10px;
+
+            button.btn-small {
+              margin-top: 8px;
+            }
+
+          i {
+              font-size: 21px;
+            }
+
+            img {
+              width: 26px;
+              aspect-ratio: auto;
+              margin-top: 3px;
+            }
+          }
+        }
+      }
+
+      .telephoneDiv {
+        display: flex;
+        justify-content: center;
+
+        div {
+          margin: 0 5px;
+        }
+      }
     }
   }
 }
@@ -1401,7 +1465,7 @@ a.reload_ranking {
 
 @media screen and (max-width: 720px) {
   .modal {
-    &.modal-alert {
+    &.modal-medium, &.modal-small {
       width: 96% !important;
     }
   }
@@ -1409,7 +1473,7 @@ a.reload_ranking {
 
 @media screen and (max-width: 601px) {
   .modal {
-    &.modal-alert {
+    &.modal-medium, &.modal-small {
       margin-top: 0 !important;
       height: 89% !important;
       top: 6% !important;

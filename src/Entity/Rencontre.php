@@ -174,9 +174,40 @@ class Rencontre
      *      maxMessage = "La ville hôte doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(name="ville_host", nullable=true, type="string", length=50)
+     * @ORM\Column(name="ville_host", nullable=true, type="string", length=200)
      */
     private $villeHost;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 300,
+     *      maxMessage = "L'adresse doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="adresse", nullable=true, type="string", length=300)
+     */
+    private $adresse;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="telephone", type="string", length=10, nullable=true)
+     *
+     * @Assert\Regex(
+     *     pattern="/[0-9]{10}/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     * )
+     */
+    private $telephone;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="site", type="string", length=100, nullable=true)
+     */
+    private $site;
 
     /**
      * @var boolean
@@ -759,5 +790,59 @@ class Rencontre
                 $this->setIdJoueurN($i, $joueur);
             }
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAdresse(): ?string
+    {
+        return mb_convert_case($this->adresse, MB_CASE_TITLE, "UTF-8");
+    }
+
+    /**
+     * @param string|null $adresse
+     * @return Rencontre
+     */
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTelephone(): ?string
+    {
+        return str_replace(' ', '', $this->telephone);
+    }
+
+    /**
+     * @param string|null $telephone
+     * @return Rencontre
+     */
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSite(): ?string
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param string|null $site
+     * @return Rencontre
+     */
+    public function setSite(?string $site): self
+    {
+        $this->site = $site;
+        return $this;
     }
 }

@@ -223,7 +223,10 @@
                                         <i class='material-icons red-text'>location_off</i>
                                     {% else %}
                                         {% if compo.domicile%} <i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                        {% else%} <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
+                                        {% else%}
+                                            <a href="#modalGPS{{ compo.id }}" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger">
+                                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
+                                            </a>
                                     {% endif %}
                                     {% endif %}
                                 </h5>
@@ -235,7 +238,10 @@
                                         <i class='material-icons red-text'>location_off</i>
                                     {% else %}
                                         {% if compo.domicile%} <i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i>
-                                        {% else%} <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
+                                        {% else%}
+                                            <a href="#modalGPS{{ compo.id }}" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger">
+                                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
+                                            </a>
                                         {% endif %}
                                     {% endif %}
                                 </h5>
@@ -330,8 +336,19 @@
                         {% endif %}
                     </div>
 
+                    {% if not compo.domicile %}
+                        {{ _modalContact.modalGPS
+                            (
+                                compo.id,
+                                compo.adresse,
+                                compo.site,
+                                compo.telephone
+                            )
+                        }}
+                    {% endif %}
+
                     {% if not compo.exempt %}
-                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
                             <div class="modal-content">
                                 <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
                                     <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
@@ -355,7 +372,7 @@
                         </div>
                     {% endif %}
 
-                    <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-alert center">
+                    <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
                         <div class="modal-content">
                             <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
                                 <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
@@ -433,7 +450,7 @@
         {% endif %}
 
         {# Modale des classement des points virtuels #}
-        <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-alert center">
+        <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-medium center">
             <div class="modal-content">
                 <p hidden="hidden" class="test">TEST</p>
                 <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">

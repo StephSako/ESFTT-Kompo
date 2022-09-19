@@ -159,8 +159,12 @@ thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
 }
 
 i.iconPlace {
-  font-size: 2.1rem;
+  font-size: 30px;
   color: #012242;
+}
+.btn-small i.iconPlace {
+  font-size: 25px;
+  color: white;
 }
 
 .setDispoCard {
@@ -640,14 +644,57 @@ table.rankingVirtualPoints td .chip .nom {
 .modal .modal-content > .row .row {
   margin: 10px 0 12px 0 !important;
 }
-.modal.modal-alert {
+.modal.modal-medium {
   margin-top: 5% !important;
   width: 700px !important;
   height: 80% !important;
   top: 4% !important;
 }
-.modal.modal-alert .modal-content {
+.modal.modal-medium .modal-content {
   padding: 2px;
+}
+.modal.modal-small {
+  width: 45% !important;
+}
+.modal.modal-small .modal-gps h5 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+.modal.modal-small .modal-gps h6 {
+  font-size: 20px;
+}
+.modal.modal-small .modal-gps a.btn.phone {
+  margin-top: 0;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns p {
+  margin-top: 5px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey {
+  padding: 5px 10px 10px 10px;
+  margin: 5px 10px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey button.btn-small {
+  margin-top: 8px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey i {
+  font-size: 21px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey img {
+  width: 26px;
+  aspect-ratio: auto;
+  margin-top: 3px;
+}
+.modal.modal-small .modal-gps .telephoneDiv {
+  display: flex;
+  justify-content: center;
+}
+.modal.modal-small .modal-gps .telephoneDiv div {
+  margin: 0 5px;
 }
 
 .preloaderSendMail {
@@ -1226,12 +1273,12 @@ a.reload_ranking {
   }
 }
 @media screen and (max-width: 720px) {
-  .modal.modal-alert {
+  .modal.modal-medium, .modal.modal-small {
     width: 96% !important;
   }
 }
 @media screen and (max-width: 601px) {
-  .modal.modal-alert {
+  .modal.modal-medium, .modal.modal-small {
     margin-top: 0 !important;
     height: 89% !important;
     top: 6% !important;
