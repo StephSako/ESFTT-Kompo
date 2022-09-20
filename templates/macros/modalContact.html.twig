@@ -79,44 +79,51 @@
             <h5>Contact de l'adversaire</h5>
 
             <h6><i class="material-icons red-text">place</i>Adresse</h6>
-            <div class="btn-gps">
-                <div class="row_btns row">
-                    <div class="card grey lighten-3 z-depth-0 col m4">
-                        <div><h6>Google Maps</h6></div>
-                        <div>
-                            <a href="https://www.google.fr/maps?q={{ hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
-                                <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
-                            </a>
+            {% if adresse or complementAdresse %}
+                {% if adresse %}
+                    <div class="btn-gps">
+                        <div class="row_btns row">
+                            <div class="card grey lighten-3 z-depth-0 col m4">
+                                <div><h6>Maps</h6></div>
+                                <div>
+                                    <a href="https://www.google.fr/maps?q={{ hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                        <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card grey lighten-3 z-depth-0 col m4">
+                                <div><h6>Waze</h6></div>
+                                <div>
+                                    <a href="https://waze.com/ul?q={{ hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
+                                        <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card grey lighten-3 z-depth-0 col m4">
+                                <div><h6>Copier</h6></div>
+                                <div>
+                                    <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                        <i class="material-icons white black-text">content_copy</i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>
                     </div>
-                    <div class="card grey lighten-3 z-depth-0 col m4">
-                        <div><h6>Waze</h6></div>
-                        <div>
-                            <a href="https://waze.com/ul?q={{ hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
-                                <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card grey lighten-3 z-depth-0 col m4">
-                        <div><h6>Copier-coller</h6></div>
-                        <div>
-                            <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
-                                <i class="material-icons white black-text">content_copy</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>
+                {% elseif not adresse and complementAdresse %}
+                    <p class="complAdr" style="margin-top: 2px;"><i>L'adresse précise n'est pas fournie par l'adversaire</i></p>
+                {% endif %}
 
                 {% if complementAdresse %}
-                    <p class="complAdr adresse_{{ id }}"><i>Indications :</i> {{ complementAdresse }}</p>
+                    <p class="complAdr adresse_{{ id }}">{{ complementAdresse }}</p><br>
                 {% endif %}
-            </div>
-            <br>
+            {% else %}
+                <p style="margin-top: 2px;"><i>L'adresse n'est pas fournie par l'adversaire</i></p>
+            {% endif %}
 
+            <h6><i class="material-icons green-text">contact_phone</i> Numéro de téléphone</h6>
             {% if telephone %}
-                <h6><i class="material-icons green-text">contact_phone</i> Numéro de téléphone</h6>
-                <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter</i></p>
+                <p style="margin-top: 2px;" class="complAdr hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter</i></p>
                 <div class="valign-wrapper telephoneDiv">
                     <div>
                         <span>{{ telephone | split('', 2) | join(' ') }}</span>
@@ -132,11 +139,15 @@
                         </a>
                     </div>
                 </div><br>
+            {% else %}
+                <p style="margin-top: 2px;"><i>Le téléphone n'est pas fourni par l'adversaire</i></p>
             {% endif %}
 
+            <h6><i class="material-icons blue-text lighten-3">language</i> Site Internet</h6>
             {% if siteWeb %}
-                <h6><i class="material-icons blue-text lighten-3">language</i> Site Internet</h6>
                 <a href="{{ siteWeb }}">{{ siteWeb }}</a>
+            {% else %}
+                <p style="margin-top: 2px;"><i>Le site Internet n'est pas fourni par l'adversaire</i></p>
             {% endif %}
         </div>
         <div class="modal-footer">

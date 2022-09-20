@@ -772,8 +772,12 @@ table.rankingVirtualPoints {
         margin-top: 0;
       }
 
+      p.complAdr {
+        margin: 0;
+      }
+
       .btn-gps{
-        p.complAdr, p.adr {
+        p.adr {
           margin: 0;
         }
 
@@ -797,6 +801,10 @@ table.rankingVirtualPoints {
             display: flex;
             flex-direction: column;
             justify-content: space-around;
+
+            &:nth-child(2) a.btn-small {
+              background-color: #3cf;
+            }
 
             button.btn-small {
               margin-top: 8px;

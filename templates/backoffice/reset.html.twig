@@ -384,6 +384,7 @@
                                                                 <th>Journée</th>
                                                                 <th>Adversaire</th>
                                                                 <th>Lieu</th>
+                                                                <th>Coordonnées</th>
                                                             </tr>
                                                         </thead>
 
@@ -419,6 +420,12 @@
                                                                             {% endif %}
                                                                         </span>
                                                                         {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                    </td>
+                                                                    <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
+                                                                        {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
+                                                                        {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
+                                                                        {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
+                                                                        {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
                                                                     </td>
                                                                 </tr>
                                                             {% endfor %}

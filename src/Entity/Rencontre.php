@@ -809,7 +809,7 @@ class Rencontre
      */
     public function getAdresse(): ?string
     {
-        return mb_convert_case($this->adresse, MB_CASE_TITLE, "UTF-8");
+        return $this->adresse;
     }
 
     /**
@@ -834,7 +834,7 @@ class Rencontre
      */
     public function setAdresse(?string $adresse): self
     {
-        $this->adresse = $adresse;
+        $this->adresse = strlen(trim($adresse)) ? trim(mb_convert_case($adresse, MB_CASE_TITLE, "UTF-8")) : null;
         return $this;
     }
 
@@ -852,7 +852,7 @@ class Rencontre
      */
     public function setTelephone(?string $telephone): self
     {
-        $this->telephone = $telephone;
+        $this->telephone = strlen(trim($telephone)) ? trim($telephone) : null;
         return $this;
     }
 
@@ -870,7 +870,7 @@ class Rencontre
      */
     public function setSite(?string $site): self
     {
-        $this->site = $site;
+        $this->site = strlen(trim($site)) ? trim($site) : null;
         return $this;
     }
 
@@ -888,7 +888,7 @@ class Rencontre
      */
     public function setComplementAdresse(?string $complementAdresse): self
     {
-        $this->complementAdresse = $complementAdresse;
+        $this->complementAdresse = strlen(trim($complementAdresse)) ? trim(mb_convert_case($complementAdresse, MB_CASE_TITLE, "UTF-8")) : null;
         return $this;
     }
 }
