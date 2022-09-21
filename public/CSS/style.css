@@ -1146,6 +1146,15 @@ a.reload_ranking {
   width: 6px;
   height: 6px;
 }
+.navbar-general .btn-floating {
+  top: 13px;
+  right: 23px;
+}
+.navbar-general .btn-floating i {
+  position: absolute;
+  height: 0;
+  line-height: 40px;
+}
 
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
@@ -1269,11 +1278,6 @@ a.reload_ranking {
     margin-top: 5px !important;
   }
 
-  .fixed-action-btn {
-    bottom: 0;
-    top: 2px;
-  }
-
   .merged_cards {
     -webkit-box-shadow: none;
   }
@@ -1305,6 +1309,15 @@ a.reload_ranking {
     top: 6% !important;
   }
 
+  .navbar-general .btn-floating {
+    top: 9px;
+  }
+  .navbar-general .btn-floating i {
+    position: absolute;
+    height: 0;
+    line-height: 40px;
+  }
+
   th.th_picture_compet_table {
     height: 96px;
   }
@@ -1325,11 +1338,6 @@ a.reload_ranking {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
-  }
-
-  .fixed-action-btn {
-    bottom: 0;
-    top: -2px;
   }
 }
 @media screen and (max-width: 550px) {

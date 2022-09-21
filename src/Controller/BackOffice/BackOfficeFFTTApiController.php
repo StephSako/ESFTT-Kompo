@@ -266,8 +266,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontreTemp = [];
                                 $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                 $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                // TODO PARSE getLibelle WITH REGEX
-                                // TODO Ne pas afficher le bouton de la journée en pré-phase
                                 $rencontreTemp['journee'] = explode('?', explode(' ', $rencontre->getLibelle())[self::JOURNEE_LABEL])[self::JOURNEE_NUMBER];
                                 $rencontreTemp['adversaireFFTT'] = $adversaire;
                                 $rencontreTemp['exempt'] = $isExempt;

@@ -114,16 +114,18 @@
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
-                                                    <div class="col m2 hide-on-med-and-up">
-                                                        <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
-                                                            <i class="material-icons">message</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col m2 hide-on-med-and-up">
-                                                        <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
-                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                        </a>
-                                                    </div>
+                                                    {% if competiteur.phoneNumber | slice(0, 2) == "06" or competiteur.phoneNumber | slice(0, 2) == "07" %}
+                                                        <div class="col m2 hide-on-med-and-up">
+                                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
+                                                                <i class="material-icons">message</i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col m2 hide-on-med-and-up">
+                                                            <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
+                                                                <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                                 <br>
                                             {% endif %}
@@ -137,16 +139,18 @@
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
-                                                            <i class="material-icons">message</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
-                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                        </a>
-                                                    </div>
+                                                    {% if competiteur.phoneNumber2 | slice(0, 2) == "06" or competiteur.phoneNumber2 | slice(0, 2) == "07" %}
+                                                        <div class="col m2 hide-on-large-only">
+                                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
+                                                                <i class="material-icons">message</i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col m2 hide-on-large-only">
+                                                            <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
+                                                                <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             {% endif %}
                                         {% else %}
