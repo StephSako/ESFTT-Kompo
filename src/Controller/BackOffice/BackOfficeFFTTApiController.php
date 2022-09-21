@@ -220,6 +220,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $rencontresParEquipes = [];
                     $journeesFFTT = [];
                     $rencontresEquipeKompo = null;
+                    $adressesClubs = [];
 
                     foreach ($equipesFFTT as $index => $equipe){
                         $nbEquipe = $index + 1;
@@ -254,6 +255,14 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $domicile = str_contains($rencontre->getNomEquipeA(), $this->getParameter('club_name'));
                                 $adversaire = !$isExempt ? mb_convert_case($domicile ? $rencontre->getNomEquipeB() : $rencontre->getNomEquipeA(), MB_CASE_TITLE, "UTF-8") : null;
 
+                                parse_str($rencontre->getLien(), $output);
+                                $idClubAdversaire = $output[!$domicile ? 'clubnum_1' : 'clubnum_2'];
+
+                                /** On request les détails du club adversaire */
+                                if (!$domicile && !array_key_exists($idClubAdversaire, $adressesClubs)) {
+                                    $adressesClubs[$idClubAdversaire] = null;
+                                }
+
                                 $rencontreTemp = [];
                                 $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                 $rencontreTemp['nbEquipe'] = $nbEquipe;
@@ -263,12 +272,46 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontreTemp['domicileFFTT'] = $domicile;
                                 $rencontreTemp['dateReelle'] = $rencontre->getDatePrevue();
 
+                                /** Contrôle de l'affichage des pictogrammes dans le formulaire à OK par défaut */
+                                $rencontreTemp['infosContact']['adresse'] = false;
+                                $rencontreTemp['infosContact']['complementAdresse'] = false;
+                                $rencontreTemp['infosContact']['site'] = false;
+                                $rencontreTemp['infosContact']['telephone'] = false;
+
                                 if ($i <= $championnatActif->getNbJournees() - 1) {
                                     if (in_array($nbEquipe, $equipesIDsCommon)) {
                                         /** On fix les rencontres existantes des équipes existantes */
-                                        if (($isExempt != $rencontresEquipeKompo[$i]->isExempt()) || (!$isExempt &&
-                                            ($rencontresEquipeKompo[$i]->getAdversaire() != $rencontreTemp['adversaireFFTT']) ||
-                                            ($domicile != $rencontresEquipeKompo[$i]->getDomicile()))) {
+                                        if (($isExempt != $rencontresEquipeKompo[$i]->isExempt()) ||
+                                            (!$isExempt &&
+                                                ($rencontresEquipeKompo[$i]->getAdversaire() != $rencontreTemp['adversaireFFTT'] ||
+                                                $domicile != $rencontresEquipeKompo[$i]->getDomicile() ||
+                                                (!$domicile && !$rencontresEquipeKompo[$i]->getSite() && !$rencontresEquipeKompo[$i]->getAdresse() && !$rencontresEquipeKompo[$i]->getTelephone() && !$rencontresEquipeKompo[$i]->getComplementAdresse())))) {
+
+                                            /** Si aucune information de contact n'est renseignée dans la rencontre Kompo, on les renseigne */
+                                            if (!$domicile && !$rencontresEquipeKompo[$i]->getSite() && !$rencontresEquipeKompo[$i]->getAdresse() && !$rencontresEquipeKompo[$i]->getTelephone() && !$rencontresEquipeKompo[$i]->getComplementAdresse()) {
+                                                /** On indique l'adresse, complément d'adresse et site web du club adverse */
+                                                if (!$adressesClubs[$idClubAdversaire]) {
+                                                    $adressesClubs[$idClubAdversaire] = $api->getClubDetails($idClubAdversaire);
+                                                }
+
+                                                $adresseAdversaire = $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
+                                                    $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
+                                                    $adressesClubs[$idClubAdversaire]->getVilleSalle();
+                                                $complementAdresseAdversaire = $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
+                                                    $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
+                                                    $adressesClubs[$idClubAdversaire]->getAdresseSalle3();
+                                                $rencontreTemp['adresse'] = $adresseAdversaire;
+                                                $rencontreTemp['site'] = $adressesClubs[$idClubAdversaire]->getSiteWeb();
+                                                $rencontreTemp['telephone'] = $adressesClubs[$idClubAdversaire]->getTelCoordo();
+                                                $rencontreTemp['complementAdresse'] =
+                                                        $complementAdresseAdversaire;
+
+                                                /** Contrôle de l'affichage des pictogrammes dans le formulaire */
+                                                $rencontreTemp['infosContact']['adresse'] = strlen(trim($adresseAdversaire));
+                                                $rencontreTemp['infosContact']['complementAdresse'] = strlen(trim($complementAdresseAdversaire));
+                                                $rencontreTemp['infosContact']['site'] = strlen(trim($adressesClubs[$idClubAdversaire]->getSiteWeb()));
+                                                $rencontreTemp['infosContact']['telephone'] = strlen(trim($adressesClubs[$idClubAdversaire]->getTelCoordo()));
+                                            }
 
                                             $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
                                             $rencontreTemp['recorded'] = true;
@@ -287,6 +330,31 @@ class BackOfficeFFTTApiController extends AbstractController
                                             ->setAdversaire($adversaire)
                                             ->setExempt($isExempt);
 
+                                        if (!$domicile) {
+                                            /** On indique l'adresse, complément d'adresse et site web du club adverse */
+                                            if (!$adressesClubs[$idClubAdversaire]) {
+                                                $adressesClubs[$idClubAdversaire] = $api->getClubDetails($idClubAdversaire);
+                                            }
+
+                                            $adresseAdversaire = $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
+                                                $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
+                                                $adressesClubs[$idClubAdversaire]->getVilleSalle();
+                                            $complementAdresseAdversaire = $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
+                                                $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
+                                                $adressesClubs[$idClubAdversaire]->getAdresseSalle3();
+                                            $rencontreToCreate
+                                                ->setAdresse($adresseAdversaire)
+                                                ->setSite($adressesClubs[$idClubAdversaire]->getSiteWeb())
+                                                ->setTelephone($adressesClubs[$idClubAdversaire]->getTelCoordo())
+                                                ->setComplementAdresse($complementAdresseAdversaire);
+
+                                            /** Contrôle de l'affichage des pictogrammes dans le formulaire */
+                                            $rencontreTemp['infosContact']['adresse'] = strlen(trim($adresseAdversaire));
+                                            $rencontreTemp['infosContact']['complementAdresse'] = strlen(trim($complementAdresseAdversaire));
+                                            $rencontreTemp['infosContact']['site'] = strlen(trim($adressesClubs[$idClubAdversaire]->getSiteWeb()));
+                                            $rencontreTemp['infosContact']['telephone'] = strlen(trim($adressesClubs[$idClubAdversaire]->getTelCoordo()));
+                                        }
+
                                         $rencontreTemp['rencontre'] = $rencontreToCreate;
                                         $rencontreTemp['recorded'] = false;
                                         $rencontresParEquipes[] = $rencontreTemp;
@@ -301,6 +369,31 @@ class BackOfficeFFTTApiController extends AbstractController
                                         ->setReporte(false)
                                         ->setAdversaire($adversaire)
                                         ->setExempt($isExempt);
+
+                                    if (!$domicile) {
+                                        /** On indique l'adresse, complément d'adresse et site web du club adverse */
+                                        if (!$adressesClubs[$idClubAdversaire]) {
+                                            $adressesClubs[$idClubAdversaire] = $api->getClubDetails($idClubAdversaire);
+                                        }
+
+                                        $adresseAdversaire = $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
+                                            $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
+                                            $adressesClubs[$idClubAdversaire]->getVilleSalle();
+                                        $complementAdresseAdversaire = $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
+                                            $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
+                                            $adressesClubs[$idClubAdversaire]->getAdresseSalle3();
+                                        $rencontreKompo
+                                            ->setAdresse($adresseAdversaire)
+                                            ->setSite($adressesClubs[$idClubAdversaire]->getSiteWeb())
+                                            ->setTelephone($adressesClubs[$idClubAdversaire]->getTelCoordo())
+                                            ->setComplementAdresse($complementAdresseAdversaire);
+
+                                        /** Contrôle de l'affichage des pictogrammes dans le formulaire */
+                                        $rencontreTemp['infosContact']['adresse'] = strlen(trim($adresseAdversaire));
+                                        $rencontreTemp['infosContact']['complementAdresse'] = strlen(trim($complementAdresseAdversaire));
+                                        $rencontreTemp['infosContact']['site'] = strlen(trim($adressesClubs[$idClubAdversaire]->getSiteWeb()));
+                                        $rencontreTemp['infosContact']['telephone'] = strlen(trim($adressesClubs[$idClubAdversaire]->getTelCoordo()));
+                                    }
 
                                     $rencontreTemp = [];
                                     $rencontreTemp['rencontre'] = $rencontreKompo;
@@ -446,6 +539,10 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ->setExempt(false)
                                 ->setDomicile(null)
                                 ->setVilleHost(null)
+                                ->setTelephone(null)
+                                ->setSite(null)
+                                ->setAdresse(null)
+                                ->setComplementAdresse(null)
                                 ->setDateReport($rencontreKompo->getIdJournee()->getDateJournee())
                                 ->setAdversaire(null);
                         }
@@ -464,13 +561,6 @@ class BackOfficeFFTTApiController extends AbstractController
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
                         }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['contactables']);
 
-                        $settings = $this->settingsRepository->find(1);
-                        try {
-                            $message = $settings->getInfosType('mail-pre-phase');
-                        } catch (Exception $e) {
-                            throw $this->createNotFoundException($e->getMessage());
-                        }
-
                         try {
                             $str_replacers = [
                                 'old' => ["[#nom_phase#]"],
@@ -481,7 +571,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $mails,
                                 true,
                                 'Kompo - Phase terminée',
-                                $message,
+                                $this->settingsRepository->find('mail-pre-phase'),
                                 $str_replacers,
                                 true);
                             $this->addFlash('success', "L'alerte de pré-phase a été envoyée");
@@ -562,6 +652,15 @@ class BackOfficeFFTTApiController extends AbstractController
                                     ->setExempt($rencontresParEquipe['exempt'])
                                     ->setReporte(false)
                                     ->setDateReport($rencontresParEquipe['dateReelle']);
+
+                                /** On renseigne les informations de contacts de l'adversaire */
+                                if (!$rencontresParEquipe['domicileFFTT']) {
+                                    $rencontresParEquipe['rencontre']
+                                        ->setTelephone($rencontresParEquipe['telephone'])
+                                        ->setSite($rencontresParEquipe['site'])
+                                        ->setAdresse($rencontresParEquipe['adresse'])
+                                        ->setComplementAdresse($rencontresParEquipe['complementAdresse']);
+                                }
                             } else {
                                 /** ... sinon on créé les rencontres inexistantes */
                                 $nbEquipe = $rencontresParEquipe['nbEquipe'];

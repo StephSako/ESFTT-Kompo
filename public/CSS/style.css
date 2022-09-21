@@ -159,8 +159,12 @@ thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
 }
 
 i.iconPlace {
-  font-size: 2.1rem;
+  font-size: 30px;
   color: #012242;
+}
+.btn-small i.iconPlace {
+  font-size: 25px;
+  color: white;
 }
 
 .setDispoCard {
@@ -640,14 +644,73 @@ table.rankingVirtualPoints td .chip .nom {
 .modal .modal-content > .row .row {
   margin: 10px 0 12px 0 !important;
 }
-.modal.modal-alert {
+.modal.modal-medium {
   margin-top: 5% !important;
   width: 700px !important;
   height: 80% !important;
   top: 4% !important;
 }
-.modal.modal-alert .modal-content {
+.modal.modal-medium .modal-content {
   padding: 2px;
+}
+.modal.modal-small {
+  width: 45% !important;
+}
+.modal.modal-small .modal-gps h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.modal.modal-small .modal-gps h6 {
+  font-size: 20px;
+}
+.modal.modal-small .modal-gps a.btn.phone {
+  margin-top: 0;
+}
+.modal.modal-small .modal-gps p.complAdr {
+  margin: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.adr {
+  margin: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.adr {
+  margin-top: 4px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns p {
+  margin-top: 5px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey {
+  padding: 5px 10px 10px 10px;
+  margin: 5px 10px;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey:nth-child(2) a.btn-small {
+  background-color: #3cf;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey button.btn-small {
+  margin-top: 8px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey i {
+  font-size: 21px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey img {
+  width: 26px;
+  aspect-ratio: auto;
+  margin-top: 3px;
+}
+.modal.modal-small .modal-gps .telephoneDiv {
+  display: flex;
+  justify-content: center;
+}
+.modal.modal-small .modal-gps .telephoneDiv div {
+  margin: 0 5px;
 }
 
 .preloaderSendMail {
@@ -1083,6 +1146,15 @@ a.reload_ranking {
   width: 6px;
   height: 6px;
 }
+.navbar-general .btn-floating {
+  top: 13px;
+  right: 23px;
+}
+.navbar-general .btn-floating i {
+  position: absolute;
+  height: 0;
+  line-height: 40px;
+}
 
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
@@ -1206,11 +1278,6 @@ a.reload_ranking {
     margin-top: 5px !important;
   }
 
-  .fixed-action-btn {
-    bottom: 0;
-    top: 2px;
-  }
-
   .merged_cards {
     -webkit-box-shadow: none;
   }
@@ -1225,16 +1292,30 @@ a.reload_ranking {
     margin-top: 0;
   }
 }
+@media screen and (max-width: 850px) {
+  .modal.modal-small {
+    width: 96% !important;
+  }
+}
 @media screen and (max-width: 720px) {
-  .modal.modal-alert {
+  .modal.modal-medium {
     width: 96% !important;
   }
 }
 @media screen and (max-width: 601px) {
-  .modal.modal-alert {
+  .modal.modal-medium, .modal.modal-small {
     margin-top: 0 !important;
     height: 89% !important;
     top: 6% !important;
+  }
+
+  .navbar-general .btn-floating {
+    top: 9px;
+  }
+  .navbar-general .btn-floating i {
+    position: absolute;
+    height: 0;
+    line-height: 40px;
   }
 
   th.th_picture_compet_table {
@@ -1257,11 +1338,6 @@ a.reload_ranking {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
-  }
-
-  .fixed-action-btn {
-    bottom: 0;
-    top: -2px;
   }
 }
 @media screen and (max-width: 550px) {
