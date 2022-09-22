@@ -28,17 +28,34 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $type
      * @return array
      */
-    public function findJoueursNonDeclares(int $idJournee, int $type): array
+    public function findDisposJoueurs(int $idJournee, int $type): array
     {
-        return $this->createQueryBuilder('c')
-            ->where("c.idCompetiteur NOT IN (SELECT DISTINCT IDENTITY(d.idCompetiteur) FROM App\Entity\Disponibilite d WHERE d.idJournee = :idJournee AND d.idChampionnat = :idChampionnat)")
+        $query = $this->createQueryBuilder('c')
+            ->select('c')
+            ->addSelect('(
+                    SELECT d.disponibilite
+                    FROM App\Entity\Competiteur c1, App\Entity\Disponibilite d
+                    WHERE d.idJournee = :idJournee
+                    AND d.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = c1.idCompetiteur
+                    AND c.idCompetiteur = d.idCompetiteur
+                ) as disponibilite')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $type)
-            ->andWhere('c.isCompetiteur = true')
-            ->orderBy('c.nom')
+            ->where('c.isCompetiteur = true')
+            ->orderBy('disponibilite', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
+
+        $query = array_map(function($dispo){
+            $dispo['joueur'] = $dispo['0'];
+            unset($dispo['0']);
+            return $dispo;
+        }, $query);
+
+        return $query;
     }
 
     /**

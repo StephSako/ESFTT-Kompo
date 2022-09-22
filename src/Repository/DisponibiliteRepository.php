@@ -20,30 +20,6 @@ class DisponibiliteRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des personnes ayant déclaré leur disponibilité pour la journée
-     * @param int $idJournee
-     * @param int $type
-     * @return int|mixed|string
-     */
-    public function findJoueursDeclares(int $idJournee, int $type)
-    {
-        return $this->createQueryBuilder('d')
-            ->select('d')
-            ->leftJoin('d.idCompetiteur', 'c')
-            ->addSelect('c')
-            ->where('d.idJournee = :idJournee')
-            ->andWhere('d.idChampionnat = :idChampionnat')
-            ->setParameter('idJournee', $idJournee)
-            ->setParameter('idChampionnat', $type)
-            ->andWhere('c.isCompetiteur = true')
-            ->orderBy('d.disponibilite', 'DESC')
-            ->addOrderBy('c.nom')
-            ->addOrderBy('c.prenom')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * Supprime toutes les disponibilités d'un joueur devenant loisir ou archivé
      * @param int $idCompetiteur
      * @return int|mixed|string

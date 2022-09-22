@@ -126,11 +126,12 @@ class HomeController extends AbstractController
         $numJournee = array_search($journee, $journees)+1;
 
         // Joueurs ayant déclaré leur disponibilité
-        $joueursDeclares = $this->disponibiliteRepository->findJoueursDeclares($id, $type);
+        $disponibilitesGenerales = $this->competiteurRepository->findDisposJoueurs($id, $type);
 
         // Joueurs n'ayant pas déclaré leur disponibilité
-        $joueursNonDeclares = $this->competiteurRepository->findJoueursNonDeclares($id, $type);
-        $joueursNonDeclaresContact = $contactController->returnPlayersContact($joueursNonDeclares);
+        $joueursNonDeclares = array_values(array_filter($disponibilitesGenerales, function ($dispo) { return $dispo['disponibilite']== null; }));
+        $joueursNonDeclaresContact = $contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
+
         if (count($joueursNonDeclares)) {
             $messageJoueursSansDispo = $this->settingsRepository->find('mail-sans-dispo')->getContent();
 
@@ -185,7 +186,7 @@ class HomeController extends AbstractController
             return $equipe->getIdDivision() == null;
         }));
 
-        $nbDispos = count(array_filter($joueursDeclares, function($dispo){return $dispo->getDisponibilite();}));
+        $nbDispos = count(array_filter(array_filter($disponibilitesGenerales, function ($dispo) { return $dispo != null; }), function($dispo){ return $dispo['disponibilite']; }));
 
         // Si l'utilisateur actuel est disponible pour la journée actuelle
         $disponible = ($dispoJoueur ? ($dispoJoueur->getDisponibilite() ? 1 : 0) : -1);
@@ -231,7 +232,7 @@ class HomeController extends AbstractController
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
-            'nbMaxPotentielPlayers' => count($joueursNonDeclares) + count($joueursDeclares),
+            'nbMaxPotentielPlayers' => count($disponibilitesGenerales),
             'nbMinJoueurs' => $nbMinJoueurs,
             'allChampionnats' => $allChampionnats,
             'selection' => $selection,
@@ -239,13 +240,13 @@ class HomeController extends AbstractController
             'compos' => $compos,
             'idEquipes' => $idEquipesVisuel,
             'selectedPlayers' => $selectedPlayers,
-            'dispos' => $joueursDeclares,
+            'disponibilitesGenerales' => $disponibilitesGenerales,
             'disponible' => $disponible,
-            'joueursNonDeclares' => $joueursNonDeclares,
             'joueursNonDeclaresContact' => $joueursNonDeclaresContact,
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'disposJoueur' => $disposJoueurFormatted,
             'nbDispos' => $nbDispos,
+            'nbNonDeclares' => count($joueursNonDeclares),
             'brulages' => $brulages,
             'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
