@@ -852,7 +852,7 @@ class Rencontre
      */
     public function setTelephone(?string $telephone): self
     {
-        $this->telephone = strlen(trim($telephone)) ? trim($telephone) : null;
+        $this->telephone = strlen(trim($telephone)) ? str_replace(' ', '', trim($telephone)) : null;
         return $this;
     }
 
