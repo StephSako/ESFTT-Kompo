@@ -115,6 +115,46 @@ html,body{
   }
 }
 
+.dispos.merged_cards, .brulageCard.merged_cards {
+  & .row.bottom_0 {
+    padding: 0;
+    text-align: left;
+
+    & .col {
+      padding: 0;
+
+      & .s10 {
+        padding-right: 1px;
+      }
+
+      & .s2 {
+        left: 8px;
+      }
+    }
+  }
+}
+
+.dispos.merged_cards .row.bottom_0 {
+  margin-left: 0;
+  margin-right: 0;
+
+  &:nth-of-type(2) {
+    margin-bottom: 4px;
+  }
+
+  &:first-of-type {
+    margin-top: 10px;
+
+    .col.s2 {
+      margin-top: 2px;
+
+      & .labelNbMatchesJoues {
+        padding: 0 5px;
+      }
+    }
+  }
+}
+
 div.scrollableTable {
   overflow-x: scroll;
   width: 100%;
@@ -1147,11 +1187,6 @@ table.table-last-compos {
       margin: 5.5px 0;
     }
   }
-}
-
-.brulageCard {
-  padding-left: 0;
-  padding-right: 0;
 }
 
 // On re-stylise les balises mal interprétées

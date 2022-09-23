@@ -122,11 +122,14 @@ class HomeController extends AbstractController
             }
         }
 
+        // Compositions d'équipe
+        $compos = $this->rencontreRepository->getRencontres($id, $type);
+
         // Numero de la journée
         $numJournee = array_search($journee, $journees)+1;
 
         // Joueurs ayant déclaré leur disponibilité
-        $disponibilitesGenerales = $this->competiteurRepository->findDisposJoueurs($id, $type);
+        $disponibilitesGenerales = $this->competiteurRepository->findDisposJoueurs($id, $type, max(array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos)));
 
         // Joueurs n'ayant pas déclaré leur disponibilité
         $joueursNonDeclares = array_values(array_filter($disponibilitesGenerales, function ($dispo) { return $dispo['disponibilite']== null; }));
@@ -151,9 +154,6 @@ class HomeController extends AbstractController
         } else {
             $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         }
-
-        // Compositions d'équipe
-        $compos = $this->rencontreRepository->getRencontres($id, $type);
 
         // Joueurs sélectionnées
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);

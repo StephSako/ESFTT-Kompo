@@ -5,13 +5,13 @@
     <div class="card-panel dispos merged_cards bottom">
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
-        <div class="row bottom_0" style="text-align: left; margin-top: 12px;">
-            <div class="col s2 center" style="margin-top: 2px;"><span style="padding: 0 5px;" class="pastille grey lighten-1">&nbsp&nbsp&nbsp</span></div>
-            <div class="col s10">Nombre de matches joués sur la phase</div>
+        <div class="row bottom_0">
+            <div class="col s2 center"><span class="labelNbMatchesJoues pastille grey">&nbsp&nbsp&nbsp</span></div>
+            <div class="col s10">Nombre de sélections sur la phase</div>
         </div>
-        <div class="row bottom_0" style="text-align: left;">
+        <div class="row bottom_0">
             <div class="col s2 center"><i class="blue-text right-align material-icons">done</i></div>
-            <div class="col s10 m7">Sélectionné en équipe</div>
+            <div class="col s10 m7">Sélectionnés pour cette journée</div>
         </div>
 
         <table class="striped">
@@ -31,7 +31,7 @@
                             </div>
                         </td>
                         <td style="padding-right: 0; padding-left: 0;">
-                            <span style="padding: 0 5px;" class="pastille grey lighten-1">3</span>
+                            <span style="padding: 0 5px;" class="pastille grey">{{ dispo.nbMatchesJoues }}</span>
                         </td>
                         <td style="padding-right: 0">
                             {% if dispo.joueur.idCompetiteur in selectedPlayers %}
