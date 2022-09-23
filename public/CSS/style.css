@@ -108,6 +108,21 @@ html, body {
   left: 8px;
 }
 
+.dispos.merged_cards table tbody tr td:first-of-type span {
+  margin-left: 2%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dispos.merged_cards table tbody tr td:nth-of-type(2) {
+  padding-left: 0;
+}
+.dispos.merged_cards table tbody tr td:nth-of-type(2) span {
+  padding: 0 5px;
+}
+.dispos.merged_cards table tbody tr td:nth-of-type(3), .dispos.merged_cards table tbody tr td:nth-of-type(2) {
+  padding-right: 0;
+}
 .dispos.merged_cards .row.bottom_0 {
   margin-left: 0;
   margin-right: 0;

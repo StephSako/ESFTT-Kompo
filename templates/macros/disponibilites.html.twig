@@ -1,5 +1,6 @@
 {% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesGenerales, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
+
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
 
     <div class="card-panel dispos merged_cards bottom">
@@ -27,13 +28,13 @@
                                 {% elseif dispo.disponibilite == 0 %}
                                     <span class="dot dot2 center">&nbsp;</span>
                                 {% endif %}
-                                <span style="margin-left: 2%;" class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
+                                <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
                             </div>
                         </td>
-                        <td style="padding-right: 0; padding-left: 0;">
-                            <span style="padding: 0 5px;" class="pastille grey">{{ dispo.nbMatchesJoues }}</span>
+                        <td>
+                            <span class="pastille grey">{{ dispo.nbMatchesJoues }}</span>
                         </td>
-                        <td style="padding-right: 0">
+                        <td>
                             {% if dispo.joueur.idCompetiteur in selectedPlayers %}
                                 <i class="blue-text right-align material-icons">done</i>
                             {% endif %}

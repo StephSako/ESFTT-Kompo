@@ -134,22 +134,45 @@ html,body{
   }
 }
 
-.dispos.merged_cards .row.bottom_0 {
-  margin-left: 0;
-  margin-right: 0;
+.dispos.merged_cards {
+  table tbody tr {
+    td:first-of-type span {
+      margin-left: 2%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  &:nth-of-type(2) {
-    margin-bottom: 4px;
+    td:nth-of-type(2) {
+      padding-left: 0;
+
+      span {
+        padding: 0 5px;
+      }
+    }
+
+    td:nth-of-type(3), td:nth-of-type(2) {
+      padding-right: 0
+    }
   }
 
-  &:first-of-type {
-    margin-top: 10px;
+  .row.bottom_0 {
+    margin-left: 0;
+    margin-right: 0;
 
-    .col.s2 {
-      margin-top: 2px;
+    &:nth-of-type(2) {
+      margin-bottom: 4px;
+    }
 
-      & .labelNbMatchesJoues {
-        padding: 0 5px;
+    &:first-of-type {
+      margin-top: 10px;
+
+      .col.s2 {
+        margin-top: 2px;
+
+        & .labelNbMatchesJoues {
+          padding: 0 5px;
+        }
       }
     }
   }
