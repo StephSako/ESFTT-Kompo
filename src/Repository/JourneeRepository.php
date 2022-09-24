@@ -48,15 +48,15 @@ class JourneeRepository extends ServiceEntityRepository
 
     /**
      * Avoir la date la plus lointaine d'un championnat
-     * @param int $type
+     * @param int $idChampionnat
      * @return int|mixed|string
      */
-    public function findEarlistDate(int $type): DateTime
+    public function findEarlistDate(int $idChampionnat): DateTime
     {
         $query = $this->createQueryBuilder('j')
             ->select('j.dateJournee')
-            ->where('j.idChampionnat = :type')
-            ->setParameter('type', $type)
+            ->where('j.idChampionnat = :idChampionnat')
+            ->setParameter('idChampionnat', $idChampionnat)
             ->orderBy('j.dateJournee', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
