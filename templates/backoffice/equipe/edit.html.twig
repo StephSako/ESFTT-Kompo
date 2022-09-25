@@ -12,11 +12,15 @@
     </header>
 
     <div class="container">
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
         {% for message in app.flashes('fail') %}
             {{ _flash.message(message, 'red') }}
         {% endfor %}
 
-        {{ _equipe.form(form, 'Modifier', champHasDivisions) }}
+        {{ _equipe.form(form, 'Modifier', champHasDivisions, listeEquipesSameDivision) }}
     </div>
 
 {% endblock %}

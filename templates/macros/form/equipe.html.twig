@@ -1,4 +1,4 @@
-{% macro form(form, btnText, champHasDivisions) %}
+{% macro form(form, btnText, champHasDivisions, listeEquipesSameDivision) %}
     <style>
         li {
             color: red;
@@ -8,7 +8,7 @@
     {% if champHasDivisions %}
         <div class="card-panel center-align">
             <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une équipe</h4>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.idChampionnat }}{% endif %}</h5>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.nom }}{% endif %}</h5>
 
             {{ form_start(form) }}
                 <div class="row">
@@ -33,6 +33,27 @@
                 <button class="btn_gestion btn btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
             {{ form_end(form) }}
         </div>
+
+        {% if listeEquipesSameDivision %}
+            <div class="card-panel center-align">
+                <h4 class="h4_form" style="margin-bottom: 10px;">Switcher avec une autre équipe de {{ form.vars.value.idDivision.shortName }}</h4>
+                <div class="row">
+                    <form class="center" action="{{ path('backoffice.equipe.switch', {'idEquipe': form.vars.value.idEquipe}) }}" method="POST" onsubmit="return confirm('Switcher les deux équipes ?')">
+                        <div class="col s12 offset-m2 m5 offset-l3 l4">
+                            <select id="listSwitch" name="listEquipeSwitch">
+                                {% for equipeSameDivision in listeEquipesSameDivision %}
+                                    <option value="{{ equipeSameDivision.idEquipe }}">Equipe {{ equipeSameDivision.numero }} - Poule {{ equipeSameDivision.idPoule.poule }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="listSwitch" class="hide"></label>
+                        </div>
+                        <div class="col s12 m2">
+                            <button class="btn_gestion btn btn_form waves-effect light-blue darken-1">Switcher</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
     {% else %}
         <div class="center card-panel">
             <p class="lobster_2 missingTitle">Le formulaire d'équipe est inaccessible car aucune équipe n'est enregistrée pour ce championnat</p>

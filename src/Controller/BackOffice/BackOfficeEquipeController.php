@@ -169,9 +169,57 @@ class BackOfficeEquipeController extends AbstractController
         }
 
         return $this->render('backoffice/equipe/edit.html.twig', [
-            'championnat' => $equipe->getIdChampionnat()->getNom(),
             'form' => $form->createView(),
+            'listeEquipesSameDivision' => $equipe->getIdDivision() ? $this->equipeRepository->getEquipesWithSameDivision($equipe) : [],
             'champHasDivisions' => $champHasDivisions
+        ]);
+    }
+
+    /**
+     * @Route("/backoffice/equipe/switch/{idEquipe}", name="backoffice.equipe.switch", requirements={"idEquipe"="\d+"})
+     * @param int $idEquipe
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function switch(int $idEquipe, Request $request): Response
+    {
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Équipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
+
+        if (!($equipeToSwitch = $this->equipeRepository->find($request->request->get('listEquipeSwitch')))) {
+            $this->addFlash('fail', 'Équipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
+
+        try {
+            // On bypass la contrainte d'unicité sur le numéro
+            $numEquipeToSwitch = $equipeToSwitch->getNumero();
+            $numEquipe = $equipe->getNumero();
+            $lienDivisionEquipeToSwitch = $equipeToSwitch->getLienDivision();
+            $lienDivisionEquipe = $equipe->getLienDivision();
+            $equipeToSwitch->setNumero(101); // TODO Fix le 100
+            $this->em->flush($equipeToSwitch);
+
+            $equipe->setNumero($numEquipeToSwitch);
+            $equipe->setLienDivision($lienDivisionEquipeToSwitch);
+            $this->em->flush();
+
+            $equipeToSwitch->setNumero($numEquipe);
+            $equipeToSwitch->setLienDivision($lienDivisionEquipe);
+            $this->em->flush();
+
+            $this->addFlash('success', 'Les équipes ' .$equipe->getNumero() . ' et ' . $equipeToSwitch->getNumero() . ' de ' . $equipe->getIdDivision()->getShortName() . ' ont été switchées');
+        } catch(Exception $e){
+            if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
+                if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        }
+        return $this->redirectToRoute('backoffice.equipe.edit', [
+            'idEquipe' => $idEquipe
         ]);
     }
 

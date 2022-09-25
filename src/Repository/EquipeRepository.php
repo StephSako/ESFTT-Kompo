@@ -33,4 +33,24 @@ class EquipeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param Equipe $equipe
+     * @return int|mixed|string
+     */
+    public function getEquipesWithSameDivision(Equipe $equipe)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.idDivision = :idDivision')
+            ->andWhere('e.idDivision IS NOT NULL')
+            ->andWhere('e.idEquipe <> :idEquipe')
+            ->andWhere('e.idChampionnat = :idChampionnat')
+            ->setParameter('idDivision', $equipe->getIdDivision())
+            ->setParameter('idEquipe', $equipe->getIdEquipe())
+            ->setParameter('idChampionnat', $equipe->getIdChampionnat())
+            ->orderBy('e.numero')
+            ->addOrderBy('e.idPoule')
+            ->getQuery()
+            ->execute();
+    }
 }
