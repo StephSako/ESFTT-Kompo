@@ -621,7 +621,7 @@ span.virtualPoints {
 table.rankingVirtualPoints {
   font-size: 13px !important;
 }
-table.rankingVirtualPoints td {
+table.rankingVirtualPoints td:not(.td-chip) {
   padding-left: 0;
   padding-right: 0;
 }
@@ -1255,7 +1255,14 @@ a.reload_ranking {
 }
 @media screen and (max-width: 992px) {
   .th_mobile_pts_off {
-    padding-top: 38px;
+    padding-top: 28px;
+  }
+  .th_mobile_pts_off.isCritFed {
+    padding-top: 18px;
+  }
+
+  table#joueursIssued tbody tr td.isCritFed:last-child {
+    min-height: 56px;
   }
 
   .th_mobile_nom {
@@ -1416,6 +1423,8 @@ a.reload_ranking {
     display: none;
   }
   table.rankingVirtualPoints td.td-chip {
+    padding-left: 0;
+    padding-right: 0;
     display: none;
   }
   table.rankingVirtualPoints td.td-name {

@@ -169,9 +169,6 @@
             <td class="td-chip">
                 <div class="chip">
                     <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
-                    {% if loop.index <4 %}
-                        <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
-                    {% endif %}
                     <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
                 </div>
             </td>
