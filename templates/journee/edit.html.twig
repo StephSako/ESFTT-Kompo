@@ -117,12 +117,13 @@
                             {% if compo.domicile is null %}
                                 <i class='material-icons red-text'>location_off</i>
                             {% else %}
-                                {% if compo.domicile %} <i class="iconPlace {% if compo.villeHost %}orange-text{% endif%} material-icons">home</i>
-                                {% else %}
-                                    <a style="margin-top: 0; margin-bottom: 0;" href="#modalGPS{{ compo.id }}" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger">
-                                        <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
-                                    </a>
-                                {% endif %}
+                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
+                                    {% if compo.domicile%}
+                                        home
+                                    {% else%}
+                                        directions_car
+                                    {% endif %}
+                                </i>
                             {% endif %}
                         {% endif %}
                     </h5>
@@ -136,7 +137,9 @@
                                     {% if compo.adversaire is null %}
                                         <h5 class="lobster_2 red-text" style="margin-top: 3px">Adversaire indéfini</h5>
                                     {% else %}
-                                        <h5 class="lobster_2" style="margin-top: 3px">{{ compo.adversaire | title }}</h5>
+                                        <a style="padding-left: 5px; padding-right: 5px;  margin-top: 0; margin-bottom: 0; font-family: Lobster Two, cursive; text-transform: none;" href="#modalGPS{{ compo.id }}" class="btn-small blue lighten-1 waves-effect modal-trigger">
+                                            <span style="font-size: 20px">{{ compo.adversaire | title }}</span>
+                                        </a>
                                     {% endif %}
                                 </div>
                                 {% if compo.idEquipe.lienDivision %}
@@ -159,7 +162,9 @@
                                     {% if compo.adversaire is null %}
                                         <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
                                     {% else %}
-                                        <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
+                                        <a style="padding-left: 5px; padding-right: 5px; margin-top: 8px; margin-bottom: 10px; font-family: Lobster Two, cursive; text-transform: none;" href="#modalGPS{{ compo.id }}" class="btn-small blue lighten-1 waves-effect modal-trigger">
+                                            <span style="font-size: 20px">{{ compo.adversaire | title }}</span>
+                                        </a>
                                     {% endif %}
                                 </div>
                                 {% if compo.idEquipe.lienDivision %}
@@ -178,9 +183,8 @@
                     <p class="blue pastille reset" style="margin-bottom: 8px; max-width: 590px;"><b>Joueurs triés automatiquement selon le classement</b> : ne vous embêtez pas à trier, sélectionnez les joueurs comme bon vous semble, même dans le désordre</p>
                 {% endif %}
 
-                {% if not compo.domicile %}
-                    {{ _modalContact.modalGPS
-                        (
+                {{ _modalContact.modalGPS
+                    (
                         compo.id,
                         compo.adresse,
                         compo.complementAdresse,
@@ -189,8 +193,7 @@
                         compo.site,
                         compo.telephone
                     )
-                    }}
-                {% endif %}
+                }}
 
                 {% if not compo.exempt %}
                     <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">

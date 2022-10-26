@@ -111,19 +111,19 @@
                         <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>
                     </div>
                 {% elseif not adresse and complementAdresse %}
-                    <p class="complAdr" style="margin-top: 2px;"><i>L'adresse précise n'est pas fournie par l'adversaire</i></p>
+                    <p class="complAdr" style="margin-top: 2px;"><i>Non fournie par l'adversaire</i></p>
                 {% endif %}
 
                 {% if complementAdresse %}
                     <p class="complAdr adresse_{{ id }}">{{ complementAdresse }}</p><br>
                 {% endif %}
             {% else %}
-                <p style="margin-top: 2px; margin-bottom: 30px;"><i>L'adresse n'est pas fournie par l'adversaire</i></p>
+                <p style="margin-top: 2px; margin-bottom: 30px;"><i>Non fournie par l'adversaire</i></p>
             {% endif %}
 
             <h6><i class="material-icons green-text">contact_phone</i> Numéro de téléphone</h6>
             {% if telephone %}
-                <p style="margin-top: 2px;" class="complAdr hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter</i></p>
+                <p style="margin-top: 2px;" class="complAdr hide-on-small-only"><i>Rendez-vous sur smartphone pour contacter</i></p>
                 <div class="valign-wrapper telephoneDiv">
                     <div>
                         <span>{{ telephone | split('', 2) | join(' ') }}</span>
@@ -142,14 +142,14 @@
                     {% endif %}
                 </div><br>
             {% else %}
-                <p style="margin-top: 2px;"><i>Le téléphone n'est pas fourni par l'adversaire</i></p>
+                <p style="margin-top: 2px;"><i>Non pas fourni par l'adversaire</i></p>
             {% endif %}
 
             <h6><i class="material-icons blue-text lighten-3">language</i> Site Internet</h6>
             {% if siteWeb %}
                 <a href="{{ siteWeb }}">{{ siteWeb }}</a>
             {% else %}
-                <p style="margin-top: 2px;"><i>Le site Internet n'est pas fourni par l'adversaire</i></p>
+                <p style="margin-top: 2px;"><i>Non fourni par l'adversaire</i></p>
             {% endif %}
         </div>
         <div class="modal-footer">

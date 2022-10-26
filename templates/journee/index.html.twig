@@ -218,29 +218,35 @@
                             </div>
 
                             <div class="col s3 hide-on-med-and-up" style="padding-left: 0; padding-right: 0;">
-                                {% if compo.domicile is null %}
-                                    <h5 style="margin-top: 12px; margin-bottom: 0;"><i class='material-icons red-text'>location_off</i></h5>
-                                {% else %}
-                                    {% if compo.domicile%} <h5 style="margin-top: 12px; margin-bottom: 0;"><i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i></h5>
-                                    {% else%}
-                                        <a style="margin-top: 12px; margin-bottom: 0;" href="#modalGPS{{ compo.id }}" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger">
-                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
-                                        </a>
+                                <h5 style="margin-top: 12px; margin-bottom: 0;">
+                                    {% if compo.domicile is null %}
+                                        <i class='material-icons red-text'>location_off</i>
+                                    {% else %}
+                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
+                                                {% if compo.domicile%}
+                                                    home
+                                                {% else%}
+                                                    directions_car
+                                                {% endif %}
+                                            </i>
                                     {% endif %}
-                                {% endif %}
+                                </h5>
                             </div>
 
                             <div class="col m2 hide-on-small-only">
-                                {% if compo.domicile is null %}
-                                    <h5 style="margin-top: 12px; margin-bottom: 0;"><i class='material-icons red-text'>location_off</i></h5>
-                                {% else %}
-                                    {% if compo.domicile%} <h5 style="margin-top: 12px; margin-bottom: 0;"><i class="iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%} material-icons">home</i></h5>
-                                    {% else%}
-                                        <a style="margin-top: 12px; margin-bottom: 0;" href="#modalGPS{{ compo.id }}" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger">
-                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4 {% endif%}">directions_car</i>
-                                        </a>
+                                <h5 style="margin-top: 12px; margin-bottom: 0;">
+                                    {% if compo.domicile is null %}
+                                        <i class='material-icons red-text'>location_off</i>
+                                    {% else %}
+                                        <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
+                                            {% if compo.domicile%}
+                                                home
+                                            {% else%}
+                                                directions_car
+                                            {% endif %}
+                                        </i>
                                     {% endif %}
-                                {% endif %}
+                                </h5>
                             </div>
 
                             <div class="col m5 hide-on-small-only">
@@ -252,7 +258,9 @@
                                             {% if compo.adversaire is null %}
                                                 <h5 class="lobster_2 red-text" style="margin-top: 3px">Adversaire indéfini</h5>
                                             {% else %}
-                                                <h5 class="lobster_2" style="margin-top: 3px">{{ compo.adversaire | title }}</h5>
+                                                <a style="padding-left: 5px; padding-right: 5px;  margin-top: 0; margin-bottom: 0; font-family: Lobster Two, cursive; text-transform: none;" href="#modalGPS{{ compo.id }}" class="btn-small blue lighten-1 waves-effect modal-trigger">
+                                                    <span style="font-size: 20px">{{ compo.adversaire | title }}</span>
+                                                </a>
                                             {% endif %}
                                         </div>
                                         {% if compo.idEquipe.lienDivision %}
@@ -277,12 +285,14 @@
                                             {% if compo.adversaire is null %}
                                                 <h5 class="lobster_2 red-text advUndefined">Adversaire indéfini</h5>
                                             {% else %}
-                                                <h5 class="lobster_2">{{ compo.adversaire | title }}</h5>
+                                                <a style="padding-left: 5px; padding-right: 5px; margin-top: 8px; margin-bottom: 10px; font-family: Lobster Two, cursive; text-transform: none;" href="#modalGPS{{ compo.id }}" class="btn-small blue lighten-1 waves-effect modal-trigger">
+                                                    <span style="font-size: 20px">{{ compo.adversaire | title }}</span>
+                                                </a>
                                             {% endif %}
                                         </div>
                                         {% if compo.idEquipe.lienDivision %}
                                             <div>
-                                                <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                                <a style="margin-bottom: 10px; margin-top: 8px;" onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                                     <i class="material-icons">format_list_bulleted</i>
                                                 </a>
                                             </div>
@@ -332,19 +342,17 @@
                         {% endif %}
                     </div>
 
-                    {% if not compo.domicile %}
-                        {{ _modalContact.modalGPS
-                            (
-                                compo.id,
-                                compo.adresse,
-                                compo.complementAdresse,
-                                compo.hrefMapsAdresse,
-                                compo.hrefWazeAdresse,
-                                compo.site,
-                                compo.telephone
-                            )
-                        }}
-                    {% endif %}
+                    {{ _modalContact.modalGPS
+                        (
+                            compo.id,
+                            compo.adresse,
+                            compo.complementAdresse,
+                            compo.hrefMapsAdresse,
+                            compo.hrefWazeAdresse,
+                            compo.site,
+                            compo.telephone
+                        )
+                    }}
 
                     {% if not compo.exempt %}
                         <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
