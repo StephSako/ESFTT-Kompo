@@ -572,6 +572,7 @@ class HomeController extends AbstractController
                 $joueursAdversaire = $domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
                 $joueursAdversaireBis = !$domicile ? $detailsRencontre->getJoueursA() : $detailsRencontre->getJoueursB();
                 $joueursAdversaireFormatted = [];
+                $matchesDoubles = [];
 
                 /** Résultat de la rencontre */
                 $resultat = ['score' => $detailsRencontre->getScoreEquipeA() . ' - ' . $detailsRencontre->getScoreEquipeB()];
@@ -595,6 +596,22 @@ class HomeController extends AbstractController
                 if (!$errorMatchSheet){
                     /** Liste des parties des joueurs lors de la rencontre */
                     $parties = $detailsRencontre->getParties();
+
+                    /** Mapping des doubles */
+                    $matchesDoubles = array_filter(array_map(function($partieDouble) use ($domicile, $joueursAdversaire, $detailsRencontre, $joueursAdversaireBis) {
+                        preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB(), $joueursBinomeDouble);
+
+                        preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA(), $joueursBinomeDoubleBis);
+
+                        if (count($joueursBinomeDouble) === 3 && in_array($joueursBinomeDouble[1], array_keys($joueursAdversaire)) && in_array($joueursBinomeDouble[2], array_keys($joueursAdversaire))) {
+                            $partieDoubleFormatted = [];
+                            $partieDoubleFormatted['isBinomeWinner'] = ($domicile ? $partieDouble->getScoreA() > $partieDouble->getScoreB() : $partieDouble->getScoreB() > $partieDouble->getScoreA()) ? 'green' : 'red lighten-1';
+                            $partieDoubleFormatted['binomeAdversaire'] = [$joueursAdversaire[$joueursBinomeDouble[1]]->getPoints(), $joueursAdversaire[$joueursBinomeDouble[2]]->getPoints()];
+                            $partieDoubleFormatted['binomeAdversaireBis'] = [$joueursAdversaireBis[$joueursBinomeDoubleBis[1]]->getPoints(), $joueursAdversaireBis[$joueursBinomeDoubleBis[2]]->getPoints()];
+
+                            return $partieDoubleFormatted;
+                        } else unset($partieDouble);
+                    }, $parties));
 
                     foreach ($joueursAdversaire as $nomJoueurAdversaire => $joueurAdversaire) {
                         if (count($joueursAdversaire)){
@@ -625,6 +642,7 @@ class HomeController extends AbstractController
                 $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
                 $journee['resultat'] = $resultat;
                 $journee['joueurs'] = $joueursAdversaireFormatted;
+                $journee['doubles'] = $matchesDoubles;
                 $journee['errorMatchSheet'] = $errorMatchSheet;
                 $journees[] = $journee;
             }
