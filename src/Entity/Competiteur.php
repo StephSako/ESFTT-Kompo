@@ -961,9 +961,10 @@ class Competiteur implements UserInterface, Serializable
     }
 
     public function getRolesFormatted() {
-        return str_replace('Role_', '', implode(', ', array_map(function($role){
+        $formattedRoles = str_replace('Role_', '', implode(', ', array_map(function($role){
             return mb_convert_case($role, MB_CASE_TITLE, "UTF-8");
         }, $this->getRoles())));
+        return strrpos($formattedRoles, ',') ? substr_replace($formattedRoles, ' et', strrpos($formattedRoles, ','), 1) : $formattedRoles;
     }
 
     /**

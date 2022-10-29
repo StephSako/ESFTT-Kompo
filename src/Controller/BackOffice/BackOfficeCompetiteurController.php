@@ -157,6 +157,7 @@ class BackOfficeCompetiteurController extends AbstractController
             ->setDateNaissance(null)
             ->setClassementOfficiel($this->getParameter('default_nb_points'))
             ->setIsCompetiteur(true);
+
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
@@ -198,7 +199,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->flush();
 
                     /** On envoie un e-mail de bienvenue */
-                    $this->sendWelcomeMail($utilController, $contactController, $competiteur, true);
+                    if (!$competiteur->isArchive()) $this->sendWelcomeMail($utilController, $contactController, $competiteur, true);
 
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
@@ -226,17 +227,20 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function sendWelcomeMail(UtilController $utilController, ContactController $contactController, Competiteur $competiteur, bool $isCreation): void {
         try {
-            $data = $this->settingsRepository->find('mail-bienvenue')->getContent();
+            /** On envoie un mail spécifique aux loisirs si loisir, sinon le mail général */
+            $role = $competiteur->isLoisir() ? '-loisirs' : '';
+            $data = $this->settingsRepository->find('mail-bienvenue' . $role)->getContent();
 
             $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
             $str_replacers = [
-                'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]"],
+                'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]", "[#roles#]"],
                 'new' => [
                     "ce <a href=\"$initPasswordLink\">lien</a>",
                     $competiteur->getUsername(),
                     $this->getParameter('time_init_password_day'),
                     $competiteur->getPrenom(),
-                    mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8")
+                    mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"),
+                    mb_convert_case($competiteur->getRolesFormatted(), MB_CASE_LOWER, "UTF-8")
                 ]
             ];
 

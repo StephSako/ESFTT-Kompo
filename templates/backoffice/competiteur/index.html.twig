@@ -29,6 +29,7 @@
         {% if app.user.admin %}
             <div class='card-panel backoffice-panel center'>
                 <h5 style="margin-top: 0">Modifier le contenu des emails automatiques de ...</h5>
+                <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue-loisirs'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue (loisirs)</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-mdp-oublie'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Mot de passe oublié</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-certif-medic-perim'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_certif_medic_perim">Certif. médic. périm.</a>
