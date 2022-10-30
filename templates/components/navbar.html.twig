@@ -4,7 +4,7 @@
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-general">
             <div class="esftt_logo" {% if app.user %}hidden{% endif %}>
-                <img class="brand-logo center" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo {{ club_diminutif }}">
+                <img class="brand-logo" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
             </div>
 
             {% if linkNextJournee is defined and linkNextJournee %}

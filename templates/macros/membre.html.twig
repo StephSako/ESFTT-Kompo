@@ -46,9 +46,9 @@
                 </td>
                 <td class="td_picture_compet">
                     {% if competiteur.avatar %}
-                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
+                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                     {% else %}
-                        <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
+                        <img class="picture_compet avatar" src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                     {% endif %}
                 </td>
                 <td>
@@ -148,9 +148,9 @@
                     </td>
                     <td class="td_picture_compet">
                         {% if competiteur.avatar %}
-                            <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
+                            <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                         {% else %}
-                            <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
+                            <img class="picture_compet avatar" src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                         {% endif %}
                     </td>
                     <td>

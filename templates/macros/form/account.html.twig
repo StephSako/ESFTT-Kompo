@@ -299,7 +299,7 @@
                             <i class="material-icons">delete</i>
                         </a>
                     {% endif %}
-                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') }}" alt="image de profil du membre">
+                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
                 </div>
             </div>
 

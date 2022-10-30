@@ -330,7 +330,7 @@ class Competiteur implements UserInterface, Serializable
      * @var File|null
      *
      * @Assert\Image(
-     *      mimeTypes = {"image/jpeg", "image/png", "image/gif"},
+     *      mimeTypes = {"image/jpg", "image/jpeg", "image/png", "image/gif"},
      *      mimeTypesMessage = "L'image doit être au format JPEG, PNG ou GIF"
      * )
      *

@@ -168,7 +168,7 @@
             {% endif %}
             <td class="td-chip">
                 <div class="chip">
-                    <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
+                    <img src="{{ asset(joueur["avatar"]) | imagine_filter('thumb') }}" alt="Avatar">
                     <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
                 </div>
             </td>

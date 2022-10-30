@@ -33,4 +33,9 @@ services:
             - '%maintenance_file_path%'
             - '@twig'
         tags:
-            - { name: 'kernel.event_listener', event: kernel.request}
+            - { name: 'kernel.event_listener', event: kernel.request }
+
+    App\EventListener\ImageCacheSubscriber:
+        tags:
+            - { name: 'doctrine.event_listener', event: preUpdate }
+            - { name: 'doctrine.event_listener', event: preRemove }

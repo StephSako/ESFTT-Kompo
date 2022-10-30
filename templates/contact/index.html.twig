@@ -81,7 +81,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="td_picture_compet">
-                                        <img class="picture_compet avatar" src="{{ competiteur.avatar ? vich_uploader_asset(competiteur, 'imageFile') : asset('images/account.png') }}" alt="Avatar" width="55px" height="55px">
+                                        <img class="picture_compet avatar" src="{{ (competiteur.avatar ? vich_uploader_asset(competiteur, 'imageFile') : asset('images/account.png')) | imagine_filter('thumb') }}" alt="Avatar" width="55px" height="55px">
                                     </td>
                                     <td style="padding-top: 10px; padding-bottom: 10px;">
                                         {{ competiteur.nom }} {{ competiteur.prenom }}

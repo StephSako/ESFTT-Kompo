@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use FFTTApi\FFTTApi;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -31,6 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
@@ -43,6 +45,8 @@ class BackOfficeCompetiteurController extends AbstractController
     private $encoder;
     private $settingsRepository;
     private $championnatRepository;
+    private $cacheManager;
+    private $uploaderHelper;
 
     /**
      * BackOfficeController constructor.
@@ -53,6 +57,8 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
      * @param ChampionnatRepository $championnatRepository
+     * @param CacheManager $cacheManager
+     * @param UploaderHelper $uploaderHelper
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
@@ -63,6 +69,8 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
                                 ChampionnatRepository $championnatRepository,
+                                CacheManager $cacheManager,
+                                UploaderHelper $uploaderHelper,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository)
     {
@@ -75,6 +83,8 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->encoder = $encoder;
         $this->settingsRepository = $settingsRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->cacheManager = $cacheManager;
+        $this->uploaderHelper = $uploaderHelper;
     }
 
     /**
@@ -505,7 +515,10 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function deleteAvatar(Competiteur $competiteur): Response
     {
+        // On supprime l'image de profil originelle
         $this->uploadHandler->remove($competiteur, 'imageFile');
+        // On supprime l'image de profil en cache
+        $this->cacheManager->remove($this->uploaderHelper->asset($competiteur, 'imageFile'));
         $competiteur->setAvatar(null);
         $competiteur->setImageFile(null);
 

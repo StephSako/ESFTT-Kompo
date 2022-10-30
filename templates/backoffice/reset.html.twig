@@ -60,9 +60,9 @@
                                     <td>
                                         <div class="chip">
                                             {% if joueur.joueur.avatar %}
-                                                <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') }}" alt="Avatar">
+                                                <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                                             {% else %}
-                                                <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                                                <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                             {% endif %}
                                             <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</span>
                                             {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT ~ ' ' ~ joueur.prenomFFTT }}{% endif %}

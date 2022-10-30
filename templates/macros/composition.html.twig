@@ -17,9 +17,9 @@
             <td>
                 <div class="chip">
                     {% if competiteur.avatar %}
-                        <img src="{{ vich_uploader_asset(competiteur, 'imageFile') }}" alt="Avatar">
+                        <img src="{{ vich_uploader_asset(competiteur, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                     {% else %}
-                        <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                        <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                     {% endif %}
                     <span>{{ competiteur.nom }} {{ competiteur.prenom }}</span>
                 </div>

@@ -23,3 +23,7 @@ kompo_refactored.db
 ###> phpunit/phpunit ###
 phpunit.xml.dist
 ###< phpunit/phpunit ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###

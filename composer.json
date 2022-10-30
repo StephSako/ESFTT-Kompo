@@ -48,6 +48,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
         "league/commonmark": "^1.6",
+        "liip/imagine-bundle": "2.7.1",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpoffice/phpspreadsheet": "^1.18",
         "scienta/doctrine-json-functions": "~4.1",

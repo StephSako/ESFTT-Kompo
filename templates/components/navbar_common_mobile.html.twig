@@ -3,9 +3,9 @@
         <a class="white-text center-align" style="padding-left: 26px;" href="{{ path('account') }}">
             <div class="chip chip-menu chip-mobile left">
                 {% if app.user.avatar %}
-                    <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="Avatar">
+                    <img src="{{ vich_uploader_asset(app.user, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                 {% else %}
-                    <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                    <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                 {% endif %}
             </div>
             Mon compte

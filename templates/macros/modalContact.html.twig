@@ -39,18 +39,22 @@
                     }
                 });
             </script>
-
-        {% else %}
-            <p class="red-text" style="margin-bottom: 0;"><b>Aucun membre contactable par {{ media }}</b></p>
         {% endif %}
+
+        {% if (response['contactables'] | length) == 0 %}
+            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 8px;">Aucun membre contactable par {{ media }}</p>
+        {% elseif response['notContactables'] | length %}
+            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 8px;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : ''}} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}} par {{ media }}</p>
+        {% endif %}
+
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}
                 <li class="green-text lighten-1 col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurContactable.avatar %}
-                            <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') }}" alt="Avatar">
+                            <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                         {% else %}
-                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                            <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                         {% endif %}
                         <span class="truncate" style="color: green">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
                     </div>
@@ -60,9 +64,9 @@
                 <li class="col s12 m6" id="notContactables_{{ joueurNotContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurNotContactable.avatar %}
-                            <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') }}" alt="Avatar">
+                            <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                         {% else %}
-                            <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                            <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                         {% endif %}
                         <span style="color: red">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
                     </div>

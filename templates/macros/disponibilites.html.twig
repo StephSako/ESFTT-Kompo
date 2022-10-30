@@ -100,7 +100,7 @@
                     <tr>
                         <td style="padding-top: 5px; padding-bottom: 5px;">
                             <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') }}" alt="Avatar">
+                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                 <span>
                                     {{ disponibilite.nom }} {{ disponibilite.prenom }}
                                 </span>
@@ -174,7 +174,7 @@
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
-                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') }}" alt="Avatar">
+                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                             <span>{{ nomJoueur }}</span>
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
@@ -187,7 +187,7 @@
                                     <tr>
                                         <td class="hide-on-med-and-down">
                                             <div class="chip">
-                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') }}" alt="Avatar">
+                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                                 <span>{{ dispos.nom }} {{ dispos.prenom }}</span>
                                             </div>
                                         </td>
