@@ -50,7 +50,8 @@ $(document).ready(function () {
 
     cb_archive.on('change', function () {
         if (!cb_archive.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked")) btn_modifier.prop('disabled', true);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked"))
+                btn_modifier.prop('disabled', true);
             cb_loisir.prop('disabled', false);
             cb_entraineur.prop('disabled', false);
             cb_capitaine.prop('disabled', false);
@@ -71,9 +72,11 @@ $(document).ready(function () {
 
     cb_capitaine.on('change', function () {
         if (!cb_capitaine.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked"))
+                btn_modifier.prop('disabled', true);
             if (!cb_competiteur.is(':checked')) cb_loisir.prop('disabled', false);
-            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_competiteur.is(':checked')) cb_archive.prop('disabled', false);
+            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_competiteur.is(':checked'))
+                cb_archive.prop('disabled', false);
         }
         else{
             btn_modifier.prop('disabled', false);
@@ -107,8 +110,8 @@ $(document).ready(function () {
 
     cb_loisir.on('change', function () {
         if (!cb_loisir.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
-            cb_capitaine.prop('disabled', false);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked"))
+                btn_modifier.prop('disabled', true);
             cb_competiteur.prop('disabled', false);
             if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked")) cb_archive.prop('disabled', false);
         }
@@ -125,15 +128,17 @@ $(document).ready(function () {
         if (!cb_competiteur.is(":checked")){
             if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_archive.is(":checked"))
                 btn_modifier.prop('disabled', true);
-            if (!cb_capitaine.is(":checked"))
-                cb_loisir.prop('disabled', false);
-            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked"))
-                cb_archive.prop('disabled', false);
+
+            if (cb_capitaine.is(":checked")) cb_capitaine.prop('checked', false)
+            cb_capitaine.prop('disabled', true);
+            cb_loisir.prop('disabled', false);
+            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked")) cb_archive.prop('disabled', false);
             cb_crit_fed.prop('checked', false).prop('disabled', true);
         }
         else{
             btn_modifier.prop('disabled', false);
             cb_loisir.prop('disabled', true);
+            cb_capitaine.prop('disabled', false);
             cb_archive.prop('disabled', true);
             cb_crit_fed.prop('checked', false).prop('disabled', false);
         }
