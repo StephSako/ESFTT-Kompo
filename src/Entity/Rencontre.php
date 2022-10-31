@@ -809,7 +809,7 @@ class Rencontre
      */
     public function getAdresse(): ?string
     {
-        return $this->adresse;
+        return trim($this->adresse);
     }
 
     /**
@@ -843,7 +843,7 @@ class Rencontre
      */
     public function getTelephone(): ?string
     {
-        return str_replace(' ', '', $this->telephone);
+        return str_replace(' ', '', trim($this->telephone));
     }
 
     /**
@@ -861,7 +861,7 @@ class Rencontre
      */
     public function getSite(): ?string
     {
-        return $this->site;
+        return trim($this->site);
     }
 
     /**
@@ -879,7 +879,7 @@ class Rencontre
      */
     public function getComplementAdresse(): ?string
     {
-        return $this->complementAdresse;
+        return trim($this->complementAdresse);
     }
 
     /**
