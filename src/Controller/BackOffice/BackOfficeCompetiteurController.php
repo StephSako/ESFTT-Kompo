@@ -209,7 +209,8 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->flush();
 
                     /** On envoie un e-mail de bienvenue */
-                    if (!$competiteur->isArchive()) $this->sendWelcomeMail($utilController, $contactController, $competiteur, true);
+                    /** Les admins ne sont pas en copie si le nouvel inscrit est uniquement loisir */
+                    if (!$competiteur->isArchive()) $this->sendWelcomeMail($utilController, $contactController, $competiteur, $competiteur->getRoles() != ['ROLE_LOISIR']);
 
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
@@ -235,7 +236,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return void
      * @throws Exception
      */
-    public function sendWelcomeMail(UtilController $utilController, ContactController $contactController, Competiteur $competiteur, bool $isCreation): void {
+    public function sendWelcomeMail(UtilController $utilController, ContactController $contactController, Competiteur $competiteur, bool $adminsInCC): void {
         try {
             /** On envoie un mail spécifique aux loisirs si loisir, sinon le mail général */
             $role = $competiteur->isLoisir() ? '-loisirs' : '';
@@ -255,7 +256,7 @@ class BackOfficeCompetiteurController extends AbstractController
             ];
 
             /** On contacte les administrateurs à la création **/
-            if ($isCreation) {
+            if ($adminsInCC) {
                 $adminsCopy = array_map(function ($joueur) {
                     return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
                 }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
@@ -270,9 +271,9 @@ class BackOfficeCompetiteurController extends AbstractController
                 false,
                 $adminsCopy);
 
-            if ($isCreation) $this->addFlash('success', 'E-mail de bienvenue envoyé');
+            if ($adminsInCC) $this->addFlash('success', 'E-mail de bienvenue envoyé');
         } catch (Exception $e) {
-            if ($isCreation) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
+            if ($adminsInCC) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
             else throw new Exception('E-mail de bienvenue non renvoyé', '1234');
         }
     }
