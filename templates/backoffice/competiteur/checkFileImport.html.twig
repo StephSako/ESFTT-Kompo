@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back-office - Importer des joueurs{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
+
+    <div style="width: 90%" class='container'>
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class='card-panel center-align white-text title_journee'>
+            <h4>Importer des joueurs</h4>
+        </div>
+
+        <div class='card-panel backoffice-panel center'>
+
+            <form action="{{ path('backoffice.competiteurs.import.excel') }}" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="file-field input-field col s12 m12 l6 offset-l3">
+                        <div class="btn blue">
+                            <i class="material-icons">attach_file</i>
+                            <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="excel_file" id="excel_file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <label for="file-path" hidden></label>
+                            <input class="file-path validate" type="text" id="file-path">
+                        </div>
+                    </div>
+                </div>
+
+                {% if joueurs %}
+
+                    {% if sheetDataHasViolations %}
+                        <div class="pastille red lighten-2 reset">
+                            <i class="material-icons">error</i> Il y a des erreurs dans le document importé : corrigez les erreurs dans le document et ré-importez le document de nouveau
+                        </div><br>
+                    {% endif %}
+
+                    <table class="striped centered responsive-table backoffice-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Pseudo</th>
+                                <th>Classement</th>
+                                <th>Mail</th>
+                                <th>Téléphone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for joueur in joueurs %}
+                                <tr>
+                                    <td class="{% if 'nom' in joueur.violations|keys %}white-text red lighten-2{% endif %}">{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</td>
+                                    <td>{{ joueur.joueur.username }}</td>
+                                    <td class="{% if 'classementOfficiel' in joueur.violations|keys %}white-text red lighten-2{% endif %}">{{ joueur.joueur.classementOfficiel }}</td>
+                                    <td class="{% if 'mail' in joueur.violations|keys %}white-text red lighten-2{% endif %}">{{ joueur.joueur.mail }}</td>
+                                    <td class="{% if 'phoneNumber' in joueur.violations|keys %}white-text red lighten-2{% endif %}">{{ joueur.joueur.phoneNumber | split('', 2) | join(' ') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn blue">lire</button>
+                {% endif %}
+                <button type="submit" class="btn blue">importer</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -41,9 +41,12 @@
         <div class='card-panel backoffice-panel center'>
 
             <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
-            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
-                <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
-            </a><br>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' data-tooltip="Exporter les joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                <i class='material-icons'>download</i>
+            </a>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.import.excel') }}' data-tooltip="Importer des joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                <i class='material-icons'>upload</i>
+            </a>
 
             {% if joueursInvalidCertifMedic|length and app.user.admin %}
                 <div style="display: flex; justify-content: center; align-items: center;">

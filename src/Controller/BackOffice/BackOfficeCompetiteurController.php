@@ -20,6 +20,8 @@ use Exception;
 use FFTTApi\FFTTApi;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,8 +33,10 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Handler\UploadHandler;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
@@ -614,9 +618,80 @@ class BackOfficeCompetiteurController extends AbstractController
             }
         );
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
-        $response->headers->set('Content-Disposition', 'attachment;filename="competiteurs.xlsx"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="Joueurs ESFTT.xlsx"');
         $response->headers->set('Cache-Control','max-age=0');
         return $response;
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/import-excel", name="backoffice.competiteurs.import.excel")
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @return Response
+     */
+    public function importCompetiteursExcel(Request $request, ValidatorInterface $validator): Response
+    {
+        $joueurs = [];
+        $file = $request->files->get("excel_file");
+        $allowedFileMimes = [ // TODO Check allowed types
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+        $sheetDataHasViolations = false;
+
+        if ($file && in_array($file->getMimeType(), $allowedFileMimes)) {
+            $beginAtLine = 2;
+            $pseudosNomsPrenoms = $this->competiteurRepository->findAllPseudos();
+
+            if('csv' == $file->getClientOriginalExtension()) $reader = new Csv();
+            else $reader = new Xlsx();
+
+            $spreadsheet = $reader->load($file->getPathname());
+            $sheetData = array_slice(array_filter($spreadsheet->getActiveSheet()->toArray(), function($line) {
+                return count(array_filter($line, function($cell) { return $cell; }));
+            }), $beginAtLine);
+
+            /** On construit le tableau de Competiteur */
+            foreach ($sheetData as $joueur) {
+                $nouveau = new Competiteur();
+
+                /** Traitement du numéro de téléphone */
+                preg_match_all('/([0-9]+)/', $joueur[3], $result);
+                $phoneNumber = join($result[0]);
+
+                $nouveau
+                    ->setNom($joueur[1])
+                    ->setPrenom($joueur[2])
+                    ->setClassementOfficiel(500) // TODO
+                    ->setMail($joueur[4])
+                    ->setPhoneNumber($phoneNumber)
+                    ->setPassword($this->encoder->encodePassword($nouveau, $this->getParameter('default_password')));
+
+                /** On vérifie l'unicité des pseudos */
+                $newUsername = str_replace(' ', '', $nouveau->getPrenom());
+                $newUsername = mb_convert_case($newUsername, MB_CASE_LOWER, "UTF-8");
+                $nouveau->setUsername($newUsername . (in_array($newUsername, $pseudosNomsPrenoms['pseudos']) ? '_' . array_count_values($pseudosNomsPrenoms['pseudos'])[$newUsername] : ''));
+                $pseudosNomsPrenoms['pseudos'][] = $nouveau->getUsername();
+
+                /** On liste les violations */
+                $violations = [];
+                foreach ($validator->validate($nouveau) as $violation) {
+                    if (!$sheetDataHasViolations) $sheetDataHasViolations = true;
+                    $violations[$violation->getPropertyPath()] = $violation->getMessage();
+                }
+
+                $joueurs[] = [
+                    'violations' => $violations,
+                    'joueur' => $nouveau
+                ];
+
+            }
+        }
+
+//        dump($joueurs);
+        return $this->render('backoffice/competiteur/checkFileImport.html.twig', [
+            'joueurs' => $joueurs,
+            'sheetDataHasViolations' => $sheetDataHasViolations
+        ]);
     }
 
     /**

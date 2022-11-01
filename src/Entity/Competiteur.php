@@ -189,7 +189,7 @@ class Competiteur implements UserInterface, Serializable
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse e-mail '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail {{ value }} n'est pas valide."
      * )
      */
     private $mail;
@@ -205,7 +205,7 @@ class Competiteur implements UserInterface, Serializable
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse e-mail '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail {{ value }} n'est pas valide."
      * )
      */
     private $mail2;
@@ -216,7 +216,7 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/",
+     *     pattern="/^[0-9]{10}$/",
      *     message="Le numéro de téléphone doit contenir 10 chiffres"
      * )
      */
@@ -228,7 +228,7 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number2", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/",
+     *     pattern="/^[0-9]{10}$/",
      *     message="Le numéro de téléphone doit contenir 10 chiffres"
      * )
      */
@@ -331,7 +331,7 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Image(
      *      mimeTypes = {"image/jpg", "image/jpeg", "image/png", "image/gif"},
-     *      mimeTypesMessage = "L'image doit être au format JPEG, PNG ou GIF"
+     *      mimeTypesMessage = "L'image doit être au format JPEG/JPG, PNG ou GIF"
      * )
      *
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
@@ -885,7 +885,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setLicence(?string $licence): self
     {
-        $this->licence = $licence;
+        $this->licence = trim($licence);
         return $this;
     }
 
@@ -921,7 +921,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setNom(?string $nom): self
     {
-        $this->nom = mb_convert_case($nom, MB_CASE_UPPER, "UTF-8");
+        $this->nom = mb_convert_case(trim($nom), MB_CASE_UPPER, "UTF-8");
         return $this;
     }
 
@@ -989,7 +989,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setUsername(?string $username): self
     {
-        $this->username = ($username ?: 'username');
+        $this->username = (trim($username) ?: 'username');
         return $this;
     }
 
@@ -1100,7 +1100,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail(?string $mail): self
     {
-        $this->mail = $mail;
+        $this->mail = trim($mail);
         return $this;
     }
 
@@ -1118,7 +1118,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail2(?string $mail2): self
     {
-        $this->mail2 = $mail2;
+        $this->mail2 = trim($mail2);
         return $this;
     }
 
@@ -1136,7 +1136,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPhoneNumber(?string $phoneNumber): self
     {
-        $this->phoneNumber = $phoneNumber;
+        $this->phoneNumber = trim($phoneNumber);
         return $this;
     }
 
@@ -1154,7 +1154,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPhoneNumber2(?string $phoneNumber2): self
     {
-        $this->phoneNumber2 = $phoneNumber2;
+        $this->phoneNumber2 = trim($phoneNumber2);
         return $this;
     }
 
@@ -1319,7 +1319,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = mb_convert_case($prenom, MB_CASE_TITLE, "UTF-8");
+        $this->prenom = mb_convert_case(trim($prenom), MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
