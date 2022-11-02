@@ -1,0 +1,53 @@
+{% if joueurs %}
+    {% if sheetDataHasViolations %}
+        <div class="pastille red lighten-2 reset">
+            <i class="material-icons">error</i> Il y a des erreurs dans le document importé : corrigez les erreurs dans le document et ré-importez le de nouveau
+        </div><br>
+    {% endif %}
+
+    <table class="striped centered responsive-table backoffice-table">
+        <thead>
+        <tr>
+            <th><i class="material-icons">person_add_alt_1</i></th>
+            <th>Nom</th>
+            <th>Classement</th>
+            <th>Mail</th>
+            <th>Téléphone</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for joueur in joueurs %}
+            <tr {% if joueur.dejaInscrit %}class="grey-text text-lighten-1"{% endif %}>
+                <td>
+                    <label>
+                        <input type="checkbox" class="filled-in" {% if not joueur.dejaInscrit %}checked="checked"{% endif %} />
+                        <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
+                    </label>
+                </td>
+                <td>
+                    <span {% if 'nom' in joueur.violations|keys %}class="pastille reset white-text red lighten-2"{% endif %}>
+                        {{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}
+                    </span>
+                </td>
+                <td>
+                    <span {% if 'classementOfficiel' in joueur.violations|keys %}class="pastille reset white-text red lighten-2"{% endif %}>
+                        {{ joueur.joueur.classementOfficiel }}
+                    </span>
+                </td>
+                <td>
+                    <span {% if 'mail' in joueur.violations|keys %}class="pastille reset white-text red lighten-2"{% endif %}>
+                        {{ joueur.joueur.mail }}
+                    </span>
+                </td>
+                <td>
+                    <span {% if 'phoneNumber' in joueur.violations|keys %}class="pastille reset white-text red lighten-2"{% endif %}>
+                        {{ joueur.joueur.phoneNumber | split('', 2) | join(' ') }}
+                    </span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn blue">Enregistrer</button>
+{% endif %}

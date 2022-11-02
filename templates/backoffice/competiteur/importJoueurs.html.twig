@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back-office - Importer des joueurs{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+        <script type="text/javascript" defer src="{{ asset('JS/importJoueursFromExcel.js') }}"></script>
+    </header>
+
+    <div style="width: 90%" class='container'>
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class='card-panel center-align white-text title_journee'>
+            <h4>Importer des joueurs</h4>
+        </div>
+
+        <div class='card-panel backoffice-panel center'>
+
+            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteurs.import') }}" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="file-field input-field col s12 m12 l6 offset-l3">
+                        <div class="btn blue">
+                            <i class="material-icons">attach_file</i>
+                            <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="excel_file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <label for="file-path" hidden></label>
+                            <input class="file-path validate" type="text" id="file-path">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tableJoueursImportes"></div>
+                <div id="tableJoueursImportesLoader" class="hide" style="padding-right: 4px; padding-left: 4px;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div><div class="gap-patch">
+                                <div class="circle"></div>
+                            </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

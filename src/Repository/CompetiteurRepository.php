@@ -427,7 +427,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             return $pseudo['username'];
         }, $query);
         $result['nomsPrenoms'] = array_map(function($pseudo) {
-            return $pseudo['nom'] .  $pseudo['prenom'];
+            return str_replace(' ', '', mb_convert_case($pseudo['nom'] . $pseudo['prenom'], MB_CASE_LOWER, "UTF-8"));
         }, $query);
         return $result;
     }

@@ -156,7 +156,6 @@ class ContactController extends AbstractController
 
         $response = new Response($json);
         $response->headers->set('Content-Type', 'application/json');
-
         return $response;
     }
 }

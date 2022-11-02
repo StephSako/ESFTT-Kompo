@@ -25,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -624,15 +625,24 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/import-excel", name="backoffice.competiteurs.import.excel")
-     * @param Request $request
-     * @param ValidatorInterface $validator
+     * @Route("/backoffice/competiteurs/import", name="backoffice.competiteurs.import")
      * @return Response
      */
-    public function importCompetiteursExcel(Request $request, ValidatorInterface $validator): Response
+    public function importCompetiteursExcel(): Response
+    {
+        return $this->render('backoffice/competiteur/importJoueurs.html.twig', []);
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file", methods={"POST"})
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @return JsonResponse
+     */
+    public function sendJoueursImportes(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $joueurs = [];
-        $file = $request->files->get("excel_file");
+        $file = $request->files->get('excelDocument');
         $allowedFileMimes = [ // TODO Check allowed types
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
@@ -681,17 +691,16 @@ class BackOfficeCompetiteurController extends AbstractController
 
                 $joueurs[] = [
                     'violations' => $violations,
-                    'joueur' => $nouveau
+                    'joueur' => $nouveau,
+                    'dejaInscrit' => in_array(str_replace(' ', '', mb_convert_case($nouveau->getNom() . $nouveau->getPrenom(), MB_CASE_LOWER, "UTF-8")), $pseudosNomsPrenoms['nomsPrenoms']) ? 1 : 0
                 ];
-
             }
         }
 
-//        dump($joueurs);
-        return $this->render('backoffice/competiteur/checkFileImport.html.twig', [
+        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', [
             'joueurs' => $joueurs,
             'sheetDataHasViolations' => $sheetDataHasViolations
-        ]);
+        ])->getContent());
     }
 
     /**
