@@ -26,16 +26,32 @@
 
         <div class='card-panel backoffice-panel center'>
 
-            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteurs.import') }}" method="POST" enctype="multipart/form-data">
-                <div class="row">
-                    <div class="file-field input-field col s12 m12 l6 offset-l3">
-                        <div class="btn blue">
+            <a class="waves-effect waves-light btn modal-trigger blue" href="#instructions">
+                <i class="material-icons">info</i> Instructions</a>
+
+            <div id="instructions" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4>Instructions pour l'importation de joueurs</h4>
+
+                    <div style="text-align: start">
+                        <p>A bunch of text</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Compris !</a>
+                </div>
+            </div>
+
+            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteurs.import.file.save') }}" method="POST" enctype="multipart/form-data">
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="file-field input-field col s12 m10 offset-m1 l6 offset-l3">
+                        <div class="btn blue" id="btnFileInputExcelDocument">
                             <i class="material-icons">attach_file</i>
-                            <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="excel_file">
+                            <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="excelDocument" id="excelDocument">
                         </div>
                         <div class="file-path-wrapper">
-                            <label for="file-path" hidden></label>
-                            <input class="file-path validate" type="text" id="file-path">
+                            <label for="filePathExcelDocument" hidden></label>
+                            <input class="file-path" type="text" id="filePathExcelDocument">
                         </div>
                     </div>
                 </div>
@@ -55,6 +71,8 @@
                     </div>
                 </div>
             </form>
+
+            <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion" id="retourMembres">Retour</a>
         </div>
     </div>
 {% endblock %}

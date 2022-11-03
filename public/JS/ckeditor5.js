@@ -69,7 +69,7 @@ BalloonEditor.create(
     const editorInstance = document.querySelector('.ck-editor__editable').ckeditorInstance;
     editorInstance.setData($('<div/>').html(ckeditor_content).text());
 
-    document.querySelector("#settings-form form").addEventListener("submit", function (e) {
+    document.querySelector("#settings-form form").addEventListener("submit", function(e) {
         e.preventDefault();
         this.querySelector('#settings-form #settings_content').value = editor.getData();
         this.submit();

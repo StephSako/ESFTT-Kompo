@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(() => {
     let undefined = $('#journee_undefined');
 
     if (undefined.is(':checked')) $('.select-dropdown').prop('disabled', true);
 
-    undefined.change(function() {
+    undefined.change(() => {
         if(this.checked) $('.select-dropdown').prop('disabled', true);
         else $('.select-dropdown').prop('disabled', false);
     });

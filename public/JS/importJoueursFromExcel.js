@@ -1,7 +1,6 @@
 function importJoueursFromExcel(file) {
-    sending();
     $.ajax({
-        url : '/backoffice/competiteurs/import-file',
+        url : '/backoffice/competiteurs/import-file/read',
         type : 'POST',
         data: file,
         processData: false,
@@ -14,34 +13,33 @@ function importJoueursFromExcel(file) {
 }
 
 function sending(){
+    $('a#retourMembres').addClass('hide');
     $('div#tableJoueursImportesLoader').removeClass('hide');
     $('div#tableJoueursImportes').addClass('hide');
-    // TODO Disabled l'input
-
-    // $('button#btnRenvoiMailBienvenue').prop('disabled', true)
-    // $('i#iconRenvoiMailBienvenue').html('sync').addClass('rotating-icon');
+    $('div#btnFileInputExcelDocument').addClass('disabled');
+    $('input#filePathExcelDocument').prop('disabled', true);
+    $('input#excelDocument').prop('disabled', true);
 }
 
 function endSending(responseTemplate){
     $('div#tableJoueursImportesLoader').addClass('hide');
     $('div#tableJoueursImportes').removeClass('hide');
     $('#tableJoueursImportes').html(responseTemplate);
-    // TODO Enabled l'input
-    // Récupérer le tableau de joueurs
-
-    // $('button#btnRenvoiMailBienvenue').prop('disabled', false)
-    // $('i#iconRenvoiMailBienvenue').html('outgoing_mail').removeClass('rotating-icon');
-    // M.toast({html: message});
+    $('div#btnFileInputExcelDocument').removeClass('disabled');
+    $('input#filePathExcelDocument').prop('disabled', false);
+    $('input#excelDocument').prop('disabled', false);
 }
 
-$(document).ready(function() {
-    let inputFile = $('input#excel_file');
+$(document).ready(() => {
+    let inputFile = $('input#excelDocument');
 
+    // Permet d'importer le même fichier après correction
     inputFile.click((e) => {
         e.target.value = null;
     });
 
     inputFile.change((e) => {
+        sending();
         let file = e.target.files[0];
         let formData = new FormData();
         formData.append('excelDocument', file);

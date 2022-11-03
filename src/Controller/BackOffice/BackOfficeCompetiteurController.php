@@ -25,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +53,7 @@ class BackOfficeCompetiteurController extends AbstractController
     private $championnatRepository;
     private $cacheManager;
     private $uploaderHelper;
+    private $validator;
 
     /**
      * BackOfficeController constructor.
@@ -64,6 +66,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param CacheManager $cacheManager
      * @param UploaderHelper $uploaderHelper
+     * @param ValidatorInterface $validator
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
@@ -76,6 +79,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 CacheManager $cacheManager,
                                 UploaderHelper $uploaderHelper,
+                                ValidatorInterface $validator,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository)
     {
@@ -90,6 +94,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->cacheManager = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
+        $this->validator = $validator;
     }
 
     /**
@@ -625,28 +630,16 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/import", name="backoffice.competiteurs.import")
-     * @return Response
+     * Lis et objectise les joueurs lus depuis un fichier Excel
+     * @param UploadedFile $file
+     * @return array
      */
-    public function importCompetiteursExcel(): Response
-    {
-        return $this->render('backoffice/competiteur/importJoueurs.html.twig', []);
-    }
-
-    /**
-     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file", methods={"POST"})
-     * @param Request $request
-     * @param ValidatorInterface $validator
-     * @return JsonResponse
-     */
-    public function sendJoueursImportes(Request $request, ValidatorInterface $validator): JsonResponse
-    {
-        $joueurs = [];
-        $file = $request->files->get('excelDocument');
+    public function buildJoueursArrayFromImport(UploadedFile $file): array {
         $allowedFileMimes = [ // TODO Check allowed types
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
         $sheetDataHasViolations = false;
+        $joueurs = [];
 
         if ($file && in_array($file->getMimeType(), $allowedFileMimes)) {
             $beginAtLine = 2;
@@ -684,7 +677,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                 /** On liste les violations */
                 $violations = [];
-                foreach ($validator->validate($nouveau) as $violation) {
+                foreach ($this->validator->validate($nouveau) as $violation) {
                     if (!$sheetDataHasViolations) $sheetDataHasViolations = true;
                     $violations[$violation->getPropertyPath()] = $violation->getMessage();
                 }
@@ -697,10 +690,62 @@ class BackOfficeCompetiteurController extends AbstractController
             }
         }
 
-        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', [
+        return [
             'joueurs' => $joueurs,
             'sheetDataHasViolations' => $sheetDataHasViolations
+        ];
+    }
+
+    /**
+     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file")
+     * @return Response
+     */
+    public function importCompetiteursExcel(): Response
+    {
+        return $this->render('backoffice/competiteur/importJoueurs.html.twig', []);
+    }
+
+    /**
+     * Appelée depuis un appel Ajax et renvoie un template sous forme d'un tableau listant les joueurs récupérés depuis un fichier Excel
+     * @Route("/backoffice/competiteurs/import-file/read", name="backoffice.competiteurs.import.file.read", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function readImportFile(Request $request): JsonResponse
+    {
+        $file = $request->files->get('excelDocument');
+        $importedData = $this->buildJoueursArrayFromImport($file);
+
+        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', [
+            'joueurs' => $importedData['joueurs'],
+            'sheetDataHasViolations' => $importedData['sheetDataHasViolations']
         ])->getContent());
+    }
+
+    /**
+     * Inscrit les joueurs depuis un fichier Excel importé
+     * @Route("/backoffice/competiteurs/import-file/save", name="backoffice.competiteurs.import.file.save", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     */
+    public function saveImportFile(Request $request): Response
+    {
+        $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'));
+        $joueurs = $importedData['joueurs'];
+        $sheetDataHasViolations = $importedData['sheetDataHasViolations'];
+
+        /** Si le document ne comporte pas de violations d'assertions, les joueurs sont enregistrés */
+        if ($sheetDataHasViolations) {
+            foreach ($joueurs as $joueur) {
+                $joueur = null;
+            }
+
+            $this->addFlash('success', 'Joueurs inscrits par importation');
+            return $this->redirectToRoute('backoffice.competiteurs');
+        } else {
+            $this->addFlash('fail', 'Il y a des erreurs dans le document importé, réessayez');
+            return $this->redirectToRoute('backoffice.competiteurs.import.file');
+        }
     }
 
     /**

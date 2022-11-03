@@ -10,8 +10,8 @@ function getGeneralClassementsVirtuels(forceReaload = null) {
             url : '/journee/general-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : function(responseTemplate) { templating('#rankingContent', responseTemplate, true); },
-            error : function() { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true); }
+            success : (responseTemplate) => { templating('#rankingContent', responseTemplate, true); },
+            error : () => { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true); }
         });
     }
 }
@@ -25,8 +25,8 @@ function getPersonnalClassementVirtuel(licence) {
             url : '/journee/personnal-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : function(responseTemplate) { templating('.preloader_personnal_virtual_rank', responseTemplate); },
-            error : function() { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
+            success : (responseTemplate) => { templating('.preloader_personnal_virtual_rank', responseTemplate); },
+            error : () => { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
         });
     }
 }

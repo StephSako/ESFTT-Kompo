@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(() => {
     let i_mail = $('#i_mail');
     let i_mail2 = $('#i_mail_2');
     let i_num = $('#i_num');
@@ -15,22 +15,22 @@ $(document).ready(function () {
     if (!i_num.val()) cb_c_num.prop('checked', false).prop('disabled', true);
     if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
 
-    i_mail.on('keyup', function () {
+    i_mail.on('keyup', () => {
         if (!i_mail.val()) cb_c_mail.prop('checked', false).prop('disabled', true);
         else cb_c_mail.prop('disabled', false);
     });
 
-    i_mail2.on('keyup', function () {
+    i_mail2.on('keyup', () => {
         if (!i_mail2.val()) cb_c_mail2.prop('checked', false).prop('disabled', true);
         else cb_c_mail2.prop('disabled', false);
     });
 
-    i_num.on('keyup', function () {
+    i_num.on('keyup', () => {
         if (!i_num.val()) cb_c_num.prop('checked', false).prop('disabled', true);
         else cb_c_num.prop('disabled', false);
     });
 
-    i_num2.on('keyup', function () {
+    i_num2.on('keyup', () => {
         if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
         else cb_c_num2.prop('disabled', false);
     });
