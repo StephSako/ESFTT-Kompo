@@ -36,6 +36,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Transliterator;
 use Vich\UploaderBundle\Handler\UploadHandler;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -672,6 +673,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 /** On vérifie l'unicité des pseudos */
                 $newUsername = str_replace(' ', '', $nouveau->getPrenom());
                 $newUsername = mb_convert_case($newUsername, MB_CASE_LOWER, "UTF-8");
+                $newUsername = Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($newUsername);
                 $nouveau->setUsername($newUsername . (in_array($newUsername, $pseudosNomsPrenoms['pseudos']) ? '_' . array_count_values($pseudosNomsPrenoms['pseudos'])[$newUsername] : ''));
                 $pseudosNomsPrenoms['pseudos'][] = $nouveau->getUsername();
 
@@ -730,6 +732,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function saveImportFile(Request $request): Response
     {
+        dump(json_decode($request->request->get('usernamesToRegister')));
         $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'));
         $joueurs = $importedData['joueurs'];
         $sheetDataHasViolations = $importedData['sheetDataHasViolations'];

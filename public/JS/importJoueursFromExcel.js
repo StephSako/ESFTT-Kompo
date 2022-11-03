@@ -46,3 +46,10 @@ $(document).ready(() => {
         importJoueursFromExcel(formData)
     });
 })
+
+function getUsernamesToRegister() {
+    let checkboxJoueurs = Array.from($("input:checkbox:checked"))
+    $("input:hidden[name='usernamesToRegister']")[0].value = JSON.stringify(checkboxJoueurs.map(el => {
+        return el.value;
+    }));
+}
