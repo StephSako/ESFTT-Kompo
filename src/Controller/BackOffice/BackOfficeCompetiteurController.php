@@ -39,7 +39,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Transliterator;
 use Vich\UploaderBundle\Handler\UploadHandler;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
-use Symfony\Component\Validator\ConstraintViolationList;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
@@ -55,6 +54,22 @@ class BackOfficeCompetiteurController extends AbstractController
     private $cacheManager;
     private $uploaderHelper;
     private $validator;
+
+    const EXCEl_CHAMP_NOM = 1;
+    const EXCEl_CHAMP_PRENOM = 2;
+    const EXCEl_CHAMP_DATE_NAISSANCE = 3;
+    const EXCEl_CHAMP_CERTIF_MEDICAL = 4;
+    const EXCEl_CHAMP_TELEPHONE = 5;
+    const EXCEl_CHAMP_TELEPHONE_2 = 6;
+    const EXCEl_CHAMP_MAIL = 7;
+    const EXCEl_CHAMP_MAIL_2 = 8;
+    const EXCEl_CHAMP_CLASSEMENT = 9;
+    const EXCEl_CHAMP_IS_LOISIR = 10;
+    const EXCEl_CHAMP_IS_CAPITAINE = 11;
+    const EXCEl_CHAMP_IS_COMPETITEUR = 12;
+    const EXCEl_CHAMP_IS_CRITERIUM = 13;
+    const EXCEl_CHAMP_IS_ENTRAINEUR = 14;
+    const EXCEl_CHAMP_IS_ADMIN = 15;
 
     /**
      * BackOfficeController constructor.
@@ -243,7 +258,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UtilController $utilController
      * @param ContactController $contactController
      * @param Competiteur $competiteur
-     * @param bool $isCreation
+     * @param bool $adminsInCC
      * @return void
      * @throws Exception
      */
@@ -658,17 +673,32 @@ class BackOfficeCompetiteurController extends AbstractController
             foreach ($sheetData as $joueur) {
                 $nouveau = new Competiteur();
 
-                /** Traitement du numéro de téléphone */
-                preg_match_all('/([0-9]+)/', $joueur[3], $result);
-                $phoneNumber = join($result[0]);
+                // TODO Check date de niassance si 1988-26-03
 
                 $nouveau
-                    ->setNom($joueur[1])
-                    ->setPrenom($joueur[2])
-                    ->setClassementOfficiel(500) // TODO
-                    ->setMail($joueur[4])
-                    ->setPhoneNumber($phoneNumber)
+                    ->setIsPasswordResetting(true)
+                    ->setIsLoisir($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_LOISIR))
+                    ->setIsCapitaine($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_CAPITAINE))
+                    ->setIsCompetiteur($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_COMPETITEUR))
+                    ->setIsAdmin($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ADMIN))
+                    ->setIsEntraineur($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ENTRAINEUR))
+                    ->setIsCritFed($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_CRITERIUM))
+                    ->setNom($joueur[self::EXCEl_CHAMP_NOM])
+                    ->setPrenom($joueur[self::EXCEl_CHAMP_PRENOM])
+                    ->setDateNaissance($joueur[self::EXCEl_CHAMP_DATE_NAISSANCE] ? date_create($joueur[self::EXCEl_CHAMP_DATE_NAISSANCE]) : null)
+                    ->setAnneeCertificatMedical($joueur[self::EXCEl_CHAMP_CERTIF_MEDICAL])
+                    ->setClassementOfficiel($joueur[self::EXCEl_CHAMP_CLASSEMENT])
+                    ->setMail($joueur[self::EXCEl_CHAMP_MAIL])
+                    ->setMail2($joueur[self::EXCEl_CHAMP_MAIL_2])
+                    ->setPhoneNumber($joueur[self::EXCEl_CHAMP_TELEPHONE])
+                    ->setPhoneNumber2($joueur[self::EXCEl_CHAMP_TELEPHONE_2])
                     ->setPassword($this->encoder->encodePassword($nouveau, $this->getParameter('default_password')));
+
+                $nouveau
+                    ->setContactableMail((bool)$nouveau->getMail())
+                    ->setContactableMail2((bool)$nouveau->getMail2())
+                    ->setContactablePhoneNumber((bool)$nouveau->getPhoneNumber())
+                    ->setContactablePhoneNumber2((bool)$nouveau->getPhoneNumber2());
 
                 /** On vérifie l'unicité des pseudos */
                 $newUsername = str_replace(' ', '', $nouveau->getPrenom());
@@ -692,10 +722,22 @@ class BackOfficeCompetiteurController extends AbstractController
             }
         }
 
+//        dump($joueurs);
+
         return [
             'joueurs' => $joueurs,
             'sheetDataHasViolations' => $sheetDataHasViolations
         ];
+    }
+
+    /**
+     * Retourne true/false si le rôle sélectionné est coché dans le document Excel importé
+     * @param array $joueur
+     * @param int $index
+     * @return bool
+     */
+    private function isRoleInExcelFile(array $joueur, int $index): bool {
+        return !($joueur[$index] == null) && mb_convert_case($joueur[$index], MB_CASE_LOWER, "UTF-8") == 'x';
     }
 
     /**

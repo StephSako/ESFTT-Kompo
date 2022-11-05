@@ -48,6 +48,8 @@ $(document).ready(() => {
 })
 
 function getUsernamesToRegister() {
+    $('button#enregistrerJoueurs').addClass('disabled');
+    $('a#annulerImportJoueurs').addClass('disabled');
     let checkboxJoueurs = Array.from($("input:checkbox:checked"))
     $("input:hidden[name='usernamesToRegister']")[0].value = JSON.stringify(checkboxJoueurs.map(el => {
         return el.value;
