@@ -31,9 +31,8 @@ function endSending(responseTemplate){
 }
 
 $(document).ready(() => {
-    let inputFile = $('input#excelDocument');
-
     // Permet d'importer le même fichier après correction
+    let inputFile = $('input#excelDocument');
     inputFile.click((e) => {
         e.target.value = null;
     });
@@ -46,12 +45,3 @@ $(document).ready(() => {
         importJoueursFromExcel(formData)
     });
 })
-
-function getUsernamesToRegister() {
-    $('button#enregistrerJoueurs').addClass('disabled');
-    $('a#annulerImportJoueurs').addClass('disabled');
-    let checkboxJoueurs = Array.from($("input:checkbox:checked"))
-    $("input:hidden[name='usernamesToRegister']")[0].value = JSON.stringify(checkboxJoueurs.map(el => {
-        return el.value;
-    }));
-}

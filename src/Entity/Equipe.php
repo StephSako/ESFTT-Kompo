@@ -36,12 +36,12 @@ class Equipe
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     *     message = "Le numéro d'équipe doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 100,
-     *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
+     *     message = "Le numéro d'équipe doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(type="integer", name="numero", nullable=false)

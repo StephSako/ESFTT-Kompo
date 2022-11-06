@@ -87,12 +87,12 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 300,
-     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     *     message = "Le classement doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 40000,
-     *     message = "Le classement doit être inférieur à {{ value }}"
+     *     message = "Le classement doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(name="classement_officiel", type="integer", nullable=true)
@@ -185,11 +185,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères"
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse e-mail {{ value }} n'est pas valide."
+     *     message = "L'adresse e-mail n'est pas valide"
      * )
      */
     private $mail;
@@ -201,11 +201,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères"
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse e-mail {{ value }} n'est pas valide."
+     *     message = "L'adresse e-mail n'est pas valide"
      * )
      */
     private $mail2;
@@ -216,8 +216,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/^[0-9]{10}$/",
-     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     *     pattern="/^0[0-9]{9}$/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres et commencer par 0"
      * )
      */
     private $phoneNumber;
@@ -228,8 +228,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number2", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/^[0-9]{10}$/",
-     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     *     pattern="/^0[0-9]{9}$/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres et commencer par 0"
      * )
      */
     private $phoneNumber2;
@@ -343,12 +343,12 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 2016,
-     *     message = "L'année de la sauvegarde du certificat médical doit être supérieur à {{ value }}"
+     *     message = "L'année de la sauvegarde du certificat médical doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 9999,
-     *     message = "L'année de la sauvegarde du certificat médical doit être inférieur à {{ value }}"
+     *     message = "L'année de la sauvegarde du certificat médical doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(type="integer", length=4, name="annee_certificat_medical", nullable=true)

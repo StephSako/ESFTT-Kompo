@@ -7,7 +7,7 @@
 
     <header>
         {% include("components/navbar_backoffice.html.twig") %}
-        <script type="text/javascript" defer src="{{ asset('JS/importJoueursFromExcel.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/importJoueursFromExcel.min.js') }}"></script>
     </header>
 
     <div style="width: 90%" class='container'>
@@ -27,7 +27,8 @@
         <div class='card-panel backoffice-panel center'>
 
             <a class="waves-effect waves-light btn modal-trigger blue" href="#instructions">
-                <i class="material-icons">info</i> Instructions</a>
+                <i class="material-icons">info</i> Instructions
+            </a>
 
             <div id="instructions" class="modal modal-fixed-footer">
                 <div class="modal-content">

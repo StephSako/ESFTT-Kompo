@@ -1293,6 +1293,20 @@ table.table-last-compos {
   }
 }
 
+#noPeopleToImport {
+  margin-top: 10px;
+}
+
+#importButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+
+  #submitImportButton {
+    margin-left: 5px;
+  }
+}
+
 span.field-icon {
   float: right;
   position: absolute;
@@ -1719,6 +1733,14 @@ a.reload_ranking {
 @media screen and (max-width: 330px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 18px;
+  }
+
+  #importButtons {
+    display: block;
+
+    #submitImportButton {
+      margin-left: 0;
+    }
   }
 }
 

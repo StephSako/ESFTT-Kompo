@@ -1113,6 +1113,19 @@ table.table-last-compos tr {
   margin: 0;
 }
 
+#noPeopleToImport {
+  margin-top: 10px;
+}
+
+#importButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+#importButtons #submitImportButton {
+  margin-left: 5px;
+}
+
 span.field-icon {
   float: right;
   position: absolute;
@@ -1474,6 +1487,13 @@ a.reload_ranking {
 @media screen and (max-width: 330px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 18px;
+  }
+
+  #importButtons {
+    display: block;
+  }
+  #importButtons #submitImportButton {
+    margin-left: 0;
   }
 }
 @media screen and (max-width: 325px) {
