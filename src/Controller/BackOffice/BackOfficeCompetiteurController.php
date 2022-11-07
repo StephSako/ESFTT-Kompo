@@ -648,6 +648,25 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * Télécharge le fichier template pour l'import de joueurs par fichier Excel
+     * @Route("/backoffice/competiteurs/download/template-import-excel", name="backoffice.competiteurs.download.template.import.excel")
+     * @return Response
+     */
+    public function downloadTemplateFile(): Response
+    {
+        $response = new Response();
+        $response->headers->set('Cache-Control', 'max-age=0');
+        $response->headers->set('Content-type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment;filename="template_import.xlsx"');
+        $response->sendHeaders();
+        error_log(print_r(\Doctrine\Common\Util\Debug::export(__DIR__ . '/public/fichiers/template_import.xlsx', 1500),1));
+        error_log(print_r(\Doctrine\Common\Util\Debug::export($this->parameterBag->get('kernel.project_dir'), 1500),1));
+        $response->setContent(file_get_contents(__DIR__ . $this->getParameter('template_import_path')));
+
+        return $response;
+    }
+
+    /**
      * Lis et objectise les joueurs lus depuis un fichier Excel
      * @param UploadedFile $file
      * @param array|null $joueursIndexToAdd
@@ -711,7 +730,7 @@ class BackOfficeCompetiteurController extends AbstractController
                         $this->checkRegexValue(
                             $joueur[self::EXCEl_CHAMP_DATE_NAISSANCE],
                             'dateNaissance',
-                            "la date de naissance",
+                            "La date de naissance",
                             $violationsManuelles
                         ))
                     ->setAnneeCertificatMedical(
@@ -850,7 +869,6 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return bool
      */
     private function isRoleInExcelFile(array $joueur, int $index): bool {
-//        if ($index == self::EXCEl_CHAMP_IS_CRITERIUM) dump($joueur[self::EXCEl_CHAMP_IS_CRITERIUM]);
         return !($joueur[$index] == null) && mb_convert_case($joueur[$index], MB_CASE_LOWER, "UTF-8") == 'x';
     }
 

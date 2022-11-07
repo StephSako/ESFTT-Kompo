@@ -32,10 +32,46 @@
 
             <div id="instructions" class="modal modal-fixed-footer">
                 <div class="modal-content">
-                    <h4>Instructions pour l'importation de joueurs</h4>
+                    <h4>Importation de joueurs par fichier Excel</h4>
 
                     <div style="text-align: start">
-                        <p>A bunch of text</p>
+                        <p>Pour importer des joueurs dans Kompo grâce à un fichier Excel, il vous suffit de sélectionner un fichier grâce au champ en haut de la page, de corriger les éventuelles erreurs de saisie et de cliquer sur le bouton <b>Enregistrer</b>.</p>
+
+                        <p>Les colonnes du fichier Excel doivent suite l'ordre suivant de la colonne <b>B</b> à <b>Q</b> :</p>
+                        <ul style="margin-left: 15px">
+                            <li>- la licence</li>
+                            <li>- le nom<sup class="red-text">*</sup></li>
+                            <li>- le prénom<sup class="red-text">*</sup></li>
+                            <li>- la date de naissance <b>(au format JJ-MM-AAAA)</b></li>
+                            <li>- l'année du dernier certificat médical</li>
+                            <li>- le numéro de téléphone</li>
+                            <li>- le numéro de téléphone 2</li>
+                            <li>- l'adresse e-mail</li>
+                            <li>- l'adresse e-mail 2</li>
+                            <li>- le classement</li>
+                            <li>- de L à Q : cocher d'un <b>x</b> les colonnes correspondantes aux rôles du nouvel adhérent<sup class="red-text">*</sup></li>
+                        </ul>
+                        <p><i><sup class="red-text">*</sup>Seules 3 colonnes sont obligatoires : le <b>nom</b>, le <b>prénom</b> et <b>au moins un rôle coché</b>. Les autres colonnes sont optionnelles mais permettent de gagner du temps à l'inscription et évitent ainsi de repasser sur chaque profil manuellement.</i></p>
+
+                        <p>Pour que le processus se déroule sans encombre, il faut renseigner un fichier qui suit ce template :</p>
+                        <div style="display: flex; justify-content: center;">
+                            <a href='{{ path('backoffice.competiteurs.download.template.import.excel') }}' style="margin-top: 0" class="blue btn"><i class="material-icons">download</i> Télécharger le template</a>
+                        </div>
+
+                        <p>Une fois le fichier lu, la liste des joueurs vous sera présentée : vous pourrez cocher/décocher les joueurs que vous souhaitez inscrire ou non. Si une licence est renseignée et qu'elle existe déjà dans Kompo, le joueur ne pourra être sélectionné.</p>
+                        <p>Si des erreurs de saisie sont détectées, elles vont seront indiquées par des encadrés rouges : survolez-la avec votre souris pour afficher le message d'aide.</p>
+                        <div style="display: flex; justify-content: center;">
+                            <img class="center docExcelNonConforme" src="{{ asset('images/docExcelNonConforme.JPG') }}" alt="image message erreur de saisie">
+                        </div>
+                        <div style="display: flex; justify-content: center;">
+                            <img class="center" style="border: 1px solid #d1d1d1; width: 250px;" src="{{ asset('images/messageErreurSaisie.jpg') }}" alt="image message erreur de saisie">
+                        </div>
+
+                        <p>Corrigez les erreurs dans le document puis soumettez-le de nouveau.</p>
+                        <div style="display: flex; justify-content: center;">
+                            <img class="center docExcelConforme" src="{{ asset('images/docExcelConforme.JPG') }}" alt="image message erreur de saisie">
+                        </div>
+                        <p>Les joueurs inscris recevront un e-mail de bienvenue si au moins un mail est renseigné.</p>
                     </div>
                 </div>
                 <div class="modal-footer">

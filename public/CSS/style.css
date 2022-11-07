@@ -1126,6 +1126,14 @@ table.table-last-compos tr {
   margin-left: 5px;
 }
 
+img.docExcelNonConforme {
+  width: 600px;
+}
+
+img.docExcelConforme {
+  width: 400px;
+}
+
 span.field-icon {
   float: right;
   position: absolute;
@@ -1363,6 +1371,15 @@ a.reload_ranking {
     width: 96% !important;
   }
 }
+@media screen and (max-width: 670px) {
+  img.docExcelNonConforme {
+    width: 100%;
+  }
+
+  img.docExcelConforme {
+    width: 100%;
+  }
+}
 @media screen and (max-width: 601px) {
   .modal.modal-medium, .modal.modal-small {
     margin-top: 0 !important;
@@ -1418,6 +1435,10 @@ a.reload_ranking {
 @media screen and (max-width: 500px) {
   #settings-form {
     margin-left: 15px;
+  }
+
+  img.docExcelNonConforme {
+    display: none;
   }
 }
 @media screen and (max-width: 460px) {

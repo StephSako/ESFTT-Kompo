@@ -10,6 +10,7 @@ parameters:
     time_limit_ajax: '%env(TIME_LIMIT_AJAX)%'
     nb_joueurs_default_division: '%env(NB_JOUEURS_DEFAULT_DIVISION)%'
     read_md_path: '%env(READ_MD_PATH)%'
+    template_import_path: '%env(TEMPLATE_IMPORT_PATH)%'
     default_nb_points: '%env(DEFAULT_NB_POINTS)%'
     club_diminutif: '%env(CLUB_DIMINUTIF)%'
     club_email: '%env(CLUB_EMAIL)%'
