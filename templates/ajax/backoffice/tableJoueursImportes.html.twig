@@ -1,3 +1,5 @@
+{% import 'macros/membre.html.twig' as _membre %}
+
 {% if joueurs %}
     {% if sheetDataHasViolations %}
         <div class="pastille red lighten-1 reset">
@@ -19,6 +21,7 @@
                     <th><i class="material-icons">person_add_alt_1</i></th>
                 {% endif %}
                 <th>Rôles</th>
+                <th>Licence</th>
                 <th>Nom</th>
                 <th>Date de naissance</th>
                 <th>Certificat médical</th>
@@ -33,36 +36,33 @@
                     {% if not sheetDataHasViolations %}
                         <td>
                             <label>
-                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked"{% endif %} />
+                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked"{% else %}disabled="disabled"{% endif %} />
                                 <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
                             </label>
                         </td>
                     {% endif %}
-                    <td style="padding-top: 8px; padding-bottom: 8px;">
-                        {% if joueur.joueur.isAdmin %}
-                            <span class='new badge red{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Administrateur'></span>
+                    <td style="padding-top: 8px; padding-bottom: 8px;"
+                        {% if 'roles' in joueur.violations|keys %}
+                            class="pastille reset white-text red lighten-1 tooltipped"
+                            data-position="top"
+                            data-tooltip="{{ joueur.violations['roles']['message'] }}"
                         {% endif %}
-
-                        {% if joueur.joueur.isCompetiteur %}
-                            {% if joueur.joueur.isAdmin %}<br>{% endif %}
-                            <span style="margin-top: 2px" class='new badge green{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Compétiteur'></span>
-                            {% if joueur.joueur.isCritFed %}
-                                <br><span style="margin-top: 2px" class='new badge purple{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Crit. féd.'></span>
+                    >
+                        {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations, dejaInscrit: joueur.dejaInscrit}) }}
+                    </td>
+                    <td>
+                        <span {% if 'licence' in joueur.violations|keys %}
+                            class="pastille reset white-text red lighten-1 tooltipped"
+                            data-position="top"
+                            data-tooltip="{{ joueur.violations['licence']['message'] }}"
+                        {% endif %}
+                        >
+                            {% if 'licence' in joueur.violations|keys and 'value' in joueur.violations['licence']|keys %}
+                                {{ joueur.violations['licence']['value'] }}
+                            {% else %}
+                                {{ joueur.joueur.licence }}
                             {% endif %}
-                        {% elseif joueur.joueur.isLoisir %}
-                            {% if joueur.joueur.isAdmin %}<br>{% endif %}
-                            <span style="margin-top: 2px" class='new badge orange{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Loisir'></span>
-                        {% endif %}
-
-                        {% if joueur.joueur.isCapitaine %}
-                            {% if joueur.joueur.isAdmin or joueur.joueur.isCompetiteur or joueur.joueur.isLoisir %}<br>{% endif %}
-                            <span style="margin-top: 2px" class='new badge blue{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Capitaine'></span>
-                        {% endif %}
-
-                        {% if joueur.joueur.isEntraineur %}
-                            {% if joueur.joueur.isAdmin or joueur.joueur.isCompetiteur or joueur.joueur.isLoisir or joueur.joueur.isCapitaine %}<br>{% endif %}
-                            <span style="margin-top: 2px" class="new badge brown{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %}" data-badge-caption="Entraîneur"></span>
-                        {% endif %}
+                        </span>&nbsp;
                     </td>
                     <td>
                         <span {% if 'nom' in joueur.violations|keys %}
@@ -91,10 +91,18 @@
                         </span>
                     </td>
                     <td>
-                        <span {% if 'dateNaissance' in joueur.violations|keys %}class="pastille reset white-text red lighten-1"{% endif %}>
-                            {% if joueur.joueur.dateNaissance %}
-                                {{ joueur.joueur.dateNaissance|date('d/m/Y') }}
-                                <br><span class="pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
+                        <span {% if 'dateNaissance' in joueur.violations|keys %}
+                                class="pastille reset white-text red lighten-1 tooltipped"
+                                data-position="top"
+                                data-tooltip="{{ joueur.violations['dateNaissance']['message'] }}"
+                            {% endif %}>
+                            {% if 'dateNaissance' in joueur.violations|keys and 'value' in joueur.violations['dateNaissance']|keys %}
+                                {{ joueur.violations['dateNaissance']['value'] }}
+                            {% else %}
+                                {% if joueur.joueur.dateNaissance %}
+                                    {{ joueur.joueur.dateNaissance|date('d/m/Y') }}
+                                    <br><span class="pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
+                                {% endif %}
                             {% endif %}
                         </span>
                     </td>
@@ -110,7 +118,7 @@
                         {% else %}
                             {% if joueur.joueur.age != null and joueur.joueur.age < 18 %}
                                 <span class="grey-text"><i>Mineur (facultatif)</i></span>
-                            {% else %}
+                            {% elseif joueur.joueur.anneeCertificatMedical %}
                                 <span>
                                     <i class="{% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                                     {{ joueur.joueur.anneeCertificatMedical }}
@@ -190,6 +198,13 @@
             <i class="material-icons">person_add_disabled</i> Vous n'avez sélectionné aucun joueur
         </div>
     {% endif %}
+
+    <div id="progress-bar" class="hide" style="margin-bottom: 10px;">
+        <p class="grey-text"><i>Enregistrement des joueurs ... merci de patienter, le processus peut prendre jusqu'à 1 minute</i></p>
+        <div class="progress" style="width: 30%; margin: 0 auto;">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
 
     <div id="importButtons">
         <a id="annulerImportJoueurs" href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>

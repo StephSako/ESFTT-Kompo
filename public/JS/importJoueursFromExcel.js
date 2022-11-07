@@ -7,8 +7,8 @@ function importJoueursFromExcel(file) {
         contentType: false,
         cache: false,
         dataType:'json',
-        success : function(responseTemplate) { endSending(responseTemplate); },
-        error : function() { endSending('Une erreur est survenue !'); }
+        success : function(responseTemplate) { endSending(responseTemplate, false); },
+        error : function() { endSending("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide !</span>", true); }
     });
 }
 
@@ -21,10 +21,11 @@ function sending(){
     $('input#excelDocument').prop('disabled', true);
 }
 
-function endSending(responseTemplate){
+function endSending(responseTemplate, isError){
+    if (isError) $('a#retourMembres').removeClass('hide');
     $('div#tableJoueursImportesLoader').addClass('hide');
     $('div#tableJoueursImportes').removeClass('hide');
-    $('#tableJoueursImportes').html(responseTemplate);
+    $('div#tableJoueursImportes').html(responseTemplate);
     $('div#btnFileInputExcelDocument').removeClass('disabled');
     $('input#filePathExcelDocument').prop('disabled', false);
     $('input#excelDocument').prop('disabled', false);

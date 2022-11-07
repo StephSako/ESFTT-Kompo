@@ -419,6 +419,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ->select('c.username')
                 ->addSelect('c.nom')
                 ->addSelect('c.prenom')
+                ->addSelect('c.licence')
                 ->getQuery()
                 ->getResult();
 
@@ -426,9 +427,11 @@ class CompetiteurRepository extends ServiceEntityRepository
         $result['pseudos'] = array_map(function($pseudo) {
             return $pseudo['username'];
         }, $query);
-        $result['nomsPrenoms'] = array_map(function($pseudo) {
-            return str_replace(' ', '', mb_convert_case($pseudo['nom'] . $pseudo['prenom'], MB_CASE_LOWER, "UTF-8"));
-        }, $query);
+        $result['licences'] = array_filter(array_map(function($licence) {
+            return $licence['licence'];
+        }, $query), function($licence) {
+            return $licence;
+        });
         return $result;
     }
 

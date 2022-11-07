@@ -55,21 +55,22 @@ class BackOfficeCompetiteurController extends AbstractController
     private $uploaderHelper;
     private $validator;
 
-    const EXCEl_CHAMP_NOM = 1;
-    const EXCEl_CHAMP_PRENOM = 2;
-    const EXCEl_CHAMP_DATE_NAISSANCE = 3;
-    const EXCEl_CHAMP_CERTIF_MEDICAL = 4;
-    const EXCEl_CHAMP_TELEPHONE = 5;
-    const EXCEl_CHAMP_TELEPHONE_2 = 6;
-    const EXCEl_CHAMP_MAIL = 7;
-    const EXCEl_CHAMP_MAIL_2 = 8;
-    const EXCEl_CHAMP_CLASSEMENT = 9;
-    const EXCEl_CHAMP_IS_LOISIR = 10;
-    const EXCEl_CHAMP_IS_CAPITAINE = 11;
-    const EXCEl_CHAMP_IS_COMPETITEUR = 12;
-    const EXCEl_CHAMP_IS_CRITERIUM = 13;
-    const EXCEl_CHAMP_IS_ENTRAINEUR = 14;
-    const EXCEl_CHAMP_IS_ADMIN = 15;
+    const EXCEl_CHAMP_LICENCE = 1;
+    const EXCEl_CHAMP_NOM = 2;
+    const EXCEl_CHAMP_PRENOM = 3;
+    const EXCEl_CHAMP_DATE_NAISSANCE = 4;
+    const EXCEl_CHAMP_CERTIF_MEDICAL = 5;
+    const EXCEl_CHAMP_TELEPHONE = 6;
+    const EXCEl_CHAMP_TELEPHONE_2 = 7;
+    const EXCEl_CHAMP_MAIL = 8;
+    const EXCEl_CHAMP_MAIL_2 = 9;
+    const EXCEl_CHAMP_CLASSEMENT = 10;
+    const EXCEl_CHAMP_IS_LOISIR = 11;
+    const EXCEl_CHAMP_IS_CAPITAINE = 12;
+    const EXCEl_CHAMP_IS_COMPETITEUR = 13;
+    const EXCEl_CHAMP_IS_CRITERIUM = 14;
+    const EXCEl_CHAMP_IS_ENTRAINEUR = 15;
+    const EXCEl_CHAMP_IS_ADMIN = 16;
 
     /**
      * BackOfficeController constructor.
@@ -656,7 +657,6 @@ class BackOfficeCompetiteurController extends AbstractController
         $allowedFileMimes = [
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
-        $sheetDataHasViolations = false;
         $joueurs = [];
 
         if (in_array($file->getMimeType(), $allowedFileMimes)) {
@@ -684,9 +684,6 @@ class BackOfficeCompetiteurController extends AbstractController
                 $violationsManuelles = [];
                 $nouveau = new Competiteur();
 
-                // TODO Check date de naissance
-                // TODO Check rôles
-
                 $nouveau
                     ->setIsPasswordResetting(true)
                     ->setIsLoisir($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_LOISIR))
@@ -695,6 +692,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     ->setIsAdmin($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ADMIN))
                     ->setIsEntraineur($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ENTRAINEUR))
                     ->setIsCritFed($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_CRITERIUM))
+                    ->setLicence($joueur[self::EXCEl_CHAMP_LICENCE])
                     ->setNom(
                         $this->checkMandatoryType(
                             $joueur[self::EXCEl_CHAMP_NOM],
@@ -709,7 +707,13 @@ class BackOfficeCompetiteurController extends AbstractController
                             "Le prénom",
                             $violationsManuelles
                         ))
-                    ->setDateNaissance($joueur[self::EXCEl_CHAMP_DATE_NAISSANCE] ? date_create($joueur[self::EXCEl_CHAMP_DATE_NAISSANCE]) : null)
+                    ->setDateNaissance(
+                        $this->checkRegexValue(
+                            $joueur[self::EXCEl_CHAMP_DATE_NAISSANCE],
+                            'dateNaissance',
+                            "la date de naissance",
+                            $violationsManuelles
+                        ))
                     ->setAnneeCertificatMedical(
                         $this->checkValueIntType(
                             $joueur[self::EXCEl_CHAMP_CERTIF_MEDICAL],
@@ -726,8 +730,8 @@ class BackOfficeCompetiteurController extends AbstractController
                         ))
                     ->setMail($joueur[self::EXCEl_CHAMP_MAIL])
                     ->setMail2($joueur[self::EXCEl_CHAMP_MAIL_2])
-                    ->setPhoneNumber($joueur[self::EXCEl_CHAMP_TELEPHONE])
-                    ->setPhoneNumber2($joueur[self::EXCEl_CHAMP_TELEPHONE_2])
+                    ->setPhoneNumber(str_replace(' ', '', $joueur[self::EXCEl_CHAMP_TELEPHONE]))
+                    ->setPhoneNumber2(str_replace(' ', '', $joueur[self::EXCEl_CHAMP_TELEPHONE_2]))
                     ->setPassword($this->encoder->encodePassword($nouveau, $this->getParameter('default_password')));
 
                 $nouveau
@@ -735,6 +739,15 @@ class BackOfficeCompetiteurController extends AbstractController
                     ->setContactableMail2((bool)$nouveau->getMail2())
                     ->setContactablePhoneNumber((bool)$nouveau->getPhoneNumber())
                     ->setContactablePhoneNumber2((bool)$nouveau->getPhoneNumber2());
+
+                /** On vérifie les rôles */
+                try {
+                    $this->checkRoles($nouveau);
+                } catch(Exception $e) {
+                    $violationsManuelles['roles'] = [
+                        'message' => $e->getMessage()
+                    ];
+                }
 
                 /** On vérifie l'unicité des pseudos */
                 $newUsername = str_replace(' ', '', $nouveau->getPrenom());
@@ -746,7 +759,6 @@ class BackOfficeCompetiteurController extends AbstractController
                 /** On liste les violations automatiquement vérifiées par l'Entité */
                 $violations = [];
                 foreach ($this->validator->validate($nouveau) as $violation) {
-                    if (!$sheetDataHasViolations) $sheetDataHasViolations = true;
                     $violations[$violation->getPropertyPath()] = ['message' => $violation->getMessage()];
                 }
 
@@ -756,18 +768,14 @@ class BackOfficeCompetiteurController extends AbstractController
                 $joueurs[] = [
                     'violations' => $violations,
                     'joueur' => $nouveau,
-                    'dejaInscrit' => in_array(str_replace(' ', '', mb_convert_case($nouveau->getNom() . $nouveau->getPrenom(), MB_CASE_LOWER, "UTF-8")), $pseudosNomsPrenoms['nomsPrenoms']) ? 1 : 0
+                    'dejaInscrit' => in_array($nouveau->getLicence(), $pseudosNomsPrenoms['licences']) ? 1 : 0
                 ];
             }
         }
 
-//        dump(array_map(function($j){
-//            return $j['violations'];
-//        }, $joueurs));
-
         return [
             'joueurs' => $joueurs,
-            'sheetDataHasViolations' => $sheetDataHasViolations
+            'sheetDataHasViolations' => count(array_filter($joueurs, function($j){ return $j['violations']; }))
         ];
     }
 
@@ -808,12 +816,41 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * @param string|null $value
+     * @param string $field
+     * @param string $fieldFr
+     * @param array $violationsManuelles
+     * @return DateTime|false|null
+     */
+    private function checkRegexValue(?string $value, string $field, string $fieldFr, array &$violationsManuelles) {
+        if ($value == null) return null;
+        else {
+            preg_match('/^([0-9]{2})\/([0-9]){2}\/([0-9]{4})$/', $value, $date);
+            if (!count($date)) {
+                $violationsManuelles[$field] = [
+                    'message' => 'Le format de ' . $fieldFr . ' est incorrecte (DD/MM/AAAA)',
+                    'value' => $value
+                ];
+                return null;
+            } else if (!date_create($date[3] . '/' . $date[2] . '/' . $date[1])) {
+                $violationsManuelles[$field] = [
+                    'message' => $fieldFr . ' est incorrecte',
+                    'value' => $value
+                ];
+                return null;
+            }
+            return date_create($date[3] . '/' . $date[2] . '/' . $date[1]);
+        }
+    }
+
+    /**
      * Retourne true/false si le rôle sélectionné est coché dans le document Excel importé
      * @param array $joueur
      * @param int $index
      * @return bool
      */
     private function isRoleInExcelFile(array $joueur, int $index): bool {
+//        if ($index == self::EXCEl_CHAMP_IS_CRITERIUM) dump($joueur[self::EXCEl_CHAMP_IS_CRITERIUM]);
         return !($joueur[$index] == null) && mb_convert_case($joueur[$index], MB_CASE_LOWER, "UTF-8") == 'x';
     }
 
@@ -856,6 +893,10 @@ class BackOfficeCompetiteurController extends AbstractController
         $joueursIndexToAdd = json_decode($request->request->get('usernamesToRegister'));
         $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'), $joueursIndexToAdd);
         $joueurs = $importedData['joueurs'];
+        /** On n'inscrit pas les joueurs déjà inscrits */
+        $joueurs = array_filter($joueurs, function($joueur) {
+            return $joueur['dejaInscrit'] != 1;
+        });
         $sheetDataHasViolations = $importedData['sheetDataHasViolations'];
         $nbErrorMail = 0;
 
@@ -875,7 +916,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
             $this->addFlash('success', 'Joueurs inscrits par importation');
             if ($nbErrorMail) $this->addFlash('fail', $nbErrorMail . ($nbErrorMail == 1 ? ' mail n\'a pas été envoyé' : ' mails n\'ont pas été envoyés'));
-            else $this->addFlash('fail', 'Tous les joueurs ont reçu le mail de bienvenu');
+            else $this->addFlash('success', 'Tous les joueurs ont reçu le mail de bienvenu');
             return $this->redirectToRoute('backoffice.competiteurs');
         } else {
             $this->addFlash('fail', 'Il y a des erreurs dans le document importé, réessayez');
@@ -891,6 +932,7 @@ class BackOfficeCompetiteurController extends AbstractController
         if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
         if ((($competiteur->isCompetiteur() || $competiteur->isCapitaine()) && ($competiteur->isLoisir() || $competiteur->isArchive())) ||
             (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) ||
+            (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) ||
             ($competiteur->isArchive() && ($competiteur->isCritFed() || $competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
             ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
             throw new Exception('Les rôles sont incohérents', 1234);

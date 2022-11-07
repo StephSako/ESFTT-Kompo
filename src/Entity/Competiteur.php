@@ -75,7 +75,7 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Regex(
      *     pattern="/^[0-9]{0,11}$/",
-     *     message="La licence ne doit contenir que des chiffres"
+     *     message="La licence doit contenir au maximum 11 chiffres"
      * )
      *
      * @ORM\Column(name="licence", type="string", length=11, nullable=true)
@@ -885,7 +885,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setLicence(?string $licence): self
     {
-        $this->licence = trim($licence);
+        $this->licence = strlen(trim($licence)) > 0 ? trim($licence) : null;
         return $this;
     }
 
