@@ -1,5 +1,5 @@
 function newDisponibilite(idJournee, disponibiliteBoolean, idCompetiteur) {
-    sending(idJournee + idCompetiteur);
+    sendingDisponibilite(idJournee + idCompetiteur);
     $.ajax({
         url : '/backoffice/disponibilites/new',
         type : 'POST',
@@ -9,8 +9,8 @@ function newDisponibilite(idJournee, disponibiliteBoolean, idCompetiteur) {
             idCompetiteur: idCompetiteur
         },
         dataType : 'json',
-        success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
-        error : function(error) { endSending(error, idJournee + idCompetiteur, false); }
+        success : function(response) { endSendingDisponibilite(response, idJournee + idCompetiteur, true); },
+        error : function(error) { endSendingDisponibilite(error, idJournee + idCompetiteur, false); }
     });
 }
 
@@ -18,7 +18,7 @@ function updateDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
     let r;
     if (disponibiliteBoolean === 0) r = confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?');
     if ((disponibiliteBoolean === 0 && r) || disponibiliteBoolean === 1){
-        sending(idJournee + idCompetiteur);
+        sendingDisponibilite(idJournee + idCompetiteur);
         $.ajax({
             url : '/backoffice/disponibilites/update',
             type : 'POST',
@@ -29,8 +29,8 @@ function updateDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
                 idJournee: idJournee
             },
             dataType : 'json',
-            success : function(response) { endSending(response, idJournee + idCompetiteur, true); },
-            error : function(error) { endSending(error, idJournee + idCompetiteur, false); }
+            success : function(response) { endSendingDisponibilite(response, idJournee + idCompetiteur, true); },
+            error : function(error) { endSendingDisponibilite(error, idJournee + idCompetiteur, false); }
         });
     }
 }
@@ -39,7 +39,7 @@ function deleteDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
     let r;
     if (disponibiliteBoolean === 1) r = confirm('Le joueur pourrait être désélectionné pour cette journée. Êtes-vous sûr ?');
     if ((disponibiliteBoolean === 1 && r) || disponibiliteBoolean === 0) {
-        sending(idJournee + idCompetiteur);
+        sendingDisponibilite(idJournee + idCompetiteur);
         $.ajax({
             url: '/backoffice/disponibilites/delete',
             type: 'POST',
@@ -50,21 +50,21 @@ function deleteDisponibilite(idCompetiteur, idDisponibilite, disponibiliteBoolea
             },
             dataType: 'json',
             success: function (response) {
-                endSending(response, idJournee + idCompetiteur, true);
+                endSendingDisponibilite(response, idJournee + idCompetiteur, true);
             },
             error: function (error) {
-                endSending(error, idJournee + idCompetiteur, false);
+                endSendingDisponibilite(error, idJournee + idCompetiteur, false);
             }
         });
     }
 }
 
-function sending(divSuffixe){
+function sendingDisponibilite(divSuffixe){
     $('#preloader' + divSuffixe).show();
     $('#dispoJoueur' + divSuffixe).hide();
 }
 
-function endSending(response, divSuffixe, isSuccess){
+function endSendingDisponibilite(response, divSuffixe, isSuccess){
     let buttonDiv = $('#dispoJoueur' + divSuffixe);
     buttonDiv.show();
     if (!isSuccess) M.toast({html: response.responseJSON});
