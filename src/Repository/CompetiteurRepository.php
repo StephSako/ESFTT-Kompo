@@ -417,8 +417,6 @@ class CompetiteurRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('c')
                 ->select('c.username')
-                ->addSelect('c.nom')
-                ->addSelect('c.prenom')
                 ->addSelect('c.licence')
                 ->getQuery()
                 ->getResult();

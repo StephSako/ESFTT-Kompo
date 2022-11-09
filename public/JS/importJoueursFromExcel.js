@@ -7,12 +7,12 @@ function importJoueursFromExcel(file) {
         contentType: false,
         cache: false,
         dataType:'json',
-        success : function(responseTemplate) { endSending(responseTemplate, false); },
-        error : function() { endSending("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide !</span>", true); }
+        success : function(responseTemplate) { endSendingImportJoueursFromExcel(responseTemplate, false); },
+        error : function() { endSendingImportJoueursFromExcel("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide !</span>", true); }
     });
 }
 
-function sending(){
+function sendingImportJoueursFromExcel(){
     $('a#retourMembres').addClass('hide');
     $('div#tableJoueursImportesLoader').removeClass('hide');
     $('div#tableJoueursImportes').addClass('hide');
@@ -21,7 +21,7 @@ function sending(){
     $('input#excelDocument').prop('disabled', true);
 }
 
-function endSending(responseTemplate, isError){
+function endSendingImportJoueursFromExcel(responseTemplate, isError){
     if (isError) $('a#retourMembres').removeClass('hide');
     $('div#tableJoueursImportesLoader').addClass('hide');
     $('div#tableJoueursImportes').removeClass('hide');
@@ -39,7 +39,7 @@ $(document).ready(() => {
     });
 
     inputFile.change((e) => {
-        sending();
+        sendingImportJoueursFromExcel();
         let file = e.target.files[0];
         let formData = new FormData();
         formData.append('excelDocument', file);
