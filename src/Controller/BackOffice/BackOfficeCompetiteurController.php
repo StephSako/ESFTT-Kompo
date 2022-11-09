@@ -659,8 +659,6 @@ class BackOfficeCompetiteurController extends AbstractController
         $response->headers->set('Content-type', 'application/octet-stream');
         $response->headers->set('Content-Disposition', 'attachment;filename="template_import.xlsx"');
         $response->sendHeaders();
-        error_log(print_r(\Doctrine\Common\Util\Debug::export(__DIR__ . '/public/fichiers/template_import.xlsx', 1500),1));
-        error_log(print_r(\Doctrine\Common\Util\Debug::export($this->parameterBag->get('kernel.project_dir'), 1500),1));
         $response->setContent(file_get_contents(__DIR__ . $this->getParameter('template_import_path')));
 
         return $response;
