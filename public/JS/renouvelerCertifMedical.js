@@ -6,8 +6,8 @@ function renouvelerCertifMedical(idCompetiteur, prenom, isFromAdmin) {
             url : '/backoffice/competiteur/renouveler/certificat/' + idCompetiteur,
             type : 'POST',
             dataType : 'json',
-            success : function(response) { endSending(response, idCompetiteur, isFromAdmin, prenom) },
-            error : function() { endSending({ status: false, message: 'Une erreur est survenue' }, idCompetiteur, isFromAdmin, prenom) }
+            success : (response) => { endSending(response, idCompetiteur, isFromAdmin, prenom) },
+            error : () => { endSending({ status: false, message: 'Une erreur est survenue' }, idCompetiteur, isFromAdmin, prenom) }
         });
     }
 }

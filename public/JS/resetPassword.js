@@ -10,8 +10,8 @@ function resetPassword() {
                 username: $('#username').val(),
             },
             dataType : 'json',
-            success : function(response) { endSending(response.message, response.success); },
-            error : function() { endSending('Une erreur est survenue !', false); }
+            success : (response) => { endSending(response.message, response.success); },
+            error : () => { endSending('Une erreur est survenue !', false); }
         });
     }
 }
@@ -36,13 +36,13 @@ function endSending(message, success){
     }
 }
 
-$(document).ready(function() {
-    $('#username').on('keyup', function () {
+$(document).ready(() => {
+    $('#username').on('keyup', () => {
         if ($('#username').val() && $('#email').val()) $('#btnResetPassword').removeClass('disabled');
         else $('#btnResetPassword').addClass('disabled');
     });
 
-    $('#email').on('keyup', function () {
+    $('#email').on('keyup', () => {
         if ($('#username').val() && $('#email').val()) $('#btnResetPassword').removeClass('disabled');
         else $('#btnResetPassword').addClass('disabled');
     });

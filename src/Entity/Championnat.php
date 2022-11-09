@@ -60,12 +60,12 @@ class Championnat
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "La limite de brûlage doit être supérieure à {{ limit }}"
+     *     message = "La limite de brûlage doit être supérieure à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 4,
-     *     message = "La limite de brûlage doit être inférierue à {{ limit }}"
+     *     message = "La limite de brûlage doit être inférierue à {{ compared_value }}"
      * )
      *
      * @Assert\NotBlank(
@@ -88,12 +88,12 @@ class Championnat
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "Il doit y avoir au minimum {{ limit }} journée"
+     *     message = "Il doit y avoir au minimum {{ compared_value }} journée"
      * )
      *
      * @Assert\LessThanOrEqual (
      *     value = 10,
-     *     message = "Il doit y avoir au maximum {{ limit }} journée"
+     *     message = "Il doit y avoir au maximum {{ compared_value }} journée"
      * )
      *
      * @Assert\NotBlank(

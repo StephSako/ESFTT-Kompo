@@ -410,6 +410,32 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère tous les pseudos, noms et prénoms de tous les joueurs
+     * @return array
+     */
+    public function findAllPseudos(): array
+    {
+        $query = $this->createQueryBuilder('c')
+                ->select('c.username')
+                ->addSelect('c.nom')
+                ->addSelect('c.prenom')
+                ->addSelect('c.licence')
+                ->getQuery()
+                ->getResult();
+
+        $result = [];
+        $result['pseudos'] = array_map(function($pseudo) {
+            return $pseudo['username'];
+        }, $query);
+        $result['licences'] = array_filter(array_map(function($licence) {
+            return $licence['licence'];
+        }, $query), function($licence) {
+            return $licence;
+        });
+        return $result;
+    }
+
+    /**
      * Retourne une liste de joueurs selon le rôle passé en paramètre
      * @param string|null $role Le paramètres correspond aux champs (boolean) dans la BDD
      * @param int|null $idRedacteur ID de l'user actif

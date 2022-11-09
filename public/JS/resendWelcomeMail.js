@@ -9,8 +9,8 @@ function renvoyerMailBienvenue(idCompetiteur, prenom) {
                 idCompetiteur: idCompetiteur
             },
             dataType : 'json',
-            success : function(response) { endSending(response.message); },
-            error : function() { endSending('Une erreur est survenue !'); }
+            success : (response) => { endSending(response.message); },
+            error : () => { endSending('Une erreur est survenue !'); }
         });
     }
 }
