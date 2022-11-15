@@ -684,7 +684,7 @@ class HomeController extends AbstractController
                 }
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
-                    'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
+                    'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
                     'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,

@@ -464,7 +464,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'cheating' => $competiteur->isCheating(),
             'winner' => $competiteur->isWinner(),
             'fullWinner' => $competiteur->isFullWinner(),
-            'profileCompletion' => $competiteur->profileCompletion()
+            'profileCompletion' => $competiteur->profileCompletion(),
+            'equipeAssociee' => $competiteur->getEquipeAssociee()->getNumero()
         ]);
     }
 

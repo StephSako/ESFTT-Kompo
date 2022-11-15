@@ -93,6 +93,13 @@ class Equipe
     private $rencontres;
 
     /**
+     * @var Competiteur[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipeAssociee")
+     */
+    protected $joueursAssocies;
+
+    /**
      * @return Championnat|null
      */
     public function getIdChampionnat(): ?Championnat
@@ -215,6 +222,24 @@ class Equipe
     public function setLienDivision(?string $lienDivision): self
     {
         $this->lienDivision = $lienDivision;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur[]
+     */
+    public function getJoueursAssocies(): array
+    {
+        return $this->joueursAssocies;
+    }
+
+    /**
+     * @param Competiteur[] $joueursAssocies
+     * @return Equipe
+     */
+    public function setJoueursAssocies(array $joueursAssocies): self
+    {
+        $this->joueursAssocies = $joueursAssocies;
         return $this;
     }
 }

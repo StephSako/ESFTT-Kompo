@@ -130,7 +130,8 @@ class CompetiteurRepository extends ServiceEntityRepository
     {
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
-            ->addSelect('c.prenom');
+            ->addSelect('c.prenom')
+            ->addSelect('IF(e.numero IS NOT NULL, e.numero, -1) as numero');
         foreach ($idEquipes as $idEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
@@ -153,7 +154,10 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isCompetiteur = true')
-            ->orderBy('c.nom')
+            ->leftJoin('c.equipeAssociee', 'e')
+            ->orderBy('e.numero')
+            ->addOrderBy('c.classement_officiel', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
@@ -166,11 +170,18 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
+            $brulageJoueur['numeroEquipeAssociee'] = $brulage['numero'];
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
-        return $allBrulage;
+        $brulagesParEquipe = [];
+        foreach($allBrulage as $nomJoueur => $brulage) {
+            $brulagesParEquipe[$brulage['numeroEquipeAssociee']][$nomJoueur] = $brulage;
+            unset($brulagesParEquipe[$brulage['numeroEquipeAssociee']][$nomJoueur]['numeroEquipeAssociee']);
+        }
+
+        return $brulagesParEquipe;
     }
 
     /**

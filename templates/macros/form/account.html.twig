@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, profileCompletion, options) %}
+{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, categorieAge, isCritFed, profileCompletion, equipeAssociee, options) %}
 
     <div class="card-panel center-align account-card">
 
@@ -208,78 +208,107 @@
                     </script>
                 {% endif %}
 
-                <div class="row section" style="margin-bottom: 0;">
+                <div class="section" style="margin-bottom: 0;">
                     <h5 class="dark_blue">Informations licence</h5>
 
                     {% if app.request.getPathInfo ends with '/new' %}
-                        <div class="col s12 hide-on-med-and-down">
-                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                            </p>
+                        <div class="row">
+                            <div class="col s12 hide-on-med-and-down">
+                                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                    <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                                </p>
+                            </div>
                         </div>
                     {% endif %}
 
-                    {% if type != 'backoffice' %}
-                        <p style="margin-bottom: 0">
-                            {% if isCritFed %}
-                                <i class="material-icons green-text">check</i> Je participe au critérium fédéral
-                            {% else%}
-                                <i class="material-icons red-text">clear</i> Je ne participe pas au critérium fédéral
-                            {% endif %}
-                        </p>
-                    {% endif %}
-
-                    <div class="col s12 l4 col_infos_licence">
-                        <p><b>Catégorie d'âge</b></p>
-                        {% if type == 'backoffice' and not editMode %}
-                            <i>Calculée sur la date de naissance</i>
-                        {% else %}
-                            {% if categorieAge %}
-                                <span class="pastille blue centered">{{ categorieAge }}</span>
+                    <div class="row">
+                        <div class="col s12 {% if type != 'backoffice' %}m6{% endif%} col_infos_licence">
+                            <p><b>Équipe</b></p>
+                            {% if equipeAssociee %}
+                                <span class="pastille blue centered">
+                            N°{{ equipeAssociee }}
+                        </span>
                             {% else %}
-                                <p style="color: red">Date de naissance indéfinie</p>
+                                <i class="grey-text">Non compétiteur</i>
                             {% endif %}
-                        {% endif %}
-                    </div>
-
-                    {% if app.request.getPathInfo ends with '/new' %}
-                        <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
-                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                            </p>
                         </div>
-                    {% endif %}
 
-                    <div class="col s12 m6 l4 col_infos_licence">
-                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
-                        {% if type == 'backoffice' %}
-                            {{ form_row(form.licence) }}
-                        {% else %}
-                            {% if options.licence %}
-                                <span class="pastille blue centered">{{ options.licence }}</span>
-                            {% else %}
-                                <p style="color: red">Licence indéfinie</p>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-
-                    <div class="col s12 m6 l4 col_infos_licence">
-                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
-                        {% if type == 'backoffice' %}
-                            {{ form_row(form.classementOfficiel) }}
-                        {% else %}
-                            {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
-                                <p><i>Vous n'êtes pas compétiteur</i></p>
-                            {% else %}
-                                {% if app.user.classementOfficiel %}
-                                    <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
+                        {% if type != 'backoffice' %}
+                            <div class="col s12 m6 col_infos_licence">
+                                <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b>Crit. fédéral</b></p>
+                                {% if type == 'backoffice' %}
+                                    {{ form_row(form.licence) }}
                                 {% else %}
-                                    <p style="color: red">Classement indéfini</p>
+                                    {% if options.licence %}
+                                        <span class="centered">
+                                            {% if isCritFed %}
+                                                <i class="material-icons green-text">check</i>
+                                            {% else%}
+                                                <i class="material-icons red-text">clear</i>
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        <p style="color: red">Licence indéfinie</p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col s12 l4 col_infos_licence">
+                            <p><b>Catégorie d'âge</b></p>
+                            {% if type == 'backoffice' and not editMode %}
+                                <i>Calculée sur la date de naissance</i>
+                            {% else %}
+                                {% if categorieAge %}
+                                    <span class="pastille blue centered">{{ categorieAge }}</span>
+                                {% else %}
+                                    <p style="color: red">Date de naissance indéfinie</p>
                                 {% endif %}
                             {% endif %}
+                        </div>
+
+                        {% if app.request.getPathInfo ends with '/new' %}
+                            <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                    <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                                </p>
+                            </div>
                         {% endif %}
+
+                        <div class="col s12 m6 l4 col_infos_licence">
+                            <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
+                            {% if type == 'backoffice' %}
+                                {{ form_row(form.licence) }}
+                            {% else %}
+                                {% if options.licence %}
+                                    <span class="pastille blue centered">{{ options.licence }}</span>
+                                {% else %}
+                                    <p style="color: red">Licence indéfinie</p>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="col s12 m6 l4 col_infos_licence">
+                            <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
+                            {% if type == 'backoffice' %}
+                                {{ form_row(form.classementOfficiel) }}
+                            {% else %}
+                                {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
+                                    <p><i>Vous n'êtes pas compétiteur</i></p>
+                                {% else %}
+                                    {% if app.user.classementOfficiel %}
+                                        <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
+                                    {% else %}
+                                        <p style="color: red">Classement indéfini</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col m1 hide-on-small-and-down"></div>
                     </div>
-                    <div class="col m1 hide-on-small-and-down"></div>
                 </div>
             {% endif %}
 

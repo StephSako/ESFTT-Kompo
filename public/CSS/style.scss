@@ -1249,6 +1249,18 @@ table.table-last-compos {
   }
 }
 
+.brulages table{
+  & thead tr h6 {
+    font-size: 1.25rem;
+  }
+
+  &:not(:first-of-type) {
+    & thead tr h6 {
+      margin-top: 15px;
+    }
+  }
+}
+
 #title_points_virtuels {
   vertical-align: sub
 }

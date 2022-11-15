@@ -363,6 +363,14 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
+     * @var Equipe|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="equipes")
+     * @ORM\JoinColumn(name="id_equipe_associee", nullable=true, referencedColumnName="id_equipe")
+     */
+    private $equipeAssociee;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $dispos;
@@ -1630,6 +1638,24 @@ class Competiteur implements UserInterface, Serializable
     public function setIsPasswordResetting(bool $isPasswordResetting): self
     {
         $this->isPasswordResetting = $isPasswordResetting;
+        return $this;
+    }
+
+    /**
+     * @return Equipe|null
+     */
+    public function getEquipeAssociee(): ?Equipe
+    {
+        return $this->equipeAssociee;
+    }
+
+    /**
+     * @param Equipe|null $equipeAssociee
+     * @return Competiteur
+     */
+    public function setEquipeAssociee(?Equipe $equipeAssociee): self
+    {
+        $this->equipeAssociee = $equipeAssociee;
         return $this;
     }
 }

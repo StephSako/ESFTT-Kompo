@@ -10,42 +10,46 @@
             <div class="col s10">Brûlé prévisionnel dans l'équipe</div>
         </div>
     </div>
-
-    <div class="scrollableTable card-panel merged_cards bottom">
-        <table class="striped {% if not idEquipes|length %} centered{% endif %}">
-            <thead>
-                <tr>
-                    <th class="center"><h5 class="hide-on-med-and-down">Brûlages</h5></th>
-                    {% for idEquipe in idEquipes %}
-                        <th class="center"><h5>{{ idEquipe }}</h5></th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% if idEquipes|length %}
-                    {% for nom, brulage in brulages %}
+    <div class="scrollableTable card-panel merged_cards bottom brulages">
+        {% if idEquipes|length %}
+            {% for numero, brulagesJoueurs in brulages %}
+                <span class="center"></span>
+                <table class="striped {% if not idEquipes|length %} centered{% endif %}">
+                    <thead>
                         <tr>
-                            <td>
-                                {{ nom }}
-                            </td>
-                            {% for brulageJournee in brulage['brulage'] %}
-                                <td class="center">
-                                    {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
-                                        <i class="red-text material-icons">highlight_off</i>
-                                    {% elseif brulageCumule(brulage['brulage'], loop.index) == limiteBrulage - 1 %}
-                                        <i class="orange-text material-icons">error_outline</i>
-                                    {% endif %}
-                                </td>
+                            <th class="center">
+                                <h6>{{ numero != '-1' ? 'Équipe n°' ~ numero : 'Sans équipe' }}</h6>
+                            </th>
+                            {% for idEquipe in idEquipes %}
+                                <th class="center"><h6>{{ idEquipe }}</h6></th>
                             {% endfor %}
                         </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td id="noTeam">2 équipes minimum requises</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        {% for nom, brulage in brulagesJoueurs %}
+                            <tr>
+                                <td {% if brulage['idCompetiteur'] == app.user.idCompetiteur %}class="bold light_blue"{% endif %}>
+                                    {{ nom }}
+                                </td>
+                                {% for b in brulage %}
+                                    <td class="center">
+                                        {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
+                                            <i class="red-text material-icons">highlight_off</i>
+                                        {% elseif brulageCumule(brulage['brulage'], loop.index) == limiteBrulage - 1 %}
+                                            <i class="orange-text material-icons">error_outline</i>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td id="noTeam">2 équipes minimum requises</td>
+            </tr>
+        {% endif %}
     </div>
 {% endmacro %}
 
