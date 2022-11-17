@@ -134,25 +134,46 @@ html,body{
   }
 }
 
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: $gradient_blue_light;
+  border-radius: 4px;
+
+  .collection-item {
+    border-bottom-color: $gradient_blue_light;
+  }
+}
+
 .dispos.merged_cards {
-  table tbody tr {
-    td:first-of-type span {
-      margin-left: 2%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  h6 {
+    font-size: 1.25rem;
+  }
+
+  table {
+    & thead tr h6 {
+      font-size: 1.25rem;
     }
 
-    td:nth-of-type(2) {
-      padding-left: 0;
-
-      span {
-        padding: 0 5px;
+    &:not(:first-of-type) {
+      & thead tr h6 {
+        margin-top: 15px;
       }
     }
 
-    td:nth-of-type(3), td:nth-of-type(2) {
-      padding-right: 0
+    tbody tr {
+      td {
+        span {
+          margin-left: 2%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .col.s1 {
+          padding-left: 0; padding-right: 0;
+        }
+      }
     }
   }
 
@@ -169,10 +190,6 @@ html,body{
 
       .col.s2 {
         margin-top: 2px;
-
-        & .labelNbMatchesJoues {
-          padding: 0 5px;
-        }
       }
     }
   }
@@ -941,7 +958,7 @@ table.rankingVirtualPoints {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 

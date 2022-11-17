@@ -95,7 +95,7 @@ class Equipe
     /**
      * @var Competiteur[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipeAssociee")
+     * @ORM\OneToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees")
      */
     protected $joueursAssocies;
 

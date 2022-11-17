@@ -363,12 +363,9 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @var Equipe|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="equipes")
-     * @ORM\JoinColumn(name="id_equipe_associee", nullable=true, referencedColumnName="id_equipe")
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
-    private $equipeAssociee;
+    private $equipesAssociees;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
@@ -1642,20 +1639,27 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return Equipe|null
+     * @return int[]
      */
-    public function getEquipeAssociee(): ?Equipe
+    public function getEquipesAssociees(): array
     {
-        return $this->equipeAssociee;
+        $equipesId = [];
+        foreach ($this->equipesAssociees as $equipesAssociee){
+            $equipesId[$equipesAssociee->getIdChampionnat()->getNom()] = [
+                'idChampionnat' => $equipesAssociee->getIdChampionnat()->getIdChampionnat(),
+                'numero' => $equipesAssociee->getIdEquipe()->getNumero() ? 'Équipe n°' . $equipesAssociee->getIdEquipe()->getNumero() : 'Sans équipe'
+            ];
+        }
+        return $equipesId;
     }
 
     /**
-     * @param Equipe|null $equipeAssociee
+     * @param mixed|null $equipesAssociees
      * @return Competiteur
      */
-    public function setEquipeAssociee(?Equipe $equipeAssociee): self
+    public function setEquipesAssociees($equipesAssociees): self
     {
-        $this->equipeAssociee = $equipeAssociee;
+        $this->equipesAssociees = $equipesAssociees;
         return $this;
     }
 }

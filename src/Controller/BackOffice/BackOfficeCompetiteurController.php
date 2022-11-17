@@ -451,7 +451,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'urlImage' => $competiteur->getAvatar(),
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'age' => $competiteur->getAge(),
-            'categorieAge' => $competiteur->getCategorieAgeLabel(),
             'isCritFed' => $competiteur->isCritFed(),
             'path' => 'backoffice.password.edit',
             'isArchived' => $competiteur->isArchive(),
@@ -465,7 +464,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'winner' => $competiteur->isWinner(),
             'fullWinner' => $competiteur->isFullWinner(),
             'profileCompletion' => $competiteur->profileCompletion(),
-            'equipeAssociee' => $competiteur->getEquipeAssociee()->getNumero()
+            'equipesAssociees' => $competiteur->getEquipesAssociees()
         ]);
     }
 

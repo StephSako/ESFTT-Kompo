@@ -49,7 +49,7 @@ class Disponibilite
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="equipesAssociees")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;

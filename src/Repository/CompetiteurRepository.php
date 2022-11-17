@@ -49,26 +49,42 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ) AS nbMatchesJoues')
             ->addSelect('(
                     SELECT d.disponibilite
-                    FROM App\Entity\Competiteur c1, App\Entity\Disponibilite d
+                    FROM App\Entity\Disponibilite d
                     WHERE d.idJournee = :idJournee
                     AND d.idChampionnat = :idChampionnat
-                    AND c.idCompetiteur = c1.idCompetiteur
                     AND c.idCompetiteur = d.idCompetiteur
                 ) as disponibilite')
+            ->addSelect('(
+                    SELECT et.numero
+                    FROM App\Entity\Titularisation t, App\Entity\Equipe et
+                    WHERE t.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t.idCompetiteur
+                    AND t.idEquipe = et.idEquipe
+                ) as numero')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $idChampionnat)
             ->where('c.isCompetiteur = true')
-            ->orderBy('disponibilite', 'DESC')
+            ->orderBy('numero')
+            ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
-        return array_map(function($dispo){
+        $disposFormatted = array_map(function($dispo){
             $dispo['joueur'] = $dispo['0'];
             unset($dispo['0']);
             return $dispo;
         }, $query);
+
+        $disposParEquipe = [];
+        foreach($disposFormatted as $dispo) {
+            $labelEquipe = $dispo['numero'] ? 'Équipe n°' . $dispo['numero'] : 'Sans équipe';
+            $disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()] = $dispo;
+            unset($disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()]['numero']);
+        }
+
+        return $disposParEquipe;
     }
 
     /**
@@ -131,7 +147,14 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom')
-            ->addSelect('IF(e.numero IS NOT NULL, e.numero, -1) as numero');
+            ->addSelect('(
+                    SELECT et.numero
+                    FROM App\Entity\Titularisation t, App\Entity\Equipe et
+                    WHERE t.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t.idCompetiteur
+                    AND t.idEquipe = et.idEquipe
+                ) as numero');
+
         foreach ($idEquipes as $idEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
@@ -154,8 +177,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isCompetiteur = true')
-            ->leftJoin('c.equipeAssociee', 'e')
-            ->orderBy('e.numero')
+            ->orderBy('numero')
             ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
@@ -170,15 +192,16 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
-            $brulageJoueur['numeroEquipeAssociee'] = $brulage['numero'];
+            $brulageJoueur['numeroEquipesAssociees'] = $brulage['numero'];
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
         $brulagesParEquipe = [];
         foreach($allBrulage as $nomJoueur => $brulage) {
-            $brulagesParEquipe[$brulage['numeroEquipeAssociee']][$nomJoueur] = $brulage;
-            unset($brulagesParEquipe[$brulage['numeroEquipeAssociee']][$nomJoueur]['numeroEquipeAssociee']);
+            $labelEquipe = $brulage['numeroEquipesAssociees'] ? 'Équipe n°' . $brulage['numeroEquipesAssociees'] : 'Sans équipe';
+            $brulagesParEquipe[$labelEquipe][$nomJoueur] = $brulage;
+            unset($brulagesParEquipe[$labelEquipe][$nomJoueur]['numeroEquipesAssociees']);
         }
 
         return $brulagesParEquipe;

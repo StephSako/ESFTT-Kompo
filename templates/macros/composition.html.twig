@@ -2,7 +2,7 @@
     <tr>
         <td class="rank{% if nbJoueurs % 3 == 0 and rank >= 3 and rank < 6 %} rank_blue {% endif %}">
             <b>Joueur {{ rank + 1 }}</b>
-            {% if nbCompo and competiteur and idJournee == 2 and j2Rule and isBrulesJ2(numEquipe, competiteur.idCompetiteur, selectedPlayers, brulages) %}
+            {% if nbCompo and competiteur and idJournee == 2 and j2Rule and isBrulesJ2(numEquipe, competiteur, selectedPlayers, brulages) %}
                 <i class="material-icons red-text tooltipped" data-position="top" data-html="true" data-tooltip="<b>Règle brûlage J2 :</b> au plus un joueur ayant joué <br> au-dessus de la {{ numEquipe }} en J1 peut être sélectionné">whatshot</i>
             {% endif %}
         </td>

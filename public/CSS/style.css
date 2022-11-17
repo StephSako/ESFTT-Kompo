@@ -108,19 +108,33 @@ html, body {
   left: 8px;
 }
 
-.dispos.merged_cards table tbody tr td:first-of-type span {
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: #1174b8;
+  border-radius: 4px;
+}
+ul.collection .collection-item {
+  border-bottom-color: #1174b8;
+}
+
+.dispos.merged_cards h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table thead tr h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table:not(:first-of-type) thead tr h6 {
+  margin-top: 15px;
+}
+.dispos.merged_cards table tbody tr td span {
   margin-left: 2%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dispos.merged_cards table tbody tr td:nth-of-type(2) {
+.dispos.merged_cards table tbody tr td .col.s1 {
   padding-left: 0;
-}
-.dispos.merged_cards table tbody tr td:nth-of-type(2) span {
-  padding: 0 5px;
-}
-.dispos.merged_cards table tbody tr td:nth-of-type(3), .dispos.merged_cards table tbody tr td:nth-of-type(2) {
   padding-right: 0;
 }
 .dispos.merged_cards .row.bottom_0 {
@@ -135,9 +149,6 @@ html, body {
 }
 .dispos.merged_cards .row.bottom_0:first-of-type .col.s2 {
   margin-top: 2px;
-}
-.dispos.merged_cards .row.bottom_0:first-of-type .col.s2 .labelNbMatchesJoues {
-  padding: 0 5px;
 }
 
 div.scrollableTable {
@@ -791,7 +802,7 @@ table.rankingVirtualPoints td .chip .nom {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 

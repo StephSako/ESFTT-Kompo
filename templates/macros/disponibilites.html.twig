@@ -1,4 +1,4 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesGenerales, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
 
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
@@ -7,7 +7,7 @@
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
         <div class="row bottom_0">
-            <div class="col s2 center"><span class="labelNbMatchesJoues pastille grey">&nbsp&nbsp&nbsp</span></div>
+            <div class="col s2 center"><span class="bold light_blue">X</span></div>
             <div class="col s10">Nombre de sélections sur la phase</div>
         </div>
         <div class="row bottom_0">
@@ -15,34 +15,46 @@
             <div class="col s10 m7">Sélectionnés pour cette journée</div>
         </div>
 
-        <table class="striped">
-            <tbody>
-                {% for dispo in disponibilitesGenerales %}
+        {% for numero, disposEquipe in disponibilitesJournee %}
+            <table class="striped">
+                <thead>
                     <tr>
-                        <td>
-                            <div class="valign-wrapper">
-                                {% if dispo.disponibilite is null %}
-                                    <span class="dot dot3 center">&nbsp;</span>
-                                {% elseif dispo.disponibilite == 1 %}
-                                    <span class="dot dot1 center">&nbsp;</span>
-                                {% elseif dispo.disponibilite == 0 %}
-                                    <span class="dot dot2 center">&nbsp;</span>
-                                {% endif %}
-                                <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="pastille grey">{{ dispo.nbMatchesJoues }}</span>
-                        </td>
-                        <td>
-                            {% if dispo.joueur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align material-icons">done</i>
-                            {% endif %}
-                        </td>
+                        <th class="center">
+                            <h6>{{ numero }}</h6>
+                        </th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for dispo in disposEquipe %}
+                        <tr>
+                            <td class="row">
+
+                                <div class="col s10">
+                                    <div class="valign-wrapper">
+                                        {% if dispo.disponibilite is null %}
+                                            <span class="dot dot3 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 1 %}
+                                            <span class="dot dot1 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 0 %}
+                                            <span class="dot dot2 center">&nbsp;</span>
+                                        {% endif %}
+                                        <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
+                                    </div>
+                                </div>
+                                <div class="col s1 center">
+                                    <span class="bold light_blue">{{ dispo.nbMatchesJoues }}</span>
+                                </div>
+                                <div class="col s1">
+                                    {% if dispo.joueur.idCompetiteur in selectedPlayers %}
+                                        <i class="blue-text right-align material-icons">done</i>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
 
         <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
