@@ -96,20 +96,23 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * // TODO A REFAIRE
      * @param int $numEquipe
-     * @param $idCompetiteur
+     * @param int $idCompetiteur
      * @param array $selectedPlayers
-     * @param array $brulageGeneral
+     * @param array $brulageGeneralEquipes
      * @return bool
      */
-    public function isBrulesJ2(int $numEquipe, $idCompetiteur, array $selectedPlayers, array $brulageGeneral): bool
+    public function isBrulesJ2(int $numEquipe, int $idCompetiteur, array $selectedPlayers, array $brulageGeneralEquipes): bool
     {
+        $brulageGeneral = [];
+        foreach ($brulageGeneralEquipes as $equipe) {
+            foreach ($equipe['joueurs'] as $joueur) {
+                $brulageGeneral[] = $joueur;
+            }
+        }
         $brulageJoueursCompo = (array_filter($brulageGeneral, function($brulageG) use ($selectedPlayers){
-            dump($brulageG);
             return in_array($brulageG['idCompetiteur'], $selectedPlayers);
         }));
-        dump('test');
 
         $isBurnt = array_filter($brulageJoueursCompo, function($brulageJoueur) use ($numEquipe) {
             return in_array(1, array_filter($brulageJoueur['brulage'], function($numEquipeBrulage) use ($numEquipe) {
@@ -121,7 +124,7 @@ class AppExtension extends AbstractExtension
             return $joueurBruleJ2['idCompetiteur'];
         },$isBurnt));
 
-        return in_array($idCompetiteur->getIdCompetiteur(), $burntJ2) && count($burntJ2) > 1;
+        return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
     }
 
     /**

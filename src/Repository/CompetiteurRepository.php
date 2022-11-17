@@ -153,7 +153,15 @@ class CompetiteurRepository extends ServiceEntityRepository
                     WHERE t.idChampionnat = :idChampionnat
                     AND c.idCompetiteur = t.idCompetiteur
                     AND t.idEquipe = et.idEquipe
-                ) as numero');
+                ) as numero')
+        ->addSelect('(
+                    SELECT et2.idEquipe
+                    FROM App\Entity\Titularisation t2, App\Entity\Equipe et2
+                    WHERE t2.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t2.idCompetiteur
+                    AND t2.idEquipe = et2.idEquipe
+                ) as idEquipeAssociee')
+        ;
 
         foreach ($idEquipes as $idEquipe) {
             $str = '';
@@ -192,16 +200,19 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
-            $brulageJoueur['numeroEquipesAssociees'] = $brulage['numero'];
+            $brulageJoueur['numero'] = $brulage['numero'];
+            $brulageJoueur['idEquipeAssociee'] = $brulage['idEquipeAssociee'];
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
         $brulagesParEquipe = [];
         foreach($allBrulage as $nomJoueur => $brulage) {
-            $labelEquipe = $brulage['numeroEquipesAssociees'] ? 'Équipe n°' . $brulage['numeroEquipesAssociees'] : 'Sans équipe';
-            $brulagesParEquipe[$labelEquipe][$nomJoueur] = $brulage;
-            unset($brulagesParEquipe[$labelEquipe][$nomJoueur]['numeroEquipesAssociees']);
+            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : 'Sans équipe';
+            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur] = $brulage;
+            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['nomEquipe'] = $labelEquipe;
+            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['idEquipeAssociee']);
+            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['numero']);
         }
 
         return $brulagesParEquipe;
