@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Serializable;
@@ -363,9 +364,22 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies")
+     * @ORM\JoinTable(name="prive_titularisation",
+                      joinColumns={
+                          @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+                      },
+                      inverseJoinColumns={
+                          @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
+                      }
+     * )
      */
     private $equipesAssociees;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur")
+     */
+    private $titularisations;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
@@ -1654,12 +1668,30 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param mixed|null $equipesAssociees
+     * @param Collection $equipesAssociees
      * @return Competiteur
      */
-    public function setEquipesAssociees($equipesAssociees): self
+    public function setEquipesAssociees(Collection $equipesAssociees): self
     {
         $this->equipesAssociees = $equipesAssociees;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Competiteur
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

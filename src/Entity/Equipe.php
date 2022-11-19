@@ -93,11 +93,14 @@ class Equipe
     private $rencontres;
 
     /**
-     * @var Competiteur[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees")
      */
     protected $joueursAssocies;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe")
+     */
+    private $titularisations;
 
     /**
      * @return Championnat|null
@@ -226,20 +229,38 @@ class Equipe
     }
 
     /**
-     * @return Competiteur[]
+     * @return Collection
      */
-    public function getJoueursAssocies(): array
+    public function getJoueursAssocies(): Collection
     {
         return $this->joueursAssocies;
     }
 
     /**
-     * @param Competiteur[] $joueursAssocies
+     * @param Collection $joueursAssocies
      * @return Equipe
      */
-    public function setJoueursAssocies(array $joueursAssocies): self
+    public function setJoueursAssocies(Collection $joueursAssocies): self
     {
         $this->joueursAssocies = $joueursAssocies;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Equipe
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

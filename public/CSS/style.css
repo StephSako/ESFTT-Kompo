@@ -675,8 +675,10 @@ table.rankingVirtualPoints td .chip .nom {
 
 .modal {
   width: 92% !important;
-  height: 85% !important;
+  height: 87% !important;
+  min-height: 87% !important;
   max-height: 100% !important;
+  top: 7% !important;
 }
 .modal .modal-content {
   max-width: 100% !important;
@@ -705,6 +707,7 @@ table.rankingVirtualPoints td .chip .nom {
   margin-top: 5% !important;
   width: 700px !important;
   height: 80% !important;
+  min-height: 80% !important;
   top: 4% !important;
 }
 .modal.modal-medium .modal-content {
@@ -1382,10 +1385,18 @@ a.reload_ranking {
   }
 }
 @media screen and (max-width: 601px) {
-  .modal.modal-medium, .modal.modal-small {
+  .modal {
     margin-top: 0 !important;
-    height: 89% !important;
+    min-height: 98% !important;
+    top: 1% !important;
+  }
+  .modal.modal-medium {
+    top: 4% !important;
+    min-height: 89% !important;
+  }
+  .modal.modal.modal-small {
     top: 6% !important;
+    min-height: 89% !important;
   }
 
   .navbar-general .btn-floating {

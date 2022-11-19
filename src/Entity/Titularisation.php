@@ -47,7 +47,7 @@ class Titularisation
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="equipesAssociees")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations")
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
@@ -63,7 +63,7 @@ class Titularisation
     /**
      * @var Equipe
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="titularisations")
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
      */
     private $idEquipe;

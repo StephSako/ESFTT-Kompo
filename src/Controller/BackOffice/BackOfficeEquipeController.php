@@ -245,4 +245,55 @@ class BackOfficeEquipeController extends AbstractController
         $range = range(1, $numEquipes ? max($numEquipes) : 1);
         return array_diff($range, $numEquipes);
     }
+
+    /**
+     * @Route("/backoffice/equipe/edit/players/{idEquipe}", name="backoffice.equipe.edit.players", requirements={"idEquipe"="\d+"})
+     * @param int $idEquipe
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function editPlayers(int $idEquipe, Request $request): Response
+    {
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Équipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
+        $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
+        $form = $this->createForm(EquipeType::class, $equipe);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $champHasDivisions) {
+            if ($form->isValid()) {
+                try {
+                    $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
+                    /** Désinscrire les joueurs superflus en cas de changement de division **/
+                    if ($equipe->getIdDivision() && $lastNbJoueursDivision > $equipe->getIdDivision()->getNbJoueurs()){
+                        foreach ($equipe->getRencontres()->toArray() as $rencontre){
+                            for ($i = $equipe->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
+                                $rencontre->setIdJoueurN($i, null);
+                            }
+                        }
+                    }
+
+                    $this->em->flush();
+                    $this->addFlash('success', 'Équipe modifiée');
+                    return $this->redirectToRoute('backoffice.equipes', [
+                        'active' => $equipe->getIdChampionnat()->getIdChampionnat()
+                    ]);
+                } catch(Exception $e){
+                    if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
+                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        }
+
+        return $this->render('backoffice/equipe/editPlayers.html.twig', [
+            'championnat' => $equipe->getIdChampionnat()->getNom(),
+            'form' => $form->createView(),
+            'champHasDivisions' => $champHasDivisions
+        ]);
+    }
 }
