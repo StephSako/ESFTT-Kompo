@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -93,12 +94,12 @@ class Equipe
     private $rencontres;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees", cascade={"persist"})
      */
     protected $joueursAssocies;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe")
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe", cascade={"persist"})
      */
     private $titularisations;
 

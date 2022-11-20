@@ -1,4 +1,4 @@
-{% macro table(equipes) %}
+{% macro table(equipes, idChampionnat) %}
     {% if equipes|length %}
         <table class="striped centered responsive-table backoffice-table">
             <thead>
@@ -7,6 +7,7 @@
                     <th>Division</th>
                     <th>Poule</th>
                     <th>Liée à la FFTT</th>
+                    <th></th>
                     <th></th>
                     <th></th>
                 </tr>

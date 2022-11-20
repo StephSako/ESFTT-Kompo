@@ -7,6 +7,7 @@ use App\Repository\DisponibiliteRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,8 +73,9 @@ class DisponibiliteController extends AbstractController
      * @Route("/journee/disponibilite/update/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param int $dispoJoueur
      * @param bool $dispo
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
+     * @throws NonUniqueResultException
      */
     public function update(int $dispoJoueur, bool $dispo, UtilController $utilController) : Response
     {

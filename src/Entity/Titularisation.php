@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *         @Index(name="IDX_titu_e", columns={"id_equipe"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_titu", columns={"id_competiteur", "id_championnat", "id_equipe"})
+ *          @UniqueConstraint(name="UNIQ_titu", columns={"id_competiteur", "id_championnat"})
  *     }
  * )
  */
@@ -47,7 +47,7 @@ class Titularisation
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations", cascade={"persist"})
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
@@ -55,7 +55,7 @@ class Titularisation
     /**
      * @var Championnat
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", cascade={"persist"})
      * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
      */
     private $idChampionnat;
@@ -63,7 +63,7 @@ class Titularisation
     /**
      * @var Equipe
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="titularisations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="titularisations", cascade={"persist"})
      * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
      */
     private $idEquipe;
@@ -80,7 +80,7 @@ class Titularisation
      * @param mixed $idTitularisation
      * @return Titularisation
      */
-    public function setIdTitularisation($idTitularisation)
+    public function setIdTitularisation($idTitularisation): self
     {
         $this->idTitularisation = $idTitularisation;
         return $this;
@@ -98,7 +98,7 @@ class Titularisation
      * @param Competiteur $idCompetiteur
      * @return Titularisation
      */
-    public function setIdCompetiteur(Competiteur $idCompetiteur): Titularisation
+    public function setIdCompetiteur(Competiteur $idCompetiteur): self
     {
         $this->idCompetiteur = $idCompetiteur;
         return $this;
@@ -116,7 +116,7 @@ class Titularisation
      * @param Championnat $idChampionnat
      * @return Titularisation
      */
-    public function setIdChampionnat(Championnat $idChampionnat): Titularisation
+    public function setIdChampionnat(Championnat $idChampionnat): self
     {
         $this->idChampionnat = $idChampionnat;
         return $this;
@@ -134,7 +134,7 @@ class Titularisation
      * @param Equipe $idEquipe
      * @return Titularisation
      */
-    public function setIdEquipe(Equipe $idEquipe): Titularisation
+    public function setIdEquipe(Equipe $idEquipe): self
     {
         $this->idEquipe = $idEquipe;
         return $this;

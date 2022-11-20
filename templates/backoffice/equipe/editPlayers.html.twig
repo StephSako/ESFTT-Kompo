@@ -18,17 +18,17 @@
 
         <div class="card-panel center-align">
             <h4 style="margin-bottom: 10px;" class="h4_form">Modifier les joueurs titulaires</h4>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.nom }} - Équipe n°{{ form.vars.value.numero }}{% endif %}</h5>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ championnat.nom }}</h5>
 
             {{ form_start(form) }}
                 <div class="row">
-                    <div class="col s12 m4 form_div_list">
-                        <b>Division</b>{{ form_row(form.idDivision) }}
+                    <div class="col s12">
+                        <b>Équipe n°</b>{{ form.vars.value.numero }}{{ form_row(form.joueursAssocies) }}
                     </div>
                 </div>
 
                 <br>
-                <a href="{{ path('backoffice.equipes', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <a href="{{ path('backoffice.equipes', championnat.idChampionnat ? { 'active': championnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
                 <button class="btn_gestion btn btn_form waves-effect light-blue darken-1">Enregistrer</button>
             {{ form_end(form) }}
         </div>

@@ -4,8 +4,11 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
+use App\Entity\Titularisation;
+use App\Form\CompetiteurType;
 use App\Form\EquipeType;
 use App\Repository\ChampionnatRepository;
+use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,23 +24,30 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $championnatRepository;
     private $divisionRepository;
+    /**
+     * @var CompetiteurRepository
+     */
+    private $competiteurRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
+     * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
+                                CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -259,41 +269,63 @@ class BackOfficeEquipeController extends AbstractController
             $this->addFlash('fail', 'Équipe inexistante');
             return $this->redirectToRoute('backoffice.equipes');
         }
-        $champHasDivisions = count($equipe->getIdChampionnat()->getDivisions()->toArray()) > 0;
-        $form = $this->createForm(EquipeType::class, $equipe);
+
+        $oldTitularisations = $equipe->getJoueursAssocies()->toArray();
+
+        $form = $this->createForm(EquipeType::class, $equipe, [
+            'editListeTitulaires' => true,
+            'choices' => $this->competiteurRepository->findBy(['isCompetiteur' => true], ['nom' => 'ASC', 'prenom' => 'ASC'])
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $champHasDivisions) {
+        if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $lastNbJoueursDivision = $equipe->getIdDivision()->getNbJoueurs();
-                    /** Désinscrire les joueurs superflus en cas de changement de division **/
-                    if ($equipe->getIdDivision() && $lastNbJoueursDivision > $equipe->getIdDivision()->getNbJoueurs()){
-                        foreach ($equipe->getRencontres()->toArray() as $rencontre){
-                            for ($i = $equipe->getIdDivision()->getNbJoueurs(); $i < $lastNbJoueursDivision; $i++){
-                                $rencontre->setIdJoueurN($i, null);
-                            }
-                        }
+                    $idsSelectedPlayers = array_map(function($j) { return $j->getIdCompetiteur(); }, $equipe->getJoueursAssocies()->toArray());
+                    $idsOldTitularisations = array_map(function($j) { return $j->getIdCompetiteur(); }, $oldTitularisations);
+
+                    $joueursToRemove = array_filter($oldTitularisations, function($joueur) use ($oldTitularisations, $idsSelectedPlayers) {
+                        return!in_array($joueur->getIdCompetiteur(), $idsSelectedPlayers);
+                    });
+                    $idsJoueursToRemove = array_map(function($j) { return $j->getIdCompetiteur(); }, $joueursToRemove);
+
+                    $titularisationsToRemove = array_filter($equipe->getTitularisations()->toArray(), function($j) use ($idsJoueursToRemove) {
+                        return in_array($j->getIdCompetiteur()->getIdCompetiteur(), $idsJoueursToRemove);
+                    });
+
+                    $joueursToAdd = array_filter($equipe->getJoueursAssocies()->toArray(), function($joueur) use ($oldTitularisations, $idsOldTitularisations) {
+                        return !in_array($joueur->getIdCompetiteur(), $idsOldTitularisations);
+                    });
+
+                    foreach ($titularisationsToRemove as $titularisatipn) {
+                        $this->em->remove($titularisatipn);
+                        $this->em->flush();
                     }
 
-                    $this->em->flush();
-                    $this->addFlash('success', 'Équipe modifiée');
+                    foreach ($joueursToAdd as $joueur) {
+                        $newTitularisation = new Titularisation($joueur, $equipe, $equipe->getIdChampionnat());
+                        $this->em->persist($newTitularisation);
+                        $this->em->flush($newTitularisation);
+                    }
+
+                    $this->addFlash('success', 'Titulaires de l\'équipe '. $equipe->getNumero() . ' modifiés');
                     return $this->redirectToRoute('backoffice.equipes', [
                         'active' => $equipe->getIdChampionnat()->getIdChampionnat()
                     ]);
                 } catch(Exception $e){
-                    if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
-                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    dump($e);
+                    // TODO
+//                    if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
+//                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
+//                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+//                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/equipe/editPlayers.html.twig', [
-            'championnat' => $equipe->getIdChampionnat()->getNom(),
-            'form' => $form->createView(),
-            'champHasDivisions' => $champHasDivisions
+            'championnat' => $equipe->getIdChampionnat(),
+            'form' => $form->createView()
         ]);
     }
 }

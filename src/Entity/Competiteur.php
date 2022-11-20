@@ -364,7 +364,7 @@ class Competiteur implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies", cascade={"persist"})
      * @ORM\JoinTable(name="prive_titularisation",
                       joinColumns={
                           @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
@@ -1653,15 +1653,24 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @return Collection
+     */
+    public function getEquipesAssociees(): Collection
+    {
+        return $this->equipesAssociees;
+    }
+
+    /**
      * @return int[]
      */
-    public function getEquipesAssociees(): array
+    public function getTableEquipesAssociees(): array
     {
         $equipesId = [];
-        foreach ($this->equipesAssociees as $equipesAssociee){
+        dump($this->equipesAssociees->toArray());
+        foreach ($this->equipesAssociees->toArray() as $equipesAssociee){
             $equipesId[$equipesAssociee->getIdChampionnat()->getNom()] = [
                 'idChampionnat' => $equipesAssociee->getIdChampionnat()->getIdChampionnat(),
-                'numero' => $equipesAssociee->getIdEquipe()->getNumero() ? 'Équipe n°' . $equipesAssociee->getIdEquipe()->getNumero() : 'Sans équipe'
+                'numero' => $equipesAssociee->getNumero() ? 'Équipe n°' . $equipesAssociee->getNumero() : 'Sans équipe'
             ];
         }
         return $equipesId;

@@ -13,6 +13,7 @@ use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
+use App\Repository\TitularisationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -71,6 +72,7 @@ class BackOfficeCompetiteurController extends AbstractController
     const EXCEl_CHAMP_IS_CRITERIUM = 14;
     const EXCEl_CHAMP_IS_ENTRAINEUR = 15;
     const EXCEl_CHAMP_IS_ADMIN = 16;
+    private $titularisationRepository;
 
     /**
      * BackOfficeController constructor.
@@ -80,6 +82,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param DivisionRepository $divisionRepository
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
+     * @param TitularisationRepository $titularisationRepository
      * @param ChampionnatRepository $championnatRepository
      * @param CacheManager $cacheManager
      * @param UploaderHelper $uploaderHelper
@@ -93,6 +96,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 DivisionRepository $divisionRepository,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
+                                TitularisationRepository $titularisationRepository,
                                 ChampionnatRepository $championnatRepository,
                                 CacheManager $cacheManager,
                                 UploaderHelper $uploaderHelper,
@@ -112,6 +116,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->cacheManager = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
         $this->validator = $validator;
+        $this->titularisationRepository = $titularisationRepository;
     }
 
     /**
@@ -401,8 +406,9 @@ class BackOfficeCompetiteurController extends AbstractController
                                 $selectionToSort->sortComposition();
                             }
 
-                            /** ... et ses disponibilités sont supprimées */
+                            /** ... et ses disponibilités et titularisations sont supprimées */
                             $this->disponibiliteRepository->setDeleteDispos($competiteur->getIdCompetiteur());
+                            $this->titularisationRepository->setDeleteTitularisation($competiteur->getIdCompetiteur());
                         }
 
                         if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
@@ -464,7 +470,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'winner' => $competiteur->isWinner(),
             'fullWinner' => $competiteur->isFullWinner(),
             'profileCompletion' => $competiteur->profileCompletion(),
-            'equipesAssociees' => $competiteur->getEquipesAssociees()
+            'equipesAssociees' => $competiteur->getTableEquipesAssociees()
         ]);
     }
 
@@ -497,6 +503,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * // TODO verifier si delete dispos et titularisations
      * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request

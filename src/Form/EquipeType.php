@@ -13,31 +13,44 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EquipeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['newEquipe']) {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+        if ($options['editListeTitulaires']) {
             $builder
-                ->add('idDivision', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'validate'
-                ],
-                'required' => false,
-                'empty_data' => null,
-                'placeholder' => 'Choisissez une division',
-                'label' => false,
-                'choices' => $options['divisionsOptGroup']
-            ])
-            ->add('numero', IntegerType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'validate',
-                    'min' => 1,
-                    'max' => 100
-                ]
-            ]);
-        } else {
-            $builder->add('idDivision', EntityType::class, [
+                ->add('joueursAssocies', SearchablePlayersType::class, [
+                    'class' => 'App\Entity\Competiteur',
+                    'choices' => $options['choices'],
+                    'by_reference' => false,
+                    'required' => true,
+                    'attr' => [
+                        'class' => 'validate'
+                    ],
+                    'label' => false,
+                ]);
+        }
+        else {
+            if ($options['newEquipe']) {
+                $builder
+                    ->add('idDivision', ChoiceType::class, [
+                        'attr' => [
+                            'class' => 'validate'
+                        ],
+                        'required' => false,
+                        'empty_data' => null,
+                        'placeholder' => 'Choisissez une division',
+                        'label' => false,
+                        'choices' => $options['divisionsOptGroup']
+                    ])
+                    ->add('numero', IntegerType::class, [
+                        'label' => false,
+                        'required' => true,
+                        'attr' => [
+                            'class' => 'validate',
+                            'min' => 1,
+                            'max' => 100
+                        ]
+                    ]);
+            } else {
+                $builder->add('idDivision', EntityType::class, [
                     'class' => 'App\Entity\Division',
                     'required' => true,
                     'attr' => [
@@ -54,19 +67,20 @@ class EquipeType extends AbstractType
                             ->addOrderBy('d.shortName', 'ASC');
                     }
                 ]);
-        }
-
-        $builder->add('idPoule', EntityType::class, [
-            'class' => 'App\Entity\Poule',
-            'choice_label' => 'poule',
-            'label' => false,
-            'empty_data' => null,
-            'placeholder' => 'Définir vide',
-            'required' => false,
-            'query_builder' => function (EntityRepository $pr) {
-                return $pr->createQueryBuilder('p')->orderBy('p.poule');
             }
-        ]);
+
+            $builder->add('idPoule', EntityType::class, [
+                'class' => 'App\Entity\Poule',
+                'choice_label' => 'poule',
+                'label' => false,
+                'empty_data' => null,
+                'placeholder' => 'Définir vide',
+                'required' => false,
+                'query_builder' => function (EntityRepository $pr) {
+                    return $pr->createQueryBuilder('p')->orderBy('p.poule');
+                }
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -75,7 +89,9 @@ class EquipeType extends AbstractType
             'data_class' => Equipe::class,
             'translation_domain' => 'forms',
             'divisionsOptGroup' => null,
-            'newEquipe' => false
+            'newEquipe' => false,
+            'editListeTitulaires' => false,
+            'choices' => []
         ]);
     }
 }
