@@ -47,7 +47,7 @@ class Titularisation
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;
@@ -55,7 +55,7 @@ class Titularisation
     /**
      * @var Championnat
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="titularisations", cascade={"persist"})
      * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
      */
     private $idChampionnat;

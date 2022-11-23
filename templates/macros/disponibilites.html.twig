@@ -97,44 +97,49 @@
 
     {% for nomChamp, disponibilites in allDisponibilites %}
         <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
-            <table class="centered responsive-table striped recapitulatifDispos">
-                <thead>
-                    <tr>
-                        <th><span class="hide-on-small-only">Joueurs</span></th>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <th style="width: 60px;">J{{ i }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
 
-                <tbody>
-                {% for disponibilite in disponibilites["dispos"] %}
-                    <tr>
-                        <td style="padding-top: 5px; padding-bottom: 5px;">
-                            <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                                <span>
-                                    {{ disponibilite.nom }} {{ disponibilite.prenom }}
-                                </span>
-                            </div>
-                        </td>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <td>
-                                {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
-                                        <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
-                                    {% else %}
-                                        <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
-                                    {% endif %}
-                                {% else %}
-                                    <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
-                                {% endif %}
+            {% for numero, disponibilitesEquipes in disponibilites["dispos"] %}
+                <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ numero }}</h6>
+
+                <table class="centered responsive-table striped recapitulatifDispos">
+                    <thead>
+                        <tr>
+                            <th><h6 class="hide-on-med-and-down">{{ numero }}</h6></th>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <th>J{{ i }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for disponibilite in disponibilitesEquipes %}
+                        <tr>
+                            <td style="padding-top: 5px; padding-bottom: 5px;">
+                                <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                    <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                                    <span>
+                                        {{ disponibilite.nom }} {{ disponibilite.prenom }}
+                                    </span>
+                                </div>
                             </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <td>
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                            <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                        {% else %}
+                                            <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
         </div>
     {% endfor %}
 {% endmacro %}

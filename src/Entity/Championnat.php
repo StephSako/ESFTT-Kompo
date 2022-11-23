@@ -161,6 +161,13 @@ class Championnat
     private $journees;
 
     /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idChampionnat")
+     */
+    private $titularisations;
+
+    /**
      * @return int
      */
     public function getNbJournees(): int
@@ -412,5 +419,23 @@ class Championnat
             return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });
         return array_shift($nextJourneeToPlay) ?: null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Championnat
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
+        return $this;
     }
 }

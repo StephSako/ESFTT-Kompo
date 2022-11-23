@@ -18,12 +18,14 @@
 
         <div class="card-panel center-align">
             <h4 style="margin-bottom: 10px;" class="h4_form">Modifier les joueurs titulaires</h4>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ championnat.nom }}</h5>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">Équipe n°{{ form.vars.value.numero }} - {{ championnat.nom }}</h5>
+
+            <p class="pastille blue"><i class="material-icons">info</i> Si vous sélectionnez un joueur déjà titulaire dans une autre équipe de ce championnat, il sera affecté à sa nouvelle équipe et ne sera plus titulaire de son ancienne équipe</p>
 
             {{ form_start(form) }}
-                <div class="row">
+                <div class="row" style="margin-bottom: 0">
                     <div class="col s12">
-                        <b>Équipe n°</b>{{ form.vars.value.numero }}{{ form_row(form.joueursAssocies) }}
+                        {{ form_row(form.joueursAssocies) }}
                     </div>
                 </div>
 

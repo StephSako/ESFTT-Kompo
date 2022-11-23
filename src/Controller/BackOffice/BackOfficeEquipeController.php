@@ -5,7 +5,6 @@ namespace App\Controller\BackOffice;
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
-use App\Form\CompetiteurType;
 use App\Form\EquipeType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
@@ -24,9 +23,6 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $championnatRepository;
     private $divisionRepository;
-    /**
-     * @var CompetiteurRepository
-     */
     private $competiteurRepository;
 
     /**
@@ -281,7 +277,21 @@ class BackOfficeEquipeController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
+                    /** IDs des joueurs sélectionnés */
                     $idsSelectedPlayers = array_map(function($j) { return $j->getIdCompetiteur(); }, $equipe->getJoueursAssocies()->toArray());
+
+                    /** On supprime les titularisations si des joueurs sont déjà affectés dans une autre équipe */
+                    $titus = $equipe->getIdChampionnat()->getTitularisations()->toArray();
+                    $oldTitularisationsToRemove = array_filter($titus, function($titu) use($equipe, $idsSelectedPlayers) {
+                        return $titu->getIdChampionnat()->getIdChampionnat() == $equipe->getIdChampionnat()->getIdChampionnat()
+                        && $titu->getIdEquipe()->getIdEquipe() != $equipe->getIdEquipe()
+                        && in_array($titu->getIdCompetiteur()->getIdCompetiteur(), $idsSelectedPlayers);
+                    });
+                    foreach ($oldTitularisationsToRemove as $oldTitularisationToRemove) {
+                        $this->em->remove($oldTitularisationToRemove);
+                    }
+                    $this->em->flush();
+
                     $idsOldTitularisations = array_map(function($j) { return $j->getIdCompetiteur(); }, $oldTitularisations);
 
                     $joueursToRemove = array_filter($oldTitularisations, function($joueur) use ($oldTitularisations, $idsSelectedPlayers) {
@@ -299,26 +309,22 @@ class BackOfficeEquipeController extends AbstractController
 
                     foreach ($titularisationsToRemove as $titularisatipn) {
                         $this->em->remove($titularisatipn);
-                        $this->em->flush();
                     }
+                    $this->em->flush();
 
                     foreach ($joueursToAdd as $joueur) {
                         $newTitularisation = new Titularisation($joueur, $equipe, $equipe->getIdChampionnat());
                         $this->em->persist($newTitularisation);
-                        $this->em->flush($newTitularisation);
                     }
+                    $this->em->flush();
 
                     $this->addFlash('success', 'Titulaires de l\'équipe '. $equipe->getNumero() . ' modifiés');
+
                     return $this->redirectToRoute('backoffice.equipes', [
                         'active' => $equipe->getIdChampionnat()->getIdChampionnat()
                     ]);
                 } catch(Exception $e){
-                    dump($e);
-                    // TODO
-//                    if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
-//                        if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
-//                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-//                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    $this->addFlash('fail', 'Une erreur est survenue');
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }

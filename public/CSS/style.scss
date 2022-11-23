@@ -1464,6 +1464,24 @@ a.reload_ranking {
   }
 }
 
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos {
+    & thead tr {
+      & th:not(:first-of-type) {
+        width: 60px;
+      }
+
+      h6 {
+        font-size: 1.25rem;
+      }
+    }
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+}
+
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
@@ -1579,8 +1597,18 @@ a.reload_ranking {
     }
   }
 
-  table.recapitulatifDispos tbody td {
-    height: 51px;
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+
+  table.recapitulatifDispos {
+    & tbody td {
+      height: 51px;
+    }
   }
 
   .col_infos_licence {

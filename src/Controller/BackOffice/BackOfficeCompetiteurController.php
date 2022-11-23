@@ -503,7 +503,6 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * // TODO verifier si delete dispos et titularisations
      * @Route("/backoffice/competiteur/delete/{id}", name="backoffice.competiteur.delete", methods="DELETE", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request

@@ -377,11 +377,6 @@ class Competiteur implements UserInterface, Serializable
     private $equipesAssociees;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur")
-     */
-    private $titularisations;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $dispos;
@@ -1666,7 +1661,6 @@ class Competiteur implements UserInterface, Serializable
     public function getTableEquipesAssociees(): array
     {
         $equipesId = [];
-        dump($this->equipesAssociees->toArray());
         foreach ($this->equipesAssociees->toArray() as $equipesAssociee){
             $equipesId[$equipesAssociee->getIdChampionnat()->getNom()] = [
                 'idChampionnat' => $equipesAssociee->getIdChampionnat()->getIdChampionnat(),
@@ -1683,24 +1677,6 @@ class Competiteur implements UserInterface, Serializable
     public function setEquipesAssociees(Collection $equipesAssociees): self
     {
         $this->equipesAssociees = $equipesAssociees;
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getTitularisations(): Collection
-    {
-        return $this->titularisations;
-    }
-
-    /**
-     * @param Collection $titularisations
-     * @return Competiteur
-     */
-    public function setTitularisations(Collection $titularisations): self
-    {
-        $this->titularisations = $titularisations;
         return $this;
     }
 }

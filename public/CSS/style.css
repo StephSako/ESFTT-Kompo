@@ -1254,6 +1254,17 @@ a.reload_ranking {
     padding-top: 5px;
   }
 }
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos thead tr th:not(:first-of-type) {
+    width: 60px;
+  }
+  table.recapitulatifDispos thead tr h6 {
+    font-size: 1.25rem;
+  }
+  table.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
+  }
+}
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
@@ -1350,6 +1361,13 @@ a.reload_ranking {
   }
   .backoffice_disponibilites .row {
     width: min-content;
+  }
+
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+  }
+  h6.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
   }
 
   table.recapitulatifDispos tbody td {

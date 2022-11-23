@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
 use App\Entity\Rencontre;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -112,12 +113,20 @@ class CompetiteurRepository extends ServiceEntityRepository
                 if ($i < count($journees)-1) $strDispos .= ", ',' , ";
             }
             $result = $result
-                ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug());
+                ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug())
+                ->addSelect('(
+                    SELECT et' . $championnat->getIdChampionnat() . '.numero
+                    FROM App\Entity\Titularisation t' . $championnat->getIdChampionnat() . ', App\Entity\Equipe et' . $championnat->getIdChampionnat() . '
+                    WHERE c.idCompetiteur = t' . $championnat->getIdChampionnat() . '.idCompetiteur
+                    AND t' . $championnat->getIdChampionnat() . '.idChampionnat = ' . $championnat->getIdChampionnat() . '
+                    AND t' . $championnat->getIdChampionnat() . '.idEquipe = et' . $championnat->getIdChampionnat() . '.idEquipe
+                ) as numero' . $championnat->getSlug());
         }
 
         $result = $result
             ->where('c.isCompetiteur = true')
-            ->orderBy('c.nom')
+            ->orderBy('c.classement_officiel', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
@@ -129,6 +138,15 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $queryResult[$championnat->getSlug()][$key] = $item;
                 $queryChamp[$championnat->getNom()]["nbJournees"] = $championnat->getNbJournees();
                 $queryChamp[$championnat->getNom()]["dispos"] = $queryResult[$championnat->getSlug()];
+            }
+        }
+
+        foreach ($queryChamp as $nomChamp => $championnat) {
+            $disposTemp = $championnat["dispos"];
+            unset($queryChamp[$nomChamp]["dispos"]);
+            foreach($disposTemp as $dispo) {
+                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : 'Sans équipe';
+                $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
             }
         }
         return $queryChamp;
