@@ -73,7 +73,7 @@ class SearchablePlayersType extends AbstractType {
                 return array_map(function($c) {
                     return (string) $c->getIdCompetiteur();
                 }, $values->toArray());
-            }, function (array $ids) use ($options) : Collection {
+            }, function (?array $ids = []) use ($options) : Collection {
                 if (empty($ids)) return new ArrayCollection([]);
                 return new ArrayCollection(
                     $this->em->getRepository($options['class'])->findBy(['idCompetiteur' => $ids])

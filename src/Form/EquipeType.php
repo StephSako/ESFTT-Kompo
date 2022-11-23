@@ -20,10 +20,7 @@ class EquipeType extends AbstractType
                     'class' => 'App\Entity\Competiteur',
                     'choices' => $options['choices'],
                     'by_reference' => false,
-                    'required' => true,
-                    'attr' => [
-                        'class' => 'validate'
-                    ],
+                    'required' => false,
                     'label' => false,
                 ]);
         }
