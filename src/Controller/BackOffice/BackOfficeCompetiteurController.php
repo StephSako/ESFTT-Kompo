@@ -470,7 +470,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'winner' => $competiteur->isWinner(),
             'fullWinner' => $competiteur->isFullWinner(),
             'profileCompletion' => $competiteur->profileCompletion(),
-            'equipesAssociees' => $competiteur->getTableEquipesAssociees()
+            'equipesAssociees' => $competiteur->getTableEquipesAssociees($this->championnatRepository->findAll())
         ]);
     }
 

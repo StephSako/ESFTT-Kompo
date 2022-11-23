@@ -1656,18 +1656,20 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @param Championnat[] $championnats
      * @return int[]
      */
-    public function getTableEquipesAssociees(): array
+    public function getTableEquipesAssociees(array $championnats): array
     {
-        $equipesId = [];
-        foreach ($this->equipesAssociees->toArray() as $equipesAssociee){
-            $equipesId[$equipesAssociee->getIdChampionnat()->getNom()] = [
-                'idChampionnat' => $equipesAssociee->getIdChampionnat()->getIdChampionnat(),
-                'numero' => $equipesAssociee->getNumero() ? 'Équipe n°' . $equipesAssociee->getNumero() : 'Sans équipe'
-            ];
+        $equipesAssociees = [];
+        foreach ($championnats as $champ) {
+            $titusChampJoueur = array_filter($champ->getTitularisations()->toArray(), function($titu){
+                return $titu->getIdCompetiteur()->getIdCompetiteur() == $this->getIdCompetiteur();
+            });
+            $equipeTitu = array_shift($titusChampJoueur);
+            $equipesAssociees[$champ->getNom()] = $equipeTitu ? $equipeTitu->getIdEquipe()->getNumero() : null;
         }
-        return $equipesId;
+        return $equipesAssociees;
     }
 
     /**
