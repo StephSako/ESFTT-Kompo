@@ -99,11 +99,17 @@ class AppExtension extends AbstractExtension
      * @param int $numEquipe
      * @param int $idCompetiteur
      * @param array $selectedPlayers
-     * @param array $brulageGeneral
+     * @param array $brulageGeneralEquipes
      * @return bool
      */
-    public function isBrulesJ2(int $numEquipe, int $idCompetiteur, array $selectedPlayers, array $brulageGeneral): bool
+    public function isBrulesJ2(int $numEquipe, int $idCompetiteur, array $selectedPlayers, array $brulageGeneralEquipes): bool
     {
+        $brulageGeneral = [];
+        foreach ($brulageGeneralEquipes as $equipe) {
+            foreach ($equipe['joueurs'] as $joueur) {
+                $brulageGeneral[] = $joueur;
+            }
+        }
         $brulageJoueursCompo = (array_filter($brulageGeneral, function($brulageG) use ($selectedPlayers){
             return in_array($brulageG['idCompetiteur'], $selectedPlayers);
         }));

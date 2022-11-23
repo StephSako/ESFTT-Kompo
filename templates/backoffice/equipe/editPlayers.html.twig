@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/flash.html.twig' as _flash %}
+{% import 'macros/form/equipe.html.twig' as _equipe %}
+{% form_theme form 'components/materialize_form_theme.html.twig' %}
+
+{% block title %}Modifier les joueurs titulaires{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
+
+    <div class="container">
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class="card-panel center-align">
+            <h4 style="margin-bottom: 10px;" class="h4_form">Modifier les joueurs titulaires</h4>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">Équipe n°{{ form.vars.value.numero }} - {{ championnat.nom }}</h5>
+
+            <p class="pastille blue"><i class="material-icons">info</i> Si vous sélectionnez un joueur déjà titulaire dans une autre équipe de ce championnat, il sera affecté à sa nouvelle équipe et ne sera plus titulaire de son ancienne équipe</p>
+
+            {{ form_start(form) }}
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col s12">
+                        {{ form_row(form.joueursAssocies) }}
+                    </div>
+                </div>
+
+                <br>
+                <a href="{{ path('backoffice.equipes', championnat.idChampionnat ? { 'active': championnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <button class="btn_gestion btn btn_form waves-effect light-blue darken-1">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

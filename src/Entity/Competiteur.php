@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Serializable;
@@ -361,6 +362,19 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies", cascade={"persist"})
+     * @ORM\JoinTable(name="prive_titularisation",
+                      joinColumns={
+                          @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+                      },
+                      inverseJoinColumns={
+                          @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
+                      }
+     * )
+     */
+    private $equipesAssociees;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
@@ -1630,6 +1644,41 @@ class Competiteur implements UserInterface, Serializable
     public function setIsPasswordResetting(bool $isPasswordResetting): self
     {
         $this->isPasswordResetting = $isPasswordResetting;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getEquipesAssociees(): Collection
+    {
+        return $this->equipesAssociees;
+    }
+
+    /**
+     * @param Championnat[] $championnats
+     * @return int[]
+     */
+    public function getTableEquipesAssociees(array $championnats): array
+    {
+        $equipesAssociees = [];
+        foreach ($championnats as $champ) {
+            $titusChampJoueur = array_filter($champ->getTitularisations()->toArray(), function($titu){
+                return $titu->getIdCompetiteur()->getIdCompetiteur() == $this->getIdCompetiteur();
+            });
+            $equipeTitu = array_shift($titusChampJoueur);
+            $equipesAssociees[$champ->getNom()] = $equipeTitu ? $equipeTitu->getIdEquipe()->getNumero() : null;
+        }
+        return $equipesAssociees;
+    }
+
+    /**
+     * @param Collection $equipesAssociees
+     * @return Competiteur
+     */
+    public function setEquipesAssociees(Collection $equipesAssociees): self
+    {
+        $this->equipesAssociees = $equipesAssociees;
         return $this;
     }
 }

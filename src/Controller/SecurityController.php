@@ -139,6 +139,7 @@ class SecurityController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
+            'equipesAssociees' => $this->getUser()->getTableEquipesAssociees($allChampionnats),
             'form' => $form->createView()
         ]);
     }

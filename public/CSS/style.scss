@@ -134,25 +134,46 @@ html,body{
   }
 }
 
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: $gradient_blue_light;
+  border-radius: 4px;
+
+  .collection-item {
+    border-bottom-color: $gradient_blue_light;
+  }
+}
+
 .dispos.merged_cards {
-  table tbody tr {
-    td:first-of-type span {
-      margin-left: 2%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  h6 {
+    font-size: 1.25rem;
+  }
+
+  table {
+    & thead tr h6 {
+      font-size: 1.25rem;
     }
 
-    td:nth-of-type(2) {
-      padding-left: 0;
-
-      span {
-        padding: 0 5px;
+    &:not(:first-of-type) {
+      & thead tr h6 {
+        margin-top: 15px;
       }
     }
 
-    td:nth-of-type(3), td:nth-of-type(2) {
-      padding-right: 0
+    tbody tr {
+      td {
+        span {
+          margin-left: 2%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .col.s1 {
+          padding-left: 0; padding-right: 0;
+        }
+      }
     }
   }
 
@@ -169,10 +190,6 @@ html,body{
 
       .col.s2 {
         margin-top: 2px;
-
-        & .labelNbMatchesJoues {
-          padding: 0 5px;
-        }
       }
     }
   }
@@ -777,8 +794,10 @@ table.rankingVirtualPoints {
 
 .modal {
   width: 92% !important ;
-  height: 85% !important ;
+  height: 87% !important ;
+  min-height: 87% !important ;
   max-height: 100% !important;
+  top: 7% !important;
 
   & .modal-content {
     max-width: 100% !important;
@@ -814,6 +833,7 @@ table.rankingVirtualPoints {
     margin-top: 5% !important;
     width: 700px !important ;
     height: 80% !important ;
+    min-height: 80% !important ;
     top: 4% !important;
 
     & .modal-content {
@@ -941,7 +961,7 @@ table.rankingVirtualPoints {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 
@@ -1249,6 +1269,18 @@ table.table-last-compos {
   }
 }
 
+.brulages table{
+  & thead tr h6 {
+    font-size: 1.25rem;
+  }
+
+  &:not(:first-of-type) {
+    & thead tr h6 {
+      margin-top: 15px;
+    }
+  }
+}
+
 #title_points_virtuels {
   vertical-align: sub
 }
@@ -1432,6 +1464,24 @@ a.reload_ranking {
   }
 }
 
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos {
+    & thead tr {
+      & th:not(:first-of-type) {
+        width: 60px;
+      }
+
+      h6 {
+        font-size: 1.25rem;
+      }
+    }
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+}
+
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
@@ -1547,8 +1597,18 @@ a.reload_ranking {
     }
   }
 
-  table.recapitulatifDispos tbody td {
-    height: 51px;
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+
+  table.recapitulatifDispos {
+    & tbody td {
+      height: 51px;
+    }
   }
 
   .col_infos_licence {
@@ -1585,10 +1645,20 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 601px) {
-  .modal.modal-medium, .modal.modal-small {
+  .modal {
     margin-top: 0 !important;
-    height: 89% !important;
-    top: 6% !important;
+    min-height: 98% !important;
+    top: 1% !important;
+
+    &.modal-medium {
+      top: 4% !important;
+      min-height: 89% !important;
+    }
+
+    &.modal.modal-small {
+      top: 6% !important;
+      min-height: 89% !important;
+    }
   }
 
   .navbar-general .btn-floating {

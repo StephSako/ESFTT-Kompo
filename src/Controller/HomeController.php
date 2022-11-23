@@ -128,13 +128,19 @@ class HomeController extends AbstractController
         // Numero de la journée
         $numJournee = array_search($journee, $journees)+1;
 
-        // Joueurs ayant déclaré leur disponibilité
-        $disponibilitesGenerales = $this->competiteurRepository->findDisposJoueurs($id, $type, max(array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos)));
-
-        // Joueurs n'ayant pas déclaré leur disponibilité
-        $joueursNonDeclares = array_values(array_filter($disponibilitesGenerales, function ($dispo) { return $dispo['disponibilite']== null; }));
+        // Disponibilités des joueurs pour la journée par équipe
+        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, max(array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos)));
+        $joueursNonDeclares = [];
+        $joueursDisponibles = [];
+        foreach ($disponibilitesJournee as $equipe) {
+            foreach ($equipe as $dispoJoueurEquipe) {
+                if ($dispoJoueurEquipe['disponibilite'] == null) $joueursNonDeclares[] = $dispoJoueurEquipe;
+                else if ($dispoJoueurEquipe['disponibilite'] == '1') $joueursDisponibles[] = $dispoJoueurEquipe;
+            }
+        }
         $joueursNonDeclaresContact = $contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
 
+        $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         if (count($joueursNonDeclares)) {
             $messageJoueursSansDispo = $this->settingsRepository->find('mail-sans-dispo')->getContent();
 
@@ -151,8 +157,6 @@ class HomeController extends AbstractController
             $messageJoueursSansDispo = str_replace('<p>', '', $messageJoueursSansDispo);
             $messageJoueursSansDispo = str_replace('</p>', '', $messageJoueursSansDispo);
             $messageJoueursSansDispo = strip_tags($messageJoueursSansDispo);
-        } else {
-            $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         }
 
         // Joueurs sélectionnées
@@ -185,8 +189,6 @@ class HomeController extends AbstractController
         }, array_filter($equipes, function($equipe){
             return $equipe->getIdDivision() == null;
         }));
-
-        $nbDispos = count(array_filter(array_filter($disponibilitesGenerales, function ($dispo) { return $dispo != null; }), function($dispo){ return $dispo['disponibilite']; }));
 
         // Si l'utilisateur actuel est disponible pour la journée actuelle
         $disponible = ($dispoJoueur ? ($dispoJoueur->getDisponibilite() ? 1 : 0) : -1);
@@ -232,7 +234,7 @@ class HomeController extends AbstractController
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
-            'nbMaxPotentielPlayers' => count($disponibilitesGenerales),
+            'nbMaxPotentielPlayers' => array_sum(array_map(function($equipe) { return count($equipe); }, $disponibilitesJournee)),
             'nbMinJoueurs' => $nbMinJoueurs,
             'allChampionnats' => $allChampionnats,
             'selection' => $selection,
@@ -240,12 +242,12 @@ class HomeController extends AbstractController
             'compos' => $compos,
             'idEquipes' => $idEquipesVisuel,
             'selectedPlayers' => $selectedPlayers,
-            'disponibilitesGenerales' => $disponibilitesGenerales,
+            'disponibilitesJournee' => $disponibilitesJournee,
             'disponible' => $disponible,
             'joueursNonDeclaresContact' => $joueursNonDeclaresContact,
             'dispoJoueur' => $dispoJoueur ? $dispoJoueur->getIdDisponibilite() : -1,
             'disposJoueur' => $disposJoueurFormatted,
-            'nbDispos' => $nbDispos,
+            'nbDispos' => count($joueursDisponibles),
             'nbNonDeclares' => count($joueursNonDeclares),
             'brulages' => $brulages,
             'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
@@ -684,7 +686,7 @@ class HomeController extends AbstractController
                 }
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
-                    'nom' => $joueur->getPrenom() . ' ' . $joueur->getNom(),
+                    'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
                     'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,

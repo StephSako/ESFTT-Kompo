@@ -1,4 +1,4 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesGenerales, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
 
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
@@ -7,7 +7,7 @@
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
         <div class="row bottom_0">
-            <div class="col s2 center"><span class="labelNbMatchesJoues pastille grey">&nbsp&nbsp&nbsp</span></div>
+            <div class="col s2 center"><span class="bold light_blue">X</span></div>
             <div class="col s10">Nombre de sélections sur la phase</div>
         </div>
         <div class="row bottom_0">
@@ -15,38 +15,50 @@
             <div class="col s10 m7">Sélectionnés pour cette journée</div>
         </div>
 
-        <table class="striped">
-            <tbody>
-                {% for dispo in disponibilitesGenerales %}
+        {% for numero, disposEquipe in disponibilitesJournee %}
+            <table class="striped">
+                <thead>
                     <tr>
-                        <td>
-                            <div class="valign-wrapper">
-                                {% if dispo.disponibilite is null %}
-                                    <span class="dot dot3 center">&nbsp;</span>
-                                {% elseif dispo.disponibilite == 1 %}
-                                    <span class="dot dot1 center">&nbsp;</span>
-                                {% elseif dispo.disponibilite == 0 %}
-                                    <span class="dot dot2 center">&nbsp;</span>
-                                {% endif %}
-                                <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="pastille grey">{{ dispo.nbMatchesJoues }}</span>
-                        </td>
-                        <td>
-                            {% if dispo.joueur.idCompetiteur in selectedPlayers %}
-                                <i class="blue-text right-align material-icons">done</i>
-                            {% endif %}
-                        </td>
+                        <th class="center">
+                            <h6>{{ numero }}</h6>
+                        </th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for dispo in disposEquipe %}
+                        <tr>
+                            <td class="row">
+
+                                <div class="col s10">
+                                    <div class="valign-wrapper">
+                                        {% if dispo.disponibilite is null %}
+                                            <span class="dot dot3 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 1 %}
+                                            <span class="dot dot1 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 0 %}
+                                            <span class="dot dot2 center">&nbsp;</span>
+                                        {% endif %}
+                                        <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
+                                    </div>
+                                </div>
+                                <div class="col s1 center">
+                                    <span class="bold light_blue">{{ dispo.nbMatchesJoues }}</span>
+                                </div>
+                                <div class="col s1">
+                                    {% if dispo.joueur.idCompetiteur in selectedPlayers %}
+                                        <i class="blue-text right-align material-icons">done</i>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
 
         <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
-        {% if nbNonDeclares|length > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+        {% if nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
             <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
         {% endif %}
     </div>
@@ -85,44 +97,49 @@
 
     {% for nomChamp, disponibilites in allDisponibilites %}
         <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
-            <table class="centered responsive-table striped recapitulatifDispos">
-                <thead>
-                    <tr>
-                        <th><span class="hide-on-small-only">Joueurs</span></th>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <th style="width: 60px;">J{{ i }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
 
-                <tbody>
-                {% for disponibilite in disponibilites["dispos"] %}
-                    <tr>
-                        <td style="padding-top: 5px; padding-bottom: 5px;">
-                            <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                                <span>
-                                    {{ disponibilite.nom }} {{ disponibilite.prenom }}
-                                </span>
-                            </div>
-                        </td>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <td>
-                                {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
-                                        <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
-                                    {% else %}
-                                        <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
-                                    {% endif %}
-                                {% else %}
-                                    <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
-                                {% endif %}
+            {% for numero, disponibilitesEquipes in disponibilites["dispos"] %}
+                <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ numero }}</h6>
+
+                <table class="centered responsive-table striped recapitulatifDispos">
+                    <thead>
+                        <tr>
+                            <th><h6 class="hide-on-med-and-down">{{ numero }}</h6></th>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <th>J{{ i }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for disponibilite in disponibilitesEquipes %}
+                        <tr>
+                            <td style="padding-top: 5px; padding-bottom: 5px;">
+                                <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                    <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                                    <span>
+                                        {{ disponibilite.nom }} {{ disponibilite.prenom }}
+                                    </span>
+                                </div>
                             </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <td>
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                            <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                        {% else %}
+                                            <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
         </div>
     {% endfor %}
 {% endmacro %}

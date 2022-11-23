@@ -93,6 +93,16 @@ class Equipe
     private $rencontres;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees", cascade={"persist"})
+     */
+    protected $joueursAssocies;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe", cascade={"persist"})
+     */
+    private $titularisations;
+
+    /**
      * @return Championnat|null
      */
     public function getIdChampionnat(): ?Championnat
@@ -215,6 +225,42 @@ class Equipe
     public function setLienDivision(?string $lienDivision): self
     {
         $this->lienDivision = $lienDivision;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJoueursAssocies(): Collection
+    {
+        return $this->joueursAssocies;
+    }
+
+    /**
+     * @param Collection $joueursAssocies
+     * @return Equipe
+     */
+    public function setJoueursAssocies(Collection $joueursAssocies): self
+    {
+        $this->joueursAssocies = $joueursAssocies;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Equipe
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

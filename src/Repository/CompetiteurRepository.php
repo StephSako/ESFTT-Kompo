@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
 use App\Entity\Rencontre;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,26 +50,42 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ) AS nbMatchesJoues')
             ->addSelect('(
                     SELECT d.disponibilite
-                    FROM App\Entity\Competiteur c1, App\Entity\Disponibilite d
+                    FROM App\Entity\Disponibilite d
                     WHERE d.idJournee = :idJournee
                     AND d.idChampionnat = :idChampionnat
-                    AND c.idCompetiteur = c1.idCompetiteur
                     AND c.idCompetiteur = d.idCompetiteur
                 ) as disponibilite')
+            ->addSelect('(
+                    SELECT et.numero
+                    FROM App\Entity\Titularisation t, App\Entity\Equipe et
+                    WHERE t.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t.idCompetiteur
+                    AND t.idEquipe = et.idEquipe
+                ) as numero')
             ->setParameter('idJournee', $idJournee)
             ->setParameter('idChampionnat', $idChampionnat)
             ->where('c.isCompetiteur = true')
-            ->orderBy('disponibilite', 'DESC')
+            ->orderBy('numero')
+            ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
-        return array_map(function($dispo){
+        $disposFormatted = array_map(function($dispo){
             $dispo['joueur'] = $dispo['0'];
             unset($dispo['0']);
             return $dispo;
         }, $query);
+
+        $disposParEquipe = [];
+        foreach($disposFormatted as $dispo) {
+            $labelEquipe = $dispo['numero'] ? 'Équipe n°' . $dispo['numero'] : 'Sans équipe';
+            $disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()] = $dispo;
+            unset($disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()]['numero']);
+        }
+
+        return $disposParEquipe;
     }
 
     /**
@@ -96,12 +113,20 @@ class CompetiteurRepository extends ServiceEntityRepository
                 if ($i < count($journees)-1) $strDispos .= ", ',' , ";
             }
             $result = $result
-                ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug());
+                ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug())
+                ->addSelect('(
+                    SELECT et' . $championnat->getIdChampionnat() . '.numero
+                    FROM App\Entity\Titularisation t' . $championnat->getIdChampionnat() . ', App\Entity\Equipe et' . $championnat->getIdChampionnat() . '
+                    WHERE c.idCompetiteur = t' . $championnat->getIdChampionnat() . '.idCompetiteur
+                    AND t' . $championnat->getIdChampionnat() . '.idChampionnat = ' . $championnat->getIdChampionnat() . '
+                    AND t' . $championnat->getIdChampionnat() . '.idEquipe = et' . $championnat->getIdChampionnat() . '.idEquipe
+                ) as numero' . $championnat->getSlug());
         }
 
         $result = $result
             ->where('c.isCompetiteur = true')
-            ->orderBy('c.nom')
+            ->orderBy('c.classement_officiel', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
@@ -113,6 +138,15 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $queryResult[$championnat->getSlug()][$key] = $item;
                 $queryChamp[$championnat->getNom()]["nbJournees"] = $championnat->getNbJournees();
                 $queryChamp[$championnat->getNom()]["dispos"] = $queryResult[$championnat->getSlug()];
+            }
+        }
+
+        foreach ($queryChamp as $nomChamp => $championnat) {
+            $disposTemp = $championnat["dispos"];
+            unset($queryChamp[$nomChamp]["dispos"]);
+            foreach($disposTemp as $dispo) {
+                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : 'Sans équipe';
+                $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
             }
         }
         return $queryChamp;
@@ -130,7 +164,23 @@ class CompetiteurRepository extends ServiceEntityRepository
     {
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
-            ->addSelect('c.prenom');
+            ->addSelect('c.prenom')
+            ->addSelect('(
+                    SELECT et.numero
+                    FROM App\Entity\Titularisation t, App\Entity\Equipe et
+                    WHERE t.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t.idCompetiteur
+                    AND t.idEquipe = et.idEquipe
+                ) as numero')
+        ->addSelect('(
+                    SELECT et2.idEquipe
+                    FROM App\Entity\Titularisation t2, App\Entity\Equipe et2
+                    WHERE t2.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t2.idCompetiteur
+                    AND t2.idEquipe = et2.idEquipe
+                ) as idEquipeAssociee')
+        ;
+
         foreach ($idEquipes as $idEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
@@ -153,7 +203,9 @@ class CompetiteurRepository extends ServiceEntityRepository
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isCompetiteur = true')
-            ->orderBy('c.nom')
+            ->orderBy('numero')
+            ->addOrderBy('c.classement_officiel', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
@@ -166,11 +218,22 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
+            $brulageJoueur['numero'] = $brulage['numero'];
+            $brulageJoueur['idEquipeAssociee'] = $brulage['idEquipeAssociee'];
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
-        return $allBrulage;
+        $brulagesParEquipe = [];
+        foreach($allBrulage as $nomJoueur => $brulage) {
+            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : 'Sans équipe';
+            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur] = $brulage;
+            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['nomEquipe'] = $labelEquipe;
+            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['idEquipeAssociee']);
+            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['numero']);
+        }
+
+        return $brulagesParEquipe;
     }
 
     /**

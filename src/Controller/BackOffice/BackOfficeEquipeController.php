@@ -4,8 +4,10 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
+use App\Entity\Titularisation;
 use App\Form\EquipeType;
 use App\Repository\ChampionnatRepository;
+use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,23 +23,27 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $championnatRepository;
     private $divisionRepository;
+    private $competiteurRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
+     * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
+                                CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->competiteurRepository = $competiteurRepository;
     }
 
     /**
@@ -244,5 +250,88 @@ class BackOfficeEquipeController extends AbstractController
         }, $numEquipes);
         $range = range(1, $numEquipes ? max($numEquipes) : 1);
         return array_diff($range, $numEquipes);
+    }
+
+    /**
+     * @Route("/backoffice/equipe/edit/players/{idEquipe}", name="backoffice.equipe.edit.players", requirements={"idEquipe"="\d+"})
+     * @param int $idEquipe
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function editPlayers(int $idEquipe, Request $request): Response
+    {
+        if (!($equipe = $this->equipeRepository->find($idEquipe))) {
+            $this->addFlash('fail', 'Équipe inexistante');
+            return $this->redirectToRoute('backoffice.equipes');
+        }
+
+        $oldTitularisations = $equipe->getJoueursAssocies()->toArray();
+
+        $form = $this->createForm(EquipeType::class, $equipe, [
+            'editListeTitulaires' => true,
+            'choices' => $this->competiteurRepository->findBy(['isCompetiteur' => true], ['nom' => 'ASC', 'prenom' => 'ASC'])
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    /** IDs des joueurs sélectionnés */
+                    $idsSelectedPlayers = array_map(function($j) { return $j->getIdCompetiteur(); }, $equipe->getJoueursAssocies()->toArray());
+
+                    /** On supprime les titularisations si des joueurs sont déjà affectés dans une autre équipe */
+                    $titus = $equipe->getIdChampionnat()->getTitularisations()->toArray();
+                    $oldTitularisationsToRemove = array_filter($titus, function($titu) use($equipe, $idsSelectedPlayers) {
+                        return $titu->getIdChampionnat()->getIdChampionnat() == $equipe->getIdChampionnat()->getIdChampionnat()
+                        && $titu->getIdEquipe()->getIdEquipe() != $equipe->getIdEquipe()
+                        && in_array($titu->getIdCompetiteur()->getIdCompetiteur(), $idsSelectedPlayers);
+                    });
+                    foreach ($oldTitularisationsToRemove as $oldTitularisationToRemove) {
+                        $this->em->remove($oldTitularisationToRemove);
+                    }
+                    $this->em->flush();
+
+                    $idsOldTitularisations = array_map(function($j) { return $j->getIdCompetiteur(); }, $oldTitularisations);
+
+                    $joueursToRemove = array_filter($oldTitularisations, function($joueur) use ($oldTitularisations, $idsSelectedPlayers) {
+                        return!in_array($joueur->getIdCompetiteur(), $idsSelectedPlayers);
+                    });
+                    $idsJoueursToRemove = array_map(function($j) { return $j->getIdCompetiteur(); }, $joueursToRemove);
+
+                    $titularisationsToRemove = array_filter($equipe->getTitularisations()->toArray(), function($j) use ($idsJoueursToRemove) {
+                        return in_array($j->getIdCompetiteur()->getIdCompetiteur(), $idsJoueursToRemove);
+                    });
+
+                    $joueursToAdd = array_filter($equipe->getJoueursAssocies()->toArray(), function($joueur) use ($oldTitularisations, $idsOldTitularisations) {
+                        return !in_array($joueur->getIdCompetiteur(), $idsOldTitularisations);
+                    });
+
+                    foreach ($titularisationsToRemove as $titularisatipn) {
+                        $this->em->remove($titularisatipn);
+                    }
+                    $this->em->flush();
+
+                    foreach ($joueursToAdd as $joueur) {
+                        $newTitularisation = new Titularisation($joueur, $equipe, $equipe->getIdChampionnat());
+                        $this->em->persist($newTitularisation);
+                    }
+                    $this->em->flush();
+
+                    $this->addFlash('success', 'Titulaires de l\'équipe '. $equipe->getNumero() . ' modifiés');
+
+                    return $this->redirectToRoute('backoffice.equipes', [
+                        'active' => $equipe->getIdChampionnat()->getIdChampionnat()
+                    ]);
+                } catch(Exception $e){
+                    $this->addFlash('fail', 'Une erreur est survenue');
+                }
+            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        }
+
+        return $this->render('backoffice/equipe/editPlayers.html.twig', [
+            'championnat' => $equipe->getIdChampionnat(),
+            'form' => $form->createView()
+        ]);
     }
 }

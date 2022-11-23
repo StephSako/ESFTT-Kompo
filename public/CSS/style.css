@@ -108,19 +108,33 @@ html, body {
   left: 8px;
 }
 
-.dispos.merged_cards table tbody tr td:first-of-type span {
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: #1174b8;
+  border-radius: 4px;
+}
+ul.collection .collection-item {
+  border-bottom-color: #1174b8;
+}
+
+.dispos.merged_cards h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table thead tr h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table:not(:first-of-type) thead tr h6 {
+  margin-top: 15px;
+}
+.dispos.merged_cards table tbody tr td span {
   margin-left: 2%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dispos.merged_cards table tbody tr td:nth-of-type(2) {
+.dispos.merged_cards table tbody tr td .col.s1 {
   padding-left: 0;
-}
-.dispos.merged_cards table tbody tr td:nth-of-type(2) span {
-  padding: 0 5px;
-}
-.dispos.merged_cards table tbody tr td:nth-of-type(3), .dispos.merged_cards table tbody tr td:nth-of-type(2) {
   padding-right: 0;
 }
 .dispos.merged_cards .row.bottom_0 {
@@ -135,9 +149,6 @@ html, body {
 }
 .dispos.merged_cards .row.bottom_0:first-of-type .col.s2 {
   margin-top: 2px;
-}
-.dispos.merged_cards .row.bottom_0:first-of-type .col.s2 .labelNbMatchesJoues {
-  padding: 0 5px;
 }
 
 div.scrollableTable {
@@ -664,8 +675,10 @@ table.rankingVirtualPoints td .chip .nom {
 
 .modal {
   width: 92% !important;
-  height: 85% !important;
+  height: 87% !important;
+  min-height: 87% !important;
   max-height: 100% !important;
+  top: 7% !important;
 }
 .modal .modal-content {
   max-width: 100% !important;
@@ -694,6 +707,7 @@ table.rankingVirtualPoints td .chip .nom {
   margin-top: 5% !important;
   width: 700px !important;
   height: 80% !important;
+  min-height: 80% !important;
   top: 4% !important;
 }
 .modal.modal-medium .modal-content {
@@ -791,7 +805,7 @@ table.rankingVirtualPoints td .chip .nom {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 
@@ -1076,6 +1090,13 @@ table.table-last-compos tr {
   cursor: pointer;
 }
 
+.brulages table thead tr h6 {
+  font-size: 1.25rem;
+}
+.brulages table:not(:first-of-type) thead tr h6 {
+  margin-top: 15px;
+}
+
 #title_points_virtuels {
   vertical-align: sub;
 }
@@ -1233,6 +1254,17 @@ a.reload_ranking {
     padding-top: 5px;
   }
 }
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos thead tr th:not(:first-of-type) {
+    width: 60px;
+  }
+  table.recapitulatifDispos thead tr h6 {
+    font-size: 1.25rem;
+  }
+  table.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
+  }
+}
 @media screen and (min-width: 1285px) {
   .exempt {
     margin-left: 80px;
@@ -1331,6 +1363,13 @@ a.reload_ranking {
     width: min-content;
   }
 
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+  }
+  h6.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
+  }
+
   table.recapitulatifDispos tbody td {
     height: 51px;
   }
@@ -1364,10 +1403,18 @@ a.reload_ranking {
   }
 }
 @media screen and (max-width: 601px) {
-  .modal.modal-medium, .modal.modal-small {
+  .modal {
     margin-top: 0 !important;
-    height: 89% !important;
+    min-height: 98% !important;
+    top: 1% !important;
+  }
+  .modal.modal-medium {
+    top: 4% !important;
+    min-height: 89% !important;
+  }
+  .modal.modal.modal-small {
     top: 6% !important;
+    min-height: 89% !important;
   }
 
   .navbar-general .btn-floating {
