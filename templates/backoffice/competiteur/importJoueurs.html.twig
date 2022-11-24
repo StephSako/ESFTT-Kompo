@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back-office - Importer des joueurs{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+        <script type="text/javascript" defer src="{{ asset('JS/importJoueursFromExcel.min.js') }}"></script>
+    </header>
+
+    <div style="width: 90%" class='container'>
+
+        {% for message in app.flashes('success') %}
+            {{ _flash.message(message, 'green') }}
+        {% endfor %}
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        <div class='card-panel center-align white-text title_journee'>
+            <h4>Importer des joueurs</h4>
+        </div>
+
+        <div class='card-panel backoffice-panel center'>
+
+            <a class="waves-effect waves-light btn modal-trigger blue" href="#instructions">
+                <i class="material-icons">info</i> Instructions
+            </a>
+
+            <div id="instructions" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4>Importation de joueurs par fichier Excel</h4>
+
+                    <div style="text-align: start">
+                        <p><b>Etape 1</b> Sélectionnez le document Excel grâce auquel vous souhaitez importer les nouveaux joueurs à inscrire.</p>
+
+                        <p>Les colonnes du fichier Excel doivent suite l'ordre suivant de la colonne <b>B</b> à <b>Q</b> :</p>
+                        <ul style="margin-left: 15px">
+                            <li>- la licence</li>
+                            <li>- le nom<sup class="red-text">*</sup></li>
+                            <li>- le prénom<sup class="red-text">*</sup></li>
+                            <li>- la date de naissance <b>(au format JJ-MM-AAAA)</b></li>
+                            <li>- l'année du dernier certificat médical</li>
+                            <li>- le numéro de téléphone</li>
+                            <li>- le numéro de téléphone 2</li>
+                            <li>- l'adresse e-mail</li>
+                            <li>- l'adresse e-mail 2</li>
+                            <li>- le classement</li>
+                            <li>- de L à Q : cocher d'un <b>x</b> les colonnes correspondantes aux rôles du nouvel adhérent<sup class="red-text">*</sup></li>
+                        </ul>
+                        <p><i><sup class="red-text">*</sup>Seules 3 colonnes sont obligatoires : le <b>nom</b>, le <b>prénom</b> et <b>au moins un rôle coché</b>. <b>Les autres colonnes sont optionnelles et peuvent rester vides</b>, mais cela permet de gagner du temps à l'inscription du joueur et évitent ainsi de repasser sur chaque profil manuellement.</i></p>
+
+                        <p>Pour que le processus se déroule sans encombre, le document doit respecter ce template :</p>
+                        <div style="display: flex; justify-content: center;">
+                            <a href='{{ path('backoffice.competiteurs.download.template.import.excel') }}' style="margin-top: 0" class="blue btn"><i class="material-icons">download</i> Template d'exemple</a>
+                        </div>
+
+                        <p><b>Etape 2</b> Une fois le document lu, la liste des joueurs vous sera affichée.</p>
+
+                        <p>Si des erreurs de saisie sont détectées, elles vont seront indiquées par des encadrés rouges : survolez-la avec votre souris pour afficher le message d'aide. Corrigez-les directement dans le document Excel, puis soumettez-le de nouveau.</p>
+                        <div style="display: flex; justify-content: center;">
+                            <img class="center" style="border: 1px solid #d1d1d1; width: 250px;" src="{{ asset('images/messageErreurSaisie.jpg') }}" alt="image message erreur de saisie">
+                        </div>
+
+                        <p><b>Etape 3</b> Une fois le document corrigé, cochez/décochez les joueurs que vous souhaitez inscrire ou non. Si, pour un joueur, sa licence est renseignée dans le document et qu'elle existe déjà dans Kompo, le joueur ne peut pas être coché.</p>
+
+                        <p><b>Etape 4</b> Si le message de succès vert apparait, cliquez sur le bouton <b>Enregistrer</b> en bas de la page et patientez quelques instants le temps que les joueurs s'enregistrent et que les e-mails de bienvenue s'envoient. <i>Les joueurs recevront un e-mail de bienvenue si <b>au moins une adresse e-mail</b> est renseignée)</i></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Compris !</a>
+                </div>
+            </div>
+
+            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteurs.import.file.save') }}" method="POST" enctype="multipart/form-data">
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="file-field input-field col s12 m10 offset-m1 l6 offset-l3">
+                        <div class="btn blue" id="btnFileInputExcelDocument">
+                            <i class="material-icons">attach_file</i>
+                            <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="excelDocument" id="excelDocument">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <label for="filePathExcelDocument" hidden></label>
+                            <input class="file-path" type="text" id="filePathExcelDocument">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tableJoueursImportes"></div>
+                <div id="tableJoueursImportesLoader" class="hide" style="padding-right: 4px; padding-left: 4px;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div><div class="gap-patch">
+                                <div class="circle"></div>
+                            </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <a style="margin-top: 12px" href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion" id="retourMembres">Retour</a>
+        </div>
+    </div>
+{% endblock %}

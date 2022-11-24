@@ -159,27 +159,29 @@
 {% macro classement(classementVirtuel, pointsWonField) %}
     {% for joueur in classementVirtuel %}
         <tr>
+            {% if joueur["gap"] is defined %}
+                <td class="progression-td">
+                    {% if joueur["hasLicence"] %}
+                        <i class="material-icons {{ joueur["gap"]["color"] }}-text">{% if joueur["gap"]["gap"] > 0 %}keyboard_arrow_up{% elseif joueur["gap"]["gap"] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur["gap"]["color"] }}-text">{{ joueur["gap"]["gap"] | abs }}</span>
+                    {% endif %}
+                </td>
+            {% endif %}
             <td class="td-chip">
                 <div class="chip">
-                    <img src="{{ asset(joueur["avatar"]) }}" alt="Avatar">
-                    {% if loop.index <4 %}
-                        <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
-                    {% endif %}
-                    <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
+                    <img src="{{ asset(joueur["avatar"]) | imagine_filter('thumb') }}" alt="Avatar">
+                    <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
                 </div>
             </td>
-            <td class="td-name">
-                {% if loop.index < 4 %}
-                    <i class="material-icons {% if loop.index == 1 %}gold-color{% elseif loop.index == 2 %}silver-color{% elseif loop.index == 3 %}bronze-color{% endif %}">military_tech</i>
-                {% endif %}
-                <span class="nom{% if joueur["nom"] == app.user.prenom ~ ' ' ~ app.user.nom %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
+            <td class="td-name{% if joueur["gap"] is not defined %} pl5{% endif %}">
+                <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
             </td>
-            {% if joueur["pointsVirtuelsVirtualPoints"] %}
+            {% if joueur["hasLicence"] %}
                 <td class="points-td">
                     <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuelsVirtualPoints"] | round(1, 'floor') }} pts</span>
                 </td>
                 <td class="progression-td">
-                    <span class="{% if joueur[pointsWonField] > 0 %}green{% elseif joueur[pointsWonField] == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if joueur[pointsWonField] >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur[pointsWonField] | round(1, 'floor') }}</span>
+                    <span class="{% if joueur[pointsWonField] > 0 %}green{% elseif joueur[pointsWonField] == 0 %}grey{% else %}red{% endif %}-text">
+                        <i class="material-icons">{% if joueur[pointsWonField] > 0 %}keyboard_arrow_up{% elseif joueur[pointsWonField] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur[pointsWonField] | round(1, 'floor') | abs }}</span>
                 </td>
             {% else %}
                 <td colspan="2" class="center">

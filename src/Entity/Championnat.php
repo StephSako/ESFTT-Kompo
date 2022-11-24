@@ -60,12 +60,12 @@ class Championnat
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "La limite de brûlage doit être supérieure à {{ limit }}"
+     *     message = "La limite de brûlage doit être supérieure à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 4,
-     *     message = "La limite de brûlage doit être inférierue à {{ limit }}"
+     *     message = "La limite de brûlage doit être inférierue à {{ compared_value }}"
      * )
      *
      * @Assert\NotBlank(
@@ -88,12 +88,12 @@ class Championnat
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "Il doit y avoir au minimum {{ limit }} journée"
+     *     message = "Il doit y avoir au minimum {{ compared_value }} journée"
      * )
      *
      * @Assert\LessThanOrEqual (
      *     value = 10,
-     *     message = "Il doit y avoir au maximum {{ limit }} journée"
+     *     message = "Il doit y avoir au maximum {{ compared_value }} journée"
      * )
      *
      * @Assert\NotBlank(
@@ -159,6 +159,13 @@ class Championnat
      * @ORM\OneToMany(targetEntity="App\Entity\Journee", mappedBy="idChampionnat", cascade={"remove"}, orphanRemoval=true)
      */
     private $journees;
+
+    /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idChampionnat")
+     */
+    private $titularisations;
 
     /**
      * @return int
@@ -412,5 +419,23 @@ class Championnat
             return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });
         return array_shift($nextJourneeToPlay) ?: null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Championnat
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
+        return $this;
     }
 }

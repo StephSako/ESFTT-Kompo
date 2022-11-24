@@ -115,6 +115,86 @@ html,body{
   }
 }
 
+.dispos.merged_cards, .brulageCard.merged_cards {
+  & .row.bottom_0 {
+    padding: 0;
+    text-align: left;
+
+    & .col {
+      padding: 0;
+
+      & .s10 {
+        padding-right: 1px;
+      }
+
+      & .s2 {
+        left: 8px;
+      }
+    }
+  }
+}
+
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: $gradient_blue_light;
+  border-radius: 4px;
+
+  .collection-item {
+    border-bottom-color: $gradient_blue_light;
+  }
+}
+
+.dispos.merged_cards {
+  h6 {
+    font-size: 1.25rem;
+  }
+
+  table {
+    & thead tr h6 {
+      font-size: 1.25rem;
+    }
+
+    &:not(:first-of-type) {
+      & thead tr h6 {
+        margin-top: 15px;
+      }
+    }
+
+    tbody tr {
+      td {
+        span {
+          margin-left: 2%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .col.s1 {
+          padding-left: 0; padding-right: 0;
+        }
+      }
+    }
+  }
+
+  .row.bottom_0 {
+    margin-left: 0;
+    margin-right: 0;
+
+    &:nth-of-type(2) {
+      margin-bottom: 4px;
+    }
+
+    &:first-of-type {
+      margin-top: 10px;
+
+      .col.s2 {
+        margin-top: 2px;
+      }
+    }
+  }
+}
+
 div.scrollableTable {
   overflow-x: scroll;
   width: 100%;
@@ -192,8 +272,13 @@ thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
 }
 
 i.iconPlace {
-  font-size: 2.1rem;
+  font-size: 30px;
   color: $dark_blue;
+
+  .btn-small & {
+    font-size: 25px;
+    color: white;
+  }
 }
 
 .setDispoCard {
@@ -315,11 +400,6 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
 .chip-mobile img {
   margin-top: 6px!important;
   margin-right: 25px!important;
-}
-
-.select-dropdown li img {
-  border-radius: 50%;
-  object-fit:cover;
 }
 
 i {
@@ -543,6 +623,23 @@ button.renew_certif_table {
 .first_sidenav {
   margin-top: 5px;
 
+  .journee.li_in_line a {
+    padding-right: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    i {
+      margin-right: 0;
+    }
+
+    .dot {
+      position: relative;
+      top: 45%;
+      width: 6px;
+      height: 6px;
+    }
+  }
+
   & .collapsible-header {
     border-radius: 5px;
   }
@@ -647,8 +744,11 @@ span.virtualPoints {
 table.rankingVirtualPoints {
   font-size: 13px !important;
   td {
-    padding-left: 0;
-    padding-right: 0;
+
+    &:not(.td-chip) {
+      padding-left: 0;
+      padding-right: 0;
+    }
 
     &.td-name {
       display: none;
@@ -662,6 +762,7 @@ table.rankingVirtualPoints {
     & .chip{
       padding-right: 0;
       margin-bottom: 0;
+      margin-left: 4px;
 
       .nom {
         font-size: 13px !important;
@@ -693,8 +794,10 @@ table.rankingVirtualPoints {
 
 .modal {
   width: 92% !important ;
-  height: 85% !important ;
+  height: 87% !important ;
+  min-height: 87% !important ;
   max-height: 100% !important;
+  top: 7% !important;
 
   & .modal-content {
     max-width: 100% !important;
@@ -726,14 +829,94 @@ table.rankingVirtualPoints {
     }
   }
 
-  &.modal-alert {
+  &.modal-medium {
     margin-top: 5% !important;
     width: 700px !important ;
     height: 80% !important ;
+    min-height: 80% !important ;
     top: 4% !important;
 
     & .modal-content {
       padding: 2px;
+    }
+  }
+
+  &.modal-small {
+    width: 45% !important;
+
+    & .modal-gps{
+      h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+
+      h6 {
+        font-size: 20px;
+      }
+
+      a.btn.phone {
+        margin-top: 0;
+      }
+
+      p.complAdr {
+        margin: 0;
+      }
+
+      .btn-gps{
+        p.adr {
+          margin: 0;
+        }
+
+        p.adr {
+          margin-top: 4px;
+        }
+
+        .row_btns {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 0;
+
+          p {
+            margin-top: 5px;
+          }
+
+          .card.grey {
+            padding: 5px 10px 10px 10px;
+            margin: 5px 10px;
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+
+            &:nth-child(2) a.btn-small {
+              background-color: #3cf;
+            }
+
+            button.btn-small {
+              margin-top: 8px;
+            }
+
+          i {
+              font-size: 21px;
+            }
+
+            img {
+              width: 26px;
+              aspect-ratio: auto;
+              margin-top: 3px;
+            }
+          }
+        }
+      }
+
+      .telephoneDiv {
+        display: flex;
+        justify-content: center;
+
+        div {
+          margin: 0 5px;
+        }
+      }
     }
   }
 }
@@ -778,7 +961,7 @@ table.rankingVirtualPoints {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 
@@ -821,6 +1004,7 @@ td#noTeam {
 
 .avatar {
   object-fit:cover;
+  border-radius: 50%;
 }
 
 #span_passwords_matching, #span_passwords_not_matching {
@@ -1051,11 +1235,6 @@ table.table-last-compos {
   }
 }
 
-.brulageCard {
-  padding-left: 0;
-  padding-right: 0;
-}
-
 // On re-stylise les balises mal interprétées
 #aide_page {
   h1 {
@@ -1090,12 +1269,83 @@ table.table-last-compos {
   }
 }
 
+.brulages table{
+  & thead tr h6 {
+    font-size: 1.25rem;
+  }
+
+  &:not(:first-of-type) {
+    & thead tr h6 {
+      margin-top: 15px;
+    }
+  }
+}
+
 #title_points_virtuels {
   vertical-align: sub
 }
 
 .lien_court {
   display: none;
+}
+
+.merged_cards.up.leftOne {
+  margin-top: 10px;
+}
+
+.divProfileCompletionCol {
+  margin-top: 0 !important;
+
+  .divProfileCompletion {
+    background-color: #ffebd7;
+    border: 1px solid #fc780b;
+    border-radius: 10px;
+
+    .progress {
+      margin-bottom: 7px;
+    }
+
+    p {
+      font-size: 15px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+
+    .champsManquants {
+      p, li {
+        font-size: 13px;
+        margin: 0;
+      }
+    }
+  }
+}
+
+#noPeopleToImport {
+  margin-top: 10px;
+}
+
+#importButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+
+  #submitImportButton {
+    margin-left: 5px;
+  }
+}
+
+span.field-icon {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .christmas_code {
@@ -1130,13 +1380,6 @@ table.table-last-compos {
   background-color: #a7d6ff;
   border-radius: 8px;
   padding: 2px 2px 3px 2px;
-}
-
-#badgeCertifInvalidButton {
-  padding: 2px 4px;
-  border-radius: 2px;
-  margin-left: 5px;
-  background-color: #ff6565;
 }
 
 .preloader_personnal_virtual_rank {
@@ -1218,6 +1461,27 @@ a.reload_ranking {
 }
 
 
+.navbar-general{
+  .left_items .dot {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+  }
+
+  .btn-floating {
+    top: 13px;
+    right: 23px;
+
+    i {
+      position: absolute;
+      height: 0;
+      line-height: 40px;
+    }
+  }
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {
@@ -1245,6 +1509,24 @@ a.reload_ranking {
 @media screen and (min-width: 992px) and (max-width: 1357px) {
   .preloader_personnal_virtual_rank {
     padding-top: 5px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos {
+    & thead tr {
+      & th:not(:first-of-type) {
+        width: 60px;
+      }
+
+      h6 {
+        font-size: 1.25rem;
+      }
+    }
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
   }
 }
 
@@ -1302,6 +1584,22 @@ a.reload_ranking {
 
 // md grid
 @media screen and (max-width: 992px) {
+  .th_mobile_pts_off {
+    padding-top: 28px;
+
+    &.isCritFed {
+      padding-top: 18px;
+    }
+  }
+
+  table#joueursIssued tbody tr td.isCritFed:last-child {
+    min-height: 56px;
+  }
+
+  .th_mobile_nom {
+    padding-top: 26px;
+  }
+
   th.th_picture_compet_table {
     height: 116px;
   }
@@ -1355,34 +1653,77 @@ a.reload_ranking {
     }
   }
 
-  table.recapitulatifDispos tbody td {
-    height: 51px;
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+
+  table.recapitulatifDispos {
+    & tbody td {
+      height: 51px;
+    }
   }
 
   .col_infos_licence {
     margin-top: 5px !important;
   }
 
-  .fixed-action-btn {
-    bottom: 0;
-    top: 2px;
+  .merged_cards {
+    -webkit-box-shadow: none;
+    &.up {
+      border-radius: 10px 10px 0 0 !important;
+    }
+
+    &.bottom {
+      border-radius: 0 0 10px 10px !important;
+      margin-top: 0 !important;
+
+      table thead th h5 {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .modal.modal-small {
+    width: 96% !important;
   }
 }
 
 @media screen and (max-width: 720px) {
-  .modal {
-    &.modal-alert {
-      width: 96% !important;
-    }
+  .modal.modal-medium {
+    width: 96% !important;
   }
 }
 
 @media screen and (max-width: 601px) {
   .modal {
-    &.modal-alert {
-      margin-top: 0 !important;
-      height: 89% !important;
+    margin-top: 0 !important;
+    min-height: 98% !important;
+    top: 1% !important;
+
+    &.modal-medium {
+      top: 4% !important;
+      min-height: 89% !important;
+    }
+
+    &.modal.modal-small {
       top: 6% !important;
+      min-height: 89% !important;
+    }
+  }
+
+  .navbar-general .btn-floating {
+    top: 9px;
+
+    i {
+      position: absolute;
+      height: 0;
+      line-height: 40px;
     }
   }
 
@@ -1409,11 +1750,6 @@ a.reload_ranking {
     figure.table {
       margin: 0 !important;
     }
-  }
-
-  .fixed-action-btn {
-    bottom: 0;
-    top: -2px;
   }
 }
 
@@ -1459,6 +1795,8 @@ a.reload_ranking {
     }
 
     &.td-chip {
+      padding-left: 0;
+      padding-right: 0;
       display: none;
     }
 
@@ -1468,6 +1806,10 @@ a.reload_ranking {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      &.pl5 {
+        padding-left: 5px;
+      }
     }
 
     &.points-td {
@@ -1477,9 +1819,12 @@ a.reload_ranking {
     }
 
     &.progression-td {
-      min-width: 58px;
-      max-width: 58px;
-      width: 58px;
+      width: 48px;
+      padding-left: 0;
+
+      &:nth-child(1) {
+        width: 39px;
+      }
     }
   }
 }
@@ -1514,6 +1859,14 @@ a.reload_ranking {
 @media screen and (max-width: 330px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 18px;
+  }
+
+  #importButtons {
+    display: block;
+
+    #submitImportButton {
+      margin-left: 0;
+    }
   }
 }
 

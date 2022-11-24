@@ -1,53 +1,64 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, joueursNonDeclares, selectedPlayers, dispos, nbDispos, allDisponibilites, type, nbMinJoueurs, nbTotalJoueurs, nomModal, hasCompos) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
-    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) }}
 
-    <div class="card-panel dispos">
-        <h5>Les dispos</h5>
-        <table class="striped">
-            <tbody>
-            {% for dispo in dispos %}
-                <tr>
-                    <td>
-                        <div class="valign-wrapper">
-                            {% if dispo.disponibilite == 1 %}
-                                <span class="dot dot1 center">&nbsp;</span>
-                            {% elseif dispo.disponibilite == 0 %}
-                                <span class="dot dot2 center">&nbsp;</span>
-                            {% else %}
-                                <span class="dot dot3 center">&nbsp;</span>
-                            {% endif %}
-                            <span style="margin-left: 2%;" class="{% if dispo.disponibilite %} green-text {% elseif not dispo.disponibilite %} red-text {% endif %}">{{ dispo.idCompetiteur.nom }} {{dispo.idCompetiteur.prenom }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        {% if dispo.idCompetiteur.idCompetiteur in selectedPlayers %}
-                            <i class="blue-text right-align material-icons">done</i>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            {% for joueur in joueursNonDeclares %}
-                <tr>
-                    <td>
-                        <div class="valign-wrapper">
-                            <span class="dot dot3 center">&nbsp;</span>
-                            <span style="margin-left: 2%;" class="grey-text">{{ joueur.nom }} {{ joueur.prenom }}</span>
-                        </div>
-                    </td>
-                    <td class="left">
-                        {% if joueur.idCompetiteur in selectedPlayers %}
-                            <i class="blue-text right-align material-icons">playlist_add_check</i>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
+
+    <div class="card-panel dispos merged_cards bottom">
+        <h5 class="hide-on-med-and-down">Les dispos</h5>
+
+        <div class="row bottom_0">
+            <div class="col s2 center"><span class="bold light_blue">X</span></div>
+            <div class="col s10">Nombre de sélections sur la phase</div>
+        </div>
+        <div class="row bottom_0">
+            <div class="col s2 center"><i class="blue-text right-align material-icons">done</i></div>
+            <div class="col s10 m7">Sélectionnés pour cette journée</div>
+        </div>
+
+        {% for numero, disposEquipe in disponibilitesJournee %}
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th class="center">
+                            <h6>{{ numero }}</h6>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dispo in disposEquipe %}
+                        <tr>
+                            <td class="row">
+
+                                <div class="col s10">
+                                    <div class="valign-wrapper">
+                                        {% if dispo.disponibilite is null %}
+                                            <span class="dot dot3 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 1 %}
+                                            <span class="dot dot1 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 0 %}
+                                            <span class="dot dot2 center">&nbsp;</span>
+                                        {% endif %}
+                                        <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
+                                    </div>
+                                </div>
+                                <div class="col s1 center">
+                                    <span class="bold light_blue">{{ dispo.nbMatchesJoues }}</span>
+                                </div>
+                                <div class="col s1">
+                                    {% if dispo.joueur.idCompetiteur in selectedPlayers %}
+                                        <i class="blue-text right-align material-icons">done</i>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
 
         <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
-        {% if joueursNonDeclares|length > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+        {% if nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
             <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
         {% endif %}
     </div>
@@ -86,56 +97,61 @@
 
     {% for nomChamp, disponibilites in allDisponibilites %}
         <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
-            <table class="centered responsive-table striped recapitulatifDispos">
-                <thead>
-                    <tr>
-                        <th><span class="hide-on-small-only">Joueurs</span></th>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <th style="width: 60px;">J{{ i }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
 
-                <tbody>
-                {% for disponibilite in disponibilites["dispos"] %}
-                    <tr>
-                        <td style="padding-top: 5px; padding-bottom: 5px;">
-                            <div class="chip" style="margin-right: 0; margin-bottom: 0;">
-                                <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') }}" alt="Avatar">
-                                <span>
-                                    {{ disponibilite.nom }} {{ disponibilite.prenom }}
-                                </span>
-                            </div>
-                        </td>
-                        {% for i in 1..disponibilites["nbJournees"] %}
-                            <td>
-                                {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
-                                        <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
-                                    {% else %}
-                                        <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
-                                    {% endif %}
-                                {% else %}
-                                    <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
-                                {% endif %}
+            {% for numero, disponibilitesEquipes in disponibilites["dispos"] %}
+                <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ numero }}</h6>
+
+                <table class="centered responsive-table striped recapitulatifDispos">
+                    <thead>
+                        <tr>
+                            <th><h6 class="hide-on-med-and-down">{{ numero }}</h6></th>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <th>J{{ i }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for disponibilite in disponibilitesEquipes %}
+                        <tr>
+                            <td style="padding-top: 5px; padding-bottom: 5px;">
+                                <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                    <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                                    <span>
+                                        {{ disponibilite.nom }} {{ disponibilite.prenom }}
+                                    </span>
+                                </div>
                             </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            {% for i in 1..disponibilites["nbJournees"] %}
+                                <td>
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                            <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                        {% else %}
+                                            <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
         </div>
     {% endfor %}
 {% endmacro %}
 
-{% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbTotalJoueurs, hasCompos) %}
-    <div class="card-panel bottom_0" style="padding: 5px 0; margin-top: 5px;">
+{% macro labelDispoSelec(nbSelectedPlayers, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, isAlone, nbMaxPotentielPlayers) %}
+    <div class="card-panel bottom_0 {% if not isAlone %}merged_cards up leftOne{% endif %}" style="padding: 5px 0;{% if isAlone %}margin-top: 10px;{% endif %}">
         <div class="row bottom_0" style="margin-bottom: 2px;">
             <div class="col s7">Disponibles</div>
             <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
-                    {% if nbDispos >= nbTotalJoueurs %}
+                    {% if nbDispos >= nbMaxSelectedJoueurs %}
                         rainbow
                     {% elseif nbDispos >= nbMinJoueurs %}
                         orange darken-2
@@ -143,7 +159,7 @@
                         red
                     {% endif %}
                 {% endif %}">
-                {{ nbDispos }}
+                {{ nbDispos }}/{{ nbMaxPotentielPlayers }}
             </div>
         </div>
 
@@ -152,7 +168,7 @@
             <div class="pastilleDispos col s4 lobster
                 {% if hasCompos %}
                     pastille
-                    {% if nbSelectedPlayers == nbTotalJoueurs %}
+                    {% if nbSelectedPlayers == nbMaxSelectedJoueurs %}
                         rainbow
                     {% elseif nbSelectedPlayers >= nbMinJoueurs %}
                         orange darken-2
@@ -160,7 +176,7 @@
                         red
                     {% endif %}
                 {% endif %}">
-                {{ nbSelectedPlayers }}/{{ nbTotalJoueurs }}
+                {{ nbSelectedPlayers }}/{{ nbMaxSelectedJoueurs }}
             </div>
         </div>
     </div>
@@ -175,7 +191,7 @@
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
-                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') }}" alt="Avatar">
+                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                             <span>{{ nomJoueur }}</span>
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
@@ -188,11 +204,11 @@
                                     <tr>
                                         <td class="hide-on-med-and-down">
                                             <div class="chip">
-                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') }}" alt="Avatar">
+                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                                 <span>{{ dispos.nom }} {{ dispos.prenom }}</span>
                                             </div>
                                         </td>
-                                        <td>J{{ i+1 }}</td>
+                                        <td><b>J{{ i+1 }}</b></td>
                                         <td>
                                             {% if dispos.undefined %}
                                                 <i class='material-icons red-text'>event_busy</i>

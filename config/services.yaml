@@ -2,6 +2,7 @@ parameters:
     fftt_api_login: '%env(FFTT_API_LOGIN)%'
     fftt_api_password: '%env(FFTT_API_PASSWORD)%'
     encryption_iv: '%env(ENCRYPTION_IV)%'
+    decryption_key: '%env(DECRYPTION_KEY)%'
     default_password: '%env(DEFAULT_PASSWORD)%'
     maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
     club_id: '%env(CLUB_ID)%'
@@ -9,6 +10,7 @@ parameters:
     time_limit_ajax: '%env(TIME_LIMIT_AJAX)%'
     nb_joueurs_default_division: '%env(NB_JOUEURS_DEFAULT_DIVISION)%'
     read_md_path: '%env(READ_MD_PATH)%'
+    template_import_path: '%env(TEMPLATE_IMPORT_PATH)%'
     default_nb_points: '%env(DEFAULT_NB_POINTS)%'
     club_diminutif: '%env(CLUB_DIMINUTIF)%'
     club_email: '%env(CLUB_EMAIL)%'
@@ -32,4 +34,9 @@ services:
             - '%maintenance_file_path%'
             - '@twig'
         tags:
-            - { name: 'kernel.event_listener', event: kernel.request}
+            - { name: 'kernel.event_listener', event: kernel.request }
+
+    App\EventListener\ImageCacheSubscriber:
+        tags:
+            - { name: 'doctrine.event_listener', event: preUpdate }
+            - { name: 'doctrine.event_listener', event: preRemove }

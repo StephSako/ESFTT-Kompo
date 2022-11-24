@@ -1,9 +1,9 @@
-$(document).ready(function() {
-    let undefined = $('#journee_undefined');
+$(document).ready(() => {
+    let journee_undefined = $('#journee_undefined');
 
-    if (undefined.is(':checked')) $('.select-dropdown').prop('disabled', true);
+    if (journee_undefined.is(':checked')) $('.select-dropdown').prop('disabled', true);
 
-    undefined.change(function() {
+    journee_undefined.change(() => {
         if(this.checked) $('.select-dropdown').prop('disabled', true);
         else $('.select-dropdown').prop('disabled', false);
     });

@@ -4,12 +4,12 @@
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-general">
             <div class="esftt_logo brand-logo" {% if app.user %}hidden{% endif %}>
-                <img class="brand-logo center hide-on-small-and-down" width="180px" src="https://www.esftt.com/images/logo-new.png" alt="logo {{ club_diminutif }}">
+                <img class="brand-logo center hide-on-small-and-down" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
 
                 <div class="flip-box hide-on-med-and-up">
                     <div class="flip-box-inner">
                         <div class="flip-box-front">
-                            <img class="brand-logo center" width="180px" height="70px" src="https://www.esftt.com/images/logo-new.png" alt="logo {{ club_diminutif }}">
+                            <img class="brand-logo center" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
                         </div>
                         <div class="flip-box-back">
                             <span class="pastille reset christmas_code diamant">XV282</span>
@@ -17,6 +17,12 @@
                     </div>
                 </div>
             </div>
+
+            {% if linkNextJournee is defined and linkNextJournee %}
+                <a class="right btn-floating light-blue tooltipped pulse hide-on-large-only hide-on-extra-large-only" href="{{ linkNextJournee }}" data-position="left" data-tooltip="Aller à la journée à venir">
+                    <i class="large material-icons">event</i>
+                </a>
+            {% endif %}
 
             {% if app.user %}
                 <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-general"><i class="material-icons">menu</i></a>
@@ -33,11 +39,24 @@
                     {% for i, journee in journees %}
                         <li class="waves-effect li_in_line dropdown_li {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                             <a class="white-text" href="{{ path("journee.show", {type: championnat.idChampionnat, id: journee.idJournee}) }}">
+                                {% if disposJoueur is not null %}
+                                    <span class="dot
+                                        {% if journee.idJournee in disposJoueur|keys %}
+                                            {% if disposJoueur[journee.idJournee] %}
+                                                dot1
+                                            {% else %}
+                                                dot2
+                                            {% endif %}
+                                        {% else %}
+                                            dot3
+                                        {% endif %}
+                                     center">&nbsp;</span>
+                                {% endif %}
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ i+1 }}
                                 {% if not journeePassee(journee) %}
                                     {% if journee.undefined %}
-                                        <i class="journee_passee material-icons red-text right">event_busy</i>
+                                        <i class="journee_passee material-icons red-text right" style="padding-top: 2px">event_busy</i>
                                     {% else %}
                                         - {{ journee.dateJournee|date('d/m') }}
                                     {% endif %}
@@ -114,17 +133,30 @@
             {% endif %}
 
             {% for i, journee in journees %}
-                <li class="li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
-                    <a class="white-text center-align" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
-                        <span class="left">Journée {{ i+1 }}</span>
+                <li class="journee li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
+                    <a class="white-text" href="{{ path('journee.show', {type: championnat.idChampionnat, id: journee.idJournee}) }}">
+                        <span>Journée {{ i+1 }}</span>
                         {% if not journeePassee(journee) %}
                             {% if journee.undefined %}
-                                <i class="material-icons red-text right" style="margin-right: 0;">event_busy</i>
+                                <i class="material-icons red-text">event_busy</i>
                             {% else %}
-                                <span class="right">{{ journee.dateJournee|date('d/m/Y') }}</span>
+                                <span>{{ journee.dateJournee|date('d/m/Y') }}</span>
                             {% endif %}
                         {% else %}
-                            <i class="material-icons green-text right" style="margin-right: 0;">done</i>
+                            <i class="material-icons green-text">done</i>
+                        {% endif %}
+                        {% if disposJoueur is not null %}
+                            <span class="dot
+                                {% if journee.idJournee in disposJoueur|keys %}
+                                    {% if disposJoueur[journee.idJournee] %}
+                                        dot1
+                                    {% else %}
+                                        dot2
+                                    {% endif %}
+                                {% else %}
+                                    dot3
+                                {% endif %}
+                             center">&nbsp;</span>
                         {% endif %}
                     </a>
                 </li>

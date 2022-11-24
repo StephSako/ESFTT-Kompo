@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(() => {
     $('.modal').modal();
 
     $(".dropdown-trigger").dropdown({
@@ -25,7 +25,5 @@ $(document).ready(function() {
         accordion : false
     });
 
-    $(document).ready(function(){
-        $('.fixed-action-btn').floatingActionButton();
-    });
+    $('.fixed-action-btn').floatingActionButton();
 });

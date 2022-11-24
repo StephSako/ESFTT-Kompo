@@ -28,7 +28,8 @@
 
         {% if app.user.admin %}
             <div class='card-panel backoffice-panel center'>
-                <h5 style="margin-top: 0">Modifier le contenu des mails automatiques de ...</h5>
+                <h5 style="margin-top: 0">Modifier le contenu des emails automatiques de ...</h5>
+                <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue-loisirs'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue (loisirs)</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-bienvenue'}) }}' class='btn waves-effect blue lighten-1 btn_gestion'>Bienvenue</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-mdp-oublie'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_mdp_oublie">Mot de passe oublié</a>
                 <a href='{{ path('backoffice.mail.edit', {type: 'mail-certif-medic-perim'}) }}' class='btn waves-effect blue lighten-1 btn_gestion' id="bo_mail_certif_medic_perim">Certif. médic. périm.</a>
@@ -39,26 +40,42 @@
 
         <div class='card-panel backoffice-panel center'>
 
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
-            <a style='margin-bottom: 20px;' href='{{ path('backoffice.competiteurs.export.excel') }}' class='btn waves-effect green btn_gestion'>
-                <img style="padding: 6px 0;" src="{{ asset('images/excel.png') }}" alt="excel_icon">
-            </a><br>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' data-tooltip="Exporter les joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                <i class='material-icons'>download</i>
+            </a>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.import.file') }}' data-tooltip="Importer des joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                <i class='material-icons'>upload</i>
+            </a>
 
             {% if joueursInvalidCertifMedic|length and app.user.admin %}
-                <a class="modal-trigger btn waves-effect btn_gestion blue lighten-1" href="#modal{{ 'certif_medic_invalides' }}" style='margin-bottom: 20px;'>Alert. certif. médic. périm.<span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span></a>
-                {{ _modalContact.modalAlertPlayers(
-                    'certif_medic_invalides',
-                    contactsJoueursInvalidCertifMedic,
-                    'Alerter les joueurs dont le certificat médical n\'est plus valable pour la rentrée',
-                    path('backoffice.alert.certif-medic-perim'),
-                    null,
-                    {
-                        noSMS: 1,
-                        linkPathMail: path('backoffice.alert.certif-medic-perim'),
-                        btnTxtMail: 'envoyer mail',
-                        info: 'Pour raison de confidentialité, les joueurs sont destinataires du mail en copie cachée. L\'alerte est envoyée au click sur le bouton \'ENVOYER MAIL\'.'
-                    })
-                }}
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <p class="red-text lighten-2" style="padding-left: 0; width: fit-content; margin-bottom: 8px;"><i class="material-icons">dangerous</i>
+                        Il y a <b><span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span> joueur{{ joueursInvalidCertifMedic|length > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                    </p>
+                    <button style="width: 27px; height: 27px;" class="modal-trigger btn waves-effect btn_gestion blue btn-floating lighten-1 btn-small" href="#modal{{ 'certif_medic_invalides' }}">
+                        <i class="material-icons" style="font-size: 14px; top: -3px; position: relative; right: 9px;">campaign</i>
+                    </button>
+                    {{ _modalContact.modalAlertPlayers(
+                        'certif_medic_invalides',
+                        contactsJoueursInvalidCertifMedic,
+                        'Alerter les joueurs dont le certificat médical n\'est plus valable pour la rentrée',
+                        path('backoffice.alert.certif-medic-perim'),
+                        null,
+                        {
+                            noSMS: 1,
+                            linkPathMail: path('backoffice.alert.certif-medic-perim'),
+                            btnTxtMail: 'envoyer e-mail',
+                            info: 'Pour raison de confidentialité, les joueurs sont destinataires de l\'e-mail en copie cachée. L\'alerte est envoyée au click sur le bouton ENVOYER E-MAIL.'
+                        })
+                    }}
+                </div>
+            {% endif %}
+
+            {% if joueursWithoutLicence.count or competiteursWithoutClassement.count %}
+                <p class="red-text lighten-2" style="margin-top: 8px; margin-bottom: 20px;"><i class="material-icons">dangerous</i>
+                    {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
+                </p>
             {% endif %}
 
             {% if joueurs|length %}
@@ -78,7 +95,7 @@
                             <i class="caret material-icons">keyboard_arrow_down</i>
                         </div>
                         <div class="collapsible-body">
-                            {{ _membre.tableArchives(joueursArchives, onlyOneAdmin ) }}
+                            {{ _membre.tableArchives(joueursArchives, onlyOneAdmin) }}
                         </div>
                     </li>
                 </ul>

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Serializable;
@@ -77,7 +78,7 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Regex(
      *     pattern="/^[0-9]{0,11}$/",
-     *     message="La licence ne doit contenir que des chiffres"
+     *     message="La licence doit contenir au maximum 11 chiffres"
      * )
      *
      * @ORM\Column(name="licence", type="string", length=11, nullable=true)
@@ -89,12 +90,12 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 300,
-     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     *     message = "Le classement doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 40000,
-     *     message = "Le classement doit être inférieur à {{ value }}"
+     *     message = "Le classement doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(name="classement_officiel", type="integer", nullable=true)
@@ -187,11 +188,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères"
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail n'est pas valide"
      * )
      */
     private $mail;
@@ -203,11 +204,11 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "L'adresse email doit contenir au maximum {{ limit }} caractères."
+     *      maxMessage = "L'adresse e-mail doit contenir au maximum {{ limit }} caractères"
      * )
      *
      * @Assert\Email(
-     *     message = "L'adresse email '{{ value }}' n'est pas valide."
+     *     message = "L'adresse e-mail n'est pas valide"
      * )
      */
     private $mail2;
@@ -218,8 +219,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/",
-     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     *     pattern="/^0[0-9]{9}$/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres et commencer par 0"
      * )
      */
     private $phoneNumber;
@@ -230,8 +231,8 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="phone_number2", type="string", length=10, nullable=true)
      *
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/",
-     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     *     pattern="/^0[0-9]{9}$/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres et commencer par 0"
      * )
      */
     private $phoneNumber2;
@@ -314,6 +315,14 @@ class Competiteur implements UserInterface, Serializable
     private $contactablePhoneNumber2 = false;
 
     /**
+     * Permet de rendre les liens d'init/reset password invalides (si encore dans les délais) si le password a déjà été initialisé/reset
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_password_resetting", nullable=false)
+     */
+    private $isPasswordResetting = false;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
@@ -324,8 +333,8 @@ class Competiteur implements UserInterface, Serializable
      * @var File|null
      *
      * @Assert\Image(
-     *      mimeTypes = {"image/jpeg", "image/png", "image/gif"},
-     *      mimeTypesMessage = "L'image doit être au format JPEG, PNG ou GIF"
+     *      mimeTypes = {"image/jpg", "image/jpeg", "image/png", "image/gif"},
+     *      mimeTypesMessage = "L'image doit être au format JPEG/JPG, PNG ou GIF"
      * )
      *
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
@@ -337,12 +346,12 @@ class Competiteur implements UserInterface, Serializable
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 2016,
-     *     message = "L'année de la sauvegarde du certificat médical doit être supérieur à {{ value }}"
+     *     message = "L'année de la sauvegarde du certificat médical doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 9999,
-     *     message = "L'année de la sauvegarde du certificat médical doit être inférieur à {{ value }}"
+     *     message = "L'année de la sauvegarde du certificat médical doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(type="integer", length=4, name="annee_certificat_medical", nullable=true)
@@ -355,6 +364,19 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies", cascade={"persist"})
+     * @ORM\JoinTable(name="prive_titularisation",
+                      joinColumns={
+                          @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+                      },
+                      inverseJoinColumns={
+                          @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
+                      }
+     * )
+     */
+    private $equipesAssociees;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
@@ -899,7 +921,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setLicence(?string $licence): self
     {
-        $this->licence = $licence;
+        $this->licence = strlen(trim($licence)) > 0 ? trim($licence) : null;
         return $this;
     }
 
@@ -935,7 +957,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setNom(?string $nom): self
     {
-        $this->nom = mb_convert_case($nom, MB_CASE_UPPER, "UTF-8");
+        $this->nom = mb_convert_case(trim($nom), MB_CASE_UPPER, "UTF-8");
         return $this;
     }
 
@@ -975,9 +997,10 @@ class Competiteur implements UserInterface, Serializable
     }
 
     public function getRolesFormatted() {
-        return str_replace('Role_', '', implode(', ', array_map(function($role){
+        $formattedRoles = str_replace('Role_', '', implode(', ', array_map(function($role){
             return mb_convert_case($role, MB_CASE_TITLE, "UTF-8");
         }, $this->getRoles())));
+        return strrpos($formattedRoles, ',') ? substr_replace($formattedRoles, ' et', strrpos($formattedRoles, ','), 1) : $formattedRoles;
     }
 
     /**
@@ -1002,7 +1025,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setUsername(?string $username): self
     {
-        $this->username = ($username ?: 'username');
+        $this->username = (trim($username) ?: 'username');
         return $this;
     }
 
@@ -1113,7 +1136,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail(?string $mail): self
     {
-        $this->mail = $mail;
+        $this->mail = trim($mail);
         return $this;
     }
 
@@ -1131,7 +1154,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail2(?string $mail2): self
     {
-        $this->mail2 = $mail2;
+        $this->mail2 = trim($mail2);
         return $this;
     }
 
@@ -1149,7 +1172,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPhoneNumber(?string $phoneNumber): self
     {
-        $this->phoneNumber = $phoneNumber;
+        $this->phoneNumber = trim($phoneNumber);
         return $this;
     }
 
@@ -1167,7 +1190,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPhoneNumber2(?string $phoneNumber2): self
     {
-        $this->phoneNumber2 = $phoneNumber2;
+        $this->phoneNumber2 = trim($phoneNumber2);
         return $this;
     }
 
@@ -1332,7 +1355,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = mb_convert_case($prenom, MB_CASE_TITLE, "UTF-8");
+        $this->prenom = mb_convert_case(trim($prenom), MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
@@ -1375,7 +1398,7 @@ class Competiteur implements UserInterface, Serializable
             ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
             return [
                 'status' => true,
-                'message' => 'Certificat médical à renouveler pour la rentrée <b>' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . '/' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)) . '</b>',
+                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . '/' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)) . '</b>',
                 'shortMessage' => $this->getLabelCertificatRentree()
             ];
         return [
@@ -1571,5 +1594,113 @@ class Competiteur implements UserInterface, Serializable
         }));
 
         return count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
+    }
+
+    /**
+     * Retourne les champs incomplétés du profil d'un joueur
+     * @return array
+     */
+    public function profileCompletion(): array
+    {
+        $champsManquants = [];
+        $completude = 0;
+
+        foreach (
+            [
+                $this->getNom(), $this->getPrenom(), $this->getUsername(), $this->getDateNaissance(),
+                $this->getAnneeCertificatMedical(), $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
+                $this->getLicence(), $this->getAvatar()
+            ] as $index => $field) {
+            if (!$field){
+                switch ($index) {
+                    case 0:
+                        $champsManquants[] = 'Nom';
+                        break;
+                    case 1:
+                        $champsManquants[] = 'Prénom';
+                        break;
+                    case 2:
+                        $champsManquants[] = 'Pseudo';
+                        break;
+                    case 3:
+                        $champsManquants[] = 'Date de naissance';
+                        break;
+                    case 4:
+                        $champsManquants[] = 'Année du certificat médical';
+                        break;
+                    case 5:
+                        $champsManquants[] = 'Une adresse e-mail contactable';
+                        break;
+                    case 6:
+                        $champsManquants[] = 'Un numéro de téléphone contactable';
+                        break;
+                    case 7:
+                        $champsManquants[] = 'Licence';
+                        break;
+                    case 8:
+                        $champsManquants[] = 'Photo de profil';
+                        break;
+                }
+                $completude++;
+            }
+        }
+
+        return [
+            "champsManquants" => $champsManquants,
+            "completude" => round(((9 - $completude) * 100) / 9)
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordResetting(): bool
+    {
+        return $this->isPasswordResetting;
+    }
+
+    /**
+     * @param bool $isPasswordResetting
+     * @return Competiteur
+     */
+    public function setIsPasswordResetting(bool $isPasswordResetting): self
+    {
+        $this->isPasswordResetting = $isPasswordResetting;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getEquipesAssociees(): Collection
+    {
+        return $this->equipesAssociees;
+    }
+
+    /**
+     * @param Championnat[] $championnats
+     * @return int[]
+     */
+    public function getTableEquipesAssociees(array $championnats): array
+    {
+        $equipesAssociees = [];
+        foreach ($championnats as $champ) {
+            $titusChampJoueur = array_filter($champ->getTitularisations()->toArray(), function($titu){
+                return $titu->getIdCompetiteur()->getIdCompetiteur() == $this->getIdCompetiteur();
+            });
+            $equipeTitu = array_shift($titusChampJoueur);
+            $equipesAssociees[$champ->getNom()] = $equipeTitu ? $equipeTitu->getIdEquipe()->getNumero() : null;
+        }
+        return $equipesAssociees;
+    }
+
+    /**
+     * @param Collection $equipesAssociees
+     * @return Competiteur
+     */
+    public function setEquipesAssociees(Collection $equipesAssociees): self
+    {
+        $this->equipesAssociees = $equipesAssociees;
+        return $this;
     }
 }

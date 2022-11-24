@@ -174,9 +174,52 @@ class Rencontre
      *      maxMessage = "La ville hôte doit contenir au maximum {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(name="ville_host", nullable=true, type="string", length=50)
+     * @ORM\Column(name="ville_host", nullable=true, type="string", length=200)
      */
     private $villeHost;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 300,
+     *      maxMessage = "L'adresse doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="adresse", nullable=true, type="string", length=300)
+     */
+    private $adresse;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 300,
+     *      maxMessage = "Le complément d'adresse doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="complement_adresse", nullable=true, type="string", length=300)
+     */
+    private $complementAdresse;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="telephone", type="string", length=10, nullable=true)
+     *
+     * @Assert\Regex(
+     *     pattern="/[0-9]{10}/",
+     *     message="Le numéro de téléphone doit contenir 10 chiffres"
+     * )
+     */
+    private $telephone;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="site", type="string", length=100, nullable=true)
+     */
+    private $site;
 
     /**
      * @var boolean
@@ -625,7 +668,7 @@ class Rencontre
     }
 
     /**
-     * Liste des adresses mail et numéros de téléphone des joueurs sélectionnés et contactables
+     * Liste des adresses e-mail et numéros de téléphone des joueurs sélectionnés et contactables
      * @param int $idRedacteur
      * @return array
      */
@@ -759,5 +802,93 @@ class Rencontre
                 $this->setIdJoueurN($i, $joueur);
             }
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAdresse(): ?string
+    {
+        return trim($this->adresse);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHrefMapsAdresse(): ?string
+    {
+        return str_replace(' ', '+', $this->getAdresse());
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHrefWazeAdresse(): ?string
+    {
+        return str_replace(' ', '%20', $this->getAdresse());
+    }
+
+    /**
+     * @param string|null $adresse
+     * @return Rencontre
+     */
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = strlen(trim($adresse)) ? trim(mb_convert_case($adresse, MB_CASE_TITLE, "UTF-8")) : null;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTelephone(): ?string
+    {
+        return str_replace(' ', '', trim($this->telephone));
+    }
+
+    /**
+     * @param string|null $telephone
+     * @return Rencontre
+     */
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = strlen(trim($telephone)) ? str_replace(' ', '', trim($telephone)) : null;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSite(): ?string
+    {
+        return trim($this->site);
+    }
+
+    /**
+     * @param string|null $site
+     * @return Rencontre
+     */
+    public function setSite(?string $site): self
+    {
+        $this->site = strlen(trim($site)) ? trim($site) : null;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getComplementAdresse(): ?string
+    {
+        return trim($this->complementAdresse);
+    }
+
+    /**
+     * @param string|null $complementAdresse
+     * @return Rencontre
+     */
+    public function setComplementAdresse(?string $complementAdresse): self
+    {
+        $this->complementAdresse = strlen(trim($complementAdresse)) ? trim(mb_convert_case($complementAdresse, MB_CASE_TITLE, "UTF-8")) : null;
+        return $this;
     }
 }

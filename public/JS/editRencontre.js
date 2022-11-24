@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(() => {
     let lieu_rencontre = $('#lieu_rencontre');
     let exempt = $('#exempt');
     let adversaire = $('#adversaire');
@@ -16,7 +16,7 @@ $(document).ready(function () {
         ville_host.prop('disabled', true);
     }
 
-    exempt.change(function () {
+    exempt.change(() => {
         if (this.checked) {
             reported.prop('checked', false).prop('disabled', true);
             lieu_rencontre.val('0');
@@ -40,7 +40,7 @@ $(document).ready(function () {
         }
     });
 
-    reported.change(function () {
+    reported.change(() => {
         $('#rencontre_dateReport .select-dropdown').prop('disabled', !this.checked);
     });
 });

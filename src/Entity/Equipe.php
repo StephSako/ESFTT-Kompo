@@ -36,12 +36,12 @@ class Equipe
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
-     *     message = "Le numéro d'équipe doit être supérieur à {{ value }}"
+     *     message = "Le numéro d'équipe doit être supérieur à {{ compared_value }}"
      * )
      *
      * @Assert\LessThanOrEqual(
      *     value = 100,
-     *     message = "Le numéro d'équipe doit être inférieur à {{ value }}"
+     *     message = "Le numéro d'équipe doit être inférieur à {{ compared_value }}"
      * )
      *
      * @ORM\Column(type="integer", name="numero", nullable=false)
@@ -91,6 +91,16 @@ class Equipe
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
      */
     private $rencontres;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees", cascade={"persist"})
+     */
+    protected $joueursAssocies;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe", cascade={"persist"})
+     */
+    private $titularisations;
 
     /**
      * @return Championnat|null
@@ -215,6 +225,42 @@ class Equipe
     public function setLienDivision(?string $lienDivision): self
     {
         $this->lienDivision = $lienDivision;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJoueursAssocies(): Collection
+    {
+        return $this->joueursAssocies;
+    }
+
+    /**
+     * @param Collection $joueursAssocies
+     * @return Equipe
+     */
+    public function setJoueursAssocies(Collection $joueursAssocies): self
+    {
+        $this->joueursAssocies = $joueursAssocies;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Equipe
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

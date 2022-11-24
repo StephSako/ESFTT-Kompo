@@ -1,31 +1,55 @@
 {% macro form(form, idJournee) %}
     <div class="card-panel center-align">
         <div class="hide-on-small-only">
-            <h4 class="titre">Journée {{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }} - {{ form.vars.value.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h4>
+            <h4 class="titre">Journée {{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }} - {{ form.vars.value.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h4>
             <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ form.vars.value.idChampionnat.nom }}</h5>
         </div>
 
         <div class="hide-on-med-and-up">
             <h4 class="titre">J{{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }}</h4>
             <h5 style="margin-top: 0;">{{ form.vars.value.idChampionnat.nom }}</h5>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ form.vars.value.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr') }}</h5>
+            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ form.vars.value.idJournee.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h5>
         </div>
 
         {{ form_start(form) }}
             <div style="margin-top: 50px;">
                 <div class="row">
-                    <div class="col s10 offset-s1 m4 offset-m2">
-                        <b>Adversaire + n° équipe</b>{{ form_row(form.adversaire, {'id': 'adversaire'}) }}
+                    <div class="col s10 offset-s1 l6 m8 offset-m2">
+                        <b>Adversaire + n° équipe</b>
+                        {{ form_row(form.adversaire, {'id': 'adversaire'}) }}
                     </div>
-                    <div class="col s10 offset-s1 m4 lieu_rencontre form_div_list">
+                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
                         <b>Lieu de la rencontre</b><br>
                         {{ form_row(form.domicile, {'id': 'lieu_rencontre'}) }}
                     </div>
                 </div>
 
+                <br><h5>Coordonnées de l'adversaire</h5>
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col s10 offset-s1 l6 m8 offset-m2">
+                        <b>Adresse</b>
+                        {{ form_row(form.adresse, {'id': 'adresse'}) }}
+                    </div>
+                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
+                        <b>Complément d'adresse</b><br>
+                        {{ form_row(form.complementAdresse, {'id': 'complementAdresse'}) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
+                        <b>Site Internet</b><br>
+                        {{ form_row(form.site, {'id': 'siteInternet'}) }}
+                    </div>
+                    <div class="col s10 offset-s1 l6 m8 offset-m2">
+                        <b>Numéro de téléphone</b>
+                        {{ form_row(form.telephone, {'id': 'telephone'}) }}
+                    </div>
+                </div>
+
                 <div class="issue row" style="margin-top: 45px; margin-bottom: 45px;">
-                    <div class="col s10 offset-s1 m6 offset-m3">
-                        <b>Ville de remplacement</b><br><i>(en cas de salle indisponible)</i>{{ form_row(form.villeHost, {'id': 'ville_host'}) }}
+                    <div class="col s10 offset-s1 m8 offset-m2">
+                        <b>Ville de remplacement</b><br><i>(en cas de salle indisponible)</i>
+                        {{ form_row(form.villeHost, {'id': 'ville_host'}) }}
                     </div>
                 </div>
                 <div class="issue">

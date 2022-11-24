@@ -5,6 +5,7 @@
 
     <header>
         {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/togglePasswordField.min.js') }}"></script>
     </header>
 
     <div style="margin-top: 40px;" class="container">
@@ -23,17 +24,18 @@
                 <div class="container">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
-                        <input id="username" name="_username" type="text" autocapitalize="off" class="validate" value="{{ lastUsername }}" required>
+                        <input id="username" name="_username" type="text" autocapitalize="off" class="validate" required>
                         <label for="username">Pseudo</label>
                     </div>
                     <div class="input-field">
                         <i class="material-icons prefix">lock</i>
                         <input id="password" name="_password" type="password" class="validate" required>
-                        <label for="password">Mot de passe</label>
+                        <label for="password" id="label_password">Mot de passe</label>
+                        <span id="toggle_password" ontoggle="#password" class="field-icon toggle-password"><span class="material-icons">visibility</span></span>
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="_remember_me" />
+                            <input type="checkbox" class="filled-in" name="_remember_me" />
                             <span>Rester connecté</span>
                         </label>
                     </div>
@@ -48,13 +50,18 @@
         </div>
     </div>
 
-    <script type="application/javascript">
+    <script type="text/javascript">
         let checkboxRememberMe = $("input[name='_remember_me']");
         let christmasCode = $("span.christmas_code");
         checkboxRememberMe.on('change', function () {
             if (!checkboxRememberMe.is(":checked")) christmasCode.addClass('hide');
             else christmasCode.removeClass('hide');
         });
+
+        if ($('input#password').val()) {
+            $('label#label_password').addClass('active')
+        }
     </script>
 
+        
 {% endblock %}

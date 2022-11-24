@@ -2,12 +2,12 @@ function alertBecomingLoisirOrArchived(){
     let becomingLoisir = $('#cb_loisir').is(":checked") && !isLoisir && !isArchived;
     let becomingArchive = $('#cb_archive').is(":checked") && !isArchived;
     if (becomingLoisir || becomingArchive){
-        let r = confirm('Membre déclaré ' + (becomingArchive ? 'archivé' : 'loisir') + ' : ' + (becomingArchive ? 'son certificat médical deviendra invalide' + (!isLoisir ? ', ' : '') : '') + (!isLoisir ? "ses disponibilités seront supprimées et il sera désélectionné de toutes compositions ultèrieures à aujourd'hui INCLUS" : '') + '. Êtes-vous sûr ?');
+        let r = confirm('Membre déclaré ' + (becomingArchive ? 'archivé' : 'loisir') + ' : ' + (becomingArchive ? 'son certificat médical deviendra invalide' + (!isLoisir ? ', ' : '') : '') + (!isLoisir ? "ses disponibilités seront supprimées et il sera désélectionné de toutes compositions ultèrieures à aujourd'hui inclues" : '') + '. Êtes-vous sûr ?');
         if (r !== true) event.preventDefault();
     } else return false;
 }
 
-$(document).ready(function () {
+$(document).ready(() => {
     let cb_admin = $('#cb_admin');
     let cb_capitaine = $('#cb_capitaine');
     let cb_loisir = $('#cb_loisir');
@@ -48,9 +48,10 @@ $(document).ready(function () {
         cb_crit_fed.prop('checked', false).prop('disabled', true);
     }
 
-    cb_archive.on('change', function () {
+    cb_archive.on('change', () => {
         if (!cb_archive.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked")) btn_modifier.prop('disabled', true);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked"))
+                btn_modifier.prop('disabled', true);
             cb_loisir.prop('disabled', false);
             cb_entraineur.prop('disabled', false);
             cb_capitaine.prop('disabled', false);
@@ -69,11 +70,13 @@ $(document).ready(function () {
         }
     });
 
-    cb_capitaine.on('change', function () {
+    cb_capitaine.on('change', () => {
         if (!cb_capitaine.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked"))
+                btn_modifier.prop('disabled', true);
             if (!cb_competiteur.is(':checked')) cb_loisir.prop('disabled', false);
-            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_competiteur.is(':checked')) cb_archive.prop('disabled', false);
+            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_competiteur.is(':checked'))
+                cb_archive.prop('disabled', false);
         }
         else{
             btn_modifier.prop('disabled', false);
@@ -83,7 +86,7 @@ $(document).ready(function () {
         }
     });
 
-    cb_entraineur.on('change', function () {
+    cb_entraineur.on('change', () => {
         if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_competiteur.is(":checked") && !cb_loisir.is(":checked")){
             if (type === 'backoffice' && !cb_archive.is(":checked") && !cb_loisir.is(":checked")) btn_modifier.prop('disabled', true);
             cb_archive.prop('disabled', false);
@@ -94,7 +97,7 @@ $(document).ready(function () {
         }
     });
 
-    cb_admin.on('change', function () {
+    cb_admin.on('change', () => {
         if (!cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_competiteur.is(":checked")){
             if (type === 'backoffice' && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
             cb_archive.prop('disabled', false);
@@ -105,10 +108,10 @@ $(document).ready(function () {
         }
     });
 
-    cb_loisir.on('change', function () {
+    cb_loisir.on('change', () => {
         if (!cb_loisir.is(":checked")){
-            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked")) btn_modifier.prop('disabled', true);
-            cb_capitaine.prop('disabled', false);
+            if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_competiteur.is(":checked") && !cb_archive.is(":checked"))
+                btn_modifier.prop('disabled', true);
             cb_competiteur.prop('disabled', false);
             if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked")) cb_archive.prop('disabled', false);
         }
@@ -121,19 +124,21 @@ $(document).ready(function () {
         cb_crit_fed.prop('disabled', true);
     });
 
-    cb_competiteur.on('change', function () {
+    cb_competiteur.on('change', () => {
         if (!cb_competiteur.is(":checked")){
             if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_archive.is(":checked"))
                 btn_modifier.prop('disabled', true);
-            if (!cb_capitaine.is(":checked"))
-                cb_loisir.prop('disabled', false);
-            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked"))
-                cb_archive.prop('disabled', false);
+
+            if (cb_capitaine.is(":checked")) cb_capitaine.prop('checked', false)
+            cb_capitaine.prop('disabled', true);
+            cb_loisir.prop('disabled', false);
+            if (!cb_entraineur.is(":checked") && !cb_admin.is(":checked") && !cb_capitaine.is(":checked")) cb_archive.prop('disabled', false);
             cb_crit_fed.prop('checked', false).prop('disabled', true);
         }
         else{
             btn_modifier.prop('disabled', false);
             cb_loisir.prop('disabled', true);
+            cb_capitaine.prop('disabled', false);
             cb_archive.prop('disabled', true);
             cb_crit_fed.prop('checked', false).prop('disabled', false);
         }

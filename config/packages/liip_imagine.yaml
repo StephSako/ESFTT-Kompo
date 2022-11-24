@@ -1,0 +1,18 @@
+liip_imagine:
+    filter_sets:
+        thumb:
+            quality: 100
+            filters :
+                auto_rotate: ~
+                strip: ~
+                thumbnail:
+                    size: [150, 150]
+                    mode: outbound
+        logo_esftt:
+            quality: 100
+            filters:
+                auto_rotate: ~
+                strip: ~
+                thumbnail:
+                    size: [300, 117]
+                    mode: outbound

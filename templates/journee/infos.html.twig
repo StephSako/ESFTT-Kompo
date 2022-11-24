@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
 {% endblock %}
 
-{% block title %}Informations {{ label }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,7 @@
         {% endfor %}
 
         <div class="card-panel center-align white-text title_journee">
-            <h4 style="font-family: Lobster, cursive">Informations {{ label }}</h4>
+            <h4 style="font-family: Lobster, cursive">{{ title }}</h4>
         </div>
 
         <div class="card-panel" id="ckeditor-render">
@@ -74,7 +74,14 @@
             <div class="card-panel" id="settings-form">
                 {{ form_start(form) }}
                     <div class="center">
-                        <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition</h5>
+                        <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition administrateur</h5><br>
+
+                        <div class="row">
+                            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                                <b><i class="material-icons prefix">short_text</i> Titre</b>{{ form_row(form.title) }}
+                            </div>
+                        </div>
+
                         <div id="editor"></div>
 
                         <br>
@@ -87,7 +94,6 @@
 
             <script type="text/javascript">
                 let ckeditor_content = '{{ HTMLContent }}';
-                let type = 'infos{{ typeBDDed }}';
             </script>
             <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>

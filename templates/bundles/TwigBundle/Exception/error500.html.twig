@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Erreur serveur{% endblock %}
+{% block title %}Une erreur est survenue{% endblock %}
 
 {% block body %}
 
@@ -9,6 +9,9 @@
             <i class="red-text darken-2 large material-icons">sentiment_dissatisfied</i>
             <h5>Oups ... {{ exception.code != 0 ? exception.message : 'Une erreur est survenue ...' }}</h5>
 
+            {% if exception.code == 500 %}
+                <p>Réessayez de réinitialiser votre mot de passe en cliquant <a href="{{ path('login.forgotten.password') }}">ici</a></p>
+            {% endif %}
             <a href="{{ path('index') }}">
                 <button class="btn waves-effect blue lighten-2 center">Retour à l'accueil</button>
             </a>

@@ -157,7 +157,7 @@ class Journee
      */
     public function getLatestDate(): DateTime {
         return max(max(array_map(function($rencontre) {
-            return $rencontre->getDateReport();
+            return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
         }, $this->getRencontres()->toArray())), $this->getDateJournee());
     }
 }

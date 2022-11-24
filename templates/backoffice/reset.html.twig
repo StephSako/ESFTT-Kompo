@@ -3,20 +3,6 @@
 
 {% block title %}Nouvelle phase{% endblock %}
 
-{% block style %}
-    <style>
-        @media screen and (max-width: 992px) {
-            .th_mobile_pts_off {
-                padding-top: 38px;
-            }
-
-            .th_mobile_nom {
-                padding-top: 26px;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
 
     {{ include('components/navbar_backoffice.html.twig') }}
@@ -47,32 +33,36 @@
                 </div>
 
                 {% if joueursIssued.competition %}
-                    <p class="col pastille orange darken-2 reset" style="margin-bottom: 10px;">
+                    <p id="messageNbJoueursIssued" class="col pastille reset {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}orange darken-2{% else %}blue{% endif %}" style="margin-bottom: 10px;">
                         <span id="nbJoueurs">
-                            {{ ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) ~ ' joueur' ~ (((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) <= 1 ? ' sera' : 's seront') ~' mis à jour' }}
+                            {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}
+                                {{ ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) ~ ' joueur' ~ (((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) <= 1 ? ' sera' : 's seront') ~' mis à jour' }}
+                            {% else %}
+                                Tous les joueurs sont à jour
+                            {% endif %}
                         </span>
                     </p>
 
-                    <table class="striped centered responsive-table" id="joueursIssued">
+                    <table class="striped centered responsive-table {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %} hide{% endif %}" id="joueursIssued">
                         <thead>
                             <tr>
                                 <th>Licence</th>
                                 <th class="th_mobile_nom">Nom</th>
                                 <th class="th_mobile_pts_off">Points officiels</th>
-                                <th class="th_mobile_pts_off isCritFed" hidden>Critérium fédéral</th>
+                                <th class="th_mobile_pts_off isCritFed hide">Critérium fédéral</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {% for joueur in joueursIssued.competition %}
-                                <tr {% if joueur.sameName and joueur.sameClassement and joueur.isCritFed %}hidden class="isCritFed"{% endif %}>
+                                <tr {% if joueur.sameName and joueur.sameClassement and joueur.isCritFed %} class="isCritFed hide"{% endif %}>
                                     <td>{{ joueur.joueur.licence }}</td>
                                     <td>
                                         <div class="chip">
                                             {% if joueur.joueur.avatar %}
-                                                <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') }}" alt="Avatar">
+                                                <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                                             {% else %}
-                                                <img src="{{ asset('images/account.png') }}" alt="Avatar">
+                                                <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                             {% endif %}
                                             <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</span>
                                             {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT ~ ' ' ~ joueur.prenomFFTT }}{% endif %}
@@ -84,7 +74,7 @@
                                             <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
                                         {% endif %}
                                     </td>
-                                    <td class="isCritFed test" hidden>
+                                    <td class="isCritFed hide">
                                         {% if joueur.joueur.critFed %}
                                             <i class="material-icons green-text">done</i><i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i><i class="material-icons red-text">clear</i>
                                         {% endif %}
@@ -93,9 +83,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-
-                {% else %}
-                    <p class="col pastille blue reset">Tous les joueurs sont à jour</p>
                 {% endif %}
 
                 {% if app.user.admin and (joueursIssued.competition) %}
@@ -111,20 +98,36 @@
                                     const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
                                     const nbJoueursAll = {{ joueursIssued.competition|length }};
                                     const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
-
-                                    $(document).ready(function () {
-                                        if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
-                                    })
+                                    let messageNbJoueursIssued = $('p#messageNbJoueursIssued')
 
                                     $('#showCritFed').change(function () {
                                         if (!this.checked) {
-                                            $('.isCritFed').attr('hidden', '');
+                                            $('.isCritFed').toggleClass('hide', '');
                                             $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
                                             if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
                                             else $('button#updateJoueursIssued').prop('disabled', false);
+                                            if (noCritFed > 0) {
+                                                messageNbJoueursIssued.removeClass('blue');
+                                                messageNbJoueursIssued.addClass('orange darken-2');
+                                            }
+                                            else {
+                                                $('span#nbJoueurs').text('Tous les joueurs sont à jour')
+                                                messageNbJoueursIssued.addClass('blue');
+                                                messageNbJoueursIssued.removeClass('orange darken-2');
+                                            }
+                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
                                         }
                                         else {
-                                            $('.isCritFed').removeAttr('hidden');
+                                            $('.isCritFed').toggleClass('hide');
+                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                            if (nbJoueursAll === 0) {
+                                                messageNbJoueursIssued.addClass('blue');
+                                                messageNbJoueursIssued.removeClass('orange darken-2');
+                                            }
+                                            else {
+                                                messageNbJoueursIssued.removeClass('blue');
+                                                messageNbJoueursIssued.addClass('orange darken-2');
+                                            }
                                             $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
                                             if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
                                             else $('button#updateJoueursIssued').prop('disabled', false);
@@ -135,7 +138,7 @@
                         {% endif %}
 
                         <input type="hidden" name="resetPlayers" value="1">
-                        <button class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
+                        <button {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %}disabled{% endif %} class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
                     </form>
                 {% endif %}
             </div>
@@ -398,6 +401,7 @@
                                                                 <th>Journée</th>
                                                                 <th>Adversaire</th>
                                                                 <th>Lieu</th>
+                                                                <th>Coordonnées</th>
                                                             </tr>
                                                         </thead>
 
@@ -433,6 +437,16 @@
                                                                             {% endif %}
                                                                         </span>
                                                                         {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                    </td>
+                                                                    <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
+                                                                        {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
+                                                                            <i class="material-icons green-text">done</i>
+                                                                        {% else %}
+                                                                            {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
+                                                                            {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
+                                                                            {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
+                                                                            {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
+                                                                        {% endif %}
                                                                     </td>
                                                                 </tr>
                                                             {% endfor %}

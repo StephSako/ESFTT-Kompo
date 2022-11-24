@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/modalContact.html.twig' as _modalContact %}
+{% import 'macros/membre.html.twig' as _membre %}
 
 {% block title %}Page de contact{% endblock %}
 
@@ -15,7 +16,7 @@
             <h4>Contacter les membres</h4>
         </div>
 
-        <div class="card-panel center-align hide-on-med-and-down" style="padding: 4px;">
+        <div class="card-panel center-align hide-on-small-only" style="padding: 4px;">
             <p><i class="material-icons blue-text">info</i> <b>Depuis un smartphone</b>, cliquez sur les numéros de tél. pour contacter via SMS, appel et What's App</p>
         </div>
 
@@ -45,7 +46,7 @@
                             <th></th>
                             <th></th>
                             <th>Nom</th>
-                            <th>E-mails</th>
+                            <th>Emails</th>
                             <th>Téléphones</th>
                         </tr>
                     </thead>
@@ -55,33 +56,10 @@
                             {% if competiteur.idCompetiteur != app.user.idCompetiteur %}
                                 <tr>
                                     <td>
-                                        {% if competiteur.isAdmin %}
-                                            <span class='new badge red' data-badge-caption='Administrateur'></span>
-                                        {% endif %}
-
-                                        {% if competiteur.isCompetiteur %}
-                                            {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
-                                            {% if competiteur.isCritFed %}
-                                                <br><span style="margin-top: 2px" class='new badge purple' data-badge-caption='Crit. féd.'></span>
-                                            {% endif %}
-                                        {% elseif competiteur.isLoisir %}
-                                            {% if competiteur.isAdmin %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>
-                                        {% endif %}
-
-                                        {% if competiteur.isCapitaine %}
-                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
-                                        {% endif %}
-
-                                        {% if competiteur.isEntraineur %}
-                                            {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir or competiteur.isCapitaine %}<br>{% endif %}
-                                            <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
-                                        {% endif %}
+                                        {{ _membre.badgesRoles(competiteur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
                                     </td>
                                     <td class="td_picture_compet">
-                                        <img class="picture_compet avatar" src="{{ competiteur.avatar ? vich_uploader_asset(competiteur, 'imageFile') : asset('images/account.png') }}" alt="Avatar" width="55px" height="55px">
+                                        <img class="picture_compet avatar" src="{{ (competiteur.avatar ? vich_uploader_asset(competiteur, 'imageFile') : asset('images/account.png')) | imagine_filter('thumb') }}" alt="Avatar" width="55px" height="55px">
                                     </td>
                                     <td style="padding-top: 10px; padding-bottom: 10px;">
                                         {{ competiteur.nom }} {{ competiteur.prenom }}
@@ -109,21 +87,23 @@
                                                     <div class="col{% if not (competiteur.phoneNumber2 and competiteur.contactablePhoneNumber2) %} responsive-phone-num{% endif %}">
                                                         {{ competiteur.phoneNumber | split('', 2) | join(' ') }}
                                                     </div>
-                                                    <div class="col m2 hide-on-large-only">
+                                                    <div class="col m2 hide-on-med-and-up">
                                                         <a class="btn blue" href="tel:{{ competiteur.phoneNumber }}">
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
-                                                            <i class="material-icons">message</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
-                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                        </a>
-                                                    </div>
+                                                    {% if competiteur.phoneNumber | slice(0, 2) == "06" or competiteur.phoneNumber | slice(0, 2) == "07" %}
+                                                        <div class="col m2 hide-on-med-and-up">
+                                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber }}">
+                                                                <i class="material-icons">message</i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col m2 hide-on-med-and-up">
+                                                            <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber }}">
+                                                                <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                                 <br>
                                             {% endif %}
@@ -137,16 +117,18 @@
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
-                                                            <i class="material-icons">message</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
-                                                            <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
-                                                        </a>
-                                                    </div>
+                                                    {% if competiteur.phoneNumber2 | slice(0, 2) == "06" or competiteur.phoneNumber2 | slice(0, 2) == "07" %}
+                                                        <div class="col m2 hide-on-large-only">
+                                                            <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
+                                                                <i class="material-icons">message</i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col m2 hide-on-large-only">
+                                                            <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
+                                                                <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             {% endif %}
                                         {% else %}

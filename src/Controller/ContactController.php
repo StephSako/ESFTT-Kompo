@@ -4,10 +4,9 @@ namespace App\Controller;
 
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
-use App\Repository\SettingsRepository;
+use App\Repository\DisponibiliteRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -20,25 +19,25 @@ class ContactController extends AbstractController
 {
     private $competiteurRepository;
     private $championnatRepository;
-    private $settingsRepository;
     private $mailer;
+    private $disponibiliteRepository;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
+     * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
-     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
-                                MailerInterface $mailer,
-                                SettingsRepository $settingsRepository)
+                                DisponibiliteRepository $disponibiliteRepository,
+                                MailerInterface $mailer)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->settingsRepository = $settingsRepository;
         $this->mailer = $mailer;
+        $this->disponibiliteRepository = $disponibiliteRepository;
     }
 
     /**
@@ -55,6 +54,17 @@ class ContactController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
         $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
 
+        // Disponibilités du joueur
+        $id = $championnat->getIdChampionnat();
+        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+        $disposJoueurFormatted = null;
+        if ($this->getUser()->isCompetiteur()) {
+            $disposJoueurFormatted = [];
+            foreach($disposJoueur as $dispo) {
+                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            }
+        }
+
         $idRedacteur = $this->getUser()->getIdCompetiteur();
         $categories['tous'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur)), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
         $categories['loisirs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur)), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
@@ -68,6 +78,7 @@ class ContactController extends AbstractController
             'competiteurs' => $competiteurs,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
+            'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
             'categories' => $categories
         ]);
@@ -110,49 +121,6 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
-     * @param Request $request
-     * @param UtilController $utilController
-     * @return Response
-     * @throws Exception
-     */
-    public function contactResetPassword(Request $request, UtilController $utilController): Response
-    {
-        if ($this->getUser() != null) return $this->redirectToRoute('index');
-        else {
-            $mail = $request->request->get('mail');
-            $username = $request->request->get('username');
-            $nom = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
-
-            if (!$nom){
-                $response = new Response(json_encode(['message' => 'Ce pseudo et ce mail ne sont pas associés', 'success' => false]));
-                $response->headers->set('Content-Type', 'application/json');
-                return $response;
-            }
-
-            $settings = $this->settingsRepository->find(1);
-            try {
-                $data = $settings->getInfosType('mail-mdp-oublie');
-            } catch (Exception $e) {
-                throw $this->createNotFoundException($e->getMessage());
-            }
-
-            $resetPasswordLink =$utilController->generateGeneratePasswordLink($request->request->get('username'), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
-            $str_replacers = [
-                'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
-                'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
-            ];
-
-            return $this->sendMail(
-                [new Address($mail, $nom)],
-                true,
-                'Kompo - Réinitialisation de votre mot de passe',
-                $data,
-                $str_replacers);
-        }
-    }
-
-    /**
      * @param Address[] $addressReceiver
      * @param bool $importance
      * @param string $sujet
@@ -179,16 +147,15 @@ class ContactController extends AbstractController
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => 'Le mail a été envoyé !', 'success' => true]);
+            $json = json_encode(['message' => 'L\'e-mail a été envoyé !', 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
+            $json = json_encode(['message' => 'L\'emai n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
         } catch (Exception $e) {
-            $json = json_encode(['message' => 'Le mail n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
+            $json = json_encode(['message' => 'L\'emai n\'a pas pu être envoyé !', 'success' => false, 'error' => $e->getMessage()]);
         }
 
         $response = new Response($json);
         $response->headers->set('Content-Type', 'application/json');
-
         return $response;
     }
 }

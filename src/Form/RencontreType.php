@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,7 +28,7 @@ class RencontreType extends AbstractType
                         return $competiteur->getSelect();
                     },
                     'required' => false,
-                    'placeholder' => 'Joueur WO',
+                    'placeholder' => 'Pas de sélection',
                     'empty_data' => null,
                     'label' => false,
                     'choices' => $options['joueursSelectionnables']
@@ -38,32 +40,51 @@ class RencontreType extends AbstractType
                     'label' => ' ',
                     'choices' => Rencontre::LIEU_RENCONTRE,
                     'required' => true
-                ])
-                ->add('adversaire', TextType::class,[
+                ])->add('adversaire', TextType::class,[
                     'label' => false,
                     'required' => false,
                     'attr' => [
                         'maxlength' => 50
                     ]]
-                )
-                ->add('reporte', CheckboxType::class,[
+                )->add('reporte', CheckboxType::class,[
                     'label' => 'Match avancé/reporté',
                     'required' => false
-                ])
-                ->add('dateReport', DateType::class,[
+                ])->add('dateReport', DateType::class,[
                     'label' => false,
                     'format' => 'd MMMM y'
-                ])
-                ->add('exempt', CheckboxType::class,[
+                ])->add('exempt', CheckboxType::class,[
                     'label' => 'Equipe exemptée',
                     'required' => false
-                ])
-                ->add('villeHost', TextType::class,[
+                ])->add('villeHost', TextType::class,[
                     'label' => false,
                     'required' => false,
                     'attr' => [
                         'maxlength' => 200,
                         'placeholder' => 'Pas de délocalisation'
+                    ]
+                ])->add('adresse', TextareaType::class,[
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 300
+                    ]
+                ])->add('telephone', TelType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 10
+                    ]
+                ])->add('site', TextType::class,[
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 100
+                    ]
+                ])->add('complementAdresse', TextareaType::class,[
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 300
                     ]
                 ]);
         }

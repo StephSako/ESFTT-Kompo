@@ -94,6 +94,63 @@ html, body {
   padding-left: 0;
 }
 
+.dispos.merged_cards .row.bottom_0, .brulageCard.merged_cards .row.bottom_0 {
+  padding: 0;
+  text-align: left;
+}
+.dispos.merged_cards .row.bottom_0 .col, .brulageCard.merged_cards .row.bottom_0 .col {
+  padding: 0;
+}
+.dispos.merged_cards .row.bottom_0 .col .s10, .brulageCard.merged_cards .row.bottom_0 .col .s10 {
+  padding-right: 1px;
+}
+.dispos.merged_cards .row.bottom_0 .col .s2, .brulageCard.merged_cards .row.bottom_0 .col .s2 {
+  left: 8px;
+}
+
+ul.collection {
+  margin: 0 auto;
+  width: fit-content;
+  border-color: #1174b8;
+  border-radius: 4px;
+}
+ul.collection .collection-item {
+  border-bottom-color: #1174b8;
+}
+
+.dispos.merged_cards h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table thead tr h6 {
+  font-size: 1.25rem;
+}
+.dispos.merged_cards table:not(:first-of-type) thead tr h6 {
+  margin-top: 15px;
+}
+.dispos.merged_cards table tbody tr td span {
+  margin-left: 2%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dispos.merged_cards table tbody tr td .col.s1 {
+  padding-left: 0;
+  padding-right: 0;
+}
+.dispos.merged_cards .row.bottom_0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.dispos.merged_cards .row.bottom_0:nth-of-type(2) {
+  margin-bottom: 4px;
+}
+.dispos.merged_cards .row.bottom_0:first-of-type {
+  margin-top: 10px;
+}
+.dispos.merged_cards .row.bottom_0:first-of-type .col.s2 {
+  margin-top: 2px;
+}
+
 div.scrollableTable {
   overflow-x: scroll;
   width: 100%;
@@ -159,8 +216,12 @@ thead th, h5, h4, h3, td.rank, .flash, .divisionBubble, .lobster {
 }
 
 i.iconPlace {
-  font-size: 2.1rem;
+  font-size: 30px;
   color: #012242;
+}
+.btn-small i.iconPlace {
+  font-size: 25px;
+  color: white;
 }
 
 .setDispoCard {
@@ -274,11 +335,6 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
 .chip-mobile img {
   margin-top: 6px !important;
   margin-right: 25px !important;
-}
-
-.select-dropdown li img {
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 i {
@@ -470,6 +526,20 @@ button.renew_certif_table i {
 .first_sidenav {
   margin-top: 5px;
 }
+.first_sidenav .journee.li_in_line a {
+  padding-right: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.first_sidenav .journee.li_in_line a i {
+  margin-right: 0;
+}
+.first_sidenav .journee.li_in_line a .dot {
+  position: relative;
+  top: 45%;
+  width: 6px;
+  height: 6px;
+}
 .first_sidenav .collapsible-header {
   border-radius: 5px;
 }
@@ -562,7 +632,7 @@ span.virtualPoints {
 table.rankingVirtualPoints {
   font-size: 13px !important;
 }
-table.rankingVirtualPoints td {
+table.rankingVirtualPoints td:not(.td-chip) {
   padding-left: 0;
   padding-right: 0;
 }
@@ -576,6 +646,7 @@ table.rankingVirtualPoints td i {
 table.rankingVirtualPoints td .chip {
   padding-right: 0;
   margin-bottom: 0;
+  margin-left: 4px;
 }
 table.rankingVirtualPoints td .chip .nom {
   font-size: 13px !important;
@@ -604,8 +675,10 @@ table.rankingVirtualPoints td .chip .nom {
 
 .modal {
   width: 92% !important;
-  height: 85% !important;
+  height: 87% !important;
+  min-height: 87% !important;
   max-height: 100% !important;
+  top: 7% !important;
 }
 .modal .modal-content {
   max-width: 100% !important;
@@ -630,14 +703,74 @@ table.rankingVirtualPoints td .chip .nom {
 .modal .modal-content > .row .row {
   margin: 10px 0 12px 0 !important;
 }
-.modal.modal-alert {
+.modal.modal-medium {
   margin-top: 5% !important;
   width: 700px !important;
   height: 80% !important;
+  min-height: 80% !important;
   top: 4% !important;
 }
-.modal.modal-alert .modal-content {
+.modal.modal-medium .modal-content {
   padding: 2px;
+}
+.modal.modal-small {
+  width: 45% !important;
+}
+.modal.modal-small .modal-gps h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.modal.modal-small .modal-gps h6 {
+  font-size: 20px;
+}
+.modal.modal-small .modal-gps a.btn.phone {
+  margin-top: 0;
+}
+.modal.modal-small .modal-gps p.complAdr {
+  margin: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.adr {
+  margin: 0;
+}
+.modal.modal-small .modal-gps .btn-gps p.adr {
+  margin-top: 4px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns p {
+  margin-top: 5px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey {
+  padding: 5px 10px 10px 10px;
+  margin: 5px 10px;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey:nth-child(2) a.btn-small {
+  background-color: #3cf;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey button.btn-small {
+  margin-top: 8px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey i {
+  font-size: 21px;
+}
+.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey img {
+  width: 26px;
+  aspect-ratio: auto;
+  margin-top: 3px;
+}
+.modal.modal-small .modal-gps .telephoneDiv {
+  display: flex;
+  justify-content: center;
+}
+.modal.modal-small .modal-gps .telephoneDiv div {
+  margin: 0 5px;
 }
 
 .preloaderSendMail {
@@ -672,7 +805,7 @@ table.rankingVirtualPoints td .chip .nom {
   margin-top: 20px;
 }
 
-td#noTeam {
+#noTeam {
   font-style: italic;
 }
 
@@ -711,6 +844,7 @@ td#noTeam {
 
 .avatar {
   object-fit: cover;
+  border-radius: 50%;
 }
 
 #span_passwords_matching, #span_passwords_not_matching {
@@ -931,11 +1065,6 @@ table.table-last-compos tr {
   margin: 5.5px 0;
 }
 
-.brulageCard {
-  padding-left: 0;
-  padding-right: 0;
-}
-
 #aide_page h1 {
   margin-top: 0;
 }
@@ -961,12 +1090,70 @@ table.table-last-compos tr {
   cursor: pointer;
 }
 
+.brulages table thead tr h6 {
+  font-size: 1.25rem;
+}
+.brulages table:not(:first-of-type) thead tr h6 {
+  margin-top: 15px;
+}
+
 #title_points_virtuels {
   vertical-align: sub;
 }
 
 .lien_court {
   display: none;
+}
+
+.merged_cards.up.leftOne {
+  margin-top: 10px;
+}
+
+.divProfileCompletionCol {
+  margin-top: 0 !important;
+}
+.divProfileCompletionCol .divProfileCompletion {
+  background-color: #ffebd7;
+  border: 1px solid #fc780b;
+  border-radius: 10px;
+}
+.divProfileCompletionCol .divProfileCompletion .progress {
+  margin-bottom: 7px;
+}
+.divProfileCompletionCol .divProfileCompletion p {
+  font-size: 15px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.divProfileCompletionCol .divProfileCompletion ul {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+.divProfileCompletionCol .divProfileCompletion .champsManquants p, .divProfileCompletionCol .divProfileCompletion .champsManquants li {
+  font-size: 13px;
+  margin: 0;
+}
+
+#noPeopleToImport {
+  margin-top: 10px;
+}
+
+#importButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+#importButtons #submitImportButton {
+  margin-left: 5px;
+}
+
+span.field-icon {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .christmas_code {
@@ -998,13 +1185,6 @@ table.table-last-compos tr {
   background-color: #a7d6ff;
   border-radius: 8px;
   padding: 2px 2px 3px 2px;
-}
-
-#badgeCertifInvalidButton {
-  padding: 2px 4px;
-  border-radius: 2px;
-  margin-left: 5px;
-  background-color: #ff6565;
 }
 
 .preloader_personnal_virtual_rank canvas {
@@ -1081,6 +1261,23 @@ a.reload_ranking {
   transform: rotateY(180deg);
 }
 
+.navbar-general .left_items .dot {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+}
+.navbar-general .btn-floating {
+  top: 13px;
+  right: 23px;
+}
+.navbar-general .btn-floating i {
+  position: absolute;
+  height: 0;
+  line-height: 40px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1102,6 +1299,17 @@ a.reload_ranking {
 @media screen and (min-width: 992px) and (max-width: 1357px) {
   .preloader_personnal_virtual_rank {
     padding-top: 5px;
+  }
+}
+@media screen and (min-width: 992px) {
+  table.recapitulatifDispos thead tr th:not(:first-of-type) {
+    width: 60px;
+  }
+  table.recapitulatifDispos thead tr h6 {
+    font-size: 1.25rem;
+  }
+  table.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
   }
 }
 @media screen and (min-width: 1285px) {
@@ -1143,6 +1351,21 @@ a.reload_ranking {
   }
 }
 @media screen and (max-width: 992px) {
+  .th_mobile_pts_off {
+    padding-top: 28px;
+  }
+  .th_mobile_pts_off.isCritFed {
+    padding-top: 18px;
+  }
+
+  table#joueursIssued tbody tr td.isCritFed:last-child {
+    min-height: 56px;
+  }
+
+  .th_mobile_nom {
+    padding-top: 26px;
+  }
+
   th.th_picture_compet_table {
     height: 116px;
   }
@@ -1192,6 +1415,13 @@ a.reload_ranking {
     width: min-content;
   }
 
+  h6.recapitulatifDispos {
+    font-size: 1.35rem;
+  }
+  h6.recapitulatifDispos:not(:first-of-type) {
+    margin-top: 20px;
+  }
+
   table.recapitulatifDispos tbody td {
     height: 51px;
   }
@@ -1200,21 +1430,52 @@ a.reload_ranking {
     margin-top: 5px !important;
   }
 
-  .fixed-action-btn {
-    bottom: 0;
-    top: 2px;
+  .merged_cards {
+    -webkit-box-shadow: none;
+  }
+  .merged_cards.up {
+    border-radius: 10px 10px 0 0 !important;
+  }
+  .merged_cards.bottom {
+    border-radius: 0 0 10px 10px !important;
+    margin-top: 0 !important;
+  }
+  .merged_cards.bottom table thead th h5 {
+    margin-top: 0;
+  }
+}
+@media screen and (max-width: 850px) {
+  .modal.modal-small {
+    width: 96% !important;
   }
 }
 @media screen and (max-width: 720px) {
-  .modal.modal-alert {
+  .modal.modal-medium {
     width: 96% !important;
   }
 }
 @media screen and (max-width: 601px) {
-  .modal.modal-alert {
+  .modal {
     margin-top: 0 !important;
-    height: 89% !important;
+    min-height: 98% !important;
+    top: 1% !important;
+  }
+  .modal.modal-medium {
+    top: 4% !important;
+    min-height: 89% !important;
+  }
+  .modal.modal.modal-small {
     top: 6% !important;
+    min-height: 89% !important;
+  }
+
+  .navbar-general .btn-floating {
+    top: 9px;
+  }
+  .navbar-general .btn-floating i {
+    position: absolute;
+    height: 0;
+    line-height: 40px;
   }
 
   th.th_picture_compet_table {
@@ -1237,11 +1498,6 @@ a.reload_ranking {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
-  }
-
-  .fixed-action-btn {
-    bottom: 0;
-    top: -2px;
   }
 }
 @media screen and (max-width: 550px) {
@@ -1279,6 +1535,8 @@ a.reload_ranking {
     display: none;
   }
   table.rankingVirtualPoints td.td-chip {
+    padding-left: 0;
+    padding-right: 0;
     display: none;
   }
   table.rankingVirtualPoints td.td-name {
@@ -1288,15 +1546,20 @@ a.reload_ranking {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+  table.rankingVirtualPoints td.td-name.pl5 {
+    padding-left: 5px;
+  }
   table.rankingVirtualPoints td.points-td {
     min-width: 82px;
     max-width: 82px;
     width: 82px;
   }
   table.rankingVirtualPoints td.progression-td {
-    min-width: 58px;
-    max-width: 58px;
-    width: 58px;
+    width: 48px;
+    padding-left: 0;
+  }
+  table.rankingVirtualPoints td.progression-td:nth-child(1) {
+    width: 39px;
   }
 }
 @media screen and (max-width: 381px) {
@@ -1323,6 +1586,13 @@ a.reload_ranking {
 @media screen and (max-width: 330px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 18px;
+  }
+
+  #importButtons {
+    display: block;
+  }
+  #importButtons #submitImportButton {
+    margin-left: 0;
   }
 }
 @media screen and (max-width: 325px) {

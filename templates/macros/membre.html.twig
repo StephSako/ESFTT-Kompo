@@ -1,4 +1,4 @@
-{% macro tableActifs(joueurs, onlyOneAdmin ) %}
+{% macro tableActifs(joueurs, onlyOneAdmin) %}
     <table id="table-to-adapt-columns" class='striped centered responsive-table backoffice-table'>
         <thead>
             <tr class='hide-on-med-and-down'>
@@ -19,36 +19,13 @@
         {% for competiteur in joueurs %}
             <tr>
                 <td style="padding-top: 8px; padding-bottom: 8px;">
-                    {% if competiteur.isAdmin %}
-                        <span class='new badge red' data-badge-caption='Administrateur'></span>
-                    {% endif %}
-
-                    {% if competiteur.isCompetiteur %}
-                        {% if competiteur.isAdmin %}<br>{% endif %}
-                        <span style="margin-top: 2px" class='new badge green' data-badge-caption='Compétiteur'></span>
-                        {% if competiteur.isCritFed %}
-                            <br><span style="margin-top: 2px" class='new badge purple' data-badge-caption='Crit. féd.'></span>
-                        {% endif %}
-                    {% elseif competiteur.isLoisir %}
-                        {% if competiteur.isAdmin %}<br>{% endif %}
-                        <span style="margin-top: 2px" class='new badge orange' data-badge-caption='Loisir'></span>
-                    {% endif %}
-
-                    {% if competiteur.isCapitaine %}
-                        {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir %}<br>{% endif %}
-                        <span style="margin-top: 2px" class='new badge blue' data-badge-caption='Capitaine'></span>
-                    {% endif %}
-
-                    {% if competiteur.isEntraineur %}
-                        {% if competiteur.isAdmin or competiteur.isCompetiteur or competiteur.isLoisir or competiteur.isCapitaine %}<br>{% endif %}
-                        <span style="margin-top: 2px" class="new badge brown lighten-1" data-badge-caption="Entraîneur"></span>
-                    {% endif %}
+                    {{ _self.badgesRoles(competiteur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
                 </td>
                 <td class="td_picture_compet">
                     {% if competiteur.avatar %}
-                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
+                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                     {% else %}
-                        <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
+                        <img class="picture_compet avatar" src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
                     {% endif %}
                 </td>
                 <td>
@@ -62,17 +39,15 @@
                     {% endif %}
                 </td>
                 <td {% if competiteur.isLoisir %}class="hide-on-med-and-down"{% endif %}>
-                    {% if competiteur.isCompetiteur %}
-                        {% if competiteur.classementOfficiel %}
-                            {{ competiteur.classementOfficiel }} pts
-                        {% else %}
-                            <span class='red-text lighten-2'>Classement indéfini</span>
-                        {% endif %}
+                    {% if competiteur.classementOfficiel %}
+                        {{ competiteur.classementOfficiel }} pts
+                    {% else %}
+                        <span class='red-text lighten-2'>{% if competiteur.isCompetiteur %}Classement indéfini{% endif %}</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if competiteur.age != null and competiteur.age < 18 %}
-                        <span style="color: grey"><i>Mineur (facultatif)</i></span>
+                        <span class="grey-text"><i>Mineur (facultatif)</i></span>
                     {% else %}
                         <span>
                             <i id="icon-renew-certif{{ competiteur.idCompetiteur }}" class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
@@ -111,7 +86,7 @@
                                 </button>
                             </form>
                         {% else %}
-                            <div class="tooltipped" data-position="top" data-tooltip="Vous êtes le seul administrateur">
+                            <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
                                 <a class='btn red lighten-2 btn_gestion' disabled="">
                                     <i class='material-icons'>delete</i>
                                 </a>
@@ -142,52 +117,83 @@
             </tr>
         </thead>
 
-        <tbody>
-        {% for competiteur in joueursArchives %}
-            <tr>
-                <td style="padding-top: 8px; padding-bottom: 8px;">
-                    <span class="new badge grey lighten-1" data-badge-caption="Archivé"></span>
-                </td>
-                <td class="td_picture_compet">
-                    {% if competiteur.avatar %}
-                        <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') }}' alt='Avatar' width='60rem' height='60rem'>
-                    {% else %}
-                        <img class="picture_compet avatar" src='{{ asset('images/account.png') }}' alt='Avatar' width='60rem' height='60rem'>
-                    {% endif %}
-                </td>
-                <td class="grey-text text-lighten-1">
-                    {{ competiteur.nom }} {{ competiteur.prenom }}
-                </td>
-                <td class="hide-on-med-and-down">
-                    {% if competiteur.licence %}
-                        {{ competiteur.licence }}
-                    {% else %}
-                        <span class='red-text lighten-2'>Licence indéfinie</span>
-                    {% endif %}
-                </td>
-                <td class="hide-on-med-and-down">
-                    {% if competiteur.classementOfficiel %}
-                        {{ competiteur.classementOfficiel }} pts
-                    {% else %}
-                        <span class='red-text lighten-2'>Classement indéfini</span>
-                    {% endif %}
-                </td>
-                <td style="padding-bottom: 0; padding-top: 0;">
-                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
-                </td>
-                {% if 'ROLE_ADMIN' in app.token.roleNames %}
-                    <td>
-                        <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
-                            <input type='hidden' name='_method' value='DELETE'>
-                            <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
-                            <button class='btn waves-effect red lighten-2 btn_gestion'>
-                                <i class='material-icons'>delete</i>
-                            </button>
-                        </form>
+        <tbody class="grey-text text-lighten-1">
+            {% for competiteur in joueursArchives %}
+                <tr>
+                    <td style="padding-top: 8px; padding-bottom: 8px;">
+                        <span class="new badge grey lighten-1 white-text" data-badge-caption="Archivé"></span>
                     </td>
-                {% endif %}
-            </tr>
-        {% endfor %}
+                    <td class="td_picture_compet">
+                        {% if competiteur.avatar %}
+                            <img class="picture_compet avatar" src='{{ vich_uploader_asset(competiteur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
+                        {% else %}
+                            <img class="picture_compet avatar" src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ competiteur.nom }} {{ competiteur.prenom }}
+                    </td>
+                    <td class="hide-on-med-and-down">
+                        {% if competiteur.licence %}
+                            {{ competiteur.licence }}
+                        {% else %}
+                            Licence indéfinie
+                        {% endif %}
+                    </td>
+                    <td class="hide-on-med-and-down">
+                        {% if competiteur.classementOfficiel %}
+                            {{ competiteur.classementOfficiel }} pts
+                        {% else %}
+                            Classement indéfini
+                        {% endif %}
+                    </td>
+                    <td style="padding-bottom: 0; padding-top: 0;">
+                        <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                    </td>
+                    {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                        <td>
+                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
+                                <input type='hidden' name='_method' value='DELETE'>
+                                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
+                                <button class='btn waves-effect red lighten-2 btn_gestion'>
+                                    <i class='material-icons'>delete</i>
+                                </button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+{% endmacro %}
+
+{% macro badgesRoles(joueur, options) %}
+    {% if joueur.isAdmin %}
+        <span class='new badge red{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Administrateur'></span>
+    {% endif %}
+
+    {% if joueur.isCompetiteur %}
+        {% if joueur.isAdmin %}<br>{% endif %}
+        <span style="margin-top: 2px" class='new badge green{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Compétiteur'></span>
+    {% endif %}
+
+    {% if joueur.isCritFed %}
+        {% if joueur.isAdmin or joueur.isCompetiteur %}<br>{% endif %}
+        <span style="margin-top: 2px" class='new badge purple{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Crit. féd.'></span>
+    {% endif %}
+
+    {% if joueur.isLoisir %}
+        {% if joueur.isAdmin or joueur.isCompetiteur or joueur.isCritFed %}<br>{% endif %}
+        <span style="margin-top: 2px" class='new badge orange{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Loisir'></span>
+    {% endif %}
+
+    {% if joueur.isCapitaine %}
+        {% if joueur.isAdmin or joueur.isCompetiteur or joueur.isLoisir or joueur.isCritFed %}<br>{% endif %}
+        <span style="margin-top: 2px" class='new badge blue{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}' data-badge-caption='Capitaine'></span>
+    {% endif %}
+
+    {% if joueur.isEntraineur %}
+        {% if joueur.isAdmin or joueur.isCompetiteur or joueur.isLoisir or joueur.isCritFed or joueur.isCapitaine %}<br>{% endif %}
+        <span style="margin-top: 2px" class="new badge brown{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}" data-badge-caption="Entraîneur"></span>
+    {% endif %}
 {% endmacro %}

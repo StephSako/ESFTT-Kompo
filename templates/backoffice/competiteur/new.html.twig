@@ -20,7 +20,7 @@
 
         {{ form_errors(form) }}
 
-        {{ _account.edit_account('backoffice', 'Créer un membre', form, null, false, null, null, null, false, {isArchived: false, isLoisir: false, usernameEditable: true, createMode: true, displayCode: false, cheating: false, isWinner: false, isFullWinner: false}) }}
+        {{ _account.edit_account('backoffice', 'Créer un membre', form, null, false, null, null, false, null, [], {isArchived: false, isLoisir: false, usernameEditable: true, createMode: true, displayCode: false, cheating: false, isWinner: false, isFullWinner: false}) }}
     </div>
 
 {% endblock %}
