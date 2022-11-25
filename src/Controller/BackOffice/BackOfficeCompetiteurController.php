@@ -5,12 +5,14 @@ namespace App\Controller\BackOffice;
 use App\Controller\ContactController;
 use App\Controller\UtilController;
 use App\Entity\Competiteur;
+use App\Entity\Titularisation;
 use App\Form\CompetiteurType;
 use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\DivisionRepository;
+use App\Repository\EquipeRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use App\Repository\TitularisationRepository;
@@ -73,12 +75,14 @@ class BackOfficeCompetiteurController extends AbstractController
     const EXCEl_CHAMP_IS_ENTRAINEUR = 15;
     const EXCEl_CHAMP_IS_ADMIN = 16;
     private $titularisationRepository;
+    private $equipeRepository;
 
     /**
      * BackOfficeController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      * @param DisponibiliteRepository $disponibiliteRepository
+     * @param EquipeRepository $equipeRepository
      * @param DivisionRepository $divisionRepository
      * @param UploadHandler $uploadHandler
      * @param UserPasswordEncoderInterface $encoder
@@ -93,6 +97,7 @@ class BackOfficeCompetiteurController extends AbstractController
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em,
                                 DisponibiliteRepository $disponibiliteRepository,
+                                EquipeRepository $equipeRepository,
                                 DivisionRepository $divisionRepository,
                                 UploadHandler $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
@@ -117,6 +122,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->uploaderHelper = $uploaderHelper;
         $this->validator = $validator;
         $this->titularisationRepository = $titularisationRepository;
+        $this->equipeRepository = $equipeRepository;
     }
 
     /**
@@ -209,6 +215,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'displayCode' => false
         ]);
         $form->handleRequest($request);
+        $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
@@ -240,6 +247,23 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->em->persist($competiteur);
                     $this->em->flush();
 
+                    /** On créé les titularisations du nouveau compétiteur */
+                    if ($competiteur->isCompetiteur()) {
+                        foreach ($equipesAssociees as $championnat) {
+                            $idEquipeRequest = $request->request->get('equipesAssociees-' . $championnat['idChampionnat']->getIdChampionnat());
+                            if ($idEquipeRequest) {
+                                $idEquipe = intval($idEquipeRequest);
+                                $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function($e) use ($idEquipe) {
+                                    return $e->getIdEquipe() == $idEquipe;
+                                });
+                                $equipe = array_shift($equipesToPick);
+                                $newTitu = new Titularisation($competiteur, $equipe, $championnat['idChampionnat']);
+                                $this->em->persist($newTitu);
+                            }
+                        }
+                    }
+                    $this->em->flush();
+
                     /** On envoie un e-mail de bienvenue */
                     /** Les admins ne sont pas en copie si le nouvel inscrit est uniquement loisir */
                     if (!$competiteur->isArchive()) $this->sendWelcomeMail($utilController, $contactController, $competiteur, $competiteur->getRoles() != ['ROLE_LOISIR'], true);
@@ -247,16 +271,19 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
+                    // TODO selectionner les équipes
                     $this->throwExceptionBOAccount($e, $competiteur);
                     return $this->render('backoffice/competiteur/new.html.twig', [
-                        'form' => $form->createView()
+                        'form' => $form->createView(),
+                        'equipesAssociees' => $equipesAssociees
                     ]);
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/competiteur/new.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'equipesAssociees' => $equipesAssociees
         ]);
     }
 

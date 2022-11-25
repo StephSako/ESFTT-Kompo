@@ -96,7 +96,7 @@ class RencontreType extends AbstractType
             'data_class' => Rencontre::class,
             'translation_domain' => 'forms',
             'editCompoMode' => null,
-            'joueursSelectionnables' => null
+            'joueursSelectionnables' => []
         ]);
     }
 }

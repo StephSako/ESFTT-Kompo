@@ -33,4 +33,26 @@ class EquipeRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Select des équipes avec optGroups pour le form Competiteur dans le back-office
+     * @return array
+     */
+    public function getEquipesOptgroup(): array
+    {
+        $data = $this->createQueryBuilder('e')
+            ->addSelect('c')
+            ->leftJoin('e.idChampionnat', 'c')
+            ->orderBy('e.numero', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $querySorted = [];
+        foreach ($data as $item) {
+            if (!array_key_exists($item->getIdChampionnat()->getNom(), $querySorted)) $querySorted[$item->getIdChampionnat()->getNom()] = [];
+            $querySorted[$item->getIdChampionnat()->getNom()]['idChampionnat'] = $item->getIdChampionnat();
+            $querySorted[$item->getIdChampionnat()->getNom()]['listeEquipes']['Équipe n°' . $item->getNumero()] = $item;
+        }
+        return $querySorted;
+    }
 }

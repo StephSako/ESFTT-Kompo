@@ -85,7 +85,7 @@ class EquipeType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Equipe::class,
             'translation_domain' => 'forms',
-            'divisionsOptGroup' => null,
+            'divisionsOptGroup' => [],
             'newEquipe' => false,
             'editListeTitulaires' => false,
             'choices' => []

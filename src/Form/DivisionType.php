@@ -57,7 +57,7 @@ class DivisionType extends AbstractType
             'nbMaxJoueurs' => null,
             'data_class' => Division::class,
             'translation_domain' => 'forms',
-            'listChamps' => null
+            'listChamps' => []
         ]);
     }
 }

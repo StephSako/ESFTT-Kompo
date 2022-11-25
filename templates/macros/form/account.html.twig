@@ -90,6 +90,22 @@
                 </div>
             {% endif %}
 
+            {% if options.equipesAssociees is defined %}
+                <div class="row" id="equipesAssocieesForm">
+                    {% for nomChampionnat, infos in options.equipesAssociees %}
+                        <div class="form_div_list col m6 s12 l5{% if loop.index0 == 0 %} offset-l1{% endif %}">
+                            <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">Championnat "{{ nomChampionnat }}"</label>
+                            <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
+                                <option value="" disabled selected>Sans équipe</option>
+                                {% for equipe in infos.listeEquipes %}
+                                    <option value="{{ equipe.idEquipe }}">Équipe {{ equipe.numero }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             {% if not options.isArchived %}
                 <div style="margin-bottom: 0;">
                     <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
