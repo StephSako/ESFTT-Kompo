@@ -47,7 +47,7 @@ class Titularisation
     /**
      * @var Competiteur
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations", cascade={"persist"})
      * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
      */
     private $idCompetiteur;

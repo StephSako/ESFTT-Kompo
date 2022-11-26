@@ -358,6 +358,13 @@ class Competiteur implements UserInterface, Serializable
     private $anneeCertificatMedical;
 
     /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur")
+     */
+    private $titularisations;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
@@ -1680,6 +1687,24 @@ class Competiteur implements UserInterface, Serializable
     public function setEquipesAssociees(Collection $equipesAssociees): self
     {
         $this->equipesAssociees = $equipesAssociees;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Competiteur
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

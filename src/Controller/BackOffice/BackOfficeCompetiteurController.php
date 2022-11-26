@@ -216,6 +216,7 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
         $form->handleRequest($request);
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
+        $idsEquipesAssociees = [];
 
         if ($form->isSubmitted()){
             if ($form->isValid()){
@@ -245,7 +246,6 @@ class BackOfficeCompetiteurController extends AbstractController
                     $competiteur->setContactablePhoneNumber2((bool)$competiteur->getPhoneNumber2());
 
                     $this->em->persist($competiteur);
-                    $this->em->flush();
 
                     /** On créé les titularisations du nouveau compétiteur */
                     if ($competiteur->isCompetiteur()) {
@@ -253,6 +253,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             $idEquipeRequest = $request->request->get('equipesAssociees-' . $championnat['idChampionnat']->getIdChampionnat());
                             if ($idEquipeRequest) {
                                 $idEquipe = intval($idEquipeRequest);
+                                $idsEquipesAssociees[] = $idEquipe;
                                 $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function($e) use ($idEquipe) {
                                     return $e->getIdEquipe() == $idEquipe;
                                 });
@@ -262,6 +263,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             }
                         }
                     }
+
                     $this->em->flush();
 
                     /** On envoie un e-mail de bienvenue */
@@ -273,17 +275,14 @@ class BackOfficeCompetiteurController extends AbstractController
                 } catch(Exception $e){
                     // TODO selectionner les équipes
                     $this->throwExceptionBOAccount($e, $competiteur);
-                    return $this->render('backoffice/competiteur/new.html.twig', [
-                        'form' => $form->createView(),
-                        'equipesAssociees' => $equipesAssociees
-                    ]);
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
 
         return $this->render('backoffice/competiteur/new.html.twig', [
             'form' => $form->createView(),
-            'equipesAssociees' => $equipesAssociees
+            'equipesAssociees' => $equipesAssociees,
+            'idsEquipesAssociees' => $idsEquipesAssociees
         ]);
     }
 
@@ -331,9 +330,9 @@ class BackOfficeCompetiteurController extends AbstractController
                 false,
                 $adminsCopy);
 
-            if ($adminsInCC && $showFlash) $this->addFlash('success', 'E-mail de bienvenue envoyé');
+            if ($showFlash) $this->addFlash('success', 'E-mail de bienvenue envoyé');
         } catch (Exception $e) {
-            if ($adminsInCC && $showFlash) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
+            if ($showFlash) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
             else throw new Exception('E-mail de bienvenue non renvoyé', '1234');
         }
     }
@@ -353,7 +352,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 return $this->redirectToRoute('backoffice.competiteurs');
             }
 
-            $this->sendWelcomeMail($utilController, $contactController, $competiteur, false, true);
+            $this->sendWelcomeMail($utilController, $contactController, $competiteur, false, false);
 
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {
@@ -391,6 +390,9 @@ class BackOfficeCompetiteurController extends AbstractController
             'displayCode' => $this->getUser()->isAdmin() && !$competiteur->isArchive()
         ]);
         $form->handleRequest($request);
+        $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
+        $idsEquipesAssociees = array_map(function ($e) { return $e->getIdEquipe(); }, $competiteur->getEquipesAssociees()->toArray());
+        $actualIdsEquipesAssociees = $idsEquipesAssociees;
 
         /** Variable permettant de controler le fait qu'il doit y avoir minimum un administrateur restant */
         $onlyOneAdmin = count($this->competiteurRepository->findJoueursByRole('Admin', null)) == 1;
@@ -398,6 +400,8 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
+                    $idsEquipesAssociees = [];
+
                     /** On vérifie qu'il y aie au minimum un administrateur restant parmi les membres actifs si l'utilisateur admin actuel est le dernier administrateur souhaitant ne plus l'être */
                     if ($onlyOneAdmin && !in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
                         $competiteur->setIsArchive(false);
@@ -446,6 +450,38 @@ class BackOfficeCompetiteurController extends AbstractController
                         /** On met ses rôles à jour dans le token de session pour ne pas être déconnecté */
                         if ($isCurrentAdminTheEditedUser) {
                             $this->get('security.token_storage')->setToken(new UsernamePasswordToken($competiteur, null, 'main', $competiteur->getRoles()));
+                        }
+
+                        /** On modifie les titularisations du nouveau compétiteur */
+                        if ($competiteur->isCompetiteur()) {
+                            foreach ($equipesAssociees as $championnat) {
+                                $idEquipeRequest = $request->request->get('equipesAssociees-' . $championnat['idChampionnat']->getIdChampionnat());
+                                if ($idEquipeRequest) {
+                                    $idEquipe = intval($idEquipeRequest);
+                                    $idsEquipesAssociees[] = $idEquipe;
+
+                                    /** Création des titularisations */
+                                    if (!in_array($idEquipe, $actualIdsEquipesAssociees)){
+                                        $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function ($e) use ($idEquipe) {
+                                            return $e->getIdEquipe() == $idEquipe;
+                                        });
+                                        $equipe = array_shift($equipesToPick);
+                                        $newTitu = new Titularisation($competiteur, $equipe, $championnat['idChampionnat']);
+                                        $this->em->persist($newTitu);
+                                    }
+                                }
+                            }
+
+                            /** Suppression des titularisations */
+                            $idsEquipesToDelete = array_filter($actualIdsEquipesAssociees, function($idEquipe) use ($idsEquipesAssociees) {
+                                return !in_array($idEquipe, $idsEquipesAssociees);
+                            });
+                            $titusToDelete = array_filter($competiteur->getTitularisations()->toArray(), function ($e) use ($idsEquipesToDelete) {
+                                return in_array($e->getIdEquipe()->getIdEquipe(), $idsEquipesToDelete);
+                            });
+                            foreach($titusToDelete as $tituToDelete) {
+                                $this->em->remove($tituToDelete);
+                            }
                         }
 
                         $this->em->flush();
@@ -497,7 +533,8 @@ class BackOfficeCompetiteurController extends AbstractController
             'winner' => $competiteur->isWinner(),
             'fullWinner' => $competiteur->isFullWinner(),
             'profileCompletion' => $competiteur->profileCompletion(),
-            'equipesAssociees' => $competiteur->getTableEquipesAssociees($this->championnatRepository->findAll())
+            'equipesAssociees' => $equipesAssociees,
+            'idsEquipesAssociees' => $idsEquipesAssociees
         ]);
     }
 

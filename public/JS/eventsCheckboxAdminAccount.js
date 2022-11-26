@@ -16,6 +16,7 @@ $(document).ready(() => {
     let cb_entraineur = $('#cb_entraineur');
     let cb_crit_fed = $('#cb_crit_fed');
     let btn_modifier = $('#btn_modifier');
+    let form_equipes_associees = $('#equipesAssocieesForm');
 
     /** Evènements liés aux checkbox Administrateur, Capitaine, Loisir, Entraineur et Archive **/
     if (cb_admin.is(":checked")) cb_archive.prop('checked', false).prop('disabled', true);
@@ -42,6 +43,7 @@ $(document).ready(() => {
     }
 
     if (cb_competiteur.is(":checked")){
+        form_equipes_associees.removeClass('hide');
         cb_loisir.prop('checked', false).prop('disabled', true);
         cb_archive.prop('checked', false).prop('disabled', true);
     } else {
@@ -126,6 +128,7 @@ $(document).ready(() => {
 
     cb_competiteur.on('change', () => {
         if (!cb_competiteur.is(":checked")){
+            form_equipes_associees.addClass('hide');
             if (type === 'backoffice' && !cb_admin.is(":checked") && !cb_capitaine.is(":checked") && !cb_entraineur.is(":checked") && !cb_loisir.is(":checked") && !cb_archive.is(":checked"))
                 btn_modifier.prop('disabled', true);
 
@@ -136,6 +139,7 @@ $(document).ready(() => {
             cb_crit_fed.prop('checked', false).prop('disabled', true);
         }
         else{
+            form_equipes_associees.removeClass('hide');
             btn_modifier.prop('disabled', false);
             cb_loisir.prop('disabled', true);
             cb_capitaine.prop('disabled', false);
