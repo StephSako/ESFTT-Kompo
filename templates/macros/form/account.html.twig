@@ -1,4 +1,5 @@
 {% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, isCritFed, profileCompletion, equipesAssociees, options) %}
+    {% import 'macros/membre.html.twig' as _membre %}
 
     <div class="card-panel center-align account-card">
 
@@ -33,6 +34,12 @@
         {{ form_start(form) }}
             <div class="row section" style="margin-bottom: 0;">
                 <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
+
+                {% if type != 'backoffice' %}
+                    <div class="col s12 account_roles">
+                        {{ _membre.badgesRoles(app.user, {sheetDataHasViolations: null, dejaInscrit: null}) }}
+                    </div>
+                {% endif %}
 
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
                     <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>

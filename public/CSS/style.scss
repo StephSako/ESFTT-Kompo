@@ -63,6 +63,16 @@ html,body{
   &.account-card {
     .col {
       margin-top: 20px;
+
+      &.account_roles {
+        margin-top: 5px;
+
+        & .new.badge {
+          padding: 4px 6px;
+          float: none;
+          line-height: 24px;
+        }
+      }
     }
   }
 }

@@ -51,6 +51,14 @@ html, body {
 .card-panel.account-card .col {
   margin-top: 20px;
 }
+.card-panel.account-card .col.account_roles {
+  margin-top: 5px;
+}
+.card-panel.account-card .col.account_roles .new.badge {
+  padding: 4px 6px;
+  float: none;
+  line-height: 24px;
+}
 
 .btn {
   margin-top: 20px;
