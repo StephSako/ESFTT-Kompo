@@ -40,37 +40,6 @@ class ChampionnatRepository extends ServiceEntityRepository
     /**
      * @return array
      */
-    public function getAllEquipes(): array
-    {
-        $query = $this->createQueryBuilder('c')
-            ->select('e.idEquipe')
-            ->addSelect('e.numero')
-            ->addSelect('p.poule')
-            ->addSelect('e.lienDivision')
-            ->addSelect('d.shortName as divShortName')
-            ->addSelect('c.nom')
-            ->addSelect('c.idChampionnat')
-            ->leftJoin('c.equipes', 'e')
-            ->leftJoin('e.idDivision', 'd')
-            ->leftJoin('e.idPoule', 'p')
-            ->orderBy('c.nom')
-            ->addOrderBy('e.numero')
-            ->getQuery()
-            ->getResult();
-
-        $querySorted = [];
-        foreach ($query as $key => $item) {
-            if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
-            if (!array_key_exists('equipes', $querySorted[$item['nom']])) $querySorted[$item['nom']]['equipes'] = [];
-            $querySorted[$item['nom']]['equipes'][$key] = $item;
-        }
-        return $querySorted;
-    }
-
-    /**
-     * @return array
-     */
     public function getAllDivisions(): array
     {
         $query = $this->createQueryBuilder('c')

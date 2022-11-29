@@ -55,4 +55,19 @@ class EquipeRepository extends ServiceEntityRepository
         }
         return $querySorted;
     }
+
+    /**
+     * Retourne toutes les équipes triées par championnat
+     * @return array
+     */
+    public function getAllEquipes(): array
+    {
+        $query = $this->findBy([], ['numero' => 'ASC']);
+        $querySorted = [];
+        foreach ($query as $equipe) {
+            $querySorted[$equipe->getIdChampionnat()->getNom()]['idChampionnat'] = $equipe->getIdChampionnat()->getIdChampionnat();
+            $querySorted[$equipe->getIdChampionnat()->getNom()]['equipes'][] = $equipe;
+        }
+        return $querySorted;
+    }
 }

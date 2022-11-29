@@ -6,7 +6,6 @@ use App\Entity\Equipe;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
 use App\Form\EquipeType;
-use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
@@ -21,20 +20,17 @@ class BackOfficeEquipeController extends AbstractController
 {
     private $em;
     private $equipeRepository;
-    private $championnatRepository;
     private $divisionRepository;
     private $competiteurRepository;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
-     * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
-                                ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
                                 CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em)
@@ -42,7 +38,6 @@ class BackOfficeEquipeController extends AbstractController
         $this->em = $em;
         $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
-        $this->championnatRepository = $championnatRepository;
         $this->competiteurRepository = $competiteurRepository;
     }
 
@@ -54,7 +49,7 @@ class BackOfficeEquipeController extends AbstractController
     public function index(Request $request): Response
     {
         return $this->render('backoffice/equipe/index.html.twig', [
-            'equipes' => $this->championnatRepository->getAllEquipes(),
+            'equipes' => $this->equipeRepository->getAllEquipes(),
             'active' => $request->query->get('active')
         ]);
     }
