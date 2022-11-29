@@ -40,14 +40,11 @@ class BackOfficeFFTTApiController extends AbstractController
     private $settingsRepository;
 
     /** Position des données dans les chaînes de caractères reçues de l'API */
-    const JOURNEE_LABEL= 4;
-    const JOURNEE_NUMBER = 1;
-    const ORGANISME_PERE_LABEL = 1;
-    const ORGANISME_PERE_NUMBER = 2;
+    const REGEX_JOURNEE_NUMBER = '/^Poule [0-9]+ - tour n°([0-9]+) du \d{2}\/\d{2}\/\d{4}$/';
+    const REGEX_ORGANISME_PERE = '/^cx_poule=[0-9]+&D1=[0-9]+&organisme_pere=([0-9]+)$/';
     const DIVISION_PARTIE_UN = 0;
     const DIVISION_PARTIE_DEUX = 1;
-    const POULE = 1;
-    const NUMERO_EQUIPE = 2;
+    const REGEX_NUMERO_EQUIPE = '/^[A-Z\s]+ ([0-9]+) - Phase ([1|2])$/';
 
     /**
      * @param CompetiteurRepository $competiteurRepository
@@ -87,7 +84,7 @@ class BackOfficeFFTTApiController extends AbstractController
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
         try {
             /** Gestion des joueurs */
-            $joueursKompo = $this->competiteurRepository->findBy(['isCompetiteur' => 1], ['nom' => 'ASC', 'prenom' => 'ASC']);
+            $joueursKompo = $this->competiteurRepository->findBy(['isArchive' => 0], ['nom' => 'ASC', 'prenom' => 'ASC']);
             $joueursIssued['nbJoueursCritFed'] = count(array_filter($joueursKompo, function($joueur){
                 return $joueur->isCritFed();
             }));
@@ -117,7 +114,7 @@ class BackOfficeFFTTApiController extends AbstractController
             }
             $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function($joueur) { return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement']; }));
 
-        } catch (Exception $exception) {
+        } catch (Exception $e) {
             $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
             $errorMajJoueurs = true;
         }
@@ -132,9 +129,9 @@ class BackOfficeFFTTApiController extends AbstractController
                 /** Gestion des équipes */
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
                 $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
-                    $organisme_pere = explode('=', explode('&', $eq->getLienDivision())[self::ORGANISME_PERE_NUMBER])[self::ORGANISME_PERE_LABEL];
-                    $lib = explode(' ', $eq->getLibelle());
-                    return $organisme_pere == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || array_pop($lib) == $this->getDatePhase(new DateTime()));
+                    $organisme_pere = $this->getValueFromRegex(self::REGEX_ORGANISME_PERE, $eq->getLienDivision());
+                    $phase = $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $eq->getLibelle(), 2);
+                    return intval($organisme_pere) == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || $phase == $this->getDatePhase(new DateTime()));
                 }));
 
                 /** On ordonne les objets des Equipes selon leurs numéros */
@@ -266,7 +263,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $rencontreTemp = [];
                                 $rencontreTemp['equipeESFTT'] = $domicile ? $rencontre->getNomEquipeA() : $rencontre->getNomEquipeB();
                                 $rencontreTemp['nbEquipe'] = $nbEquipe;
-                                $rencontreTemp['journee'] = explode('?', explode(' ', $rencontre->getLibelle())[self::JOURNEE_LABEL])[self::JOURNEE_NUMBER];
+                                $rencontreTemp['journee'] = $this->getValueFromRegex(self::REGEX_JOURNEE_NUMBER, $rencontre->getLibelle());
                                 $rencontreTemp['adversaireFFTT'] = $adversaire;
                                 $rencontreTemp['exempt'] = $isExempt;
                                 $rencontreTemp['domicileFFTT'] = $domicile;
@@ -610,7 +607,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             $equipeIssued['equipe']
                                 ->setLienDivision($equipeIssued['lienDivision'])
                                 ->setIdDivision($arrayDivisionPoule[0])
-                                ->setIdPoule($arrayDivisionPoule[self::POULE]);
+                                ->setIdPoule($arrayDivisionPoule[1]);
                         }
                         $this->em->refresh($championnat);
 
@@ -623,9 +620,8 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On créé les équipes inexistantes */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {
                             $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat);
-
                             $newEquipe = new \App\Entity\Equipe();
-                            $newEquipe->setIdPoule($arrayDivisionPoule[self::POULE]);
+                            $newEquipe->setIdPoule($arrayDivisionPoule[1]);
                             $newEquipe->setNumero($numero);
                             $newEquipe->setIdChampionnat($championnat);
                             $newEquipe->setIdDivision($arrayDivisionPoule[0]);
@@ -767,6 +763,18 @@ class BackOfficeFFTTApiController extends AbstractController
      * @return int
      */
     function getEquipeNumero(string $equipeLibelle): int {
-        return intval(preg_replace('/\D/', '', explode(' ', $equipeLibelle)[self::NUMERO_EQUIPE]));
+        return intval($this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $equipeLibelle));
+    }
+
+    /**
+     * @param $regex
+     * @param string $value
+     * @param int|null $index Par défaut le premier match
+     * @return string
+     */
+    function getValueFromRegex($regex, string $value, ?int $index = 1): string
+    {
+        preg_match($regex, $value, $matches);
+        return $matches[$index];
     }
 }

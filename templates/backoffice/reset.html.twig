@@ -25,12 +25,7 @@
             <div class='card-panel center'>
                 <h4 style="margin-bottom: 15px;">Les compétiteurs</h4>
 
-                <div style="padding-top: 8px; padding-bottom: 8px; margin-bottom: 10px;" class="col pastille blue lighten-1 reset"><i class="material-icons white-text">info</i> Avant de mettre à jour les joueurs compétiteurs, pensez à :
-                    <ul style="margin-bottom: 0;">
-                        <li style="margin-bottom: 6px">• renseigner les numéros de licence des joueurs compétiteurs</li>
-                        <li>• cocher bien la case <b>compétiteur</b> pour les joueurs étant compétiteurs</li>
-                    </ul>
-                </div>
+                <div style="padding-top: 8px; padding-bottom: 8px; margin-bottom: 10px;" class="col pastille blue lighten-1 reset"><i class="material-icons white-text">info</i> Seuls les membres ayant leur licence renseignée dans Kompo sont sujets à la mise à jour</div>
 
                 {% if joueursIssued.competition %}
                     <p id="messageNbJoueursIssued" class="col pastille reset {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}orange darken-2{% else %}blue{% endif %}" style="margin-bottom: 10px;">
@@ -307,7 +302,7 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
-                                                <th>Numéro</th>
+                                                <th>Équipe</th>
                                                 <th>Libellé division</th>
                                                 <th>Poule</th>
                                                 <th>Liaison à la FFTT</th>
@@ -318,7 +313,7 @@
                                             {% for equipe in data.teams.issued %}
                                                 <tr>
                                                     <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
-                                                    <td><b>{{ equipe.equipe.numero }}</b></td>
+                                                    <td>{{ club_name|title ~ ' ' ~ equipe.equipe.numero }}</td>
                                                     <td>
                                                         <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
                                                         {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
