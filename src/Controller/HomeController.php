@@ -129,7 +129,8 @@ class HomeController extends AbstractController
         $numJournee = array_search($journee, $journees)+1;
 
         // Disponibilités des joueurs pour la journée par équipe
-        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, max(array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos)));
+        $nbMaxJoueursParDivision = array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos);
+        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, $nbMaxJoueursParDivision ? max($nbMaxJoueursParDivision) : $this->getParameter('nb_joueurs_default_division'));
         $joueursNonDeclares = [];
         $joueursDisponibles = [];
         foreach ($disponibilitesJournee as $equipe) {

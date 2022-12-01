@@ -172,14 +172,13 @@ class CompetiteurRepository extends ServiceEntityRepository
                     AND c.idCompetiteur = t.idCompetiteur
                     AND t.idEquipe = et.idEquipe
                 ) as numero')
-        ->addSelect('(
+            ->addSelect('(
                     SELECT et2.idEquipe
                     FROM App\Entity\Titularisation t2, App\Entity\Equipe et2
                     WHERE t2.idChampionnat = :idChampionnat
                     AND c.idCompetiteur = t2.idCompetiteur
                     AND t2.idEquipe = et2.idEquipe
-                ) as idEquipeAssociee')
-        ;
+                ) as idEquipeAssociee');
 
         foreach ($idEquipes as $idEquipe) {
             $str = '';
@@ -197,12 +196,12 @@ class CompetiteurRepository extends ServiceEntityRepository
                                   'AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe ' .
                                   'AND e' . $idEquipe . '.numero = ' . $idEquipe . ' ' .
                                   'AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
-                ->setParameter('idJournee', $idJournee)
-                ->setParameter('idChampionnat', $idChampionnat);
+                ->setParameter('idJournee', $idJournee);
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isCompetiteur = true')
+            ->setParameter('idChampionnat', $idChampionnat)
             ->orderBy('numero')
             ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
