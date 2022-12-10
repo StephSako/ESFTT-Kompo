@@ -40,8 +40,8 @@ class UtilController extends AbstractController
         $latestDateMax = new DateTime(date_format(($maxDate->add(new DateInterval('P1D'))), 'Y-m-d'));
         $today = new DateTime();
         if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
-        else if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase prête à être lancée'];
-        else return ['launchable' => false, 'message' => 'La phase n\'est pas terminée pour lancer la pré-phase'];
+        else if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase est prête à être lancée'];
+        else return ['launchable' => false, 'message' => null];
     }
 
     /**
@@ -60,7 +60,7 @@ class UtilController extends AbstractController
             ]);
         $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
         $encryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-        return 'https://www.prive.esftt.com/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
+        return $this->getParameter('url_prod') . '/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
     }
 
     /**

@@ -550,21 +550,29 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
 
+                        $joueursToContact = array_filter($this->competiteurRepository->findJoueursByRole('Competiteur', null), function($j) use ($championnat) {
+                            return in_array($championnat->getIdChampionnat(), array_map(function($t) {
+                                return $t->getIdChampionnat()->getIdChampionnat();
+                            }, $j->getTitularisations()->toArray()));
+                        });
                         $mails = array_map(function ($joueur) {
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                        }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', null))['mail']['contactables']);
+                        }, $contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
 
                         try {
                             $str_replacers = [
-                                'old' => ["[#nom_phase#]"],
-                                'new' => [$championnat->getNom()]
+                                'old' => ["[#nom_phase#]", "[#lien_division#]"],
+                                'new' => [
+                                    $championnat->getNom(),
+                                    " <a href=\"" . $this->getParameter('url_prod') . '/journee/' . $championnat->getIdChampionnat() . "\">ici</a>"
+                                ]
                             ];
 
                             $contactController->sendMail(
                                 $mails,
                                 true,
                                 'Kompo - Phase terminée',
-                                $this->settingsRepository->find('mail-pre-phase'),
+                                $this->settingsRepository->find('mail-pre-phase')->getContent(),
                                 $str_replacers,
                                 true);
                             $this->addFlash('success', "L'alerte de pré-phase a été envoyée");

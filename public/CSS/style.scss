@@ -1739,6 +1739,12 @@ a.reload_ranking {
   }
 }
 
+@media screen and (min-width: 325px) and (max-width: 460px) {
+  .virtualRankButtons {
+    padding-top: 8px;
+  }
+}
+
 @media screen and (max-width: 411px) {
   table.rankingVirtualPoints td {
     .chip {
@@ -1798,7 +1804,7 @@ a.reload_ranking {
   }
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 275px) {
   a.reload_ranking {
     display: none;
   }

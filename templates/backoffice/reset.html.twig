@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 
-{% block title %}Mise à jour{% endblock %}
+{% block title %}Mises à jour{% endblock %}
 
 {% block body %}
 
@@ -152,12 +152,11 @@
             {% for nomChampionnat, data in allChampionnatsReset %}
                 <div id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
                     {% if data.recorded %}
-                        <div class='backoffice-panel center card-panel'>
+                        {% if data.preRentree.finished.launchable %}
+                            <div class='backoffice-panel center card-panel'>
 
-                            <h3 style="margin-top: 10px; margin-bottom: 10px;">Pré-phase</h3>
-
-                            {% if data.preRentree.finished.launchable %}
-                                <p class="pastille green white-text reset" style="margin-bottom: 25px;">{{ data.preRentree.finished['message'] }}</p>
+                                <h3 style="margin-top: 10px; margin-bottom: 10px;">La pré-phase</h3>
+                                <p class="pastille green white-text reset" style="margin-bottom: 25px;">{{ data.preRentree.finished.message }}</p>
 
                                 <div class="center">
                                     <h4>Les journées</h4>
@@ -225,239 +224,242 @@
                                         </div>
                                     </form>
                                 {% endif %}
-                            {% else %}
-                                <p class="pastille blue white-text reset">{{ data.preRentree.finished['message'] }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class='backoffice-panel center card-panel'>
-                            <h3 style="margin-top: 10px;">La phase</h3>
-
-                            <div class="center">
-                                <h4>Les journées</h4>
-                                {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;">Toutes les journées sont à jour</p>{% endif %}
-                                {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.issued|length ~ (data.dates.issued|length == 1 ? ' date sera mise à jour' : ' dates seront mises à jour') }}</p>{% endif %}
-                                {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.missing|length ~ (data.dates.missing|length == 1 ? ' dates sera créée' : ' dates seront créées') }}</p>{% endif %}
-                                {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.surplus|length ~ (data.dates.surplus|length == 1 ? ' date sera supprimée' : ' dates seront supprimées') }}</p>{% endif %}
-
-                                {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
-                                    <table class="striped centered responsive-table">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Journée</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        {% for dateIssued in data.dates.issued %}
-                                            <tr>
-                                                <td><i class="material-icons orange-text text-darken-2">edit</i></td>
-                                                <td><b>{{ dateIssued.nJournee }}</b></td>
-                                                <td>
-                                                    <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                    <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-
-                                        {% for index, dateMissing in data.dates.missing %}
-                                            <tr>
-                                                <td><i class="material-icons green-text">add_circle</i></td>
-                                                <td><b>{{ index }}</b></td>
-                                                <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
-                                            </tr>
-                                        {% endfor %}
-
-                                        {% for dateSurplus in data.dates.surplus %}
-                                            <tr>
-                                                <td><i class="material-icons red-text">delete</i></td>
-                                                <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
-                                                <td>
-                                                    {% if dateSurplus.undefined %}
-                                                        <i class='material-icons red-text'>event_busy</i>
-                                                    {% else %}
-                                                        {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                {% endif %}
                             </div>
+                        {% endif %}
 
-                            <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+                        {% if not data.preRentree.finished.launchable %}
+                            <div class='backoffice-panel center card-panel'>
+                                <h3 style="margin-top: 10px; margin-bottom: 10px;">La phase</h3>
 
-                            <div class="center">
-                                <h4>Les équipes</h4>
-                                {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset">{{ data.teams.toUpdate|listeEquipeToManage(2) }}</p>{% endif %}
-                                {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</p>{% endif %}
-                                {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</p>{% endif %}
-                                {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset">Toutes les équipes sont à jour</p>{% endif %}
+                                {% if not (data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
+                                    <p class="pastille green white-text reset">Toutes les données sont à jour</p>
+                                    <div style="margin-top: 25px; margin-bottom: 15px;"></div>
+                                {% endif %}
 
-                                {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
-                                    <table class="striped centered responsive-table">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Équipe</th>
-                                                <th>Libellé division</th>
-                                                <th>Poule</th>
-                                                <th>Liaison à la FFTT</th>
-                                            </tr>
-                                        </thead>
+                                <div class="center">
+                                    <h4>Les journées</h4>
+                                    {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;">Toutes les journées sont à jour</p>{% endif %}
+                                    {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.issued|length ~ (data.dates.issued|length == 1 ? ' date sera mise à jour' : ' dates seront mises à jour') }}</p>{% endif %}
+                                    {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.missing|length ~ (data.dates.missing|length == 1 ? ' dates sera créée' : ' dates seront créées') }}</p>{% endif %}
+                                    {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.surplus|length ~ (data.dates.surplus|length == 1 ? ' date sera supprimée' : ' dates seront supprimées') }}</p>{% endif %}
 
-                                        <tbody>
-                                            {% for equipe in data.teams.issued %}
+                                    {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
+                                        <table class="striped centered responsive-table">
+                                            <thead>
                                                 <tr>
-                                                    <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
-                                                    <td>{{ club_name|title ~ ' ' ~ equipe.equipe.numero }}</td>
+                                                    <th></th>
+                                                    <th>Journée</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            {% for dateIssued in data.dates.issued %}
+                                                <tr>
+                                                    <td><i class="material-icons orange-text text-darken-2">edit</i></td>
+                                                    <td><b>{{ dateIssued.nJournee }}</b></td>
                                                     <td>
-                                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
-                                                        {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption>Poule indéfinie</span>" }}</span>
-                                                        {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <span {% if not equipe.sameLienDivision %}class="red-text" {% endif %}>{{ equipe.equipe.lienDivision ? "<i class='material-icons orange-text'>update</i>" : "<i class='material-icons red-text'>leak_remove</i>" }}</span>
-                                                        {% if not equipe.sameLienDivision and not equipe.equipe.lienDivision %}<i class="material-icons black-text">arrow_forward</i><i class='material-icons green-text'>leak_add</i>{% endif %}
+                                                        <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
+                                                        <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
                                                     </td>
                                                 </tr>
                                             {% endfor %}
 
-                                            {% for numero, equipe in data.teams.toCreate %}
+                                            {% for index, dateMissing in data.dates.missing %}
                                                 <tr>
                                                     <td><i class="material-icons green-text">add_circle</i></td>
-                                                    <td><b>{{ numero }}</b></td>
-                                                    <td>
-                                                        {{ equipe.divisionShortName }}
-                                                    </td>
-                                                    <td>
-                                                        {{ equipe.poule }}
-                                                    </td>
-                                                    <td><i class='material-icons green-text'>leak_add</i></td>
+                                                    <td><b>{{ index }}</b></td>
+                                                    <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
                                                 </tr>
                                             {% endfor %}
 
-                                            {% for equipe in data.teams.toDelete %}
+                                            {% for dateSurplus in data.dates.surplus %}
                                                 <tr>
                                                     <td><i class="material-icons red-text">delete</i></td>
-                                                    <td><b>{{ equipe.numero }}</b></td>
+                                                    <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
                                                     <td>
-                                                        {% if equipe.idDivision %}
-                                                            {{ equipe.idDivision.shortName }}
+                                                        {% if dateSurplus.undefined %}
+                                                            <i class='material-icons red-text'>event_busy</i>
                                                         {% else %}
-                                                            <span class="red-text lighten-2">Division indéfinie</span>
+                                                            {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
                                                         {% endif %}
                                                     </td>
-                                                    <td>
-                                                        {% if equipe.idPoule %}
-                                                            {{ equipe.idPoule.poule }}
-                                                        {% else %}
-                                                            <span class="red-text lighten-2">Poule indéfinie</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td><i class='material-icons black-text'>leak_add</i></td>
                                                 </tr>
                                             {% endfor %}
-                                        </tbody>
-                                    </table>
-                                {% endif %}
-                            </div>
-
-                            <div style="margin-top: 45px; margin-bottom: 35px;"></div>
-
-                            <div class="center">
-                                <h4>Les rencontres</h4>
-
-                                {% if data.matches.issuedSorted %}
-                                    <p class="pastille orange darken-2 reset">{{ data.matches.issued|length ~ (data.matches.issued|length == 1 ? ' rencontre sera mise à jour' : ' rencontres seront mises à jour') }}</p>
-
-                                    {% for equipe, rencontres in data.matches.issuedSorted %}
-                                        <ul class="collapsible backoffice_disponibilites">
-                                            <li class="active">
-                                                <div class="collapsible-header">
-                                                    <div class="chip">
-                                                        <i class="material-icons" style="vertical-align: middle;">people</i>
-                                                        {{ equipe }}
-                                                    </div>
-                                                    <i class="caret material-icons">keyboard_arrow_down</i>
-                                                </div>
-
-                                                <div class="collapsible-body">
-                                                    <table class="striped centered responsive-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th>Journée</th>
-                                                                <th>Adversaire</th>
-                                                                <th>Lieu</th>
-                                                                <th>Coordonnées</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {% for rencontre in rencontres %}
-                                                                <tr>
-                                                                    <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
-                                                                    <td>{{ rencontre.journee }}</td>
-                                                                    <td>
-                                                                        {% if not rencontre.exempt %}
-                                                                            <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
-                                                                                {% if rencontre.rencontre.exempt %}
-                                                                                    <span class="new badge red white-text" data-badge-caption>Exemptée</span>
-                                                                                {% elseif rencontre.rencontre.adversaire is null%}
-                                                                                    <span class="new badge red white-text" data-badge-caption>Adversaire indéfini</span>
-                                                                                {% else %}
-                                                                                    {{ rencontre.rencontre.adversaire }}
-                                                                                {% endif %}
-                                                                            </span>
-                                                                            {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
-                                                                        {% else %}
-                                                                            <span class="new badge red white-text" data-badge-caption>Exemptée</span>
-                                                                        {% endif %}
-                                                                    </td>
-                                                                    <td>
-                                                                        <span>
-                                                                            {% if rencontre.rencontre.domicile is null %}
-                                                                                <i class='material-icons red-text'>location_off</i>
-                                                                            {% else %}
-                                                                                {% if rencontre.rencontre.domicile %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>home</i>
-                                                                                {% else %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>directions_car</i>
-                                                                                {% endif %}
-                                                                            {% endif %}
-                                                                        </span>
-                                                                        {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
-                                                                    </td>
-                                                                    <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
-                                                                        {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
-                                                                            <i class="material-icons green-text">done</i>
-                                                                        {% else %}
-                                                                            {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
-                                                                            {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
-                                                                            {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
-                                                                            {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
-                                                                        {% endif %}
-                                                                    </td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    {% endfor %}
-                                {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
-                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                </div>
 
                                 <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
-                                    {% if app.user.admin %}
+                                <div class="center">
+                                    <h4>Les équipes</h4>
+                                    {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset">{{ data.teams.toUpdate|listeEquipeToManage(2) }}</p>{% endif %}
+                                    {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</p>{% endif %}
+                                    {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</p>{% endif %}
+                                    {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset">Toutes les équipes sont à jour</p>{% endif %}
+
+                                    {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
+                                        <table class="striped centered responsive-table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Équipe</th>
+                                                    <th>Libellé division</th>
+                                                    <th>Poule</th>
+                                                    <th>Liaison à la FFTT</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for equipe in data.teams.issued %}
+                                                    <tr>
+                                                        <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
+                                                        <td>{{ club_name|title ~ ' ' ~ equipe.equipe.numero }}</td>
+                                                        <td>
+                                                            <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
+                                                            {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption>Poule indéfinie</span>" }}</span>
+                                                            {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <span {% if not equipe.sameLienDivision %}class="red-text" {% endif %}>{{ equipe.equipe.lienDivision ? "<i class='material-icons orange-text'>update</i>" : "<i class='material-icons red-text'>leak_remove</i>" }}</span>
+                                                            {% if not equipe.sameLienDivision and not equipe.equipe.lienDivision %}<i class="material-icons black-text">arrow_forward</i><i class='material-icons green-text'>leak_add</i>{% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                                {% for numero, equipe in data.teams.toCreate %}
+                                                    <tr>
+                                                        <td><i class="material-icons green-text">add_circle</i></td>
+                                                        <td><b>{{ numero }}</b></td>
+                                                        <td>
+                                                            {{ equipe.divisionShortName }}
+                                                        </td>
+                                                        <td>
+                                                            {{ equipe.poule }}
+                                                        </td>
+                                                        <td><i class='material-icons green-text'>leak_add</i></td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                                {% for equipe in data.teams.toDelete %}
+                                                    <tr>
+                                                        <td><i class="material-icons red-text">delete</i></td>
+                                                        <td><b>{{ equipe.numero }}</b></td>
+                                                        <td>
+                                                            {% if equipe.idDivision %}
+                                                                {{ equipe.idDivision.shortName }}
+                                                            {% else %}
+                                                                <span class="red-text lighten-2">Division indéfinie</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if equipe.idPoule %}
+                                                                {{ equipe.idPoule.poule }}
+                                                            {% else %}
+                                                                <span class="red-text lighten-2">Poule indéfinie</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td><i class='material-icons black-text'>leak_add</i></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                </div>
+
+                                <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
+                                <div class="center">
+                                    <h4>Les rencontres</h4>
+
+                                    {% if data.matches.issuedSorted %}
+                                        <p class="pastille orange darken-2 reset">{{ data.matches.issued|length ~ (data.matches.issued|length == 1 ? ' rencontre sera mise à jour' : ' rencontres seront mises à jour') }}</p>
+
+                                        {% for equipe, rencontres in data.matches.issuedSorted %}
+                                            <ul class="collapsible backoffice_disponibilites">
+                                                <li class="active">
+                                                    <div class="collapsible-header">
+                                                        <div class="chip">
+                                                            <i class="material-icons" style="vertical-align: middle;">people</i>
+                                                            {{ equipe }}
+                                                        </div>
+                                                        <i class="caret material-icons">keyboard_arrow_down</i>
+                                                    </div>
+
+                                                    <div class="collapsible-body">
+                                                        <table class="striped centered responsive-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>Journée</th>
+                                                                    <th>Adversaire</th>
+                                                                    <th>Lieu</th>
+                                                                    <th>Coordonnées</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                {% for rencontre in rencontres %}
+                                                                    <tr>
+                                                                        <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                        <td>{{ rencontre.journee }}</td>
+                                                                        <td>
+                                                                            {% if not rencontre.exempt %}
+                                                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
+                                                                                    {% if rencontre.rencontre.exempt %}
+                                                                                        <span class="new badge red white-text" data-badge-caption>Exemptée</span>
+                                                                                    {% elseif rencontre.rencontre.adversaire is null%}
+                                                                                        <span class="new badge red white-text" data-badge-caption>Adversaire indéfini</span>
+                                                                                    {% else %}
+                                                                                        {{ rencontre.rencontre.adversaire }}
+                                                                                    {% endif %}
+                                                                                </span>
+                                                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                                            {% else %}
+                                                                                <span class="new badge red white-text" data-badge-caption>Exemptée</span>
+                                                                            {% endif %}
+                                                                        </td>
+                                                                        <td>
+                                                                            <span>
+                                                                                {% if rencontre.rencontre.domicile is null %}
+                                                                                    <i class='material-icons red-text'>location_off</i>
+                                                                                {% else %}
+                                                                                    {% if rencontre.rencontre.domicile %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>home</i>
+                                                                                    {% else %}<i class='material-icons{% if rencontre.rencontre.domicile != rencontre.domicileFFTT %} red-text{% endif %}'>directions_car</i>
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                            </span>
+                                                                            {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                        </td>
+                                                                        <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
+                                                                            {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
+                                                                                <i class="material-icons green-text">done</i>
+                                                                            {% else %}
+                                                                                {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
+                                                                                {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
+                                                                                {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
+                                                                                {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
+                                                                            {% endif %}
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        {% endfor %}
+                                    {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
+                                    {% endif %}
+
+                                    {% if app.user.admin and (data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
+                                        <div style="margin-top: 45px; margin-bottom: 35px;"></div>
+
                                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
                                             <input type="hidden" name="resetChampionnats" value="1">
                                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
@@ -478,12 +480,9 @@
                                             </div>
                                         </form>
                                     {% endif %}
-                                {% else %}
-                                    <p class="pastille green white-text reset">Toutes les données sont à jour</p>
-                                {% endif %}
+                                </div>
                             </div>
-                        </div>
-
+                        {% endif %}
                     {% else %}
                         <div class='backoffice-panel center card-panel'>
                             <p class="pastille orange center reset" style="margin-top: 10px; margin-bottom: 10px;">{{ data.messageChampionnat }}</p>

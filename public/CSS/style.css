@@ -1483,6 +1483,11 @@ a.reload_ranking {
     padding: 10px 0;
   }
 }
+@media screen and (min-width: 325px) and (max-width: 460px) {
+  .virtualRankButtons {
+    padding-top: 8px;
+  }
+}
 @media screen and (max-width: 411px) {
   table.rankingVirtualPoints td .chip {
     padding: 0;
@@ -1529,7 +1534,7 @@ a.reload_ranking {
     right: 6px;
   }
 }
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 275px) {
   a.reload_ranking {
     display: none;
   }
