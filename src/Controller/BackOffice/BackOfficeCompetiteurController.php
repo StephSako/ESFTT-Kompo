@@ -20,6 +20,9 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use FFTTApi\Exception\ClubNotFoundException;
+use FFTTApi\Exception\InvalidURIParametersException;
+use FFTTApi\Exception\URIPartNotValidException;
 use FFTTApi\FFTTApi;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -747,6 +750,15 @@ class BackOfficeCompetiteurController extends AbstractController
         $joueurs = [];
 
         if (in_array($file->getMimeType(), $allowedFileMimes)) {
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            try {
+                $joueursFromApi =  array_map(function ($j) {
+                    return $j->getLicence();
+                }, $api->getJoueursByClub($this->getParameter('club_id')));
+            } catch (Exception $e) {
+                $joueursFromApi = null;
+            }
+
             $beginAtLine = 2;
             $pseudosNomsPrenoms = $this->competiteurRepository->findAllPseudos();
 
@@ -779,7 +791,14 @@ class BackOfficeCompetiteurController extends AbstractController
                     ->setIsAdmin($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ADMIN))
                     ->setIsEntraineur($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_ENTRAINEUR))
                     ->setIsCritFed($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_CRITERIUM))
-                    ->setLicence($joueur[self::EXCEl_CHAMP_LICENCE])
+                    ->setLicence(
+                        $this->checkValueInArray(
+                            trim($joueur[self::EXCEl_CHAMP_LICENCE]),
+                            'licence',
+                            "La licence",
+                            $violationsManuelles,
+                            $joueursFromApi
+                        ))
                     ->setNom(
                         $this->checkMandatoryType(
                             $joueur[self::EXCEl_CHAMP_NOM],
@@ -897,6 +916,24 @@ class BackOfficeCompetiteurController extends AbstractController
             $violationsManuelles[$field] = [
                 'message' => $fieldFr . ' est obligatoire',
                 'value' => '?'
+            ];
+        }
+        return $value;
+    }
+
+    /**
+     * @param string|null $value
+     * @param string $field
+     * @param string $fieldFr
+     * @param array $violationsManuelles
+     * @param array $values
+     * @return string|null
+     */
+    private function checkValueInArray(?string $value, string $field, string $fieldFr, array &$violationsManuelles, array $values): ?string {
+        if ($value != null && $values != null && !in_array($value, $values)) {
+            $violationsManuelles[$field] = [
+                'message' => $fieldFr . " n'existe pas",
+                'value' => $value
             ];
         }
         return $value;
