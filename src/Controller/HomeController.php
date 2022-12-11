@@ -206,16 +206,16 @@ class HomeController extends AbstractController
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
-            return $joueur->isCertifMedicalInvalid()['status'];
+            return $joueur->isCertifMedicalInvalid()['status'] && $joueur->isCompetiteur();
         }));
 
         /** Joueurs sans licence définie */
         $countJoueursWithoutLicence = count(array_filter($allValidPlayers, function ($joueur) {
-            return !$joueur->getLicence();
+            return !$joueur->getLicence() && $joueur->isCompetiteur();
         }));
         $joueursWithoutLicence = [
             'count' => $countJoueursWithoutLicence,
-            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> compétiteur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
         ];
 
         /** Compétiteurs sans classement officiel défini */

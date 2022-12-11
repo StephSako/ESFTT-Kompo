@@ -152,7 +152,7 @@ class BackOfficeCompetiteurController extends AbstractController
         }));
         $joueursWithoutLicence = [
             'count' => $countJoueursWithoutLicence,
-            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> membre' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
         ];
 
         /** Compétiteurs sans classement officiel défini */
