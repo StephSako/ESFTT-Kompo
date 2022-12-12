@@ -53,9 +53,9 @@
                     <p class="red-text lighten-2" style="padding-left: 0; width: fit-content; margin-bottom: 8px;"><i class="material-icons">dangerous</i>
                         Il y a <b><span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span> membre{{ joueursInvalidCertifMedic|length > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
                     </p>
-                    <button style="width: 27px; height: 27px;" class="modal-trigger btn waves-effect btn_gestion blue btn-floating lighten-1 btn-small" href="#modal{{ 'certif_medic_invalides' }}">
+                    <a style="width: 27px; height: 27px;" class="modal-trigger btn waves-effect btn_gestion blue btn-floating lighten-1 btn-small" href="#modal{{ 'certif_medic_invalides' }}">
                         <i class="material-icons" style="font-size: 14px; top: -3px; position: relative; right: 9px;">campaign</i>
-                    </button>
+                    </a>
                     {{ _modalContact.modalAlertPlayers(
                         'certif_medic_invalides',
                         contactsJoueursInvalidCertifMedic,
