@@ -43,11 +43,19 @@
 
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
                     <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
-                    {{ form_row(form.nom, {'id': 'my_own_id'}) }}
+                    {% if type == 'backoffice' and not form.vars.value.isArchive %}
+                        {{ form_row(form.nom) }}
+                    {% else %}
+                        <p>{{ form.vars.value.nom }}</p>
+                    {% endif %}
                 </div>
                 <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
                     <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
-                    {{ form_row(form.prenom) }}
+                    {% if type == 'backoffice' and not form.vars.value.isArchive %}
+                        {{ form_row(form.prenom) }}
+                    {% else %}
+                        <p>{{ form.vars.value.prenom }}</p>
+                    {% endif %}
                 </div>
                 {% if options.usernameEditable %}
                     <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">

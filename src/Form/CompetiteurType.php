@@ -19,22 +19,6 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'uppercase validate',
-                    'maxlength' => 50
-                ]
-            ])
-            ->add('prenom', TextType::class, [
-                'label' => false,
-                'required' => true,
-                'attr' => [
-                    'class' => 'validate',
-                    'maxlength' => 50
-                ]
-            ])
             ->add('dateNaissance', BirthdayType::class, [
                 'required' => $options['dateNaissanceRequired'],
                 'invalid_message' => 'Cette date de naissance est invalide',
@@ -143,6 +127,22 @@ class CompetiteurType extends AbstractType
 
         if (($options['adminAccess'] || $options['capitaineAccess']) && !$options['isArchived']) {
             $builder
+                ->add('nom', TextType::class, [
+                    'label' => false,
+                    'required' => true,
+                    'attr' => [
+                        'class' => 'uppercase validate',
+                        'maxlength' => 50
+                    ]
+                ])
+                ->add('prenom', TextType::class, [
+                    'label' => false,
+                    'required' => true,
+                    'attr' => [
+                        'class' => 'validate',
+                        'maxlength' => 50
+                    ]
+                ])
                 ->add('licence', TelType::class, [
                     'label' => false,
                     'required' => false,
