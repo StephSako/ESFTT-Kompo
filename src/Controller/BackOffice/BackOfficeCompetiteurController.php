@@ -762,7 +762,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $beginAtLine = 2;
             $pseudosNomsPrenoms = $this->competiteurRepository->findAllPseudos();
 
-            if('csv' == $file->getClientOriginalExtension()) $reader = new Csv();
+            if ('csv' == $file->getClientOriginalExtension()) $reader = new Csv();
             else $reader = new Xlsx();
 
             $spreadsheet = $reader->load($file->getPathname());
@@ -859,13 +859,13 @@ class BackOfficeCompetiteurController extends AbstractController
                 $newUsername = str_replace(' ', '', $nouveau->getPrenom());
                 $newUsername = mb_convert_case($newUsername, MB_CASE_LOWER, "UTF-8");
                 $newUsername = Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($newUsername);
-                $nouveau->setUsername($newUsername . (in_array($newUsername, $pseudosNomsPrenoms['pseudos']) ? '_' . array_count_values($pseudosNomsPrenoms['pseudos'])[$newUsername] : ''));
+                $nouveau->setUsername($this->getUniqueUsername($newUsername, $pseudosNomsPrenoms['pseudos']));
                 $pseudosNomsPrenoms['pseudos'][] = $nouveau->getUsername();
 
                 /** On liste les violations automatiquement vérifiées par l'Entité */
                 $violations = [];
                 foreach ($this->validator->validate($nouveau) as $violation) {
-                    $violations[$violation->getPropertyPath()] = ['message' => $violation->getMessage()];
+                    if ($violation->getPropertyPath() != 'licence') $violations[$violation->getPropertyPath()] = ['message' => $violation->getMessage()];
                 }
 
                 /** On merge les deux tableaux de violations vérifiées manuellement et automatiquement */
@@ -883,6 +883,17 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueurs' => $joueurs,
             'sheetDataHasViolations' => count(array_filter($joueurs, function($j){ return $j['violations']; }))
         ];
+    }
+
+    /**
+     * @param string $username
+     * @param array $existingUsernames
+     * @return string
+     */
+    private function getUniqueUsername(string $username, array $existingUsernames): string {
+        $i = 1;
+        while (in_array($username . '_' . $i, $existingUsernames)) { $i++; }
+        return $username . '_' . $i;
     }
 
     /**

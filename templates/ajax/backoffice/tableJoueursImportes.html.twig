@@ -36,7 +36,7 @@
                     {% if not sheetDataHasViolations %}
                         <td>
                             <label>
-                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked"{% else %}disabled="disabled"{% endif %} />
+                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked" {% else %}disabled="disabled"{% endif %} />
                                 <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
                             </label>
                         </td>
@@ -101,7 +101,7 @@
                             {% else %}
                                 {% if joueur.joueur.dateNaissance %}
                                     {{ joueur.joueur.dateNaissance|date('d/m/Y') }}
-                                    <br><span class="pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
+                                    <br><span class="{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %} pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
                                 {% endif %}
                             {% endif %}
                         </span>
@@ -120,7 +120,7 @@
                                 <span class="grey-text"><i>Mineur (facultatif)</i></span>
                             {% elseif joueur.joueur.anneeCertificatMedical %}
                                 <span>
-                                    <i class="{% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
+                                    <i class="{% if joueur.dejaInscrit and not sheetDataHasViolations %}text-lighten-3{% endif %} {% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                                     {{ joueur.joueur.anneeCertificatMedical }}
                                 </span>
                             {% endif %}
@@ -200,7 +200,7 @@
     {% endif %}
 
     <div id="progress-bar" class="hide" style="margin-bottom: 10px;">
-        <p class="grey-text"><i>Enregistrement des joueurs ... Merci de patienter, le processus peut prendre plusieurs minutes suivant le nombre de joueurs à inscrire</i></p>
+        <p class="grey-text"><i>Inscriptions des joueurs ... Merci de patienter, le processus peut durer plusieurs minutes suivant le nombre de joueurs à inscrire</i></p>
         <div class="progress" style="width: 30%; margin: 0 auto;">
             <div class="indeterminate"></div>
         </div>
