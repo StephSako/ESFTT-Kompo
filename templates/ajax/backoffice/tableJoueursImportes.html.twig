@@ -9,6 +9,12 @@
         <div class="pastille green lighten-2 reset">
             <i class="material-icons">checklist_rtl</i> Le document est conforme et les joueurs sont prêts à être inscrits
         </div><br>
+
+        {% if hasDoublon %}
+            <div class="pastille orange lighten-1 reset">
+                <i class="material-icons">error_outline</i> Le document contient probablement des doublons, signalés par le logo <i class="material-icons">people_alt</i>
+            </div><br>
+        {% endif %}
     {% endif %}
 
     <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
@@ -19,6 +25,9 @@
             <tr>
                 {% if not sheetDataHasViolations %}
                     <th><i class="material-icons">person_add_alt_1</i></th>
+                {% endif %}
+                {% if hasDoublon %}
+                    <th></th>
                 {% endif %}
                 <th>Rôles</th>
                 <th>Licence</th>
@@ -39,6 +48,13 @@
                                 <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked" {% else %}disabled="disabled"{% endif %} />
                                 <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
                             </label>
+                        </td>
+                    {% endif %}
+                    {% if hasDoublon %}
+                        <td>
+                            {% if joueur.doublon and not joueur.dejaInscrit %}
+                                <i class="material-icons orange-text">people_alt</i>
+                            {% endif %}
                         </td>
                     {% endif %}
                     <td style="padding-top: 8px; padding-bottom: 8px;"

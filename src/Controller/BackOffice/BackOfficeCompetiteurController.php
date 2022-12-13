@@ -874,13 +874,15 @@ class BackOfficeCompetiteurController extends AbstractController
                 $joueurs[] = [
                     'violations' => $violations,
                     'joueur' => $nouveau,
-                    'dejaInscrit' => in_array($nouveau->getLicence(), $pseudosNomsPrenoms['licences']) ? 1 : 0
+                    'dejaInscrit' => in_array($nouveau->getLicence(), $pseudosNomsPrenoms['licences']) ? 1 : 0,
+                    'doublon' => in_array($nouveau->getPrenom() . $nouveau->getNom(), $pseudosNomsPrenoms['prenoms_noms']) ? 1 : 0
                 ];
             }
         }
 
         return [
             'joueurs' => $joueurs,
+            'hasDoublon' => count(array_filter($joueurs, function ($j) { return $j['doublon'] == 1 ;})) > 0,
             'sheetDataHasViolations' => count(array_filter($joueurs, function($j){ return $j['violations']; }))
         ];
     }
@@ -1007,11 +1009,7 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         $file = $request->files->get('excelDocument');
         $importedData = $this->buildJoueursArrayFromImport($file, null);
-
-        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', [
-            'joueurs' => $importedData['joueurs'],
-            'sheetDataHasViolations' => $importedData['sheetDataHasViolations']
-        ])->getContent());
+        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', $importedData)->getContent());
     }
 
     /**

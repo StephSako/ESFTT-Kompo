@@ -480,12 +480,17 @@ class CompetiteurRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
                 ->select('c.username')
                 ->addSelect('c.licence')
+                ->addSelect('c.prenom')
+                ->addSelect('c.nom')
                 ->getQuery()
                 ->getResult();
 
         $result = [];
         $result['pseudos'] = array_map(function($pseudo) {
             return $pseudo['username'];
+        }, $query);
+        $result['prenoms_noms'] = array_map(function($nomPrenom) {
+            return $nomPrenom['prenom'] . $nomPrenom['nom'];
         }, $query);
         $result['licences'] = array_filter(array_map(function($licence) {
             return $licence['licence'];

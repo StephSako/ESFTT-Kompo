@@ -7,7 +7,7 @@ function changeColor(id){
     let tr = $('tr#tr_' + id)
     let pastilles = $('tr#tr_' + id + '>td span.pastille')
     let badges = $('tr#tr_' + id + '>td span.new.badge')
-    let icons = $('tr#tr_' + id + '>td>span i.material-icons')
+    let icons = $('tr#tr_' + id + '>td i.material-icons')
 
     if (input.is(":checked")){
         tr.removeClass('grey-text lighten-1')
