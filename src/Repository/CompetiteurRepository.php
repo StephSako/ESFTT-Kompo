@@ -473,30 +473,38 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récupère tous les pseudos, noms et prénoms de tous les joueurs
+     * @param boolean $justUsernames
      * @return array
      */
-    public function findAllPseudos(): array
+    public function findAllPseudos(bool $justUsernames): array
     {
         $query = $this->createQueryBuilder('c')
-                ->select('c.username')
+                ->select('c.username');
+        if (!$justUsernames) {
+            $query = $query
                 ->addSelect('c.licence')
                 ->addSelect('c.prenom')
-                ->addSelect('c.nom')
-                ->getQuery()
-                ->getResult();
+                ->addSelect('c.nom');
+        }
+        $query = $query
+            ->getQuery()
+            ->getResult();
 
         $result = [];
-        $result['pseudos'] = array_map(function($pseudo) {
+        $result['usernames'] = array_map(function($pseudo) {
             return $pseudo['username'];
         }, $query);
-        $result['prenoms_noms'] = array_map(function($nomPrenom) {
-            return $nomPrenom['prenom'] . $nomPrenom['nom'];
-        }, $query);
-        $result['licences'] = array_filter(array_map(function($licence) {
-            return $licence['licence'];
-        }, $query), function($licence) {
-            return $licence;
-        });
+
+        if (!$justUsernames) {
+            $result['prenoms_noms'] = array_map(function($nomPrenom) {
+                return $nomPrenom['prenom'] . $nomPrenom['nom'];
+            }, $query);
+            $result['licences'] = array_filter(array_map(function($licence) {
+                return $licence['licence'];
+            }, $query), function($licence) {
+                return $licence;
+            });
+        }
         return $result;
     }
 

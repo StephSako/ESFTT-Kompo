@@ -11,6 +11,7 @@ use DateTime;
 use Exception;
 use App\Repository\RencontreRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Transliterator;
 
 class UtilController extends AbstractController
 {
@@ -134,6 +135,9 @@ class UtilController extends AbstractController
      * @return string
      */
     function getUniqueUsername(string $username, array $existingUsernames): string {
+        $username = str_replace(' ', '', $username);
+        $username = mb_convert_case($username, MB_CASE_LOWER, "UTF-8");
+        $username = Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($username);
         $draftUsername = $username;
         $i = 1;
         if (in_array($username, $existingUsernames)) $draftUsername = $username . '_' . $i;

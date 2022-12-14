@@ -930,9 +930,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNom(): string
+    public function getNom(): ?string
     {
         return $this->nom;
     }
@@ -1328,9 +1328,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPrenom(): string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
