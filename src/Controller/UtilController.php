@@ -127,4 +127,21 @@ class UtilController extends AbstractController
             return max([$renc->isReporte() ? $renc->getDateReport() : null, $renc->getIdJournee()->getDateJournee()]);
         }, $championnat->getRencontres()->toArray()), SORT_REGULAR);
     }
+
+    /**
+     * @param string $username
+     * @param array $existingUsernames
+     * @return string
+     */
+    function getUniqueUsername(string $username, array $existingUsernames): string {
+        $draftUsername = $username;
+        $i = 1;
+        if (in_array($username, $existingUsernames)) $draftUsername = $username . '_' . $i;
+
+        while (in_array($draftUsername, $existingUsernames)) {
+            $i++;
+            $draftUsername = $username . '_' . $i;
+        }
+        return $draftUsername;
+    }
 }

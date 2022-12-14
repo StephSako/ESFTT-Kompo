@@ -60,6 +60,9 @@ class BackOfficeCompetiteurController extends AbstractController
     private $cacheManager;
     private $uploaderHelper;
     private $validator;
+    private $titularisationRepository;
+    private $equipeRepository;
+    private $utilController;
 
     const EXCEl_CHAMP_LICENCE = 1;
     const EXCEl_CHAMP_NOM = 2;
@@ -77,8 +80,6 @@ class BackOfficeCompetiteurController extends AbstractController
     const EXCEl_CHAMP_IS_CRITERIUM = 14;
     const EXCEl_CHAMP_IS_ENTRAINEUR = 15;
     const EXCEl_CHAMP_IS_ADMIN = 16;
-    private $titularisationRepository;
-    private $equipeRepository;
 
     /**
      * BackOfficeController constructor.
@@ -91,6 +92,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @param TitularisationRepository $titularisationRepository
      * @param ChampionnatRepository $championnatRepository
+     * @param UtilController $utilController
      * @param CacheManager $cacheManager
      * @param UploaderHelper $uploaderHelper
      * @param ValidatorInterface $validator
@@ -106,6 +108,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UserPasswordEncoderInterface $encoder,
                                 TitularisationRepository $titularisationRepository,
                                 ChampionnatRepository $championnatRepository,
+                                UtilController $utilController,
                                 CacheManager $cacheManager,
                                 UploaderHelper $uploaderHelper,
                                 ValidatorInterface $validator,
@@ -126,6 +129,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->validator = $validator;
         $this->titularisationRepository = $titularisationRepository;
         $this->equipeRepository = $equipeRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -180,7 +184,7 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Competiteur $competiteur
      * @return void
      */
-    private function throwExceptionBOAccount(Exception $e, Competiteur $competiteur){
+    private function showFlashBOAccount(Exception $e, Competiteur $competiteur){
         if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
             if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
             else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
@@ -224,7 +228,7 @@ class BackOfficeCompetiteurController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-
+                    
                     /** On vérifie l'existence de la licence */
                     if (strlen($competiteur->getLicence()) && !$competiteur->isArchive()) {
                         try {
@@ -276,8 +280,17 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
                 } catch(Exception $e){
-                    // TODO selectionner les équipes
-                    $this->throwExceptionBOAccount($e, $competiteur);
+                    $idsEquipesAssociees = [];
+                    if ($competiteur->isCompetiteur()) {
+                        foreach ($equipesAssociees as $championnat) {
+                            $idEquipeRequest = $request->request->get('equipesAssociees-' . $championnat['idChampionnat']->getIdChampionnat());
+                            if ($idEquipeRequest) {
+                                $idEquipe = intval($idEquipeRequest);
+                                $idsEquipesAssociees[] = $idEquipe;
+                            }
+                        }
+                    }
+                    $this->showFlashBOAccount($e, $competiteur);
                 }
             } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
         }
@@ -510,7 +523,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     }
                 } catch(Exception $e){
                     $competiteur->setIsArchive(false);
-                    $this->throwExceptionBOAccount($e, $competiteur);
+                    $this->showFlashBOAccount($e, $competiteur);
                 }
             } else {
                 $competiteur->setIsArchive(false);
@@ -859,7 +872,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 $newUsername = str_replace(' ', '', $nouveau->getPrenom());
                 $newUsername = mb_convert_case($newUsername, MB_CASE_LOWER, "UTF-8");
                 $newUsername = Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($newUsername);
-                $nouveau->setUsername($this->getUniqueUsername($newUsername, $pseudosNomsPrenoms['pseudos']));
+                $nouveau->setUsername($this->utilController->getUniqueUsername($newUsername, $pseudosNomsPrenoms['pseudos']));
                 $pseudosNomsPrenoms['pseudos'][] = $nouveau->getUsername();
 
                 /** On liste les violations automatiquement vérifiées par l'Entité */
@@ -885,17 +898,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'hasDoublon' => count(array_filter($joueurs, function ($j) { return $j['doublon'] == 1 ;})) > 0,
             'sheetDataHasViolations' => count(array_filter($joueurs, function($j){ return $j['violations']; }))
         ];
-    }
-
-    /**
-     * @param string $username
-     * @param array $existingUsernames
-     * @return string
-     */
-    private function getUniqueUsername(string $username, array $existingUsernames): string {
-        $i = 1;
-        while (in_array($username . '_' . $i, $existingUsernames)) { $i++; }
-        return $username . '_' . $i;
     }
 
     /**
