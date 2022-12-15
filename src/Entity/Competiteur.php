@@ -1594,7 +1594,7 @@ class Competiteur implements UserInterface, Serializable
         foreach (
             [
                 $this->getNom(), $this->getPrenom(), $this->getUsername(), $this->getDateNaissance(),
-                $this->getAnneeCertificatMedical(), $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
+                !$this->isCertifMedicalInvalid()['status'], $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
                 $this->getLicence(), $this->getAvatar()
             ] as $index => $field) {
             if (!$field){

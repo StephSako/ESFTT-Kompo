@@ -28,10 +28,21 @@ function changeColor(id){
     if (!getCheckedJoueurs().length){
         $('#submitImportButton').addClass('hide')
         $('#noPeopleToImport').removeClass('hide')
+        $('p#nbFutursMembres').addClass('hide');
     } else {
         $('#submitImportButton').removeClass('hide')
         $('#noPeopleToImport').addClass('hide')
+        $('p#nbFutursMembres').removeClass('hide')
     }
+
+    setNbFutursMembres();
+}
+
+function setNbFutursMembres() {
+    let textNbFutursMembres = null;
+    if (getCheckedJoueurs().length > 1) textNbFutursMembres = getCheckedJoueurs().length + ' membres seront inscrits';
+    else if (getCheckedJoueurs().length === 1) textNbFutursMembres = getCheckedJoueurs().length + ' membre sera inscris';
+    $('p#nbFutursMembres span').text(' ' + textNbFutursMembres)
 }
 
 function getCheckedJoueurs(){

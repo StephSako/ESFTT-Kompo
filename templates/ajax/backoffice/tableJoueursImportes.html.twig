@@ -213,6 +213,15 @@
         <div class="pastille orange lighten-2 reset hide" id="noPeopleToImport">
             <i class="material-icons">person_add_disabled</i> Vous n'avez sélectionné aucun joueur
         </div>
+
+        <script type="text/javascript">
+            $(document).ready(() => {
+                setNbFutursMembres();
+            })
+        </script>
+        <p id="nbFutursMembres" style="margin-top: 12px" class="pastille reset blue lighten-2">
+            <i class="material-icons">info</i><span></span>
+        </p>
     {% endif %}
 
     <div id="progress-bar" class="hide" style="margin-bottom: 10px;">
