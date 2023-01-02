@@ -9,16 +9,25 @@
         <div class="pastille green lighten-2 reset">
             <i class="material-icons">checklist_rtl</i> Le document est conforme et les joueurs sont prêts à être inscrits
         </div><br>
+
+        {% if hasDoublon %}
+            <div class="pastille orange lighten-1 reset">
+                <i class="material-icons">error_outline</i> Le document contient probablement des doublons, signalés par le logo <i class="material-icons">people_alt</i>
+            </div><br>
+        {% endif %}
     {% endif %}
 
     <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('JS/importJoueursFromExcel_ajax.min.js') }}"></script>
 
-    <table id="table-to-adapt-columns" class="striped centered responsive-table backoffice-table import-excel-table">
+    <table class="striped centered responsive-table backoffice-table import-excel-table table-to-adapt-columns">
         <thead class="hide-on-med-and-down">
             <tr>
                 {% if not sheetDataHasViolations %}
                     <th><i class="material-icons">person_add_alt_1</i></th>
+                {% endif %}
+                {% if hasDoublon %}
+                    <th></th>
                 {% endif %}
                 <th>Rôles</th>
                 <th>Licence</th>
@@ -36,9 +45,16 @@
                     {% if not sheetDataHasViolations %}
                         <td>
                             <label>
-                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked"{% else %}disabled="disabled"{% endif %} />
+                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked" {% else %}disabled="disabled"{% endif %} />
                                 <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
                             </label>
+                        </td>
+                    {% endif %}
+                    {% if hasDoublon %}
+                        <td>
+                            {% if joueur.doublon and not joueur.dejaInscrit %}
+                                <i class="material-icons orange-text">people_alt</i>
+                            {% endif %}
                         </td>
                     {% endif %}
                     <td style="padding-top: 8px; padding-bottom: 8px;"
@@ -101,7 +117,7 @@
                             {% else %}
                                 {% if joueur.joueur.dateNaissance %}
                                     {{ joueur.joueur.dateNaissance|date('d/m/Y') }}
-                                    <br><span class="pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
+                                    <br><span class="{% if joueur.dejaInscrit and not sheetDataHasViolations %} lighten-3{% endif %} pastille blue centered">{{ joueur.joueur.categorieAgeLabel }}</span>
                                 {% endif %}
                             {% endif %}
                         </span>
@@ -120,7 +136,7 @@
                                 <span class="grey-text"><i>Mineur (facultatif)</i></span>
                             {% elseif joueur.joueur.anneeCertificatMedical %}
                                 <span>
-                                    <i class="{% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
+                                    <i class="{% if joueur.dejaInscrit and not sheetDataHasViolations %}text-lighten-3{% endif %} {% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                                     {{ joueur.joueur.anneeCertificatMedical }}
                                 </span>
                             {% endif %}
@@ -197,10 +213,19 @@
         <div class="pastille orange lighten-2 reset hide" id="noPeopleToImport">
             <i class="material-icons">person_add_disabled</i> Vous n'avez sélectionné aucun joueur
         </div>
+
+        <script type="text/javascript">
+            $(document).ready(() => {
+                setNbFutursMembres();
+            })
+        </script>
+        <p id="nbFutursMembres" style="margin-top: 12px" class="pastille reset blue lighten-2">
+            <i class="material-icons">info</i><span></span>
+        </p>
     {% endif %}
 
     <div id="progress-bar" class="hide" style="margin-bottom: 10px;">
-        <p class="grey-text"><i>Enregistrement des joueurs ... Merci de patienter, le processus peut prendre plusieurs minutes suivant le nombre de joueurs à inscrire</i></p>
+        <p class="grey-text"><i>Inscriptions des joueurs ... Merci de patienter, le processus peut durer plusieurs minutes suivant le nombre de joueurs à inscrire</i></p>
         <div class="progress" style="width: 30%; margin: 0 auto;">
             <div class="indeterminate"></div>
         </div>

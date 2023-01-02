@@ -51,6 +51,14 @@ html, body {
 .card-panel.account-card .col {
   margin-top: 20px;
 }
+.card-panel.account-card .col.account_roles {
+  margin-top: 5px;
+}
+.card-panel.account-card .col.account_roles .new.badge {
+  padding: 4px 6px;
+  float: none;
+  line-height: 24px;
+}
 
 .btn {
   margin-top: 20px;
@@ -486,9 +494,18 @@ button.renew_certif_table i {
 }
 
 .poule {
-  font-size: 1.3rem;
-  margin-top: 3%;
-  margin-bottom: 5px;
+  font-family: Lobster Two, cursive;
+  font-size: 15px !important;
+}
+.poule a {
+  height: 25px;
+  line-height: 25px;
+  text-transform: none;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-top: 2px;
+  margin-bottom: 0;
+  font-size: 15px !important;
 }
 
 .nav-wrapper li:first-child {
@@ -704,10 +721,10 @@ table.rankingVirtualPoints td .chip .nom {
   margin: 10px 0 12px 0 !important;
 }
 .modal.modal-medium {
-  margin-top: 5% !important;
+  margin-top: 4% !important;
   width: 700px !important;
-  height: 80% !important;
-  min-height: 80% !important;
+  height: 81% !important;
+  min-height: 81% !important;
   top: 4% !important;
 }
 .modal.modal-medium .modal-content {
@@ -1113,7 +1130,7 @@ table.table-last-compos tr {
   margin-top: 0 !important;
 }
 .divProfileCompletionCol .divProfileCompletion {
-  background-color: #ffebd7;
+  background-color: #fff8f0;
   border: 1px solid #fc780b;
   border-radius: 10px;
 }
@@ -1527,6 +1544,11 @@ a.reload_ranking {
     padding: 10px 0;
   }
 }
+@media screen and (min-width: 325px) and (max-width: 460px) {
+  .virtualRankButtons {
+    padding-top: 8px;
+  }
+}
 @media screen and (max-width: 411px) {
   table.rankingVirtualPoints td .chip {
     padding: 0;
@@ -1573,11 +1595,6 @@ a.reload_ranking {
     right: 6px;
   }
 }
-@media screen and (max-width: 350px) {
-  a.reload_ranking {
-    display: none;
-  }
-}
 @media screen and (max-width: 344px) {
   .virtualRankButtons {
     font-size: 13px;
@@ -1622,6 +1639,11 @@ a.reload_ranking {
     font-size: 14px;
   }
 }
+@media screen and (max-width: 275px) {
+  a.reload_ranking {
+    display: none;
+  }
+}
 @media screen and (max-width: 260px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 12px;
@@ -1630,6 +1652,11 @@ a.reload_ranking {
 @media screen and (max-width: 237px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 10px;
+  }
+}
+@media screen and (max-width: 220px) {
+  .poule, .poule a {
+    font-size: 11px !important;
   }
 }
 

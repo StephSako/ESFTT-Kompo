@@ -172,14 +172,13 @@ class CompetiteurRepository extends ServiceEntityRepository
                     AND c.idCompetiteur = t.idCompetiteur
                     AND t.idEquipe = et.idEquipe
                 ) as numero')
-        ->addSelect('(
+            ->addSelect('(
                     SELECT et2.idEquipe
                     FROM App\Entity\Titularisation t2, App\Entity\Equipe et2
                     WHERE t2.idChampionnat = :idChampionnat
                     AND c.idCompetiteur = t2.idCompetiteur
                     AND t2.idEquipe = et2.idEquipe
-                ) as idEquipeAssociee')
-        ;
+                ) as idEquipeAssociee');
 
         foreach ($idEquipes as $idEquipe) {
             $str = '';
@@ -197,12 +196,12 @@ class CompetiteurRepository extends ServiceEntityRepository
                                   'AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe ' .
                                   'AND e' . $idEquipe . '.numero = ' . $idEquipe . ' ' .
                                   'AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
-                ->setParameter('idJournee', $idJournee)
-                ->setParameter('idChampionnat', $idChampionnat);
+                ->setParameter('idJournee', $idJournee);
         }
         $brulages = $brulages
             ->addSelect('c.idCompetiteur')
             ->where('c.isCompetiteur = true')
+            ->setParameter('idChampionnat', $idChampionnat)
             ->orderBy('numero')
             ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
@@ -474,25 +473,38 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récupère tous les pseudos, noms et prénoms de tous les joueurs
+     * @param boolean $justUsernames
      * @return array
      */
-    public function findAllPseudos(): array
+    public function findAllPseudos(bool $justUsernames): array
     {
         $query = $this->createQueryBuilder('c')
-                ->select('c.username')
+                ->select('c.username');
+        if (!$justUsernames) {
+            $query = $query
                 ->addSelect('c.licence')
-                ->getQuery()
-                ->getResult();
+                ->addSelect('c.prenom')
+                ->addSelect('c.nom');
+        }
+        $query = $query
+            ->getQuery()
+            ->getResult();
 
         $result = [];
-        $result['pseudos'] = array_map(function($pseudo) {
+        $result['usernames'] = array_map(function($pseudo) {
             return $pseudo['username'];
         }, $query);
-        $result['licences'] = array_filter(array_map(function($licence) {
-            return $licence['licence'];
-        }, $query), function($licence) {
-            return $licence;
-        });
+
+        if (!$justUsernames) {
+            $result['prenoms_noms'] = array_map(function($nomPrenom) {
+                return $nomPrenom['prenom'] . $nomPrenom['nom'];
+            }, $query);
+            $result['licences'] = array_filter(array_map(function($licence) {
+                return $licence['licence'];
+            }, $query), function($licence) {
+                return $licence;
+            });
+        }
         return $result;
     }
 

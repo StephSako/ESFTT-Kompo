@@ -13,7 +13,19 @@ $(document).ready(() => {
         preventScrolling: true
     });
 
-    $('.tabs').tabs();
+    $('.tabs').tabs({
+        onShow: () => {
+            if ($(window).width() <= 992) {
+                let tables = document.getElementsByClassName('table-to-adapt-columns')
+                for (const table of tables) {
+                    if (table.offsetParent != null) {
+                        let trs = [...table.rows];
+                        trs.forEach(tr => tr.style.height = Math.max(...trs.map(x => x.offsetHeight)) + 'px');
+                    }
+                }
+            }
+        }
+    });
 
     $('.tooltipped').tooltip();
 

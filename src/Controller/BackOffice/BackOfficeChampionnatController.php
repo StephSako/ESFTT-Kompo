@@ -106,7 +106,7 @@ class BackOfficeChampionnatController extends AbstractController
 
         return $this->render('backoffice/new.html.twig', [
             'form' => $form->createView(),
-            'title' => 'championnats',
+            'title' => 'Créer un championnat',
             'macro' => 'championnat'
         ]);
     }

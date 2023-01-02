@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
@@ -357,6 +358,13 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="integer", length=4, name="annee_certificat_medical", nullable=true)
      */
     private $anneeCertificatMedical;
+
+    /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur")
+     */
+    private $titularisations;
 
     /**
      * @var DateTime|null
@@ -944,9 +952,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNom(): string
+    public function getNom(): ?string
     {
         return $this->nom;
     }
@@ -1342,9 +1350,9 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPrenom(): string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
@@ -1608,7 +1616,7 @@ class Competiteur implements UserInterface, Serializable
         foreach (
             [
                 $this->getNom(), $this->getPrenom(), $this->getUsername(), $this->getDateNaissance(),
-                $this->getAnneeCertificatMedical(), $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
+                !$this->isCertifMedicalInvalid()['status'], $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
                 $this->getLicence(), $this->getAvatar()
             ] as $index => $field) {
             if (!$field){
@@ -1674,7 +1682,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function getEquipesAssociees(): Collection
     {
-        return $this->equipesAssociees;
+        return $this->equipesAssociees ?? new ArrayCollection([]);
     }
 
     /**
@@ -1701,6 +1709,24 @@ class Competiteur implements UserInterface, Serializable
     public function setEquipesAssociees(Collection $equipesAssociees): self
     {
         $this->equipesAssociees = $equipesAssociees;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTitularisations(): Collection
+    {
+        return $this->titularisations;
+    }
+
+    /**
+     * @param Collection $titularisations
+     * @return Competiteur
+     */
+    public function setTitularisations(Collection $titularisations): self
+    {
+        $this->titularisations = $titularisations;
         return $this;
     }
 }

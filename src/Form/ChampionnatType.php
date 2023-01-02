@@ -66,7 +66,7 @@ class ChampionnatType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Championnat::class,
             'translation_domain' => 'forms',
-            'organismesOptGroup' => null
+            'organismesOptGroup' => []
         ]);
     }
 }

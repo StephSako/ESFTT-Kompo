@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Back-office - Les divisions{% endblock %}
+{% block title %}Les divisions{% endblock %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/division.html.twig' as _division %}
 
 {% block body %}
-
     {{ include('components/navbar_backoffice.html.twig') }}
+    <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
 
     <div class='container center'>
 

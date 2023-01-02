@@ -10,7 +10,7 @@
 /.env
 /public/.htaccess
 /src/Migrations
-/public/images/profile_pictures
+/public/images/profile_pictures/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

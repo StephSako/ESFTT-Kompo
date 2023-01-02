@@ -1,6 +1,6 @@
 {% macro table(divisions) %}
     {% if divisions|length %}
-        <table class="striped centered responsive-table backoffice-table">
+        <table class="striped centered responsive-table backoffice-table table-to-adapt-columns">
             <thead>
                 <tr>
                     <th>Diminutif</th>
@@ -28,13 +28,15 @@
                         </a>
                     </td>
                     <td>
-                        <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
-                            <button class="btn waves-effect red lighten-2 btn_gestion">
-                                <i class="material-icons">delete</i>
-                            </button>
-                        </form>
+                        {% if division.nbEquipes == 0 %}
+                            <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                                <button class="btn waves-effect red lighten-2 btn_gestion">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

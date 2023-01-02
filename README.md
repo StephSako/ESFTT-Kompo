@@ -194,7 +194,7 @@ Sur mobile, la liste des joueurs se déroule de gauche à droite.
 
 <h3 id="gestion_backoffice">Gestion - Back-office</h3>
 
-<h4 id="gestion_mise_a_jour_donnees">Mise à jour des données</h4>
+<h4 id="gestion_mise_a_jour_donnees">Mises à jour des données</h4>
 <h4 id="gestion_championnats">Les championnats</h4>
 <h4 id="gestion_dates_journees">Les dates des journées</h4>
 <h4 id="gestion_rencontres">Les rencontres</h4>

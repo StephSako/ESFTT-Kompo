@@ -135,7 +135,8 @@ class HomeController extends AbstractController
         $numJournee = array_search($journee, $journees)+1;
 
         // Disponibilités des joueurs pour la journée par équipe
-        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, max(array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos)));
+        $nbMaxJoueursParDivision = array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos);
+        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, $nbMaxJoueursParDivision ? max($nbMaxJoueursParDivision) : $this->getParameter('nb_joueurs_default_division'));
         $joueursNonDeclares = [];
         $joueursDisponibles = [];
         foreach ($disponibilitesJournee as $equipe) {
@@ -211,16 +212,16 @@ class HomeController extends AbstractController
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
-            return $joueur->isCertifMedicalInvalid()['status'];
+            return $joueur->isCertifMedicalInvalid()['status'] && $joueur->isCompetiteur();
         }));
 
         /** Joueurs sans licence définie */
         $countJoueursWithoutLicence = count(array_filter($allValidPlayers, function ($joueur) {
-            return !$joueur->getLicence();
+            return !$joueur->getLicence() && $joueur->isCompetiteur();
         }));
         $joueursWithoutLicence = [
             'count' => $countJoueursWithoutLicence,
-            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . '</b> joueur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . ' dont la licence n\'est pas définie' : ''
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' compétiteur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . '</b> dont la licence n\'est pas définie' : ''
         ];
 
         /** Compétiteurs sans classement officiel défini */
@@ -229,7 +230,7 @@ class HomeController extends AbstractController
         }));
         $competiteursWithoutClassement = [
             'count' => $countCompetiteursWithoutClassement,
-            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . '</b> compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . ' dont le classement officiel n\'est pas défini' : ''
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() . '?code=true' : null);

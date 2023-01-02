@@ -20,15 +20,15 @@
                             <b>{{ equipe.numero }}</b>
                         </td>
                         <td>
-                            {% if equipe.divShortName %}
-                                {{ equipe.divShortName }}
+                            {% if equipe.idDivision %}
+                                {{ equipe.idDivision.shortName }}
                             {% else %}
                                 <span class="red-text lighten-2">Division indéfinie</span>
                             {% endif %}
                         </td>
                         <td>
-                            {% if equipe.poule %}
-                                {{ equipe.poule }}
+                            {% if equipe.idPoule %}
+                                {{ equipe.idPoule.poule }}
                             {% else %}
                                 <span class="red-text lighten-2">Poule indéfinie</span>
                             {% endif %}
@@ -40,7 +40,7 @@
                         </td>
                         <td>
                             <a href="{{ path('backoffice.equipe.edit.players', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect green lighten-1 btn_gestion">
-                                <i class="material-icons">groups</i>
+                                {{ equipe.joueursAssocies|length}} <i class="material-icons">groups</i>
                             </a>
                         </td>
                         <td>
