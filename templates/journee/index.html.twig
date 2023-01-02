@@ -190,14 +190,20 @@
                                 <h5>
                                     <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
-                                <p class="poule" style="margin-bottom: 0;">
-                                    Poule
-                                    {% if compo.idEquipe.idPoule %}
-                                        <span style="font-size: 95%; font-family: 'Lora', serif;">{{ compo.idEquipe.idPoule.poule }}</span>
-                                    {% else %}
-                                        <span class="red-text" style="font-size: 95%; font-family: 'Lora', serif;">?</span>
+                                <div class="poule">
+                                    {% if compo.idEquipe.lienDivision %}
+                                        <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
                                     {% endif %}
-                                </p>
+                                        Poule
+                                        {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                            {{ compo.idEquipe.idPoule.poule }}
+                                        {% else %}
+                                            <span class="red-text">?</span>
+                                        {% endif %}
+                                    {% if compo.idEquipe.lienDivision %}
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </div>
 
                             <div class="col s5 m3" style="padding-left: 0; padding-right: 0;">
@@ -207,13 +213,6 @@
                                             Équipe {{ compo.idEquipe.numero }}
                                         </h5>
                                     </div>
-                                    {% if compo.idEquipe.lienDivision %}
-                                        <div class="col" style="padding-left: 0; padding-right: 0;">
-                                            <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                                <i class="material-icons">equalizer</i>
-                                            </a>
-                                        </div>
-                                    {% endif %}
                                 </div>
                             </div>
 
@@ -251,7 +250,7 @@
 
                             <div class="col m5 hide-on-small-only">
                                 {% if compo.exempt %}
-                                    <h5 style="margin-top: 4px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
+                                    <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
                                     <div class="row" style="margin-top: 12px">
                                         <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
@@ -278,7 +277,7 @@
                         <div class="hide-on-med-and-up adversaireLine center">
                             <div class="{% if not compo.exempt %}m5{% endif%}">
                                 {% if compo.exempt %}
-                                    <h5 class="lobster_2 pastille exempt reset red">Exemptée</h5>
+                                    <h5 style="margin-top: 5px" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
                                     <div class="advDefined">
                                         <div>

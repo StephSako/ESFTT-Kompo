@@ -38,6 +38,63 @@
                         </span>
                     </p>
 
+                    {% if app.user.admin %}
+                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
+                            {% if joueursIssued.nbJoueursCritFed > 0 %}
+                                <p style="margin-top: 25px; margin-bottom: 10px;">
+                                    <label>
+                                        <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
+                                        <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
+                                    </label>
+
+                                    <script type="text/javascript">
+                                        const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
+                                        const nbJoueursAll = {{ joueursIssued.competition|length }};
+                                        const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
+                                        let messageNbJoueursIssued = $('p#messageNbJoueursIssued')
+
+                                        $('#showCritFed').change(function () {
+                                            if (!this.checked) {
+                                                $('.isCritFed').toggleClass('hide', '');
+                                                $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
+                                                if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                                else $('button#updateJoueursIssued').prop('disabled', false);
+                                                if (noCritFed > 0) {
+                                                    messageNbJoueursIssued.removeClass('blue');
+                                                    messageNbJoueursIssued.addClass('orange darken-2');
+                                                }
+                                                else {
+                                                    $('span#nbJoueurs').text('Tous les joueurs sont à jour')
+                                                    messageNbJoueursIssued.addClass('blue');
+                                                    messageNbJoueursIssued.removeClass('orange darken-2');
+                                                }
+                                                if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                            }
+                                            else {
+                                                $('.isCritFed').toggleClass('hide');
+                                                if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                                if (nbJoueursAll === 0) {
+                                                    messageNbJoueursIssued.addClass('blue');
+                                                    messageNbJoueursIssued.removeClass('orange darken-2');
+                                                }
+                                                else {
+                                                    messageNbJoueursIssued.removeClass('blue');
+                                                    messageNbJoueursIssued.addClass('orange darken-2');
+                                                }
+                                                $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
+                                                if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                                else $('button#updateJoueursIssued').prop('disabled', false);
+                                            }
+                                        })
+                                    </script>
+                                </p>
+                            {% endif %}
+
+                            <input type="hidden" name="resetPlayers" value="1">
+                            <button {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %}disabled{% endif %} class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
+                        </form>
+                    {% endif %}
+
                     <table class="striped centered responsive-table {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %} hide{% endif %}" id="joueursIssued">
                         <thead>
                             <tr>
@@ -78,63 +135,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                {% endif %}
-
-                {% if app.user.admin and (joueursIssued.competition) %}
-                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
-                        {% if joueursIssued.nbJoueursCritFed > 0 %}
-                            <p style="margin-top: 25px; margin-bottom: 10px;">
-                                <label>
-                                    <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
-                                    <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
-                                </label>
-
-                                <script type="text/javascript">
-                                    const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
-                                    const nbJoueursAll = {{ joueursIssued.competition|length }};
-                                    const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
-                                    let messageNbJoueursIssued = $('p#messageNbJoueursIssued')
-
-                                    $('#showCritFed').change(function () {
-                                        if (!this.checked) {
-                                            $('.isCritFed').toggleClass('hide', '');
-                                            $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
-                                            if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
-                                            else $('button#updateJoueursIssued').prop('disabled', false);
-                                            if (noCritFed > 0) {
-                                                messageNbJoueursIssued.removeClass('blue');
-                                                messageNbJoueursIssued.addClass('orange darken-2');
-                                            }
-                                            else {
-                                                $('span#nbJoueurs').text('Tous les joueurs sont à jour')
-                                                messageNbJoueursIssued.addClass('blue');
-                                                messageNbJoueursIssued.removeClass('orange darken-2');
-                                            }
-                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
-                                        }
-                                        else {
-                                            $('.isCritFed').toggleClass('hide');
-                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
-                                            if (nbJoueursAll === 0) {
-                                                messageNbJoueursIssued.addClass('blue');
-                                                messageNbJoueursIssued.removeClass('orange darken-2');
-                                            }
-                                            else {
-                                                messageNbJoueursIssued.removeClass('blue');
-                                                messageNbJoueursIssued.addClass('orange darken-2');
-                                            }
-                                            $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
-                                            if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
-                                            else $('button#updateJoueursIssued').prop('disabled', false);
-                                        }
-                                    })
-                                </script>
-                            </p>
-                        {% endif %}
-
-                        <input type="hidden" name="resetPlayers" value="1">
-                        <button {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %}disabled{% endif %} class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
-                    </form>
                 {% endif %}
             </div>
         {% endif %}

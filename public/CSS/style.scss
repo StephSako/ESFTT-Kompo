@@ -590,9 +590,19 @@ button.renew_certif_table {
 }
 
 .poule {
-  font-size: 1.3rem;
-  margin-top: 3%;
-  margin-bottom: 5px;
+  font-family: Lobster Two, cursive;
+  font-size: 15px !important;
+
+  a {
+    height: 25px;
+    line-height: 25px;
+    text-transform: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 2px;
+    margin-bottom: 0;
+    font-size: 15px !important;
+  }
 }
 
 .nav-wrapper {
@@ -840,10 +850,10 @@ table.rankingVirtualPoints {
   }
 
   &.modal-medium {
-    margin-top: 5% !important;
+    margin-top: 4% !important;
     width: 700px !important ;
-    height: 80% !important ;
-    min-height: 80% !important ;
+    height: 81% !important ;
+    min-height: 81% !important ;
     top: 4% !important;
 
     & .modal-content {
@@ -1804,12 +1814,6 @@ a.reload_ranking {
   }
 }
 
-@media screen and (max-width: 275px) {
-  a.reload_ranking {
-    display: none;
-  }
-}
-
 @media screen and (max-width: 344px) {
   .virtualRankButtons  {
     font-size: 13px;
@@ -1862,6 +1866,12 @@ a.reload_ranking {
   }
 }
 
+@media screen and (max-width: 275px) {
+  a.reload_ranking {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 260px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 12px;
@@ -1871,5 +1881,11 @@ a.reload_ranking {
 @media screen and (max-width: 237px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 220px) {
+  .poule, .poule a {
+    font-size: 11px !important;
   }
 }
