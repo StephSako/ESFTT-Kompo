@@ -41,7 +41,7 @@
                     {% if app.user.admin %}
                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
                             {% if joueursIssued.nbJoueursCritFed > 0 %}
-                                <p style="margin-top: 25px; margin-bottom: 10px;">
+                                <p style="margin-top: 10px; margin-bottom: 10px;">
                                     <label>
                                         <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
                                         <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
