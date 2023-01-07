@@ -94,7 +94,7 @@
                             <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                         </h5>
                         <div class="poule">
-                            {% if compo.idEquipe.lienDivision %}
+                            {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
                                 <a style="margin-bottom: 4px" onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger poule" href="#modalClassement{{ compo.idEquipe.numero }}">
                             {% endif %}
                                 <span>
@@ -105,7 +105,7 @@
                                         <span class="red-text">?</span>
                                     {% endif %}
                                 </span>
-                            {% if compo.idEquipe.lienDivision %}
+                            {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
                                 </a>
                             {% endif %}
                         </div>

@@ -19,7 +19,6 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use ErrorException;
 use Exception;
 use FFTTApi\FFTTApi;
 use FFTTApi\Model\Equipe;
@@ -41,10 +40,11 @@ class BackOfficeFFTTApiController extends AbstractController
 
     /** Position des données dans les chaînes de caractères reçues de l'API */
     const REGEX_JOURNEE_NUMBER = '/^Poule [0-9]+ - tour n°([0-9]+) du \d{2}\/\d{2}\/\d{4}$/';
-    const REGEX_ORGANISME_PERE = '/^cx_poule=[0-9]+&D1=[0-9]+&organisme_pere=([0-9]+)$/';
+    const REGEX_ORGANISME_PERE = '/^cx_poule=[0-9]*&D1=[0-9]+&organisme_pere=([0-9]+)$/';
     const DIVISION_PARTIE_UN = 0;
     const DIVISION_PARTIE_DEUX = 1;
     const REGEX_NUMERO_EQUIPE = '/^[A-Z\s]+ (\(?[0-9]+\)?) - Phase ([1|2])$/';
+    const STRING_LIBELLE_POULE = 'Poule';
 
     /**
      * @param CompetiteurRepository $competiteurRepository
@@ -169,7 +169,13 @@ class BackOfficeFFTTApiController extends AbstractController
                     foreach ($equipesFFTT as $equipe) {
                         $numeroEquipeFFTT = $this->getEquipeNumero($equipe->getLibelle());
                         $libelleDivisionEquipeFFTT = explode(' ', $equipe->getDivision());
-                        $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT)-1];
+
+                        if ($libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT) - 2] == self::STRING_LIBELLE_POULE) {
+                            $pouleEquipeFFTT = $libelleDivisionEquipeFFTT[count($libelleDivisionEquipeFFTT) - 1];
+                        } else {
+                            $pouleEquipeFFTT = null;
+                        }
+
                         $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX], MB_CASE_TITLE, "UTF-8");
                         $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN][0] . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX][0];
                         $equipeIssued = [];
@@ -181,7 +187,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             }))[0];
 
                             $sameDivision = $equipeKompo->getIdDivision() && $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTTShortName;
-                            $samePoule = $equipeKompo->getIdPoule() && $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT);
+                            $samePoule = ($equipeKompo->getIdPoule() && $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT)) || ($equipeKompo->getIdPoule() == null && mb_strtoupper($pouleEquipeFFTT) == "");
                             $sameLienDivision = $equipeKompo->getLienDivision() && $equipeKompo->getLienDivision() == $equipe->getLienDivision();
                             if (!$sameDivision || !$samePoule || !$sameLienDivision){
                                 $equipeIssued['equipe'] = $equipeKompo;
@@ -711,11 +717,11 @@ class BackOfficeFFTTApiController extends AbstractController
     /**
      * @param string $divisionLongName
      * @param string $divisionShortName
-     * @param string $pouleName
+     * @param string|null $pouleName
      * @param Championnat $championnat
      * @return array
      */
-    function getDivisionPoule(string $divisionLongName, string $divisionShortName, string $pouleName, Championnat $championnat): array
+    function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
     {
         /** Si la division n'existe pas, on la créé **/
         $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $divisionShortName, 'idChampionnat' => $championnat->getIdChampionnat()]);
@@ -731,14 +737,16 @@ class BackOfficeFFTTApiController extends AbstractController
         else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];
 
         /** Si la poule n'existe pas, on la créé **/
-        $poulesSearch = $this->pouleRepository->findBy(['poule' => $pouleName]);
         $poule = null;
-        if (count($poulesSearch) == 0){
-            $poule = new Poule();
-            $poule->setPoule($pouleName);
-            $this->em->persist($poule);
+        if ($pouleName) {
+            $poulesSearch = $this->pouleRepository->findBy(['poule' => $pouleName]);
+            if (count($poulesSearch) == 0){
+                $poule = new Poule();
+                $poule->setPoule($pouleName);
+                $this->em->persist($poule);
+            }
+            else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
         }
-        else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
 
         return [$division, $poule];
     }
