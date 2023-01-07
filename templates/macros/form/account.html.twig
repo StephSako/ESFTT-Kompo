@@ -342,18 +342,10 @@
                             <i class="material-icons">delete</i>
                         </a>
 
-                        <script type="text/javascript">
-                            $('a.deleteAvatar').on('click', () => {
-                                $('span.christmas_code').removeClass('hide');
-                            })
-                        </script>
-
                     {% endif %}
                     <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
                 </div>
             </div>
-
-            <span class="reset pastille christmas_code hide">434PJ</span>
 
             {% if app.request.getPathInfo ends with '/new' %}
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
@@ -371,16 +363,17 @@
                         {% if options.isWinner and not options.isFullWinner %}
                             <p class="green-text">
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                                Vous avez trouvé tous les codes hors codes bonus ! Félicitations !
+                                Vous avez trouvé tous les codes classiques ! Félicitations !
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
                             </p>
                         {% elseif options.isFullWinner %}
                             <p class="green-text">
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                                Vous avez trouvé tous les codes ainsi que les 3 codes bonus
-                                <i class="material-icons prefix" style="color: #6977a1">diamond</i>
-                                <i class="material-icons prefix" style="color: #e0115f">diamond</i>
-                                <i class="material-icons prefix" style="color: #b9f2ff">diamond</i>
+                                Vous avez trouvé tous les codes ainsi que les 4 codes bonus
+                                <i class="material-icons prefix" style="color: #9f64bd">diamond</i>
+                                <i class="material-icons prefix" style="color: #ffd700">diamond</i>
+                                <i class="material-icons prefix" style="color: #0131b4">diamond</i>
+                                <i class="material-icons prefix" style="color: #019875">diamond</i>
                                 ! Félicitations !
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
                             </p>
@@ -389,7 +382,7 @@
                         {% endif %}
                     {% endif %}
 
-                    {% for i in 1..11 %}
+                    {% for i in 1..10 %}
                         <div class="col s8 offset-s2">
                             <div class="row">
                                 <div class="col s11">
@@ -402,23 +395,28 @@
                             </div>
                         </div>
                     {% endfor %}
-                    {% for i in 12..14 %}
+                    {% for i in 11..14 %}
                         <div class="col s8 offset-s2">
                             <div class="row">
                                 <div class="col s11">
-                                    <b><i class="material-icons prefix" style="color: {% if i == 12 %}
-                                            #b9f2ff
+                                    <b><i class="material-icons prefix" style="color:
+                                        {% if i == 11 %}
+                                            #9f64bd
+                                        {% elseif i == 12 %}
+                                            #ffd700
                                         {% elseif i == 13 %}
                                             #0131b4
                                         {% elseif i == 14 %}
-                                            #e0115f
+                                            #019875
                                         {% endif %}">diamond</i> Code
-                                        {% if i == 12 %}
-                                            Diamant <i>(+1 point)</i>
+                                        {% if i == 11 %}
+                                            Améthyste <i>(+1 point)</i>
+                                        {% elseif i == 12 %}
+                                            Or <i>(+2 points)</i>
                                         {% elseif i == 13 %}
-                                            Saphir <i>(+2 points)</i>
+                                            Saphir <i>(+3 points)</i>
                                         {% elseif i == 14 %}
-                                            Rubis <i>(+3 points)</i>
+                                            Émeraude <i>(+4 points)</i>
                                         {% endif %}
                                     </b>
                                     {{ form_row(attribute(form,'code' ~ i)) }}
@@ -480,6 +478,7 @@
         <h4 class="h4_form">{{ title }}</h4>
 
         <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
+            <span class="reset pastille christmas_code hide eyes_password">434PJ</span>
             <div class="row">
                 {% if type == 'general' %}
                     <div class="input-field col s12 l4">

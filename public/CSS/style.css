@@ -1180,17 +1180,21 @@ span.field-icon {
   font-weight: bold;
   background-color: red;
 }
-.christmas_code.diamant {
-  background-color: #b9f2ff !important;
+.christmas_code.amethyste {
+  background-color: #9f64bd !important;
+  color: white;
+}
+.christmas_code.or {
+  background-color: #ffd700 !important;
   color: black;
 }
 .christmas_code.saphir {
   background-color: #0131b4 !important;
   color: white;
 }
-.christmas_code.rubis {
-  background-color: #e0115f !important;
-  color: black;
+.christmas_code.emeraude {
+  background-color: #019875 !important;
+  color: white;
 }
 
 .preloader-wrapper.tiny {

@@ -20,7 +20,7 @@ class CompetiteurType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $year = intval((new DateTime())->format('Y'));
-        $range = range($year - 120, $year + 1);
+        $range = range($year - 100, $year + 1);
         $builder
             ->add('dateNaissance', BirthdayType::class, [
                 'required' => $options['dateNaissanceRequired'],

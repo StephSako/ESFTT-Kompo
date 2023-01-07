@@ -1375,8 +1375,13 @@ span.field-icon {
   font-weight: bold;
   background-color: red;
 
-  &.diamant {
-    background-color: #b9f2ff !important;
+  &.amethyste {
+    background-color: #9f64bd !important;
+    color: white;
+  }
+
+  &.or {
+    background-color: #ffd700 !important;
     color: black;
   }
 
@@ -1385,9 +1390,9 @@ span.field-icon {
     color: white;
   }
 
-  &.rubis {
-    background-color: #e0115f !important;
-    color: black;
+  &.emeraude {
+    background-color: #019875 !important;
+    color: white;
   }
 }
 

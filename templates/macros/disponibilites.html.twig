@@ -136,6 +136,16 @@
                                 </td>
                             {% endfor %}
                         </tr>
+                        {% if nomChamp == 'Départemental' and numero == 'Équipe n°4' and loop.last %}
+                            <tr class="hide-on-extra-large-only hide-on-large-only">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="pastille reset christmas_code">28BD7</span>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>

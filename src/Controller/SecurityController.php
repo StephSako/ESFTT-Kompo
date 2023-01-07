@@ -279,10 +279,8 @@ class SecurityController extends AbstractController
                         ->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
-                    $this->addFlash('christmas_code', null);
                     return $this->redirectToRoute('login');
                 } else {
-                    $this->addFlash('christmas_code', null);
                     $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
                 }
             }

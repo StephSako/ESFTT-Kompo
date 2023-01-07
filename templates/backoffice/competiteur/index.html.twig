@@ -113,9 +113,10 @@
                         <th class="center">Nom</th>
                         <th class="center">Sans triche</th>
                         <th class="center">Codes corrects</th>
-                        <th class="center"><i class="material-icons prefix" style="color: #b9f2ff">diamond</i>Code Diamant</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #9f64bd">diamond</i>Code Améthyste</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #ffd700">diamond</i>Code Or</th>
                         <th class="center"><i class="material-icons prefix" style="color: #0131b4">diamond</i>Code Saphir</th>
-                        <th class="center"><i class="material-icons prefix" style="color: #e0115f">diamond</i>Code Rubis</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #019875">diamond</i>Code Émeraude</th>
                     </tr>
                 </thead>
 
@@ -124,10 +125,12 @@
                         {% if joueur.ownCodes | length %}
                             <tr>
                                 <td>
-                                    {% if joueur.winner and not joueur.fullWinner %}
-                                        <span class="material-icons green-text" style="vertical-align: bottom;">emoji_events</span>
-                                    {% elseif joueur.fullWinner %}
-                                        <span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>
+                                    {% if not joueur.cheating %}
+                                        {% if joueur.winner and not joueur.fullWinner %}
+                                            <span class="material-icons green-text" style="vertical-align: bottom;">emoji_events</span>
+                                        {% elseif joueur.fullWinner %}
+                                            <span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>
+                                        {% endif %}
                                     {% endif %}
                                     {{ joueur.nom }} {{ joueur.prenom }}
                                 </td>
@@ -138,7 +141,7 @@
                                         <i class="material-icons red-text">report_problem</i>
                                     {% endif %}
                                 </td>
-                                <td class="center"><b {% if joueur.winner and not joueur.fullWinner %}class="green-text"{% elseif joueur.fullWinner %}class="gold-color"{% endif %}>{{ joueur.ownCodes | length }}</b> / 11 + 3</td>
+                                <td class="center"><b {% if joueur.winner and not joueur.fullWinner %}class="green-text"{% elseif joueur.fullWinner %}class="gold-color"{% endif %}>{{ joueur.ownCodes | length }}</b> / 10 + 4</td>
                                 <td class="center">
                                     {% if joueur.codeBonus1Correct %}
                                         <i class="material-icons green-text">check</i>
@@ -155,6 +158,13 @@
                                 </td>
                                 <td class="center">
                                     {% if joueur.codeBonus3Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center">
+                                    {% if joueur.codeBonus4Correct %}
                                         <i class="material-icons green-text">check</i>
                                     {% else %}
                                         <i class="material-icons red-text">clear</i>
