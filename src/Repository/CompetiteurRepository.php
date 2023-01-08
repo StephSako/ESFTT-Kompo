@@ -156,11 +156,11 @@ class CompetiteurRepository extends ServiceEntityRepository
      * Liste du brûlage
      * @param int $idChampionnat
      * @param int $idJournee
-     * @param array $idEquipes
+     * @param array $numEquipes
      * @param int $nbJoueurs
      * @return array
      */
-    public function getBrulages(int $idChampionnat, int $idJournee, array $idEquipes, int $nbJoueurs): array
+    public function getBrulages(int $idChampionnat, int $idJournee, array $numEquipes, int $nbJoueurs): array
     {
         $brulages = $this->createQueryBuilder('c')
             ->select('c.nom')
@@ -180,22 +180,22 @@ class CompetiteurRepository extends ServiceEntityRepository
                     AND t2.idEquipe = et2.idEquipe
                 ) as idEquipeAssociee');
 
-        foreach ($idEquipes as $idEquipe) {
+        foreach ($numEquipes as $numEquipe) {
             $str = '';
             for ($i = 0; $i < $nbJoueurs; $i++) {
-                $str .= 'p' . $idEquipe . '.idJoueur' . $i . ' = c.idCompetiteur';
+                $str .= 'p' . $numEquipe . '.idJoueur' . $i . ' = c.idCompetiteur';
                 if ($i < $nbJoueurs - 1) $str .= ' OR ';
             }
             $brulages = $brulages
-                ->addSelect('(SELECT COUNT(p' . $idEquipe . '.id) ' .
-                                  'FROM App\Entity\Rencontre p' . $idEquipe . ', ' .
-                                  'App\Entity\Equipe e' . $idEquipe . ' ' .
-                                  'WHERE p' . $idEquipe . '.idChampionnat = :idChampionnat ' .
-                                  'AND e' . $idEquipe . '.idChampionnat = :idChampionnat ' .
-                                  'AND (' . $str . ') AND p' . $idEquipe . '.idJournee < :idJournee ' .
-                                  'AND e' . $idEquipe . '.idEquipe = p' . $idEquipe . '.idEquipe ' .
-                                  'AND e' . $idEquipe . '.numero = ' . $idEquipe . ' ' .
-                                  'AND e' . $idEquipe . '.idDivision IS NOT NULL) AS E' . $idEquipe)
+                ->addSelect('(SELECT COUNT(p' . $numEquipe . '.id) ' .
+                                  'FROM App\Entity\Rencontre p' . $numEquipe . ', ' .
+                                  'App\Entity\Equipe e' . $numEquipe . ' ' .
+                                  'WHERE p' . $numEquipe . '.idChampionnat = :idChampionnat ' .
+                                  'AND e' . $numEquipe . '.idChampionnat = :idChampionnat ' .
+                                  'AND (' . $str . ') AND p' . $numEquipe . '.idJournee < :idJournee ' .
+                                  'AND e' . $numEquipe . '.idEquipe = p' . $numEquipe . '.idEquipe ' .
+                                  'AND e' . $numEquipe . '.numero = ' . $numEquipe . ' ' .
+                                  'AND e' . $numEquipe . '.idDivision IS NOT NULL) AS E' . $numEquipe)
                 ->setParameter('idJournee', $idJournee);
         }
         $brulages = $brulages
@@ -213,8 +213,8 @@ class CompetiteurRepository extends ServiceEntityRepository
         foreach ($brulages as $brulage){
             $brulageJoueur = [];
             $brulageInt = [];
-            foreach ($idEquipes as $idEquipe) {
-                $brulageInt[$idEquipe] = intval($brulage['E'.$idEquipe]);
+            foreach ($numEquipes as $numEquipe) {
+                $brulageInt[$numEquipe] = intval($brulage['E'.$numEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['numero'] = $brulage['numero'];

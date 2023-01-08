@@ -313,6 +313,17 @@
                             </tbody>
                         </table>
 
+                        {% if compo.selectedPlayers|length == compo.idEquipe.idDivision.nbJoueurs %}
+                            {% set listeRemplacants = listeRemplacants(compo.idEquipe.numero, brulages, disponibilitesJournee, selectedPlayers) %}
+                            {% if listeRemplacants|length %}
+                                <div class="blue pastille reset remplacants">
+                                    <i class="material-icons tooltipped" data-position="top" data-tooltip="Remplaçant : si son équipe n'est pas complète, c'est un joueur déclaré disponible, non brûlé pour son équipe et non sélectionné dans une équipe">help_outline</i>
+                                    <b>Remplaçant{% if listeRemplacants|length > 1 %}s{% endif %}</b><br>
+                                    {{ listeRemplacants|join(', ', ' et ') }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">
                                 <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">

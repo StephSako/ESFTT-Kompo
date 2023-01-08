@@ -1248,6 +1248,15 @@ a.reload_ranking {
   line-height: 40px;
 }
 
+.pastille.remplacants {
+  margin-top: 10px;
+  background-color: #7dc4fc !important;
+}
+.pastille.remplacants i.material-icons {
+  font-size: 19px;
+  margin-bottom: 1px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;

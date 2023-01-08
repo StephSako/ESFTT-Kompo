@@ -1454,6 +1454,16 @@ a.reload_ranking {
   }
 }
 
+.pastille.remplacants {
+  margin-top: 10px;
+  background-color: #7dc4fc !important;
+
+  & i.material-icons {
+    font-size: 19px;
+    margin-bottom: 1px;
+  }
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general{
     .right_items_navbar {

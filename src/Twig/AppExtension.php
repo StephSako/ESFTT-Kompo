@@ -19,7 +19,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
             new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
-            new TwigFunction('journeePassee', [$this, 'journeePassee'])
+            new TwigFunction('journeePassee', [$this, 'journeePassee']),
+            new TwigFunction('listeRemplacants', [$this, 'listeRemplacants'])
         ];
     }
 
@@ -149,7 +150,45 @@ class AppExtension extends AbstractExtension
         return $str;
     }
 
+    /**
+     * @param Journee $journee
+     * @return bool
+     */
     public function journeePassee(Journee $journee): bool {
         return !$journee->getUndefined() && intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) < 0;
+    }
+
+    /**
+     * @param int $numeroEquipe
+     * @param array $allBrulages
+     * @param array $allDispos
+     * @param array $selectedIdsPlayersEquipe
+     * @return array
+     */
+    public function listeRemplacants(int $numeroEquipe, array $allBrulages, array $allDispos, array $selectedIdsPlayersEquipe): array
+    {
+        /** on récupère la liste des brûlages de l'équipe */
+        $brulagesEquipe = array_values(array_filter($allBrulages, function($e) use ($numeroEquipe) {
+            return $e['nomEquipe'] == 'Équipe n°' . $numeroEquipe;
+        }))[0]['joueurs'];
+
+        /** On filtre les joueurs de l'équipe disponibles non sélectionnés pour cette journée */
+        $disposNonSelectionnesEquipe = array_filter($allDispos['Équipe n°' . $numeroEquipe], function ($joueurDisposNonSelectionne) use ($selectedIdsPlayersEquipe) {
+            return $joueurDisposNonSelectionne['disponibilite'] == "1" && !in_array($joueurDisposNonSelectionne['joueur']->getIdCompetiteur(), $selectedIdsPlayersEquipe);
+        });
+
+        /** On filtre les joueurs de l'équipe non brûlés pour cette journée */
+        $joueursNonBrules = array_filter($brulagesEquipe, function($joueur) use ($numeroEquipe) {
+            return array_sum(array_filter($joueur['brulage'], function($numEquipe) use ($numeroEquipe) {
+                    return $numEquipe < $numeroEquipe;
+                }, ARRAY_FILTER_USE_KEY)) < 2;
+        });
+        $joueursNonBrules = array_map(function($joueurNonBrule) {
+            return $joueurNonBrule['idCompetiteur'];
+        }, $joueursNonBrules);
+
+        return array_keys(array_filter($disposNonSelectionnesEquipe, function($remplacant) use ($joueursNonBrules) {
+            return in_array($remplacant['joueur']->getIdCompetiteur(), $joueursNonBrules);
+        }));
     }
 }
