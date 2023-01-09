@@ -220,7 +220,7 @@
 
                             <div class="col s5 m3" style="padding-left: 0; padding-right: 0;">
                                 <div class="row" style="margin-top: 12px">
-                                    <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
+                                    <div class="col offset-s3" style="padding-left: 0; padding-right: 6px;">
                                         <h5 class="lobster_2" style="margin-top: 3px;">
                                             Équipe {{ compo.idEquipe.numero }}
                                         </h5>
@@ -230,9 +230,28 @@
 
                             <div class="col s3 hide-on-med-and-up" style="padding-left: 0; padding-right: 0;">
                                 <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                    {% if compo.domicile is null %}
-                                        <i class='material-icons red-text'>location_off</i>
-                                    {% else %}
+                                    {% if not compo.exempt %}
+                                        {% if compo.domicile is null %}
+                                            <i class='material-icons red-text'>location_off</i>
+                                        {% else %}
+                                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
+                                                    {% if compo.domicile%}
+                                                        home
+                                                    {% else%}
+                                                        directions_car
+                                                    {% endif %}
+                                                </i>
+                                        {% endif %}
+                                    {% endif %}
+                                </h5>
+                            </div>
+
+                            <div class="col m2 hide-on-small-only">
+                                <h5 style="margin-top: 12px; margin-bottom: 0;">
+                                    {% if not compo.exempt %}
+                                        {% if compo.domicile is null %}
+                                            <i class='material-icons red-text'>location_off</i>
+                                        {% else %}
                                             <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
                                                 {% if compo.domicile%}
                                                     home
@@ -240,22 +259,7 @@
                                                     directions_car
                                                 {% endif %}
                                             </i>
-                                    {% endif %}
-                                </h5>
-                            </div>
-
-                            <div class="col m2 hide-on-small-only">
-                                <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                    {% if compo.domicile is null %}
-                                        <i class='material-icons red-text'>location_off</i>
-                                    {% else %}
-                                        <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                            {% if compo.domicile%}
-                                                home
-                                            {% else%}
-                                                directions_car
-                                            {% endif %}
-                                        </i>
+                                        {% endif %}
                                     {% endif %}
                                 </h5>
                             </div>
@@ -324,6 +328,24 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+
+                        {% if compo.selectedPlayers|length == compo.idEquipe.idDivision.nbJoueurs %}
+                            {% set listeRemplacants = listeRemplacants(compo.idEquipe.numero, brulages, disponibilitesJournee, selectedPlayers) %}
+                            {% if listeRemplacants|length %}
+                                <div class="blue pastille reset remplacants">
+                                    <div class="header">
+                                        <p>
+                                            <i class="material-icons tooltipped" data-position="top" data-tooltip="Remplaçant : si son équipe est complète, c'est un joueur déclaré disponible, non brûlé et non sélectionné dans une équipe">help</i>
+                                        </p>
+                                        <p>
+                                            <b>Remplaçant{% if listeRemplacants|length > 1 %}s{% endif %}</b><br>
+                                        </p>
+                                        <p></p>
+                                    </div>
+                                    {{ listeRemplacants|join(', ', ' et ') }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
 
                         {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
                             <div style="margin-bottom: 10px; margin-top: 5px;">

@@ -61,7 +61,7 @@ html, body {
 }
 
 .btn {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .btn_form {
@@ -1297,6 +1297,22 @@ a.reload_ranking {
   position: absolute;
   height: 0;
   line-height: 40px;
+}
+
+.pastille.remplacants {
+  margin-top: 10px;
+  background-color: #4baefc !important;
+}
+.pastille.remplacants .header {
+  display: flex;
+  justify-content: space-between;
+}
+.pastille.remplacants .header p {
+  margin: 0 0 2px 0;
+}
+.pastille.remplacants i.material-icons {
+  font-size: 19px;
+  margin-bottom: 1px;
 }
 
 @media screen and (max-width: 1466px) {
