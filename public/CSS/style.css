@@ -61,7 +61,7 @@ html, body {
 }
 
 .btn {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .btn_form {
@@ -1250,7 +1250,14 @@ a.reload_ranking {
 
 .pastille.remplacants {
   margin-top: 10px;
-  background-color: #7dc4fc !important;
+  background-color: #4baefc !important;
+}
+.pastille.remplacants .header {
+  display: flex;
+  justify-content: space-between;
+}
+.pastille.remplacants .header p {
+  margin: 0 0 2px 0;
 }
 .pastille.remplacants i.material-icons {
   font-size: 19px;
