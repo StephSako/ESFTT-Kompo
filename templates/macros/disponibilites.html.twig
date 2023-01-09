@@ -28,15 +28,18 @@
                     {% for dispo in disposEquipe %}
                         <tr>
                             <td class="row">
-
                                 <div class="col s10">
                                     <div class="valign-wrapper">
-                                        {% if dispo.disponibilite is null %}
-                                            <span class="dot dot3 center">&nbsp;</span>
-                                        {% elseif dispo.disponibilite == 1 %}
-                                            <span class="dot dot1 center">&nbsp;</span>
-                                        {% elseif dispo.disponibilite == 0 %}
-                                            <span class="dot dot2 center">&nbsp;</span>
+                                        {% if not dispo.joueur.licence is null %}
+                                            {% if dispo.disponibilite is null %}
+                                                <span class="dot dot3 center">&nbsp;</span>
+                                            {% elseif dispo.disponibilite == 1 %}
+                                                <span class="dot dot1 center">&nbsp;</span>
+                                            {% elseif dispo.disponibilite == 0 %}
+                                                <span class="dot dot2 center">&nbsp;</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <i class="material-icons red-text tooltipped" data-position="top" data-tooltip="Licence indéfinie" style="font-size: 18px">payment</i>
                                         {% endif %}
                                         <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
                                     </div>
@@ -118,20 +121,22 @@
                                 <div class="chip" style="margin-right: 0; margin-bottom: 0;">
                                     <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                     <span>
-                                        {{ disponibilite.nom }} {{ disponibilite.prenom }}
+                                        {{ disponibilite.nom }} {{ disponibilite.prenom }} {% if disponibilite.licence is null %}<i class="material-icons red-text tooltipped" style="vertical-align: middle; margin-bottom: 3px;" data-position="top" data-tooltip="Licence indéfinie">payment</i>{% endif %}
                                     </span>
                                 </div>
                             </td>
                             {% for i in 1..disponibilites["nbJournees"] %}
                                 <td>
-                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
-                                            <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                    {% if not disponibilite.licence is null %}
+                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                            {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                                <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
+                                            {% else %}
+                                                <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                            {% endif %}
                                         {% else %}
-                                            <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
+                                            <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
                                         {% endif %}
-                                    {% else %}
-                                        <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
                                     {% endif %}
                                 </td>
                             {% endfor %}
