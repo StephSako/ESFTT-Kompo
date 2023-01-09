@@ -7,4 +7,5 @@ function copyPaste(id_rencontre) {
     selection.addRange(range);
     document.execCommand('copy');
     M.toast({html: 'Adresse copiée dans le presse-papier'})
+    $('.adresse_cc').removeClass('hide')
 }
