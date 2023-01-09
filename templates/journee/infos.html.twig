@@ -99,22 +99,24 @@
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
         {% endif %}
 
-        <div class="card-panel center">
-            <h5>[<i>MODE DEVELOPPEMENT</i>] Liste des codes secrets</h5>
-            <p><u>/!\</u> A enlever quand la chasse sera démarrée <u>/!\</u></p>
+        {% if app.request.requesturi == '/informations/general' %}
+            <div class="card-panel center">
+                <h5>[<i>MODE DEVELOPPEMENT</i>] Liste des codes secrets</h5>
+                <p><u>/!\</u> A enlever quand la chasse aux codes sera démarrée <u>/!\</u></p>
 
-            <button class="btn waves-effect blue lighten-2" id="trolling">Afficher les codes</button>
+                <button class="btn waves-effect blue lighten-2" id="trolling">Afficher les codes</button>
 
-            <div id="div_trolling" class="hide center">
-                <span style="font-size: 60px;">🤡</span>
+                <div id="div_trolling" class="hide center">
+                    <span style="font-size: 100px;">🤡</span>
+                </div>
+
+                <script type="text/javascript">
+                    $('button#trolling').click(() => {
+                        $('div#div_trolling').removeClass('hide');
+                        $('button#trolling').addClass('hide');
+                    })
+                </script>
             </div>
-
-            <script type="text/javascript">
-                $('button#trolling').click(() => {
-                    $('div#div_trolling').removeClass('hide');
-                    $('button#trolling').addClass('hide');
-                })
-            </script>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}
