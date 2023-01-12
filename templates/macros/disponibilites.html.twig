@@ -141,7 +141,7 @@
                                 </td>
                             {% endfor %}
                         </tr>
-                        {% if nomChamp == 'Départemental' and numero == 'Équipe n°4' and loop.last %}
+                        {% if nomChamp == 'Départemental' and numero == 'Équipe n°4' and loop.last and 'ROLE_LOISIR' not in app.token.roleNames %}
                             <tr class="hide-on-extra-large-only hide-on-large-only">
                                 <td></td>
                                 <td></td>

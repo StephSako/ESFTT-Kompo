@@ -49,14 +49,16 @@
                                     <td>{{ player.licence }}</td>
                                 </tr>
                             {% endfor %}
-                            <tr class="hide-on-med-and-up">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="reset pastille christmas_code">59D7K</span>
-                                </td>
-                            </tr>
+                            {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                                <tr class="hide-on-med-and-up">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <span class="reset pastille christmas_code">59D7K</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 {% else %}

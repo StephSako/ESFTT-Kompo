@@ -477,7 +477,9 @@
         <h4 class="h4_form">{{ title }}</h4>
 
         <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
-            <span class="reset pastille christmas_code hide eyes_password">434PJ</span>
+            {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                <span class="reset pastille christmas_code hide eyes_password">434PJ</span>
+            {% endif %}
             <div class="row">
                 {% if type == 'general' %}
                     <div class="input-field col s12 l4">

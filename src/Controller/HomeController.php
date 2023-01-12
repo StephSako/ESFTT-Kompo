@@ -67,7 +67,6 @@ class HomeController extends AbstractController
      */
     public function indexAction(Request $request): Response
     {
-        if ($request->query->get('code') != null) $this->addFlash('christmas_code_2', null);
         if ($this->utilController->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
                 'type' => $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),

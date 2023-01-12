@@ -33,12 +33,14 @@
         {% for message in app.flashes('christmas_code') %}
             <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
                 {{ _flash.message(message, 'red') }}
-                <span class="reset pastille christmas_code">Z76E3</span>
+                {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                    <span class="reset pastille christmas_code">Z76E3</span>
+                {% endif %}
             </div>
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.critFed, app.user.profileCompletion, equipesAssociees, {licence: app.user.licence, isArchived: false, usernameEditable: true, displayCode: true, cheating: app.user.cheating, isWinner: app.user.winner, isFullWinner: app.user.fullWinner}) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.critFed, app.user.profileCompletion, equipesAssociees, {licence: app.user.licence, isArchived: false, usernameEditable: true, displayCode: not app.user.isLoisir, cheating: app.user.cheating, isWinner: app.user.winner, isFullWinner: app.user.fullWinner}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
             {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, isCritFed, profileCompletion, null, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable, displayCode: app.user.admin and not isArchived, cheating: cheating, isWinner: winner, isFullWinner: fullWinner, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}

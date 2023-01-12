@@ -104,7 +104,7 @@ class SecurityController extends AbstractController
 
         $form = $this->createForm(CompetiteurType::class, $user, [
             'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null,
-            'displayCode' => true
+            'displayCode' => !$this->getUser()->isLoisir()
         ]);
         $form->handleRequest($request);
 
