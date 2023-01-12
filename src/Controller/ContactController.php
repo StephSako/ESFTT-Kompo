@@ -21,34 +21,37 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $mailer;
     private $disponibiliteRepository;
+    private $utilController;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
+     * @param UtilController $utilController
      * @param MailerInterface $mailer
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
+                                UtilController $utilController,
                                 MailerInterface $mailer)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
         $this->mailer = $mailer;
         $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->utilController = $utilController;
     }
 
     /**
      * @Route("/contact", name="contact")
-     * @param UtilController $utilController
      * @return Response
      */
-    public function index(UtilController $utilController): Response
+    public function index(): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
         $allChampionnats = $this->championnatRepository->findAll();

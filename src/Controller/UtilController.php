@@ -35,7 +35,7 @@ class UtilController extends AbstractController
      * @return array
      * @throws Exception
      */
-    function isPreRentreeLaunchable(Championnat $championnat): array {
+    public function isPreRentreeLaunchable(Championnat $championnat): array {
         $latestDate = $this->getLastDates($championnat);
         $maxDate = clone max($latestDate);
         $latestDateMax = new DateTime(date_format(($maxDate->add(new DateInterval('P1D'))), 'Y-m-d'));
@@ -122,7 +122,7 @@ class UtilController extends AbstractController
      * @param Championnat $championnat
      * @return array
      */
-    function getLastDates(Championnat $championnat): array
+    public function getLastDates(Championnat $championnat): array
     {
         return array_unique(array_map(function(Rencontre $renc) {
             return max([$renc->isReporte() ? $renc->getDateReport() : null, $renc->getIdJournee()->getDateJournee()]);
@@ -134,7 +134,7 @@ class UtilController extends AbstractController
      * @param array $existingUsernames
      * @return string
      */
-    function getUniqueUsername(string $username, array $existingUsernames): string {
+    public function getUniqueUsername(string $username, array $existingUsernames): string {
         $username = str_replace(' ', '', $username);
         $username = mb_convert_case($username, MB_CASE_LOWER, "UTF-8");
         $username = Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($username);

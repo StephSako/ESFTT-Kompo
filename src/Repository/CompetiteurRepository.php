@@ -98,6 +98,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
             ->addSelect('c.nom')
+            ->addSelect('c.licence')
             ->addSelect('c.prenom');
 
         foreach ($championnats as $championnat){
