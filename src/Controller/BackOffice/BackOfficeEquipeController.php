@@ -239,7 +239,7 @@ class BackOfficeEquipeController extends AbstractController
      * @param array $numEquipes
      * @return array
      */
-    public function getAllowedNumbers(Array $numEquipes): array {
+    public function getAllowedNumbers(array $numEquipes): array {
         $numEquipes = array_map(function ($numero) {
             return $numero;
         }, $numEquipes);

@@ -45,12 +45,16 @@ class BackOfficeFFTTApiController extends AbstractController
     const DIVISION_PARTIE_DEUX = 1;
     const REGEX_NUMERO_EQUIPE = '/^[A-Z\s]+ (\(?[0-9]+\)?) - Phase ([1|2])$/';
     const STRING_LIBELLE_POULE = 'Poule';
+    private $utilController;
+    private $contactController;
 
     /**
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
      * @param PouleRepository $pouleRepository
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      */
@@ -58,6 +62,8 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
+                                ContactController $contactController,
+                                UtilController $utilController,
                                 EntityManagerInterface $em,
                                 SettingsRepository $settingsRepository)
     {
@@ -67,13 +73,15 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
         $this->settingsRepository = $settingsRepository;
+        $this->utilController = $utilController;
+        $this->contactController = $contactController;
     }
 
     /**
      * @Route("/backoffice/new_phase", name="backoffice.reset.phase")
      * @throws Exception
      */
-    public function index(Request $request, ContactController $contactController, UtilController $utilController): Response
+    public function index(Request $request): Response
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
         $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
@@ -115,7 +123,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function($joueur) { return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement']; }));
 
         } catch (Exception $e) {
-            $this->addFlash('fail', 'Mise à jour des joueurs compétiteurs impossible : API de la FFTT indisponible pour le moment');
+            $this->addFlash('fail', 'Mise à jour des membres impossible : API de la FFTT indisponible pour le moment');
             $errorMajJoueurs = true;
         }
 
@@ -444,7 +452,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-phase où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -515,7 +523,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                         /** On set les Journées comme étant indéfinies avec les dates maximum de la prochaine phase */
-                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
+                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
                             $dateKompo
                                 ->setUndefined(true)
@@ -563,7 +571,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         });
                         $mails = array_map(function ($joueur) {
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                        }, $contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
+                        }, $this->contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
 
                         try {
                             $str_replacers = [
@@ -574,7 +582,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ]
                             ];
 
-                            $contactController->sendMail(
+                            $this->contactController->sendMail(
                                 $mails,
                                 true,
                                 'Kompo - Phase terminée',
@@ -708,7 +716,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param DateTime $date
      * @return string
      */
-    function getDatePhase(DateTime $date): string {
+    public function getDatePhase(DateTime $date): string {
         $monthDate = $date->format('n');
         if (1 <= $monthDate && $monthDate <= 6) return "2";
         return "1";
@@ -721,7 +729,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param Championnat $championnat
      * @return array
      */
-    function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
+    public function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
     {
         /** Si la division n'existe pas, on la créé **/
         $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $divisionShortName, 'idChampionnat' => $championnat->getIdChampionnat()]);
@@ -760,7 +768,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @return array
      * @throws Exception
      */
-    function maxDatesNextPhase(Datetime $date, int $nbJournees): array
+    public function maxDatesNextPhase(Datetime $date, int $nbJournees): array
     {
         if (new Datetime($date->format('Y') . '-' . '07-01') < $date && $date < new Datetime($date->format('Y') . '-' . '12-31')) {
             $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '06-30'),'+1 day +1 year');
@@ -779,7 +787,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param string $equipeLibelle
      * @return int
      */
-    function getEquipeNumero(string $equipeLibelle): int {
+    public function getEquipeNumero(string $equipeLibelle): int {
         return intval(preg_replace('/\D/', '', $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $equipeLibelle)));
     }
 
@@ -789,7 +797,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param int|null $index Par défaut le premier match
      * @return string
      */
-    function getValueFromRegex($regex, string $value, ?int $index = 1): string
+    public function getValueFromRegex($regex, string $value, ?int $index = 1): string
     {
         preg_match($regex, $value, $matches);
         return $matches[$index];

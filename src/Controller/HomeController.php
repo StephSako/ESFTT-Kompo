@@ -28,6 +28,8 @@ class HomeController extends AbstractController
     private $disponibiliteRepository;
     private $rencontreRepository;
     private $settingsRepository;
+    private $utilController;
+    private $contactController;
 
     /**
      * @param ChampionnatRepository $championnatRepository
@@ -35,6 +37,8 @@ class HomeController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
+     * @param UtilController $utilController
+     * @param ContactController $contactController
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
@@ -42,6 +46,8 @@ class HomeController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository,
+                                UtilController $utilController,
+                                ContactController $contactController,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -50,18 +56,20 @@ class HomeController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
+        $this->utilController = $utilController;
+        $this->contactController = $contactController;
     }
 
     /**
      * @Route("/", name="index")
      * @throws Exception
      */
-    public function indexAction(UtilController $utilController): Response
+    public function indexAction(): Response
     {
-        if ($utilController->nextJourneeToPlayAllChamps()){
+        if ($this->utilController->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
-                'type' => $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
-                'id' => $utilController->nextJourneeToPlayAllChamps()->getIdJournee()
+                'type' => $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
+                'id' => $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee()
             ]);
         } else return $this->render('journee/noChamp.html.twig', [
             'allChampionnats' => null,
@@ -89,13 +97,11 @@ class HomeController extends AbstractController
     /**
      * @param int $type
      * @param int $id
-     * @param ContactController $contactController
-     * @param UtilController $utilController
      * @return Response
      * @throws Exception
      * @Route("/journee/{type}/{id}", name="journee.show", requirements={"type"="\d+", "id"="\d+"})
      */
-    public function journee(int $type, int $id, ContactController $contactController, UtilController $utilController): Response
+    public function journee(int $type, int $id): Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
@@ -139,7 +145,7 @@ class HomeController extends AbstractController
                 else if ($dispoJoueurEquipe['disponibilite'] == '1') $joueursDisponibles[] = $dispoJoueurEquipe;
             }
         }
-        $joueursNonDeclaresContact = $contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
+        $joueursNonDeclaresContact = $this->contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
 
         $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         if (count($joueursNonDeclares)) {
@@ -227,7 +233,7 @@ class HomeController extends AbstractController
             'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
-        $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
+        $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -251,7 +257,7 @@ class HomeController extends AbstractController
             'nbDispos' => count($joueursDisponibles),
             'nbNonDeclares' => count($joueursNonDeclares),
             'brulages' => $brulages,
-            'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
+            'isPreRentreeLaunchable' => $this->utilController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
             'joueursWithoutLicence' => $joueursWithoutLicence,
@@ -267,10 +273,9 @@ class HomeController extends AbstractController
      * @param int $type
      * @param int $compo
      * @param Request $request
-     * @param UtilController $utilController
      * @return Response
      */
-    public function edit(int $type, int $compo, Request $request, UtilController $utilController) : Response
+    public function edit(int $type, int $compo, Request $request) : Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) {
             $this->addFlash('fail', 'Championnat inexistant');
@@ -354,7 +359,7 @@ class HomeController extends AbstractController
                                 $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
                                 if ($invalidCompo){
                                     array_push($invalidCompos, ...$invalidCompo);
-                                    $utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
+                                    $this->utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
                                 }
                             }
                         }
@@ -433,10 +438,10 @@ class HomeController extends AbstractController
     /**
      * @Route("/informations/{type}", name="informations")
      */
-    public function getInformations(Request $request, string $type, UtilController $utilController): Response
+    public function getInformations(Request $request, string $type): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $setting = $this->settingsRepository->find($type);
         if (!$setting) {
@@ -498,10 +503,10 @@ class HomeController extends AbstractController
     /**
      * @Route("/aide", name="aide")
      */
-    public function getHelpPage(UtilController $utilController): Response
+    public function getHelpPage(): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();
@@ -533,7 +538,7 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    function getPreviousComposAdversaire(Request $request): JsonResponse {
+    public function getPreviousComposAdversaire(Request $request): JsonResponse {
         $journees = [];
         $erreur = null;
         $nomAdversaire = null;
@@ -603,7 +608,6 @@ class HomeController extends AbstractController
                     /** Mapping des doubles */
                     $matchesDoubles = array_filter(array_map(function($partieDouble) use ($domicile, $joueursAdversaire, $detailsRencontre, $joueursAdversaireBis) {
                         preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB(), $joueursBinomeDouble);
-
                         preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA(), $joueursBinomeDoubleBis);
 
                         if (count($joueursBinomeDouble) === 3 && in_array($joueursBinomeDouble[1], array_keys($joueursAdversaire)) && in_array($joueursBinomeDouble[2], array_keys($joueursAdversaire))) {
@@ -614,6 +618,7 @@ class HomeController extends AbstractController
 
                             return $partieDoubleFormatted;
                         } else unset($partieDouble);
+                        return [];
                     }, $parties));
 
                     foreach ($joueursAdversaire as $nomJoueurAdversaire => $joueurAdversaire) {
@@ -665,7 +670,7 @@ class HomeController extends AbstractController
      * @Route("/journee/general-classement-virtuel", name="index.generalClassementsVirtuels", methods={"POST"})
      * @return JsonResponse
      */
-    function getClassementVirtuelsClub(): JsonResponse {
+    public function getClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
         $classementPointsSaison = [];
@@ -815,7 +820,7 @@ class HomeController extends AbstractController
      * @param array $classements
      * @return array
      */
-    function getGaps(array $referenceTable, array $classements): array {
+    public function getGaps(array $referenceTable, array $classements): array {
         $gaps = [];
 
         foreach ($classements as $key => $joueur){
@@ -840,7 +845,7 @@ class HomeController extends AbstractController
      * @param array $classementToGap
      * @return array
      */
-    function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array {
+    public function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array {
         return array_map(function($classement) use ($gaps) {
             $classement['gap'] = $gaps[$classement['idCompetiteur']];
             return $classement;
@@ -852,7 +857,7 @@ class HomeController extends AbstractController
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
      * @return JsonResponse
      */
-    function getPersonnalClassementVirtuelsClub(): JsonResponse {
+    public function getPersonnalClassementVirtuelsClub(): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $erreur = null;
         $virtualPointsProgression = null;
@@ -893,7 +898,7 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    function getClassementPoule(Request $request): JsonResponse {
+    public function getClassementPoule(Request $request): JsonResponse {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementPoule = [];
         $erreur = null;
