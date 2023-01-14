@@ -98,6 +98,7 @@ class HomeController extends AbstractController
     /**
      * @param int $type
      * @param int $id
+     * @param Request $request
      * @return Response
      * @throws Exception
      * @Route("/journee/{type}/{id}", name="journee.show", requirements={"type"="\d+", "id"="\d+"})

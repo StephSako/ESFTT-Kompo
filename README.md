@@ -1,5 +1,7 @@
 # Bienvenue sur Kompo !
 
+***En cours de rédaction ...***
+
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/accueil.PNG" alt="accueil"></p>
 
 <p align="center" style="font-size: 12px">~ Avec l'aide de <a href="https://github.com/carage34">carage34</a> ~</p>
@@ -118,7 +120,7 @@ Exemple sur l'image ci-dessus :
 
 <h3 id="regle_2eme_journee">Règle de la 2ème journée</h3>
 
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/brulage_J2.JPG" alt="brulage_J2"></p>
+<p align="center"><img width="30%" src="https://raw.githubusercontent.com/StephSako/Kompo/master/illustrations/brulage_J2.JPG" alt="brulage_J2"></p>
 
 Lors de la 2ème journée, une équipe doit sélectionner au maximum un joueur ayant joué dans une équipe supèrieure lors de la première journée.
 

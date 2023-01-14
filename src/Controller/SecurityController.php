@@ -111,7 +111,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('christmas_code', 'Date de naissance dans le futur');
+                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('fail', 'Date de naissance dans le futur');
                     else {
                         $user->setNom($user->getNom());
                         $user->setPrenom($user->getPrenom());

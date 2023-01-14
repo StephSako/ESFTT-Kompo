@@ -101,7 +101,7 @@
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>
         {% endif %}
 
-        {% if app.request.requesturi == '/informations/general' %}
+        {% if app.request.requesturi == '/informations/general' and 'ROLE_LOISIR' not in app.token.roleNames %}
             <div class="card-panel center">
                 <h5>[<i>MODE DEVELOPPEMENT</i>] Liste des codes secrets</h5>
                 <p><u>/!\</u> A enlever quand la chasse aux codes sera démarrée <u>/!\</u></p>

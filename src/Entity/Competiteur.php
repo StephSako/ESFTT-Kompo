@@ -611,6 +611,29 @@ class Competiteur implements UserInterface, Serializable
     {
         return $this->isWinner() && $this->code11 == self::BONUS_CODE_1 && $this->code12 == self::BONUS_CODE_2 && $this->code13 == self::BONUS_CODE_3 && $this->code14 == self::BONUS_CODE_4;
     }
+    /**
+     * @return int
+     */
+    public function getScore(): int
+    {
+        $score = 0;
+        if (in_array($this->code1, self::SECRET_CODES)) $score++;
+        if (in_array($this->code2, self::SECRET_CODES)) $score++;
+        if (in_array($this->code3, self::SECRET_CODES)) $score++;
+        if (in_array($this->code4, self::SECRET_CODES)) $score++;
+        if (in_array($this->code5, self::SECRET_CODES)) $score++;
+        if (in_array($this->code6, self::SECRET_CODES)) $score++;
+        if (in_array($this->code7, self::SECRET_CODES)) $score++;
+        if (in_array($this->code8, self::SECRET_CODES)) $score++;
+        if (in_array($this->code9, self::SECRET_CODES)) $score++;
+        if (in_array($this->code10, self::SECRET_CODES)) $score++;
+        if ($this->getCodeBonus1Correct()) $score += 2;
+        if ($this->getCodeBonus2Correct()) $score += 3;
+        if ($this->getCodeBonus3Correct()) $score += 4;
+        if ($this->getCodeBonus4Correct()) $score += 5;
+        return $score;
+    }
+
 
     /**
      * @return boolean

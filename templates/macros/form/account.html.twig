@@ -356,17 +356,19 @@
 
                     <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
 
+                    <p class="pastille reset blue"><b>Score : {{ form.vars.value.score }}/24</b></p>
+
                     {% if options.cheating %}
                         <p class="red-text"><b>Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</b></p>
                     {% else %}
                         {% if options.isWinner and not options.isFullWinner %}
-                            <p class="green-text">
+                            <p class="green-text" style="margin-bottom: 0">
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                                Vous avez trouvé tous les codes classiques ! Félicitations !
+                                Vous avez trouvé tous les codes classiques ! Félicitations ! Trouvez les derniers codes bonus !
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
                             </p>
                         {% elseif options.isFullWinner %}
-                            <p class="green-text">
+                            <p class="green-text" style="margin-bottom: 0">
                                 <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
                                 Vous avez trouvé tous les codes ainsi que les 4 codes bonus
                                 <i class="material-icons prefix" style="color: #9f64bd">diamond</i>
@@ -382,7 +384,7 @@
                     {% endif %}
 
                     {% for i in 1..10 %}
-                        <div class="col s8 offset-s2">
+                        <div class="col s10 offset-s1">
                             <div class="row">
                                 <div class="col s11">
                                     <b><i class="material-icons prefix">key</i> Code {{ i }}</b>
@@ -395,7 +397,7 @@
                         </div>
                     {% endfor %}
                     {% for i in 11..14 %}
-                        <div class="col s8 offset-s2">
+                        <div class="col s10 offset-s1">
                             <div class="row">
                                 <div class="col s11">
                                     <b><i class="material-icons prefix" style="color:

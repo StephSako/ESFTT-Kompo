@@ -112,7 +112,7 @@
                     <tr>
                         <th class="center">Nom</th>
                         <th class="center">Sans triche</th>
-                        <th class="center">Codes corrects</th>
+                        <th class="center">Scores</th>
                         <th class="center"><i class="material-icons prefix" style="color: #9f64bd">diamond</i>Code Améthyste</th>
                         <th class="center"><i class="material-icons prefix" style="color: #ffd700">diamond</i>Code Or</th>
                         <th class="center"><i class="material-icons prefix" style="color: #0131b4">diamond</i>Code Saphir</th>
@@ -141,7 +141,7 @@
                                         <i class="material-icons red-text">report_problem</i>
                                     {% endif %}
                                 </td>
-                                <td class="center"><b {% if joueur.winner and not joueur.fullWinner %}class="green-text"{% elseif joueur.fullWinner %}class="gold-color"{% endif %}>{{ joueur.ownCodes | length }}</b> / 10 + 4</td>
+                                <td class="center"><b {% if joueur.winner and not joueur.fullWinner %}class="green-text"{% elseif joueur.fullWinner %}class="gold-color"{% endif %}>{{ joueur.score }}</b>/24</td>
                                 <td class="center">
                                     {% if joueur.codeBonus1Correct %}
                                         <i class="material-icons green-text">check</i>
