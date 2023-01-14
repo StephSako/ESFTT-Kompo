@@ -1,9 +1,10 @@
-function getGeneralClassementsVirtuels(forceReaload = null) {
-    if (!alreadyCalledClassement || forceReaload) {
+function getGeneralClassementsVirtuels(forceReload = null) {
+    if (!alreadyCalledClassement || forceReload) {
         alreadyCalledClassement = true;
-        if (forceReaload) {
+        if (forceReload) {
             $('a.reload_ranking').addClass('hide');
             $('div#rankingContentLoader').removeClass('hide');
+            $('span.christmas_code').removeClass('hide');
             $('div#rankingContent').addClass('hide');
         }
         $.ajax({
@@ -37,6 +38,7 @@ function templating(selector, response, general = false){
             $('a.reload_ranking').removeClass('hide');
             $('div#rankingContentLoader').addClass('hide');
             $('div#rankingContent').removeClass('hide');
+            $('span.christmas_code').addClass('hide');
         }
         $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
     })

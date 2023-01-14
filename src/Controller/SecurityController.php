@@ -104,19 +104,21 @@ class SecurityController extends AbstractController
 
         $form = $this->createForm(CompetiteurType::class, $user, [
             'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null,
-            'displayCode' => true
+            'displayCode' => !$this->getUser()->isLoisir()
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 try {
-                    $user->setNom($user->getNom());
-                    $user->setPrenom($user->getPrenom());
-
-                    $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées');
-                    return $this->redirectToRoute('account');
+                    if ($user->getDateNaissance() > new DateTime()) $this->addFlash('fail', 'Date de naissance dans le futur');
+                    else {
+                        $user->setNom($user->getNom());
+                        $user->setPrenom($user->getPrenom());
+                        $this->em->flush();
+                        $this->addFlash('success', 'Informations modifiées');
+                        return $this->redirectToRoute('account');
+                    }
                 } catch(Exception $e){
                     if ($e->getPrevious()->getCode() == "23000"){
                         if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
@@ -278,7 +280,9 @@ class SecurityController extends AbstractController
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
                     return $this->redirectToRoute('login');
-                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                } else {
+                    $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
+                }
             }
 
             return $this->render('account/reset_password.html.twig', [

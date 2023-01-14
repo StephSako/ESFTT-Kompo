@@ -104,48 +104,77 @@
             {% endif %}
         </div>
 
-{#        <div class='card-panel backoffice-panel center'>#}
-{#            <h5>Résultats - Chasse aux codes</h5>#}
+        <div class='card-panel backoffice-panel center'>
+            <h5>Résultats - Chasse aux codes</h5>
 
-{#            <table class="responsive-table striped">#}
-{#                <thead>#}
-{#                    <tr>#}
-{#                        <th class="center">Nom</th>#}
-{#                        <th class="center">Sans triche</th>#}
-{#                        <th class="center">Codes corrects</th>#}
-{#                        <th class="center">Code d'or</th>#}
-{#                    </tr>#}
-{#                </thead>#}
+            <table class="responsive-table striped">
+                <thead>
+                    <tr>
+                        <th class="center">Nom</th>
+                        <th class="center">Sans triche</th>
+                        <th class="center">Scores</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #9f64bd">diamond</i>Code Améthyste</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #ffd700">diamond</i>Code Or</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #0131b4">diamond</i>Code Saphir</th>
+                        <th class="center"><i class="material-icons prefix" style="color: #019875">diamond</i>Code Émeraude</th>
+                    </tr>
+                </thead>
 
-{#                <tbody>#}
-{#                    {% for joueur in joueurs %}#}
-{#                        {% if joueur.code14Correct or joueur.ownCodes | length %}#}
-{#                            <tr>#}
-{#                                <td>#}
-{#                                    {% if joueur.winner %}<span class="material-icons red-text" style="vertical-align: bottom;">emoji_events</span>{% endif %}#}
-{#                                    {% if joueur.fullWinner %}<span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>{% endif %}#}
-{#                                    {{ joueur.nom }} {{ joueur.prenom }}#}
-{#                                </td>#}
-{#                                <td class="center">#}
-{#                                    {% if not joueur.cheating %}#}
-{#                                        <i class="material-icons green-text">check</i>#}
-{#                                    {% else %}#}
-{#                                        <i class="material-icons red-text">clear</i>#}
-{#                                    {% endif %}#}
-{#                                </td>#}
-{#                                <td class="center"><b {% if joueur.winner %}class="green-text"{% endif %}>{{ joueur.ownCodes | length }}</b> / 13</td>#}
-{#                                <td class="center">#}
-{#                                    {% if joueur.code14Correct %}#}
-{#                                        <i class="material-icons green-text">check</i>#}
-{#                                    {% else %}#}
-{#                                        <i class="material-icons red-text">clear</i>#}
-{#                                    {% endif %}#}
-{#                                </td>#}
-{#                            </tr>#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
-{#                </tbody>#}
-{#            </table>#}
-{#        </div>#}
+                <tbody>
+                    {% for joueur in joueurs %}
+                        {% if joueur.ownCodes | length %}
+                            <tr>
+                                <td>
+                                    {% if not joueur.cheating %}
+                                        {% if joueur.winner and not joueur.fullWinner %}
+                                            <span class="material-icons green-text" style="vertical-align: bottom;">emoji_events</span>
+                                        {% elseif joueur.fullWinner %}
+                                            <span class="material-icons gold-color" style="vertical-align: bottom;">emoji_events</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    {{ joueur.nom }} {{ joueur.prenom }}
+                                </td>
+                                <td class="center">
+                                    {% if not joueur.cheating %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">report_problem</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center"><b {% if joueur.winner and not joueur.fullWinner %}class="green-text"{% elseif joueur.fullWinner %}class="gold-color"{% endif %}>{{ joueur.score }}</b>/24</td>
+                                <td class="center">
+                                    {% if joueur.codeBonus1Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center">
+                                    {% if joueur.codeBonus2Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center">
+                                    {% if joueur.codeBonus3Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                                <td class="center">
+                                    {% if joueur.codeBonus4Correct %}
+                                        <i class="material-icons green-text">check</i>
+                                    {% else %}
+                                        <i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

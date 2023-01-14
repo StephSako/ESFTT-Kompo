@@ -62,9 +62,10 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="index")
-     * @throws Exception
+     * @param Request $request
+     * @return Response
      */
-    public function indexAction(): Response
+    public function indexAction(Request $request): Response
     {
         if ($this->utilController->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
@@ -97,12 +98,15 @@ class HomeController extends AbstractController
     /**
      * @param int $type
      * @param int $id
+     * @param Request $request
      * @return Response
      * @throws Exception
      * @Route("/journee/{type}/{id}", name="journee.show", requirements={"type"="\d+", "id"="\d+"})
      */
-    public function journee(int $type, int $id): Response
+    public function journee(int $type, int $id, Request $request): Response
     {
+        if ($request->query->get('code') != null) $this->addFlash('christmas_code', null);
+
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
 
@@ -233,7 +237,7 @@ class HomeController extends AbstractController
             'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
-        $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
+        $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() . '?code=true' : null);
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,

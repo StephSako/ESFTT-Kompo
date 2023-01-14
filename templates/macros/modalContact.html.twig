@@ -2,6 +2,11 @@
     <div id="modal{{ id }}" class="modal modal-medium modal-fixed-footer">
         <div class="modal-content">
             <h5>{{ titre }}</h5>
+
+            {% if id == 'entraineurs' and 'ROLE_LOISIR' not in app.token.roleNames %}
+                <span class="pastille christmas_code reset">92Z7P</span>
+            {% endif %}
+
             <div class="row">
                 <p style="margin-top: 2px;" class="hide-on-small-only"><i>Rendez-vous sur votre smartphone pour contacter par SMS</i></p>
 
@@ -82,6 +87,10 @@
         <div class="modal-content modal-gps center">
             <h5>Coordonnées de l'adversaire</h5>
 
+            {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                <span class="pastille reset christmas_code">D87D4</span><br>
+            {% endif %}
+
             <h6><i class="material-icons red-text">place</i>Adresse</h6>
             {% if adresse or complementAdresse %}
                 {% if adresse %}
@@ -109,6 +118,9 @@
                                     <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <i class="material-icons white black-text">content_copy</i>
                                     </button>
+                                    {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                                        <span class="reset pastille christmas_code hide adresse_cc">238KR</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

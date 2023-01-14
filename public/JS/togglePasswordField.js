@@ -11,6 +11,8 @@ $(document).ready(function() {
             clicked[$(this)[0]['id']] = 0;
         }
 
+        if (Object.values(clicked).every(v => v === 1) && Object.values(clicked).length === 3) $('.eyes_password ').removeClass('hide');
+
         let input = $($(this).attr("ontoggle"));
         input.attr("type", input.attr("type") === "password" ? "text" : "password");
     });

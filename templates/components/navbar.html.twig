@@ -3,8 +3,21 @@
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-general">
-            <div class="esftt_logo" {% if app.user %}hidden{% endif %}>
-                <img class="brand-logo" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
+            <div class="esftt_logo brand-logo" {% if app.user %}hidden{% endif %}>
+                <img class="brand-logo center {% if 'ROLE_LOISIR' not in app.token.roleNames %} hide-on-small-and-down{% endif %}" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
+
+                {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                    <div class="flip-box hide-on-med-and-up">
+                        <div class="flip-box-inner">
+                            <div class="flip-box-front">
+                                <img class="brand-logo center" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
+                            </div>
+                            <div class="flip-box-back">
+                                <span class="pastille reset christmas_code or">XV282</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
             {% if linkNextJournee is defined and linkNextJournee %}
@@ -67,11 +80,14 @@
 
                         <!-- Dropdown Structure -->
                         <ul id="menu_dropdown_champs" class="dropdown-content">
-                            {% for championnatList in allChampionnats %}
+                            {% for i, championnatList in allChampionnats %}
                                 {% if championnat.idChampionnat != championnatList.idChampionnat %}
                                     <li class="waves-effect li_in_line">
                                         <a class="white-text" href="{{ path("index.type", {type: championnatList.idChampionnat}) }}">
                                             <i class="material-icons left green-text">swap_horiz</i>{{ championnatList.nom }}
+                                            {% if i == 1 and 'ROLE_LOISIR' not in app.token.roleNames %}
+                                                <span class="reset pastille christmas_code">FG8KD</span>
+                                            {% endif %}
                                         </a>
                                     </li>
                                 {% endif %}
