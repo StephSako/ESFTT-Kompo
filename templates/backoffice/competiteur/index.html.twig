@@ -121,7 +121,7 @@
                 </thead>
 
                 <tbody>
-                    {% for joueur in joueurs %}
+                    {% for joueur in joueurs|sort((a, b) => b.score <=> a.score) %}
                         {% if joueur.ownCodes | length %}
                             <tr>
                                 <td>
