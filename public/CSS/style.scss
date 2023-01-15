@@ -698,6 +698,12 @@ li.error {
   font-style: italic;
 }
 
+.dropdown-content {
+  & li>span, & li>div>span, & li>span>label {
+    color: #1a7cbf;
+  }
+}
+
 form {
   h5 {
     font-size: 1.3rem;

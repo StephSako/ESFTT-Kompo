@@ -590,6 +590,10 @@ li.error {
   font-style: italic;
 }
 
+.dropdown-content li > span, .dropdown-content li > div > span, .dropdown-content li > span > label {
+  color: #1a7cbf;
+}
+
 form h5 {
   font-size: 1.3rem;
 }

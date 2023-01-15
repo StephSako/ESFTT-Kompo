@@ -655,7 +655,7 @@ class Rencontre
     }
 
     /**
-     * Liste des joueurs sélectionnés dans une composition d'équipe
+     * Liste des joueurs sélectionnés dans la composition d'équipe
      * @return Competiteur[]|null[]
      */
     public function getListSelectedPlayers(): array

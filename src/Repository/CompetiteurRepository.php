@@ -543,6 +543,13 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, int $limiteBrulage, Rencontre $compo): array
     {
         $request = $this->createQueryBuilder('c')
+            ->addSelect('(
+                    SELECT et.numero
+                    FROM App\Entity\Titularisation t, App\Entity\Equipe et
+                    WHERE t.idChampionnat = :idChampionnat
+                    AND c.idCompetiteur = t.idCompetiteur
+                    AND t.idEquipe = et.idEquipe
+                ) as numero')
             ->leftJoin('c.dispos', 'd')
             ->where('d.idJournee = :idJournee')
             ->andWhere('d.disponibilite = 1')
@@ -570,19 +577,18 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->setParameter('idJournee', $compo->getIdJournee()->getIdJournee())
             ->setParameter('numero', $compo->getIdEquipe()->getNumero())
             ->setParameter('idChampionnat', $compo->getIdChampionnat()->getIdChampionnat())
-            ->orderBy('c.nom')
+            ->orderBy('numero')
+            ->addOrderBy('c.classement_officiel', 'DESC')
+            ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()->getResult();
 
-        $nonSelectionnes = array_filter($request, function($joueur) use($compo) {
-            return !in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
-        });
-        $querySorted['Non sélectionné' . (count($nonSelectionnes) > 1 ? 's' : '')] = $nonSelectionnes;
-        $selectionnes = array_filter($request, function($joueur) use($compo) {
-            return in_array($joueur->getIdCompetiteur(), $compo->getSelectedPlayers());
-        });
-        $querySorted['Sélectionné' . (count($selectionnes) > 1 ? 's' : '') . ' dans l\'équipe'] = $selectionnes;
+        $brulagesParEquipe = [];
+        foreach($request as $joueur) {
+            $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : 'Sans équipe';
+            $brulagesParEquipe[$labelEquipe][] = $joueur[0];
+        }
 
-        return $querySorted;
+        return $brulagesParEquipe;
     }
 }
