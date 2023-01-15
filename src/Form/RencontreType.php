@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Competiteur;
 use App\Entity\Rencontre;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -22,6 +23,8 @@ class RencontreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['editCompoMode']) {
+            $selectedPlayers = array_map(function($joueur) { return $joueur->getIdCompetiteur(); }, $builder->getData()->getListSelectedPlayers());
+
             for($j = 0; $j < $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
                 $builder->add('idJoueur' . $j, ChoiceType::class, [
                     'choice_label' => function ($competiteur) use ($builder) {
@@ -31,7 +34,10 @@ class RencontreType extends AbstractType
                     'placeholder' => 'Pas de sélection',
                     'empty_data' => null,
                     'label' => false,
-                    'choices' => $options['joueursSelectionnables']
+                    'choices' => $options['joueursSelectionnables'],
+                    'choice_attr' => function (?Competiteur $competiteur) use ($selectedPlayers) {
+                        return $competiteur && in_array($competiteur->getIdCompetiteur(), $selectedPlayers) ? ['class' => 'SELECTED'] : [];
+                    },
                 ]);
             }
         } else {

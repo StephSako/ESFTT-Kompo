@@ -30,9 +30,10 @@ security:
         ROLE_ADMIN: ROLE_CAPITAINE
 
     access_control:
-        - { path: ^/composition, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
         - { path: ^/compte, roles: ROLE_LOISIR }
         - { path: ^/backoffice, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
+        - { path: ^/journee/edit, roles: [ ROLE_CAPITAINE, ROLE_ADMIN ] }
+        - { path: ^/journee/empty, roles: [ ROLE_CAPITAINE, ROLE_ADMIN ] }
         - { path: ^/journee, roles: ROLE_LOISIR }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/aide, roles: ROLE_LOISIR }
