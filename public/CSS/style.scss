@@ -209,7 +209,11 @@ div.scrollableTable {
   overflow-x: scroll;
   width: 100%;
   padding: 0;
-  font-size: 90%;
+
+  &.brulages {
+    font-size: 90%;
+  }
+
   height: auto;
   margin-top: 10px;
 
@@ -383,13 +387,27 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   }
 }
 
-.cardJoueursBrules {
+.cardJoueursEditJournee {
   margin-top: 20px;
+
+  &.joueurSelectionnablesBrulage.dix_px {
+    margin-top: 10px;
+  }
+
   padding: 10px 0 6px;
 
   h5 {
     margin-top: 8px;
     margin-bottom: 8px;
+  }
+
+  td {
+    padding-left: 10px;
+    font-size: 90%;
+  }
+
+  th {
+    padding: 0 5px;
   }
 }
 
@@ -1673,6 +1691,14 @@ a.reload_ranking {
       table thead th h5 {
         margin-top: 0;
       }
+    }
+  }
+
+  .cardJoueursEditJournee {
+    margin-top: 10px;
+
+    td {
+      font-size: 95%;
     }
   }
 }

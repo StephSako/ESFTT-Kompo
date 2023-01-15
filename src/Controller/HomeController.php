@@ -269,7 +269,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/{type}/edit/{compo}", name="composition.edit", requirements={"type"="\d+", "compo"="\d+"})
+     * @Route("/journee/edit/{type}/{compo}", name="composition.edit", requirements={"type"="\d+", "compo"="\d+"})
      * @param int $type
      * @param int $compo
      * @param Request $request
@@ -413,7 +413,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/empty/{idCompo}/{type}/{idJournee}", name="composition.vider", requirements={"idCompo"="\d+"})
+     * @Route("/journee/empty/{idCompo}/{type}/{idJournee}", name="composition.vider", requirements={"idCompo"="\d+"})
      * @param int $idCompo
      * @param int $type
      * @param int $idJournee
