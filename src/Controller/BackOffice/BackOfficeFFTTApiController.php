@@ -139,7 +139,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
                     $organisme_pere = $this->getValueFromRegex(self::REGEX_ORGANISME_PERE, $eq->getLienDivision());
                     $phase = $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $eq->getLibelle(), 2);
-                    return intval($organisme_pere) == $championnatActif->getLienFfttApi() && (!$championnatActif->isPeriodicite() || $phase == $this->getDatePhase(new DateTime()));
+                    return $organisme_pere == strval($championnatActif->getOrganismePere()) && (!$championnatActif->isPeriodicite() || $phase == $this->getDatePhase());
                 }));
 
                 /** On ordonne les objets des Equipes selon leurs numéros */
@@ -713,12 +713,11 @@ class BackOfficeFFTTApiController extends AbstractController
 
     /**
      * Détermine la phase d'une date passée en paramètre
-     * @param DateTime $date
      * @return string
      */
-    public function getDatePhase(DateTime $date): string {
-        $monthDate = $date->format('n');
-        if (1 <= $monthDate && $monthDate <= 6) return "2";
+    public function getDatePhase(): string {
+        $monthDate = (new DateTime())->format('n');
+        if ($monthDate >= 1 && $monthDate <= 6) return "2";
         return "1";
     }
 

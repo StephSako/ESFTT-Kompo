@@ -9,7 +9,9 @@
                     <th>Liée à la FFTT</th>
                     <th></th>
                     <th></th>
-                    <th></th>
+                    {% if app.user.admin %}
+                        <th></th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -48,15 +50,17 @@
                                 <i class="material-icons">edit</i>
                             </a>
                         </td>
-                        <td>
-                            <form method="post" action="{{ path('backoffice.equipe.delete', {idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Supprimer une équipe peut entraîner de gros bugs sur Kompo. Êtes-vous sûr de supprimer l\'équipe ?')">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
-                                <button class="btn waves-effect red lighten-2 btn_gestion">
-                                    <i class="material-icons">delete</i>
-                                </button>
-                            </form>
-                        </td>
+                        {% if app.user.admin %}
+                            <td>
+                                <form method="post" action="{{ path('backoffice.equipe.delete', {idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Supprimer une équipe peut entraîner de gros bugs sur Kompo. Êtes-vous sûr de supprimer l\'équipe ?')">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
+                                    <button class="btn waves-effect red lighten-2 btn_gestion">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </form>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

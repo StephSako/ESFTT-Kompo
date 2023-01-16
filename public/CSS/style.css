@@ -906,6 +906,10 @@ table.classementPoule td {
   padding: 14px 5px;
 }
 
+table.table-backoffice-disponibilites tbody td {
+  padding: 7px 5px;
+}
+
 @-webkit-keyframes rainbow {
   0% {
     background-position: 0 82%;
@@ -1461,9 +1465,6 @@ a.reload_ranking {
     margin-top: 0;
   }
 
-  .backoffice_disponibilites table.table-backoffice-disponibilites tbody td {
-    padding: 5px;
-  }
   .backoffice_disponibilites .row {
     width: min-content;
   }
