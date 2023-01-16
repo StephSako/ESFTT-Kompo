@@ -44,7 +44,7 @@ class ChampionnatType extends AbstractType
                 'label' => ' ',
                 'required' => false
             ])
-            ->add('lienFfttApi', ChoiceType::class,[
+            ->add('organismePere', ChoiceType::class,[
                 'label' => ' ',
                 'choices' => $options['organismesOptGroup'],
                 'required' => false,

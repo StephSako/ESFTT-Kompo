@@ -205,15 +205,9 @@
                     <div class="collapsible-body">
                         <table class="centered striped responsive-table table-backoffice-disponibilites">
                             <tbody>
-                                {% for i, dispos in infos.disponibilites %}
+                                {% for dispos in infos.disponibilites %}
                                     <tr>
-                                        <td class="hide-on-med-and-down">
-                                            <div class="chip">
-                                                <img src="{{ asset(dispos.avatar ? 'images/profile_pictures/' ~ dispos.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                                                <span>{{ dispos.nom }} {{ dispos.prenom }}</span>
-                                            </div>
-                                        </td>
-                                        <td><b>J{{ i+1 }}</b></td>
+                                        <td><b>Journée {{ loop.index }}</b></td>
                                         <td>
                                             {% if dispos.undefined %}
                                                 <i class='material-icons red-text'>event_busy</i>

@@ -32,10 +32,12 @@
                 </a>
             </div>
         {% else %}
-            <a href='{{ path('backoffice.division.new') }}'
-               class='btn waves-effect blue lighten-1 btn_gestion'>
-                Créer une division
-            </a>
+            {% if app.user.admin %}
+                <a href='{{ path('backoffice.division.new') }}'
+                   class='btn waves-effect blue lighten-1 btn_gestion'>
+                    Créer une division
+                </a>
+            {% endif %}
 
             {% if divisions|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
