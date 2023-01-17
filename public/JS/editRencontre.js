@@ -1,46 +1,36 @@
 $(document).ready(() => {
-    let lieu_rencontre = $('#lieu_rencontre');
+    let lieu_rencontre = $('.lieu_rencontre .select-wrapper input.select-dropdown');
     let exempt = $('#exempt');
     let adversaire = $('#adversaire');
     let ville_host = $('#ville_host');
     let reported = $('#reporte');
+    let selects = $('#rencontre_dateReport .select-dropdown');
 
-    if (!reported.is(':checked')) $('#rencontre_dateReport .select-dropdown').prop('disabled', true);
+    if (!reported.is(':checked')) selects.prop('disabled', true);
 
     if (exempt.is(':checked')) {
         reported.prop('disabled', true);
-        adversaire.val("").attr('placeholder', "Pas d'adversaire");
-        adversaire.prop('disabled', true);
+        adversaire.val("").attr('placeholder', "Pas d'adversaire").prop('disabled', true);
         lieu_rencontre.prop('disabled', true);
-        ville_host.val("").attr('placeholder', "Pas de délocalisation");
         ville_host.prop('disabled', true);
     }
 
-    exempt.change(() => {
-        if (this.checked) {
-            reported.prop('checked', false).prop('disabled', true);
-            lieu_rencontre.val('0');
-            lieu_rencontre.formSelect();
+    exempt.change((e) => {
+        reported.prop('disabled', e.currentTarget.checked);
+        adversaire.prop('disabled', e.currentTarget.checked);
+        ville_host.prop('disabled', e.currentTarget.checked);
+        lieu_rencontre.prop('disabled', e.currentTarget.checked);
+        selects.prop('disabled', true);
+        if (e.currentTarget.checked) {
+            reported.prop('checked', false);
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
-            adversaire.prop('disabled', true);
-            ville_host.val("").attr('placeholder', "Pas de délocalisation");
-            ville_host.prop('disabled', true);
-            reported.prop('disabled', true);
-            $('.select-dropdown').prop('disabled', true);
+            ville_host.val("");
         } else {
             adversaire.attr('placeholder', "Adversaire");
-            adversaire.prop('disabled', false);
-            ville_host.attr('placeholder', "Pas de délocalisation");
-            ville_host.prop('disabled', false);
-            reported.prop('disabled', false);
-            lieu_rencontre.val(lieu_rencontre_value);
-            lieu_rencontre.formSelect();
-            $('.select-dropdown').prop('disabled', true);
-            $('.lieu_rencontre .select-dropdown').prop('disabled', false);
         }
     });
 
-    reported.change(() => {
-        $('#rencontre_dateReport .select-dropdown').prop('disabled', !this.checked);
+    reported.change((e) => {
+        $('#rencontre_dateReport .select-dropdown').prop('disabled', !e.currentTarget.checked);
     });
 });

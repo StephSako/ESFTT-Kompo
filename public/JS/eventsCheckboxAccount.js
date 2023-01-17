@@ -16,22 +16,22 @@ $(document).ready(() => {
     if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
 
     i_mail.on('keyup', () => {
-        if (!i_mail.val()) cb_c_mail.prop('checked', false).prop('disabled', true);
-        else cb_c_mail.prop('disabled', false);
+        if (!i_mail.val()) cb_c_mail.prop('checked', false);
+        cb_c_mail.prop('disabled', !i_mail.val());
     });
 
     i_mail2.on('keyup', () => {
-        if (!i_mail2.val()) cb_c_mail2.prop('checked', false).prop('disabled', true);
-        else cb_c_mail2.prop('disabled', false);
+        if (!i_mail2.val()) cb_c_mail2.prop('checked', false);
+        cb_c_mail2.prop('disabled', !i_mail2.val());
     });
 
     i_num.on('keyup', () => {
-        if (!i_num.val()) cb_c_num.prop('checked', false).prop('disabled', true);
-        else cb_c_num.prop('disabled', false);
+        if (!i_num.val()) cb_c_num.prop('checked', false);
+        cb_c_num.prop('disabled', !i_num.val());
     });
 
     i_num2.on('keyup', () => {
-        if (!i_num2.val()) cb_c_num2.prop('checked', false).prop('disabled', true);
-        else cb_c_num2.prop('disabled', false);
+        if (!i_num2.val()) cb_c_num2.prop('checked', false);
+        cb_c_num2.prop('disabled', !i_num2.val());
     });
 });

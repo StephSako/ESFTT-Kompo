@@ -3,8 +3,7 @@ $(document).ready(() => {
 
     if (journee_undefined.is(':checked')) $('.select-dropdown').prop('disabled', true);
 
-    journee_undefined.change(() => {
-        if(this.checked) $('.select-dropdown').prop('disabled', true);
-        else $('.select-dropdown').prop('disabled', false);
+    journee_undefined.change((e) => {
+        $('.select-dropdown').prop('disabled', e.currentTarget.checked);
     });
 });
