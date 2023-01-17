@@ -330,9 +330,9 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $nbJoueursBruleJ2 = 0;
-            if ($championnat->isJ2Rule()){
+            if ($championnat->isJ2Rule()) {
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
-                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables,
+                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables['joueurs'],
                     function($joueur){
                         return ($joueur["bruleJ2"]);
                     }), 'idCompetiteur');
@@ -343,7 +343,7 @@ class HomeController extends AbstractController
                 }
             }
 
-            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés J2 sont sélectionnés');
+            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés spécial J2 sont sélectionnés');
             else {
                 /** On sauvegarde la composition d'équipe */
                 try {
@@ -401,7 +401,7 @@ class HomeController extends AbstractController
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
-            'brulageSelectionnables' => $brulageSelectionnables,
+            'brulageSelectionnables' => $brulageSelectionnables['par_equipes'],
             'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
