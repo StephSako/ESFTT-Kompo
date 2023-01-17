@@ -4,12 +4,10 @@ $(document).ready(() => {
     let btn_reset_password = $('#btnResetPassword');
 
     i_new_password.on('keyup', () => {
-        if (i_new_password.val() && i_new_password_repeat.val()) btn_reset_password.prop('disabled', false);
-        else btn_reset_password.prop('disabled', true);
+        btn_reset_password.prop('disabled', !(i_new_password.val() && i_new_password_repeat.val()));
     });
 
     i_new_password_repeat.on('keyup', () => {
-        if (i_new_password.val() && i_new_password_repeat.val()) btn_reset_password.prop('disabled', false);
-        else btn_reset_password.prop('disabled', true);
+        btn_reset_password.prop('disabled', !(i_new_password.val() && i_new_password_repeat.val()));
     });
 });

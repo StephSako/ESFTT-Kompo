@@ -73,7 +73,6 @@ class BackOfficeRencontreController extends AbstractController
                 try {
                     /** Si l'équipe est exemptée, on remet les champs à zéro */
                     if ($rencontre->isExempt()) {
-                        $rencontre->setDomicile(true);
                         $rencontre->setAdversaire(null);
                         $rencontre->setVilleHost(null);
                         $rencontre->setReporte(false);

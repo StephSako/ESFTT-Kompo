@@ -622,6 +622,18 @@ form h5 {
   text-transform: capitalize;
 }
 
+ul.dropdown-content.select-dropdown li.optgroup {
+  min-height: 30px;
+}
+ul.dropdown-content.select-dropdown li.optgroup:hover {
+  cursor: default;
+  background-color: white;
+}
+ul.dropdown-content.select-dropdown li.optgroup span {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 .input_file .file-field.input-field {
   margin-left: 20%;
   margin-right: 20%;
