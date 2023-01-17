@@ -362,7 +362,10 @@ class CompetiteurRepository extends ServiceEntityRepository
             unset($brulagesSelectionnablesParEquipe[$labelEquipe][$nomJoueur]['numero']);
         }
 
-        return $brulagesSelectionnablesParEquipe;
+        return [
+            'joueurs' => $allBrulage,
+            'par_equipes' => $brulagesSelectionnablesParEquipe
+        ];
     }
 
     /**
