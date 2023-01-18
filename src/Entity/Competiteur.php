@@ -1122,7 +1122,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail(?string $mail): self
     {
-        $this->mail = trim($mail);
+        $this->mail = strlen(trim($mail)) > 0 ? trim($mail) : null;
         return $this;
     }
 
@@ -1140,7 +1140,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function setMail2(?string $mail2): self
     {
-        $this->mail2 = trim($mail2);
+        $this->mail2 = strlen(trim($mail2)) > 0 ? trim($mail2) : null;
         return $this;
     }
 
