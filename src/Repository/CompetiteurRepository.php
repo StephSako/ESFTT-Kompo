@@ -126,7 +126,8 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $result = $result
             ->where('c.isCompetiteur = true')
-            ->orderBy('c.classement_officiel', 'DESC')
+            ->orderBy(implode(', ', array_map(function ($c) { return 'numero' . $c->getSlug(); }, $championnats)))
+            ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
