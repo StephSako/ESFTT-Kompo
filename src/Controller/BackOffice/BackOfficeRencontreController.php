@@ -71,12 +71,12 @@ class BackOfficeRencontreController extends AbstractController
         if ($form->isSubmitted()){
             if ($form->isValid()){
                 try {
-                    /** Si l'équipe est exemptée, on remet les champs à zéro */
+                    /** Si l'équipe est exemptée, on remet les champs à zéro et on vide la composition d'équipe */
                     if ($rencontre->isExempt()) {
                         $rencontre->setAdversaire(null);
                         $rencontre->setVilleHost(null);
                         $rencontre->setReporte(false);
-
+                        $rencontre->emptyCompo();
                         $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                         $this->em->flush();
                         $this->addFlash('success', 'Rencontre modifiée');
