@@ -68,7 +68,7 @@ class DisponibiliteController extends AbstractController
         return $this->redirectToRoute('journee.show',
             [
                 'type' => $journee->getIdChampionnat()->getIdChampionnat(),
-                'id' => $journee->getIdJournee()
+                'idJournee' => $journee->getIdJournee()
             ]
         );
     }
@@ -108,7 +108,7 @@ class DisponibiliteController extends AbstractController
         return $this->redirectToRoute('journee.show',
             [
                 'type' => $dispoJoueur->getIdChampionnat()->getIdChampionnat(),
-                'id' => $journee
+                'idJournee' => $journee
             ]
         );
     }

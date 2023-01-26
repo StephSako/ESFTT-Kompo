@@ -63,30 +63,21 @@
             <div class="center-align card-panel">
 
                 {% if compo.reporte and not compo.idJournee.undefined %}
-                    <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                    <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px" class="col s12 orange-text">
                         <i class="material-icons">update</i>
                         <b>Match {{ compo.idJournee.dateJournee > compo.dateReport ? 'avancé' : 'reporté' }} au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
                     </span>
                 {% endif %}
 
                 {% if compo.villeHost %}
-                    <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
-                            <i class="material-icons">error_outline</i>
+                    <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px" class="col s12 orange-text">
+                            <i class="material-icons">wrong_location</i>
                             <b>Salle indisponible : rencontre à {{ compo.villeHost }}</b>
                         </span>
                 {% endif %}
 
-                <div style="display: flex; justify-content: center;">
-                    <div>
-                        <h4 style="margin-bottom: 15px; margin-top: 0; margin-right: 10px;"><span class="hide-on-med-and-up">J</span><span class="hide-on-small-only">Journée</span> {{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
-                    </div>
-                    {% if compo.idEquipe.lienDivision %}
-                        <div class="col" style="padding-left: 0; padding-right: 0;">
-                            <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                <i class="material-icons">equalizer</i>
-                            </a>
-                        </div>
-                    {% endif %}
+                <div>
+                    <h4 style="margin-bottom: 15px; margin-top: 0; margin-right: 10px;"><span class="hide-on-med-and-up">J</span><span class="hide-on-small-only">Journée</span> {{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
                 </div>
 
                 <div class="row header_compo">
@@ -151,9 +142,12 @@
                                         </a>
                                     {% endif %}
                                 </div>
-                                {% if compo.idEquipe.lienDivision %}
+                                {% if compo.idEquipe.lienDivision and compo.adversaire is not null %}
                                     <div class="col" style="padding-left: 0; padding-right: 0;">
-                                        <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}"><i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i></a>
+                                        <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')"
+                                           class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
+                                            <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
+                                        </a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -176,7 +170,7 @@
                                         </a>
                                     {% endif %}
                                 </div>
-                                {% if compo.idEquipe.lienDivision %}
+                                {% if compo.idEquipe.lienDivision and compo.adversaire is not null %}
                                     <div>
                                         <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                             <i class="material-icons">format_list_bulleted</i>
@@ -265,7 +259,7 @@
                     </div>
                     <br>
                     <div id="btnsEditCompo" style="height: 38px;">
-                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, id: compo.idJournee.idJournee}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, idJournee: compo.idJournee.idJournee}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
                         <button style="margin-top: 5px" class="btn btn_form waves-effect blue lighten-2" onclick="preloaderConfirm()">Confirmer</button><br>
                     </div>
 

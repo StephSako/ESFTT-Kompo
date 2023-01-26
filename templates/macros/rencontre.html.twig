@@ -71,8 +71,8 @@
                                                 {% if rencontre.domicile is null %}
                                                     <i class='material-icons red-text'>location_off</i>
                                                 {% else %}
-                                                    {% if rencontre.domicile %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">home</i>
-                                                    {% else %} <i class="material-icons{% if rencontre.villeHost %} red-text {% endif%}">directions_car</i>
+                                                    {% if rencontre.domicile %} <i class="material-icons{% if rencontre.villeHost %} orange-text {% endif%}">home</i>
+                                                    {% else %} <i class="material-icons{% if rencontre.villeHost %} orange-text {% endif%}">directions_car</i>
                                                     {% endif %}
                                                 {% endif %}
                                             {% endif %}
@@ -80,7 +80,7 @@
                                         <td style="height: 59px; padding-top: 8px;">
                                             {% if not rencontre.exempt %}
                                                 {% if not rencontre.villeHost %} <i class="green-text material-icons">check</i>
-                                                {% else %} <span class="red-text"><i class="material-icons">clear</i>(à {{ rencontre.villeHost }})</span>
+                                                {% else %} <span class="red-text"><i class="material-icons">wrong_location</i>(à {{ rencontre.villeHost }})</span>
                                                 {% endif %}
                                             {% endif %}
                                         </td>
