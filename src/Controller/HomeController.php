@@ -171,7 +171,7 @@ class HomeController extends AbstractController
 
         // Nombre maximal de joueurs pour les compos du championnat sélectionné
         $nbMaxSelectedJoueurs = array_sum(array_map(function($compo) use ($type) {
-            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
+            return !$compo->isExempt() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 0;
         }, $compos));
 
         // Numéros des équipes valides pour le brûlage
