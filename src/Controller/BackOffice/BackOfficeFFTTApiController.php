@@ -78,7 +78,7 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/new_phase", name="backoffice.reset.phase")
+     * @Route("/backoffice/update", name="backoffice.reset.phase")
      * @throws Exception
      */
     public function index(Request $request): Response

@@ -1,9 +1,11 @@
-<script>
-    function showRotatingIcon() {
-        $('.fix-icon').addClass('hide');
-        $('.rotating-icon').removeClass('hide');
-    }
-</script>
+{% if app.user.admin %}
+    <script>
+        function showRotatingIcon() {
+            $('.fix-icon').addClass('hide');
+            $('.rotating-icon').removeClass('hide');
+        }
+    </script>
+{% endif %}
 
 <div class="navbar-fixed">
     <nav class="nav-extended">
@@ -14,12 +16,14 @@
             <a href="#" data-target="slide-out" class="sidenav-trigger sidenav-backoffice"><i class="material-icons">menu</i></a>
 
             <ul class="left_items">
-                <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
-                    <a onclick="showRotatingIcon()" class="white-text" href="{{ path("backoffice.reset.phase") }}">
-                        <i class="material-icons left fix-icon" style="margin-right: 0;">sync</i>
-                        <i class="material-icons left rotating-icon hide" style="margin-right: 0;">sync</i>
-                    </a>
-                </li>
+                {% if app.user.admin %}
+                    <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/update' %}active blue darken-3{% endif %}">
+                        <a onclick="showRotatingIcon()" class="white-text" href="{{ path("backoffice.reset.phase") }}">
+                            <i class="material-icons left fix-icon" style="margin-right: 0;">sync</i>
+                            <i class="material-icons left rotating-icon hide" style="margin-right: 0;">sync</i>
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.championnats") }}"><i class="material-icons left">emoji_events</i>Championnat</a>
                 </li>
@@ -56,11 +60,13 @@
 </div>
 
 <ul id="slide-out" class="sidenav">
-    <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/new_phase' %}active blue darken-3{% endif %}">
-        <a onclick="showRotatingIcon()" class="white-text center-align" href="{{ path("backoffice.reset.phase") }}">
-            <i class="white-text material-icons left fix-icon">sync</i>
-            <i class="white-text material-icons left rotating-icon hide">sync</i>Mises à jour</a>
-    </li>
+    {% if app.user.admin %}
+        <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/update' %}active blue darken-3{% endif %}">
+            <a onclick="showRotatingIcon()" class="white-text center-align" href="{{ path("backoffice.reset.phase") }}">
+                <i class="white-text material-icons left fix-icon">sync</i>
+                <i class="white-text material-icons left rotating-icon hide">sync</i>Mises à jour</a>
+        </li>
+    {% endif %}
     <li class="li_in_line {% if app.request.getPathInfo starts with '/backoffice/championnat' %}active blue darken-3{% endif %}">
         <a class="white-text center-align" href="{{ path("backoffice.championnats") }}"><i class="white-text material-icons left">emoji_events</i>Championnat</a>
     </li>

@@ -549,7 +549,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'age' => $competiteur->getAge(),
             'isCritFed' => $competiteur->isCritFed(),
-            'path' => 'backoffice.password.edit',
+            'path' => 'backoffice.competiteur.password.edit',
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
             'isAdmin' => $competiteur->isAdmin(),
@@ -567,7 +567,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
+     * @Route("/backoffice/competiteur/password/update/{id}", name="backoffice.competiteur.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
      * @return RedirectResponse|Response

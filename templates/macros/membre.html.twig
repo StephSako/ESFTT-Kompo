@@ -53,7 +53,7 @@
                             <i id="icon-renew-certif{{ competiteur.idCompetiteur }}" class="{% if not competiteur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                             <span class="label-renew-certif{{ competiteur.idCompetiteur }}">{{ competiteur.certifMedicalInvalid.shortMessage }}</span>
                         </span>
-                        {% if competiteur.certifMedicalInvalid.status %}
+                        {% if competiteur.certifMedicalInvalid.status and app.user.admin %}
                             <br><button id="btnCertif{{ competiteur.idCompetiteur }}" onclick="renouvelerCertifMedical({{ competiteur.idCompetiteur }}, '{{ competiteur.prenom }}', true)" class="btn-small btn-floating green renew_certif_table"><i class="material-icons">autorenew</i></button>
 
                             <div hidden id="loaderCertif{{ competiteur.idCompetiteur }}">

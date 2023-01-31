@@ -31,6 +31,23 @@ security:
 
     access_control:
         - { path: ^/compte, roles: ROLE_LOISIR }
+        - { path: ^/backoffice/update, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/championnat/new, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/championnat/edit, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/championnat/delete, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/division/delete, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/division/edit, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/division/new, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/equipe/delete, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteur/renouveler/certificat, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteur/resend-welcome-mail, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteur/delete, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteur/password/update, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteurs/mail/edit, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteurs/mail/certif-medic-perim, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteurs/import-file, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteurs/import-file/save, roles: [ROLE_ADMIN] }
+        - { path: ^/backoffice/competiteurs/import-file/read, roles: [ROLE_ADMIN] }
         - { path: ^/backoffice, roles: [ROLE_CAPITAINE, ROLE_ADMIN] }
         - { path: ^/journee/edit, roles: [ ROLE_CAPITAINE, ROLE_ADMIN ] }
         - { path: ^/journee/empty, roles: [ ROLE_CAPITAINE, ROLE_ADMIN ] }
