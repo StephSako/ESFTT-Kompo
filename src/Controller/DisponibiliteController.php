@@ -19,17 +19,14 @@ class DisponibiliteController extends AbstractController
     private $journeeRepository;
     private $disponibiliteRepository;
     private $rencontreRepository;
-    private $utilController;
 
     /**
      * @param EntityManagerInterface $em
-     * @param UtilController $utilController
      * @param JourneeRepository $journeeRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(EntityManagerInterface $em,
-                                UtilController $utilController,
                                 JourneeRepository $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 RencontreRepository $rencontreRepository)
@@ -38,7 +35,6 @@ class DisponibiliteController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->rencontreRepository = $rencontreRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -77,10 +73,11 @@ class DisponibiliteController extends AbstractController
      * @Route("/journee/disponibilite/update/{dispoJoueur}/{dispo}", name="journee.disponibilite.update")
      * @param int $dispoJoueur
      * @param bool $dispo
+     * @param UtilController $utilController
      * @return Response
      * @throws NonUniqueResultException
      */
-    public function update(int $dispoJoueur, bool $dispo) : Response
+    public function update(int $dispoJoueur, bool $dispo, UtilController $utilController) : Response
     {
         if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) {
             $this->addFlash('fail', 'Disponibilité inexistante');
@@ -94,7 +91,7 @@ class DisponibiliteController extends AbstractController
         if (!$dispo){
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-            $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
+            $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
 
             foreach ($invalidCompos as $compo){
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
