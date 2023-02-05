@@ -45,16 +45,22 @@ class BackOfficeFFTTApiController extends AbstractController
     const DIVISION_PARTIE_DEUX = 1;
     const REGEX_NUMERO_EQUIPE = '/^[A-Z\s]+ (\(?[0-9]+\)?) - Phase ([1|2])$/';
     const STRING_LIBELLE_POULE = 'Poule';
-    private $utilController;
-    private $contactController;
+    const CONVERTIONS = [
+        "L08_Honneur Poule" => [
+            "shortName" => "H",
+            "longName" => "Honneur"
+        ],
+        "L08_2eme Division" => [
+            "shortName" => "D2",
+            "longName" => "Division 2"
+        ]
+    ];
 
     /**
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
      * @param PouleRepository $pouleRepository
-     * @param ContactController $contactController
-     * @param UtilController $utilController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      */
@@ -62,8 +68,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ChampionnatRepository $championnatRepository,
                                 DivisionRepository $divisionRepository,
                                 PouleRepository $pouleRepository,
-                                ContactController $contactController,
-                                UtilController $utilController,
                                 EntityManagerInterface $em,
                                 SettingsRepository $settingsRepository)
     {
@@ -73,15 +77,16 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
         $this->settingsRepository = $settingsRepository;
-        $this->utilController = $utilController;
-        $this->contactController = $contactController;
     }
 
     /**
+     * @param Request $request
+     * @param ContactController $contactController
+     * @param UtilController $utilController
+     * @return Response
      * @Route("/backoffice/update", name="backoffice.reset.phase")
-     * @throws Exception
      */
-    public function index(Request $request): Response
+    public function index(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
         $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
@@ -184,8 +189,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             $pouleEquipeFFTT = null;
                         }
 
-                        $divisionEquipeFFTTLongName = mb_convert_case($libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX], MB_CASE_TITLE, "UTF-8");
-                        $divisionEquipeFFTTShortName = $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_UN][0] . $libelleDivisionEquipeFFTT[self::DIVISION_PARTIE_DEUX][0];
+                        $divisionEquipeFFTT = $this->labelDivisionFormatter($libelleDivisionEquipeFFTT);
                         $equipeIssued = [];
 
                         /** L'équipe est recensée des 2 côtés */
@@ -194,13 +198,13 @@ class BackOfficeFFTTApiController extends AbstractController
                                 return $equipe->getNumero() == $numeroEquipeFFTT;
                             }))[0];
 
-                            $sameDivision = $equipeKompo->getIdDivision() && $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTTShortName;
+                            $sameDivision = $equipeKompo->getIdDivision() && $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTT["shortName"];
                             $samePoule = ($equipeKompo->getIdPoule() && $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT)) || ($equipeKompo->getIdPoule() == null && mb_strtoupper($pouleEquipeFFTT) == "");
                             $sameLienDivision = $equipeKompo->getLienDivision() && $equipeKompo->getLienDivision() == $equipe->getLienDivision();
                             if (!$sameDivision || !$samePoule || !$sameLienDivision){
                                 $equipeIssued['equipe'] = $equipeKompo;
-                                $equipeIssued['divisionFFTTLongName'] = $divisionEquipeFFTTLongName;
-                                $equipeIssued['divisionFFTTShortName'] = $divisionEquipeFFTTShortName;
+                                $equipeIssued['divisionFFTTLongName'] = $divisionEquipeFFTT["longName"];
+                                $equipeIssued['divisionFFTTShortName'] = $divisionEquipeFFTT["shortName"];
                                 $equipeIssued['pouleFFTT'] = $pouleEquipeFFTT;
                                 $equipeIssued['sameDivision'] = $sameDivision;
                                 $equipeIssued['lienDivision'] = $equipe->getLienDivision();
@@ -212,8 +216,8 @@ class BackOfficeFFTTApiController extends AbstractController
                             unset($equipesToCreate[$numeroEquipeFFTT]);
                             $equipesToCreate[$numeroEquipeFFTT]["poule"] = $pouleEquipeFFTT;
                             $equipesToCreate[$numeroEquipeFFTT]["lienDivision"] = $equipe->getLienDivision();
-                            $equipesToCreate[$numeroEquipeFFTT]["divisionShortName"] = $divisionEquipeFFTTShortName;
-                            $equipesToCreate[$numeroEquipeFFTT]["divisionLongName"] = $divisionEquipeFFTTLongName;
+                            $equipesToCreate[$numeroEquipeFFTT]["divisionShortName"] = $divisionEquipeFFTT["shortName"];
+                            $equipesToCreate[$numeroEquipeFFTT]["divisionLongName"] = $divisionEquipeFFTT["longName"];
                         }
                     }
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["issued"] = $equipesIssued;
@@ -452,7 +456,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-phase où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $this->utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
@@ -523,7 +527,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->championnatRepository->deleteData('Disponibilite', $idChampionnat);
 
                         /** On set les Journées comme étant indéfinies avec les dates maximum de la prochaine phase */
-                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($this->utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
+                        $maxDatesNextPhase = $this->maxDatesNextPhase(max($utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
                             $dateKompo
                                 ->setUndefined(true)
@@ -571,7 +575,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         });
                         $mails = array_map(function ($joueur) {
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                        }, $this->contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
+                        }, $contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
 
                         try {
                             $str_replacers = [
@@ -582,7 +586,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ]
                             ];
 
-                            $this->contactController->sendMail(
+                            $contactController->sendMail(
                                 $mails,
                                 true,
                                 'Kompo - Phase terminée',
@@ -800,5 +804,15 @@ class BackOfficeFFTTApiController extends AbstractController
     {
         preg_match($regex, $value, $matches);
         return $matches[$index];
+    }
+
+    public function labelDivisionFormatter(array $libelleBrutFFTT): array {
+        $libelleLong = $libelleBrutFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX];
+        /** Si le libellé doit être traduit */
+        if (array_key_exists($libelleLong, self::CONVERTIONS)) return self::CONVERTIONS[$libelleLong];
+        return [
+            "longName" => mb_convert_case($libelleLong, MB_CASE_TITLE, "UTF-8"),
+            "shortName" => $libelleBrutFFTT[self::DIVISION_PARTIE_UN][0] . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX][0]
+        ];
     }
 }
