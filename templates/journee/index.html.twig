@@ -45,6 +45,7 @@
                 {% endif %}
             </div>
 
+            {% set listeCapitainesIds = listeCapitaines|map(c => "#{c.idCompetiteur}") %}
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
             {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
             {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
@@ -342,17 +343,21 @@
                                         <i class="material-icons">group_add</i>
                                     </a>
                                     {% if not compo.isEmpty %}
-                                        {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
+                                        {% set getListContactSelectedPlayers = compo.getListContactSelectedPlayers(app.user.idCompetiteur, listeCapitaines) %}
+                                        {% if getListContactSelectedPlayers['nbJoueursWithoutMe'] > 0 %}
                                             <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                                 <i class="material-icons campaign">campaign</i>
                                             </a>
                                             {{ _modalContact.modalAlertPlayers
                                                 (
                                                     compo.id,
-                                                    compo.getListContactSelectedPlayers(app.user.idCompetiteur),
+                                                    getListContactSelectedPlayers,
                                                     'Alerter les joueurs',
-                                                    'mailto:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                                    'sms:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom)
+                                                    'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                    'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
+                                                    {
+                                                        capitainesToHide: isCapitaineNotSelectedForCCI(compo.getListSelectedPlayers|map(p => "#{p.idCompetiteur}"), listeCapitainesIds)
+                                                    }
                                                 )
                                             }}
                                         {% endif %}

@@ -10,10 +10,10 @@
                 {% endif %}
 
                 {% if not options.noSMS is defined %}
-                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id,  { capitainesToHide: (options.capitainesToHide is defined ? options.capitainesToHide : []) }) }}
                 {% endif %}
 
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id) }}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id, { capitainesToHide: (options.capitainesToHide is defined ? options.capitainesToHide : []) }) }}
             </div>
         </div>
         <div class="modal-footer">
@@ -22,7 +22,7 @@
     </div>
 {% endmacro %}
 
-{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id) %}
+{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id, options) %}
     <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
         {% if response['contactables']|length %}
             <a href="{{ link }}" class="center-align btn blue lighten-2" id="btn_{{ media }}_{{ id }}">
@@ -49,14 +49,14 @@
 
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}
-                <li class="green-text lighten-1 col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
+                <li class="col s12 m6 {% if joueurContactable.idCompetiteur in options.capitainesToHide %} hide{% endif %}" id="contactable_{{ joueurContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurContactable.avatar %}
                             <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
                         {% else %}
                             <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                         {% endif %}
-                        <span class="truncate" style="color: green">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
+                        <span class="truncate green-text text-darken-2">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
                     </div>
                 </li>
             {% endfor %}
@@ -68,7 +68,7 @@
                         {% else %}
                             <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                         {% endif %}
-                        <span style="color: red">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
+                        <span class="truncate red-text">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
                     </div>
                 </li>
             {% endfor %}
