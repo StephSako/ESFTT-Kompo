@@ -15,7 +15,6 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('rencontreStillEditable', [$this, 'rencontreStillEditable']),
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
             new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
@@ -41,17 +40,6 @@ class AppExtension extends AbstractExtension
     public function journeeStillEditable(DateTime $latestDate): bool
     {
         return intval($latestDate->diff(new DateTime())->format('%R%a')) <= 0;
-    }
-
-    /**
-     * @param Rencontre $rencontre
-     * @return bool
-     */
-    public function rencontreStillEditable(Rencontre $rencontre): bool
-    {
-        $dateDepassee = intval((new DateTime())->diff($rencontre->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
-        $dateReporteeDepassee = intval((new DateTime())->diff($rencontre->getDateReport())->format('%R%a')) >= 0;
-        return (($dateDepassee && !$rencontre->isReporte()) || ($dateReporteeDepassee && $rencontre->isReporte()) || $rencontre->getIdJournee()->getUndefined());
     }
 
     /**

@@ -16,6 +16,7 @@
         <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/getClassementRanking.min.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/toggleCompoValidation.min.js') }}"></script>
     </header>
 
     <div class="row main">
@@ -161,17 +162,44 @@
             <div class="hide-on-large-only center-align">
                 {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, (compos|length), true, nbMaxPotentielPlayers) }}
             </div>
-            {% if compos and selectedPlayers|length == nbMaxSelectedJoueurs %}
-                <div class="complete_compos card-panel center green lighten-1 title_journee rainbow">
-                    <h5 class="white-text"><i class="material-icons">check_circle</i>
-                        Compositions complètes</h5>
-                </div>
-            {% endif %}
 
             {% if compos|length %}
                 {% for compo in compos %}
                     <div class="center card-panel">
                         <div class="row header_compo">
+                            {% if not compo.isOver and not compo.exempt %}
+                                <div id="pastilleBorder{{ compo.id }}" class="pastilleBorder {% if compo.isValidationCompo %}validee{% else %}enAttente{% endif %}">
+                                    <div class="pastilleBorderContent" style="display: flex;align-items: center; justify-content: center;">
+                                        <div id="pastilleBorderContentText{{ compo.id }}">
+                                            {% if compo.isValidationCompo %}
+                                                <i class="material-icons">checklist_rtl</i> Équipe confirmée
+                                            {% else %}
+                                                <i class="material-icons">rule</i> Attente de confirmation
+                                            {% endif %}
+                                        </div>
+                                        {% if "ROLE_CAPITAINE" in app.user.roles %}
+                                            <div>
+                                                <i class="material-icons blue-text text-lighten-1 swap-validation" id="compoValidation{{ compo.id }}" onclick="toggleCompoValidation('{{ compo.id }}')">
+                                                    swap_horizontal_circle
+                                                </i>
+                                            </div>
+                                            <div id="preloader{{ compo.id }}" class="preloader micro" style="display: none">
+                                                <div class="preloader-wrapper micro active">
+                                                    <div class="spinner-layer spinner-blue-only">
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div><div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div><div class="circle-clipper right">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
 
                             {% if compo.reporte and not journee.undefined %}
                                 <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px;" class="col s12 orange-text">
@@ -307,7 +335,7 @@
                         </div>
 
                         {% if not compo.exempt %}
-                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and not compo.isOver %}
                                 <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                             {% endif %}
 
@@ -337,7 +365,7 @@
                                 {% endif %}
                             {% endif %}
 
-                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and not compo.isOver %}
                                 <div style="margin-bottom: 10px; margin-top: 5px;">
                                     <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
                                         <i class="material-icons">group_add</i>

@@ -248,6 +248,13 @@ class Rencontre
     private $adversaire;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="validation_compo", type="boolean", nullable=false)
+     */
+    private $validationCompo;
+
+    /**
      * @param int $n
      * @return Competiteur|null
      */
@@ -896,5 +903,40 @@ class Rencontre
     {
         $this->complementAdresse = strlen(trim($complementAdresse)) ? trim(mb_convert_case($complementAdresse, MB_CASE_TITLE, "UTF-8")) : null;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidationCompo(): bool
+    {
+        return $this->validationCompo;
+    }
+
+    /**
+     * @param bool $validationCompo
+     * @return Rencontre
+     */
+    public function setValidationCompo(bool $validationCompo): Rencontre
+    {
+        $this->validationCompo = $validationCompo;
+        return $this;
+    }
+
+    /**
+     * Détermine si une rencontre est passée ou non
+     * @return bool
+     */
+    public function isOver(): bool {
+        $dateDepassee = intval((new DateTime())->diff($this->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($this->getDateReport())->format('%R%a')) >= 0;
+        return !(($dateDepassee && !$this->isReporte()) || ($dateReporteeDepassee && $this->isReporte()) || $this->getIdJournee()->getUndefined());
+    }
+
+    /**
+     * @return void
+     */
+    public function toggleCompValidation(): void {
+        $this->setValidationCompo(!$this->isValidationCompo());
     }
 }

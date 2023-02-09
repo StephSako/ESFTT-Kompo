@@ -2,6 +2,8 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Entity\Competiteur;
+use App\Entity\Rencontre;
 use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
@@ -129,5 +131,27 @@ class BackOfficeRencontreController extends AbstractController
             'form' => $form->createView(),
             'idJournee' => $posJournee
         ]);
+    }
+
+    /**
+     * @Route("/backoffice/rencontre/update/validation/{rencontre}", name="backoffice.rencontre.update.validation", methods={"POST"})
+     * @param Rencontre $rencontre
+     * @return Response
+     */
+    public function toggleCompoValidation(Rencontre $rencontre): Response
+    {
+        try {
+            if ($rencontre->isOver()) throw new Exception('La rencontre est déjà passée', 504);
+            $rencontre->toggleCompValidation();
+            $json = json_encode(['status' => true, 'isValide' => $rencontre->isValidationCompo()]);
+            $this->em->flush();
+        } catch (Exception $e) {
+            $json = json_encode(['status' => false, 'isValide' => null, 'message' => $e->getCode() == 504 ? $e->getMessage() : 'Une erreur est survenue']);
+        }
+
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }
