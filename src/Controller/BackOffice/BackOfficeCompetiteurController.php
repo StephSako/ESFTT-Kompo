@@ -58,8 +58,6 @@ class BackOfficeCompetiteurController extends AbstractController
     private $validator;
     private $titularisationRepository;
     private $equipeRepository;
-    private $utilController;
-    private $contactController;
 
     const EXCEl_CHAMP_LICENCE = 1;
     const EXCEl_CHAMP_NOM = 2;
@@ -89,11 +87,9 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @param TitularisationRepository $titularisationRepository
      * @param ChampionnatRepository $championnatRepository
-     * @param UtilController $utilController
      * @param CacheManager $cacheManager
      * @param UploaderHelper $uploaderHelper
      * @param ValidatorInterface $validator
-     * @param ContactController $contactController
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
@@ -106,11 +102,9 @@ class BackOfficeCompetiteurController extends AbstractController
                                 UserPasswordEncoderInterface $encoder,
                                 TitularisationRepository $titularisationRepository,
                                 ChampionnatRepository $championnatRepository,
-                                UtilController $utilController,
                                 CacheManager $cacheManager,
                                 UploaderHelper $uploaderHelper,
                                 ValidatorInterface $validator,
-                                ContactController $contactController,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository)
     {
@@ -128,15 +122,14 @@ class BackOfficeCompetiteurController extends AbstractController
         $this->validator = $validator;
         $this->titularisationRepository = $titularisationRepository;
         $this->equipeRepository = $equipeRepository;
-        $this->utilController = $utilController;
-        $this->contactController = $contactController;
     }
 
     /**
      * @Route("/backoffice/competiteurs", name="backoffice.competiteurs")
+     * @param ContactController $contactController
      * @return Response
      */
-    public function index(): Response
+    public function index(ContactController $contactController): Response
     {
         $joueurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $joueursArchives = $this->competiteurRepository->findBy(['isArchive' => true], ['nom' => 'ASC', 'prenom' => 'ASC']);
@@ -171,7 +164,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueurs' => $joueurs,
             'joueursArchives' => $joueursArchives,
             'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
-            'contactsJoueursInvalidCertifMedic' => $this->contactController->returnPlayersContact($joueursInvalidCertifMedic),
+            'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContact($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin,
             'joueursWithoutLicence' => $joueursWithoutLicence,
             'competiteursWithoutClassement' => $competiteursWithoutClassement
@@ -198,9 +191,11 @@ class BackOfficeCompetiteurController extends AbstractController
     /**
      * @Route("/backoffice/competiteur/new", name="backoffice.competiteur.new")
      * @param Request $request
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         $competiteur = new Competiteur();
         $competiteur
@@ -245,7 +240,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     $this->checkRoles($competiteur);
 
                     /** On défini l'username automatiquement */
-                    $competiteur->setUsername($this->utilController->getUniqueUsername($competiteur->getPrenom(), $this->competiteurRepository->findAllPseudos(true)['usernames']));
+                    $competiteur->setUsername($utilController->getUniqueUsername($competiteur->getPrenom(), $this->competiteurRepository->findAllPseudos(true)['usernames']));
 
                     $competiteur->setNom($competiteur->getNom());
                     $competiteur->setPrenom($competiteur->getPrenom());
@@ -277,7 +272,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     /** On envoie un e-mail de bienvenue */
                     /** Les admins ne sont pas en copie si le nouvel inscrit est uniquement loisir */
-                    if (!$competiteur->isArchive()) $this->sendWelcomeMail($competiteur, $competiteur->getRoles() != ['ROLE_LOISIR'], true);
+                    if (!$competiteur->isArchive()) $this->sendWelcomeMail($competiteur, $competiteur->getRoles() != ['ROLE_LOISIR'], true, $contactController, $utilController);
 
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
@@ -321,16 +316,18 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param Competiteur $competiteur
      * @param bool $adminsInCC
      * @param bool $showFlash
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @return void
      * @throws Exception
      */
-    public function sendWelcomeMail(Competiteur $competiteur, bool $adminsInCC, bool $showFlash): void {
+    public function sendWelcomeMail(Competiteur $competiteur, bool $adminsInCC, bool $showFlash, ContactController $contactController, UtilController $utilController): void {
         try {
             /** On envoie un mail spécifique aux loisirs si loisir, sinon le mail général */
             $role = $competiteur->isLoisir() ? '-loisirs' : '';
             $data = $this->settingsRepository->find('mail-bienvenue' . $role)->getContent();
 
-            $initPasswordLink = $this->utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
+            $initPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'P' . $this->getParameter('time_init_password_day') . 'D');
             $str_replacers = [
                 'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]", "[#roles#]"],
                 'new' => [
@@ -347,10 +344,10 @@ class BackOfficeCompetiteurController extends AbstractController
             if ($adminsInCC) {
                 $adminsCopy = array_map(function ($joueur) {
                     return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                }, $this->contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
+                }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
             } else $adminsCopy = null;
 
-            $this->contactController->sendMail(
+            $contactController->sendMail(
                 [new Address($competiteur->getMail() ?? $competiteur->getMail2(), $competiteur->getNom() . ' ' . $competiteur->getPrenom())],
                 true,
                 'Bienvenue sur Kompo ' . $competiteur->getPrenom() . ' !',
@@ -369,9 +366,11 @@ class BackOfficeCompetiteurController extends AbstractController
     /**
      * @Route("/backoffice/competiteur/resend-welcome-mail", name="backoffice.competiteur.resend-welcome-mail", requirements={"idCompetiteur"="\d+"})
      * @param Request $request
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @return Response
      */
-    public function resendWelcomeMail(Request $request): Response
+    public function resendWelcomeMail(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         try {
             if (!($competiteur = $this->competiteurRepository->find($request->request->get('idCompetiteur')))) {
@@ -379,7 +378,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 return $this->redirectToRoute('backoffice.competiteurs');
             }
 
-            $this->sendWelcomeMail($competiteur, false, false);
+            $this->sendWelcomeMail($competiteur, false, false, $contactController, $utilController);
 
             $json = json_encode(['message' => 'E-mail de bienvenue renvoyé à ' . $competiteur->getPrenom(), 'success' => true]);
         } catch (Exception $e) {
@@ -395,10 +394,10 @@ class BackOfficeCompetiteurController extends AbstractController
      * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
      * @param int $idCompetiteur
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
      */
-    public function edit(int $idCompetiteur, Request $request): Response
+    public function edit(int $idCompetiteur, Request $request, UtilController $utilController): Response
     {
         if (!($competiteur = $this->competiteurRepository->find($idCompetiteur))) {
             $this->addFlash('fail', 'Membre inexistant');
@@ -526,7 +525,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 return $this->redirectToRoute('index.type', [
                                     'type' => $this->get('session')->get('type') ?
                                         $this->championnatRepository->find($this->get('session')->get('type'))->getIdChampionnat()
-                                        : $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat()
+                                        : $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat()
                                 ]);
                             }
                         }
@@ -549,7 +548,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
             'age' => $competiteur->getAge(),
             'isCritFed' => $competiteur->isCritFed(),
-            'path' => 'backoffice.password.edit',
+            'path' => 'backoffice.competiteur.password.edit',
             'isArchived' => $competiteur->isArchive(),
             'isLoisir' => $competiteur->isLoisir(),
             'isAdmin' => $competiteur->isAdmin(),
@@ -567,7 +566,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/update_password/{id}", name="backoffice.password.edit", requirements={"id"="\d+"})
+     * @Route("/backoffice/competiteur/password/update/{id}", name="backoffice.competiteur.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
      * @return RedirectResponse|Response
@@ -766,9 +765,10 @@ class BackOfficeCompetiteurController extends AbstractController
      * Lis et objectise les joueurs lus depuis un fichier Excel
      * @param UploadedFile $file
      * @param array|null $joueursIndexToAdd
+     * @param UtilController $utilController
      * @return array
      */
-    public function buildJoueursArrayFromImport(UploadedFile $file, ?array $joueursIndexToAdd): array {
+    public function buildJoueursArrayFromImport(UploadedFile $file, ?array $joueursIndexToAdd, UtilController $utilController): array {
         $allowedFileMimes = [
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
@@ -881,7 +881,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 }
 
                 /** On vérifie l'unicité des pseudos */
-                $nouveau->setUsername($this->utilController->getUniqueUsername($nouveau->getPrenom(), $pseudosNomsPrenoms['usernames']));
+                $nouveau->setUsername($utilController->getUniqueUsername($nouveau->getPrenom(), $pseudosNomsPrenoms['usernames']));
                 $pseudosNomsPrenoms['usernames'][] = $nouveau->getUsername();
 
                 /** On liste les violations automatiquement vérifiées par l'Entité */
@@ -1007,19 +1007,20 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function importCompetiteursExcel(): Response
     {
-        return $this->render('backoffice/competiteur/importJoueurs.html.twig', []);
+        return $this->render('backoffice/competiteur/importJoueurs.html.twig');
     }
 
     /**
      * Appelée depuis un appel Ajax et renvoie un template sous forme d'un tableau listant les joueurs récupérés depuis un fichier Excel
      * @Route("/backoffice/competiteurs/import-file/read", name="backoffice.competiteurs.import.file.read", methods={"POST"})
      * @param Request $request
+     * @param UtilController $utilController
      * @return JsonResponse
      */
-    public function readImportFile(Request $request): JsonResponse
+    public function readImportFile(Request $request, UtilController $utilController): JsonResponse
     {
         $file = $request->files->get('excelDocument');
-        $importedData = $this->buildJoueursArrayFromImport($file, null);
+        $importedData = $this->buildJoueursArrayFromImport($file, null, $utilController);
         return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', $importedData)->getContent());
     }
 
@@ -1027,12 +1028,14 @@ class BackOfficeCompetiteurController extends AbstractController
      * Inscrit les joueurs depuis un fichier Excel importé
      * @Route("/backoffice/competiteurs/import-file/save", name="backoffice.competiteurs.import.file.save", methods={"POST"})
      * @param Request $request
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @return Response
      */
-    public function saveImportFile(Request $request): Response
+    public function saveImportFile(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         $joueursIndexToAdd = json_decode($request->request->get('usernamesToRegister'));
-        $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'), $joueursIndexToAdd);
+        $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'), $joueursIndexToAdd, $utilController);
         $joueurs = $importedData['joueurs'];
         /** On n'inscrit pas les joueurs déjà inscrits */
         $joueurs = array_filter($joueurs, function($joueur) {
@@ -1049,7 +1052,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                 /** On envoie un e-mail de bienvenue */
                 try {
-                    if (!$joueur['joueur']->isArchive()) $this->sendWelcomeMail($joueur['joueur'], $joueur['joueur']->getRoles() != ['ROLE_LOISIR'], false);
+                    if (!$joueur['joueur']->isArchive()) $this->sendWelcomeMail($joueur['joueur'], $joueur['joueur']->getRoles() != ['ROLE_LOISIR'], false, $contactController, $utilController);
                 } catch (Exception $e) {
                     $nbErrorMail++;
                 }
@@ -1157,13 +1160,14 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
+     * @param ContactController $contactController
      * @return Response
      */
-    public function alertCertifMedicPerimes(): Response
+    public function alertCertifMedicPerimes(ContactController $contactController): Response
     {
         $mails = array_map(function ($address) {
                 return new Address($address);
-            }, explode(',', $this->contactController->returnPlayersContact(
+            }, explode(',', $contactController->returnPlayersContact(
                 array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
         }))['mail']['toString']));
@@ -1176,7 +1180,7 @@ class BackOfficeCompetiteurController extends AbstractController
         ];
 
         try {
-            $this->contactController->sendMail(
+            $contactController->sendMail(
                 $mails,
                 true,
                 'Kompo - Certificat médical à renouveler',

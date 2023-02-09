@@ -24,24 +24,20 @@ class BackOfficeChampionnatController extends AbstractController
     private $em;
     private $championnatRepository;
     private $journeeRepository;
-    private $utilController;
 
     /**
      * BackOfficeChampionnatController constructor.
      * @param ChampionnatRepository $championnatRepository
-     * @param UtilController $utilController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
-                                UtilController $utilController,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->journeeRepository = $journeeRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -125,9 +121,10 @@ class BackOfficeChampionnatController extends AbstractController
      * @Route("/backoffice/championnat/edit/{idChampionnat}", name="backoffice.championnat.edit", requirements={"idChampionnat"="\d+"})
      * @param int $idChampionnat
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function edit(int $idChampionnat, Request $request): Response
+    public function edit(int $idChampionnat, Request $request, UtilController $utilController): Response
     {
         if (!($championnat = $this->championnatRepository->find($idChampionnat))) {
             $this->addFlash('fail', 'Championnat inexistant');
@@ -156,7 +153,7 @@ class BackOfficeChampionnatController extends AbstractController
                     foreach ($journeesToRecalcul as $journee){
                         foreach ($journee->getRencontres()->toArray() as $rencontre){
                             for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
-                                if ($rencontre->getIdJoueurN($j)) $this->utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $journee->getIdJournee());
+                                if ($rencontre->getIdJoueurN($j)) $utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $journee->getIdJournee());
                             }
                             $rencontre->sortComposition();
                         }

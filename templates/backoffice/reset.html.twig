@@ -38,62 +38,60 @@
                         </span>
                     </p>
 
-                    {% if app.user.admin %}
-                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
-                            {% if joueursIssued.nbJoueursCritFed > 0 %}
-                                <p style="margin-top: 10px; margin-bottom: 10px;">
-                                    <label>
-                                        <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
-                                        <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
-                                    </label>
+                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
+                        {% if joueursIssued.nbJoueursCritFed > 0 %}
+                            <p style="margin-top: 10px; margin-bottom: 10px;">
+                                <label>
+                                    <input id="showCritFed" type="checkbox" name="unsubCritFedplayers"/>
+                                    <span>Désinscrire le{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} {{ joueursIssued.nbJoueursCritFed > 1 ? joueursIssued.nbJoueursCritFed : '' }} joueur{{ joueursIssued.nbJoueursCritFed > 1 ? 's' : '' }} du critérium fédéral <i>(si nouvelle saison)</i></span>
+                                </label>
 
-                                    <script type="text/javascript">
-                                        const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
-                                        const nbJoueursAll = {{ joueursIssued.competition|length }};
-                                        const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
-                                        let messageNbJoueursIssued = $('p#messageNbJoueursIssued')
+                                <script type="text/javascript">
+                                    const nbJoueursCritFedOnly = {{ joueursIssued.nbJoueursCritFedOnly }};
+                                    const nbJoueursAll = {{ joueursIssued.competition|length }};
+                                    const noCritFed = nbJoueursAll - nbJoueursCritFedOnly;
+                                    let messageNbJoueursIssued = $('p#messageNbJoueursIssued')
 
-                                        $('#showCritFed').change(function () {
-                                            if (!this.checked) {
-                                                $('.isCritFed').toggleClass('hide', '');
-                                                $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
-                                                if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
-                                                else $('button#updateJoueursIssued').prop('disabled', false);
-                                                if (noCritFed > 0) {
-                                                    messageNbJoueursIssued.removeClass('blue');
-                                                    messageNbJoueursIssued.addClass('orange darken-2');
-                                                }
-                                                else {
-                                                    $('span#nbJoueurs').text('Tous les joueurs sont à jour')
-                                                    messageNbJoueursIssued.addClass('blue');
-                                                    messageNbJoueursIssued.removeClass('orange darken-2');
-                                                }
-                                                if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                    $('#showCritFed').change(function () {
+                                        if (!this.checked) {
+                                            $('.isCritFed').toggleClass('hide', '');
+                                            $('span#nbJoueurs').text(noCritFed + ' joueur' + (noCritFed > 1 ? 's' : '') + (noCritFed > 1 ? ' seront' : ' sera') + ' mis à jour')
+                                            if (noCritFed === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                            else $('button#updateJoueursIssued').prop('disabled', false);
+                                            if (noCritFed > 0) {
+                                                messageNbJoueursIssued.removeClass('blue');
+                                                messageNbJoueursIssued.addClass('orange darken-2');
                                             }
                                             else {
-                                                $('.isCritFed').toggleClass('hide');
-                                                if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
-                                                if (nbJoueursAll === 0) {
-                                                    messageNbJoueursIssued.addClass('blue');
-                                                    messageNbJoueursIssued.removeClass('orange darken-2');
-                                                }
-                                                else {
-                                                    messageNbJoueursIssued.removeClass('blue');
-                                                    messageNbJoueursIssued.addClass('orange darken-2');
-                                                }
-                                                $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
-                                                if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
-                                                else $('button#updateJoueursIssued').prop('disabled', false);
+                                                $('span#nbJoueurs').text('Tous les joueurs sont à jour')
+                                                messageNbJoueursIssued.addClass('blue');
+                                                messageNbJoueursIssued.removeClass('orange darken-2');
                                             }
-                                        })
-                                    </script>
-                                </p>
-                            {% endif %}
+                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                        }
+                                        else {
+                                            $('.isCritFed').toggleClass('hide');
+                                            if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
+                                            if (nbJoueursAll === 0) {
+                                                messageNbJoueursIssued.addClass('blue');
+                                                messageNbJoueursIssued.removeClass('orange darken-2');
+                                            }
+                                            else {
+                                                messageNbJoueursIssued.removeClass('blue');
+                                                messageNbJoueursIssued.addClass('orange darken-2');
+                                            }
+                                            $('span#nbJoueurs').text(nbJoueursAll + ' joueur' + (nbJoueursAll > 1 ? 's' : '') + (nbJoueursAll > 1 ? ' seront' : ' sera') + ' mis à jour')
+                                            if (nbJoueursAll === 0) $('button#updateJoueursIssued').prop('disabled', true);
+                                            else $('button#updateJoueursIssued').prop('disabled', false);
+                                        }
+                                    })
+                                </script>
+                            </p>
+                        {% endif %}
 
-                            <input type="hidden" name="resetPlayers" value="1">
-                            <button {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %}disabled{% endif %} class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
-                        </form>
-                    {% endif %}
+                        <input type="hidden" name="resetPlayers" value="1">
+                        <button {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %}disabled{% endif %} class='btn waves-effect green btn_gestion' id="updateJoueursIssued">Mettre à jour</button>
+                    </form>
 
                     <table class="striped centered responsive-table {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %} hide{% endif %}" id="joueursIssued">
                         <thead>
@@ -203,27 +201,25 @@
 
                                 <div style="margin-top: 25px; margin-bottom: 35px;"></div>
 
-                                {% if app.user.admin %}
-                                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
-                                        <input type="hidden" name="preRentreeResetChampionnats" value="1">
-                                        <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
-                                        <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer la pré-phase</button>
+                                <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
+                                    <input type="hidden" name="preRentreeResetChampionnats" value="1">
+                                    <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
+                                    <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer la pré-phase</button>
 
-                                        <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
-                                            <div class="preloader-wrapper small active">
-                                                <div class="spinner-layer spinner-blue-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
-                                                    </div>
+                                    <div id="preloaderPreRentreeResetPhase{{ nomChampionnat }}" hidden style="height: 38px;">
+                                        <div class="preloader-wrapper small active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div><div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div><div class="circle-clipper right">
+                                                    <div class="circle"></div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                {% endif %}
+                                    </div>
+                                </form>
                             </div>
                         {% endif %}
 
@@ -457,7 +453,7 @@
                                     {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
                                     {% endif %}
 
-                                    {% if app.user.admin and (data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
+                                    {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
                                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                         <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">

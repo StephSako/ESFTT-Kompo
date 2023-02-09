@@ -167,10 +167,13 @@ class AppExtension extends AbstractExtension
      */
     public function listeRemplacants(int $numeroEquipe, array $allBrulages, array $allDispos, array $selectedIdsPlayersEquipe): array
     {
-        /** on récupère la liste des brûlages de l'équipe */
-        $brulagesEquipe = array_values(array_filter($allBrulages, function($e) use ($numeroEquipe) {
+        $brulageEquipe = array_filter($allBrulages, function($e) use ($numeroEquipe) {
             return $e['nomEquipe'] == 'Équipe n°' . $numeroEquipe;
-        }))[0]['joueurs'];
+        });
+        if (count($brulageEquipe) == 0) return [];
+
+        /** on récupère la liste des brûlages de l'équipe */
+        $brulagesEquipe = array_values($brulageEquipe)[0]['joueurs'];
 
         /** On filtre les joueurs de l'équipe disponibles non sélectionnés pour cette journée */
         $disposNonSelectionnesEquipe = array_filter($allDispos['Équipe n°' . $numeroEquipe], function ($joueurDisposNonSelectionne) use ($selectedIdsPlayersEquipe) {

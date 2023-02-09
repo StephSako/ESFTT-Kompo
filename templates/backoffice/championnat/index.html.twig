@@ -21,10 +21,12 @@
             <h4>Les championnats</h4>
         </div>
 
-        <a href='{{ path('backoffice.championnat.new') }}'
-           class='btn waves-effect blue lighten-1 btn_gestion'>
-            Créer un championnat
-        </a>
+        {% if app.user.admin %}
+            <a href='{{ path('backoffice.championnat.new') }}'
+               class='btn waves-effect blue lighten-1 btn_gestion'>
+                Créer un championnat
+            </a>
+        {% endif %}
 
         <div class='card-panel' style='margin-top: 20px;'>
             {% if championnats|length %}
@@ -39,8 +41,10 @@
                         <th>Règle brûlage J2</th>
                         <th>Tri auto.</th>
                         <th>Lié à la FFTT</th>
-                        <th></th>
-                        <th></th>
+                        {% if app.user.admin %}
+                            <th></th>
+                            <th></th>
+                        {% endif %}
                     </tr>
                     </thead>
 
@@ -60,22 +64,24 @@
                                 <i class='material-icons'>{% if championnat.compoSorted %}check{% else %}clear{% endif %}</i>
                             </td>
                             <td>
-                                {% if championnat.lienFfttApi %} <i class='material-icons green-text'>leak_add</i>
+                                {% if championnat.organismePere %} <i class='material-icons green-text'>leak_add</i>
                                 {% else %} <i class='material-icons red-text'>leak_remove</i>
                                 {% endif %}
                             </td>
-                            <td>
-                                <a href='{{ path('backoffice.championnat.edit', {idChampionnat: championnat.idChampionnat}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
-                            </td>
-                            <td>
-                                <form method='post' action='{{ path('backoffice.championnat.delete', {idChampionnat: championnat.idChampionnat}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le championnat ?')">
-                                    <input type='hidden' name='_method' value='DELETE'>
-                                    <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ championnat.idChampionnat) }}'>
-                                    <button class='btn waves-effect red lighten-2 btn_gestion'>
-                                        <i class='material-icons'>delete</i>
-                                    </button>
-                                </form>
-                            </td>
+                            {% if app.user.admin %}
+                                <td>
+                                    <a href='{{ path('backoffice.championnat.edit', {idChampionnat: championnat.idChampionnat}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                                </td>
+                                <td>
+                                    <form method='post' action='{{ path('backoffice.championnat.delete', {idChampionnat: championnat.idChampionnat}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le championnat ?')">
+                                        <input type='hidden' name='_method' value='DELETE'>
+                                        <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ championnat.idChampionnat) }}'>
+                                        <button class='btn waves-effect red lighten-2 btn_gestion'>
+                                            <i class='material-icons'>delete</i>
+                                        </button>
+                                    </form>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

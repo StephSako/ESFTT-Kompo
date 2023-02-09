@@ -163,9 +163,11 @@ div.scrollableTable {
   overflow-x: scroll;
   width: 100%;
   padding: 0;
-  font-size: 90%;
   height: auto;
   margin-top: 10px;
+}
+div.scrollableTable.brulages {
+  font-size: 90%;
 }
 div.scrollableTable tr:nth-child(odd) > td {
   background-color: #f2f2f2;
@@ -318,13 +320,23 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   object-fit: cover;
 }
 
-.cardJoueursBrules {
+.cardJoueursEditJournee {
   margin-top: 20px;
   padding: 10px 0 6px;
 }
-.cardJoueursBrules h5 {
+.cardJoueursEditJournee.joueurSelectionnablesBrulage.dix_px {
+  margin-top: 10px;
+}
+.cardJoueursEditJournee h5 {
   margin-top: 8px;
   margin-bottom: 8px;
+}
+.cardJoueursEditJournee td {
+  padding-left: 10px;
+  font-size: 90%;
+}
+.cardJoueursEditJournee th {
+  padding: 0 5px;
 }
 
 .chip-menu {
@@ -590,6 +602,10 @@ li.error {
   font-style: italic;
 }
 
+.dropdown-content li > span, .dropdown-content li > div > span, .dropdown-content li > span > label {
+  color: #1a7cbf;
+}
+
 form h5 {
   font-size: 1.3rem;
 }
@@ -604,6 +620,18 @@ form h5 {
 
 .titlecase .select-dropdown.dropdown-trigger, .titlecase .dropdown-content.select-dropdown {
   text-transform: capitalize;
+}
+
+ul.dropdown-content.select-dropdown li.optgroup {
+  min-height: 30px;
+}
+ul.dropdown-content.select-dropdown li.optgroup:hover {
+  cursor: default;
+  background-color: white;
+}
+ul.dropdown-content.select-dropdown li.optgroup span {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .input_file .file-field.input-field {
@@ -888,6 +916,10 @@ table.rankingVirtualPoints td .chip .nom {
 
 table.classementPoule td {
   padding: 14px 5px;
+}
+
+table.table-backoffice-disponibilites tbody td {
+  padding: 7px 5px;
 }
 
 @-webkit-keyframes rainbow {
@@ -1445,9 +1477,6 @@ a.reload_ranking {
     margin-top: 0;
   }
 
-  .backoffice_disponibilites table.table-backoffice-disponibilites tbody td {
-    padding: 5px;
-  }
   .backoffice_disponibilites .row {
     width: min-content;
   }
@@ -1479,6 +1508,13 @@ a.reload_ranking {
   }
   .merged_cards.bottom table thead th h5 {
     margin-top: 0;
+  }
+
+  .cardJoueursEditJournee {
+    margin-top: 10px;
+  }
+  .cardJoueursEditJournee td {
+    font-size: 95%;
   }
 }
 @media screen and (max-width: 850px) {

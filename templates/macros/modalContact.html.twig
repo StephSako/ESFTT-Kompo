@@ -118,10 +118,10 @@
                                     <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <i class="material-icons white black-text">content_copy</i>
                                     </button>
-                                    {% if 'ROLE_LOISIR' not in app.token.roleNames %}
-                                        <span class="reset pastille christmas_code hide adresse_cc">238KR</span>
-                                    {% endif %}
                                 </div>
+                                {% if 'ROLE_LOISIR' not in app.token.roleNames %}
+                                    <span class="reset pastille christmas_code hide adresse_cc">238KR</span>
+                                {% endif %}
                             </div>
                         </div>
                         <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>

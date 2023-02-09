@@ -81,7 +81,7 @@ class Championnat
      *
      * @ORM\Column(type="integer", name="lien_fftt_api", nullable=true)
      */
-    private $lienFfttApi;
+    private $organismePere;
 
     /**
      * @var int
@@ -358,18 +358,18 @@ class Championnat
     /**
      * @return int|null
      */
-    public function getLienFfttApi(): ?int
+    public function getOrganismePere(): ?int
     {
-        return $this->lienFfttApi;
+        return $this->organismePere;
     }
 
     /**
-     * @param int|null $lienFfttApi
+     * @param int|null $organismePere
      * @return Championnat
      */
-    public function setLienFfttApi(?int $lienFfttApi): self
+    public function setOrganismePere(?int $organismePere): self
     {
-        $this->lienFfttApi = $lienFfttApi;
+        $this->organismePere = $organismePere;
         return $this;
     }
 

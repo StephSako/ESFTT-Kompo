@@ -181,20 +181,20 @@
                         <div class="row header_compo">
 
                             {% if compo.reporte and not journee.undefined %}
-                                <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
+                                <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px;" class="col s12 orange-text">
                                 <i class="material-icons">update</i>
                                 <b>Match {{ journee.dateJournee > compo.dateReport ? 'avancé' : 'reporté' }} au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
                                 </span>
                             {% endif %}
 
                             {% if compo.villeHost %}
-                                <span style="margin-top: 0; margin-bottom: 10px;" class="col s12 orange-text">
-                                    <i class="material-icons">error_outline</i>
+                                <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px;" class="col s12 orange-text">
+                                    <i class="material-icons">wrong_location</i>
                                     <b>Salle indisponible : rencontre à {{ compo.villeHost }}</b>
                                 </span>
                             {% endif %}
 
-                            <div class="col s4 m2" style="padding-right: 0">
+                            <div class="col s4{% if not compo.exempt%} m2{% endif %}" style="padding-right: 0">
                                 <h5>
                                     <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
@@ -216,7 +216,7 @@
 
                             <div class="col s5 m3" style="padding-left: 0; padding-right: 0;">
                                 <div class="row" style="margin-top: 12px">
-                                    <div class="col offset-s3" style="padding-left: 0; padding-right: 6px;">
+                                    <div class="col offset-s3 offset-m4" style="padding-left: 0; padding-right: 6px;">
                                         <h5 class="lobster_2" style="margin-top: 3px;">
                                             Équipe {{ compo.idEquipe.numero }}
                                         </h5>
@@ -224,9 +224,9 @@
                                 </div>
                             </div>
 
-                            <div class="col s3 hide-on-med-and-up" style="padding-left: 0; padding-right: 0;">
-                                <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                    {% if not compo.exempt %}
+                            {% if not compo.exempt %}
+                                <div class="col s3 hide-on-med-and-up" style="padding-left: 0; padding-right: 0;">
+                                    <h5 style="margin-top: 12px; margin-bottom: 0;">
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
@@ -238,13 +238,13 @@
                                                     {% endif %}
                                                 </i>
                                         {% endif %}
-                                    {% endif %}
-                                </h5>
-                            </div>
+                                    </h5>
+                                </div>
+                            {% endif %}
 
-                            <div class="col m2 hide-on-small-only">
-                                <h5 style="margin-top: 12px; margin-bottom: 0;">
-                                    {% if not compo.exempt %}
+                            {% if not compo.exempt %}
+                                <div class="col m2 hide-on-small-only">
+                                    <h5 style="margin-top: 12px; margin-bottom: 0;">
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
@@ -256,11 +256,11 @@
                                                 {% endif %}
                                             </i>
                                         {% endif %}
-                                    {% endif %}
-                                </h5>
-                            </div>
+                                    </h5>
+                                </div>
+                            {% endif %}
 
-                            <div class="col m5 hide-on-small-only">
+                            <div class="col{% if not compo.exempt %} m5{% else %} s4{% endif%} hide-on-small-only">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
@@ -274,7 +274,7 @@
                                                 </a>
                                             {% endif %}
                                         </div>
-                                        {% if compo.idEquipe.lienDivision %}
+                                        {% if compo.idEquipe.lienDivision and compo.adversaire is not null %}
                                             <div class="col" style="padding-left: 0; padding-right: 0;">
                                                 <a onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                                     <i class="material-icons" style="font-size: 1.5rem;">format_list_bulleted</i>
@@ -301,7 +301,7 @@
                                                 </a>
                                             {% endif %}
                                         </div>
-                                        {% if compo.idEquipe.lienDivision %}
+                                        {% if compo.idEquipe.lienDivision and compo.adversaire is not null %}
                                             <div>
                                                 <a style="margin-bottom: 10px; margin-top: 8px;" onclick="getLastComposAdversaire('{{ compo.adversaire }}', '{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#modalJoueursAdv{{ compo.idEquipe.numero }}">
                                                     <i class="material-icons">format_list_bulleted</i>
@@ -313,100 +313,100 @@
                             </div>
                         </div>
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
-                            <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
-                        {% endif %}
+                        {% if not compo.exempt %}
+                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                                <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
+                            {% endif %}
 
-                        <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
-                            <tbody>
-                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
+                                <tbody>
+                                    {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
+                                        {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
 
-                        {% if compo.selectedPlayers|length == compo.idEquipe.idDivision.nbJoueurs %}
-                            {% set listeRemplacants = listeRemplacants(compo.idEquipe.numero, brulages, disponibilitesJournee, selectedPlayers) %}
-                            {% if listeRemplacants|length %}
-                                <div class="blue pastille reset remplacants">
-                                    <div class="header">
-                                        <p>
-                                            <i class="material-icons tooltipped" data-position="top" data-tooltip="Remplaçant : si son équipe est complète, c'est un joueur déclaré disponible, non brûlé et non sélectionné dans une équipe">help</i>
-                                        </p>
-                                        <p>
-                                            <b>Remplaçant{% if listeRemplacants|length > 1 %}s{% endif %}</b><br>
-                                        </p>
-                                        <p></p>
+                            {% if compo.selectedPlayers|length == compo.idEquipe.idDivision.nbJoueurs %}
+                                {% set listeRemplacants = listeRemplacants(compo.idEquipe.numero, brulages, disponibilitesJournee, selectedPlayers) %}
+                                {% if listeRemplacants|length %}
+                                    <div class="blue pastille reset remplacants">
+                                        <div class="header">
+                                            <p>
+                                                <i class="material-icons tooltipped" data-position="top" data-tooltip="Remplaçant : si son équipe est complète, c'est un joueur déclaré disponible, non brûlé et non sélectionné dans une équipe">help</i>
+                                            </p>
+                                            <p>
+                                                <b>Remplaçant{% if listeRemplacants|length > 1 %}s{% endif %}</b><br>
+                                            </p>
+                                            <p></p>
+                                        </div>
+                                        {{ listeRemplacants|join(', ', ' et ') }}
                                     </div>
-                                    {{ listeRemplacants|join(', ', ' et ') }}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
+                                <div style="margin-bottom: 10px; margin-top: 5px;">
+                                    <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
+                                        <i class="material-icons">group_add</i>
+                                    </a>
+                                    {% if not compo.isEmpty %}
+                                        {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
+                                            <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
+                                                <i class="material-icons campaign">campaign</i>
+                                            </a>
+                                            {{ _modalContact.modalAlertPlayers
+                                                (
+                                                    compo.id,
+                                                    compo.getListContactSelectedPlayers(app.user.idCompetiteur),
+                                                    'Alerter les joueurs',
+                                                    'mailto:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                    'sms:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom)
+                                                )
+                                            }}
+                                        {% endif %}
+                                        <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: idJournee, idCompo: compo.id}) }}">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             {% endif %}
-                        {% endif %}
 
-                        {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and (rencontreStillEditable(compo)) %}
-                            <div style="margin-bottom: 10px; margin-top: 5px;">
-                                <a href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2">
-                                    <i class="material-icons">group_add</i>
-                                </a>
-                                {% if not compo.isEmpty %}
-                                    {% if compo.getListContactSelectedPlayers(app.user.idCompetiteur)['nbJoueursWithoutMe'] > 0 %}
-                                        <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
-                                            <i class="material-icons campaign">campaign</i>
-                                        </a>
-                                        {{ _modalContact.modalAlertPlayers
-                                            (
-                                                compo.id,
-                                                compo.getListContactSelectedPlayers(app.user.idCompetiteur),
-                                                'Alerter les joueurs',
-                                                'mailto:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                                'sms:' ~ compo.getListContactSelectedPlayers(app.user.idCompetiteur)['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom)
-                                            )
-                                        }}
-                                    {% endif %}
-                                    <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {idCompo: compo.id, type: championnat.idChampionnat, idJournee: idJournee}) }}">
-                                        <i class="material-icons">delete</i>
-                                    </a>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
+                            {{ _modalContact.modalGPS
+                                (
+                                compo.id,
+                                compo.adresse,
+                                compo.complementAdresse,
+                                compo.hrefMapsAdresse,
+                                compo.hrefWazeAdresse,
+                                compo.site,
+                                compo.telephone
+                                )
+                            }}
 
-                    {{ _modalContact.modalGPS
-                        (
-                            compo.id,
-                            compo.adresse,
-                            compo.complementAdresse,
-                            compo.hrefMapsAdresse,
-                            compo.hrefWazeAdresse,
-                            compo.site,
-                            compo.telephone
-                        )
-                    }}
-
-                    {% if not compo.exempt %}
-                        <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
-                            <div class="modal-content">
-                                <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                        <div class="preloader-wrapper small active">
-                                            <div class="spinner-layer spinner-blue-only">
-                                                <div class="circle-clipper left">
-                                                    <div class="circle"></div>
-                                                </div><div class="gap-patch">
-                                                    <div class="circle"></div>
-                                                </div><div class="circle-clipper right">
-                                                    <div class="circle"></div>
+                            <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
+                                <div class="modal-content">
+                                    <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
+                                        <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                                            <div class="preloader-wrapper small active">
+                                                <div class="spinner-layer spinner-blue-only">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div><div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div><div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="modal-footer">
+                                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
-                            </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
 
                     <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
                         <div class="modal-content">

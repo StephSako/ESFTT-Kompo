@@ -28,8 +28,6 @@ class HomeController extends AbstractController
     private $disponibiliteRepository;
     private $rencontreRepository;
     private $settingsRepository;
-    private $utilController;
-    private $contactController;
 
     /**
      * @param ChampionnatRepository $championnatRepository
@@ -37,8 +35,6 @@ class HomeController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
-     * @param UtilController $utilController
-     * @param ContactController $contactController
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
@@ -46,8 +42,6 @@ class HomeController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 RencontreRepository $rencontreRepository,
                                 SettingsRepository $settingsRepository,
-                                UtilController $utilController,
-                                ContactController $contactController,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -56,21 +50,19 @@ class HomeController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
-        $this->utilController = $utilController;
-        $this->contactController = $contactController;
     }
 
     /**
      * @Route("/", name="index")
-     * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function indexAction(Request $request): Response
+    public function indexAction(UtilController $utilController): Response
     {
-        if ($this->utilController->nextJourneeToPlayAllChamps()){
+        if ($utilController->nextJourneeToPlayAllChamps()){
             return $this->redirectToRoute('journee.show', [
-                'type' => $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
-                'id' => $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee()
+                'type' => $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
+                'idJournee' => $utilController->nextJourneeToPlayAllChamps()->getIdJournee()
             ]);
         } else return $this->render('journee/noChamp.html.twig', [
             'allChampionnats' => null,
@@ -90,38 +82,40 @@ class HomeController extends AbstractController
         if ($championnat) {
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'id' => $championnat->getNextJourneeToPlay() ? $championnat->getNextJourneeToPlay()->getIdJournee() : $championnat->getJournees()->toArray()[0]->getIdJournee()
+                'idJournee' => $championnat->getNextJourneeToPlay() ? $championnat->getNextJourneeToPlay()->getIdJournee() : $championnat->getJournees()->toArray()[0]->getIdJournee()
             ]);
-        } else return $this->redirectToRoute('index', []);
+        } else return $this->redirectToRoute('index');
     }
 
     /**
      * @param int $type
-     * @param int $id
+     * @param int $idJournee
      * @param Request $request
+     * @param ContactController $contactController
+     * @param UtilController $utilController
      * @return Response
+     * @Route("/journee/{type}/{idJournee}", name="journee.show", requirements={"type"="\d+", "idJournee"="\d+"})
      * @throws Exception
-     * @Route("/journee/{type}/{id}", name="journee.show", requirements={"type"="\d+", "id"="\d+"})
      */
-    public function journee(int $type, int $id, Request $request): Response
+    public function journee(int $type, int $idJournee, Request $request, ContactController $contactController, UtilController $utilController): Response
     {
         if ($request->query->get('code') != null) $this->addFlash('christmas_code', null);
 
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
 
-        if (!in_array($id, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))){
+        if (!in_array($idJournee, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))){
             $this->addFlash('fail', 'Journée inexistante pour ce championnat');
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
-        $journee = array_values(array_filter($journees, function($journee) use ($id) { return ($journee->getIdJournee() == $id ? $journee : null); }))[0];
+        $journee = array_values(array_filter($journees, function($journee) use ($idJournee) { return ($journee->getIdJournee() == $idJournee ? $journee : null); }))[0];
 
         $this->get('session')->set('type', $type);
 
         // Disponibilité du joueur
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
-        $dispoJoueur = array_values(array_filter($disposJoueur, function($dispo) use ($id) {
-            return $dispo->getIdJournee()->getIdJournee() == $id;
+        $dispoJoueur = array_values(array_filter($disposJoueur, function($dispo) use ($idJournee) {
+            return $dispo->getIdJournee()->getIdJournee() == $idJournee;
         }));
         $dispoJoueur = count($dispoJoueur) ? $dispoJoueur[0] : null;
         $disposJoueurFormatted = null;
@@ -133,14 +127,14 @@ class HomeController extends AbstractController
         }
 
         // Compositions d'équipe
-        $compos = $this->rencontreRepository->getRencontres($id, $type);
+        $compos = $this->rencontreRepository->getRencontres($idJournee, $type);
 
         // Numero de la journée
         $numJournee = array_search($journee, $journees)+1;
 
         // Disponibilités des joueurs pour la journée par équipe
         $nbMaxJoueursParDivision = array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos);
-        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($id, $type, $nbMaxJoueursParDivision ? max($nbMaxJoueursParDivision) : $this->getParameter('nb_joueurs_default_division'));
+        $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($idJournee, $type, $nbMaxJoueursParDivision ? max($nbMaxJoueursParDivision) : $this->getParameter('nb_joueurs_default_division'));
         $joueursNonDeclares = [];
         $joueursDisponibles = [];
         foreach ($disponibilitesJournee as $equipe) {
@@ -149,7 +143,7 @@ class HomeController extends AbstractController
                 else if ($dispoJoueurEquipe['disponibilite'] == '1') $joueursDisponibles[] = $dispoJoueurEquipe;
             }
         }
-        $joueursNonDeclaresContact = $this->contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
+        $joueursNonDeclaresContact = $contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
 
         $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         if (count($joueursNonDeclares)) {
@@ -175,7 +169,7 @@ class HomeController extends AbstractController
 
         // Nombre maximal de joueurs pour les compos du championnat sélectionné
         $nbMaxSelectedJoueurs = array_sum(array_map(function($compo) use ($type) {
-            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
+            return !$compo->isExempt() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 0;
         }, $compos));
 
         // Numéros des équipes valides pour le brûlage
@@ -212,7 +206,7 @@ class HomeController extends AbstractController
 
         // Brûlages des joueurs
         $divisions = $championnat->getDivisions()->toArray();
-        $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $id, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
+        $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
@@ -237,7 +231,7 @@ class HomeController extends AbstractController
             'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
-        $linkNextJournee = ($this->utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $this->utilController->nextJourneeToPlayAllChamps()->getIdJournee() . '?code=true' : null);
+        $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() . '?code=true' : null);
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -261,7 +255,7 @@ class HomeController extends AbstractController
             'nbDispos' => count($joueursDisponibles),
             'nbNonDeclares' => count($joueursNonDeclares),
             'brulages' => $brulages,
-            'isPreRentreeLaunchable' => $this->utilController->isPreRentreeLaunchable($championnat)['launchable'],
+            'isPreRentreeLaunchable' => $utilController->isPreRentreeLaunchable($championnat)['launchable'],
             'allDisponibilites' => $allDisponibilites,
             'countJoueursCertifMedicPerim' => $countJoueursCertifMedicPerim,
             'joueursWithoutLicence' => $joueursWithoutLicence,
@@ -273,13 +267,14 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/{type}/edit/{compo}", name="composition.edit", requirements={"type"="\d+", "compo"="\d+"})
+     * @Route("/journee/edit/{type}/{compo}", name="composition.edit", requirements={"type"="\d+", "compo"="\d+"})
      * @param int $type
      * @param int $compo
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function edit(int $type, int $compo, Request $request) : Response
+    public function edit(int $type, int $compo, Request $request, UtilController $utilController) : Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) {
             $this->addFlash('fail', 'Championnat inexistant');
@@ -291,18 +286,23 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
 
+        if ($compo->isExempt()) {
+            $this->addFlash('fail', 'Journée exemptée pour l\'équipe ' . $compo->getIdEquipe()->getNumero());
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
+        }
+
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
             $this->addFlash('fail', 'Cette rencontre n\'est plus modifiable : date de journée dépassée');
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $compo->getIdJournee()->getIdJournee()]);
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $journees = $championnat->getJournees()->toArray();
         $idJournee = array_search($compo->getIdJournee(), $journees)+1;
         if (!$compo->getIdEquipe()->getIdDivision()) {
             $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $compo->getIdJournee()->getIdJournee()]);
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $allChampionnats = $this->championnatRepository->findAll();
@@ -334,9 +334,9 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $nbJoueursBruleJ2 = 0;
-            if ($championnat->isJ2Rule()){
+            if ($championnat->isJ2Rule()) {
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
-                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables,
+                $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables['joueurs'],
                     function($joueur){
                         return ($joueur["bruleJ2"]);
                     }), 'idCompetiteur');
@@ -347,7 +347,7 @@ class HomeController extends AbstractController
                 }
             }
 
-            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés J2 sont sélectionnés');
+            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés spécial J2 sont sélectionnés');
             else {
                 /** On sauvegarde la composition d'équipe */
                 try {
@@ -363,7 +363,7 @@ class HomeController extends AbstractController
                                 $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
                                 if ($invalidCompo){
                                     array_push($invalidCompos, ...$invalidCompo);
-                                    $this->utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
+                                    $utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
                                 }
                             }
                         }
@@ -382,7 +382,7 @@ class HomeController extends AbstractController
 
                     return $this->redirectToRoute('journee.show', [
                         'type' => $type,
-                        'id' => $compo->getIdJournee()->getIdJournee()
+                        'idJournee' => $compo->getIdJournee()->getIdJournee()
                     ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000"){
@@ -405,7 +405,7 @@ class HomeController extends AbstractController
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
             'nbJoueursDivision' => $nbJoueursDivision,
-            'brulageSelectionnables' => $brulageSelectionnables,
+            'brulageSelectionnables' => $brulageSelectionnables['par_equipes'],
             'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
@@ -417,17 +417,29 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/composition/empty/{idCompo}/{type}/{idJournee}", name="composition.vider", requirements={"idCompo"="\d+"})
+     * @Route("/journee/empty/{type}/{idJournee}/{idCompo}", name="composition.vider", requirements={"idCompo"="\d+"})
      * @param int $idCompo
      * @param int $type
      * @param int $idJournee
      * @return Response
      */
-    public function emptyComposition(int $idCompo, int $type, int $idJournee) : Response
+    public function emptyComposition(int $type, int $idJournee, int $idCompo) : Response
     {
         if (!($compo = $this->rencontreRepository->find($idCompo))) {
             $this->addFlash('fail', 'Rencontre inexistante');
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'id' => $idJournee]);
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $idJournee]);
+        }
+
+        if ($compo->isExempt()) {
+            $this->addFlash('fail', 'Journée exemptée pour l\'équipe ' . $compo->getIdEquipe()->getNumero());
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
+        }
+
+        $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
+        if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
+            $this->addFlash('fail', 'Cette rencontre n\'est plus modifiable : date de journée dépassée');
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $compo->emptyCompo();
@@ -435,17 +447,17 @@ class HomeController extends AbstractController
         $this->addFlash('success', 'Composition vidée');
         return $this->redirectToRoute('journee.show', [
             'type' => $compo->getIdChampionnat()->getIdChampionnat(),
-            'id' => $compo->getIdJournee()->getIdJournee()
+            'idJournee' => $compo->getIdJournee()->getIdJournee()
         ]);
     }
 
     /**
      * @Route("/informations/{type}", name="informations")
      */
-    public function getInformations(Request $request, string $type): Response
+    public function getInformations(Request $request, string $type, UtilController $utilController): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         $setting = $this->settingsRepository->find($type);
         if (!$setting) {
@@ -507,10 +519,10 @@ class HomeController extends AbstractController
     /**
      * @Route("/aide", name="aide")
      */
-    public function getHelpPage(): Response
+    public function getHelpPage(UtilController $utilController): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $this->utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
         // Disponibilités du joueur
         $id = $championnat->getIdChampionnat();

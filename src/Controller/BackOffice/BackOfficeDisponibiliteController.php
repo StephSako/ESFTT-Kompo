@@ -25,7 +25,6 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $journeeRepository;
     private $rencontreRepository;
     private $championnatRepository;
-    private $utilController;
 
     /**
      * BackOfficeController constructor.
@@ -33,7 +32,6 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param CompetiteurRepository $competiteurRepository
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
-     * @param UtilController $utilController
      * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
@@ -41,7 +39,6 @@ class BackOfficeDisponibiliteController extends AbstractController
                                 CompetiteurRepository $competiteurRepository,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em,
-                                UtilController $utilController,
                                 ChampionnatRepository $championnatRepository,
                                 RencontreRepository $rencontreRepository)
     {
@@ -51,7 +48,6 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -107,9 +103,10 @@ class BackOfficeDisponibiliteController extends AbstractController
     /**
      * @Route("/backoffice/disponibilites/update", name="backoffice.disponibilite.update", methods={"POST"})
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function update(Request $request):Response
+    public function update(Request $request, UtilController $utilController):Response
     {
         /** On récupère les paramètres */
         $idDisponibilite = $request->request->get('idDisponibilite');
@@ -127,7 +124,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             if (!$disponibiliteBoolean){
                 $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
                 $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-                $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+                $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
                 foreach ($invalidCompos as $compo){
                     /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
@@ -153,9 +150,10 @@ class BackOfficeDisponibiliteController extends AbstractController
     /**
      * @Route("/backoffice/disponibilites/delete", name="backoffice.disponibilite.delete", methods={"POST"})
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function delete(Request $request):Response
+    public function delete(Request $request, UtilController $utilController):Response
     {
         /** On récupère les paramètres */
         $idDisponibilite = $request->request->get('idDisponibilite');
@@ -169,7 +167,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             /** On supprime le joueur des compositions d'équipe de la journée actuelle */
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
-            $this->utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
+            $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
             foreach ($invalidCompos as $compo){
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
