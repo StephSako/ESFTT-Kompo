@@ -1154,6 +1154,10 @@ table.table-last-compos tr {
   display: none;
 }
 
+button#updateJoueursIssued {
+  margin-top: 0;
+}
+
 .merged_cards.up.leftOne {
   margin-top: 10px;
 }
@@ -1371,6 +1375,9 @@ a.reload_ranking {
     padding-top: 18px;
   }
 
+  table#joueursIssued {
+    margin-top: 16px;
+  }
   table#joueursIssued tbody tr td.isCritFed:last-child {
     min-height: 56px;
   }
