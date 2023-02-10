@@ -343,6 +343,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             ->setDateReport($journeesKompo[$i]->getDateJournee())
                                             ->setReporte(false)
                                             ->setAdversaire($adversaire)
+                                            ->setValidationCompo(false)
                                             ->setExempt($isExempt);
 
                                         /** On indique l'adresse, complément d'adresse et site web du club adverse */
@@ -381,6 +382,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                         ->setVilleHost(false)
                                         ->setReporte(false)
                                         ->setAdversaire($adversaire)
+                                        ->setValidationCompo(false)
                                         ->setExempt($isExempt);
 
                                     /** On indique l'adresse, complément d'adresse et site web du club adverse */
@@ -553,6 +555,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ->setTelephone(null)
                                 ->setSite(null)
                                 ->setAdresse(null)
+                                ->setValidationCompo(false)
                                 ->setComplementAdresse(null)
                                 ->setDateReport($rencontreKompo->getIdJournee()->getDateJournee())
                                 ->setAdversaire(null);
