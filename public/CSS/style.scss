@@ -1351,6 +1351,10 @@ table.table-last-compos {
   display: none;
 }
 
+button#updateJoueursIssued {
+  margin-top: 0;
+}
+
 .merged_cards.up.leftOne {
   margin-top: 10px;
 }
@@ -1678,8 +1682,12 @@ a.reload_ranking {
     }
   }
 
-  table#joueursIssued tbody tr td.isCritFed:last-child {
-    min-height: 56px;
+  table#joueursIssued {
+    margin-top: 16px;
+
+    tbody tr td.isCritFed:last-child {
+      min-height: 56px;
+    }
   }
 
   .th_mobile_nom {

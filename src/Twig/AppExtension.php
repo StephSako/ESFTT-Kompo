@@ -20,7 +20,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
             new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
             new TwigFunction('journeePassee', [$this, 'journeePassee']),
-            new TwigFunction('listeRemplacants', [$this, 'listeRemplacants'])
+            new TwigFunction('listeRemplacants', [$this, 'listeRemplacants']),
+            new TwigFunction('isCapitaineNotSelectedForCCI', [$this, 'isCapitaineNotSelectedForCCI'])
         ];
     }
 
@@ -193,5 +194,15 @@ class AppExtension extends AbstractExtension
         return array_keys(array_filter($disposNonSelectionnesEquipe, function($remplacant) use ($joueursNonBrules) {
             return in_array($remplacant['joueur']->getIdCompetiteur(), $joueursNonBrules);
         }));
+    }
+
+    /**
+     * Retourne les IDs des capitaines à cacher, destinés au CCI
+     * @param array $selectedPlayersIds
+     * @param array $capitainesIds
+     * @return array
+     */
+    public function isCapitaineNotSelectedForCCI(array $selectedPlayersIds, array $capitainesIds): array {
+        return array_values(array_diff($capitainesIds, $selectedPlayersIds));
     }
 }
