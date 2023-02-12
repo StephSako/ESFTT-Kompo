@@ -1209,30 +1209,6 @@ span.field-icon {
   z-index: 2;
 }
 
-.christmas_code {
-  font-family: "Lato", sans-serif;
-  font-size: 12px;
-  margin: 6px 6px !important;
-  font-weight: bold;
-  background-color: red;
-}
-.christmas_code.amethyste {
-  background-color: #9f64bd !important;
-  color: white;
-}
-.christmas_code.or {
-  background-color: #ffd700 !important;
-  color: black;
-}
-.christmas_code.saphir {
-  background-color: #0131b4 !important;
-  color: white;
-}
-.christmas_code.emeraude {
-  background-color: #019875 !important;
-  color: white;
-}
-
 .preloader-wrapper.tiny {
   width: 26.24px;
   height: 26.24px;
@@ -1277,45 +1253,6 @@ a.reload_ranking {
   position: absolute;
   right: 8px;
   top: 8px;
-}
-
-/* The flip box container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
-.flip-box {
-  width: 180px;
-  height: 70px;
-  perspective: 1000px;
-  /* Remove this if you don't want the 3D effect */
-}
-
-/* This container is needed to position the front and back side */
-.flip-box-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-/* Do an horizontal flip when you move the mouse over the flip box container */
-.flip-box:hover .flip-box-inner {
-  transform: rotateY(180deg);
-}
-
-/* Position the front and back side */
-.flip-box-front,
-.flip-box-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  /* Safari */
-  backface-visibility: hidden;
-}
-
-/* Style the back side */
-.flip-box-back {
-  transform: rotateY(180deg);
 }
 
 .navbar-general .left_items .dot {
@@ -1402,11 +1339,6 @@ a.reload_ranking {
   }
   .navbar-general .esftt_logo {
     display: block;
-  }
-}
-@media screen and (min-width: 1168px) {
-  .navbar-general .esftt_logo {
-    display: none;
   }
 }
 @media screen and (max-width: 1128px) {

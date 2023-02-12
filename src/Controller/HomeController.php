@@ -90,17 +90,14 @@ class HomeController extends AbstractController
     /**
      * @param int $type
      * @param int $idJournee
-     * @param Request $request
      * @param ContactController $contactController
      * @param UtilController $utilController
      * @return Response
      * @Route("/journee/{type}/{idJournee}", name="journee.show", requirements={"type"="\d+", "idJournee"="\d+"})
      * @throws Exception
      */
-    public function journee(int $type, int $idJournee, Request $request, ContactController $contactController, UtilController $utilController): Response
+    public function journee(int $type, int $idJournee, ContactController $contactController, UtilController $utilController): Response
     {
-        if ($request->query->get('code') != null) $this->addFlash('christmas_code', null);
-
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
 
@@ -231,7 +228,7 @@ class HomeController extends AbstractController
             'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
-        $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() . '?code=true' : null);
+        $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
         $listeCapitaines = $this->competiteurRepository->findJoueursByRole('Capitaine', $this->getUser()->getIdCompetiteur());
 
         return $this->render('journee/index.html.twig', [

@@ -56,13 +56,6 @@ class Competiteur implements UserInterface, Serializable
         ['libelle' => 'Poussin',    'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
-    const SECRET_CODES = ['2B5Q7', '28BD7', '92Z7P', '5SF85', '3U98K',
-                          '59D7K', 'FG8KD', '238KR', 'Z76E3', 'D87D4'];
-    const BONUS_CODE_1 = '434PJ';
-    const BONUS_CODE_2 = 'XV282';
-    const BONUS_CODE_3 = 'H35H5';
-    const BONUS_CODE_4 = '4E93Y';
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -560,113 +553,6 @@ class Competiteur implements UserInterface, Serializable
      */
     private $code14;
 
-    public function getOwnCodes(): array {
-        return array_filter([
-            $this->code1,
-            $this->code2,
-            $this->code3,
-            $this->code4,
-            $this->code5,
-            $this->code6,
-            $this->code7,
-            $this->code8,
-            $this->code9,
-            $this->code10,
-            $this->code11,
-            $this->code12,
-            $this->code13,
-            $this->code14,
-        ], function($code) {
-            return $code != null && in_array($code, array_merge(self::SECRET_CODES, [self::BONUS_CODE_1, self::BONUS_CODE_2, self::BONUS_CODE_3, self::BONUS_CODE_4]));
-        });
-    }
-
-    public function isCheating(): bool {
-        $allFoundCodes = $this->getOwnCodes();
-        if (count($allFoundCodes) != count(array_unique($allFoundCodes))) return true;
-        return false;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isWinner(): bool
-    {
-        return in_array($this->code1, self::SECRET_CODES)
-        && in_array($this->code2, self::SECRET_CODES)
-        && in_array($this->code3, self::SECRET_CODES)
-        && in_array($this->code4, self::SECRET_CODES)
-        && in_array($this->code5, self::SECRET_CODES)
-        && in_array($this->code6, self::SECRET_CODES)
-        && in_array($this->code7, self::SECRET_CODES)
-        && in_array($this->code8, self::SECRET_CODES)
-        && in_array($this->code9, self::SECRET_CODES)
-        && in_array($this->code10, self::SECRET_CODES);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isFullWinner(): bool
-    {
-        return $this->isWinner() && $this->code11 == self::BONUS_CODE_1 && $this->code12 == self::BONUS_CODE_2 && $this->code13 == self::BONUS_CODE_3 && $this->code14 == self::BONUS_CODE_4;
-    }
-    /**
-     * @return int
-     */
-    public function getScore(): int
-    {
-        $score = 0;
-        if (in_array($this->code1, self::SECRET_CODES)) $score++;
-        if (in_array($this->code2, self::SECRET_CODES)) $score++;
-        if (in_array($this->code3, self::SECRET_CODES)) $score++;
-        if (in_array($this->code4, self::SECRET_CODES)) $score++;
-        if (in_array($this->code5, self::SECRET_CODES)) $score++;
-        if (in_array($this->code6, self::SECRET_CODES)) $score++;
-        if (in_array($this->code7, self::SECRET_CODES)) $score++;
-        if (in_array($this->code8, self::SECRET_CODES)) $score++;
-        if (in_array($this->code9, self::SECRET_CODES)) $score++;
-        if (in_array($this->code10, self::SECRET_CODES)) $score++;
-        if ($this->getCodeBonus1Correct()) $score += 2;
-        if ($this->getCodeBonus2Correct()) $score += 3;
-        if ($this->getCodeBonus3Correct()) $score += 4;
-        if ($this->getCodeBonus4Correct()) $score += 5;
-        return $score;
-    }
-
-
-    /**
-     * @return boolean
-     */
-    public function getCodeBonus1Correct(): bool
-    {
-        return $this->code11 == self::BONUS_CODE_1;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCodeBonus2Correct(): bool
-    {
-        return $this->code12 == self::BONUS_CODE_2;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCodeBonus3Correct(): bool
-    {
-        return $this->code13 == self::BONUS_CODE_3;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getCodeBonus4Correct(): bool
-    {
-        return $this->code14 == self::BONUS_CODE_4;
-    }
-
     /**
      * @return string|null
      */
@@ -917,26 +803,6 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->code14 = $code14;
         return $this;
-    }
-
-    /**
-     * Renvoie l'icon à afficher selon la validité du code passé en paramètre
-     * @param string $code
-     * @param bool $cheating
-     * @param int $i
-     * @return string
-     */
-    public function codeValidation(string $code, bool $cheating, int $i): string {
-        if ($cheating) return '<i class="material-icons red-text">clear</i>';
-
-        $isRegularCode = in_array($code, self::SECRET_CODES);
-        if (($i >= 1 && $i <= 10 && $isRegularCode)
-            || ($i == 11 && $code == self::BONUS_CODE_1)
-            || ($i == 12 && $code == self::BONUS_CODE_2)
-            || ($i == 13 && $code == self::BONUS_CODE_3)
-            || ($i == 14 && $code == self::BONUS_CODE_4))
-            return '<i class="material-icons green-text">check</i>';
-        return '<i class="material-icons red-text">clear</i>';
     }
 
     /**

@@ -171,18 +171,6 @@ class CompetiteurType extends AbstractType
                 ]
             ]);
         }
-
-        if ($options['displayCode']) {
-            for ($i = 1; $i < 15; $i++) {
-                $builder
-                    ->add('code' . $i, TextType::class, [
-                        'label' => false,
-                        'required' => false,
-                        'attr' => [
-                            'maxlength' => 5
-                    ]]);
-            }
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -196,8 +184,7 @@ class CompetiteurType extends AbstractType
             'isArchived' => false,
             'dateNaissanceRequired' => false,
             'usernameEditable' => true,
-            'createMode' => false,
-            'displayCode' => false
+            'createMode' => false
         ]);
     }
 }

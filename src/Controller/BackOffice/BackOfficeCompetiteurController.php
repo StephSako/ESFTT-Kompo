@@ -212,7 +212,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'dateNaissanceRequired' => false,
             'isCertificatInvalid' => true,
             'createMode' => true,
-            'displayCode' => false,
             'usernameEditable' => false
         ]);
         $form->handleRequest($request);
@@ -411,8 +410,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
             'dateNaissanceRequired' => $competiteur->getDateNaissance() != null,
-            'usernameEditable' => $usernameEditable,
-            'displayCode' => $this->getUser()->isAdmin() && !$competiteur->isArchive()
+            'usernameEditable' => $usernameEditable
         ]);
         $form->handleRequest($request);
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
@@ -556,9 +554,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'competiteurId' => $competiteur->getIdCompetiteur(),
             'usernameEditable' => $usernameEditable,
             'form' => $form->createView(),
-            'cheating' => $competiteur->isCheating(),
-            'winner' => $competiteur->isWinner(),
-            'fullWinner' => $competiteur->isFullWinner(),
             'profileCompletion' => $competiteur->profileCompletion(),
             'equipesAssociees' => $equipesAssociees,
             'idsEquipesAssociees' => $idsEquipesAssociees

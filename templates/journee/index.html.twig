@@ -28,14 +28,6 @@
                 {{ _flash.message(message, 'green') }}
             {% endfor %}
 
-            {% if 'ROLE_LOISIR' not in app.token.roleNames %}
-                {% for message in app.flashes('christmas_code') %}
-                    <div class="card-panel center-align" style="background-color: transparent; box-shadow: none; padding-top: 0;padding-bottom: 0;">
-                        <span class="reset pastille christmas_code">3U98K</span>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
             {% for message in app.flashes('fail') %}
                 {{ _flash.message(message, 'red') }}
             {% endfor %}
@@ -498,9 +490,6 @@
                     <i class="material-icons">refresh</i>
                 </a>
                 <h6><b>Progressions et points virtuels</b></h6>
-                {% if 'ROLE_LOISIR' not in app.token.roleNames %}
-                    <span class="reset pastille christmas_code hide">5SF85</span>
-                {% endif %}
                 <div id="rankingContent"></div>
                 <div id="rankingContentLoader" style="padding-right: 4px; padding-left: 4px;">
                     <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">

@@ -351,86 +351,6 @@
                 <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
             {% endif %}
 
-            {% if options.displayCode %}
-                <div class="row" style="margin-bottom: 0; margin-top: 20px; font-size: 16px;">
-
-                    <h5 class="dark_blue">Jeu - Chasse aux codes</h5>
-
-                    <p class="pastille reset blue"><b>Score : {{ form.vars.value.score }}/24</b></p>
-
-                    {% if options.cheating %}
-                        <p class="red-text"><b>Un code ne peut être utilisé qu'une seule fois ... la sélection n'est donc pas valide !</b></p>
-                    {% else %}
-                        {% if options.isWinner and not options.isFullWinner %}
-                            <p class="green-text" style="margin-bottom: 0">
-                                <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                                Vous avez trouvé tous les codes classiques ! Félicitations ! Trouvez les derniers codes bonus !
-                                <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                            </p>
-                        {% elseif options.isFullWinner %}
-                            <p class="green-text" style="margin-bottom: 0">
-                                <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                                Vous avez trouvé tous les codes ainsi que les 4 codes bonus
-                                <i class="material-icons prefix" style="color: #9f64bd">diamond</i>
-                                <i class="material-icons prefix" style="color: #ffd700">diamond</i>
-                                <i class="material-icons prefix" style="color: #0131b4">diamond</i>
-                                <i class="material-icons prefix" style="color: #019875">diamond</i>
-                                ! Félicitations !
-                                <span class="material-icons gold-color" style="vertical-align: text-bottom;">emoji_events</span>
-                            </p>
-                        {% else %}
-                            <p><i>Vous n'avez pas encore trouvé tous les codes ... <b>persévérez !</b></i></p>
-                        {% endif %}
-                    {% endif %}
-
-                    {% for i in 1..10 %}
-                        <div class="col s10 offset-s1">
-                            <div class="row">
-                                <div class="col s11">
-                                    <b><i class="material-icons prefix">key</i> Code {{ i }}</b>
-                                    {{ form_row(attribute(form,'code' ~ i)) }}
-                                </div>
-                                <div class="col s1">
-                                    {{ app.user.codeValidation(form.children['code' ~ i].vars.value, options.cheating, i) | raw }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% for i in 11..14 %}
-                        <div class="col s10 offset-s1">
-                            <div class="row">
-                                <div class="col s11">
-                                    <b><i class="material-icons prefix" style="color:
-                                        {% if i == 11 %}
-                                            #9f64bd
-                                        {% elseif i == 12 %}
-                                            #ffd700
-                                        {% elseif i == 13 %}
-                                            #0131b4
-                                        {% elseif i == 14 %}
-                                            #019875
-                                        {% endif %}">diamond</i> Code
-                                        {% if i == 11 %}
-                                            Améthyste <i>(+1 point)</i>
-                                        {% elseif i == 12 %}
-                                            Or <i>(+2 points)</i>
-                                        {% elseif i == 13 %}
-                                            Saphir <i>(+3 points)</i>
-                                        {% elseif i == 14 %}
-                                            Émeraude <i>(+4 points)</i>
-                                        {% endif %}
-                                    </b>
-                                    {{ form_row(attribute(form,'code' ~ i)) }}
-                                </div>
-                                <div class="col s1">
-                                    {{ app.user.codeValidation(form.children['code' ~ i].vars.value, options.cheating, i) | raw }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
             <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index", { 'code': 'y' }) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
             <button
                 {% if editMode %}
@@ -479,9 +399,6 @@
         <h4 class="h4_form">{{ title }}</h4>
 
         <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
-            {% if 'ROLE_LOISIR' not in app.token.roleNames %}
-                <span class="reset pastille christmas_code hide eyes_password amethyste">434PJ</span>
-            {% endif %}
             <div class="row">
                 {% if type == 'general' %}
                     <div class="input-field col s12 l4">

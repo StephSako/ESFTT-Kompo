@@ -103,8 +103,7 @@ class SecurityController extends AbstractController
         $user = $this->getUser();
 
         $form = $this->createForm(CompetiteurType::class, $user, [
-            'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null,
-            'displayCode' => !$this->getUser()->isLoisir()
+            'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null
         ]);
         $form->handleRequest($request);
 
@@ -280,9 +279,7 @@ class SecurityController extends AbstractController
                     $this->em->flush();
                     $this->addFlash('success', 'Mot de passe modifié');
                     return $this->redirectToRoute('login');
-                } else {
-                    $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
-                }
+                } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
             }
 
             return $this->render('account/reset_password.html.twig', [

@@ -29,10 +29,7 @@ function endSendingResetPassword(message, success){
     $('#email').prop('disabled', false);
     $('#username').prop('disabled', false);
 
-    if (!success) {
-        M.toast({html: message});
-        $('span.christmas_code').removeClass('hide')
-    }
+    if (!success) M.toast({html: message});
     else {
         $('#divMailSent').removeClass('hide');
         $('#sendMailForm').addClass('hide');
