@@ -11,10 +11,10 @@
                 {% endif %}
 
                 {% if not options.noSMS is defined %}
-                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id,  { capitainesToHide: (options.capitainesToHide is defined ? options.capitainesToHide : []) }) }}
+                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
                 {% endif %}
 
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id, { capitainesToHide: (options.capitainesToHide is defined ? options.capitainesToHide : []) }) }}
+                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id) }}
             </div>
         </div>
         <div class="modal-footer">
@@ -23,7 +23,7 @@
     </div>
 {% endmacro %}
 
-{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id, options) %}
+{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id) %}
     <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
         {% if response['contactables']|length %}
             <a href="{{ link }}" class="center-align btn blue lighten-2" id="btn_{{ media }}_{{ id }}">
@@ -50,7 +50,7 @@
 
         <ul class="row">
             {% for joueurContactable in response['contactables'] %}
-                <li class="col s12 m6 {% if joueurContactable.idCompetiteur in options.capitainesToHide %} hide{% endif %}" id="contactable_{{ joueurContactable.idCompetiteur }}">
+                <li class="col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
                     <div class="chip">
                         {% if joueurContactable.avatar %}
                             <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">

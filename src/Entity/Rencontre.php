@@ -677,18 +677,11 @@ class Rencontre
     /**
      * Liste des adresses e-mail et numéros de téléphone des joueurs sélectionnés et contactables
      * @param int $idRedacteur
-     * @param array $listeCapitaines
      * @return array
      */
-    public function getListContactSelectedPlayers(int $idRedacteur, array $listeCapitaines): array
+    public function getListContactSelectedPlayers(int $idRedacteur): array
     {
         $joueurs = $this->getListSelectedPlayers();
-
-        /** Ajout des capitaines en copie SMS/mail */
-        foreach ($listeCapitaines as $capitaine) {
-            if (!in_array($capitaine->getIdCompetiteur(), array_map(function(Competiteur $joueur) { return $joueur->getIdCompetiteur(); }, $joueurs))) $joueurs[] = $capitaine;
-        }
-
         $mails = [];
         $contactablesMails = [];
         $notContactablesMails = [];

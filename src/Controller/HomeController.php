@@ -229,7 +229,6 @@ class HomeController extends AbstractController
         ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
-        $listeCapitaines = $this->competiteurRepository->findJoueursByRole('Capitaine', $this->getUser()->getIdCompetiteur());
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
@@ -260,8 +259,7 @@ class HomeController extends AbstractController
             'competiteursWithoutClassement' => $competiteursWithoutClassement,
             'messageJoueursSansDispo' => $messageJoueursSansDispo,
             'objetJoueursSansDispos' => $objetJoueursSansDispos,
-            'linkNextJournee' => $linkNextJournee,
-            'listeCapitaines' => $listeCapitaines
+            'linkNextJournee' => $linkNextJournee
         ]);
     }
 
