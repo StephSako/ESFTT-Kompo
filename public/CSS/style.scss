@@ -1359,6 +1359,46 @@ button#updateJoueursIssued {
   margin-top: 10px;
 }
 
+.pastilleBorder {
+  border-radius: 10px;
+  width: fit-content;
+  margin: 0 auto;
+  padding-top: 1px;
+
+  .pastilleBorderContent {
+    margin: 0;
+    padding: 2px 10px;
+  }
+
+  .preloader {
+    margin-left: 6px;
+    padding-bottom: 24px;
+    padding-top: 2px;
+  }
+
+  i.material-icons {
+    font-size: 16px;
+    vertical-align: text-bottom;
+
+    &.swap-validation {
+      margin-left: 2px;
+      font-size: 26px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+  }
+
+  &.enAttente {
+    border: 1px solid #ef6c00;
+    color: #ef6c00;
+  }
+  
+  &.validee {
+    border: 1px solid #4caf50;
+    color: #4caf50;
+  }
+}
+
 .divProfileCompletionCol {
   margin-top: 0 !important;
 
@@ -1417,6 +1457,11 @@ span.field-icon {
 .preloader-wrapper.tiny {
   width: 26.24px;
   height: 26.24px;
+}
+
+.preloader-wrapper.micro, .preloader.micro {
+  width: 22px;
+  height: 22px;
 }
 
 .editor_variable_highlighted {
@@ -1857,6 +1902,10 @@ a.reload_ranking {
       }
     }
   }
+
+  .pastilleBorder {
+    margin: 0 auto 6px auto;
+  }
 }
 
 @media screen and (max-width: 381px) {
@@ -1942,10 +1991,20 @@ a.reload_ranking {
   #collapsible_selectionnable_plus_1 {
     font-size: 10px;
   }
+
+  .pastilleBorder.enAttente {
+    margin: 0 8px;
+  }
 }
 
 @media screen and (max-width: 220px) {
   .poule, .poule a {
     font-size: 11px !important;
+  }
+}
+
+@media screen and (max-width: 196px) {
+  .pastilleBorder.validee {
+    margin: 0 8px;
   }
 }

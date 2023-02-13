@@ -81,6 +81,16 @@
                 </div>
 
                 <div class="row header_compo">
+                    <div class="pastilleBorder {% if compo.isValidationCompo %}validee{% else %}enAttente{% endif %}">
+                        <div class="pastilleBorderContent">
+                            {% if compo.isValidationCompo %}
+                                <i class="material-icons">checklist_rtl</i> Équipe confirmée
+                            {% else %}
+                                <i class="material-icons">rule</i> Attente de confirmation
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="col s4 m2" style="padding-left: 0; padding-right: 0">
                         <h5>
                             <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
