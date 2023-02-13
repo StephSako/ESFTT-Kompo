@@ -2,60 +2,65 @@
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
     <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
+
     {% if journees|length > 0 %}
         {% for journee in journees %}
-            <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille blue reset"><b>J{{ loop.index }} :</b> {{ journee.nomAdversaireBis }}</span>
-                {% if journee.resultat.resultat and journee.joueurs|length > 0 %}
-                    <i class="material-icons">chevron_right</i><span class="pastille {{ journee.resultat.resultat }} reset">{{ journee.resultat.score }}</span>
-                {% endif %}
-            </p>
-            {% if not journee.errorMatchSheet %}
-                {% if journee.joueurs|length > 0 %}
-                    <table class="striped centered table-last-compos">
-                        {% for nom, donnees in journee.joueurs %}
-                            {% set nomFormatted = nom|split('#')[0] %}
-                            {% if nomFormatted %}
+            {% if journee.exempt %}
+                <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille grey darken-1 reset"><b>J{{ loop.index }} :</b> Exemptée</span></p>
+            {% else %}
+                <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille blue reset"><b>J{{ loop.index }} :</b> {{ journee.nomAdversaireBis }}</span>
+                    {% if journee.resultat.resultat and journee.joueurs|length > 0 %}
+                        <i class="material-icons">chevron_right</i><span class="pastille {{ journee.resultat.resultat }} reset">{{ journee.resultat.score }}</span>
+                    {% endif %}
+                </p>
+                {% if not journee.errorMatchSheet %}
+                    {% if journee.joueurs|length > 0 %}
+                        <table class="striped centered table-last-compos">
+                            {% for nom, donnees in journee.joueurs %}
+                                {% set nomFormatted = nom|split('#')[0] %}
+                                {% if nomFormatted %}
+                                    <tr>
+                                        <td style="max-width: 50px">
+                                            <span class="truncate">{{ nomFormatted }}</span>
+                                        </td>
+                                        <td>{% if donnees.points %}
+                                                <span class="new badge light-blue darken-3" data-badge-caption="">{{ donnees.points }}</span>
+                                            {% else %}
+                                                <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help_outline</i>
+                                            {% endif %}
+                                        <td>
+                                            {% for resultat in donnees.resultats %}
+                                                <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire | raw }}</span>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% for id, donnees in journee.doubles %}
                                 <tr>
-                                    <td style="max-width: 50px">
-                                        <span class="truncate">{{ nomFormatted }}</span>
-                                    </td>
-                                    <td>{% if donnees.points %}
-                                            <span class="new badge light-blue darken-3" data-badge-caption="">{{ donnees.points }}</span>
-                                        {% else %}
-                                            <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help_outline</i>
-                                        {% endif %}
-                                    <td>
-                                        {% for resultat in donnees.resultats %}
-                                            <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire | raw }}</span>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                        {% for id, donnees in journee.doubles %}
-                            <tr>
-                                <td style="max-width: 50px" colspan="2">
+                                    <td style="max-width: 50px" colspan="2">
                                     <span class="new badge light-blue darken-3" data-badge-caption="">
                                         {% for points in donnees.binomeAdversaire %}
                                             {% if points %}{{ points }}{% else %}<i style="font-size: 1.7em" class="material-icons tiny">help_outline</i>{% endif %}{% if not loop.last %} - {% endif %}
                                         {% endfor %}
                                     </span>
-                                </td>
-                                <td>
+                                    </td>
+                                    <td>
                                     <span class="reset pastille {{ donnees.isBinomeWinner }}">
                                         {% for points in donnees.binomeAdversaireBis %}
                                             {% if points %}{{ points }}{% else %}<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>{% endif %}{% if not loop.last %} - {% endif %}
                                         {% endfor %}
                                     </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <h6 class="center">En attente des résulats ... patience 😊</h6>
+                    {% endif %}
                 {% else %}
-                    <h6 class="center">En attente des résulats ... patience 😊</h6>
+                    <p style="margin: 0; border-radius: 5px;" class="pastille grey darken-5">Feuille de match erronée</p>
                 {% endif %}
-            {% else %}
-                <p style="margin: 0; border-radius: 5px;" class="pastille grey darken-5">Feuille de match erronée</p>
             {% endif %}
         {% endfor %}
     {% else %}
