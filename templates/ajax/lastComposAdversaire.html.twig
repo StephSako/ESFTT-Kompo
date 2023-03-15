@@ -26,7 +26,7 @@
                                         <td>{% if donnees.points %}
                                                 <span class="new badge light-blue darken-3" data-badge-caption="">{{ donnees.points }}</span>
                                             {% else %}
-                                                <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help_outline</i>
+                                                <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help</i>
                                             {% endif %}
                                         <td>
                                             {% for resultat in donnees.resultats %}
@@ -37,22 +37,42 @@
                                 {% endif %}
                             {% endfor %}
                             {% for id, donnees in journee.doubles %}
-                                <tr>
-                                    <td style="max-width: 50px" colspan="2">
-                                    <span class="new badge light-blue darken-3" data-badge-caption="">
-                                        {% for points in donnees.binomeAdversaire %}
-                                            {% if points %}{{ points }}{% else %}<i style="font-size: 1.7em" class="material-icons tiny">help_outline</i>{% endif %}{% if not loop.last %} - {% endif %}
-                                        {% endfor %}
-                                    </span>
-                                    </td>
-                                    <td>
-                                    <span class="reset pastille {{ donnees.isBinomeWinner }}">
-                                        {% for points in donnees.binomeAdversaireBis %}
-                                            {% if points %}{{ points }}{% else %}<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>{% endif %}{% if not loop.last %} - {% endif %}
-                                        {% endfor %}
-                                    </span>
-                                    </td>
-                                </tr>
+                                {% if not ('isBinomeWO' in donnees|keys and 'binomeAdversaireBis' not in donnees|keys) %}
+                                    <tr>
+                                        <td style="max-width: 50px" colspan="2">
+                                        <span class="new badge {{ 'isBinomeWO' in donnees|keys ? 'blue lighten-2' : 'light-blue darken-3' }}" data-badge-caption="">
+                                            {% if 'isBinomeWO' not in donnees|keys %}
+                                                {% for points in donnees.binomeAdversaire %}
+                                                    {% if points %}
+                                                        {{ points }}
+                                                    {% else %}
+                                                        <i style="font-size: 1.7em" class="material-icons tiny">help</i>
+                                                    {% endif %}
+                                                    {% if not loop.last %} - {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                WO
+                                            {% endif %}
+                                        </span>
+                                        </td>
+                                        <td>
+                                            <span class="reset pastille {{ donnees.isBinomeWinner }} {{ 'isBinomeBisWO' in donnees|keys ? 'lighten-3' : (donnees.isBinomeWinner != 'red' ? '' : 'lighten-1') }}">
+                                                {% if 'isBinomeBisWO' not in donnees|keys %}
+                                                    {% for points in donnees.binomeAdversaireBis %}
+                                                        {% if points %}
+                                                            {{ points }}
+                                                        {% else %}
+                                                            <i style="font-size: 1.5em" class="material-icons tiny">help</i>
+                                                        {% endif %}
+                                                        {% if not loop.last %} - {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    WO
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         </table>
                     {% else %}
