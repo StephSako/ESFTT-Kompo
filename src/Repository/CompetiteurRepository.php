@@ -99,7 +99,8 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->select('c.avatar')
             ->addSelect('c.nom')
             ->addSelect('c.licence')
-            ->addSelect('c.prenom');
+            ->addSelect('c.prenom')
+            ->addSelect('c.idCompetiteur');
 
         foreach ($championnats as $championnat){
             $strDispos = '';

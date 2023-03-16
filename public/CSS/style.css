@@ -1196,6 +1196,11 @@ button#updateJoueursIssued {
   color: #4caf50;
 }
 
+.btnsDispos {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .divProfileCompletionCol {
   margin-top: 0 !important;
 }
@@ -1365,11 +1370,6 @@ a.reload_ranking {
   .exempt {
     margin-left: 80px;
     margin-right: 80px;
-  }
-}
-@media screen and (min-width: 993px) and (max-width: 1171px) {
-  a#modalAlertNoDispoSetpcStyle {
-    margin-top: 0;
   }
 }
 @media screen and (max-width: 1167px) {
