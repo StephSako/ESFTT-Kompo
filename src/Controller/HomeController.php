@@ -29,6 +29,9 @@ class HomeController extends AbstractController
     private $rencontreRepository;
     private $settingsRepository;
 
+    const ABSENT_ABSENT = 'Absent Absent';
+    const WO = 'WO';
+
     /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
@@ -600,10 +603,18 @@ class HomeController extends AbstractController
                     $matchesDoubles = [];
 
                     /** Résultat de la rencontre */
-                    $resultat = ['score' => $detailsRencontre->getScoreEquipeA() . ' - ' . $detailsRencontre->getScoreEquipeB()];
+                    $resultat = ['score' => $domicile ?
+                        $detailsRencontre->getScoreEquipeA() . ' - ' . $detailsRencontre->getScoreEquipeB() :
+                        $detailsRencontre->getScoreEquipeB() . ' - ' . $detailsRencontre->getScoreEquipeA()
+                    ];
+
+                    $isTeamForfeit = ($detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) ?
+                        $detailsRencontre->getNomEquipeA() :
+                            ($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) ?
+                                $detailsRencontre->getNomEquipeB() : null));
 
                     if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && !$domicile) || ($domicile && $detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()))
-                        $resultat['resultat'] = 'red';
+                        $resultat['resultat'] = 'red lighten-1';
                     else if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && $domicile) || ($detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB() && !$domicile))
                         $resultat['resultat'] = 'green';
                     else if ($detailsRencontre->getScoreEquipeA() == $detailsRencontre->getScoreEquipeB())
@@ -618,24 +629,49 @@ class HomeController extends AbstractController
                         })) == count($joueursAdversaireBis);
 
                     /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
-                    if (!$errorMatchSheet){
+                    if ($isTeamForfeit) {
+                        $joueursAdversaireFormatted = [1];
+                        $journee['teamForfeit'] = mb_convert_case($isTeamForfeit, MB_CASE_TITLE, "UTF-8");
+                    } else if (!$errorMatchSheet) {
                         /** Liste des parties des joueurs lors de la rencontre */
                         $parties = $detailsRencontre->getParties();
 
                         /** Mapping des doubles */
                         $matchesDoubles = array_filter(array_map(function($partieDouble) use ($domicile, $joueursAdversaire, $detailsRencontre, $joueursAdversaireBis) {
-                            preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB(), $joueursBinomeDouble);
-                            preg_match('/([a-zA-Z\s\-]+) et ([a-zA-Z\s\-]+)/', $domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA(), $joueursBinomeDoubleBis);
+                            $partieDoubleFormatted = [];
+                            preg_match('/([a-zà-ÿA-ZÀ-Ý\s\-\']+) et ([a-zà-ÿA-ZÀ-Ý\s\-\']+)/', $domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB(), $joueursBinomeDouble);
+                            preg_match('/([a-zà-ÿA-ZÀ-Ý\s\-\']+) et ([a-zà-ÿA-ZÀ-Ý\s\-\']+)/', $domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA(), $joueursBinomeDoubleBis);
 
-                            if (count($joueursBinomeDouble) === 3 && in_array($joueursBinomeDouble[1], array_keys($joueursAdversaire)) && in_array($joueursBinomeDouble[2], array_keys($joueursAdversaire))) {
-                                $partieDoubleFormatted = [];
-                                $partieDoubleFormatted['isBinomeWinner'] = ($domicile ? $partieDouble->getScoreA() > $partieDouble->getScoreB() : $partieDouble->getScoreB() > $partieDouble->getScoreA()) ? 'green' : 'red lighten-1';
-                                $partieDoubleFormatted['binomeAdversaire'] = [$joueursAdversaire[$joueursBinomeDouble[1]]->getPoints(), $joueursAdversaire[$joueursBinomeDouble[2]]->getPoints()];
-                                $partieDoubleFormatted['binomeAdversaireBis'] = [$joueursAdversaireBis[$joueursBinomeDoubleBis[1]]->getPoints(), $joueursAdversaireBis[$joueursBinomeDoubleBis[2]]->getPoints()];
+                            if (count($joueursBinomeDouble) == 3 || count($joueursBinomeDoubleBis) == 3) {
+                                // Gestion du binôme de l'équipe adversaire
+                                if (($domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB()) == self::ABSENT_ABSENT) {
+                                    $partieDoubleFormatted['isBinomeWinner'] = 'red';
 
+                                    if ($domicile && $partieDouble->getAdversaireA() == self::ABSENT_ABSENT) $partieDoubleFormatted['isBinomeWO'] = true;
+                                    else if (!$domicile && $partieDouble->getAdversaireB() == self::ABSENT_ABSENT) $partieDoubleFormatted['isBinomeWO'] = true;
+                                } else {
+                                    $partieDoubleFormatted['isBinomeWinner'] = ($domicile ? $partieDouble->getScoreA() > $partieDouble->getScoreB() : $partieDouble->getScoreB() > $partieDouble->getScoreA()) ? 'green' : 'red';
+                                    if (count($joueursBinomeDouble) == 3 && in_array($joueursBinomeDouble[1], array_keys($joueursAdversaire)) && in_array($joueursBinomeDouble[2], array_keys($joueursAdversaire))) {
+                                        $partieDoubleFormatted['binomeAdversaire'] = [$joueursAdversaire[$joueursBinomeDouble[1]]->getPoints(), $joueursAdversaire[$joueursBinomeDouble[2]]->getPoints()];
+                                    }
+                                }
+
+                                // Gestion du binôme de l'équipe adversaire bis
+                                if (($domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA()) == self::ABSENT_ABSENT) {
+                                    $partieDoubleFormatted['isBinomeWinner'] = 'green';
+
+                                    if ($domicile && $partieDouble->getAdversaireB() == self::ABSENT_ABSENT) $partieDoubleFormatted['isBinomeBisWO'] = true;
+                                    else if (!$domicile && $partieDouble->getAdversaireA() == self::ABSENT_ABSENT) $partieDoubleFormatted['isBinomeBisWO'] = true;
+                                } else {
+                                    if (count($joueursBinomeDoubleBis) == 3 && in_array($joueursBinomeDoubleBis[1], array_keys($joueursAdversaireBis)) && in_array($joueursBinomeDoubleBis[2], array_keys($joueursAdversaireBis))) {
+                                        $partieDoubleFormatted['binomeAdversaireBis'] = [$joueursAdversaireBis[$joueursBinomeDoubleBis[1]]->getPoints(), $joueursAdversaireBis[$joueursBinomeDoubleBis[2]]->getPoints()];
+                                    }
+                                }
                                 return $partieDoubleFormatted;
-                            } else unset($partieDouble);
-                            return [];
+                            } else {
+                                unset($partieDouble);
+                                return [];
+                            }
                         }, $parties));
 
                         foreach ($joueursAdversaire as $nomJoueurAdversaire => $joueurAdversaire) {
@@ -652,18 +688,28 @@ class HomeController extends AbstractController
                                         return $joueurAdversaireBis->getNom() . ' ' . $joueurAdversaireBis->getPrenom() == $nomJoueurAdversaireBis;
                                     }));
 
+                                    // Si le joueur adversaire est WO
+                                    $pointsAdversaire = '<i style="font-size: 1.5em" class="material-icons tiny">help</i>';
+                                    $isWo = ($domicile && $match->getAdversaireB() == self::ABSENT_ABSENT) || (!$domicile && $match->getAdversaireA() == self::ABSENT_ABSENT);
+                                    if ($isWo) {
+                                        $pointsAdversaire = self::WO;
+                                    } else if (count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints()) {
+                                        $pointsAdversaire = $joueurAdversaireBis[0]->getPoints();
+                                    }
+
                                     return [
-                                        'resultat' => ($isWinner ? 'green' : 'red lighten-1'),
-                                        'pointsJoueurAdversaire' => count($joueurAdversaireBis) && $joueurAdversaireBis[0]->getPoints() ? $joueurAdversaireBis[0]->getPoints() : '<i style="font-size: 1.5em" class="material-icons tiny">help_outline</i>'
+                                        'resultat' => ($isWinner ? 'green' . ($isWo ? ' lighten-3' : '') : 'red lighten-1'),
+                                        'pointsJoueurAdversaire' => $pointsAdversaire
                                     ];
                                 }, $matches);
 
-                                $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
-                                $joueursAdversaireFormatted[$joueurAdversaire->getNom() . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
+                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom()) . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
+                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom()) . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
                             }
                         }
                     }
 
+                    $journee['domicile'] = $domicile;
                     $journee['exempt'] = false;
                     $journee['nomAdversaireBis'] = mb_convert_case($nomAdversaireBis, MB_CASE_TITLE, "UTF-8");
                     $journee['resultat'] = $resultat;
