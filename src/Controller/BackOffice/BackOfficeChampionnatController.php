@@ -24,20 +24,24 @@ class BackOfficeChampionnatController extends AbstractController
     private $em;
     private $championnatRepository;
     private $journeeRepository;
+    private $utilController;
 
     /**
      * BackOfficeChampionnatController constructor.
      * @param ChampionnatRepository $championnatRepository
+     * @param UtilController $utilController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
+                                UtilController $utilController,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->journeeRepository = $journeeRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -97,6 +101,7 @@ class BackOfficeChampionnatController extends AbstractController
                     $journee->setDateJournee((new DateTime())->modify('+' . $i . ' day'));
                     $this->em->persist($journee);
                 }
+                $championnat->setLastUpdate($this->utilController->getAdminUpdateLog('Créé par '));
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat créé');
@@ -195,6 +200,7 @@ class BackOfficeChampionnatController extends AbstractController
                         }
                     }
                 }
+                $championnat->setLastUpdate($this->utilController->getAdminUpdateLog('Modifié par '));
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat modifié');

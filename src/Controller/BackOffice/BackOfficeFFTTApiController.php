@@ -532,6 +532,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $maxDatesNextPhase = $this->maxDatesNextPhase(max($utilController->getLastDates($championnat)), count($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"]));
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["journees"] as $index => $dateKompo) {
                             $dateKompo
+                                ->setLastUpdate(null)
                                 ->setUndefined(true)
                                 ->setDateJournee($maxDatesNextPhase[$index]);
                         }
@@ -549,6 +550,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On reset les informations des rencontres */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["rencontres"] as $rencontreKompo) {
                             $rencontreKompo
+                                ->setLastUpdate(null)
                                 ->setExempt(false)
                                 ->setDomicile(null)
                                 ->setVilleHost(null)
@@ -565,6 +567,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On reset les lienDivision, divisions et poules des équipes */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["teams"] as $equipeKompo) {
                             $equipeKompo
+                                ->setLastUpdate(null)
                                 ->setLienDivision(null)
                                 ->setIdPoule(null);
                         }
@@ -606,6 +609,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On fix les dates des journées */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
                             $dateIssuedToFix['journee']
+                                ->setLastUpdate(null)
                                 ->setDateJournee($dateIssuedToFix['dateFFTT'])
                                 ->setUndefined(false);
                         }
@@ -614,14 +618,16 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         /** On fix le nombre de journées du championnat */
                         if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()){
-                            $championnat->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
+                            $championnat
+                                ->setLastUpdate(null)
+                                ->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
 
                             /** On créé les journées inexistantes */
                             foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["missing"] as $dateMissingToCreate) {
                                 $this->em->persist($dateMissingToCreate);
                             }
 
-                            /** On supprime les dates en surplus */
+                            /** On supprime les journées en surplus */
                             foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["surplus"] as $dateSurplus) {
                                 $this->em->remove($dateSurplus);
                                 $this->em->flush();
@@ -635,6 +641,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             /** On set la division et la poule à l'équipe */
                             $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
                             $equipeIssued['equipe']
+                                ->setLastUpdate(null)
                                 ->setLienDivision($equipeIssued['lienDivision'])
                                 ->setIdDivision($arrayDivisionPoule[0])
                                 ->setIdPoule($arrayDivisionPoule[1]);
@@ -672,6 +679,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     ->setVilleHost(false)
                                     ->setExempt($rencontresParEquipe['exempt'])
                                     ->setReporte(false)
+                                    ->setLastUpdate(null)
                                     ->setDateReport($rencontresParEquipe['dateReelle']);
 
                                 /** On renseigne les informations de contacts de l'adversaire si aucun champ n'est renseigné */
