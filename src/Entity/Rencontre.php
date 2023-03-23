@@ -255,6 +255,18 @@ class Rencontre
     private $validationCompo;
 
     /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Le log de mise à jour doit contenir au maximum {{ limit }} lettres"
+     * )
+     *
+     * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
+     */
+    private $lastUpdate;
+
+    /**
      * @param int $n
      * @return Competiteur|null
      */
@@ -931,5 +943,23 @@ class Rencontre
      */
     public function toggleCompValidation(): void {
         $this->setValidationCompo(!$this->isValidationCompo());
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastUpdate(): ?string
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param string|null $lastUpdate
+     * @return Rencontre
+     */
+    public function setLastUpdate(?string $lastUpdate): self
+    {
+        $this->lastUpdate = $lastUpdate;
+        return $this;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\UtilController;
 use App\Entity\Equipe;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
@@ -22,16 +23,19 @@ class BackOfficeEquipeController extends AbstractController
     private $equipeRepository;
     private $divisionRepository;
     private $competiteurRepository;
+    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param EquipeRepository $equipeRepository
      * @param DivisionRepository $divisionRepository
+     * @param UtilController $utilController
      * @param CompetiteurRepository $competiteurRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(EquipeRepository $equipeRepository,
                                 DivisionRepository $divisionRepository,
+                                UtilController $utilController,
                                 CompetiteurRepository $competiteurRepository,
                                 EntityManagerInterface $em)
     {
@@ -39,6 +43,7 @@ class BackOfficeEquipeController extends AbstractController
         $this->equipeRepository = $equipeRepository;
         $this->divisionRepository = $divisionRepository;
         $this->competiteurRepository = $competiteurRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -101,6 +106,7 @@ class BackOfficeEquipeController extends AbstractController
                     } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants) throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12343);
 
                     $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
+                    $equipe->setLastUpdate($this->utilController->getAdminUpdateLog('Créée par '));
                     $this->createEquipeAndRencontres($equipe);
 
                     $this->em->flush();
@@ -154,6 +160,7 @@ class BackOfficeEquipeController extends AbstractController
                                 }
                             }
                         }
+                        $equipe->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
 
                         $this->em->flush();
                         $this->addFlash('success', 'Équipe modifiée');
