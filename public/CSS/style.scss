@@ -1942,6 +1942,12 @@ a.reload_ranking {
   }
 }
 
+@media screen and (max-width: 328px) {
+  .footer-copyright  {
+    font-size: 12px;
+  }
+}
+
 @media screen and (max-width: 325px) {
   .virtualRankButtons  {
     flex-direction: column;
@@ -1972,6 +1978,10 @@ a.reload_ranking {
   #collapsible_selectionnable_plus_1 {
     font-size: 14px;
   }
+
+  .footer-copyright  {
+    font-size: 10px;
+  }
 }
 
 @media screen and (max-width: 275px) {
@@ -1983,6 +1993,12 @@ a.reload_ranking {
 @media screen and (max-width: 260px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 240px) {
+  .footer-copyright  {
+    font-size: 8px;
   }
 }
 
