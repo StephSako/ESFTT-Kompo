@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Index;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JourneeRepository")
@@ -54,6 +55,18 @@ class Journee
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee", cascade={"remove"}, orphanRemoval=true)
      */
     protected $rencontres;
+
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Le log de mise à jour doit contenir au maximum {{ limit }} lettres"
+     * )
+     *
+     * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
+     */
+    private $lastUpdate;
 
     /**
      * @return Championnat
@@ -161,5 +174,23 @@ class Journee
         }, $this->getRencontres()->toArray());
 
         return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastUpdate(): ?string
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param string|null $lastUpdate
+     * @return Journee
+     */
+    public function setLastUpdate(?string $lastUpdate): self
+    {
+        $this->lastUpdate = $lastUpdate;
+        return $this;
     }
 }

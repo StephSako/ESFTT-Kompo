@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\UtilController;
 use App\Entity\Division;
 use App\Form\DivisionType;
 use App\Repository\ChampionnatRepository;
@@ -20,23 +21,27 @@ class BackOfficeDivisionController extends AbstractController
     private $divisionRepository;
     private $equipeRepository;
     private $championnatRepository;
+    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      * @param ChampionnatRepository $championnatRepository
+     * @param UtilController $utilController
      * @param EquipeRepository $equipeRepository
      */
     public function __construct(DivisionRepository $divisionRepository,
                                 EntityManagerInterface $em,
                                 ChampionnatRepository $championnatRepository,
+                                UtilController $utilController,
                                 EquipeRepository $equipeRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->equipeRepository = $equipeRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -72,6 +77,8 @@ class BackOfficeDivisionController extends AbstractController
                 try {
                     $division->setLongName($division->getLongName());
                     $division->setShortName($division->getShortName());
+                    $division->setLastUpdate($this->utilController->getAdminUpdateLog('Créée par '));
+
                     $this->em->persist($division);
                     $this->em->flush();
                     $this->addFlash('success', 'Division créée');
@@ -119,6 +126,7 @@ class BackOfficeDivisionController extends AbstractController
                 try {
                     $division->setLongName($division->getLongName());
                     $division->setShortName($division->getShortName());
+                    $division->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
 
                     /** Si nbJoueurs diminue, on supprime les joueurs superflux des rencontres des équipes affiliées */
                     if ($nbJoueurs > $form->getData()->getNbJoueurs()) {

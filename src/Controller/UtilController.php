@@ -148,4 +148,12 @@ class UtilController extends AbstractController
         }
         return $draftUsername;
     }
+
+    /**
+     * @param string $préfixe
+     * @return string
+     */
+    public function getAdminUpdateLog(string $préfixe): string {
+        return $préfixe . $this->getUser()->getPrenom() . ' ' . $this->getUser()->getNom()[0] . '. le ' . date_format(new DateTime(), 'd/m/Y');
+    }
 }

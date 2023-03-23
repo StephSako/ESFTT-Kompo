@@ -6,7 +6,7 @@
     </style>
 
     {% if champHasDivisions %}
-        <div class="card-panel center-align">
+        <div class="card-panel center-align {% if form.vars.value.lastUpdate is not null %}relative{% endif %}">
             <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une équipe</h4>
             <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.nom }}{% endif %}</h5>
 
@@ -32,6 +32,10 @@
                 <a href="{{ path('backoffice.equipes', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat } : {}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
                 <button class="btn_gestion btn btn_form waves-effect light-blue darken-1">{{ btnText }}</button>
             {{ form_end(form) }}
+
+            {% if form.vars.value.lastUpdate is not null %}
+                <span class="adminEditLog">{{ form.vars.value.lastUpdate }}</span>
+            {% endif %}
         </div>
     {% else %}
         <div class="center card-panel">

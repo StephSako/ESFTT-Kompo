@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Controller\UtilController;
 use App\Form\JourneeType;
 use App\Repository\JourneeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,17 +16,21 @@ class BackOfficeJourneeController extends AbstractController
 {
     private $em;
     private $journeeRepository;
+    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param JourneeRepository $journeeRepository
+     * @param UtilController $utilController
      * @param EntityManagerInterface $em
      */
     public function __construct(JourneeRepository $journeeRepository,
+                                UtilController $utilController,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
+        $this->utilController = $utilController;
     }
 
     /**
@@ -65,6 +70,7 @@ class BackOfficeJourneeController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
+                    $journee->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
                     $this->em->flush();
                     $this->addFlash('success', 'Journée modifiée');
                     return $this->redirectToRoute('backoffice.journees', [

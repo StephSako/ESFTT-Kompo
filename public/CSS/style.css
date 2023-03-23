@@ -1201,6 +1201,21 @@ button#updateJoueursIssued {
   justify-content: space-evenly;
 }
 
+.card-panel.relative {
+  position: relative;
+  padding-bottom: 35px;
+}
+
+.adminEditLog {
+  position: absolute;
+  bottom: 4px;
+  left: 2px;
+  margin-top: 8px;
+  margin-left: 8px;
+  color: darkgrey;
+  font-size: 12px;
+}
+
 .divProfileCompletionCol {
   margin-top: 0 !important;
 }
@@ -1675,6 +1690,10 @@ a.reload_ranking {
 @media screen and (max-width: 307px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 16px;
+  }
+
+  .card-panel.relative {
+    padding-bottom: 47px;
   }
 }
 @media screen and (max-width: 283px) {

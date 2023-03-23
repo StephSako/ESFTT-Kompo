@@ -103,6 +103,18 @@ class Division
     protected $equipes;
 
     /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Le log de mise à jour doit contenir au maximum {{ limit }} lettres"
+     * )
+     *
+     * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
+     */
+    private $lastUpdate;
+
+    /**
      * @return mixed
      */
     public function getIdDivision()
@@ -207,6 +219,24 @@ class Division
     public function setNbJoueurs(int $nbJoueurs): self
     {
         $this->nbJoueurs = $nbJoueurs;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastUpdate(): ?string
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param string|null $lastUpdate
+     * @return Division
+     */
+    public function setLastUpdate(?string $lastUpdate): self
+    {
+        $this->lastUpdate = $lastUpdate;
         return $this;
     }
 }
