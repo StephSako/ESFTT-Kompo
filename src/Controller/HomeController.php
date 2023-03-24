@@ -608,10 +608,10 @@ class HomeController extends AbstractController
                         $detailsRencontre->getScoreEquipeB() . ' - ' . $detailsRencontre->getScoreEquipeA()
                     ];
 
-                    $isTeamForfeit = ($detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) ?
+                    $isTeamForfeit = $detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) && $detailsRencontre->getScoreEquipeB() != 0 && count($detailsRencontre->getJoueursB()) ?
                         $detailsRencontre->getNomEquipeA() :
-                            ($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) ?
-                                $detailsRencontre->getNomEquipeB() : null));
+                            (($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) && $detailsRencontre->getScoreEquipeA() != 0 && count($detailsRencontre->getJoueursA())) ?
+                                $detailsRencontre->getNomEquipeB() : null);
 
                     if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && !$domicile) || ($domicile && $detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()))
                         $resultat['resultat'] = 'red lighten-1';
