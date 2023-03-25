@@ -247,6 +247,10 @@ i.iconPlace {
   background: #012242;
 }
 
+#menu_dropdown_contact {
+  height: auto !important;
+}
+
 #menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
@@ -376,7 +380,9 @@ i.campaign {
   padding: 0;
 }
 .whatsapp_btn img {
-  padding: 5px 8px;
+  width: 34px;
+  height: 26px;
+  padding: 8px 8px 0 8px;
 }
 
 #slide-out .collapsible .li_in_line {

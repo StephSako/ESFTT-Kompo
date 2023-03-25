@@ -309,6 +309,10 @@ i.iconPlace {
   background: $dark_blue;
 }
 
+#menu_dropdown_contact {
+  height: auto !important;
+}
+
 #menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
@@ -450,7 +454,9 @@ i {
   padding: 0;
 
   img {
-    padding: 5px 8px;
+    width: 34px;
+    height: 26px;
+    padding: 8px 8px 0 8px;
   }
 }
 

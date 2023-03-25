@@ -10,6 +10,7 @@
     <header>
         {% include("components/navbar_backoffice.html.twig") %}
         <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/searchPlayers.js') }}"></script>
     </header>
 
     <div class='container'>
@@ -39,20 +40,9 @@
         {% endif %}
 
         <div class='card-panel backoffice-panel center'>
-
-            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
-            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' data-tooltip="Exporter les joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
-                <i class='material-icons'>download</i>
-            </a>
-            {% if app.user.admin %}
-                <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.import.file') }}' data-tooltip="Importer des joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
-                    <i class='material-icons'>upload</i>
-                </a>
-            {% endif %}
-
             {% if joueursInvalidCertifMedic|length and app.user.admin %}
-                <div style="display: flex; justify-content: center; align-items: center;">
-                    <p class="red-text lighten-2" style="padding-left: 0; width: fit-content; margin-bottom: 8px;"><i class="material-icons">dangerous</i>
+                <div style="display: flex; justify-content: center; align-items: center; margin: 10px auto;">
+                    <p class="red-text lighten-2" style="padding-left: 0; width: fit-content; margin: 0"><i class="material-icons">dangerous</i>
                         Il y a <b><span id="badgeCertifInvalidButton">{{ joueursInvalidCertifMedic|length }}</span> membre{{ joueursInvalidCertifMedic|length > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
                     </p>
                     <a style="width: 27px; height: 27px;" class="modal-trigger btn waves-effect btn_gestion blue btn-floating lighten-1 btn-small" href="#modal{{ 'certif_medic_invalides' }}">
@@ -75,9 +65,19 @@
             {% endif %}
 
             {% if joueursWithoutLicence.count or competiteursWithoutClassement.count %}
-                <p class="red-text lighten-2" style="margin-top: 8px; margin-bottom: 20px;"><i class="material-icons">dangerous</i>
+                <p class="red-text lighten-2" style="margin: 10px auto"><i class="material-icons">dangerous</i>
                     {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
                 </p>
+            {% endif %}
+
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteur.new') }}' class='btn waves-effect blue lighten-1 btn_gestion'>Créer un membre</a>
+            <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.export.excel') }}' data-tooltip="Exporter les joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                <i class='material-icons'>download</i>
+            </a>
+            {% if app.user.admin %}
+                <a style='margin-bottom: 5px;' href='{{ path('backoffice.competiteurs.import.file') }}' data-tooltip="Importer des joueurs" data-position="top" class='btn waves-effect green btn_gestion tooltipped'>
+                    <i class='material-icons'>upload</i>
+                </a>
             {% endif %}
 
             {% if joueurs|length %}

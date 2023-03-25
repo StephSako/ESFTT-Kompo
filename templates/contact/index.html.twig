@@ -9,6 +9,7 @@
     <header>
         {% include("components/navbar.html.twig") %}
         <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
+        <script type="text/javascript" defer src="{{ asset('JS/searchPlayers.js') }}"></script>
     </header>
 
     <div class="container">
@@ -21,8 +22,14 @@
         </div>
 
         <div class="card-panel center-align" style="padding: 15px 10px">
-
             {% if competiteurs|length %}
+                <div class="row" style="margin-bottom: 15px;">
+                    <div class="input-field col s12 m8 offset-m2 l6 offset-l3">
+                        <label for="search-input" style="margin-bottom: 0">Rechercher un joueur ...</label>
+                        <input placeholder="... par nom, prénom, rôle" id="search-input" type="text" class="validate" style="margin-bottom: 0">
+                    </div>
+                </div>
+
                 <a class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Message groupé</a>
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
                     {% for nom, categorie in categories %}
@@ -40,7 +47,7 @@
                     }}
                 {% endfor %}
 
-                <table style="margin-top: 10px" class="striped centered responsive-table table_contact table-to-adapt-columns">
+                <table style="margin-top: 10px" class="striped centered responsive-table table_contact table-to-adapt-columns search-table">
                     <thead>
                         <tr class="hide-on-med-and-down">
                             <th></th>
@@ -88,7 +95,7 @@
                                                         {{ competiteur.phoneNumber | split('', 2) | join(' ') }}
                                                     </div>
                                                     <div class="col m2 hide-on-med-and-up">
-                                                        <a class="btn blue" href="tel:{{ competiteur.phoneNumber }}">
+                                                        <a class="btn blue lighten-1" href="tel:{{ competiteur.phoneNumber }}">
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
@@ -112,18 +119,18 @@
                                                     <div class="col">
                                                         <span>{{ competiteur.phoneNumber2 | split('', 2) | join(' ') }}</span>
                                                     </div>
-                                                    <div class="col m2 hide-on-large-only">
-                                                        <a class="btn blue" href="tel:{{ competiteur.phoneNumber2 }}">
+                                                    <div class="col m2 hide-on-med-and-up">
+                                                        <a class="btn blue lighten-1" href="tel:{{ competiteur.phoneNumber2 }}">
                                                             <i class="material-icons">phone</i>
                                                         </a>
                                                     </div>
                                                     {% if competiteur.phoneNumber2 | slice(0, 2) == "06" or competiteur.phoneNumber2 | slice(0, 2) == "07" %}
-                                                        <div class="col m2 hide-on-large-only">
+                                                        <div class="col m2 hide-on-med-and-up">
                                                             <a class="btn blue" href="sms:{{ competiteur.phoneNumber2 }}">
                                                                 <i class="material-icons">message</i>
                                                             </a>
                                                         </div>
-                                                        <div class="col m2 hide-on-large-only">
+                                                        <div class="col m2 hide-on-med-and-up">
                                                             <a class="whatsapp_btn btn" href="https://wa.me/+33{{ competiteur.phoneNumber2 }}">
                                                                 <img src="{{ asset('images/whatsapp_icon.png') }}" alt="whatsapp_icon">
                                                             </a>
