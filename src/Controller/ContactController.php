@@ -41,7 +41,7 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/contact", name="contact")
+     * @Route("/contacter", name="contact")
      * @param UtilController $utilController
      * @return Response
      */
