@@ -26,7 +26,7 @@
                 <div class="row" style="margin-bottom: 15px;">
                     <div class="input-field col s12 m8 offset-m2 l6 offset-l3">
                         <label for="search-input" style="margin-bottom: 0">Rechercher un joueur ...</label>
-                        <input placeholder="... par nom, prénom, rôle" id="search-input" type="text" class="validate" style="margin-bottom: 0">
+                        <input placeholder="... par nom, prénom, rôle" id="search-input" onkeyup="searchValue('#search-table', '#search-input', 3, 0)" type="text" class="validate" style="margin-bottom: 0">
                     </div>
                 </div>
 
@@ -37,17 +37,22 @@
                     {% endfor %}
                 </ul>
 
+
+
                 {% for nom, categorie in categories %}
                     {{ _modalContact.modalAlertPlayers(
                         nom,
                         categorie['joueurs'],
                         categorie['titleModale'],
-                        'mailto:' ~ categorie['joueurs']['mail']['toString'],
-                        'sms:' ~ categorie['joueurs']['sms']['toString'])
+                        (categorie['isCustom'] is not defined ? ('mailto:' ~ categorie['joueurs']['mail']['toString']) : null),
+                        (categorie['isCustom'] is not defined ? ('sms:' ~ categorie['joueurs']['sms']['toString']) : null),
+                        {
+                            isCustom: categorie['isCustom'] is defined
+                        })
                     }}
                 {% endfor %}
 
-                <table style="margin-top: 10px" class="striped centered responsive-table table_contact table-to-adapt-columns search-table">
+                <table style="margin-top: 10px" class="striped centered responsive-table table_contact table-to-adapt-columns" id="search-table">
                     <thead>
                         <tr class="hide-on-med-and-down">
                             <th></th>

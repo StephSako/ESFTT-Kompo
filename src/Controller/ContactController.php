@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Competiteur;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
@@ -66,13 +67,15 @@ class ContactController extends AbstractController
         }
 
         $idRedacteur = $this->getUser()->getIdCompetiteur();
-        $categories['tous'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole(null, $idRedacteur)), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
-        $categories['loisirs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Loisir', $idRedacteur)), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
-        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Competiteur', $idRedacteur)), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
-        $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('CritFed', $idRedacteur)), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
-        $categories['capitaines'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Capitaine', $idRedacteur)), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
-        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Entraineur', $idRedacteur)), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
-        $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'Les administrateurs'];
+        $allPlayersButMe = $this->competiteurRepository->findJoueursByRole(null, $idRedacteur);
+        $categories['tous'] = ['joueurs' => $this->returnPlayersContactByMedia($allPlayersButMe), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
+        $categories['loisirs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isLoisir(); })), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
+        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCompetiteur(); })), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
+        $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCritFed(); })), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
+        $categories['capitaines'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCapitaine(); })), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
+        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isEntraineur(); })), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
+        $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'Les administrateurs'];
+        $categories['custom'] = ['joueurs' => $this->returnPlayersContactByPlayer($allPlayersButMe), 'titleItem' => 'Personnalisé', 'titleModale' => 'Message personnalisé', 'isCustom' => true];
 
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
@@ -85,11 +88,18 @@ class ContactController extends AbstractController
     }
 
     /**
-     * Formatte les joueurs contactables par rôle
+     * @return array
+     */
+    public function getContactInfosFromCustomMessage(): array {
+        return [];
+    }
+
+    /**
+     * Formatte les joueurs contactables par média
      * @param array $joueurs
      * @return array
      */
-    public function returnPlayersContact(array $joueurs): array
+    public function returnPlayersContactByMedia(array $joueurs): array
     {
         $mails = [];
         $contactablesMails = [];
@@ -118,6 +128,22 @@ class ContactController extends AbstractController
         $response['sms']['notContactables'] = $notContactablesPhoneNumbers;
 
         return $response;
+    }
+
+    /**
+     * Formatte les joueurs contactables par média
+     * @param array $joueurs
+     * @return array
+     */
+    public function returnPlayersContactByPlayer(array $joueurs): array
+    {
+        $joueursByPlayer = [];
+        foreach ($joueurs as $joueur) {
+            $joueursByPlayer[$joueur->getIdCompetiteur()]['joueur'] = $joueur;
+            $joueursByPlayer[$joueur->getIdCompetiteur()]['mail'] = $joueur->getFirstContactableMail();
+            $joueursByPlayer[$joueur->getIdCompetiteur()]['sms'] = $joueur->getFirstContactablePhoneNumber();
+        }
+        return $joueursByPlayer;
     }
 
     /**

@@ -10,11 +10,15 @@
                     <p class="blue-text"><i class="material-icons">info</i> {{ options.info }}</p>
                 {% endif %}
 
-                {% if not options.noSMS is defined %}
-                    {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
-                {% endif %}
+                {% if options.isCustom is defined and options.isCustom %}
+                    {{ _self.modalCustomMessage(id, response) }}
+                {% else %}
+                    {% if not options.noSMS is defined %}
+                        {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
+                    {% endif %}
 
-                {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id) }}
+                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id) }}
+                {% endif %}
             </div>
         </div>
         <div class="modal-footer">
@@ -161,4 +165,51 @@
             <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">Fermer</a>
         </div>
     </div>
+{% endmacro %}
+
+{% macro modalCustomMessage(id, response) %}
+    {% import 'macros/membre.html.twig' as _membre %}
+
+    <a href="" class="center-align btn blue lighten-2" id="btn_display_medias">
+        Afficher médias
+    </a>
+
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="input-field col s12 m8 offset-m2 l6 offset-l3">
+            <label for="search-input" style="margin-bottom: 0">Rechercher un joueur ...</label>
+            <input placeholder="... par nom, prénom, rôle" id="search-input-custom" onkeyup="searchValue('#search-table-custom', '#search-input-custom', 4, 1)" type="text" class="validate" style="margin-bottom: 0">
+        </div>
+    </div>
+
+    <table class="striped centered responsive-table backoffice-table table-to-adapt-columns" id="search-table-custom">
+        <tbody>
+            {% for joueur in response %}
+                <tr>
+                    <td>
+                        <label>
+                            <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" />
+                            <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
+                        </label>
+                    </td>
+                    <td style="padding-top: 8px; padding-bottom: 8px;">
+                        {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
+                    </td>
+                    <td>
+                        <div class="chip">
+                            {% if joueur.joueur.avatar %}
+                                <img src='{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
+                            {% else %}
+                                <img src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        {{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}
+                    </td>
+                    <td><i class="material-icons {% if joueur.mail %}red-text{% else %}{% endif %}">close</i></td>
+                    <td><i class="material-icons">close</i></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endmacro %}

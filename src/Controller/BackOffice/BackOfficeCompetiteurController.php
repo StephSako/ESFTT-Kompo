@@ -164,7 +164,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueurs' => $joueurs,
             'joueursArchives' => $joueursArchives,
             'joueursInvalidCertifMedic' => $joueursInvalidCertifMedic,
-            'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContact($joueursInvalidCertifMedic),
+            'contactsJoueursInvalidCertifMedic' => $contactController->returnPlayersContactByMedia($joueursInvalidCertifMedic),
             'onlyOneAdmin' => $onlyOneAdmin,
             'joueursWithoutLicence' => $joueursWithoutLicence,
             'competiteursWithoutClassement' => $competiteursWithoutClassement
@@ -343,7 +343,7 @@ class BackOfficeCompetiteurController extends AbstractController
             if ($adminsInCC) {
                 $adminsCopy = array_map(function ($joueur) {
                     return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                }, $contactController->returnPlayersContact($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
+                }, $contactController->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Admin', null))['mail']['contactables']);
             } else $adminsCopy = null;
 
             $contactController->sendMail(
@@ -1162,7 +1162,7 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         $mails = array_map(function ($address) {
                 return new Address($address);
-            }, explode(',', $contactController->returnPlayersContact(
+            }, explode(',', $contactController->returnPlayersContactByMedia(
                 array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
         }))['mail']['toString']));
