@@ -170,15 +170,20 @@
 {% macro modalCustomMessage(id, response) %}
     {% import 'macros/membre.html.twig' as _membre %}
 
-    <a href="" class="center-align btn blue lighten-2" id="btn_display_medias">
-        Afficher médias
-    </a>
-
     <div class="row" style="margin-bottom: 15px;">
         <div class="input-field col s12 m8 offset-m2 l6 offset-l3">
             <label for="search-input" style="margin-bottom: 0">Rechercher un joueur ...</label>
             <input placeholder="... par nom, prénom, rôle" id="search-input-custom" onkeyup="searchValue('#search-table-custom', '#search-input-custom', 4, 1)" type="text" class="validate" style="margin-bottom: 0">
         </div>
+    </div>
+
+    <div id="divSelectedContacts" class="card grey lighten-3 z-depth-0" hidden>
+        <h6>Contacts sélectionnés :</h6>
+        <div id="listSelectedContacts"></div>
+
+        <button class="btn btn_form waves-effect light-blue darken-1" id="btn_display_medias">
+            Contacter
+        </button>
     </div>
 
     <table class="striped centered responsive-table backoffice-table table-to-adapt-columns" id="search-table-custom">
@@ -187,7 +192,7 @@
                 <tr>
                     <td>
                         <label>
-                            <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" />
+                            <input onchange="addRemoveCustomContact(this.checked, '{{ joueur.joueur.idCompetiteur }}', '{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}', '{{ joueur.joueur.avatar }}')" value="{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" />
                             <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
                         </label>
                     </td>
@@ -206,8 +211,8 @@
                     <td>
                         {{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}
                     </td>
-                    <td><i class="material-icons {% if joueur.mail %}red-text{% else %}{% endif %}">close</i></td>
-                    <td><i class="material-icons">close</i></td>
+                    <td><i class="material-icons {% if joueur.mail is null %}red-text{% else %}green-text text-darken-2{% endif %}">mail</i></td>
+                    <td><i class="material-icons {% if joueur.sms is null %}red-text{% else %}green-text text-darken-2{% endif %}">phone_iphone</i></td>
                 </tr>
             {% endfor %}
         </tbody>

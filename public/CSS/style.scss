@@ -389,6 +389,30 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
     width: 40px;
     object-fit:cover;
   }
+
+  &.customMessage {
+    height: 30px;
+    color: white;
+    font-size: 14px;
+    line-height: 30px;
+    background-color: $scroll_blue;
+
+    img {
+      background-color: white;
+      height: 30px;
+      width: 30px;
+    }
+  }
+}
+
+#divSelectedContacts {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+
+  h6 {
+    margin-top: 0;
+  }
 }
 
 .cardJoueursEditJournee {

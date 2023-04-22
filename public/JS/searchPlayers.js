@@ -8,7 +8,7 @@ let searchValue = (table_id, input_id, i_nomPrenom, i_roles) => {
 
         if (value.length && row[0].id !== 'tr-empty-result-search') {
             let nomPrenom = row.find("td:" + (i_nomPrenom === 0 ? "first" : "nth-child(" + i_nomPrenom + ")")).text().trim().toUpperCase();
-            let rolesTemp = Array.from(row.find("td:" + (i_roles === 0 ? "first" : "nth-child(" + i_roles + ")"))[0].children).filter(e => e.classList.contains('badge')).map(e => e.dataset.badgeCaption.toUpperCase())
+            let rolesTemp = Array.from(row.find("td:" + (i_roles === 0 ? "first" : "nth-child(" + (i_roles === 1 ? i_roles+=1 : i_roles) + ")"))[0].children).filter(e => e.classList.contains('badge')).map(e => e.dataset.badgeCaption.toUpperCase())
 
             if ((nomPrenom.indexOf(value) < 0 && rolesTemp.filter(role => role.indexOf(value) >= 0).length === 0)) row.hide();
             else row.show();
@@ -31,4 +31,12 @@ let searchValue = (table_id, input_id, i_nomPrenom, i_roles) => {
             row.show();
         }
     });
+}
+
+function addRemoveCustomContact(isChecked, idCompetiteur, nomPrenom, urlAvatarPic) {
+    if (isChecked) $('#listSelectedContacts').append(`<div id="${idCompetiteur}" class="chip customMessage"><img src="http://kompo/media/cache/thumb/images/${urlAvatarPic ? 'profile_pictures/' + urlAvatarPic : 'account.png'}" alt="Icon custom contact">${nomPrenom}</div>`)
+    else $(`#listSelectedContacts .chip.customMessage#${idCompetiteur}`).remove();
+
+    if (Array.from($(`#listSelectedContacts .chip.customMessage`)).length) $('#divSelectedContacts').removeAttr('hidden');
+    else $('#divSelectedContacts').attr('hidden', '');
 }
