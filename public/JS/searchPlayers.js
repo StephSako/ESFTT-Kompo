@@ -34,7 +34,7 @@ let searchValue = (table_id, input_id, i_nomPrenom, i_roles) => {
 }
 
 function addRemoveCustomContact(isChecked, idCompetiteur, nomPrenom, urlAvatarPic) {
-    if (isChecked) $('#listSelectedContacts').append(`<div id="${idCompetiteur}" class="chip customMessage"><img src="http://kompo/media/cache/thumb/images/${urlAvatarPic ? 'profile_pictures/' + urlAvatarPic : 'account.png'}" alt="Icon custom contact">${nomPrenom}</div>`)
+    if (isChecked) $('#listSelectedContacts').append(`<div id="${idCompetiteur}" class="chip customMessage"><img src="https://www.prive.esftt.com/media/cache/thumb/images/${urlAvatarPic ? 'profile_pictures/' + urlAvatarPic : 'account.png'}" alt="Icon custom contact">${nomPrenom}</div>`)
     else $(`#listSelectedContacts .chip.customMessage#${idCompetiteur}`).remove();
 
     if (Array.from($(`#listSelectedContacts .chip.customMessage`)).length) $('#divSelectedContacts').removeAttr('hidden');
