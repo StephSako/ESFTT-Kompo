@@ -328,7 +328,7 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   color: white;
   font-size: 14px;
   line-height: 30px;
-  background-color: #1b5fac;
+  background-color: #1565c0;
 }
 .chip.customMessage img {
   background-color: white;
@@ -341,8 +341,25 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   padding-bottom: 8px;
   padding-top: 8px;
 }
+#divSelectedContacts button {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+#divSelectedContacts i#removeAllCustomContacts {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
 #divSelectedContacts h6 {
   margin-top: 0;
+}
+
+button.backToCheckboxes {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .cardJoueursEditJournee {

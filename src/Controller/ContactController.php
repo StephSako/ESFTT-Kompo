@@ -9,6 +9,8 @@ use App\Repository\DisponibiliteRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -75,7 +77,7 @@ class ContactController extends AbstractController
         $categories['capitaines'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCapitaine(); })), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
         $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isEntraineur(); })), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
         $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'Les administrateurs'];
-        $categories['custom'] = ['joueurs' => $this->returnPlayersContactByPlayer($allPlayersButMe), 'titleItem' => 'Personnalisé', 'titleModale' => 'Message personnalisé', 'isCustom' => true];
+        $categories['custom'] = ['joueurs' => $this->returnPlayersContactByPlayer($allPlayersButMe), 'titleItem' => 'Personnalisée', 'titleModale' => 'Message personnalisé', 'isCustom' => true];
 
         return $this->render('contact/index.html.twig', [
             'competiteurs' => $competiteurs,
@@ -88,10 +90,14 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @return array
+     * @Route("/contacter/custom-infos-contact", name="contact.custom.infos-contact")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function getContactInfosFromCustomMessage(): array {
-        return [];
+    public function getContactsInfosFromCustomMessage(Request $request): JsonResponse {
+        return new JsonResponse($this->render('ajax/modalContactCustomContacts.html.twig', [
+            'infosCustomContacts' => $this->returnPlayersContactByMedia($this->competiteurRepository->findBy(['idCompetiteur' => $request->query->get('contactIDs')]))
+        ])->getContent());
     }
 
     /**

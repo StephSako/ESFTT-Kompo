@@ -40,3 +40,44 @@ function addRemoveCustomContact(isChecked, idCompetiteur, nomPrenom, urlAvatarPi
     if (Array.from($(`#listSelectedContacts .chip.customMessage`)).length) $('#divSelectedContacts').removeAttr('hidden');
     else $('#divSelectedContacts').attr('hidden', '');
 }
+
+let divCustomContactsCheckList = undefined;
+
+function getInfosContactsSelectedPlayers() {
+    divCustomContactsCheckList = `<div>${$('#modalcustom .modal-content')[0].innerHTML}</div>`;
+    let divCustomContactsCheckListElement = $($.parseHTML(divCustomContactsCheckList))
+    let checkedIDs = Array.from($('#listSelectedContacts .chip.customMessage')).map(chip => chip.id)
+    divCustomContactsCheckListElement.find('table#search-table-custom input:checkbox').removeAttr('checked')
+    divCustomContactsCheckListElement.find(checkedIDs.map(id => `table#search-table-custom input#${id}:checkbox`).join(', ')).attr('checked','checked')
+    divCustomContactsCheckList = divCustomContactsCheckListElement.html()
+
+    $.ajax({
+        url : '/contacter/custom-infos-contact',
+        type : 'GET',
+        data: {
+            contactIDs: checkedIDs
+        },
+        dataType : 'json',
+        success : (response) => { endSendingGetInfosContact(response, true); },
+        error : () => { endSendingGetInfosContact(null, false); }
+    });
+}
+
+function endSendingGetInfosContact(response, isOK) {
+    if (isOK) {
+        let HTMLResponse = $.parseHTML(response)[1].firstElementChild.innerHTML
+        $('#modalcustom .modal-content').html(HTMLResponse);
+        $('#listSelectedContacts .chip.customMessage').remove()
+    } else M.toast({html: 'Une erreur est survenue'});
+}
+
+function backToCustomContactsCheckList() {
+    $('#modalcustom .modal-content').html(divCustomContactsCheckList);
+    $('.tooltipped').tooltip();
+}
+
+function removeSelection() {
+    $('#listSelectedContacts .chip.customMessage').remove()
+    $('#divSelectedContacts').attr('hidden', '')
+    $('table#search-table-custom input:checkbox').prop('checked', false);
+}
