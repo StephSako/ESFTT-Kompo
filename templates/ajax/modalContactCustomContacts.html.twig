@@ -1,0 +1,12 @@
+{% import 'macros/modalContact.html.twig' as _modalContact %}
+
+{{ _modalContact.modalAlertPlayers(
+    'custom',
+    infosCustomContacts,
+    'Message personnalisé',
+    'mailto:' ~ infosCustomContacts['mail']['toString'],
+    'sms:' ~ infosCustomContacts['sms']['toString'],
+    {
+        isCustomResponse: true
+    })
+}}

@@ -143,7 +143,7 @@ class HomeController extends AbstractController
                 else if ($dispoJoueurEquipe['disponibilite'] == '1') $joueursDisponibles[] = $dispoJoueurEquipe;
             }
         }
-        $joueursNonDeclaresContact = $contactController->returnPlayersContact(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
+        $joueursNonDeclaresContact = $contactController->returnPlayersContactByMedia(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
 
         $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         if (count($joueursNonDeclares)) {

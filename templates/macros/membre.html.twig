@@ -6,11 +6,11 @@
     <div class="row" style="margin-bottom: 15px;">
         <div class="input-field col s12 m8 offset-m2 l6 offset-l3">
             <label for="search-input" style="margin-bottom: 0">Rechercher un joueur ...</label>
-            <input placeholder="... par nom, prénom, rôle" id="search-input" type="text" class="validate" style="margin-bottom: 0">
+            <input placeholder="... par nom, prénom, rôle" id="search-input" onkeyup="searchValue('#search-table', '#search-input', 3, 0)" type="text" class="validate" style="margin-bottom: 0">
         </div>
     </div>
 
-    <table class="striped centered responsive-table backoffice-table table-to-adapt-columns search-table">
+    <table class="striped centered responsive-table backoffice-table table-to-adapt-columns" id="search-table">
         <thead>
             <tr class="hide-on-med-and-down">
                 <th class="th_picture_compet_table"></th>

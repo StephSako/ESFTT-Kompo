@@ -581,7 +581,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         });
                         $mails = array_map(function ($joueur) {
                             return new Address($joueur->getFirstContactableMail(), $joueur->getPrenom() . ' ' . $joueur->getNom());
-                        }, $contactController->returnPlayersContact($joueursToContact)['mail']['contactables']);
+                        }, $contactController->returnPlayersContactByMedia($joueursToContact)['mail']['contactables']);
 
                         try {
                             $str_replacers = [
