@@ -6,6 +6,7 @@ use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ class SecurityController extends AbstractController
     private $competiteurRepository;
     private $disponibiliteRepository;
     private $settingsRepository;
+    private $rencontreRepository;
 
     /**
      * SecurityController constructor.
@@ -38,6 +40,7 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      * @param AuthenticationUtils $utils
+     * @param RencontreRepository $rencontreRepository
      * @param UploadHandler $uploadHandler
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param UserPasswordEncoderInterface $encoder
@@ -47,6 +50,7 @@ class SecurityController extends AbstractController
                                 EntityManagerInterface $em,
                                 SettingsRepository $settingsRepository,
                                 AuthenticationUtils $utils,
+                                RencontreRepository $rencontreRepository,
                                 UploadHandler $uploadHandler,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 UserPasswordEncoderInterface $encoder)
@@ -59,6 +63,7 @@ class SecurityController extends AbstractController
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->settingsRepository = $settingsRepository;
+        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
@@ -140,6 +145,7 @@ class SecurityController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'equipesAssociees' => $this->getUser()->getTableEquipesAssociees($allChampionnats),
             'form' => $form->createView()
         ]);

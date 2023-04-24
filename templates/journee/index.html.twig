@@ -42,9 +42,27 @@
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
-                    <h5>{{ journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h5>
+                    <h5>{{ journee.dateJournee | format_datetime('long', 'none', locale='fr') | title }}</h5>
                 {% endif %}
             </div>
+
+            {% if journeesWithReportedRencontresFormatted %}
+                <div class="divProfileCompletionCol center">
+                    <div class="divProfileCompletion orange-text text-darken-4">
+                        <p><i class="material-icons">update</i><b> Rencontres décalées - J{{ idJournee }}</b></p>
+
+                        <div class="champsManquants">
+                            <ul>
+                                {% for rencontre in journeesWithReportedRencontresFormatted %}
+                                    <li>
+                                        <b>-</b> Match de la <b>{{ rencontre.idEquipe.numero }}</b> contre <b>{{ rencontre.adversaire }} {{ (rencontre.idJournee.dateJournee > rencontre.dateReport ? ' avancé' : ' reporté') }}</b> au <b>{{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
             {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
@@ -102,10 +120,10 @@
                     </div>
                 {% endif %}
 
-                {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and equipesSansDivision|length %}
+                {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and equipesSansDivision | length %}
                     <div class="card-panel center cardTeamsWithoutDiv">
                         <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
-                        <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom|customSlug}) }}">Corriger</a>
+                        <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom | customSlug}) }}">Corriger</a>
                     </div>
                 {% endif %}
             {% endif %}
@@ -128,7 +146,7 @@
                             {% if hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
                     {% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
-                        Il y a <b>{{ countJoueursCertifMedicPerim }} compétiteur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now'|date('Y') }}/{{ 'now'|date('Y')+1 }}</b>
+                        Il y a <b>{{ countJoueursCertifMedicPerim }} compétiteur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now' | date('Y') }}/{{ 'now' | date('Y')+1 }}</b>
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
                     </p>
                 </div>
@@ -159,10 +177,10 @@
             </div>
 
             <div class="hide-on-large-only center-align">
-                {{ _disponibilites.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, (compos|length), true, nbMaxPotentielPlayers) }}
+                {{ _disponibilites.labelDispoSelec(selectedPlayers | length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, (compos | length), true, nbMaxPotentielPlayers) }}
             </div>
 
-            {% if compos|length %}
+            {% if compos | length %}
                 {% for compo in compos %}
                     <div class="center card-panel">
                         <div class="row header_compo">
@@ -173,7 +191,7 @@
                                             {% if compo.isValidationCompo %}
                                                 <i class="material-icons">checklist_rtl</i> Équipe confirmée
                                             {% else %}
-                                                <i class="material-icons">rule</i> Attente de confirmation
+                                                <i class="material-icons">rule</i> Équipe non confirmée
                                             {% endif %}
                                         </div>
                                         {% if "ROLE_CAPITAINE" in app.user.roles %}
@@ -203,7 +221,7 @@
                             {% if compo.reporte and not journee.undefined %}
                                 <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px;" class="col s12 orange-text">
                                 <i class="material-icons">update</i>
-                                <b>Match {{ journee.dateJournee > compo.dateReport ? 'avancé' : 'reporté' }} au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
+                                <b>{{ journee.dateJournee > compo.dateReport ? 'Avancé' : 'Reporté' }} au {{ compo.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
                                 </span>
                             {% endif %}
 
@@ -216,7 +234,7 @@
 
                             <div class="col s4{% if not compo.exempt%} m2{% endif %}" style="padding-right: 0">
                                 <h5>
-                                    <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
+                                    <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <div class="poule">
                                     {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
@@ -346,20 +364,20 @@
                                 </tbody>
                             </table>
 
-                            {% if compo.selectedPlayers|length == compo.idEquipe.idDivision.nbJoueurs %}
+                            {% if compo.selectedPlayers | length == compo.idEquipe.idDivision.nbJoueurs %}
                                 {% set listeRemplacants = listeRemplacants(compo.idEquipe.numero, brulages, disponibilitesJournee, selectedPlayers) %}
-                                {% if listeRemplacants|length %}
+                                {% if listeRemplacants | length %}
                                     <div class="blue pastille reset remplacants">
                                         <div class="header">
                                             <p>
                                                 <i class="material-icons tooltipped" data-position="top" data-tooltip="Remplaçant : si son équipe est complète, c'est un joueur déclaré disponible, non brûlé et non sélectionné dans une équipe">help</i>
                                             </p>
                                             <p>
-                                                <b>Remplaçant{% if listeRemplacants|length > 1 %}s{% endif %}</b><br>
+                                                <b>Remplaçant{% if listeRemplacants | length > 1 %}s{% endif %}</b><br>
                                             </p>
                                             <p></p>
                                         </div>
-                                        {{ listeRemplacants|join(', ', ' et ') }}
+                                        {{ listeRemplacants | join(', ', ' et ') }}
                                     </div>
                                 {% endif %}
                             {% endif %}
@@ -471,7 +489,7 @@
                 </div>
                 <div class="collapsible-body">
                     <div class="center-align">
-                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos|length), nbMaxPotentielPlayers) }}
+                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers) }}
                     </div>
                 </div>
             </li>
@@ -494,7 +512,7 @@
                 <div class="hide-on-med-and-down">
                     {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
                 </div>
-                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos|length), nbMaxPotentielPlayers) }}
+                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers) }}
             </div>
         </div>
 

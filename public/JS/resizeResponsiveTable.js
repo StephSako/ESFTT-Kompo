@@ -10,8 +10,7 @@ $(window).resize(function() {
     }
 });
 
-
-$(document).ready(function() {
+function resizeTable() {
     if ($(window).width() <= 992) {
         let tables = document.getElementsByClassName('table-to-adapt-columns')
         for (const table of tables) {
@@ -21,4 +20,25 @@ $(document).ready(function() {
             }
         }
     }
+}
+
+$(document).ready(function() {
+    resizeTable()
+});
+
+let resized = false;
+let observer = new MutationObserver(function(mutations) {
+    if (!resized) {
+        mutations.forEach(function(mutation) {
+            if ($('#modalcustom').css('display') !== 'none' && !resized) {
+                resizeTable()
+                resized = true
+            }
+        });
+    }
+});
+
+observer.observe(document.querySelector('#modalcustom'), {
+    attributes: true,
+    attributeFilter: ['style']
 });

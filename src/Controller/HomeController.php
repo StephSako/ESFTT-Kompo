@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Rencontre;
 use App\Form\RencontreType;
 use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
@@ -232,12 +233,18 @@ class HomeController extends AbstractController
         ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
+        $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat());
+        $journeesWithReportedRencontresFormatted = array_filter($journeesWithReportedRencontres['rencontres'], function (Rencontre $r) use ($idJournee) {
+            return $r->getIdJournee()->getIdJournee() == $idJournee;
+        });
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $journeesWithReportedRencontres['ids'],
+            'journeesWithReportedRencontresFormatted' => $journeesWithReportedRencontresFormatted,
             'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
             'nbMaxPotentielPlayers' => array_sum(array_map(function($equipe) { return count($equipe); }, $disponibilitesJournee)),
             'nbMinJoueurs' => $nbMinJoueurs,
@@ -404,6 +411,7 @@ class HomeController extends AbstractController
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'nbJoueursDivision' => $nbJoueursDivision,
             'brulageSelectionnables' => $brulageSelectionnables['par_equipes'],
             'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,
@@ -507,6 +515,7 @@ class HomeController extends AbstractController
             'championnat' => $championnat,
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'disposJoueur' => $disposJoueurFormatted,
             'HTMLContent' => $setting->getContent(),
             'showConcernedPlayers' => $showConcernedPlayers,
@@ -544,6 +553,7 @@ class HomeController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'markdown_data' => $markdown_data
         ]);
     }

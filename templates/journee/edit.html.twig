@@ -65,7 +65,7 @@
                 {% if compo.reporte and not compo.idJournee.undefined %}
                     <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px" class="col s12 orange-text">
                         <i class="material-icons">update</i>
-                        <b>Match {{ compo.idJournee.dateJournee > compo.dateReport ? 'avancé' : 'reporté' }} au {{ compo.dateReport | format_datetime('long', 'none', locale='fr')|title }}</b>
+                        <b>{{ compo.idJournee.dateJournee > compo.dateReport ? 'Avancé' : 'Reporté' }} au {{ compo.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
                     </span>
                 {% endif %}
 
@@ -86,7 +86,7 @@
                             {% if compo.isValidationCompo %}
                                 <i class="material-icons">checklist_rtl</i> Équipe confirmée
                             {% else %}
-                                <i class="material-icons">rule</i> Attente de confirmation
+                                <i class="material-icons">rule</i> Équipe non confirmée
                             {% endif %}
                         </div>
                     </div>

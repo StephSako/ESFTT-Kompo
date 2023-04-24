@@ -200,4 +200,24 @@ class RencontreRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
     }
+
+    /**
+     * Retourne la liste des IDs des Journées ayant des Rencontres reportées
+     * @param int $idChampionnat
+     * @return array
+     */
+    public function getJourneesWithReportedRencontres(int $idChampionnat): array
+    {
+        $rencontres = $this->createQueryBuilder('r')
+            ->where('r.reporte = true')
+            ->andWhere('r.idChampionnat = :idChampionnat')
+            ->setParameter('idChampionnat', $idChampionnat)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'ids' => array_map(function (Rencontre $r) { return $r->getIdJournee()->getIdJournee(); }, $rencontres),
+            'rencontres' => $rencontres
+        ];
+    }
 }

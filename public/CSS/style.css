@@ -1209,7 +1209,7 @@ button#updateJoueursIssued {
 .pastilleBorder {
   border-radius: 10px;
   width: fit-content;
-  margin: 0 auto;
+  margin: 0 auto 8px auto;
   padding-top: 1px;
 }
 .pastilleBorder .pastilleBorderContent {
@@ -1676,10 +1676,6 @@ a.reload_ranking {
   table.rankingVirtualPoints td.progression-td:nth-child(1) {
     width: 39px;
   }
-
-  .pastilleBorder {
-    margin: 0 auto 6px auto;
-  }
 }
 @media screen and (max-width: 381px) {
   .setDispoCard h5.unsetTitle {
@@ -1768,19 +1764,10 @@ a.reload_ranking {
   #collapsible_selectionnable_plus_1 {
     font-size: 10px;
   }
-
-  .pastilleBorder.enAttente {
-    margin: 0 8px;
-  }
 }
 @media screen and (max-width: 220px) {
   .poule, .poule a {
     font-size: 11px !important;
-  }
-}
-@media screen and (max-width: 196px) {
-  .pastilleBorder.validee {
-    margin: 0 8px;
   }
 }
 

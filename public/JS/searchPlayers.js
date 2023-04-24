@@ -73,7 +73,6 @@ function endSendingGetInfosContact(response, isOK) {
 
 function backToCustomContactsCheckList() {
     $('#modalcustom .modal-content').html(divCustomContactsCheckList);
-    $('.tooltipped').tooltip();
 }
 
 function removeSelection() {

@@ -186,7 +186,7 @@
     </div>
 
     <div id="divSelectedContacts" class="card grey lighten-3 z-depth-0" hidden>
-        <i onclick="removeSelection()" class="material-icons red-text text-darken-1 tooltipped" data-tooltip="Effacer la sélection" data-position="top" id="removeAllCustomContacts">group_remove</i>
+        <i onclick="removeSelection()" class="material-icons red-text text-darken-1" id="removeAllCustomContacts">group_remove</i>
         <h6>Contacts sélectionnés :</h6>
         <div id="listSelectedContacts"></div>
 
@@ -208,14 +208,8 @@
                     <td style="padding-top: 8px; padding-bottom: 8px;">
                         {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
                     </td>
-                    <td>
-                        <div class="chip">
-                            {% if joueur.joueur.avatar %}
-                                <img src='{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
-                            {% else %}
-                                <img src='{{ asset('images/account.png') | imagine_filter('thumb') }}' alt='Avatar' width='60rem' height='60rem'>
-                            {% endif %}
-                        </div>
+                    <td class="td_picture_compet">
+                        <img class="picture_compet avatar" src="{{ (joueur.joueur.avatar ? vich_uploader_asset(joueur.joueur, 'imageFile') : asset('images/account.png')) | imagine_filter('thumb') }}" alt="Avatar" width="55px" height="55px">
                     </td>
                     <td>
                         {{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}

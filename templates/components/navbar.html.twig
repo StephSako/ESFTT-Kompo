@@ -48,6 +48,9 @@
                                         <i class="journee_passee material-icons red-text right" style="padding-top: 2px">event_busy</i>
                                     {% else %}
                                         - {{ journee.dateJournee|date('d/m') }}
+                                        {% if journee.idJournee in journeesWithReportedRencontres %}
+                                            <i class="journee_passee material-icons orange-text right">update</i>
+                                        {% endif %}
                                     {% endif %}
                                 {% else %}
                                     <i class="journee_passee material-icons green-text right">done</i>
@@ -126,7 +129,10 @@
                             {% if journee.undefined %}
                                 <i class="material-icons red-text">event_busy</i>
                             {% else %}
-                                <span>{{ journee.dateJournee|date('d/m/Y') }}</span>
+                                {{ journee.dateJournee|date('d/m/Y') }}
+                                {% if journee.idJournee in journeesWithReportedRencontres %}
+                                    <i class="journee_passee material-icons orange-text right">update</i>
+                                {% endif %}
                             {% endif %}
                         {% else %}
                             <i class="material-icons green-text">done</i>

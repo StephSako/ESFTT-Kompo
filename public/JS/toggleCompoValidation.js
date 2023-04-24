@@ -19,7 +19,7 @@ function endDendingCompoValidation(response, divSuffixe, isSuccess) {
     if (!isSuccess || !response.status) M.toast({html: response.message});
     else {
         $('#pastilleBorder' + divSuffixe).toggleClass('enAttente').toggleClass('validee')
-        $('#pastilleBorderContentText' + divSuffixe).html(response.isValide ? `<i class="material-icons">checklist_rtl</i> Équipe confirmée` : `<i class="material-icons">rule</i> Attente de confirmation`)
+        $('#pastilleBorderContentText' + divSuffixe).html(response.isValide ? `<i class="material-icons">checklist_rtl</i> Équipe confirmée` : `<i class="material-icons">rule</i> Équipe non confirmée`)
     }
     $('#preloader' + divSuffixe).hide();
 }

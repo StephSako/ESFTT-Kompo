@@ -6,6 +6,7 @@ use App\Entity\Competiteur;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\RencontreRepository;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,16 +25,19 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $mailer;
     private $disponibiliteRepository;
+    private $rencontreRepository;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
+     * @param RencontreRepository $rencontreRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
      */
     public function __construct(CompetiteurRepository $competiteurRepository,
                                 ChampionnatRepository $championnatRepository,
+                                RencontreRepository $rencontreRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 MailerInterface $mailer)
     {
@@ -41,6 +45,7 @@ class ContactController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->mailer = $mailer;
         $this->disponibiliteRepository = $disponibiliteRepository;
+        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
@@ -85,6 +90,7 @@ class ContactController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
+            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'categories' => $categories
         ]);
     }
