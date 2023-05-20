@@ -752,15 +752,10 @@ class Rencontre
         setlocale (LC_TIME, 'fr_FR.utf8','fra');
         date_default_timezone_set('Europe/Paris');
         $br = '%0D%0A%0D%0A';
+        $date = !$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench();
         $message = "&body=Salut, c'est " . $prenomSender . '.' .  $br;
         $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero() . ' pour le championnat : ' . $this->getIdChampionnat()->getNom();
-
-        if (!$this->getIdJournee()->getUndefined()){
-            $message .= ', le ';
-            if (!$this->isReporte()) $message .= $this->getIdJournee()->getDateJourneeFrench();
-            else $message .= $this->getDateReportFrench();
-        } else $message .= ', à une date indéterminée pour le moment';
-        $message .= ".";
+        $message .= (!$this->getIdJournee()->getUndefined() ? ', le ' . $date : ', à une date indéterminée pour le moment') . ".";
 
         if ($this->isExempt()) $message .=  "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . 'Bonne journée à vous.';
         else {
@@ -779,7 +774,7 @@ class Rencontre
 
             $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
-            $message .= '.' . $br .'A Vendredi !';
+            $message .= '.' . $br .'A ' . strtok($date, ' ') . ' !';
         }
 
         return $message;
