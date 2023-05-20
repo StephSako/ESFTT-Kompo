@@ -4,8 +4,8 @@ function toggleCompoValidation(idRencontre) {
         url : '/backoffice/rencontre/update/validation/' + idRencontre,
         type : 'POST',
         dataType : 'json',
-        success : function(response) { endDendingCompoValidation(response, idRencontre, true); },
-        error : function(error) { endDendingCompoValidation(error, idRencontre, false); }
+        success : function(response) { endSendingCompoValidation(response, idRencontre, true); },
+        error : function(error) { endSendingCompoValidation(error, idRencontre, false); }
     });
 }
 
@@ -14,10 +14,15 @@ function sendingCompoValidation(divSuffixe){
     $('#compoValidation' + divSuffixe).hide();
 }
 
-function endDendingCompoValidation(response, divSuffixe, isSuccess) {
+function endSendingCompoValidation(response, divSuffixe, isSuccess) {
     $('#compoValidation' + divSuffixe).show();
-    if (!isSuccess || !response.status) M.toast({html: response.message});
-    else {
+    if (!isSuccess || !response.status) {
+        M.toast({html: response.message})
+        $('#compoEdition' + divSuffixe).removeClass('hide');
+    } else {
+        if (!response.isValide) $('#compoEdition' + divSuffixe).removeClass('hide');
+        else $('#compoEdition' + divSuffixe).addClass('hide');
+
         $('#pastilleBorder' + divSuffixe).toggleClass('enAttente').toggleClass('validee')
         $('#pastilleBorderContentText' + divSuffixe).html(response.isValide ? `<i class="material-icons">checklist_rtl</i> Équipe confirmée` : `<i class="material-icons">rule</i> Équipe non confirmée`)
     }
