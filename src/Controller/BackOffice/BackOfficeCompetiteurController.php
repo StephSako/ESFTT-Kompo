@@ -968,21 +968,21 @@ class BackOfficeCompetiteurController extends AbstractController
     private function checkRegexValue(?string $value, string $field, string $fieldFr, array &$violationsManuelles) {
         if ($value == null) return null;
         else {
-            preg_match('/^([0-9]{2})\/([0-9]){2}\/([0-9]{4})$/', $value, $date);
+            preg_match('/^((?<jour>[0-9]{2})\/(?<mois>[0-9]{2})\/(?<annee>[0-9]{4}))|((?<jour2>[0-9]{2})-(?<mois2>[0-9]{2})-(?<annee2>[0-9]{4}))$/', $value, $date);
             if (!count($date)) {
                 $violationsManuelles[$field] = [
                     'message' => 'Le format de ' . $fieldFr . ' est incorrecte (DD/MM/AAAA)',
                     'value' => $value
                 ];
                 return null;
-            } else if (!date_create($date[3] . '/' . $date[2] . '/' . $date[1])) {
+            } else if (!date_create(($date['annee'] ?: $date['annee2']) . '/' . ($date['mois'] ?: $date['mois2']) . '/' . ($date['jour'] ?: $date['jour2']))) {
                 $violationsManuelles[$field] = [
                     'message' => $fieldFr . ' est incorrecte',
                     'value' => $value
                 ];
                 return null;
             }
-            return date_create($date[3] . '/' . $date[2] . '/' . $date[1]);
+            return date_create(($date['annee'] ?: $date['annee2']) . '/' . ($date['mois'] ?: $date['mois2']) . '/' . ($date['jour'] ?: $date['jour2']));
         }
     }
 
