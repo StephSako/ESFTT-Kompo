@@ -44,6 +44,7 @@
                         categorie['titleModale'],
                         (categorie['isCustom'] is not defined ? ('mailto:' ~ categorie['joueurs']['mail']['toString']) : null),
                         (categorie['isCustom'] is not defined ? ('sms:' ~ categorie['joueurs']['sms']['toString']) : null),
+                        true,
                         {
                             isCustom: categorie['isCustom'] is defined
                         })

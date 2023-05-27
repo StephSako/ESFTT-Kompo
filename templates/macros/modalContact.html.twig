@@ -1,4 +1,4 @@
-{% macro modalAlertPlayers(id, response, titre, linkMail, linkSMS, options) %}
+{% macro modalAlertPlayers(id, response, titre, linkMail, linkSMS, showListContactables, options) %}
     <div id="modal{{ id }}" class="modal modal-medium modal-fixed-footer">
         <div class="modal-content">
 
@@ -22,10 +22,10 @@
                     {{ _self.modalCustomMessage(id, response) }}
                 {% else %}
                     {% if not options.noSMS is defined %}
-                        {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id) }}
+                        {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'sms', options.btnTxtSMS ?? 'par sms', linkSMS, id, showListContactables) }}
                     {% endif %}
 
-                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id) }}
+                    {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id, showListContactables) }}
                 {% endif %}
             </div>
         </div>
@@ -35,8 +35,8 @@
     </div>
 {% endmacro %}
 
-{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id) %}
-    <div class="{{ hideClass }} card grey lighten-3 z-depth-0">
+{% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id, showListContactables) %}
+    <div class="{{ hideClass }} card grey lighten-3 z-depth-0" style="overflow:auto;{% if media == 'sms' %}margin-bottom: 10px;{% endif %}">
         {% if response['contactables']|length %}
             <a href="{{ link }}" class="center-align btn blue lighten-2" id="btn_{{ media }}_{{ id }}">
                 {{ btnTxt }}
@@ -55,37 +55,44 @@
         {% endif %}
 
         {% if (response['contactables'] | length) == 0 %}
-            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 8px;">Aucun membre contactable par {{ media }}</p>
+            <p style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;"><span class="pastille red reset">Aucun membre contactable</span></p>
         {% elseif response['notContactables'] | length %}
-            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 8px;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : ''}} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}} par {{ media }}</p>
+            <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ (response['contactables'] | length) > 1 ? 's' : ''}} contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}}</p>
+            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 0;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : ''}} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}}</p>
         {% endif %}
 
-        <ul class="row">
-            {% for joueurContactable in response['contactables'] %}
-                <li class="col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
-                    <div class="chip">
-                        {% if joueurContactable.avatar %}
-                            <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
-                        {% else %}
-                            <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                        {% endif %}
-                        <span class="truncate green-text text-darken-2">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
-                    </div>
-                </li>
-            {% endfor %}
-            {% for joueurNotContactable in response['notContactables'] %}
-                <li class="col s12 m6" id="notContactables_{{ joueurNotContactable.idCompetiteur }}">
-                    <div class="chip">
-                        {% if joueurNotContactable.avatar %}
-                            <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
-                        {% else %}
-                            <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                        {% endif %}
-                        <span class="truncate red-text">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+        {% if (response['contactables'] | length) != 0 and (response['notContactables'] | length) == 0 and not showListContactables %}
+            <p class="pastille green reset center lighten-1" style="margin-top: 10px; margin-bottom: 10px;">Tous les joueurs sont contactables</p>
+        {% else %}
+            <ul class="row" style="margin-bottom: 0 !important">
+                {% if showListContactables %}
+                    {% for joueurContactable in response['contactables'] %}
+                        <li class="col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
+                            <div class="chip">
+                                {% if joueurContactable.avatar %}
+                                    <img src="{{ vich_uploader_asset(joueurContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
+                                {% else %}
+                                    <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                                {% endif %}
+                                <span class="truncate green-text text-darken-2">{{ joueurContactable.nom ~ ' ' ~ joueurContactable.prenom }}</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% for joueurNotContactable in response['notContactables'] %}
+                    <li class="col s12 m6" id="notContactables_{{ joueurNotContactable.idCompetiteur }}">
+                        <div class="chip">
+                            {% if joueurNotContactable.avatar %}
+                                <img src="{{ vich_uploader_asset(joueurNotContactable, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
+                            {% else %}
+                                <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                            {% endif %}
+                            <span class="truncate red-text">{{ joueurNotContactable.nom ~ ' ' ~ joueurNotContactable.prenom }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 {% endmacro %}
 

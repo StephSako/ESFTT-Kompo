@@ -85,6 +85,7 @@
                 'Joueurs non déclarés',
                 'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
                 'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?&body=' ~ messageJoueursSansDispo,
+                true,
                 { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
             )
         }}

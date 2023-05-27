@@ -1007,7 +1007,7 @@ class Competiteur implements UserInterface, Serializable
      */
     public function getSelect(): string
     {
-        return $this->getNom() . ' ' . $this->getPrenom() . ' - ' . $this->getClassementOfficiel() . ' pts';
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
     /**
