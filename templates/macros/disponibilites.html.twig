@@ -7,7 +7,7 @@
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
         <div class="row bottom_0">
-            <div class="col s2 center"><span class="bold light_blue">X</span></div>
+            <div class="col s2 center"><span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">X</span></div>
             <div class="col s10">Nombre de sélections sur la phase</div>
         </div>
         <div class="row bottom_0">
@@ -44,8 +44,8 @@
                                         <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}{% if dispo.joueur.idCompetiteur == app.user.idCompetiteur %} bold{% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
                                     </div>
                                 </div>
-                                <div class="col s1 center">
-                                    <span class="bold light_blue">{{ dispo.nbMatchesJoues }}</span>
+                                <div class="col s1 center" style="border-radius: 25%;">
+                                    <span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">{{ dispo.nbMatchesJoues }}</span>
                                 </div>
                                 <div class="col s1">
                                     {% if dispo.joueur.idCompetiteur in selectedPlayers %}

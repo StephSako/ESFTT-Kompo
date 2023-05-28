@@ -50,7 +50,7 @@
                             </label>
                         </td>
                     {% endif %}
-                    {% if hasDoublon %}
+                    {% if hasDoublon and not sheetDataHasViolations %}
                         <td>
                             {% if joueur.doublon and not joueur.dejaInscrit %}
                                 <i class="material-icons orange-text">people_alt</i>

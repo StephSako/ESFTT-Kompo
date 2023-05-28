@@ -70,11 +70,12 @@ class BackOfficeCompetiteurController extends AbstractController
     const EXCEl_CHAMP_MAIL_2 = 9;
     const EXCEl_CHAMP_CLASSEMENT = 10;
     const EXCEl_CHAMP_IS_LOISIR = 11;
-    const EXCEl_CHAMP_IS_CAPITAINE = 12;
-    const EXCEl_CHAMP_IS_COMPETITEUR = 13;
-    const EXCEl_CHAMP_IS_CRITERIUM = 14;
-    const EXCEl_CHAMP_IS_ENTRAINEUR = 15;
-    const EXCEl_CHAMP_IS_ADMIN = 16;
+    const EXCEl_CHAMP_IS_JEUNE = 12;
+    const EXCEl_CHAMP_IS_CAPITAINE = 13;
+    const EXCEl_CHAMP_IS_COMPETITEUR = 14;
+    const EXCEl_CHAMP_IS_CRITERIUM = 15;
+    const EXCEl_CHAMP_IS_ENTRAINEUR = 16;
+    const EXCEl_CHAMP_IS_ADMIN = 17;
 
     /**
      * BackOfficeController constructor.
@@ -805,6 +806,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                 $nouveau
                     ->setIsPasswordResetting(true)
+                    ->setIsJeune($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_JEUNE))
                     ->setIsLoisir($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_LOISIR))
                     ->setIsCapitaine($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_CAPITAINE))
                     ->setIsCompetiteur($this->isRoleInExcelFile($joueur, self::EXCEl_CHAMP_IS_COMPETITEUR))
@@ -1069,13 +1071,11 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function checkRoles(Competiteur $competiteur){
         if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
-        if ((($competiteur->isCompetiteur() || $competiteur->isCapitaine()) && ($competiteur->isLoisir() || $competiteur->isArchive())) ||
-            (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) ||
-            (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) ||
-            ($competiteur->isArchive() && ($competiteur->isCritFed() || $competiteur->isLoisir() || $competiteur->isCompetiteur() || $competiteur->isAdmin() || $competiteur->isCapitaine() || $competiteur->isEntraineur())) ||
-            ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine()))){
-            throw new Exception('Les rôles sont incohérents', 1234);
-        }
+        if (count($competiteur->getRoles()) == 1 && $competiteur->isJeune()) throw new Exception('Le jeune doit avoir au moins un autre rôle', 1234);
+        if ($competiteur->isArchive() && count($competiteur->getRoles()) > 1) throw new Exception('Le joueur archivé ne doit pas avoir d\'autres rôles', 1234);
+        if (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) throw new Exception('Un capitaine doit être compétiteur', 1234);
+        if (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) throw new Exception('Un joueur du crit. féd. doit être compétiteur', 1234);
+        if ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine())) throw new Exception('Un loisir ne peut pas avoir de rôle(s) lié(s) à la compétition', 1234);
     }
 
     /**

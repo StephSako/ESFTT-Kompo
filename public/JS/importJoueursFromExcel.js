@@ -8,7 +8,7 @@ function importJoueursFromExcel(file) {
         cache: false,
         dataType:'json',
         success : function(responseTemplate) { endSendingImportJoueursFromExcel(responseTemplate, false); },
-        error : function() { endSendingImportJoueursFromExcel("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide !</span>", true); }
+        error : function() { endSendingImportJoueursFromExcel("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide, utilisez le template fourni dans Instructions !</span>", true); }
     });
 }
 

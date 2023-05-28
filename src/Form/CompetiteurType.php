@@ -60,6 +60,10 @@ class CompetiteurType extends AbstractType
                 ->add('isCritFed', CheckboxType::class, [
                     'label' => 'Critérium fédéral',
                     'required' => false
+                ])
+                ->add('isJeune', CheckboxType::class, [
+                    'label' => 'Jeune',
+                    'required' => false
                 ]);
         }
 

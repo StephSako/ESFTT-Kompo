@@ -207,4 +207,9 @@
         {% if joueur.isAdmin or joueur.isCompetiteur or joueur.isLoisir or joueur.isCritFed or joueur.isCapitaine %}<br>{% endif %}
         <span style="margin-top: 2px" class="new badge brown{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}" data-badge-caption="Entraîneur"></span>
     {% endif %}
+
+    {% if joueur.isJeune %}
+        {% if joueur.isAdmin or joueur.isCompetiteur or joueur.isLoisir or joueur.isCritFed or joueur.isCapitaine or joueur.isEntraineur %}<br>{% endif %}
+        <span style="margin-top: 2px" class="new badge teal{% if options.dejaInscrit and not options.sheetDataHasViolations %} lighten-3{% endif %}" data-badge-caption="Jeune"></span>
+    {% endif %}
 {% endmacro %}

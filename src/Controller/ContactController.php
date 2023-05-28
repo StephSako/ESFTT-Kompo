@@ -77,6 +77,7 @@ class ContactController extends AbstractController
         $allPlayersButMe = $this->competiteurRepository->findJoueursByRole(null, $idRedacteur);
         $categories['tous'] = ['joueurs' => $this->returnPlayersContactByMedia($allPlayersButMe), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
         $categories['loisirs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isLoisir(); })), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
+        $categories['jeunes'] = ['joueurs' => $this->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Jeune', $idRedacteur)), 'titleItem' => 'Jeunes', 'titleModale' => 'Les jeunes'];
         $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCompetiteur(); })), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
         $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCritFed(); })), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
         $categories['capitaines'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCapitaine(); })), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];

@@ -277,6 +277,13 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @var boolean
      *
+     * @ORM\Column(type="boolean", name="is_jeune", nullable=false)
+     */
+    private $isJeune = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(type="boolean", name="is_archive", nullable=false)
      */
     private $isArchive = false;
@@ -895,6 +902,7 @@ class Competiteur implements UserInterface, Serializable
             if ($this->isEntraineur()) $roles[] = 'ROLE_ENTRAINEUR';
             if ($this->isAdmin()) $roles[] = 'ROLE_ADMIN';
             if ($this->isLoisir())  $roles[] = 'ROLE_LOISIR';
+            if ($this->isJeune())  $roles[] = 'ROLE_JEUNE';
             if ($this->isCapitaine()) $roles[] = 'ROLE_CAPITAINE';
             if ($this->isCompetiteur()) $roles[] = 'ROLE_COMPETITEUR';
         } else $roles[] = 'ROLE_ARCHIVE';
@@ -1375,20 +1383,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return Competiteur
-     */
-    public function setIsTotallyArchive(): self
-    {
-        return $this->setIsArchive(true)
-            ->setIsAdmin(false)
-            ->setIsCapitaine(false)
-            ->setIsCompetiteur(false)
-            ->setIsCritFed(false)
-            ->setIsEntraineur(false)
-            ->setIsLoisir(false);
-    }
-
-    /**
      * @return bool
      */
     public function isCritFed(): bool
@@ -1469,6 +1463,24 @@ class Competiteur implements UserInterface, Serializable
     public function setIsCompetiteur(bool $isCompetiteur): self
     {
         $this->isCompetiteur = $isCompetiteur;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJeune(): bool
+    {
+        return $this->isJeune;
+    }
+
+    /**
+     * @param bool $isJeune
+     * @return Competiteur
+     */
+    public function setIsJeune(bool $isJeune): Competiteur
+    {
+        $this->isJeune = $isJeune;
         return $this;
     }
 
