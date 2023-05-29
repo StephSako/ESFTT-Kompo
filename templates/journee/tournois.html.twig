@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
+{% endblock %}
+
+{% block title %}Tournois FFTT{% endblock %}
+
+{% block body %}
+
+    <header>
+        {% include("components/navbar.html.twig") %}
+        <script type="text/javascript" src="{{ asset('JS/getListeTournois.min.js') }}"></script>
+    </header>
+
+    <div class="container" id="settings-page">
+        <div class="card-panel center-align white-text title_journee">
+            <h4 style="font-family: Lobster, cursive">Tournois FFTT</h4>
+        </div>
+
+        <div class="card-panel" id="ckeditor-render">
+
+            <button onclick="getListeTournois();">GET</button>
+        </div>
+
+        <script type="text/javascript">
+
+        </script>
+    </div>
+{% endblock %}

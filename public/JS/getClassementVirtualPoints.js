@@ -10,8 +10,8 @@ function getGeneralClassementsVirtuels(forceReload = null) {
             url : '/journee/general-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : (responseTemplate) => { templating('#rankingContent', responseTemplate, true); },
-            error : () => { templating('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true); }
+            success : (responseTemplate) => { templatingClassementVirtuel('#rankingContent', responseTemplate, true); },
+            error : () => { templatingClassementVirtuel('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true); }
         });
     }
 }
@@ -19,19 +19,19 @@ function getGeneralClassementsVirtuels(forceReload = null) {
 let alreadyCalledClassement = false;
 
 function getPersonnalClassementVirtuel(licence) {
-    if (!licence) templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
+    if (!licence) templatingClassementVirtuel('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
     else {
         $.ajax({
             url : '/journee/personnal-classement-virtuel',
             type : 'POST',
             dataType : 'json',
-            success : (responseTemplate) => { templating('.preloader_personnal_virtual_rank', responseTemplate); },
-            error : () => { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
+            success : (responseTemplate) => { templatingClassementVirtuel('.preloader_personnal_virtual_rank', responseTemplate); },
+            error : () => { templatingClassementVirtuel('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
         });
     }
 }
 
-function templating(selector, response, general = false){
+function templatingClassementVirtuel(selector, response, general = false){
     $(selector).each(function() {
         if (general) {
             $('a.reload_ranking').removeClass('hide');

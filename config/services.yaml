@@ -17,6 +17,10 @@ parameters:
     time_reset_password_hour: '%env(TIME_RESET_PASSWORD_HOUR)%'
     time_init_password_day: '%env(TIME_INIT_PASSWORD_DAY)%'
     url_prod: '%env(URL_PROD)%'
+    url_get_tournois: '%env(URL_GET_TOURNOIS)%'
+    host_get_tournois: '%env(HOST_GET_TOURNOIS)%'
+    referer_get_tournois: '%env(REFERER_GET_TOURNOIS)%'
+    origin_get_tournois: '%env(ORIGIN_GET_TOURNOIS)%'
 
 services:
     _defaults:
