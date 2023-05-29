@@ -14,7 +14,7 @@ $(document).ready(() => {
     let cb_jeune = $('#cb_jeune');
     let cb_competiteur = $('#cb_competiteur');
     let cb_archive = $('#cb_archive');
-    let cb_entraineur = $('#cb_entraineur');
+    let cb_entraineur = $('#cb_entraineur')
     let cb_crit_fed = $('#cb_crit_fed');
     let btn_modifier = $('#btn_modifier');
     let form_equipes_associees = $('#equipesAssocieesForm');
@@ -55,6 +55,7 @@ $(document).ready(() => {
         cb_competiteur.prop('disabled', e.currentTarget.checked);
         cb_capitaine.prop('disabled', e.currentTarget.checked);
         cb_crit_fed.prop('disabled', true);
+        cb_jeune.prop('disabled', e.currentTarget.checked);
     });
 
     cb_capitaine.on('change', () => {
