@@ -109,7 +109,7 @@
             {% endif %}
 
             {% if options.equipesAssociees is defined %}
-                <div class="row" id="equipesAssocieesForm" class="hide">
+                <div class="row hide" id="equipesAssocieesForm">
                     <h5 class="dark_blue" style="margin-top: 0;">Titularisations</h5>
                     {% for nomChampionnat, infos in options.equipesAssociees %}
                         <div class="form_div_list col m6 s12 l5{% if loop.index0 == 0 %} offset-l1{% endif %}">
