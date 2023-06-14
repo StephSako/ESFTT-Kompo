@@ -55,7 +55,7 @@
                             <ul>
                                 {% for rencontre in journeesWithReportedRencontresFormatted %}
                                     <li>
-                                        <b>-</b> Match de la <b>{{ rencontre.idEquipe.numero }}</b> contre <b>{{ rencontre.adversaire }} {{ (rencontre.idJournee.dateJournee > rencontre.dateReport ? ' avancé' : ' reporté') }}</b> au <b>{{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
+                                        <b>-</b> Match de la <b>{{ rencontre.idEquipe.numero }}</b> <b>{{ rencontre.adversaire ? 'contre ' ~ rencontre.adversaire : '' }} {{ (rencontre.idJournee.dateJournee > rencontre.dateReport ? ' avancé' : ' reporté') }}</b> au <b>{{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
                                     </li>
                                 {% endfor %}
                             </ul>

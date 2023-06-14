@@ -559,6 +559,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ->setAdresse(null)
                                 ->setValidationCompo(false)
                                 ->setComplementAdresse(null)
+                                ->setReporte(false)
                                 ->setDateReport($rencontreKompo->getIdJournee()->getDateJournee())
                                 ->setAdversaire(null);
                         }
