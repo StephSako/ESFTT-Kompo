@@ -220,17 +220,15 @@ class FooterController extends AbstractController
             );
             $content = $response->toArray();
 
-            dump(array_map(function ($tournoi) {
+            $tournois = array_map(function ($tournoi) {
                 return new Tournoi($tournoi);
-            }, $content["hydra:member"]));
-
-//            $tournois = $content;
+            }, $content["hydra:member"]);
         } catch (Exception $e) {
             dump($e);
         }
 
         return new JsonResponse($this->render('ajax/listeTournois.html.twig', array(
-            'tournois' => 'tournois'
+            'tournois' => $tournois
         ))->getContent());
     }
 }

@@ -17,7 +17,7 @@ class Tournoi
             $this->setStartDate(null);
         }
         try {
-            $this->setEndDate(new DateTime($item['startDate']));
+            $this->setEndDate(new DateTime($item['endDate']));
         } catch (Exception $e) {
             $this->setEndDate(null);
         }
