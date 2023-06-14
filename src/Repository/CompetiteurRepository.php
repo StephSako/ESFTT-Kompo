@@ -100,6 +100,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.nom')
             ->addSelect('c.licence')
             ->addSelect('c.prenom')
+            ->addSelect('c.classement_officiel')
             ->addSelect('c.idCompetiteur');
 
         foreach ($championnats as $championnat){
@@ -128,7 +129,6 @@ class CompetiteurRepository extends ServiceEntityRepository
         $result = $result
             ->where('c.isCompetiteur = true')
             ->orderBy(implode(', ', array_map(function ($c) { return 'numero' . $c->getSlug(); }, $championnats)))
-            ->addOrderBy('c.classement_officiel', 'DESC')
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -150,6 +150,9 @@ class CompetiteurRepository extends ServiceEntityRepository
             foreach($disposTemp as $dispo) {
                 $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : 'Sans équipe';
                 $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
+                usort($queryChamp[$nomChamp]["dispos"][$labelEquipe], function ($dispo1, $dispo2) {
+                    return $dispo2['classement_officiel'] - $dispo1['classement_officiel'];
+                });
             }
         }
         return $queryChamp;
