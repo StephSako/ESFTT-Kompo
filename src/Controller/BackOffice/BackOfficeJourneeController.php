@@ -72,6 +72,18 @@ class BackOfficeJourneeController extends AbstractController
                 try {
                     $journee->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
                     $this->em->flush();
+
+                    /** On reset les dates de report des Rencontres non décalées à la même date de la Journée */
+                    $rencontresToResetDatereport = array_filter($journee->getRencontres()->toArray(), function($r) {
+                        return !$r->isReporte();
+                    });
+                    if ($rencontresToResetDatereport) {
+                        foreach ($rencontresToResetDatereport as $rencontre) {
+                            $rencontre->setDateReport($journee->getDateJournee());
+                        }
+                        $this->em->flush();
+                    }
+
                     $this->addFlash('success', 'Journée modifiée');
                     return $this->redirectToRoute('backoffice.journees', [
                         'active' => $journee->getIdChampionnat()->getIdChampionnat()
