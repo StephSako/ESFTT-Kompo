@@ -219,6 +219,7 @@ class BackOfficeEquipeController extends AbstractController
         foreach ($journees as $journee){
             $rencontre = new Rencontre($equipe->getIdChampionnat());
             $rencontre
+                ->setValidationCompo(false)
                 ->setIdJournee($journee)
                 ->setIdEquipe($equipe)
                 ->setDomicile(null)

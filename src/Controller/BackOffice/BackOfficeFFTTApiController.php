@@ -408,7 +408,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $rencontreTemp['infosContact']['site'] = strlen(trim($idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getSiteWeb() : ''));
                                     $rencontreTemp['infosContact']['telephone'] = strlen(trim($idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getTelCoordo() : ''));
 
-                                    $rencontreTemp = [];
                                     $rencontreTemp['rencontre'] = $rencontreKompo;
                                     $rencontreTemp['recorded'] = false;
                                     $rencontresParEquipes[] = $rencontreTemp;

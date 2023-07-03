@@ -44,6 +44,7 @@ class ChampionnatRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('c')
             ->select('d.longName')
+            ->addSelect('d.idDivision')
             ->addSelect('d.shortName')
             ->addSelect('COUNT(e) as nbEquipes')
             ->addSelect('c.nom')
@@ -60,11 +61,13 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->getResult();
 
         $querySorted = [];
-        foreach ($query as $key => $item) {
-            if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
-            if (!array_key_exists('divisions', $querySorted[$item['nom']])) $querySorted[$item['nom']]['divisions'] = [];
-            $querySorted[$item['nom']]['divisions'][$key] = $item;
+        foreach ($query as $key => $division) {
+            if ($division['idDivision']) {
+                if (!array_key_exists($division['nom'], $querySorted)) $querySorted[$division['nom']] = [];
+                if (!array_key_exists('idChampionnat', $querySorted[$division['nom']])) $querySorted[$division['nom']]['idChampionnat'] = $division['idChampionnat'];
+                if (!array_key_exists('divisions', $querySorted[$division['nom']])) $querySorted[$division['nom']]['divisions'] = [];
+                $querySorted[$division['nom']]['divisions'][$key] = $division;
+            }
         }
         return $querySorted;
     }
@@ -82,6 +85,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('c.idChampionnat')
             ->addSelect('j.dateJournee')
             ->addSelect('j.undefined')
+            ->addSelect('r.id')
             ->addSelect('r.adversaire')
             ->addSelect('r.domicile')
             ->addSelect('r.villeHost')
@@ -102,11 +106,13 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->getResult();
 
         $querySorted = [];
-        foreach ($query as $key => $item) {
-            if (!array_key_exists($item['nom'], $querySorted)) $querySorted[$item['nom']] = [];
-            if (!array_key_exists('idChampionnat', $querySorted[$item['nom']])) $querySorted[$item['nom']]['idChampionnat'] = $item['idChampionnat'];
-            if (!array_key_exists('rencontres', $querySorted[$item['nom']])) $querySorted[$item['nom']]['rencontres'] = [];
-            $querySorted[$item['nom']]['rencontres'][$item['numero']][$key] = $item;
+        foreach ($query as $key => $rencontre) {
+            if ($rencontre['id']) {
+                if (!array_key_exists($rencontre['nom'], $querySorted)) $querySorted[$rencontre['nom']] = [];
+                if (!array_key_exists('idChampionnat', $querySorted[$rencontre['nom']])) $querySorted[$rencontre['nom']]['idChampionnat'] = $rencontre['idChampionnat'];
+                if (!array_key_exists('rencontres', $querySorted[$rencontre['nom']])) $querySorted[$rencontre['nom']]['rencontres'] = [];
+                $querySorted[$rencontre['nom']]['rencontres'][$rencontre['numero']][$key] = $rencontre;
+            }
         }
         return $querySorted;
     }
