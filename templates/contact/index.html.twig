@@ -5,9 +5,8 @@
 {% block title %}Page de contact{% endblock %}
 
 {% block body %}
-
     <header>
-        {% include("components/navbar.html.twig") %}
+        {% include("components/navbar" ~ (isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
         <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/searchPlayers.min.js') }}"></script>
     </header>

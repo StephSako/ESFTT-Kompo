@@ -4,8 +4,9 @@
 {% import 'macros/flash.html.twig' as _flash %}
 
 {% block body %}
-
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
 
     <div class='container center'>
 

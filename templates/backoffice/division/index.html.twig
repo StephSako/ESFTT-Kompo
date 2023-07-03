@@ -5,7 +5,9 @@
 {% import 'macros/division.html.twig' as _division %}
 
 {% block body %}
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
     <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
 
     <div class='container center'>

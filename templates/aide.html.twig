@@ -3,7 +3,6 @@
 {% block title %}Page d'aide de Kompo{% endblock %}
 
 {% block body %}
-
     <script type="text/javascript">
         function jumpTo(anchor) {
             window.location.href = '#' + anchor;
@@ -12,7 +11,7 @@
     </script>
 
     <header>
-        {% include("components/navbar.html.twig") %}
+        {% include("components/navbar" ~ (isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
     </header>
 
     <div class="container" id="aide_page">

@@ -5,8 +5,9 @@
 {% import 'macros/equipe.html.twig' as _equipe %}
 
 {% block body %}
-
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
 
     <div class='container center'>
 

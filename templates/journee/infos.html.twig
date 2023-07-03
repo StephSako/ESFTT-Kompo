@@ -7,9 +7,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-
     <header>
-        {% include("components/navbar.html.twig") %}
+        {% include("components/navbar" ~ (isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
     </header>
 
     <div class="container" id="settings-page">

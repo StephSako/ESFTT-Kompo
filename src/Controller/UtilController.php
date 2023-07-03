@@ -156,4 +156,18 @@ class UtilController extends AbstractController
     public function getAdminUpdateLog(string $préfixe): string {
         return $préfixe . $this->getUser()->getPrenom() . ' ' . $this->getUser()->getNom()[0] . '. le ' . date_format(new DateTime(), 'd/m/Y');
     }
+
+    /**
+     * Détermine si le navbar du back-office est conservée ou non
+     * @param string $redirection
+     * @param array $options
+     * @param string|null $backOfficeParam
+     * @return array
+     */
+    public function keepBackOfficeNavbar(string $redirection, array $options, ?string $backOfficeParam): array {
+        return [
+            'redirect' => $this->redirectToRoute($redirection, $options),
+            'issue' => ($backOfficeParam && $backOfficeParam != 'true') || ($backOfficeParam == 'true' && !($this->getUser()->isCapitaine() || $this->getUser()->isAdmin()))
+        ];
+    }
 }

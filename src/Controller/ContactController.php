@@ -50,28 +50,38 @@ class ContactController extends AbstractController
 
     /**
      * @Route("/contacter", name="contact")
+     * @param Request $request
      * @param UtilController $utilController
      * @return Response
      */
-    public function index(UtilController $utilController): Response
+    public function index(Request $request, UtilController $utilController): Response
     {
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('contact', [], $request->query->get('backoffice'));
+        if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
+        else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
-        $allChampionnats = $this->championnatRepository->findAll();
-        $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        if (!$isBackoffice) {
+            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
-        // Disponibilités du joueur
-        $id = $championnat->getIdChampionnat();
-        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = null;
-        if ($this->getUser()->isCompetiteur()) {
-            $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
-                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            // Disponibilités du joueur
+            $id = $championnat->getIdChampionnat();
+            $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+            $disposJoueurFormatted = null;
+            if ($this->getUser()->isCompetiteur()) {
+                $disposJoueurFormatted = [];
+                foreach($disposJoueur as $dispo) {
+                    $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+                }
             }
+
+            $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
+            $allChampionnats = $this->championnatRepository->findAll();
         }
+
+        $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);
 
         $idRedacteur = $this->getUser()->getIdCompetiteur();
         $allPlayersButMe = $this->competiteurRepository->findJoueursByRole(null, $idRedacteur);
@@ -91,8 +101,9 @@ class ContactController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
-            'categories' => $categories
+            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
+            'categories' => $categories,
+            'isBackOffice' => $isBackoffice
         ]);
     }
 

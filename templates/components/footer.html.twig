@@ -5,26 +5,27 @@
             <a class="center" href="https://www.esftt.com/forum">Forum privé</a><br>
             <a class="center" href="https://www.facebook.com/groups/46831155736">Notre Facebook</a>
         </div>
+        {% set suffixebackoffice = (app.request.get('backoffice') == 'true' or app.request.getPathInfo starts with '/backoffice' ? 'true' : null) %}
         <div class="container center">
             <div class="lien_long">
-                <a class="center" href="{{ path('informations', {type: 'championnat-departemental'}) }}">Championnat départemental</a><br>
-                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris'}) }}">Championnat de Paris</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-departemental', backoffice: suffixebackoffice}) }}">Championnat départemental</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris', backoffice: suffixebackoffice}) }}">Championnat de Paris</a><br>
             </div>
             <div class="lien_court">
-                <a class="center" href="{{ path('informations', {type: 'championnat-departemental'}) }}">Champ. depart.</a><br>
-                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris'}) }}">Champ. de Paris</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-departemental', backoffice: suffixebackoffice}) }}">Champ. depart.</a><br>
+                <a class="center" href="{{ path('informations', {type: 'championnat-de-paris', backoffice: suffixebackoffice}) }}">Champ. de Paris</a><br>
             </div>
-            <a class="center" href="{{ path('informations', {type: 'criterium-federal'}) }}">Critérium fédéral</a><br>
+            <a class="center" href="{{ path('informations', {type: 'criterium-federal', backoffice: suffixebackoffice}) }}">Critérium fédéral</a><br>
         </div>
         <div class="container center">
             <div class="lien_long">
-                <a class="center" href="{{ path('informations', {type: 'general'}) }}">Informations générales</a><br>
+                <a class="center" href="{{ path('informations', {type: 'general', backoffice: suffixebackoffice}) }}">Informations générales</a><br>
             </div>
             <div class="lien_court">
-                <a class="center" href="{{ path('informations', {type: 'general'}) }}">Infos générales</a><br>
+                <a class="center" href="{{ path('informations', {type: 'general', backoffice: suffixebackoffice}) }}">Infos générales</a><br>
             </div>
             <a class="center" href="https://www.pingpocket.fr/">PingPocket</a><br>
-            <a class="center" href="{{ path('aide') }}">Aide Kompo</a>
+            <a class="center" href="{{ path('aide', suffixebackoffice ? {backoffice: suffixebackoffice} : {}) }}">Aide Kompo</a>
         </div>
     </div>
 </footer>

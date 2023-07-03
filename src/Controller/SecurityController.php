@@ -88,25 +88,32 @@ class SecurityController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function edit(Request $request, UtilController $utilController){
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('account', [], $request->query->get('backoffice'));
+        if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
+        else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = $equipesAssociees = null;
+        if (!$isBackoffice) {
+            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
 
-        // Disponibilités du joueur
-        $id = $championnat->getIdChampionnat();
-        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = null;
-        if ($this->getUser()->isCompetiteur()) {
-            $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
-                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+            $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+
+            // Disponibilités du joueur
+            $id = $championnat->getIdChampionnat();
+            $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+            if ($this->getUser()->isCompetiteur()) {
+                $disposJoueurFormatted = [];
+                foreach($disposJoueur as $dispo) {
+                    $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+                }
             }
+
+            $allChampionnats = $this->championnatRepository->findAll();
+            $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
+            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
-
-        $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
-
         $form = $this->createForm(CompetiteurType::class, $user, [
             'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null
         ]);
@@ -145,9 +152,10 @@ class SecurityController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
-            'equipesAssociees' => $this->getUser()->getTableEquipesAssociees($allChampionnats),
-            'form' => $form->createView()
+            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
+            'equipesAssociees' => $equipesAssociees,
+            'form' => $form->createView(),
+            'isBackOffice' => $isBackoffice
         ]);
     }
 
