@@ -1312,7 +1312,7 @@ class Competiteur implements UserInterface, Serializable
             ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
             return [
                 'status' => true,
-                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . '/' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)) . '</b>',
+                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1) . '</b>',
                 'shortMessage' => $this->getLabelCertificatRentree()
             ];
         return [

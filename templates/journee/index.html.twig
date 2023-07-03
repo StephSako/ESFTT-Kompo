@@ -65,7 +65,8 @@
             {% endif %}
 
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
-            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
+            {# Certificat médical invalide à partir de mai #}
+            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status and ("now" | date('m')) >= 4 %}
             {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
             {% set hasJoueursWithoutLicenceClassoff = (joueursWithoutLicence.count or competiteursWithoutClassement.count) and (app.user.admin or app.user.capitaine) %}
 
@@ -107,7 +108,7 @@
                             {% endif %}
                         {% else %}
                             <p class="red-text lighten-2">
-                                <i class="material-icons red-text">dangerous</i>
+                                <i class="material-icons red-text">payment</i>
                                 {% if app.user.licence and not app.user.classementOfficiel %}
                                     Votre <b>classement</b> n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
                                 {% elseif not app.user.licence and app.user.classementOfficiel %}
@@ -132,7 +133,7 @@
                 <div class="card-panel center setDispoCard"
                      style="{% if userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}{% if hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
                 >
-                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                    <p class="red-text lighten-2"><i class="material-icons red-text">health_and_safety</i>
                         {{ app.user.certifMedicalInvalid.message | raw }}
                     </p>
                 </div>
@@ -145,7 +146,7 @@
                             {% if userCertifMedicalInvalid or userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}
                             {% if hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
                     {% endif %}>
-                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                    <p class="red-text lighten-2"><i class="material-icons">health_and_safety</i>
                         Il y a <b>{{ countJoueursCertifMedicPerim }} compétiteur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now' | date('Y') }}/{{ 'now' | date('Y')+1 }}</b>
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
                     </p>
@@ -156,7 +157,7 @@
                 <div class="card-panel center setDispoCard"
                      {% if userCertifMedicalInvalid or hasJoueursCertifMedicPerim or userClassementLicenceIndefinies %}style="margin-top: 10px;" {% endif %}
                 >
-                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                    <p class="red-text lighten-2"><i class="material-icons">payment</i>
                         {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
                     </p>
