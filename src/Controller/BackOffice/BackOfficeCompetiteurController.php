@@ -331,7 +331,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $str_replacers = [
                 'old' => ["[#init_password_link#]", "[#pseudo#]", "[#time_init_password_day#]", "[#prenom#]", "[#club_name#]", "[#roles#]"],
                 'new' => [
-                    "ce <a href=\"$initPasswordLink\">lien</a>",
+                    "ce <a href=\"" . $initPasswordLink . "\">lien</a>",
                     $competiteur->getUsername(),
                     $this->getParameter('time_init_password_day'),
                     $competiteur->getPrenom(),

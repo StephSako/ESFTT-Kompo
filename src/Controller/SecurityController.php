@@ -160,7 +160,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/compte/update_password", name="account.update.password")
+     * @Route("/compte/update-password", name="account.update.password")
      * @param Request $request
      * @return Response
      */
@@ -206,7 +206,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
+     * @Route("/login/contact/forgotten-password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @param UtilController $utilController
      * @param ContactController $contactController
@@ -247,33 +247,31 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/forgotten_password", name="login.forgotten.password")
+     * @Route("/login/forgotten-password", name="login.forgotten.password")
      * @return Response
      */
     public function forgottenPassword(): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
-        else return $this->render('account/forgotten_password.html.twig', []);
+        else return $this->render('account/forgotten_password.html.twig');
     }
 
     /**
-     * @Route("/login/reset_password/{token}", name="login.reset.password")
+     * @Route("/login/reset-password/{token}", name="login.reset.password")
      * @param Request $request
      * @param string $token
+     * @param UtilController $utilController
      * @return Response
      * @throws Exception
      */
-    public function resetPassword(Request $request, string $token): Response
+    public function resetPassword(Request $request, UtilController $utilController, string $token): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
-            $tokenDecoded = base64_decode($token);
-            $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-            $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
-
-            $idCompetiteur = json_decode($decryption, true)['idCompetiteur'];
+            $tokenDecoded = $utilController->decryptToken($token);
+            $idCompetiteur = $tokenDecoded['idCompetiteur'];
             $competiteur = $this->competiteurRepository->find($idCompetiteur);
-            $dateValid = json_decode($decryption, true)['dateValidation'];
+            $dateValid = $tokenDecoded['dateValidation'];
 
             /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
             if ($dateValid <= (new DateTime())->getTimestamp()){

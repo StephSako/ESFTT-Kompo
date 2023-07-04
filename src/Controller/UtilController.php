@@ -10,6 +10,7 @@ use DateInterval;
 use DateTime;
 use Exception;
 use App\Repository\RencontreRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Transliterator;
 
@@ -17,16 +18,20 @@ class UtilController extends AbstractController
 {
     private $rencontreRepository;
     private $championnatRepository;
+    private $logger;
 
     /**
      * @param RencontreRepository $rencontreRepository
+     * @param LoggerInterface $logger
      * @param ChampionnatRepository $championnatRepository
      */
     public function __construct(RencontreRepository $rencontreRepository,
+                                LoggerInterface $logger,
                                 ChampionnatRepository $championnatRepository)
     {
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -46,6 +51,43 @@ class UtilController extends AbstractController
     }
 
     /**
+     * @param string $token
+     * @return string
+     * @throws Exception
+     */
+    public function encryptToken(string $token):string {
+        $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
+        $encryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
+        $encrypted = base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
+
+        // On vérifie que le token est bien déchiffrable
+        try {
+            $this->decryptToken($encrypted);
+            return $encrypted;
+        } catch (Exception $e) {
+            $this->logger->error("TOKEN DECRYPTION INVALIDE : " . $token . ' | ' . $encrypted);
+            return 'token-encryption-failed';
+        }
+    }
+
+    /**
+     * @param string $token
+     * @return array|null
+     * @throws Exception
+     */
+    public function decryptToken(string $token): ?array {
+        $tokenDecoded = base64_decode($token);
+        $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
+        $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
+        $tokenDecoded = json_decode($decryption, true);
+        if ($tokenDecoded == null) {
+            $this->logger->error("TOKEN DECRYPTION INVALID : " . $token);
+            throw new Exception("Le token est invalide !", 500);
+        }
+        return $tokenDecoded;
+    }
+
+    /**
      * Génère un token afin de modifier le mot de passe d'un utilisateur en passant l'username et le date changer (combien de temps
      * le token est valide) en paramètre
      * @param int $idCompetiteur
@@ -59,9 +101,7 @@ class UtilController extends AbstractController
                 'idCompetiteur' => $idCompetiteur,
                 'dateValidation' => (new DateTime())->add(new DateInterval($dateChanger))->getTimestamp()
             ]);
-        $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
-        $encryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-        return $this->getParameter('url_prod') . '/login/reset_password/' . base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
+        return $this->getParameter('url_prod') . '/login/reset-password/' . $this->encryptToken($token);
     }
 
     /**
@@ -150,11 +190,11 @@ class UtilController extends AbstractController
     }
 
     /**
-     * @param string $préfixe
+     * @param string $prefixe
      * @return string
      */
-    public function getAdminUpdateLog(string $préfixe): string {
-        return $préfixe . $this->getUser()->getPrenom() . ' ' . $this->getUser()->getNom()[0] . '. le ' . date_format(new DateTime(), 'd/m/Y');
+    public function getAdminUpdateLog(string $prefixe): string {
+        return $prefixe . $this->getUser()->getPrenom() . ' ' . $this->getUser()->getNom()[0] . '. le ' . date_format(new DateTime(), 'd/m/Y');
     }
 
     /**

@@ -2,7 +2,7 @@ function getLastComposAdversaire(nomAdversaire, lienDivision, numeroEquipe) {
     if (!alreadyCalledComposAdversaires.includes(numeroEquipe)) {
         alreadyCalledComposAdversaires.push(numeroEquipe);
         $.ajax({
-            url: '/journee/last_compos_adversaire',
+            url: '/journee/last-compos-adversaire',
             type: 'POST',
             data: {
                 nomAdversaire: nomAdversaire,

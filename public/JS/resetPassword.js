@@ -3,7 +3,7 @@ function resetPassword() {
     else {
         sendingResetPassword();
         $.ajax({
-            url : '/login/contact/forgotten_password',
+            url : '/login/contact/forgotten-password',
             type : 'POST',
             data: {
                 mail: $('#email').val(),

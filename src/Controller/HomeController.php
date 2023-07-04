@@ -583,7 +583,7 @@ class HomeController extends AbstractController
 
     /**
      * Renvoie un template des anciennes compositions d'équipe de l'adversaire des précédentes journées
-     * @Route("/journee/last_compos_adversaire", name="index.lastComposAdversaire", methods={"POST"})
+     * @Route("/journee/last-compos-adversaire", name="index.lastComposAdversaire", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
