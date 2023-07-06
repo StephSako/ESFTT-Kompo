@@ -626,4 +626,33 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         return $brulagesParEquipe;
     }
+
+    /**
+     * Liste des annniversaires
+     * @return array
+     * @throws Exception
+     */
+    public function getAnniversaires(): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c.nom')
+            ->addSelect('c.prenom')
+            ->addSelect('c.dateNaissance')
+            ->where('c.dateNaissance IS NOT NULL')
+            ->andWhere('c.isArchive = false')
+            ->getQuery()
+            ->getResult();
+        $query = array_map(function ($joueur) {
+            $joueur['dateNaissanceFormatted'] = new DateTime((date("Y") + (date('n') > $joueur['dateNaissance']->format('n') ? 1 : 0)) . substr($joueur['dateNaissance']->format('Y-m-d'), -6));
+            return $joueur;
+        }, $query);
+
+        usort($query, function ($j1, $j2) {
+            return $j2['dateNaissanceFormatted'] < $j1['dateNaissanceFormatted'];
+        });
+
+        return array_filter($query, function ($joueur) {
+            return in_array((int) (new DateTime())->diff($joueur['dateNaissanceFormatted'])->format('%R%a'), range(0,30));
+        });
+    }
 }

@@ -238,6 +238,8 @@ class HomeController extends AbstractController
             return $r->getIdJournee()->getIdJournee() == $idJournee;
         });
 
+        $anniversaires = $this->competiteurRepository->getAnniversaires();
+
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
             'idJournee' => $numJournee,
@@ -269,6 +271,7 @@ class HomeController extends AbstractController
             'competiteursWithoutClassement' => $competiteursWithoutClassement,
             'messageJoueursSansDispo' => $messageJoueursSansDispo,
             'objetJoueursSansDispos' => $objetJoueursSansDispos,
+            'anniversaires' => $anniversaires,
             'linkNextJournee' => $linkNextJournee
         ]);
     }

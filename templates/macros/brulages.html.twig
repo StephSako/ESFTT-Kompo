@@ -137,3 +137,19 @@
         <span style="margin-top: 0; margin-bottom: 0;">En journée 2, un seul joueur marqué du symbole <i class="material-icons red-text">whatshot</i> dans <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i><span class="lobster" style="font-size: 100%;">Sélectionnables & brûlage J+1</span>  peut être sélectionné</span>
     </div>
 {% endmacro %}
+
+{% macro cardAnniversaires(anniversaires) %}
+    {% if anniversaires %}
+        <div class="card-panel bottom_0 center-align" style="margin-top: 10px">
+            <h6 class="lobster_2"><b>🥳 Anniversaires à venir</b></h6>
+
+            {% if app.user.dateNaissance is null %}
+                <span style="font-size: 90%" class="blue-text text-lighten-1"><i>Renseignez votre date de naissance</i> 😄</span>
+            {% endif %}
+
+            {% for joueur in anniversaires %}
+                <p class="joueurAnniv">{{ joueur.nom ~ ' ' ~ joueur.prenom }} <b>{{ joueur.dateNaissance|format_datetime(pattern='EEE d/LL', locale='fr')|title }}</b></p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endmacro %}

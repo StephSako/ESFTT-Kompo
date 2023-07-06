@@ -21,6 +21,7 @@
     <div class="row main">
         <div class="col l3 hide-on-med-and-down">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
+            {{ _brulage.cardAnniversaires(anniversaires) }}
         </div>
 
         <div class="col s12 l6">
@@ -479,34 +480,39 @@
             {% endif %}
         </div>
 
-        <ul class="collapsible hide-on-large-only">
-            <li>
-                <div class="collapsible-header">
-                    <div class="chip">
-                        <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
-                        <span class="lobster">Disponibilités</span>
+        <div class="hide-on-large-only">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
+                            <span class="lobster">Disponibilités</span>
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
-                </div>
-                <div class="collapsible-body">
-                    <div class="center-align">
-                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers) }}
+                    <div class="collapsible-body">
+                        <div class="center-align">
+                            {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers) }}
+                        </div>
                     </div>
-                </div>
-            </li>
-            <li>
-                <div class="collapsible-header">
-                    <div class="chip">
-                        <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
-                        <span class="lobster">Brûlage</span>
+                </li>
+                <li>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
+                            <span class="lobster">Brûlage</span>
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
-                </div>
-                <div class="collapsible-body">
-                    {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
-                </div>
-            </li>
-        </ul>
+                    <div class="collapsible-body">
+                        {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
+                    </div>
+                </li>
+            </ul>
+            <div class="col s12 l6">
+                {{ _brulage.cardAnniversaires(anniversaires) }}
+            </div>
+        </div>
 
         <div class="col l3 hide-on-med-and-down">
             <div class="center-align">

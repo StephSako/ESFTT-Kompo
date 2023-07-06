@@ -1046,6 +1046,13 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   transform-origin: 0.6em 0.5em;
 }
 
+p.joueurAnniv {
+  margin-top: 10px;
+  margin-bottom: 11px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .brand-logo {
   left: 50% !important;
 }
