@@ -1086,6 +1086,12 @@ table.rankingVirtualPoints {
     &:hover {
       color: #3691f8;
     }
+
+    &.active {
+      background-color: #1565c0;
+      padding: 1px 4px;
+      border-radius: 5px;
+    }
   }
 }
 

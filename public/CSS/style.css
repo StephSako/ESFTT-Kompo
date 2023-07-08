@@ -912,6 +912,11 @@ table.rankingVirtualPoints td .chip .nom {
 .page-footer a:hover {
   color: #3691f8;
 }
+.page-footer a.active {
+  background-color: #1565c0;
+  padding: 1px 4px;
+  border-radius: 5px;
+}
 
 .missingTitle {
   font-size: 20px;
