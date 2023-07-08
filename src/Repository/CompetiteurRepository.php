@@ -19,9 +19,21 @@ use Exception;
  */
 class CompetiteurRepository extends ServiceEntityRepository
 {
+    const LABEL_SANS_EQUIPE = 'Sans équipe';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Competiteur::class);
+    }
+
+    public function moveSansEquipesInEndList(array $mainArray): array {
+        /** Les 'sans équipes' vont en fin de liste */
+        if (array_key_exists(self::LABEL_SANS_EQUIPE, $mainArray)) {
+            $se = $mainArray[self::LABEL_SANS_EQUIPE];
+            unset($mainArray[self::LABEL_SANS_EQUIPE]);
+            $mainArray[self::LABEL_SANS_EQUIPE] = $se;
+        }
+        return $mainArray;
     }
 
     /**
@@ -80,12 +92,11 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $disposParEquipe = [];
         foreach($disposFormatted as $dispo) {
-            $labelEquipe = $dispo['numero'] ? 'Équipe n°' . $dispo['numero'] : 'Sans équipe';
+            $labelEquipe = $dispo['numero'] ? 'Équipe n°' . $dispo['numero'] : self::LABEL_SANS_EQUIPE;
             $disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()] = $dispo;
             unset($disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()]['numero']);
         }
-
-        return $disposParEquipe;
+        return $this->moveSansEquipesInEndList($disposParEquipe);
     }
 
     /**
@@ -148,13 +159,15 @@ class CompetiteurRepository extends ServiceEntityRepository
             $disposTemp = $championnat["dispos"];
             unset($queryChamp[$nomChamp]["dispos"]);
             foreach($disposTemp as $dispo) {
-                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : 'Sans équipe';
+                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : self::LABEL_SANS_EQUIPE;
                 $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
                 usort($queryChamp[$nomChamp]["dispos"][$labelEquipe], function ($dispo1, $dispo2) {
                     return $dispo2['classement_officiel'] - $dispo1['classement_officiel'];
                 });
             }
+            $queryChamp[$nomChamp]["dispos"] = $this->moveSansEquipesInEndList($queryChamp[$nomChamp]["dispos"]);
         }
+
         return $queryChamp;
     }
 
@@ -224,21 +237,19 @@ class CompetiteurRepository extends ServiceEntityRepository
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['numero'] = $brulage['numero'];
-            $brulageJoueur['idEquipeAssociee'] = $brulage['idEquipeAssociee'];
             $brulageJoueur['idCompetiteur'] = $brulage['idCompetiteur'];
             $allBrulage[$brulage['nom'] . ' ' . $brulage['prenom']] = $brulageJoueur;
         }
 
         $brulagesParEquipe = [];
         foreach($allBrulage as $nomJoueur => $brulage) {
-            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : 'Sans équipe';
-            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur] = $brulage;
-            $brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['nomEquipe'] = $labelEquipe;
-            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['idEquipeAssociee']);
-            unset($brulagesParEquipe[$brulage['idEquipeAssociee'] ?: 0]['joueurs'][$nomJoueur]['numero']);
+            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : self::LABEL_SANS_EQUIPE;
+            $brulagesParEquipe[$labelEquipe][$nomJoueur] = [
+                'brulage' => $brulage['brulage'],
+                'idCompetiteur' => $brulage['idCompetiteur']
+            ];
         }
-
-        return $brulagesParEquipe;
+        return $this->moveSansEquipesInEndList($brulagesParEquipe);
     }
 
     /**
@@ -362,10 +373,11 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $brulagesSelectionnablesParEquipe = [];
         foreach($allBrulage as $nomJoueur => $brulage) {
-            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : 'Sans équipe';
+            $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : self::LABEL_SANS_EQUIPE;
             $brulagesSelectionnablesParEquipe[$labelEquipe][$nomJoueur] = $brulage;
             unset($brulagesSelectionnablesParEquipe[$labelEquipe][$nomJoueur]['numero']);
         }
+        $brulagesSelectionnablesParEquipe = $this->moveSansEquipesInEndList($brulagesSelectionnablesParEquipe);
 
         return [
             'joueurs' => $allBrulage,
@@ -421,10 +433,10 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $joueursBrules = [];
         foreach($query as $joueur) {
-            $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : 'Sans équipe';
+            $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : self::LABEL_SANS_EQUIPE;
             $joueursBrules[$labelEquipe][] = $joueur['nom'] . ' ' . $joueur['prenom'];
         }
-        return $joueursBrules;
+        return $this->moveSansEquipesInEndList($joueursBrules);
     }
 
     /**
@@ -620,11 +632,11 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $brulagesParEquipe = [];
         foreach($request as $joueur) {
-            $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : 'Sans équipe';
+            $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : self::LABEL_SANS_EQUIPE;
             $brulagesParEquipe[$labelEquipe][] = $joueur[0];
         }
 
-        return $brulagesParEquipe;
+        return $this->moveSansEquipesInEndList($brulagesParEquipe);
     }
 
     /**
