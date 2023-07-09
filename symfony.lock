@@ -95,6 +95,18 @@
             "./src/Repository/.gitignore"
         ]
     },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
+        },
+        "files": [
+            "src/DataFixtures/AppFixtures.php"
+        ]
+    },
     "doctrine/doctrine-migrations-bundle": {
         "version": "1.2",
         "recipe": {
@@ -189,6 +201,9 @@
             "config/packages/liip_imagine.yaml",
             "config/routes/liip_imagine.yaml"
         ]
+    },
+    "liip/test-fixtures-bundle": {
+        "version": "2.1.1"
     },
     "maennchen/zipstream-php": {
         "version": "2.1.0"
@@ -326,9 +341,6 @@
     },
     "sebastian/resource-operations": {
         "version": "2.0.2"
-    },
-    "sebastian/type": {
-        "version": "1.1.4"
     },
     "sebastian/version": {
         "version": "2.0.1"

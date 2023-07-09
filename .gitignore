@@ -20,6 +20,7 @@
 ###< symfony/phpunit-bridge ###
 .idea
 kompo_refactored.db
+/tests/kompo_tests.db-journal
 ###> phpunit/phpunit ###
 phpunit.xml.dist
 ###< phpunit/phpunit ###
