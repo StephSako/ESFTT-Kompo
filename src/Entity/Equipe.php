@@ -18,7 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         @Index(name="IDX_eq_champ", columns={"id_championnat"})
  *     },
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_equipe", columns={"id_championnat", "numero"})
+ *          @UniqueConstraint(name="UNIQ_equipe", columns={"id_championnat", "numero"}),
+ *          @UniqueConstraint(name="UNIQ_lien_div", columns={"lien_division"})
  *     }
  * )
  */

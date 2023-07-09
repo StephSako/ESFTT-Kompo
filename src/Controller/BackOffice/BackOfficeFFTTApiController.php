@@ -710,6 +710,10 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat mis à jour');
                     }
+
+                    /** On reset tous les last_update des entités liées au championnat */
+                    $this->championnatRepository->resetLastUpdateForChampEntities($idChampionnat);
+
                     return $this->redirectToRoute('backoffice.reset.phase');
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }

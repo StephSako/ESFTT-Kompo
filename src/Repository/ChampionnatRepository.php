@@ -153,4 +153,22 @@ class ChampionnatRepository extends ServiceEntityRepository
         }
         return $organismes;
     }
+
+    /**
+     * @param int $idChampionnat
+     * @return void
+     */
+    public function resetLastUpdateForChampEntities(int $idChampionnat) {
+        $tablesToResetLastUpdate = ['Championnat', 'Division', 'Journee', 'Rencontre', 'Equipe'];
+
+        foreach ($tablesToResetLastUpdate as $table) {
+            $this->createQueryBuilder('t')
+                ->update('App\Entity\\' . $table, 't')
+                ->set('t.lastUpdate', 'NULL')
+                ->where('t.idChampionnat = :idChampionnat')
+                ->setParameter('idChampionnat', $idChampionnat)
+                ->getQuery()
+                ->execute();
+        }
+    }
 }

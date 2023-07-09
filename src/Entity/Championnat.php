@@ -15,7 +15,8 @@ use Doctrine\Common\Collections\Collection;
  * @ORM\Table(
  *     name="prive_championnat",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"})
+ *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"}),
+ *          @UniqueConstraint(name="UNIQ_lien_fftt", columns={"lien_fftt_api"})
  *     }
  * )
  * @UniqueEntity(
