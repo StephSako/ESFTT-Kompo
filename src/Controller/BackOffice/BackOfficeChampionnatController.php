@@ -24,24 +24,20 @@ class BackOfficeChampionnatController extends AbstractController
     private $em;
     private $championnatRepository;
     private $journeeRepository;
-    private $utilController;
 
     /**
      * BackOfficeChampionnatController constructor.
      * @param ChampionnatRepository $championnatRepository
-     * @param UtilController $utilController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(ChampionnatRepository $championnatRepository,
-                                UtilController $utilController,
                                 JourneeRepository $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->championnatRepository = $championnatRepository;
         $this->journeeRepository = $journeeRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -75,9 +71,10 @@ class BackOfficeChampionnatController extends AbstractController
     /**
      * @Route("/backoffice/championnat/new", name="backoffice.championnat.new")
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UtilController $utilController): Response
     {
         $organismes = $this->getOrganismesFormatted();
         $championnat = new Championnat();
@@ -101,7 +98,7 @@ class BackOfficeChampionnatController extends AbstractController
                     $journee->setDateJournee((new DateTime())->modify('+' . $i . ' day'));
                     $this->em->persist($journee);
                 }
-                $championnat->setLastUpdate($this->utilController->getAdminUpdateLog('Créé par '));
+                $championnat->setLastUpdate($utilController->getAdminUpdateLog('Créé par '));
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat créé');
@@ -109,6 +106,7 @@ class BackOfficeChampionnatController extends AbstractController
             } catch(Exception $e){
                 if ($e->getPrevious()->getCode() == "23000"){
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
+                    else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', 'Il existe déjà un championnat pour \'' . array_search($championnat->getOrganismePere(), array_merge(...array_values($organismes))) . '\'');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
                 else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -201,7 +199,7 @@ class BackOfficeChampionnatController extends AbstractController
                         }
                     }
                 }
-                $championnat->setLastUpdate($this->utilController->getAdminUpdateLog('Modifié par '));
+                $championnat->setLastUpdate($utilController->getAdminUpdateLog('Modifié par '));
 
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat modifié');

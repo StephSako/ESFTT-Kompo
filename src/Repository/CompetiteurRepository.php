@@ -114,7 +114,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.classement_officiel')
             ->addSelect('c.idCompetiteur');
 
-        foreach ($championnats as $championnat){
+        foreach ($championnats as $championnat) {
             $strDispos = '';
             $journees = $championnat->getJournees()->toArray();
             foreach ($journees as $i => $journee) {
@@ -127,7 +127,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 if ($i < count($journees)-1) $strDispos .= ", ',' , ";
             }
             $result = $result
-                ->addSelect('CONCAT(' . $strDispos . ') AS ' . $championnat->getSlug())
+                ->addSelect((count($journees) > 1 ? 'CONCAT(' . $strDispos . ')' : $strDispos) . ' AS ' . $championnat->getSlug())
                 ->addSelect('(
                     SELECT et' . $championnat->getIdChampionnat() . '.numero
                     FROM App\Entity\Titularisation t' . $championnat->getIdChampionnat() . ', App\Entity\Equipe et' . $championnat->getIdChampionnat() . '
