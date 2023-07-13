@@ -207,7 +207,7 @@ class HomeController extends AbstractController
 
         // Brûlages des joueurs
         $divisions = $championnat->getDivisions()->toArray();
-        $brulages = $divisions ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
+        $brulages = $divisions && $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
@@ -337,14 +337,14 @@ class HomeController extends AbstractController
             'editCompoMode' => true
         ]);
 
-        $joueursBrules = $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage());
+        $joueursBrules = $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulesDansEquipe($compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $type, $nbMaxJoueurs, $championnat->getLimiteBrulage()) : [];
         $nbJoueursDivision = $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             $nbJoueursBruleJ2 = 0;
-            if ($championnat->isJ2Rule()) {
+            if ($championnat->getLimiteBrulage() && $championnat->isJ2Rule()) {
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
                 $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables['joueurs'],
                     function($joueur){
@@ -416,7 +416,7 @@ class HomeController extends AbstractController
             'journees' => $journees,
             'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'nbJoueursDivision' => $nbJoueursDivision,
-            'brulageSelectionnables' => $brulageSelectionnables['par_equipes'],
+            'brulageSelectionnables' => $brulageSelectionnables ? $brulageSelectionnables['par_equipes'] : [],
             'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,

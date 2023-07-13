@@ -21,7 +21,7 @@
     <div class="row main">
         <div class="col l3 hide-on-med-and-down">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
-            {{ _brulage.cardAnniversaires(anniversaires) }}
+            {{ _brulage.cardAnniversaires(anniversaires, championnat.limiteBrulage) }}
         </div>
 
         <div class="col s12 l6">
@@ -510,7 +510,7 @@
                 </li>
             </ul>
             <div class="col s12 l6">
-                {{ _brulage.cardAnniversaires(anniversaires) }}
+                {{ _brulage.cardAnniversaires(anniversaires, championnat.limiteBrulage) }}
             </div>
         </div>
 

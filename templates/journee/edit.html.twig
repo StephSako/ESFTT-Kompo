@@ -26,7 +26,7 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
+                        {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero, championnat.limiteBrulage) }}
                     </div>
                 </li>
                 <li>
@@ -51,10 +51,10 @@
         </div>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
+            {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero, championnat.limiteBrulage) }}
         </div>
 
-        <div class="col s12 l7">
+        <div class="col s12 {% if championnat.limiteBrulage %}l7{% else %}l8{% endif %}">
             {% for message in app.flashes('fail') %}
                 {{ _flash.message(message, 'red') }}
             {% endfor %}
@@ -296,7 +296,7 @@
                 {{ form_end(form) }}
             </div>
         </div>
-        <div class="col l3 hide-on-med-and-down">
+        <div class="col {% if championnat.limiteBrulage %}l3{% else %}l2{% endif %} hide-on-med-and-down">
             {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
         </div>
     </div>

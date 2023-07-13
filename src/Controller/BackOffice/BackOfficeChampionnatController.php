@@ -85,6 +85,12 @@ class BackOfficeChampionnatController extends AbstractController
 
         if ($form->isSubmitted()){
             try {
+                /** Si le brulage est défini à 0, on le NULL */
+                if ($championnat->getLimiteBrulage() == 0){
+                    $championnat->setJ2Rule(false);
+                    $championnat->setLimiteBrulage(null);
+                }
+
                 $championnat->setNom($championnat->getNom());
                 $this->em->persist($championnat);
 
@@ -143,6 +149,12 @@ class BackOfficeChampionnatController extends AbstractController
 
         if ($form->isSubmitted()) {
             try {
+                /** Si le brulage est défini à 0, on le NULL */
+                if ($championnat->getLimiteBrulage() == 0) {
+                    $championnat->setJ2Rule(false);
+                    $championnat->setLimiteBrulage(null);
+                }
+
                 $journees = $championnat->getJournees()->toArray();
 
                 /** Si la limite du brûlage diminue, on recalcule tous les brûlages des joueurs */

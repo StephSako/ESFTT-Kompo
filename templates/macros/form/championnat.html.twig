@@ -17,7 +17,7 @@
 
                 <div class="col s12 l4">
                     <b><i class="red-text material-icons prefix">whatshot</i> Limite du brûlage</b>
-                    {{ form_row(form.limiteBrulage) }}
+                    {{ form_row(form.limiteBrulage, {'id': 'i_limite_brulage'}) }}
                 </div>
 
                 <div class="col s12 l4">
@@ -61,12 +61,18 @@
     <script type="text/javascript">
         let i_nb_journees = $('#i_nb_journees');
         let cb_regle_j2 = $('#cb_regle_j2');
+        let limite_brulage = $('#i_limite_brulage');
 
-        /** Evènements liés aux emails et numéros de téléphone **/
-        if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+        /** Evènements liés aux brûlage/brûlage J2 **/
+        if (i_nb_journees.val() === '' || parseInt(i_nb_journees.val()) <= 1 || limite_brulage.val() === '' || limite_brulage.val() === '0') cb_regle_j2.prop('checked', false).prop('disabled', true);
 
         i_nb_journees.change(function () {
-            if (i_nb_journees.val() === '' || i_nb_journees.val() <= 1) cb_regle_j2.prop('checked', false).prop('disabled', true);
+            if (i_nb_journees.val() === '' || parseInt(i_nb_journees.val()) <= 1 || limite_brulage.val() === '' || limite_brulage.val() === '0') cb_regle_j2.prop('checked', false).prop('disabled', true);
+            else cb_regle_j2.prop('disabled', false);
+        });
+
+        limite_brulage.change(function () {
+            if (i_nb_journees.val() === '' || parseInt(i_nb_journees.val()) <= 1 || limite_brulage.val() === '' || limite_brulage.val() === '0') cb_regle_j2.prop('checked', false).prop('disabled', true);
             else cb_regle_j2.prop('disabled', false);
         });
     </script>

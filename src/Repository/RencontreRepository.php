@@ -63,7 +63,8 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $limiteBrulage, int $nbJoueurs, int $type){
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $limiteBrulage, int $nbJoueurs, int $type) {
+        if (!$limiteBrulage) return [];
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
         $strP = $strRP = '';

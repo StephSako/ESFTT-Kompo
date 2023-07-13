@@ -259,23 +259,25 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $idJournee
      * @param array $idEquipes
      * @param int $nbJoueurs
-     * @param int $limiteBrulage
+     * @param int|null $limiteBrulage
      * @return array
      */
-    public function getBrulagesSelectionnables(Championnat $championnat, int $numero, int $idJournee, array $idEquipes, int $nbJoueurs, int $limiteBrulage): array
+    public function getBrulagesSelectionnables(Championnat $championnat, int $numero, int $idJournee, array $idEquipes, int $nbJoueurs, ?int $limiteBrulage): array
     {
         $journees = $championnat->getJournees()->toArray();
         $idFirstJournee = $journees[0]->getIdJournee();
-        $j2Condition = (count($journees) >= 2 && $journees[1]->getIdJournee() == $idJournee) && $championnat->isJ2Rule();
+        $j2Condition = $limiteBrulage && (count($journees) >= 2 && $journees[1]->getIdJournee() == $idJournee) && $championnat->isJ2Rule();
         if ($j2Condition) $strJ2 = '';
         $strD = '';
 
-        for ($j = 0; $j < $nbJoueurs; $j++) {
-            if ($j2Condition) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
-            $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
-            if ($j < $nbJoueurs - 1){
-                $strD .= ' OR ';
-                if ($j2Condition) $strJ2 .= ' OR ';
+        if ($limiteBrulage) {
+            for ($j = 0; $j < $nbJoueurs; $j++) {
+                if ($j2Condition) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
+                $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
+                if ($j < $nbJoueurs - 1){
+                    $strD .= ' OR ';
+                    if ($j2Condition) $strJ2 .= ' OR ';
+                }
             }
         }
 
@@ -291,7 +293,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                     AND t.idEquipe = et.idEquipe
                 ) as numero');
 
-        if ($j2Condition){
+        if ($j2Condition) {
             $brulages = $brulages->addSelect('(SELECT COUNT(r.id)' .
                 ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
                 ' WHERE e.idDivision IS NOT NULL' .
@@ -324,6 +326,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('c.isCompetiteur = true')
             ->andWhere('d.idJournee = :idJournee')
             ->andWhere('d.disponibilite = 1');
+
         for ($j = 0; $j < $nbJoueurs; $j++) {
             $brulages = $brulages
                 ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
@@ -333,13 +336,18 @@ class CompetiteurRepository extends ServiceEntityRepository
                                                   ' AND e' . $j .'e.numero <> :numero'.
                                                   ' AND p' . $j . '.idChampionnat = :idChampionnat)');
         }
+
+        if ($limiteBrulage) {
+            $brulages = $brulages
+                ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
+                    ' WHERE (' . $strD . ')' .
+                    ' AND p.idJournee < :idJournee' .
+                    ' AND p.idChampionnat = :idChampionnat' .
+                    ' AND p.idEquipe = eBis.idEquipe' .
+                    ' AND eBis.numero < :numero) < ' . $limiteBrulage);
+        }
+
         $brulages = $brulages
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
-                       ' WHERE (' . $strD . ')' .
-                       ' AND p.idJournee < :idJournee' .
-                       ' AND p.idChampionnat = :idChampionnat' .
-                       ' AND p.idEquipe = eBis.idEquipe' .
-                       ' AND eBis.numero < :numero) < ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
             ->setParameter('numero', $numero)
             ->setParameter('idChampionnat', $championnat->getIdChampionnat())
@@ -391,11 +399,12 @@ class CompetiteurRepository extends ServiceEntityRepository
      * @param int $idJournee
      * @param int $idChampionnat
      * @param int $nbJoueurs
-     * @param int $limiteBrulage
+     * @param int|null $limiteBrulage
      * @return array
      */
-    public function getBrulesDansEquipe(int $numero, int $idJournee, int $idChampionnat, int $nbJoueurs, int $limiteBrulage): array
+    public function getBrulesDansEquipe(int $numero, int $idJournee, int $idChampionnat, int $nbJoueurs, ?int $limiteBrulage): array
     {
+        if (!$limiteBrulage) return [];
         $str = '';
         for ($j = 0; $j < $nbJoueurs; $j++) {
             $str .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
@@ -583,11 +592,11 @@ class CompetiteurRepository extends ServiceEntityRepository
     /**
      * Retourne la liste des joueurs sélectionnables pour la compo d'équipe avec opt groupe
      * @param int $nbMaxJoueurs
-     * @param int $limiteBrulage
+     * @param int|null $limiteBrulage
      * @param Rencontre $compo
      * @return array
      */
-    public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, int $limiteBrulage, Rencontre $compo): array
+    public function getJoueursSelectionnablesOptGroup(int $nbMaxJoueurs, ?int $limiteBrulage, Rencontre $compo): array
     {
         $request = $this->createQueryBuilder('c')
             ->addSelect('(
@@ -602,6 +611,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('d.disponibilite = 1')
             ->andWhere('d.idChampionnat = :idChampionnat')
             ->andWhere('c.isCompetiteur = true');
+
         $str = '';
         for ($i = 0; $i < $nbMaxJoueurs; $i++) {
             $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
@@ -614,13 +624,19 @@ class CompetiteurRepository extends ServiceEntityRepository
                     ' AND e' . $i .'e.numero <> :numero'.
                     ' AND p' . $i . '.idChampionnat = :idChampionnat)');
         }
+
+        /** Joueurs brûlés non sélectionnables */
+        if ($limiteBrulage) {
+            $request = $request
+                ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
+                    ' WHERE (' . $str . ')' .
+                    ' AND p.idJournee < :idJournee' .
+                    ' AND p.idEquipe = eBis.idEquipe' .
+                    ' AND eBis.numero < :numero ' .
+                    ' AND p.idChampionnat = :idChampionnat) < ' . $limiteBrulage);
+        }
+
         $request = $request
-            ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
-                ' WHERE (' . $str . ')' .
-                ' AND p.idJournee < :idJournee' .
-                ' AND p.idEquipe = eBis.idEquipe' .
-                ' AND eBis.numero < :numero ' .
-                ' AND p.idChampionnat = :idChampionnat) < ' . $limiteBrulage)
             ->setParameter('idJournee', $compo->getIdJournee()->getIdJournee())
             ->setParameter('numero', $compo->getIdEquipe()->getNumero())
             ->setParameter('idChampionnat', $compo->getIdChampionnat()->getIdChampionnat())
