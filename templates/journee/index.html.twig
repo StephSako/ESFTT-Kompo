@@ -242,7 +242,7 @@
                                         <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
                                     {% endif %}
                                         Poule
-                                        {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                        {% if compo.idEquipe.idPoule %}
                                             {{ compo.idEquipe.idPoule.poule }}
                                         {% else %}
                                             <span class="red-text">?</span>
