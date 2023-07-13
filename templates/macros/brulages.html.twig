@@ -1,17 +1,17 @@
 {% macro table(limiteBrulage, brulages, idEquipes) %}
-    <div class="card-panel bottom_0 brulageCard merged_cards up">
+    <div class="scrollableTable card-panel bottom_0 brulages">
+        <h5 class="center hide-on-med-and-down">Brûlages</h5>
+
         <div class="row bottom_0">
-            <div class="col s2 center"><i class="red-text material-icons">highlight_off</i></div>
-            <div class="col s10">Brûlé dans l'équipe</div>
+            <div class="col s2 m1 l2 center"><i class="red-text material-icons">highlight_off</i></div>
+            <div class="col s10 m11 l10">Brûlé dans l'équipe</div>
         </div>
 
         <div class="row bottom_0">
-            <div class="col s2 center"><i class="orange-text material-icons">error_outline</i></div>
-            <div class="col s10">Brûlé prévisionnel dans l'équipe</div>
+            <div class="col s2 m1 l2 center"><i class="orange-text material-icons">error_outline</i></div>
+            <div class="col s10 m11 l10">Brûlé prévisionnel dans l'équipe</div>
         </div>
-    </div>
-    <div class="scrollableTable card-panel merged_cards bottom brulages">
-        <h5 class="center hide-on-med-and-down" style="margin-bottom: 2px">Brûlages</h5>
+
         {% if idEquipes|length %}
             {% for nomEquipe, brulagesEquipe in brulages %}
                 <table class="striped {% if not idEquipes|length %} centered{% endif %}">

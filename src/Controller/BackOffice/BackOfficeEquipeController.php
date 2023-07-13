@@ -273,7 +273,7 @@ class BackOfficeEquipeController extends AbstractController
 
         $form = $this->createForm(EquipeType::class, $equipe, [
             'editListeTitulaires' => true,
-            'choices' => $this->competiteurRepository->findBy(['isCompetiteur' => true], ['nom' => 'ASC', 'prenom' => 'ASC'])
+            'choices' => $this->competiteurRepository->findBy(['isCompetiteur' => true], ['classement_officiel' => 'DESC', 'nom' => 'ASC', 'prenom' => 'ASC'])
         ]);
         $form->handleRequest($request);
 

@@ -166,8 +166,10 @@ div.scrollableTable {
   height: auto;
   margin-top: 10px;
 }
-div.scrollableTable.brulages {
-  font-size: 90%;
+div.scrollableTable.brulages .bottom_0 {
+  padding: 0;
+  margin-left: 0;
+  width: 100%;
 }
 div.scrollableTable tr:nth-child(odd) > td {
   background-color: #f2f2f2;
@@ -1437,6 +1439,14 @@ a.reload_ranking {
   table.recapitulatifDispos:not(:first-of-type) {
     margin-top: 20px;
   }
+
+  .bottom_0.brulages {
+    padding: 0;
+    margin-top: 20px;
+  }
+  .bottom_0.brulages .row.bottom_0 {
+    font-size: 94%;
+  }
 }
 @media screen and (min-width: 1285px) {
   .exempt {
@@ -1513,10 +1523,6 @@ a.reload_ranking {
   .virtualPointsCard p {
     margin-top: -2px;
     margin-bottom: 4px;
-  }
-
-  .brulageCard {
-    margin-top: 10px;
   }
 
   table.composition-equipe tbody td {
