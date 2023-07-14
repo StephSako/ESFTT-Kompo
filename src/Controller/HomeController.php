@@ -215,7 +215,7 @@ class HomeController extends AbstractController
         // Si l'utilisateur est sélectionné pour la journée actuelle
         $selection = $this->getUser()->isSelectedIn($compos);
 
-        $allChampionnats = $this->championnatRepository->findAll();
+        $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
         $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
 
         // Brûlages des joueurs
@@ -332,7 +332,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
-        $allChampionnats = $this->championnatRepository->findAll();
+        $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
 
         /** Nombre de joueurs maximum par équipe du championnat */
         $nbMaxJoueurs = max(array_map(function ($division) {
@@ -520,7 +520,7 @@ class HomeController extends AbstractController
             }
 
             $journees = $championnat->getJournees()->toArray();
-            $allChampionnats = $this->championnatRepository->findAll();
+            $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
 
@@ -591,7 +591,7 @@ class HomeController extends AbstractController
             }
 
             $journees = $championnat->getJournees()->toArray();
-            $allChampionnats = $this->championnatRepository->findAll();
+            $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
 

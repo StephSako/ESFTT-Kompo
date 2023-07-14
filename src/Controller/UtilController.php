@@ -157,7 +157,7 @@ class UtilController extends AbstractController
      */
     public function nextJourneeToPlayAllChamps(): Journee
     {
-        $allChamps = $this->championnatRepository->findAll();
+        $allChamps = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
         $array = array_filter(array_map(function ($c) {
             return $c->getNextJourneeToPlay();
         }, $allChamps), function ($cNJTP) {

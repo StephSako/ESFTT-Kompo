@@ -110,7 +110,7 @@ class SecurityController extends AbstractController
                 }
             }
 
-            $allChampionnats = $this->championnatRepository->findAll();
+            $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
             $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
