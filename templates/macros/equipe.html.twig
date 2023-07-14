@@ -6,8 +6,10 @@
                     <th>N°</th>
                     <th>Division</th>
                     <th>Poule</th>
-                    <th>Liée à la FFTT</th>
-                    <th></th>
+                    {% if equipes|filter(e => e.idChampionnat.organismePere != null)|length %}
+                        <th>Liée à la FFTT</th>
+                    {% endif %}
+                    <th>Titulaires</th>
                     <th></th>
                     {% if app.user.admin %}
                         <th></th>
@@ -35,11 +37,13 @@
                                 <span class="red-text lighten-2">Poule indéfinie</span>
                             {% endif %}
                         </td>
-                        <td>
-                            {% if equipe.lienDivision %} <i class='material-icons green-text'>leak_add</i>
-                            {% else %} <i class='material-icons red-text'>leak_remove</i>
-                            {% endif %}
-                        </td>
+                        {% if equipe.idChampionnat.organismePere %}
+                            <td>
+                                {% if equipe.lienDivision %} <i class='material-icons green-text'>leak_add</i>
+                                {% else %} <i class='material-icons red-text'>leak_remove</i>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                         <td>
                             <a href="{{ path('backoffice.equipe.edit.players', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect green lighten-1 btn_gestion">
                                 {{ equipe.joueursAssocies|length}} <i class="material-icons">groups</i>

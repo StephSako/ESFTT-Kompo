@@ -171,4 +171,17 @@ class ChampionnatRepository extends ServiceEntityRepository
                 ->execute();
         }
     }
+
+    /**
+     * Liste des championnats updatables pour mises à jour
+     * @return array
+     */
+    public function getChampionnatsUpdatableByFFTTApi(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.organismePere IS NOT NULL')
+            ->orderBy('c.nom')
+            ->getQuery()
+            ->getResult();
+    }
 }

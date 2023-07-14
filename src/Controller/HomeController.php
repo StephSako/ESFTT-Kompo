@@ -175,14 +175,20 @@ class HomeController extends AbstractController
 
         // Numéros des équipes valides pour le brûlage
         $equipes = $championnat->getEquipes()->toArray();
-        $equipesBrulage = array_map(function($equipe){
-            return $equipe->getNumero();
-        }, array_filter($equipes, function($equipe){
-            return $equipe->getIdDivision() != null;
-        }));
-        sort($equipesBrulage, SORT_NUMERIC);
-        $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
-        $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
+
+        // Gestion et affichage des équipes sujettes aux brûlage
+        $idEquipesVisuel = $idEquipesBrulage = [];
+        if ($championnat->getLimiteBrulage()) {
+            $equipesBrulage = array_map(function($equipe) {
+                return $equipe->getNumero();
+            }, array_filter($equipes, function($equipe){
+                return $equipe->getIdDivision() != null;
+            }));
+
+            sort($equipesBrulage, SORT_NUMERIC);
+            $idEquipesVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
+            $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
+        }
 
         // Nombre minimal critique de joueurs pour les compos du championnat
         $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
@@ -207,14 +213,14 @@ class HomeController extends AbstractController
 
         // Brûlages des joueurs
         $divisions = $championnat->getDivisions()->toArray();
-        $brulages = $divisions && $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){return $division->getNbJoueurs();}, $divisions))) : null;
+        $brulages = $divisions && $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){ return $division->getNbJoueurs(); }, $divisions))) : [];
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'] && $joueur->isCompetiteur();
         }));
 
-        /** Joueurs sans licence définie */
+        // Joueurs sans licence définie
         $countJoueursWithoutLicence = count(array_filter($allValidPlayers, function ($joueur) {
             return !$joueur->getLicence() && $joueur->isCompetiteur();
         }));
@@ -223,7 +229,7 @@ class HomeController extends AbstractController
             'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' compétiteur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . '</b> dont la licence n\'est pas définie' : ''
         ];
 
-        /** Compétiteurs sans classement officiel défini */
+        // Compétiteurs sans classement officiel défini
         $countCompetiteursWithoutClassement = count(array_filter($allValidPlayers, function ($joueur) {
             return !$joueur->getClassementOfficiel() && $joueur->isCompetiteur();
         }));
@@ -321,14 +327,17 @@ class HomeController extends AbstractController
         $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
 
         /** Numéros des équipes valides pour le brûlage */
-        $equipesBrulage = array_map(function($equipe){
-            return $equipe->getNumero();
-        }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
-            return $equipe->getIdDivision() != null;
-        }));
-        sort($equipesBrulage, SORT_NUMERIC);
-        $idEquipesBrulageVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
-        $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
+        $idEquipesBrulage = $idEquipesBrulageVisuel = [];
+        if ($championnat->getLimiteBrulage()) {
+            $equipesBrulage = array_map(function($equipe){
+                return $equipe->getNumero();
+            }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
+                return $equipe->getIdDivision() != null;
+            }));
+            sort($equipesBrulage, SORT_NUMERIC);
+            $idEquipesBrulageVisuel = array_slice($equipesBrulage, 1, count($equipesBrulage));
+            $idEquipesBrulage = array_slice($equipesBrulage, 0, count($equipesBrulage) - 1);
+        }
 
         $joueursSelectionnables = $this->competiteurRepository->getJoueursSelectionnablesOptGroup($nbMaxJoueurs, $championnat->getLimiteBrulage(), $compo);
         $brulageSelectionnables = $this->competiteurRepository->getBrulagesSelectionnables($championnat, $compo->getIdEquipe()->getNumero(), $compo->getIdJournee()->getIdJournee(), $idEquipesBrulage, $nbMaxJoueurs, $championnat->getLimiteBrulage());
@@ -357,31 +366,33 @@ class HomeController extends AbstractController
                 }
             }
 
-            if ($nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés spécial J2 sont sélectionnés');
+            if ($championnat->getLimiteBrulage() && $championnat->isJ2Rule() && $nbJoueursBruleJ2 >= 2) $this->addFlash('fail', $nbJoueursBruleJ2 . ' joueurs brûlés spécial J2 sont sélectionnés');
             else {
                 /** On sauvegarde la composition d'équipe */
                 try {
                     $this->em->flush();
 
-                    /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
-                    $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
-                    $invalidCompos = [];
+                    if ($championnat->getLimiteBrulage()) {
+                        /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
+                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                        $invalidCompos = [];
 
-                    foreach ($journeesToRecalculate as $journeeToRecalculate) {
-                        for ($j = 0; $j < $nbJoueursDivision; $j++) {
-                            if ($form->getData()->getIdJoueurN($j)) {
-                                $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
-                                if ($invalidCompo){
-                                    array_push($invalidCompos, ...$invalidCompo);
-                                    $utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
+                        foreach ($journeesToRecalculate as $journeeToRecalculate) {
+                            for ($j = 0; $j < $nbJoueursDivision; $j++) {
+                                if ($form->getData()->getIdJoueurN($j)) {
+                                    $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
+                                    if ($invalidCompo){
+                                        array_push($invalidCompos, ...$invalidCompo);
+                                        $utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
-                    foreach ($invalidCompos as $invalidCompo){
-                        $invalidCompo['compo']->sortComposition();
+                        /** On trie les compositions d'équipe dont des joueurs ont été déselctionnés suite à un brûlage */
+                        foreach ($invalidCompos as $invalidCompo){
+                            $invalidCompo['compo']->sortComposition();
+                        }
                     }
 
                     /** On trie la composition d'équipe dans l'ordre décroissant des classements si le championnat possède cette règle */

@@ -158,7 +158,7 @@ class BackOfficeChampionnatController extends AbstractController
                 $journees = $championnat->getJournees()->toArray();
 
                 /** Si la limite du brûlage diminue, on recalcule tous les brûlages des joueurs */
-                if ($limiteBrulage > $championnat->getLimiteBrulage()){
+                if ($championnat->getLimiteBrulage() && $limiteBrulage > $championnat->getLimiteBrulage()){
                     $journeesToRecalcul = array_slice($journees, 0, count($journees));
 
                     $nbMaxJoueurs = max(array_map(function($division) {

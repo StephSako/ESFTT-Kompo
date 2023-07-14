@@ -168,6 +168,9 @@ class CompetiteurRepository extends ServiceEntityRepository
             $queryChamp[$nomChamp]["dispos"] = $this->moveSansEquipesInEndList($queryChamp[$nomChamp]["dispos"]);
         }
 
+        uksort($queryChamp, function ($champ1, $champ2) {
+            return $champ1 > $champ2;
+        });
         return $queryChamp;
     }
 

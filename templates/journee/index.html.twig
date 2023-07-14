@@ -496,18 +496,20 @@
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div class="collapsible-header">
-                        <div class="chip">
-                            <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
-                            <span class="lobster">Brûlage</span>
+                {% if championnat.limiteBrulage %}
+                    <li>
+                        <div class="collapsible-header">
+                            <div class="chip">
+                                <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
+                                <span class="lobster">Brûlage</span>
+                            </div>
+                            <i class="caret material-icons">keyboard_arrow_down</i>
                         </div>
-                        <i class="caret material-icons">keyboard_arrow_down</i>
-                    </div>
-                    <div class="collapsible-body">
-                        {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
-                    </div>
-                </li>
+                        <div class="collapsible-body">
+                            {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
+                        </div>
+                    </li>
+                {% endif %}
             </ul>
             <div class="col s12 l6">
                 {{ _brulage.cardAnniversaires(anniversaires, championnat.limiteBrulage) }}

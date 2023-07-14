@@ -62,7 +62,12 @@ class EquipeRepository extends ServiceEntityRepository
      */
     public function getAllEquipes(): array
     {
-        $query = $this->findBy([], ['numero' => 'ASC']);
+        $query = $this->createQueryBuilder('e')
+            ->leftJoin('e.idChampionnat', 'c')
+            ->orderBy('c.nom')
+            ->addOrderBy('e.numero')
+            ->getQuery()
+            ->getResult();
         $querySorted = [];
         foreach ($query as $equipe) {
             $querySorted[$equipe->getIdChampionnat()->getNom()]['idChampionnat'] = $equipe->getIdChampionnat()->getIdChampionnat();
