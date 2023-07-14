@@ -1,15 +1,15 @@
-function AllowLinkTarget( editor ) {
+function AllowLinkTarget(editor) {
     editor.model.schema.extend('$text', {allowAttributes: 'editorVariableHighlighted'});
-    editor.conversion.for( 'downcast' ).attributeToElement({
+    editor.conversion.for('downcast').attributeToElement({
         model: 'editorVariableHighlighted',
         view: (attributeValue, {writer}) => {
-            const linkElement = writer.createAttributeElement('span',{class: attributeValue}, {priority: 5});
+            const linkElement = writer.createAttributeElement('span', {class: attributeValue}, {priority: 5});
             writer.setCustomProperty('link', true, linkElement);
             return linkElement;
         },
         converterPriority: 'low'
     });
-    editor.conversion.for( 'upcast' ).attributeToAttribute( {
+    editor.conversion.for('upcast').attributeToAttribute({
         view: {
             name: 'span',
             key: 'class'
@@ -65,11 +65,13 @@ BalloonEditor.create(
         toolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link'],
         blockToolbar: ['heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'blockquote', 'insertTable', 'link']
     }
-).catch(error => { console.error( error ); }).then(editor => {
+).catch(error => {
+    console.error(error);
+}).then(editor => {
     const editorInstance = document.querySelector('.ck-editor__editable').ckeditorInstance;
     editorInstance.setData($('<div/>').html(ckeditor_content).text());
 
-    document.querySelector("#settings-form form").addEventListener("submit", function(e) {
+    document.querySelector("#settings-form form").addEventListener("submit", function (e) {
         e.preventDefault();
         this.querySelector('#settings-form #settings_content').value = editor.getData();
         this.submit();

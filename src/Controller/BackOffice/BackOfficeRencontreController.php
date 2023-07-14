@@ -26,8 +26,8 @@ class BackOfficeRencontreController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(RencontreRepository $rencontreRepository,
-                                ChampionnatRepository $championnatRepository,
+    public function __construct(RencontreRepository    $rencontreRepository,
+                                ChampionnatRepository  $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -66,12 +66,12 @@ class BackOfficeRencontreController extends AbstractController
 
         $journees = $rencontre->getIdChampionnat()->getJournees()->toArray();
         $journee = $rencontre->getIDJournee();
-        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+        $posJournee = array_keys(array_filter($journees, function ($journeeChamp) use ($journee) {
             return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-        }))[0]+=1;
+        }))[0] += 1;
 
-        if ($form->isSubmitted()){
-            if ($form->isValid()){
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
                 try {
                     /** Si l'équipe est exemptée, on remet les champs à zéro et on vide la composition d'équipe */
                     if ($rencontre->isExempt()) {
@@ -124,7 +124,7 @@ class BackOfficeRencontreController extends AbstractController
                             ]);
                         }
                     }
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }

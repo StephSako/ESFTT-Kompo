@@ -22,13 +22,46 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Disponibilite
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer", name="id_disponibilite")
+     */
+    private $idDisponibilite;
+    /**
+     * @var Competiteur
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
+     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
+     */
+    private $idCompetiteur;
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="dispos")
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
+    /**
+     * @var Journee
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journee")
+     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
+     */
+    private $idJournee;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
+     */
+    private $disponibilite;
 
     /**
      * Disponibilite constructor.
      * @param Competiteur $competiteur
      * @param Journee $journee
      * @param bool $disponibilite
-     * @param Championnat$type
+     * @param Championnat $type
      */
     public function __construct(Competiteur $competiteur, Journee $journee, bool $disponibilite, Championnat $type)
     {
@@ -38,44 +71,6 @@ class Disponibilite
             ->setIdChampionnat($type)
             ->setIdJournee($journee);
     }
-
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id_disponibilite")
-     */
-    private $idDisponibilite;
-
-    /**
-     * @var Competiteur
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="dispos")
-     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
-     */
-    private $idCompetiteur;
-
-    /**
-     * @var Championnat
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="dispos")
-     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
-     */
-    private $idChampionnat;
-
-    /**
-     * @var Journee
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Journee")
-     * @ORM\JoinColumn(name="id_journee", referencedColumnName="id_journee", nullable=false)
-     */
-    private $idJournee;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean", name="disponibilite", nullable=false)
-     */
-    private $disponibilite;
 
     /**
      * @return mixed

@@ -21,27 +21,23 @@ class BackOfficeDivisionController extends AbstractController
     private $divisionRepository;
     private $equipeRepository;
     private $championnatRepository;
-    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param DivisionRepository $divisionRepository
      * @param EntityManagerInterface $em
      * @param ChampionnatRepository $championnatRepository
-     * @param UtilController $utilController
      * @param EquipeRepository $equipeRepository
      */
-    public function __construct(DivisionRepository $divisionRepository,
+    public function __construct(DivisionRepository     $divisionRepository,
                                 EntityManagerInterface $em,
-                                ChampionnatRepository $championnatRepository,
-                                UtilController $utilController,
-                                EquipeRepository $equipeRepository)
+                                ChampionnatRepository  $championnatRepository,
+                                EquipeRepository       $equipeRepository)
     {
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->equipeRepository = $equipeRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -60,9 +56,10 @@ class BackOfficeDivisionController extends AbstractController
     /**
      * @Route("/backoffice/division/new", name="backoffice.division.new")
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UtilController $utilController): Response
     {
         $division = new Division();
         $listChamps = $this->championnatRepository->getAllChampionnats();
@@ -72,12 +69,12 @@ class BackOfficeDivisionController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $listChamps){
-            if ($form->isValid()){
+        if ($form->isSubmitted() && $listChamps) {
+            if ($form->isValid()) {
                 try {
                     $division->setLongName($division->getLongName());
                     $division->setShortName($division->getShortName());
-                    $division->setLastUpdate($this->utilController->getAdminUpdateLog('Créée par '));
+                    $division->setLastUpdate($utilController->getAdminUpdateLog('Créée par '));
 
                     $this->em->persist($division);
                     $this->em->flush();
@@ -85,8 +82,8 @@ class BackOfficeDivisionController extends AbstractController
                     return $this->redirectToRoute('backoffice.divisions', [
                         'active' => $division->getIdChampionnat()->getIdChampionnat()
                     ]);
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -105,10 +102,10 @@ class BackOfficeDivisionController extends AbstractController
      * @Route("/backoffice/division/edit/{idDivision}", name="backoffice.division.edit", requirements={"idDivision"="\d+"})
      * @param int $idDivision
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
      */
-    public function edit(int $idDivision, Request $request): Response
+    public function edit(int $idDivision, Request $request, UtilController $utilController): Response
     {
         if (!($division = $this->divisionRepository->find($idDivision))) {
             $this->addFlash('fail', 'Division inexistante');
@@ -126,16 +123,16 @@ class BackOfficeDivisionController extends AbstractController
                 try {
                     $division->setLongName($division->getLongName());
                     $division->setShortName($division->getShortName());
-                    $division->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
+                    $division->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
 
                     /** Si nbJoueurs diminue, on supprime les joueurs superflux des rencontres des équipes affiliées */
                     if ($nbJoueurs > $form->getData()->getNbJoueurs()) {
-                        $commposWithPlayerSuperflux = array_filter($division->getIdChampionnat()->getRencontres()->toArray(), function ($rencontre) use ($division){
+                        $commposWithPlayerSuperflux = array_filter($division->getIdChampionnat()->getRencontres()->toArray(), function ($rencontre) use ($division) {
                             return $rencontre->getIdEquipe()->getIdDivision()->getIdDivision() == $division->getIdDivision();
                         });
 
-                        foreach($commposWithPlayerSuperflux as $compo){
-                            for ($i = $form->getData()->getNbJoueurs(); $i < $nbJoueurs; $i++){
+                        foreach ($commposWithPlayerSuperflux as $compo) {
+                            for ($i = $form->getData()->getNbJoueurs(); $i < $nbJoueurs; $i++) {
                                 $compo->setIdJoueurN($i, null);
                             }
                         }
@@ -146,8 +143,8 @@ class BackOfficeDivisionController extends AbstractController
                     return $this->redirectToRoute('backoffice.divisions', [
                         'active' => $division->getIdChampionnat()->getIdChampionnat()
                     ]);
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
@@ -178,9 +175,9 @@ class BackOfficeDivisionController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $division->getIdDivision(), $request->get('_token'))) {
 
             /** On vide les compositions des équipes affiliées à la division supprimée car une équipe sans division n'est pas editable **/
-            foreach ($division->getEquipes()->toArray() as $equipes){
-                foreach ($equipes->getRencontres() as $compo){
-                    for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++){
+            foreach ($division->getEquipes()->toArray() as $equipes) {
+                foreach ($equipes->getRencontres() as $compo) {
+                    for ($i = 0; $i < $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); $i++) {
                         $compo->setIdJoueurN($i, null);
                     }
                 }

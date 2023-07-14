@@ -19,7 +19,7 @@ function getLastComposAdversaire(nomAdversaire, lienDivision, numeroEquipe) {
     }
 }
 
-function templatingLastComposAdversaire(numeroEquipe, response){
+function templatingLastComposAdversaire(numeroEquipe, response) {
     $('#joueursAdv' + numeroEquipe).html(response);
 }
 

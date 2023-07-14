@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,19 +23,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Journee
 {
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee", cascade={"remove"}, orphanRemoval=true)
+     */
+    protected $rencontres;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_journee")
      */
     private $idJournee;
-
     /**
      * @var DateTime
      *
      * @ORM\Column(type="date", name="date_journee", nullable=false)
      */
     private $dateJournee;
-
     /**
      * @var Championnat
      *
@@ -43,19 +45,12 @@ class Journee
      * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
      */
     private $idChampionnat;
-
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="undefined", nullable=false)
      */
     private $undefined;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idJournee", cascade={"remove"}, orphanRemoval=true)
-     */
-    protected $rencontres;
-
     /**
      * @var string|null
      *
@@ -89,24 +84,6 @@ class Journee
     /**
      * @return mixed
      */
-    public function getRencontres()
-    {
-        return $this->rencontres;
-    }
-
-    /**
-     * @param $rencontres
-     * @return $this
-     */
-    public function setRencontres($rencontres): self
-    {
-        $this->rencontres = $rencontres;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getIdJournee()
     {
         return $this->idJournee;
@@ -123,18 +100,19 @@ class Journee
     }
 
     /**
+     * @return string
+     */
+    public function getDateJourneeFrench(): string
+    {
+        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateJournee()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
+    }
+
+    /**
      * @return DateTime
      */
     public function getDateJournee(): DateTime
     {
         return $this->dateJournee;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDateJourneeFrench(): string {
-        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateJournee()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
     }
 
     /**
@@ -168,12 +146,31 @@ class Journee
     /**
      * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
      */
-    public function getLatestDate(): DateTime {
-        $datesEtReportsJournee = array_map(function($rencontre) {
+    public function getLatestDate(): DateTime
+    {
+        $datesEtReportsJournee = array_map(function ($rencontre) {
             return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
         }, $this->getRencontres()->toArray());
 
         return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRencontres()
+    {
+        return $this->rencontres;
+    }
+
+    /**
+     * @param $rencontres
+     * @return $this
+     */
+    public function setRencontres($rencontres): self
+    {
+        $this->rencontres = $rencontres;
+        return $this;
     }
 
     /**

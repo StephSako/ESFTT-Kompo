@@ -44,21 +44,6 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class BackOfficeCompetiteurController extends AbstractController
 {
-    private $em;
-    private $competiteurRepository;
-    private $rencontreRepository;
-    private $disponibiliteRepository;
-    private $divisionRepository;
-    private $uploadHandler;
-    private $encoder;
-    private $settingsRepository;
-    private $championnatRepository;
-    private $cacheManager;
-    private $uploaderHelper;
-    private $validator;
-    private $titularisationRepository;
-    private $equipeRepository;
-
     const EXCEl_CHAMP_LICENCE = 1;
     const EXCEl_CHAMP_NOM = 2;
     const EXCEl_CHAMP_PRENOM = 3;
@@ -76,6 +61,20 @@ class BackOfficeCompetiteurController extends AbstractController
     const EXCEl_CHAMP_IS_CRITERIUM = 15;
     const EXCEl_CHAMP_IS_ENTRAINEUR = 16;
     const EXCEl_CHAMP_IS_ADMIN = 17;
+    private $em;
+    private $competiteurRepository;
+    private $rencontreRepository;
+    private $disponibiliteRepository;
+    private $divisionRepository;
+    private $uploadHandler;
+    private $encoder;
+    private $settingsRepository;
+    private $championnatRepository;
+    private $cacheManager;
+    private $uploaderHelper;
+    private $validator;
+    private $titularisationRepository;
+    private $equipeRepository;
 
     /**
      * BackOfficeController constructor.
@@ -94,20 +93,20 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      */
-    public function __construct(CompetiteurRepository $competiteurRepository,
-                                EntityManagerInterface $em,
-                                DisponibiliteRepository $disponibiliteRepository,
-                                EquipeRepository $equipeRepository,
-                                DivisionRepository $divisionRepository,
-                                UploadHandler $uploadHandler,
+    public function __construct(CompetiteurRepository        $competiteurRepository,
+                                EntityManagerInterface       $em,
+                                DisponibiliteRepository      $disponibiliteRepository,
+                                EquipeRepository             $equipeRepository,
+                                DivisionRepository           $divisionRepository,
+                                UploadHandler                $uploadHandler,
                                 UserPasswordEncoderInterface $encoder,
-                                TitularisationRepository $titularisationRepository,
-                                ChampionnatRepository $championnatRepository,
-                                CacheManager $cacheManager,
-                                UploaderHelper $uploaderHelper,
-                                ValidatorInterface $validator,
-                                RencontreRepository $rencontreRepository,
-                                SettingsRepository $settingsRepository)
+                                TitularisationRepository     $titularisationRepository,
+                                ChampionnatRepository        $championnatRepository,
+                                CacheManager                 $cacheManager,
+                                UploaderHelper               $uploaderHelper,
+                                ValidatorInterface           $validator,
+                                RencontreRepository          $rencontreRepository,
+                                SettingsRepository           $settingsRepository)
     {
         $this->em = $em;
         $this->competiteurRepository = $competiteurRepository;
@@ -136,10 +135,10 @@ class BackOfficeCompetiteurController extends AbstractController
         $joueursArchives = $this->competiteurRepository->findBy(['isArchive' => true], ['nom' => 'ASC', 'prenom' => 'ASC']);
 
         $onlyOneAdmin = count(array_filter($joueurs, function ($joueur) {
-           return $joueur->isAdmin();
-        })) == 1;
+                return $joueur->isAdmin();
+            })) == 1;
 
-        $joueursInvalidCertifMedic = array_filter($joueurs, function($joueur) {
+        $joueursInvalidCertifMedic = array_filter($joueurs, function ($joueur) {
             return $joueur->isCertifMedicalInvalid()['status'];
         });
 
@@ -158,7 +157,7 @@ class BackOfficeCompetiteurController extends AbstractController
         }));
         $competiteursWithoutClassement = [
             'count' => $countCompetiteursWithoutClassement,
-            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
         return $this->render('backoffice/competiteur/index.html.twig', [
@@ -170,23 +169,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'joueursWithoutLicence' => $joueursWithoutLicence,
             'competiteursWithoutClassement' => $competiteursWithoutClassement
         ]);
-    }
-
-    /**
-     * @param Exception $e
-     * @param Competiteur $competiteur
-     * @return void
-     */
-    private function showFlashBOAccount(Exception $e, Competiteur $competiteur){
-        if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000"){
-            if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
-            else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
-            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
-            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
-            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-        } else if ($e->getCode() == '1234') $this->addFlash('fail', $e->getMessage());
-        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
     }
 
     /**
@@ -220,7 +202,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
         $idsEquipesAssociees = [];
 
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
                     /** On vérifie l'existence de la licence */
@@ -258,7 +240,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             if ($idEquipeRequest) {
                                 $idEquipe = intval($idEquipeRequest);
                                 $idsEquipesAssociees[] = $idEquipe;
-                                $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function($e) use ($idEquipe) {
+                                $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function ($e) use ($idEquipe) {
                                     return $e->getIdEquipe() == $idEquipe;
                                 });
                                 $equipe = array_shift($equipesToPick);
@@ -276,7 +258,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                     $this->addFlash('success', 'Membre créé');
                     return $this->redirectToRoute('backoffice.competiteurs');
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     $idsEquipesAssociees = [];
                     if ($competiteur->isCompetiteur()) {
                         foreach ($equipesAssociees as $championnat) {
@@ -314,6 +296,20 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * @param Competiteur $competiteur
+     * @throws Exception
+     */
+    public function checkRoles(Competiteur $competiteur)
+    {
+        if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
+        if (count($competiteur->getRoles()) == 1 && $competiteur->isJeune()) throw new Exception('Le jeune doit avoir au moins un autre rôle', 1234);
+        if ($competiteur->isArchive() && count($competiteur->getRoles()) > 1) throw new Exception('Le joueur archivé ne doit pas avoir d\'autres rôles', 1234);
+        if (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) throw new Exception('Un capitaine doit être compétiteur', 1234);
+        if (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) throw new Exception('Un joueur du crit. féd. doit être compétiteur', 1234);
+        if ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine())) throw new Exception('Un loisir ne peut pas avoir de rôle(s) lié(s) à la compétition', 1234);
+    }
+
+    /**
+     * @param Competiteur $competiteur
      * @param bool $adminsInCC
      * @param bool $showFlash
      * @param ContactController $contactController
@@ -321,7 +317,8 @@ class BackOfficeCompetiteurController extends AbstractController
      * @return void
      * @throws Exception
      */
-    public function sendWelcomeMail(Competiteur $competiteur, bool $adminsInCC, bool $showFlash, ContactController $contactController, UtilController $utilController): void {
+    public function sendWelcomeMail(Competiteur $competiteur, bool $adminsInCC, bool $showFlash, ContactController $contactController, UtilController $utilController): void
+    {
         try {
             /** On envoie un mail spécifique aux loisirs si loisir, sinon le mail général */
             $role = $competiteur->isLoisir() ? '-loisirs' : '';
@@ -361,6 +358,24 @@ class BackOfficeCompetiteurController extends AbstractController
             if ($showFlash) $this->addFlash('fail', 'E-mail de bienvenue non envoyé');
             else throw new Exception('E-mail de bienvenue non renvoyé', '1234');
         }
+    }
+
+    /**
+     * @param Exception $e
+     * @param Competiteur $competiteur
+     * @return void
+     */
+    private function showFlashBOAccount(Exception $e, Competiteur $competiteur)
+    {
+        if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000") {
+            if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
+            else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
+            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
+            else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
+            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        } else if ($e->getCode() == '1234') $this->addFlash('fail', $e->getMessage());
+        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
     }
 
     /**
@@ -415,14 +430,16 @@ class BackOfficeCompetiteurController extends AbstractController
         ]);
         $form->handleRequest($request);
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
-        $idsEquipesAssociees = array_map(function ($e) { return $e->getIdEquipe(); }, $competiteur->getEquipesAssociees()->toArray());
+        $idsEquipesAssociees = array_map(function ($e) {
+            return $e->getIdEquipe();
+        }, $competiteur->getEquipesAssociees()->toArray());
         $actualIdsEquipesAssociees = $idsEquipesAssociees;
 
         /** Variable permettant de controler le fait qu'il doit y avoir minimum un administrateur restant */
         $onlyOneAdmin = count($this->competiteurRepository->findJoueursByRole('Admin', null)) == 1;
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()){
+            if ($form->isValid()) {
                 try {
                     $idsEquipesAssociees = [];
 
@@ -446,14 +463,14 @@ class BackOfficeCompetiteurController extends AbstractController
                         $this->checkRoles($competiteur);
 
                         /** Un joueur devenant non-compétiteur est désélectionné de toutes les compositions de chaque championnat des journées ultèrieures à aujourd'hui ... **/
-                        if (!$competiteur->isCompetiteur()){
+                        if (!$competiteur->isCompetiteur()) {
                             $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], true);
 
                             /** On supprime le joueur des compos d'équipe ... */
                             $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
 
                             /** ... on trie les compos qui ont un tri automatique ... */
-                            $rencontresToSort = array_filter($rencontres, function($rencontre) {
+                            $rencontresToSort = array_filter($rencontres, function ($rencontre) {
                                 return $rencontre->getIdChampionnat()->isCompoSorted();
                             });
                             foreach ($rencontresToSort as $selectionToSort) {
@@ -485,7 +502,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                     $idsEquipesAssociees[] = $idEquipe;
 
                                     /** Création des titularisations */
-                                    if (!in_array($idEquipe, $actualIdsEquipesAssociees)){
+                                    if (!in_array($idEquipe, $actualIdsEquipesAssociees)) {
                                         $equipesToPick = array_filter(array_values($championnat['listeEquipes']), function ($e) use ($idEquipe) {
                                             return $e->getIdEquipe() == $idEquipe;
                                         });
@@ -497,13 +514,13 @@ class BackOfficeCompetiteurController extends AbstractController
                             }
 
                             /** Suppression des titularisations */
-                            $idsEquipesToDelete = array_filter($actualIdsEquipesAssociees, function($idEquipe) use ($idsEquipesAssociees) {
+                            $idsEquipesToDelete = array_filter($actualIdsEquipesAssociees, function ($idEquipe) use ($idsEquipesAssociees) {
                                 return !in_array($idEquipe, $idsEquipesAssociees);
                             });
                             $titusToDelete = array_filter($competiteur->getTitularisations()->toArray(), function ($e) use ($idsEquipesToDelete) {
                                 return in_array($e->getIdEquipe()->getIdEquipe(), $idsEquipesToDelete);
                             });
-                            foreach($titusToDelete as $tituToDelete) {
+                            foreach ($titusToDelete as $tituToDelete) {
                                 $this->em->remove($tituToDelete);
                             }
                         }
@@ -518,8 +535,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 $this->get('security.token_storage')->setToken();
                                 $this->get('session')->invalidate();
                                 return $this->redirectToRoute('logout');
-                            }
-                            else {
+                            } else {
                                 /** ... on le redirige vers la page d'accueil */
                                 return $this->redirectToRoute('index.type', [
                                     'type' => $this->get('session')->get('type') ?
@@ -531,7 +547,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
                         return $this->redirectToRoute('backoffice.competiteurs');
                     }
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     $competiteur->setIsArchive(false);
                     $this->showFlashBOAccount($e, $competiteur);
                 }
@@ -562,12 +578,33 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * On supprime le joueur des compos d'équipe des journées ultèrieures à aujourd'hui inclus
+     * @param array $rencontres
+     * @param int $idCompetiteur
+     * @return void
+     * @throws NonUniqueResultException
+     */
+    public function deletePlayerInSelections(array $rencontres, int $idCompetiteur): void
+    {
+        /** On supprime le joueur des compos d'équipe ... */
+        foreach ($rencontres as $rencontre) {
+            for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
+                if ($rencontre->getIdJoueurN($i) && $rencontre->getIdJoueurN($i)->getIdCompetiteur() == $idCompetiteur) {
+                    $rencontre->setIdJoueurN($i, null);
+                    $this->em->flush();
+                }
+            }
+        }
+    }
+
+    /**
      * @Route("/backoffice/competiteur/password/update/{id}", name="backoffice.competiteur.password.edit", requirements={"id"="\d+"})
      * @param Competiteur $competiteur
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function updatePassword(Competiteur $competiteur, Request $request){
+    public function updatePassword(Competiteur $competiteur, Request $request)
+    {
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'capitaineAccess' => true
         ]);
@@ -605,7 +642,7 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->deletePlayerInSelections($rencontres, $competiteur->getIdCompetiteur());
 
             /** ... on trie les compos qui ont un tri automatique pour les futures journées uniquement */
-            $rencontresToSort = array_filter($rencontres, function($rencontre) {
+            $rencontresToSort = array_filter($rencontres, function ($rencontre) {
                 return $rencontre->getIdChampionnat()->isCompoSorted() && $rencontre->getIdJournee()->getDateJournee() >= new DateTime();
             });
             foreach ($rencontresToSort as $selectionToSort) {
@@ -673,21 +710,6 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @return array
-     * @throws Exception
-     */
-    private function getDataForPDF(): array
-    {
-        $competiteursList = [];
-        $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
-
-        foreach ($competiteurs as $user) {
-            $competiteursList[] = $user->serializeToPDF();
-        }
-        return $competiteursList;
-    }
-
-    /**
      * @Route("/backoffice/competiteurs/export-excel", name="backoffice.competiteurs.export.excel")
      * @return Response
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
@@ -713,31 +735,46 @@ class BackOfficeCompetiteurController extends AbstractController
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => array('argb' => 'FF4F81BD')
                 ),
-                'font'  => array(
-                    'bold'  =>  true,
-                    'color' => array('rgb' => 'FFFFFF' )
+                'font' => array(
+                    'bold' => true,
+                    'color' => array('rgb' => 'FFFFFF')
                 )
             )
         );
 
-        $sheet->fromArray($dataCompetiteurs,'', 'A2', true);
+        $sheet->fromArray($dataCompetiteurs, '', 'A2', true);
         /** On resize automatiquement les colonnes */
-        for($col = 'A'; $col !== 'O'; $col++) {
+        for ($col = 'A'; $col !== 'O'; $col++) {
             $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
         }
 
         $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
 
         /** On envoie le fichier en téléchargement */
-        $response =  new StreamedResponse(
+        $response = new StreamedResponse(
             function () use ($writer) {
                 $writer->save('php://output');
             }
         );
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
         $response->headers->set('Content-Disposition', 'attachment;filename="Joueurs ESFTT.xlsx"');
-        $response->headers->set('Cache-Control','max-age=0');
+        $response->headers->set('Cache-Control', 'max-age=0');
         return $response;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    private function getDataForPDF(): array
+    {
+        $competiteursList = [];
+        $competiteurs = $this->competiteurRepository->findBy([], ['nom' => 'ASC', 'prenom' => 'ASC']);
+
+        foreach ($competiteurs as $user) {
+            $competiteursList[] = $user->serializeToPDF();
+        }
+        return $competiteursList;
     }
 
     /**
@@ -758,13 +795,37 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
+     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file")
+     * @return Response
+     */
+    public function importCompetiteursExcel(): Response
+    {
+        return $this->render('backoffice/competiteur/importJoueurs.html.twig');
+    }
+
+    /**
+     * Appelée depuis un appel Ajax et renvoie un template sous forme d'un tableau listant les joueurs récupérés depuis un fichier Excel
+     * @Route("/backoffice/competiteurs/import-file/read", name="backoffice.competiteurs.import.file.read", methods={"POST"})
+     * @param Request $request
+     * @param UtilController $utilController
+     * @return JsonResponse
+     */
+    public function readImportFile(Request $request, UtilController $utilController): JsonResponse
+    {
+        $file = $request->files->get('excelDocument');
+        $importedData = $this->buildJoueursArrayFromImport($file, null, $utilController);
+        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', $importedData)->getContent());
+    }
+
+    /**
      * Lis et objectise les joueurs lus depuis un fichier Excel
      * @param UploadedFile $file
      * @param array|null $joueursIndexToAdd
      * @param UtilController $utilController
      * @return array
      */
-    public function buildJoueursArrayFromImport(UploadedFile $file, ?array $joueursIndexToAdd, UtilController $utilController): array {
+    public function buildJoueursArrayFromImport(UploadedFile $file, ?array $joueursIndexToAdd, UtilController $utilController): array
+    {
         $allowedFileMimes = [
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         ];
@@ -773,7 +834,7 @@ class BackOfficeCompetiteurController extends AbstractController
         if (in_array($file->getMimeType(), $allowedFileMimes)) {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
             try {
-                $joueursFromApi =  array_map(function ($j) {
+                $joueursFromApi = array_map(function ($j) {
                     return $j->getLicence();
                 }, $api->getJoueursByClub($this->getParameter('club_id')));
             } catch (Exception $e) {
@@ -787,13 +848,15 @@ class BackOfficeCompetiteurController extends AbstractController
             else $reader = new Xlsx();
 
             $spreadsheet = $reader->load($file->getPathname());
-            $rawJoueurs = array_slice(array_filter($spreadsheet->getActiveSheet()->toArray(), function($line) {
-                return count(array_filter($line, function($cell) { return $cell; }));
+            $rawJoueurs = array_slice(array_filter($spreadsheet->getActiveSheet()->toArray(), function ($line) {
+                return count(array_filter($line, function ($cell) {
+                    return $cell;
+                }));
             }), $beginAtLine);
 
             /** On ne sélectionne que les joueurs cochés */
             if ($joueursIndexToAdd) {
-                $rawJoueurs = array_filter($rawJoueurs, function($index) use ($joueursIndexToAdd) {
+                $rawJoueurs = array_filter($rawJoueurs, function ($index) use ($joueursIndexToAdd) {
                     return in_array(strval($index), $joueursIndexToAdd);
                 }, ARRAY_FILTER_USE_KEY);
             }
@@ -871,7 +934,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 /** On vérifie les rôles */
                 try {
                     $this->checkRoles($nouveau);
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     $violationsManuelles['roles'] = [
                         'message' => $e->getMessage()
                     ];
@@ -901,45 +964,24 @@ class BackOfficeCompetiteurController extends AbstractController
 
         return [
             'joueurs' => $joueurs,
-            'hasDoublon' => count(array_filter($joueurs, function ($j) { return $j['doublon'] == 1 ;})) > 0,
-            'sheetDataHasViolations' => count(array_filter($joueurs, function($j){ return $j['violations']; }))
+            'hasDoublon' => count(array_filter($joueurs, function ($j) {
+                    return $j['doublon'] == 1;
+                })) > 0,
+            'sheetDataHasViolations' => count(array_filter($joueurs, function ($j) {
+                return $j['violations'];
+            }))
         ];
     }
 
     /**
-     * @param string|null $value
-     * @param string $field
-     * @param string $fieldFr
-     * @param array $violationsManuelles
-     * @return int|null
+     * Retourne true/false si le rôle sélectionné est coché dans le document Excel importé
+     * @param array $joueur
+     * @param int $index
+     * @return bool
      */
-    private function checkValueIntType(?string $value, string $field, string $fieldFr, array &$violationsManuelles): ?int {
-        if ($value == null) return null;
-        else if ($value != intval($value) . "") {
-            $violationsManuelles[$field] = [
-                'message' => $fieldFr . ' doit être un nombre',
-                'value' => $value
-            ];
-            return null;
-        }
-        else return intval($value);
-    }
-
-    /**
-     * @param string|null $value
-     * @param string $field
-     * @param string $fieldFr
-     * @param array $violationsManuelles
-     * @return string|null
-     */
-    private function checkMandatoryType(?string $value, string $field, string $fieldFr, array &$violationsManuelles): ?string {
-        if ($value == null) {
-            $violationsManuelles[$field] = [
-                'message' => $fieldFr . ' est obligatoire',
-                'value' => '?'
-            ];
-        }
-        return $value;
+    private function isRoleInExcelFile(array $joueur, int $index): bool
+    {
+        return !($joueur[$index] == null) && mb_convert_case($joueur[$index], MB_CASE_LOWER, "UTF-8") == 'x';
     }
 
     /**
@@ -950,7 +992,8 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param array $values
      * @return string|null
      */
-    private function checkValueInArray(?string $value, string $field, string $fieldFr, array &$violationsManuelles, array $values): ?string {
+    private function checkValueInArray(?string $value, string $field, string $fieldFr, array &$violationsManuelles, array $values): ?string
+    {
         if ($value != null && $values != null && !in_array($value, $values)) {
             $violationsManuelles[$field] = [
                 'message' => $fieldFr . " n'existe pas",
@@ -965,9 +1008,28 @@ class BackOfficeCompetiteurController extends AbstractController
      * @param string $field
      * @param string $fieldFr
      * @param array $violationsManuelles
+     * @return string|null
+     */
+    private function checkMandatoryType(?string $value, string $field, string $fieldFr, array &$violationsManuelles): ?string
+    {
+        if ($value == null) {
+            $violationsManuelles[$field] = [
+                'message' => $fieldFr . ' est obligatoire',
+                'value' => '?'
+            ];
+        }
+        return $value;
+    }
+
+    /**
+     * @param string|null $value
+     * @param string $field
+     * @param string $fieldFr
+     * @param array $violationsManuelles
      * @return DateTime|false|null
      */
-    private function checkRegexValue(?string $value, string $field, string $fieldFr, array &$violationsManuelles) {
+    private function checkRegexValue(?string $value, string $field, string $fieldFr, array &$violationsManuelles)
+    {
         if ($value == null) return null;
         else {
             preg_match('/^((?<jour>[0-9]{2})\/(?<mois>[0-9]{2})\/(?<annee>[0-9]{4}))|((?<jour2>[0-9]{2})-(?<mois2>[0-9]{2})-(?<annee2>[0-9]{4}))$/', $value, $date);
@@ -989,36 +1051,22 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * Retourne true/false si le rôle sélectionné est coché dans le document Excel importé
-     * @param array $joueur
-     * @param int $index
-     * @return bool
+     * @param string|null $value
+     * @param string $field
+     * @param string $fieldFr
+     * @param array $violationsManuelles
+     * @return int|null
      */
-    private function isRoleInExcelFile(array $joueur, int $index): bool {
-        return !($joueur[$index] == null) && mb_convert_case($joueur[$index], MB_CASE_LOWER, "UTF-8") == 'x';
-    }
-
-    /**
-     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file")
-     * @return Response
-     */
-    public function importCompetiteursExcel(): Response
+    private function checkValueIntType(?string $value, string $field, string $fieldFr, array &$violationsManuelles): ?int
     {
-        return $this->render('backoffice/competiteur/importJoueurs.html.twig');
-    }
-
-    /**
-     * Appelée depuis un appel Ajax et renvoie un template sous forme d'un tableau listant les joueurs récupérés depuis un fichier Excel
-     * @Route("/backoffice/competiteurs/import-file/read", name="backoffice.competiteurs.import.file.read", methods={"POST"})
-     * @param Request $request
-     * @param UtilController $utilController
-     * @return JsonResponse
-     */
-    public function readImportFile(Request $request, UtilController $utilController): JsonResponse
-    {
-        $file = $request->files->get('excelDocument');
-        $importedData = $this->buildJoueursArrayFromImport($file, null, $utilController);
-        return new JsonResponse($this->render('ajax/backoffice/tableJoueursImportes.html.twig', $importedData)->getContent());
+        if ($value == null) return null;
+        else if ($value != intval($value) . "") {
+            $violationsManuelles[$field] = [
+                'message' => $fieldFr . ' doit être un nombre',
+                'value' => $value
+            ];
+            return null;
+        } else return intval($value);
     }
 
     /**
@@ -1035,7 +1083,7 @@ class BackOfficeCompetiteurController extends AbstractController
         $importedData = $this->buildJoueursArrayFromImport($request->files->get('excelDocument'), $joueursIndexToAdd, $utilController);
         $joueurs = $importedData['joueurs'];
         /** On n'inscrit pas les joueurs déjà inscrits */
-        $joueurs = array_filter($joueurs, function($joueur) {
+        $joueurs = array_filter($joueurs, function ($joueur) {
             return $joueur['dejaInscrit'] != 1;
         });
         $sheetDataHasViolations = $importedData['sheetDataHasViolations'];
@@ -1063,19 +1111,6 @@ class BackOfficeCompetiteurController extends AbstractController
             $this->addFlash('fail', 'Il y a des erreurs dans le document importé, réessayez');
             return $this->redirectToRoute('backoffice.competiteurs.import.file');
         }
-    }
-
-    /**
-     * @param Competiteur $competiteur
-     * @throws Exception
-     */
-    public function checkRoles(Competiteur $competiteur){
-        if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
-        if (count($competiteur->getRoles()) == 1 && $competiteur->isJeune()) throw new Exception('Le jeune doit avoir au moins un autre rôle', 1234);
-        if ($competiteur->isArchive() && count($competiteur->getRoles()) > 1) throw new Exception('Le joueur archivé ne doit pas avoir d\'autres rôles', 1234);
-        if (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) throw new Exception('Un capitaine doit être compétiteur', 1234);
-        if (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) throw new Exception('Un joueur du crit. féd. doit être compétiteur', 1234);
-        if ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine())) throw new Exception('Un loisir ne peut pas avoir de rôle(s) lié(s) à la compétition', 1234);
     }
 
     /**
@@ -1135,25 +1170,6 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * On supprime le joueur des compos d'équipe des journées ultèrieures à aujourd'hui inclus
-     * @param array $rencontres
-     * @param int $idCompetiteur
-     * @return void
-     * @throws NonUniqueResultException
-     */
-    public function deletePlayerInSelections(array $rencontres, int $idCompetiteur): void {
-        /** On supprime le joueur des compos d'équipe ... */
-        foreach ($rencontres as $rencontre) {
-            for ($i = 0; $i < $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"]; $i++) {
-                if ($rencontre->getIdJoueurN($i) && $rencontre->getIdJoueurN($i)->getIdCompetiteur() == $idCompetiteur){
-                    $rencontre->setIdJoueurN($i, null);
-                    $this->em->flush();
-                }
-            }
-        }
-    }
-
-    /**
      * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
      * @param ContactController $contactController
      * @return Response
@@ -1161,17 +1177,17 @@ class BackOfficeCompetiteurController extends AbstractController
     public function alertCertifMedicPerimes(ContactController $contactController): Response
     {
         $mails = array_map(function ($address) {
-                return new Address($address);
-            }, explode(',', $contactController->returnPlayersContactByMedia(
-                array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
-            return $joueur->isCertifMedicalInvalid()['status'];
-        }))['mail']['toString']));
+            return new Address($address);
+        }, explode(',', $contactController->returnPlayersContactByMedia(
+            array_filter($this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']), function ($joueur) {
+                return $joueur->isCertifMedicalInvalid()['status'];
+            }))['mail']['toString']));
 
         $message = $this->settingsRepository->find('mail-certif-medic-perim')->getContent();
 
         $str_replacers = [
             'old' => ['[#annee_saison#]'],
-            'new' => [(new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1)]
+            'new' => [(new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y')) + 1)]
         ];
 
         try {

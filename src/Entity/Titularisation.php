@@ -22,6 +22,33 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Titularisation
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer", name="id_titularisation")
+     */
+    private $idTitularisation;
+    /**
+     * @var Competiteur
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
+     */
+    private $idCompetiteur;
+    /**
+     * @var Championnat
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="titularisations", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
+     */
+    private $idChampionnat;
+    /**
+     * @var Equipe
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="titularisations", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
+     */
+    private $idEquipe;
 
     /**
      * Titularisation constructor.
@@ -36,37 +63,6 @@ class Titularisation
             ->setIdChampionnat($type)
             ->setIdEquipe($equipe);
     }
-
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id_titularisation")
-     */
-    private $idTitularisation;
-
-    /**
-     * @var Competiteur
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Competiteur", inversedBy="titularisations", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur", nullable=false)
-     */
-    private $idCompetiteur;
-
-    /**
-     * @var Championnat
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Championnat", inversedBy="titularisations", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
-     */
-    private $idChampionnat;
-
-    /**
-     * @var Equipe
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipe", inversedBy="titularisations", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe", nullable=false)
-     */
-    private $idEquipe;
 
     /**
      * @return mixed

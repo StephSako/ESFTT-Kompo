@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PouleRepository")
@@ -22,12 +22,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 class Poule
 {
     /**
+     * @var Equipe[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idPoule")
+     */
+    protected $equipes;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_poule", nullable=false)
      */
     private $idPoule;
-
     /**
      * @var string
      *
@@ -44,13 +49,6 @@ class Poule
      * @ORM\Column(type="string", name="poule", nullable=false, length=1)
      */
     private $poule;
-
-    /**
-     * @var Equipe[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idPoule")
-     */
-    protected $equipes;
 
     /**
      * @return Equipe[]|null

@@ -7,9 +7,9 @@ $light_blue: #1565c0;
 $scroll_blue: #1b5fac;
 $scroll_dark_blue: #0d427f;
 $gradient_blue_light: rgb(17, 116, 184);
-$gradient_blue_dark:  rgba(0, 19, 23, 1);
+$gradient_blue_dark: rgba(0, 19, 23, 1);
 
-[type="checkbox"].filled-in:checked+span:not(.lever):after{
+[type="checkbox"].filled-in:checked + span:not(.lever):after {
   background-color: #2196f3;
   border-color: #2196f3;
 }
@@ -28,7 +28,7 @@ body {
   position: relative;
 }
 
-html,body{
+html, body {
   scrollbar-color: $scroll_blue white !important;
   scrollbar-width: thin;
 }
@@ -181,7 +181,8 @@ ul.collection {
         }
 
         .col.s1 {
-          padding-left: 0; padding-right: 0;
+          padding-left: 0;
+          padding-right: 0;
         }
       }
     }
@@ -221,11 +222,11 @@ div.scrollableTable {
   height: auto;
   margin-top: 10px;
 
-  tr:nth-child(odd)>td {
-    background-color: rgb(242,242,242);
+  tr:nth-child(odd) > td {
+    background-color: rgb(242, 242, 242);
   }
 
-  tr:nth-child(even)>td {
+  tr:nth-child(even) > td {
     background-color: white;
   }
 
@@ -257,7 +258,7 @@ div.scrollableTable {
     padding-left: 8px;
   }
 
-  td:not(:first-child){
+  td:not(:first-child) {
   }
 }
 
@@ -338,7 +339,7 @@ i.iconPlace {
   border-radius: 5px;
 }
 
-#collapsible-sidenav{
+#collapsible-sidenav {
   padding: 0 !important;
   border-radius: 5px;
 }
@@ -391,7 +392,7 @@ li, p, .btn, label, nav ul a, .card-panel .bottom_0, .tab a {
   img {
     height: 40px;
     width: 40px;
-    object-fit:cover;
+    object-fit: cover;
   }
 
   &.customMessage {
@@ -472,14 +473,14 @@ button.backToCheckboxes {
   img {
     height: 35px;
     width: 35px;
-    object-fit:cover;
+    object-fit: cover;
     background-color: white;
   }
 }
 
 .chip-mobile img {
-  margin-top: 6px!important;
-  margin-right: 25px!important;
+  margin-top: 6px !important;
+  margin-right: 25px !important;
 }
 
 i {
@@ -594,7 +595,7 @@ button.renew_certif_table {
 
 .collapsible {
   border: none;
-  box-shadow: none!important;
+  box-shadow: none !important;
 
   .collapsible-body {
     border: none;
@@ -628,6 +629,7 @@ button.renew_certif_table {
         margin: 0;
       }
     }
+
     .collapsible-body {
       background-color: white;
 
@@ -652,12 +654,12 @@ button.renew_certif_table {
   }
 
   .tab a.active {
-    background-color:rgba(grey, 0.5);
-    color:#000;
+    background-color: rgba(grey, 0.5);
+    color: #000;
   }
 
   .indicator {
-    background-color:black;
+    background-color: black;
   }
 }
 
@@ -752,26 +754,26 @@ li.error {
     background-color: $gradient_blue_light;
   }
 
-  input[type=checkbox]:checked+.lever {
+  input[type=checkbox]:checked + .lever {
     background-color: rgba($gradient_blue_light, 0.5);
   }
 
-  input[type=checkbox]+.lever:after {
+  input[type=checkbox] + .lever:after {
     background-color: $gradient_blue_light;
   }
 
-  input[type=checkbox]+.lever {
+  input[type=checkbox] + .lever {
     background-color: rgba($gradient_blue_light, 0.5);
   }
 }
 
-.form_div_list .dropdown-content li:first-child>span {
+.form_div_list .dropdown-content li:first-child > span {
   color: gray;
   font-style: italic;
 }
 
 .dropdown-content {
-  & li>span, & li>div>span, & li>span>label {
+  & li > span, & li > div > span, & li > span > label {
     color: #1a7cbf;
   }
 }
@@ -786,11 +788,11 @@ form {
   margin-bottom: 0;
 }
 
-.uppercase{
+.uppercase {
   text-transform: uppercase;
 }
 
-.titlecase .select-dropdown.dropdown-trigger, .titlecase .dropdown-content.select-dropdown{
+.titlecase .select-dropdown.dropdown-trigger, .titlecase .dropdown-content.select-dropdown {
   text-transform: capitalize;
 }
 
@@ -808,7 +810,7 @@ ul.dropdown-content.select-dropdown li.optgroup {
   }
 }
 
-.input_file .file-field.input-field{
+.input_file .file-field.input-field {
   margin-left: 20%;
   margin-right: 20%;
 }
@@ -855,6 +857,7 @@ span.virtualPoints {
 
 table.rankingVirtualPoints {
   font-size: 13px !important;
+
   td {
 
     &:not(.td-chip) {
@@ -871,7 +874,7 @@ table.rankingVirtualPoints {
       font-size: 20px;
     }
 
-    & .chip{
+    & .chip {
       padding-right: 0;
       margin-bottom: 0;
       margin-left: 4px;
@@ -905,9 +908,9 @@ table.rankingVirtualPoints {
 }
 
 .modal {
-  width: 92% !important ;
-  height: 87% !important ;
-  min-height: 87% !important ;
+  width: 92% !important;
+  height: 87% !important;
+  min-height: 87% !important;
   max-height: 100% !important;
   top: 7% !important;
 
@@ -943,9 +946,9 @@ table.rankingVirtualPoints {
 
   &.modal-medium {
     margin-top: 4% !important;
-    width: 700px !important ;
-    height: 81% !important ;
-    min-height: 81% !important ;
+    width: 700px !important;
+    height: 81% !important;
+    min-height: 81% !important;
     top: 4% !important;
 
     & .modal-content {
@@ -956,7 +959,7 @@ table.rankingVirtualPoints {
   &.modal-small {
     width: 45% !important;
 
-    & .modal-gps{
+    & .modal-gps {
       h5 {
         margin-top: 0;
         margin-bottom: 10px;
@@ -974,7 +977,7 @@ table.rankingVirtualPoints {
         margin: 0;
       }
 
-      .btn-gps{
+      .btn-gps {
         p.adr {
           margin: 0;
         }
@@ -1008,7 +1011,7 @@ table.rankingVirtualPoints {
               margin-top: 8px;
             }
 
-          i {
+            i {
               font-size: 21px;
             }
 
@@ -1057,7 +1060,7 @@ table.rankingVirtualPoints {
     margin-bottom: 2px;
   }
 
-  td{
+  td {
     &.td_buttons_contact_phone {
       padding-top: 10px !important;
       padding-bottom: 10px !important;
@@ -1077,7 +1080,7 @@ table.rankingVirtualPoints {
   font-style: italic;
 }
 
-.page-footer{
+.page-footer {
   padding-top: 0;
   background-color: $dark_blue;
   position: absolute;
@@ -1121,7 +1124,7 @@ table.rankingVirtualPoints {
 }
 
 .avatar {
-  object-fit:cover;
+  object-fit: cover;
   border-radius: 50%;
 }
 
@@ -1161,32 +1164,59 @@ table.table-backoffice-disponibilites tbody td {
 }
 
 @-webkit-keyframes rainbow {
-  0%{background-position:0 82%}
-  50%{background-position:100% 19%}
-  100%{background-position:0 82%}
+  0% {
+    background-position: 0 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0 82%
+  }
 }
+
 @-moz-keyframes rainbow {
-  0%{background-position:0 82%}
-  50%{background-position:100% 19%}
-  100%{background-position:0 82%}
+  0% {
+    background-position: 0 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0 82%
+  }
 }
+
 @-o-keyframes rainbow {
-  0%{background-position:0 82%}
-  50%{background-position:100% 19%}
-  100%{background-position:0 82%}
+  0% {
+    background-position: 0 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0 82%
+  }
 }
+
 @keyframes rainbow {
-  0%{background-position:0 82%}
-  50%{background-position:100% 19%}
-  100%{background-position:0 82%}
+  0% {
+    background-position: 0 82%
+  }
+  50% {
+    background-position: 100% 19%
+  }
+  100% {
+    background-position: 0 82%
+  }
 }
 
 @keyframes spin {
   from {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    transform:rotate(-360deg);
+    transform: rotate(-360deg);
   }
 }
 
@@ -1195,7 +1225,8 @@ li {
     justify-content: space-between;
     padding-top: 10px;
     padding-bottom: 10px;
-    &.collapsible-header-sidenav{
+
+    &.collapsible-header-sidenav {
       background-color: $darken_blue !important;
     }
 
@@ -1208,17 +1239,20 @@ li {
 
     .chip {
       margin: 0;
+
       &:not(.chip-sidenav) {
         font-size: 14px;
       }
     }
   }
+
   &.active {
     .collapsible-header {
       .caret {
         &:not(.caret-sidenav) {
           transform-origin: 0.6em 0.5em;
         }
+
         transform: rotate(-180deg);
       }
     }
@@ -1236,8 +1270,8 @@ p.joueurAnniv {
   left: 50% !important;
 }
 
-.backoffice-table{
-  th{
+.backoffice-table {
+  th {
     padding-left: 0;
     padding-right: 0;
   }
@@ -1251,7 +1285,7 @@ p.joueurAnniv {
 }
 
 .noDivisionPill {
-  background-color: rgba(241,35,35, 0.2);
+  background-color: rgba(241, 35, 35, 0.2);
   border-radius: 5px;
   padding: 5px;
 
@@ -1312,7 +1346,8 @@ button.btn_renouveler_certif_mobile {
   }
 
   h5.pastille {
-    margin-top: 0; margin-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
   }
 
   div.advDefined {
@@ -1398,7 +1433,7 @@ table.table-last-compos {
   }
 }
 
-.brulages table{
+.brulages table {
   & thead tr h6 {
     font-size: 1.25rem;
   }
@@ -1586,7 +1621,7 @@ span.field-icon {
     }
   }
 
-  &.lastBtnVirtualPoints{
+  &.lastBtnVirtualPoints {
     left: -3px !important;
     border-radius: 0 8px 8px 0;
   }
@@ -1598,7 +1633,7 @@ a.reload_ranking {
   top: 8px;
 }
 
-.navbar-general{
+.navbar-general {
   .left_items .dot {
     position: absolute;
     top: 15%;
@@ -1639,7 +1674,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 1466px) {
-  .right_items_navbar_general{
+  .right_items_navbar_general {
     .right_items_navbar {
       display: none;
     }
@@ -1651,7 +1686,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 1449px) {
-  .right_items_navbar_backoffice{
+  .right_items_navbar_backoffice {
     .right_items_navbar {
       display: none;
     }
@@ -1703,7 +1738,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 1167px) {
-  .navbar-general{
+  .navbar-general {
     .left_items {
       display: none;
     }
@@ -1715,7 +1750,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 1128px) {
-  .navbar-backoffice{
+  .navbar-backoffice {
     .left_items {
       display: none;
     }
@@ -1820,6 +1855,7 @@ a.reload_ranking {
 
   .merged_cards {
     -webkit-box-shadow: none;
+
     &.up {
       border-radius: 10px 10px 0 0 !important;
     }
@@ -1882,7 +1918,7 @@ a.reload_ranking {
     }
   }
 
-  th.th_picture_compet_table{
+  th.th_picture_compet_table {
     height: 96px;
   }
 
@@ -1891,7 +1927,7 @@ a.reload_ranking {
     padding-bottom: 0;
     height: 40px;
 
-    & img.picture_compet{
+    & img.picture_compet {
       width: 40px;
       height: 40px;
     }
@@ -1950,6 +1986,7 @@ a.reload_ranking {
   table.rankingVirtualPoints td {
     .chip {
       padding: 0;
+
       img {
         display: none;
       }
@@ -2006,7 +2043,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 344px) {
-  .virtualRankButtons  {
+  .virtualRankButtons {
     font-size: 13px;
   }
 }
@@ -2026,13 +2063,13 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 328px) {
-  .footer-copyright  {
+  .footer-copyright {
     font-size: 12px;
   }
 }
 
 @media screen and (max-width: 325px) {
-  .virtualRankButtons  {
+  .virtualRankButtons {
     flex-direction: column;
 
     .buttonGroup:first-child button {
@@ -2066,7 +2103,7 @@ a.reload_ranking {
     font-size: 14px;
   }
 
-  .footer-copyright  {
+  .footer-copyright {
     font-size: 10px;
   }
 }
@@ -2084,7 +2121,7 @@ a.reload_ranking {
 }
 
 @media screen and (max-width: 240px) {
-  .footer-copyright  {
+  .footer-copyright {
     font-size: 8px;
   }
 }

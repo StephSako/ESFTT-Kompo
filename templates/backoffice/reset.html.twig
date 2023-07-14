@@ -62,22 +62,19 @@
                                             if (noCritFed > 0) {
                                                 messageNbJoueursIssued.removeClass('blue');
                                                 messageNbJoueursIssued.addClass('orange darken-2');
-                                            }
-                                            else {
+                                            } else {
                                                 $('span#nbJoueurs').text('Tous les joueurs sont à jour')
                                                 messageNbJoueursIssued.addClass('blue');
                                                 messageNbJoueursIssued.removeClass('orange darken-2');
                                             }
                                             if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
-                                        }
-                                        else {
+                                        } else {
                                             $('.isCritFed').toggleClass('hide');
                                             if (noCritFed === 0) $('table#joueursIssued').toggleClass('hide');
                                             if (nbJoueursAll === 0) {
                                                 messageNbJoueursIssued.addClass('blue');
                                                 messageNbJoueursIssued.removeClass('orange darken-2');
-                                            }
-                                            else {
+                                            } else {
                                                 messageNbJoueursIssued.removeClass('blue');
                                                 messageNbJoueursIssued.addClass('orange darken-2');
                                             }
@@ -96,42 +93,42 @@
 
                     <table class="striped centered responsive-table {% if ((joueursIssued.competition|length) - (joueursIssued.nbJoueursCritFedOnly)) == 0 %} hide{% endif %}" id="joueursIssued">
                         <thead>
-                            <tr>
-                                <th>Licence</th>
-                                <th class="th_mobile_nom">Nom</th>
-                                <th class="th_mobile_pts_off">Points officiels</th>
-                                <th class="th_mobile_pts_off isCritFed hide">Critérium fédéral</th>
-                            </tr>
+                        <tr>
+                            <th>Licence</th>
+                            <th class="th_mobile_nom">Nom</th>
+                            <th class="th_mobile_pts_off">Points officiels</th>
+                            <th class="th_mobile_pts_off isCritFed hide">Critérium fédéral</th>
+                        </tr>
                         </thead>
 
                         <tbody>
-                            {% for joueur in joueursIssued.competition %}
-                                <tr {% if joueur.sameName and joueur.sameClassement and joueur.isCritFed %} class="isCritFed hide"{% endif %}>
-                                    <td>{{ joueur.joueur.licence }}</td>
-                                    <td>
-                                        <div class="chip">
-                                            {% if joueur.joueur.avatar %}
-                                                <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
-                                            {% else %}
-                                                <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
-                                            {% endif %}
-                                            <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</span>
-                                            {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT ~ ' ' ~ joueur.prenomFFTT }}{% endif %}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span {% if not joueur.sameClassement %}class="red-text"{% endif %}>{{ (joueur.joueur.classementOfficiel is not null ? joueur.joueur.classementOfficiel : "<i class='material-icons'>clear</i>") }}</span>
-                                        {% if not joueur.sameClassement %}
-                                            <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
+                        {% for joueur in joueursIssued.competition %}
+                            <tr {% if joueur.sameName and joueur.sameClassement and joueur.isCritFed %} class="isCritFed hide"{% endif %}>
+                                <td>{{ joueur.joueur.licence }}</td>
+                                <td>
+                                    <div class="chip">
+                                        {% if joueur.joueur.avatar %}
+                                            <img src="{{ vich_uploader_asset(joueur.joueur, 'imageFile') | imagine_filter('thumb') }}" alt="Avatar">
+                                        {% else %}
+                                            <img src="{{ asset('images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                         {% endif %}
-                                    </td>
-                                    <td class="isCritFed hide">
-                                        {% if joueur.joueur.critFed %}
-                                            <i class="material-icons green-text">done</i><i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i><i class="material-icons red-text">clear</i>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                        <span {% if not joueur.sameName %} class="red-text"{% endif %}>{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}</span>
+                                        {% if not joueur.sameName %}<i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i>{{ joueur.nomFFTT ~ ' ' ~ joueur.prenomFFTT }}{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span {% if not joueur.sameClassement %}class="red-text"{% endif %}>{{ (joueur.joueur.classementOfficiel is not null ? joueur.joueur.classementOfficiel : "<i class='material-icons'>clear</i>") }}</span>
+                                    {% if not joueur.sameClassement %}
+                                        <i class="material-icons black-text">arrow_forward</i> {{ joueur.pointsFFTT }}
+                                    {% endif %}
+                                </td>
+                                <td class="isCritFed hide">
+                                    {% if joueur.joueur.critFed %}
+                                        <i class="material-icons green-text">done</i><i class="material-icons black-text" style="vertical-align: sub;">arrow_forward</i><i class="material-icons red-text">clear</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 {% endif %}
@@ -212,9 +209,11 @@
                                             <div class="spinner-layer spinner-blue-only">
                                                 <div class="circle-clipper left">
                                                     <div class="circle"></div>
-                                                </div><div class="gap-patch">
+                                                </div>
+                                                <div class="gap-patch">
                                                     <div class="circle"></div>
-                                                </div><div class="circle-clipper right">
+                                                </div>
+                                                <div class="circle-clipper right">
                                                     <div class="circle"></div>
                                                 </div>
                                             </div>
@@ -243,11 +242,11 @@
                                     {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
                                         <table class="striped centered responsive-table">
                                             <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Journée</th>
-                                                    <th>Date</th>
-                                                </tr>
+                                            <tr>
+                                                <th></th>
+                                                <th>Journée</th>
+                                                <th>Date</th>
+                                            </tr>
                                             </thead>
 
                                             <tbody>
@@ -300,70 +299,70 @@
                                     {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
                                         <table class="striped centered responsive-table">
                                             <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Équipe</th>
-                                                    <th>Libellé division</th>
-                                                    <th>Poule</th>
-                                                    <th>Liaison à la FFTT</th>
-                                                </tr>
+                                            <tr>
+                                                <th></th>
+                                                <th>Équipe</th>
+                                                <th>Libellé division</th>
+                                                <th>Poule</th>
+                                                <th>Liaison à la FFTT</th>
+                                            </tr>
                                             </thead>
 
                                             <tbody>
-                                                {% for equipe in data.teams.issued %}
-                                                    <tr>
-                                                        <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
-                                                        <td>{{ club_name|title ~ ' ' ~ equipe.equipe.numero }}</td>
-                                                        <td>
-                                                            <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
-                                                            {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption>Poule indéfinie</span>" }}</span>
-                                                            {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <span {% if not equipe.sameLienDivision %}class="red-text" {% endif %}>{{ equipe.equipe.lienDivision ? "<i class='material-icons orange-text'>update</i>" : "<i class='material-icons red-text'>leak_remove</i>" }}</span>
-                                                            {% if not equipe.sameLienDivision and not equipe.equipe.lienDivision %}<i class="material-icons black-text">arrow_forward</i><i class='material-icons green-text'>leak_add</i>{% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
+                                            {% for equipe in data.teams.issued %}
+                                                <tr>
+                                                    <td><i class="material-icons orange-text text-darken-2 ">edit</i></td>
+                                                    <td>{{ club_name|title ~ ' ' ~ equipe.equipe.numero }}</td>
+                                                    <td>
+                                                        <span {% if not equipe.sameDivision %}class="red-text" {% endif %}>{{ equipe.equipe.idDivision ? equipe.equipe.idDivision.shortName : "<span class='new badge red white-text' data-badge-caption>Division indéfinie</span>" }}</span>
+                                                        {% if not equipe.sameDivision %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.divisionFFTTShortName }}{% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span {% if not equipe.samePoule %}class="red-text" {% endif %}>{{ equipe.equipe.idPoule ? equipe.equipe.idPoule.poule : "<span class='new badge red white-text' data-badge-caption>Poule indéfinie</span>" }}</span>
+                                                        {% if not equipe.samePoule %}<i class="material-icons black-text">arrow_forward</i>{{ equipe.pouleFFTT }}{% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span {% if not equipe.sameLienDivision %}class="red-text" {% endif %}>{{ equipe.equipe.lienDivision ? "<i class='material-icons orange-text'>update</i>" : "<i class='material-icons red-text'>leak_remove</i>" }}</span>
+                                                        {% if not equipe.sameLienDivision and not equipe.equipe.lienDivision %}<i class="material-icons black-text">arrow_forward</i><i class='material-icons green-text'>leak_add</i>{% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
 
-                                                {% for numero, equipe in data.teams.toCreate %}
-                                                    <tr>
-                                                        <td><i class="material-icons green-text">add_circle</i></td>
-                                                        <td><b>{{ numero }}</b></td>
-                                                        <td>
-                                                            {{ equipe.divisionShortName }}
-                                                        </td>
-                                                        <td>
-                                                            {{ equipe.poule }}
-                                                        </td>
-                                                        <td><i class='material-icons green-text'>leak_add</i></td>
-                                                    </tr>
-                                                {% endfor %}
+                                            {% for numero, equipe in data.teams.toCreate %}
+                                                <tr>
+                                                    <td><i class="material-icons green-text">add_circle</i></td>
+                                                    <td><b>{{ numero }}</b></td>
+                                                    <td>
+                                                        {{ equipe.divisionShortName }}
+                                                    </td>
+                                                    <td>
+                                                        {{ equipe.poule }}
+                                                    </td>
+                                                    <td><i class='material-icons green-text'>leak_add</i></td>
+                                                </tr>
+                                            {% endfor %}
 
-                                                {% for equipe in data.teams.toDelete %}
-                                                    <tr>
-                                                        <td><i class="material-icons red-text">delete</i></td>
-                                                        <td><b>{{ equipe.numero }}</b></td>
-                                                        <td>
-                                                            {% if equipe.idDivision %}
-                                                                {{ equipe.idDivision.shortName }}
-                                                            {% else %}
-                                                                <span class="red-text lighten-2">Division indéfinie</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            {% if equipe.idPoule %}
-                                                                {{ equipe.idPoule.poule }}
-                                                            {% else %}
-                                                                <span class="red-text lighten-2">Poule indéfinie</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td><i class='material-icons black-text'>leak_add</i></td>
-                                                    </tr>
-                                                {% endfor %}
+                                            {% for equipe in data.teams.toDelete %}
+                                                <tr>
+                                                    <td><i class="material-icons red-text">delete</i></td>
+                                                    <td><b>{{ equipe.numero }}</b></td>
+                                                    <td>
+                                                        {% if equipe.idDivision %}
+                                                            {{ equipe.idDivision.shortName }}
+                                                        {% else %}
+                                                            <span class="red-text lighten-2">Division indéfinie</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if equipe.idPoule %}
+                                                            {{ equipe.idPoule.poule }}
+                                                        {% else %}
+                                                            <span class="red-text lighten-2">Poule indéfinie</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td><i class='material-icons black-text'>leak_add</i></td>
+                                                </tr>
+                                            {% endfor %}
                                             </tbody>
                                         </table>
                                     {% endif %}
@@ -391,37 +390,37 @@
                                                     <div class="collapsible-body">
                                                         <table class="striped centered responsive-table">
                                                             <thead>
-                                                                <tr>
-                                                                    <th></th>
-                                                                    <th>Journée</th>
-                                                                    <th>Adversaire</th>
-                                                                    <th>Lieu</th>
-                                                                    <th>Coordonnées</th>
-                                                                </tr>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Journée</th>
+                                                                <th>Adversaire</th>
+                                                                <th>Lieu</th>
+                                                                <th>Coordonnées</th>
+                                                            </tr>
                                                             </thead>
 
                                                             <tbody>
-                                                                {% for rencontre in rencontres %}
-                                                                    <tr>
-                                                                        <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
-                                                                        <td>{{ rencontre.journee }}</td>
-                                                                        <td>
-                                                                            {% if not rencontre.exempt %}
-                                                                                <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
+                                                            {% for rencontre in rencontres %}
+                                                                <tr>
+                                                                    <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                    <td>{{ rencontre.journee }}</td>
+                                                                    <td>
+                                                                        {% if not rencontre.exempt %}
+                                                                            <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
                                                                                     {% if rencontre.rencontre.exempt %}
                                                                                         <span class="new badge red white-text" data-badge-caption>Exemptée</span>
-                                                                                    {% elseif rencontre.rencontre.adversaire is null%}
+                                                                                    {% elseif rencontre.rencontre.adversaire is null %}
                                                                                         <span class="new badge red white-text" data-badge-caption>Adversaire indéfini</span>
                                                                                     {% else %}
                                                                                         {{ rencontre.rencontre.adversaire }}
                                                                                     {% endif %}
                                                                                 </span>
-                                                                                {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
-                                                                            {% else %}
-                                                                                <span class="new badge red white-text" data-badge-caption>Exemptée</span>
-                                                                            {% endif %}
-                                                                        </td>
-                                                                        <td>
+                                                                            {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.adversaireFFTT }}{% endif %}
+                                                                        {% else %}
+                                                                            <span class="new badge red white-text" data-badge-caption>Exemptée</span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
                                                                             <span>
                                                                                 {% if rencontre.rencontre.domicile is null %}
                                                                                     <i class='material-icons red-text'>location_off</i>
@@ -431,20 +430,20 @@
                                                                                     {% endif %}
                                                                                 {% endif %}
                                                                             </span>
-                                                                            {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
-                                                                        </td>
-                                                                        <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
-                                                                            {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
-                                                                                <i class="material-icons green-text">done</i>
-                                                                            {% else %}
-                                                                                {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
-                                                                                {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
-                                                                                {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
-                                                                                {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
-                                                                            {% endif %}
-                                                                        </td>
-                                                                    </tr>
-                                                                {% endfor %}
+                                                                        {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
+                                                                    </td>
+                                                                    <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
+                                                                        {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
+                                                                            <i class="material-icons green-text">done</i>
+                                                                        {% else %}
+                                                                            {% if rencontre.infosContact.adresse %}<i class="material-icons">place</i>{% endif %}
+                                                                            {% if rencontre.infosContact.complementAdresse %}<i class="material-icons">explore</i>{% endif %}
+                                                                            {% if rencontre.infosContact.telephone %}<i class="material-icons">contact_phone</i>{% endif %}
+                                                                            {% if rencontre.infosContact.site %}<i class="material-icons">language</i>{% endif %}
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -467,9 +466,11 @@
                                                     <div class="spinner-layer spinner-blue-only">
                                                         <div class="circle-clipper left">
                                                             <div class="circle"></div>
-                                                        </div><div class="gap-patch">
+                                                        </div>
+                                                        <div class="gap-patch">
                                                             <div class="circle"></div>
-                                                        </div><div class="circle-clipper right">
+                                                        </div>
+                                                        <div class="circle-clipper right">
                                                             <div class="circle"></div>
                                                         </div>
                                                     </div>
@@ -493,7 +494,7 @@
     <script type="text/javascript">
         function resetPhasePreloader(nomChampionnat) {
             const response = confirm('Mettre à jour les matches de ' + nomChampionnat + ' ?');
-            if (response){
+            if (response) {
                 $('#preloaderResetPhase' + nomChampionnat).removeAttr('hidden');
                 $('#btnResetPhase' + nomChampionnat).addClass('hide');
             }
@@ -502,7 +503,7 @@
 
         function preRentreeResetPhasePreloader(nomChampionnat) {
             const response = confirm('Réinitialiser les matches de ' + nomChampionnat + ' ?');
-            if (response){
+            if (response) {
                 $('#preloaderPreRentreeResetPhase' + nomChampionnat).removeAttr('hidden');
                 $('#PreRentreeBtnResetPhase' + nomChampionnat).addClass('hide');
             }

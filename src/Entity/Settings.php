@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Settings
 {
-
     /**
      * @var string
      *

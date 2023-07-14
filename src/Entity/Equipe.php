@@ -26,12 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Equipe
 {
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees", cascade={"persist"})
+     */
+    protected $joueursAssocies;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_equipe")
      */
     private $idEquipe;
-
     /**
      * @var int
      *
@@ -48,7 +51,6 @@ class Equipe
      * @ORM\Column(type="integer", name="numero", nullable=false)
      */
     private $numero;
-
     /**
      * @var Division|null
      *
@@ -56,7 +58,6 @@ class Equipe
      * @ORM\JoinColumn(name="id_division", nullable=true, referencedColumnName="id_division")
      */
     private $idDivision;
-
     /**
      * @var Championnat
      *
@@ -64,7 +65,6 @@ class Equipe
      * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
      */
     private $idChampionnat;
-
     /**
      * @var Poule|null
      *
@@ -72,7 +72,6 @@ class Equipe
      * @ORM\JoinColumn(name="id_poule", nullable=true, referencedColumnName="id_poule")
      */
     private $idPoule;
-
     /**
      * @var string|null
      *
@@ -84,7 +83,6 @@ class Equipe
      * @ORM\Column(type="string", length=100, name="lien_division", nullable=true)
      */
     private $lienDivision;
-
     /**
      * @var Collection
      *
@@ -92,12 +90,6 @@ class Equipe
      * @ORM\OneToMany(targetEntity="App\Entity\Rencontre", mappedBy="idEquipe", cascade={"remove"}, orphanRemoval=true)
      */
     private $rencontres;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Competiteur", mappedBy="equipesAssociees", cascade={"persist"})
-     */
-    protected $joueursAssocies;
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idEquipe", cascade={"persist"})
      */

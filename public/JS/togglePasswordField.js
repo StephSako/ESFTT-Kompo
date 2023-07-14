@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     let clicked = {};
     $(".toggle-password").click(function () {
         $(this).toggleClass("toggle-password");

@@ -3,24 +3,28 @@ function renvoyerMailBienvenue(idCompetiteur, prenom) {
     if (r) {
         sendingRenvoyerMailBienvenue();
         $.ajax({
-            url : '/backoffice/competiteur/resend-welcome-mail',
-            type : 'POST',
+            url: '/backoffice/competiteur/resend-welcome-mail',
+            type: 'POST',
             data: {
                 idCompetiteur: idCompetiteur
             },
-            dataType : 'json',
-            success : (response) => { endSendingRenvoyerMailBienvenue(response.message); },
-            error : () => { endSendingRenvoyerMailBienvenue('Une erreur est survenue !'); }
+            dataType: 'json',
+            success: (response) => {
+                endSendingRenvoyerMailBienvenue(response.message);
+            },
+            error: () => {
+                endSendingRenvoyerMailBienvenue('Une erreur est survenue !');
+            }
         });
     }
 }
 
-function sendingRenvoyerMailBienvenue(){
+function sendingRenvoyerMailBienvenue() {
     $('button#btnRenvoiMailBienvenue').prop('disabled', true)
     $('i#iconRenvoiMailBienvenue').html('sync').addClass('rotating-icon');
 }
 
-function endSendingRenvoyerMailBienvenue(message){
+function endSendingRenvoyerMailBienvenue(message) {
     $('button#btnRenvoiMailBienvenue').prop('disabled', false)
     $('i#iconRenvoiMailBienvenue').html('outgoing_mail').removeClass('rotating-icon');
     M.toast({html: message});

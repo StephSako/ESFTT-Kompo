@@ -26,10 +26,10 @@ class DisponibiliteController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param RencontreRepository $rencontreRepository
      */
-    public function __construct(EntityManagerInterface $em,
-                                JourneeRepository $journeeRepository,
+    public function __construct(EntityManagerInterface  $em,
+                                JourneeRepository       $journeeRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                RencontreRepository $rencontreRepository)
+                                RencontreRepository     $rencontreRepository)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
@@ -44,7 +44,7 @@ class DisponibiliteController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function new(int $journee, bool $dispo):Response
+    public function new(int $journee, bool $dispo): Response
     {
         if (!($journee = $this->journeeRepository->find($journee))) {
             $this->addFlash('fail', 'Journée inexistante');
@@ -77,7 +77,7 @@ class DisponibiliteController extends AbstractController
      * @return Response
      * @throws NonUniqueResultException
      */
-    public function update(int $dispoJoueur, bool $dispo, UtilController $utilController) : Response
+    public function update(int $dispoJoueur, bool $dispo, UtilController $utilController): Response
     {
         if (!($dispoJoueur = $this->disponibiliteRepository->find($dispoJoueur))) {
             $this->addFlash('fail', 'Disponibilité inexistante');
@@ -88,12 +88,12 @@ class DisponibiliteController extends AbstractController
         $journee = $dispoJoueur->getIdJournee()->getIdJournee();
 
         /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-        if (!$dispo){
+        if (!$dispo) {
             $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($journee)['nbMaxJoueurs'];
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($this->getUser()->getIdCompetiteur(), $journee, $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
             $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $this->getUser()->getIdCompetiteur());
 
-            foreach ($invalidCompos as $compo){
+            foreach ($invalidCompos as $compo) {
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
                 $compo['compo']->sortComposition();
             }

@@ -92,7 +92,7 @@
 </div>
 
 {% if app.user %}
-<!-- SideNav Structure -->
+    <!-- SideNav Structure -->
     <ul id="slide-out" class="sidenav">
         <div class="first_sidenav">
             {% if allChampionnats|length > 1 %}
@@ -156,7 +156,9 @@
         </div>
 
         {% if allChampionnats|length > 0 %}
-            <li><div class="divider_custom"></div></li>
+            <li>
+                <div class="divider_custom"></div>
+            </li>
         {% endif %}
         {% if allChampionnats|length == 0 %}
             <li class="li_in_line{% if app.request.getPathInfo == '/' %} active blue darken-3{% endif %}">

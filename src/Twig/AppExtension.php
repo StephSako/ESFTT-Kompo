@@ -68,7 +68,7 @@ class AppExtension extends AbstractExtension
         }
 
         $str .= $nbEquipes > 1 ? ' n\'ont ' : ' n\'a ';
-        $str .= 'pas de division' . ($nbEquipes > 1 ? 's':'') . ' affiliée' . ($nbEquipes > 1 ? 's':'') . ' : vous ne pouvez donc pas accéder à';
+        $str .= 'pas de division' . ($nbEquipes > 1 ? 's' : '') . ' affiliée' . ($nbEquipes > 1 ? 's' : '') . ' : vous ne pouvez donc pas accéder à';
         $str .= ($nbEquipes > 1 ? ' leurs ' : ' ses ') . 'compositions d\'équipe';
 
         return $str;
@@ -98,19 +98,19 @@ class AppExtension extends AbstractExtension
                 $brulageGeneral[] = $joueur;
             }
         }
-        $brulageJoueursCompo = (array_filter($brulageGeneral, function($brulageG) use ($selectedPlayers){
+        $brulageJoueursCompo = (array_filter($brulageGeneral, function ($brulageG) use ($selectedPlayers) {
             return in_array($brulageG['idCompetiteur'], $selectedPlayers);
         }));
 
-        $isBurnt = array_filter($brulageJoueursCompo, function($brulageJoueur) use ($numEquipe) {
-            return in_array(1, array_filter($brulageJoueur['brulage'], function($numEquipeBrulage) use ($numEquipe) {
+        $isBurnt = array_filter($brulageJoueursCompo, function ($brulageJoueur) use ($numEquipe) {
+            return in_array(1, array_filter($brulageJoueur['brulage'], function ($numEquipeBrulage) use ($numEquipe) {
                 return $numEquipeBrulage < $numEquipe;
             }, ARRAY_FILTER_USE_KEY));
         });
 
-        $burntJ2 = array_values(array_map(function($joueurBruleJ2) {
+        $burntJ2 = array_values(array_map(function ($joueurBruleJ2) {
             return $joueurBruleJ2['idCompetiteur'];
-        },$isBurnt));
+        }, $isBurnt));
 
         return in_array($idCompetiteur, $burntJ2) && count($burntJ2) > 1;
     }
@@ -141,7 +141,8 @@ class AppExtension extends AbstractExtension
      * @param Journee $journee
      * @return bool
      */
-    public function journeePassee(Journee $journee): bool {
+    public function journeePassee(Journee $journee): bool
+    {
         return !$journee->getUndefined() && intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) < 0;
     }
 
@@ -164,16 +165,16 @@ class AppExtension extends AbstractExtension
         });
 
         /** On filtre les joueurs de l'équipe non brûlés pour cette journée */
-        $joueursNonBrules = array_filter($brulagesEquipe, function($joueur) use ($numeroEquipe) {
-            return array_sum(array_filter($joueur['brulage'], function($numEquipe) use ($numeroEquipe) {
+        $joueursNonBrules = array_filter($brulagesEquipe, function ($joueur) use ($numeroEquipe) {
+            return array_sum(array_filter($joueur['brulage'], function ($numEquipe) use ($numeroEquipe) {
                     return $numEquipe < $numeroEquipe;
                 }, ARRAY_FILTER_USE_KEY)) < 2;
         });
-        $joueursNonBrules = array_map(function($joueurNonBrule) {
+        $joueursNonBrules = array_map(function ($joueurNonBrule) {
             return $joueurNonBrule['idCompetiteur'];
         }, $joueursNonBrules);
 
-        return array_keys(array_filter($disposNonSelectionnesEquipe, function($remplacant) use ($joueursNonBrules) {
+        return array_keys(array_filter($disposNonSelectionnesEquipe, function ($remplacant) use ($joueursNonBrules) {
             return in_array($remplacant['joueur']->getIdCompetiteur(), $joueursNonBrules);
         }));
     }

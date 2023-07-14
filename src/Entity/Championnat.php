@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
+use Cocur\Slugify\Slugify;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping\UniqueConstraint;
-use Cocur\Slugify\Slugify;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionnatRepository")
@@ -217,24 +217,6 @@ class Championnat
     }
 
     /**
-     * @return Collection
-     */
-    public function getJournees(): Collection
-    {
-        return $this->journees;
-    }
-
-    /**
-     * @param Collection $journees
-     * @return Championnat
-     */
-    public function setJournees(Collection $journees): self
-    {
-        $this->journees = $journees;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getDispos()
@@ -333,14 +315,6 @@ class Championnat
     }
 
     /**
-     * @return string
-     */
-    public function getSlug(): string
-    {
-        return (new Slugify())->slugify($this->nom);
-    }
-
-    /**
      * @param string|null $nom
      * @return Championnat
      */
@@ -348,6 +322,14 @@ class Championnat
     {
         $this->nom = mb_convert_case($nom, MB_CASE_TITLE, "UTF-8");
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return (new Slugify())->slugify($this->nom);
     }
 
     /**
@@ -426,12 +408,30 @@ class Championnat
      * Retourne l'ID de la prochaine journée à jouer
      * @return Journee|null
      */
-    public function getNextJourneeToPlay():? Journee
+    public function getNextJourneeToPlay(): ?Journee
     {
-        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function($journee) {
-            return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
+        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function ($journee) {
+            return !$journee->getUndefined() && (int)(new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });
         return array_shift($nextJourneeToPlay) ?: null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJournees(): Collection
+    {
+        return $this->journees;
+    }
+
+    /**
+     * @param Collection $journees
+     * @return Championnat
+     */
+    public function setJournees(Collection $journees): self
+    {
+        $this->journees = $journees;
+        return $this;
     }
 
     /**

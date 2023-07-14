@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BackOfficeChampionnatController extends AbstractController
 {
-
     private $em;
     private $championnatRepository;
     private $journeeRepository;
@@ -31,8 +30,8 @@ class BackOfficeChampionnatController extends AbstractController
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(ChampionnatRepository $championnatRepository,
-                                JourneeRepository $journeeRepository,
+    public function __construct(ChampionnatRepository  $championnatRepository,
+                                JourneeRepository      $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -51,24 +50,6 @@ class BackOfficeChampionnatController extends AbstractController
     }
 
     /**
-     * @return array
-     */
-    public function getOrganismesFormatted(): array
-    {
-        try {
-            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            return $this->championnatRepository->getOrganismesFormatted(
-                [
-                    'Ligue' => $api->getOrganismes('Lzz'),
-                    'Département' => $api->getOrganismes('D')
-                ]);
-        } catch (Exception $e) {
-            $this->addFlash('fail', 'Récupération des organismes impossible');
-            return [];
-        }
-    }
-
-    /**
      * @Route("/backoffice/championnat/new", name="backoffice.championnat.new")
      * @param Request $request
      * @param UtilController $utilController
@@ -83,10 +64,10 @@ class BackOfficeChampionnatController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             try {
                 /** Si le brulage est défini à 0, on le NULL */
-                if ($championnat->getLimiteBrulage() == 0){
+                if ($championnat->getLimiteBrulage() == 0) {
                     $championnat->setJ2Rule(false);
                     $championnat->setLimiteBrulage(null);
                 }
@@ -109,13 +90,12 @@ class BackOfficeChampionnatController extends AbstractController
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat créé');
                 return $this->redirectToRoute('backoffice.championnats');
-            } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000"){
+            } catch (Exception $e) {
+                if ($e->getPrevious()->getCode() == "23000") {
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', 'Il existe déjà un championnat pour \'' . array_search($championnat->getOrganismePere(), array_merge(...array_values($organismes))) . '\'');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                }
-                else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
             }
         }
 
@@ -124,6 +104,24 @@ class BackOfficeChampionnatController extends AbstractController
             'title' => 'Créer un championnat',
             'macro' => 'championnat'
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrganismesFormatted(): array
+    {
+        try {
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            return $this->championnatRepository->getOrganismesFormatted(
+                [
+                    'Ligue' => $api->getOrganismes('Lzz'),
+                    'Département' => $api->getOrganismes('D')
+                ]);
+        } catch (Exception $e) {
+            $this->addFlash('fail', 'Récupération des organismes impossible');
+            return [];
+        }
     }
 
     /**
@@ -158,15 +156,15 @@ class BackOfficeChampionnatController extends AbstractController
                 $journees = $championnat->getJournees()->toArray();
 
                 /** Si la limite du brûlage diminue, on recalcule tous les brûlages des joueurs */
-                if ($championnat->getLimiteBrulage() && $limiteBrulage > $championnat->getLimiteBrulage()){
+                if ($championnat->getLimiteBrulage() && $limiteBrulage > $championnat->getLimiteBrulage()) {
                     $journeesToRecalcul = array_slice($journees, 0, count($journees));
 
-                    $nbMaxJoueurs = max(array_map(function($division) {
+                    $nbMaxJoueurs = max(array_map(function ($division) {
                         return $division->getNbJoueurs();
                     }, $championnat->getDivisions()->toArray()));
 
-                    foreach ($journeesToRecalcul as $journee){
-                        foreach ($journee->getRencontres()->toArray() as $rencontre){
+                    foreach ($journeesToRecalcul as $journee) {
+                        foreach ($journee->getRencontres()->toArray() as $rencontre) {
                             for ($j = 0; $j < $rencontre->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
                                 if ($rencontre->getIdJoueurN($j)) $utilController->checkInvalidSelection($championnat->getLimiteBrulage(), $championnat->getIdChampionnat(), $rencontre->getIdJoueurN($j)->getIdCompetiteur(), $nbMaxJoueurs, $journee->getIdJournee());
                             }
@@ -179,11 +177,11 @@ class BackOfficeChampionnatController extends AbstractController
                 $championnat->setNom($championnat->getNom());
 
                 /** Si nbJournees diminue, on supprime les rencontres, sinon on en créé */
-                if ($championnat->getNbJournees() < count($journees)){
+                if ($championnat->getNbJournees() < count($journees)) {
                     for ($i = $championnat->getNbJournees(); $i < count($journees); $i++) {
                         $this->em->remove($journees[$i]);
                     }
-                } else if ($championnat->getNbJournees() > count($journees)){
+                } else if ($championnat->getNbJournees() > count($journees)) {
                     $equipes = $championnat->getEquipes()->toArray();
                     $earliestDate = $this->journeeRepository->findEarlistDate($idChampionnat);
                     for ($i = count($journees); $i < $championnat->getNbJournees(); $i++) {
@@ -194,7 +192,7 @@ class BackOfficeChampionnatController extends AbstractController
                         $this->em->persist($journee);
                         $this->em->flush();
 
-                        foreach ($equipes as $equipe){
+                        foreach ($equipes as $equipe) {
                             $rencontre = new Rencontre($equipe->getIdChampionnat());
                             $rencontre
                                 ->setValidationCompo(false)
@@ -216,8 +214,8 @@ class BackOfficeChampionnatController extends AbstractController
                 $this->em->flush();
                 $this->addFlash('success', 'Championnat modifié');
                 return $this->redirectToRoute('backoffice.championnats');
-            } catch(Exception $e){
-                if ($e->getPrevious()->getCode() == "23000"){
+            } catch (Exception $e) {
+                if ($e->getPrevious()->getCode() == "23000") {
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');

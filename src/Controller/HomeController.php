@@ -23,15 +23,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    const ABSENT_ABSENT = 'Absent Absent';
+    const WO = 'WO';
     private $em;
     private $competiteurRepository;
     private $championnatRepository;
     private $disponibiliteRepository;
     private $rencontreRepository;
     private $settingsRepository;
-
-    const ABSENT_ABSENT = 'Absent Absent';
-    const WO = 'WO';
 
     /**
      * @param ChampionnatRepository $championnatRepository
@@ -41,12 +40,12 @@ class HomeController extends AbstractController
      * @param SettingsRepository $settingsRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(ChampionnatRepository $championnatRepository,
+    public function __construct(ChampionnatRepository   $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                CompetiteurRepository $competiteurRepository,
-                                RencontreRepository $rencontreRepository,
-                                SettingsRepository $settingsRepository,
-                                EntityManagerInterface $em)
+                                CompetiteurRepository   $competiteurRepository,
+                                RencontreRepository     $rencontreRepository,
+                                SettingsRepository      $settingsRepository,
+                                EntityManagerInterface  $em)
     {
         $this->em = $em;
         $this->rencontreRepository = $rencontreRepository;
@@ -63,7 +62,7 @@ class HomeController extends AbstractController
      */
     public function indexAction(UtilController $utilController): Response
     {
-        if ($utilController->nextJourneeToPlayAllChamps()){
+        if ($utilController->nextJourneeToPlayAllChamps()) {
             return $this->redirectToRoute('journee.show', [
                 'type' => $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
                 'idJournee' => $utilController->nextJourneeToPlayAllChamps()->getIdJournee()
@@ -105,24 +104,28 @@ class HomeController extends AbstractController
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
         $journees = $championnat->getJournees()->toArray();
 
-        if (!in_array($idJournee, array_map(function ($journee){ return $journee->getIdJournee(); }, $journees))){
+        if (!in_array($idJournee, array_map(function ($journee) {
+            return $journee->getIdJournee();
+        }, $journees))) {
             $this->addFlash('fail', 'Journée inexistante pour ce championnat');
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
-        $journee = array_values(array_filter($journees, function($journee) use ($idJournee) { return ($journee->getIdJournee() == $idJournee ? $journee : null); }))[0];
+        $journee = array_values(array_filter($journees, function ($journee) use ($idJournee) {
+            return ($journee->getIdJournee() == $idJournee ? $journee : null);
+        }))[0];
 
         $this->get('session')->set('type', $type);
 
         // Disponibilité du joueur
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
-        $dispoJoueur = array_values(array_filter($disposJoueur, function($dispo) use ($idJournee) {
+        $dispoJoueur = array_values(array_filter($disposJoueur, function ($dispo) use ($idJournee) {
             return $dispo->getIdJournee()->getIdJournee() == $idJournee;
         }));
         $dispoJoueur = count($dispoJoueur) ? $dispoJoueur[0] : null;
         $disposJoueurFormatted = null;
         if ($this->getUser()->isCompetiteur()) {
             $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
+            foreach ($disposJoueur as $dispo) {
                 $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
             }
         }
@@ -131,10 +134,12 @@ class HomeController extends AbstractController
         $compos = $this->rencontreRepository->getRencontres($idJournee, $type);
 
         // Numero de la journée
-        $numJournee = array_search($journee, $journees)+1;
+        $numJournee = array_search($journee, $journees) + 1;
 
         // Disponibilités des joueurs pour la journée par équipe
-        $nbMaxJoueursParDivision = array_map(function($compo) use ($type) { return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs(); }, $compos);
+        $nbMaxJoueursParDivision = array_map(function ($compo) use ($type) {
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
+        }, $compos);
         $disponibilitesJournee = $this->competiteurRepository->findDisposJoueurs($idJournee, $type, $nbMaxJoueursParDivision ? max($nbMaxJoueursParDivision) : $this->getParameter('nb_joueurs_default_division'));
         $joueursNonDeclares = [];
         $joueursDisponibles = [];
@@ -144,14 +149,16 @@ class HomeController extends AbstractController
                 else if ($dispoJoueurEquipe['disponibilite'] == '1') $joueursDisponibles[] = $dispoJoueurEquipe;
             }
         }
-        $joueursNonDeclaresContact = $contactController->returnPlayersContactByMedia(array_map(function($dispo){ return $dispo['joueur']; }, $joueursNonDeclares));
+        $joueursNonDeclaresContact = $contactController->returnPlayersContactByMedia(array_map(function ($dispo) {
+            return $dispo['joueur'];
+        }, $joueursNonDeclares));
 
         $messageJoueursSansDispo = $objetJoueursSansDispos = null;
         if (count($joueursNonDeclares)) {
             $messageJoueursSansDispo = $this->settingsRepository->find('mail-sans-dispo')->getContent();
 
             /** Formattage du message **/
-            setlocale (LC_TIME, 'fr_FR.utf8','fra');
+            setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
             date_default_timezone_set('Europe/Paris');
             $str_replacers = [
                 'old' => ['[#n_journee#]', '[#date_journee#]', '[#nom_redacteur#]', '[#nom_championnat#]'],
@@ -169,7 +176,7 @@ class HomeController extends AbstractController
         $selectedPlayers = $this->rencontreRepository->getSelectedPlayers($compos);
 
         // Nombre maximal de joueurs pour les compos du championnat sélectionné
-        $nbMaxSelectedJoueurs = array_sum(array_map(function($compo) use ($type) {
+        $nbMaxSelectedJoueurs = array_sum(array_map(function ($compo) use ($type) {
             return !$compo->isExempt() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 0;
         }, $compos));
 
@@ -179,9 +186,9 @@ class HomeController extends AbstractController
         // Gestion et affichage des équipes sujettes aux brûlage
         $idEquipesVisuel = $idEquipesBrulage = [];
         if ($championnat->getLimiteBrulage()) {
-            $equipesBrulage = array_map(function($equipe) {
+            $equipesBrulage = array_map(function ($equipe) {
                 return $equipe->getNumero();
-            }, array_filter($equipes, function($equipe){
+            }, array_filter($equipes, function ($equipe) {
                 return $equipe->getIdDivision() != null;
             }));
 
@@ -191,14 +198,14 @@ class HomeController extends AbstractController
         }
 
         // Nombre minimal critique de joueurs pour les compos du championnat
-        $nbMinJoueurs = array_sum(array_map(function($compo) use ($type) {
+        $nbMinJoueurs = array_sum(array_map(function ($compo) use ($type) {
             return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() - 1;
         }, $compos));
 
         // Equipes sans divisions affiliées
-        $equipesSansDivision = array_map(function($equipe){
+        $equipesSansDivision = array_map(function ($equipe) {
             return $equipe->getNumero();
-        }, array_filter($equipes, function($equipe){
+        }, array_filter($equipes, function ($equipe) {
             return $equipe->getIdDivision() == null;
         }));
 
@@ -213,7 +220,9 @@ class HomeController extends AbstractController
 
         // Brûlages des joueurs
         $divisions = $championnat->getDivisions()->toArray();
-        $brulages = $divisions && $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function($division){ return $division->getNbJoueurs(); }, $divisions))) : [];
+        $brulages = $divisions && $championnat->getLimiteBrulage() ? $this->competiteurRepository->getBrulages($type, $idJournee, $idEquipesBrulage, max(array_map(function ($division) {
+            return $division->getNbJoueurs();
+        }, $divisions))) : [];
 
         $allValidPlayers = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $countJoueursCertifMedicPerim = count(array_filter($allValidPlayers, function ($joueur) {
@@ -235,7 +244,7 @@ class HomeController extends AbstractController
         }));
         $competiteursWithoutClassement = [
             'count' => $countCompetiteursWithoutClassement,
-            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ' ) . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
         ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
@@ -254,7 +263,9 @@ class HomeController extends AbstractController
             'journeesWithReportedRencontres' => $journeesWithReportedRencontres['ids'],
             'journeesWithReportedRencontresFormatted' => $journeesWithReportedRencontresFormatted,
             'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
-            'nbMaxPotentielPlayers' => array_sum(array_map(function($equipe) { return count($equipe); }, $disponibilitesJournee)),
+            'nbMaxPotentielPlayers' => array_sum(array_map(function ($equipe) {
+                return count($equipe);
+            }, $disponibilitesJournee)),
             'nbMinJoueurs' => $nbMinJoueurs,
             'allChampionnats' => $allChampionnats,
             'selection' => $selection,
@@ -290,7 +301,7 @@ class HomeController extends AbstractController
      * @param UtilController $utilController
      * @return Response
      */
-    public function edit(int $type, int $compo, Request $request, UtilController $utilController) : Response
+    public function edit(int $type, int $compo, Request $request, UtilController $utilController): Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) {
             $this->addFlash('fail', 'Championnat inexistant');
@@ -315,7 +326,7 @@ class HomeController extends AbstractController
         }
 
         $journees = $championnat->getJournees()->toArray();
-        $idJournee = array_search($compo->getIdJournee(), $journees)+1;
+        $idJournee = array_search($compo->getIdJournee(), $journees) + 1;
         if (!$compo->getIdEquipe()->getIdDivision()) {
             $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
@@ -324,14 +335,16 @@ class HomeController extends AbstractController
         $allChampionnats = $this->championnatRepository->findAll();
 
         /** Nombre de joueurs maximum par équipe du championnat */
-        $nbMaxJoueurs = max(array_map(function($division){return $division->getNbJoueurs();}, $championnat->getDivisions()->toArray()));
+        $nbMaxJoueurs = max(array_map(function ($division) {
+            return $division->getNbJoueurs();
+        }, $championnat->getDivisions()->toArray()));
 
         /** Numéros des équipes valides pour le brûlage */
         $idEquipesBrulage = $idEquipesBrulageVisuel = [];
         if ($championnat->getLimiteBrulage()) {
-            $equipesBrulage = array_map(function($equipe){
+            $equipesBrulage = array_map(function ($equipe) {
                 return $equipe->getNumero();
-            }, array_filter($championnat->getEquipes()->toArray(), function($equipe){
+            }, array_filter($championnat->getEquipes()->toArray(), function ($equipe) {
                 return $equipe->getIdDivision() != null;
             }));
             sort($equipesBrulage, SORT_NUMERIC);
@@ -356,7 +369,7 @@ class HomeController extends AbstractController
             if ($championnat->getLimiteBrulage() && $championnat->isJ2Rule()) {
                 /** Liste des joueurs brûlés en J2 pour les championnats ayant cette règle */
                 $joueursBrulesRegleJ2 = array_column(array_filter($brulageSelectionnables['joueurs'],
-                    function($joueur){
+                    function ($joueur) {
                         return ($joueur["bruleJ2"]);
                     }), 'idCompetiteur');
 
@@ -381,7 +394,7 @@ class HomeController extends AbstractController
                             for ($j = 0; $j < $nbJoueursDivision; $j++) {
                                 if ($form->getData()->getIdJoueurN($j)) {
                                     $invalidCompo = $this->rencontreRepository->getSelectedWhenBurnt($form->getData()->getIdJoueurN($j)->getIdCompetiteur(), $journeeToRecalculate->getIdJournee(), $championnat->getLimiteBrulage(), $nbMaxJoueurs, $championnat->getIdChampionnat());
-                                    if ($invalidCompo){
+                                    if ($invalidCompo) {
                                         array_push($invalidCompos, ...$invalidCompo);
                                         $utilController->deleteInvalidSelectedPlayers($invalidCompo, $nbMaxJoueurs, $form->getData()->getIdJoueurN($j)->getIdCompetiteur());
                                     }
@@ -390,7 +403,7 @@ class HomeController extends AbstractController
                         }
 
                         /** On trie les compositions d'équipe dont des joueurs ont été déselctionnés suite à un brûlage */
-                        foreach ($invalidCompos as $invalidCompo){
+                        foreach ($invalidCompos as $invalidCompo) {
                             $invalidCompo['compo']->sortComposition();
                         }
                     }
@@ -406,11 +419,10 @@ class HomeController extends AbstractController
                         'idJournee' => $compo->getIdJournee()->getIdJournee()
                     ]);
                 } catch (Exception $e) {
-                    if ($e->getPrevious()->getCode() == "23000"){
+                    if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    }
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
             }
         }
@@ -418,7 +430,7 @@ class HomeController extends AbstractController
         // Disponibilités du joueur
         $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $type]);
         $disposJoueurFormatted = [];
-        foreach($disposJoueur as $dispo) {
+        foreach ($disposJoueur as $dispo) {
             $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
         }
 
@@ -445,7 +457,7 @@ class HomeController extends AbstractController
      * @param int $idJournee
      * @return Response
      */
-    public function emptyComposition(int $type, int $idJournee, int $idCompo) : Response
+    public function emptyComposition(int $type, int $idJournee, int $idCompo): Response
     {
         if (!($compo = $this->rencontreRepository->find($idCompo))) {
             $this->addFlash('fail', 'Rencontre inexistante');
@@ -482,7 +494,7 @@ class HomeController extends AbstractController
      */
     public function getInformations(Request $request, string $type, UtilController $utilController): Response
     {
-        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('informations', [ 'type' => $type ], $request->query->get('backoffice'));
+        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('informations', ['type' => $type], $request->query->get('backoffice'));
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
@@ -515,7 +527,7 @@ class HomeController extends AbstractController
         $setting = $this->settingsRepository->find($type);
         $form = null;
         $isAdmin = $this->getUser()->isAdmin();
-        if ($isAdmin){
+        if ($isAdmin) {
             $form = $this->createForm(SettingsType::class, $setting, [
                 'show_title_form' => true
             ]);
@@ -571,9 +583,9 @@ class HomeController extends AbstractController
             // Disponibilités du joueur
             $id = $championnat->getIdChampionnat();
             $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-                if ($this->getUser()->isCompetiteur()) {
+            if ($this->getUser()->isCompetiteur()) {
                 $disposJoueurFormatted = [];
-                foreach($disposJoueur as $dispo) {
+                foreach ($disposJoueur as $dispo) {
                     $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
                 }
             }
@@ -601,7 +613,8 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getPreviousComposAdversaire(Request $request): JsonResponse {
+    public function getPreviousComposAdversaire(Request $request): JsonResponse
+    {
         $journees = [];
         $erreur = null;
         $nomAdversaire = null;
@@ -616,13 +629,13 @@ class HomeController extends AbstractController
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
             /** On récupère l'ensemble des matches (antèrieurs à aujourd'hui) de la poule de l'adversaire */
-            $rencontresPoules = array_filter($api->getRencontrePouleByLienDivision($lienDivision), function($renc) use($nomAdversaire) {
+            $rencontresPoules = array_filter($api->getRencontrePouleByLienDivision($lienDivision), function ($renc) use ($nomAdversaire) {
                 return (mb_convert_case($renc->getNomEquipeA(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire || mb_convert_case($renc->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire) && $renc->getDatePrevue() < new DateTime();
             });
 
             /** On récupère toutes les équipes de la poule pour extraire le numéro du club adversaire */
             $equipesPoules = $api->getClassementPouleByLienDivision($lienDivision);
-            $numeroClubAdversaire = array_filter($equipesPoules, function($equ) use ($nomAdversaire) {
+            $numeroClubAdversaire = array_filter($equipesPoules, function ($equ) use ($nomAdversaire) {
                 return $equ->getNomEquipe() == $nomAdversaire;
             });
             $numeroClubAdversaire = count($numeroClubAdversaire) == 1 ? $numeroClubAdversaire[array_key_first($numeroClubAdversaire)]->getNumero() : null;
@@ -637,7 +650,7 @@ class HomeController extends AbstractController
 
                     /** On récupère le numéro du club adversaire ... de notre adversaire */
                     $nomAdversaireBis = $domicile ? mb_convert_case($rencontrePoule->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") : mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8");
-                    $numeroClubAdversaireBis = array_filter($equipesPoules, function($equ) use ($nomAdversaireBis) {
+                    $numeroClubAdversaireBis = array_filter($equipesPoules, function ($equ) use ($nomAdversaireBis) {
                         return $equ->getNomEquipe() == $nomAdversaireBis;
                     });
                     $numeroClubAdversaireBis = count($numeroClubAdversaireBis) == 1 ? $numeroClubAdversaireBis[array_key_first($numeroClubAdversaireBis)]->getNumero() : null;
@@ -657,8 +670,8 @@ class HomeController extends AbstractController
 
                     $isTeamForfeit = $detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) && $detailsRencontre->getScoreEquipeB() != 0 && count($detailsRencontre->getJoueursB()) ?
                         $detailsRencontre->getNomEquipeA() :
-                            (($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) && $detailsRencontre->getScoreEquipeA() != 0 && count($detailsRencontre->getJoueursA())) ?
-                                $detailsRencontre->getNomEquipeB() : null);
+                        (($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) && $detailsRencontre->getScoreEquipeA() != 0 && count($detailsRencontre->getJoueursA())) ?
+                            $detailsRencontre->getNomEquipeB() : null);
 
                     if (($detailsRencontre->getScoreEquipeA() > $detailsRencontre->getScoreEquipeB() && !$domicile) || ($domicile && $detailsRencontre->getScoreEquipeA() < $detailsRencontre->getScoreEquipeB()))
                         $resultat['resultat'] = 'red lighten-1';
@@ -669,9 +682,9 @@ class HomeController extends AbstractController
                     else $resultat['resultat'] = null;
 
                     /** On vérifie qu'il n'y aie pas d'erreur dans la feuille de match */
-                    $errorMatchSheet = count($detailsRencontre->getParties()) && count(array_filter($joueursAdversaire, function($joueur) {
+                    $errorMatchSheet = count($detailsRencontre->getParties()) && count(array_filter($joueursAdversaire, function ($joueur) {
                             return !$joueur->getLicence() || !$joueur->getPoints();
-                        })) == count($joueursAdversaire) && count(array_filter($joueursAdversaireBis, function($joueur) {
+                        })) == count($joueursAdversaire) && count(array_filter($joueursAdversaireBis, function ($joueur) {
                             return !$joueur->getLicence() || !$joueur->getPoints();
                         })) == count($joueursAdversaireBis);
 
@@ -684,7 +697,7 @@ class HomeController extends AbstractController
                         $parties = $detailsRencontre->getParties();
 
                         /** Mapping des doubles */
-                        $matchesDoubles = array_filter(array_map(function($partieDouble) use ($domicile, $joueursAdversaire, $detailsRencontre, $joueursAdversaireBis) {
+                        $matchesDoubles = array_filter(array_map(function ($partieDouble) use ($domicile, $joueursAdversaire, $detailsRencontre, $joueursAdversaireBis) {
                             $partieDoubleFormatted = [];
                             preg_match('/([a-zà-ÿA-ZÀ-Ý\s\-\']+) et ([a-zà-ÿA-ZÀ-Ý\s\-\']+)/', $domicile ? $partieDouble->getAdversaireA() : $partieDouble->getAdversaireB(), $joueursBinomeDouble);
                             preg_match('/([a-zà-ÿA-ZÀ-Ý\s\-\']+) et ([a-zà-ÿA-ZÀ-Ý\s\-\']+)/', $domicile ? $partieDouble->getAdversaireB() : $partieDouble->getAdversaireA(), $joueursBinomeDoubleBis);
@@ -722,16 +735,16 @@ class HomeController extends AbstractController
                         }, $parties));
 
                         foreach ($joueursAdversaire as $nomJoueurAdversaire => $joueurAdversaire) {
-                            if (count($joueursAdversaire)){
-                                $matches = array_filter($parties, function($partie) use ($nomJoueurAdversaire, $domicile) {
+                            if (count($joueursAdversaire)) {
+                                $matches = array_filter($parties, function ($partie) use ($nomJoueurAdversaire, $domicile) {
                                     return $domicile ? $partie->getAdversaireA() == $nomJoueurAdversaire : $partie->getAdversaireB() == $nomJoueurAdversaire;
                                 });
 
-                                $resultatMatches = array_map(function($match) use ($domicile, $joueursAdversaireBis) {
+                                $resultatMatches = array_map(function ($match) use ($domicile, $joueursAdversaireBis) {
                                     $isWinner = $domicile ? $match->getScoreA() > $match->getScoreB() : $match->getScoreB() > $match->getScoreA();
                                     $nomJoueurAdversaireBis = !$domicile ? $match->getAdversaireA() : $match->getAdversaireB();
 
-                                    $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
+                                    $joueurAdversaireBis = array_values(array_filter($joueursAdversaireBis, function ($joueurAdversaireBis) use ($nomJoueurAdversaireBis) {
                                         return $joueurAdversaireBis->getNom() . ' ' . $joueurAdversaireBis->getPrenom() == $nomJoueurAdversaireBis;
                                     }));
 
@@ -766,7 +779,7 @@ class HomeController extends AbstractController
                 }
                 $journees[] = $journee;
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $erreur = 'Liste des joueurs adversaires indisponible';
         }
 
@@ -782,7 +795,8 @@ class HomeController extends AbstractController
      * @Route("/journee/general-classement-virtuel", name="index.generalClassementsVirtuels", methods={"POST"})
      * @return JsonResponse
      */
-    public function getClassementVirtuelsClub(): JsonResponse {
+    public function getClassementVirtuelsClub(): JsonResponse
+    {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
         $classementPointsSaison = [];
@@ -795,12 +809,13 @@ class HomeController extends AbstractController
         try {
             $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $classementProgressionMensuel = array_map(function($joueur) use ($api) {
+            $classementProgressionMensuel = array_map(function ($joueur) use ($api) {
                 $virtualPoint = null;
                 if ($joueur->getLicence()) {
                     try {
                         $virtualPoint = $api->getJoueurVirtualPoints($joueur->getLicence());
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                    }
                 }
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
@@ -831,7 +846,7 @@ class HomeController extends AbstractController
             });
 
             /** Table de référence pour le calcul des gaps */
-            $referenceTable = array_map(function($joueur) {
+            $referenceTable = array_map(function ($joueur) {
                 $joueur['pointsVirtuelsVirtualPoints'] = $joueur['pointsVirtuelsVirtualPoints'] - $joueur['pointsVirtuelsPointsWonSaison'];
                 return $joueur;
             }, $classementProgressionSaison);
@@ -911,7 +926,7 @@ class HomeController extends AbstractController
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
             $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             $erreur = 'Classement virtuel général indisponible.';
         }
 
@@ -932,11 +947,12 @@ class HomeController extends AbstractController
      * @param array $classements
      * @return array
      */
-    public function getGaps(array $referenceTable, array $classements): array {
+    public function getGaps(array $referenceTable, array $classements): array
+    {
         $gaps = [];
 
-        foreach ($classements as $key => $joueur){
-            $gap = (array_keys(array_filter($referenceTable, function ($idCompetiteur) use($joueur) {
+        foreach ($classements as $key => $joueur) {
+            $gap = (array_keys(array_filter($referenceTable, function ($idCompetiteur) use ($joueur) {
                     return $idCompetiteur == $joueur['idCompetiteur'];
                 }))[0]) - $key;
 
@@ -957,8 +973,9 @@ class HomeController extends AbstractController
      * @param array $classementToGap
      * @return array
      */
-    public function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array {
-        return array_map(function($classement) use ($gaps) {
+    public function getClassementVirtuelClubGapped(array $gaps, array $classementToGap): array
+    {
+        return array_map(function ($classement) use ($gaps) {
             $classement['gap'] = $gaps[$classement['idCompetiteur']];
             return $classement;
         }, $classementToGap);
@@ -969,7 +986,8 @@ class HomeController extends AbstractController
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
      * @return JsonResponse
      */
-    public function getPersonnalClassementVirtuelsClub(): JsonResponse {
+    public function getPersonnalClassementVirtuelsClub(): JsonResponse
+    {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $erreur = null;
         $virtualPointsProgression = null;
@@ -984,10 +1002,10 @@ class HomeController extends AbstractController
                 $virtualPointsProgression = $virtualPoints->getSeasonlyPointsWon();
                 $virtualPoints = $virtualPoints->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
-                $points = array_map(function($histo) {
+                $points = array_map(function ($histo) {
                     return $histo->getPoints();
                 }, $historique);
-                $annees = array_map(function($histo) {
+                $annees = array_map(function ($histo) {
                     return $histo->getAnneeFin();
                 }, $historique);
             } catch (Exception $e) {
@@ -1010,7 +1028,8 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getClassementPoule(Request $request): JsonResponse {
+    public function getClassementPoule(Request $request): JsonResponse
+    {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementPoule = [];
         $erreur = null;
@@ -1035,7 +1054,7 @@ class HomeController extends AbstractController
                 ];
                 $points = $equipe->getPoints();
             }
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             $erreur = 'Classement de la poule indisponible';
         }
 

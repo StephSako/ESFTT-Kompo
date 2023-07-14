@@ -26,16 +26,6 @@ class CompetiteurRepository extends ServiceEntityRepository
         parent::__construct($registry, Competiteur::class);
     }
 
-    public function moveSansEquipesInEndList(array $mainArray): array {
-        /** Les 'sans équipes' vont en fin de liste */
-        if (array_key_exists(self::LABEL_SANS_EQUIPE, $mainArray)) {
-            $se = $mainArray[self::LABEL_SANS_EQUIPE];
-            unset($mainArray[self::LABEL_SANS_EQUIPE]);
-            $mainArray[self::LABEL_SANS_EQUIPE] = $se;
-        }
-        return $mainArray;
-    }
-
     /**
      * @param int $idJournee
      * @param int $idChampionnat
@@ -84,19 +74,30 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        $disposFormatted = array_map(function($dispo){
+        $disposFormatted = array_map(function ($dispo) {
             $dispo['joueur'] = $dispo['0'];
             unset($dispo['0']);
             return $dispo;
         }, $query);
 
         $disposParEquipe = [];
-        foreach($disposFormatted as $dispo) {
+        foreach ($disposFormatted as $dispo) {
             $labelEquipe = $dispo['numero'] ? 'Équipe n°' . $dispo['numero'] : self::LABEL_SANS_EQUIPE;
             $disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()] = $dispo;
             unset($disposParEquipe[$labelEquipe][$dispo['joueur']->getNom() . ' ' . $dispo['joueur']->getPrenom()]['numero']);
         }
         return $this->moveSansEquipesInEndList($disposParEquipe);
+    }
+
+    public function moveSansEquipesInEndList(array $mainArray): array
+    {
+        /** Les 'sans équipes' vont en fin de liste */
+        if (array_key_exists(self::LABEL_SANS_EQUIPE, $mainArray)) {
+            $se = $mainArray[self::LABEL_SANS_EQUIPE];
+            unset($mainArray[self::LABEL_SANS_EQUIPE]);
+            $mainArray[self::LABEL_SANS_EQUIPE] = $se;
+        }
+        return $mainArray;
     }
 
     /**
@@ -120,11 +121,11 @@ class CompetiteurRepository extends ServiceEntityRepository
             foreach ($journees as $i => $journee) {
                 $suffixe = $journee->getIdJournee() . $championnat->getIdChampionnat();
                 $strDispos .= 'IFNULL((SELECT dt' . $suffixe . '.disponibilite' .
-                              ' FROM App\Entity\Disponibilite dt' . $suffixe .
-                              ' WHERE dt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
-                              ' AND c.idCompetiteur = dt' . $suffixe . '.idCompetiteur' .
-                              ' AND dt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
-                if ($i < count($journees)-1) $strDispos .= ", ',' , ";
+                    ' FROM App\Entity\Disponibilite dt' . $suffixe .
+                    ' WHERE dt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
+                    ' AND c.idCompetiteur = dt' . $suffixe . '.idCompetiteur' .
+                    ' AND dt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
+                if ($i < count($journees) - 1) $strDispos .= ", ',' , ";
             }
             $result = $result
                 ->addSelect((count($journees) > 1 ? 'CONCAT(' . $strDispos . ')' : $strDispos) . ' AS ' . $championnat->getSlug())
@@ -139,7 +140,9 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $result = $result
             ->where('c.isCompetiteur = true')
-            ->orderBy(implode(', ', array_map(function ($c) { return 'numero' . $c->getSlug(); }, $championnats)))
+            ->orderBy(implode(', ', array_map(function ($c) {
+                return 'numero' . $c->getSlug();
+            }, $championnats)))
             ->addOrderBy('c.nom')
             ->addOrderBy('c.prenom')
             ->getQuery()
@@ -158,7 +161,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         foreach ($queryChamp as $nomChamp => $championnat) {
             $disposTemp = $championnat["dispos"];
             unset($queryChamp[$nomChamp]["dispos"]);
-            foreach($disposTemp as $dispo) {
+            foreach ($disposTemp as $dispo) {
                 $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe n°' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : self::LABEL_SANS_EQUIPE;
                 $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
                 usort($queryChamp[$nomChamp]["dispos"][$labelEquipe], function ($dispo1, $dispo2) {
@@ -210,14 +213,14 @@ class CompetiteurRepository extends ServiceEntityRepository
             }
             $brulages = $brulages
                 ->addSelect('(SELECT COUNT(p' . $numEquipe . '.id) ' .
-                                  'FROM App\Entity\Rencontre p' . $numEquipe . ', ' .
-                                  'App\Entity\Equipe e' . $numEquipe . ' ' .
-                                  'WHERE p' . $numEquipe . '.idChampionnat = :idChampionnat ' .
-                                  'AND e' . $numEquipe . '.idChampionnat = :idChampionnat ' .
-                                  'AND (' . $str . ') AND p' . $numEquipe . '.idJournee < :idJournee ' .
-                                  'AND e' . $numEquipe . '.idEquipe = p' . $numEquipe . '.idEquipe ' .
-                                  'AND e' . $numEquipe . '.numero = ' . $numEquipe . ' ' .
-                                  'AND e' . $numEquipe . '.idDivision IS NOT NULL) AS E' . $numEquipe)
+                    'FROM App\Entity\Rencontre p' . $numEquipe . ', ' .
+                    'App\Entity\Equipe e' . $numEquipe . ' ' .
+                    'WHERE p' . $numEquipe . '.idChampionnat = :idChampionnat ' .
+                    'AND e' . $numEquipe . '.idChampionnat = :idChampionnat ' .
+                    'AND (' . $str . ') AND p' . $numEquipe . '.idJournee < :idJournee ' .
+                    'AND e' . $numEquipe . '.idEquipe = p' . $numEquipe . '.idEquipe ' .
+                    'AND e' . $numEquipe . '.numero = ' . $numEquipe . ' ' .
+                    'AND e' . $numEquipe . '.idDivision IS NOT NULL) AS E' . $numEquipe)
                 ->setParameter('idJournee', $idJournee);
         }
         $brulages = $brulages
@@ -232,11 +235,11 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $allBrulage = [];
-        foreach ($brulages as $brulage){
+        foreach ($brulages as $brulage) {
             $brulageJoueur = [];
             $brulageInt = [];
             foreach ($numEquipes as $numEquipe) {
-                $brulageInt[$numEquipe] = intval($brulage['E'.$numEquipe]);
+                $brulageInt[$numEquipe] = intval($brulage['E' . $numEquipe]);
             }
             $brulageJoueur['brulage'] = $brulageInt;
             $brulageJoueur['numero'] = $brulage['numero'];
@@ -245,7 +248,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
 
         $brulagesParEquipe = [];
-        foreach($allBrulage as $nomJoueur => $brulage) {
+        foreach ($allBrulage as $nomJoueur => $brulage) {
             $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : self::LABEL_SANS_EQUIPE;
             $brulagesParEquipe[$labelEquipe][$nomJoueur] = [
                 'brulage' => $brulage['brulage'],
@@ -277,7 +280,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             for ($j = 0; $j < $nbJoueurs; $j++) {
                 if ($j2Condition) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
                 $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
-                if ($j < $nbJoueurs - 1){
+                if ($j < $nbJoueurs - 1) {
                     $strD .= ' OR ';
                     if ($j2Condition) $strJ2 .= ' OR ';
                 }
@@ -316,12 +319,12 @@ class CompetiteurRepository extends ServiceEntityRepository
             }
             $brulages = $brulages
                 ->addSelect('(SELECT COUNT(r' . $equipe . '.id)' .
-                                  ' FROM App\Entity\Rencontre r' . $equipe . ', App\Entity\Equipe e' . $equipe .
-                                  ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
-                                  ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
-                                  ' AND e' . $equipe . '.numero = ' . $equipe .
-                                  ' AND r' . $equipe . '.idChampionnat = :idChampionnat' .
-                                  ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
+                    ' FROM App\Entity\Rencontre r' . $equipe . ', App\Entity\Equipe e' . $equipe .
+                    ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
+                    ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
+                    ' AND e' . $equipe . '.numero = ' . $equipe .
+                    ' AND r' . $equipe . '.idChampionnat = :idChampionnat' .
+                    ' AND e' . $equipe . '.idDivision IS NOT NULL) AS E' . $equipe);
         }
         $brulages = $brulages
             ->leftJoin('c.dispos', 'd')
@@ -333,11 +336,11 @@ class CompetiteurRepository extends ServiceEntityRepository
         for ($j = 0; $j < $nbJoueurs; $j++) {
             $brulages = $brulages
                 ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $j . '.idJoueur' . $j . ' IS NOT NULL, p' . $j . '.idJoueur' . $j . ', 0)' .
-                                                  ' FROM App\Entity\Rencontre p' . $j . ', App\Entity\Equipe e' . $j .'e' .
-                                                  ' WHERE p' . $j . '.idJournee = d.idJournee' .
-                                                  ' AND p' . $j . '.idEquipe = e' . $j .'e.idEquipe'.
-                                                  ' AND e' . $j .'e.numero <> :numero'.
-                                                  ' AND p' . $j . '.idChampionnat = :idChampionnat)');
+                    ' FROM App\Entity\Rencontre p' . $j . ', App\Entity\Equipe e' . $j . 'e' .
+                    ' WHERE p' . $j . '.idJournee = d.idJournee' .
+                    ' AND p' . $j . '.idEquipe = e' . $j . 'e.idEquipe' .
+                    ' AND e' . $j . 'e.numero <> :numero' .
+                    ' AND p' . $j . '.idChampionnat = :idChampionnat)');
         }
 
         if ($limiteBrulage) {
@@ -362,7 +365,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $allBrulage = [];
-        foreach ($brulages as $brulage){
+        foreach ($brulages as $brulage) {
             /** On formate en associant le joueur à son brûlage par équipe */
             $brulageJoueur = [];
             $brulageInt = [];
@@ -383,7 +386,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
 
         $brulagesSelectionnablesParEquipe = [];
-        foreach($allBrulage as $nomJoueur => $brulage) {
+        foreach ($allBrulage as $nomJoueur => $brulage) {
             $labelEquipe = $brulage['numero'] ? 'Équipe n°' . $brulage['numero'] : self::LABEL_SANS_EQUIPE;
             $brulagesSelectionnablesParEquipe[$labelEquipe][$nomJoueur] = $brulage;
             unset($brulagesSelectionnablesParEquipe[$labelEquipe][$nomJoueur]['numero']);
@@ -425,14 +428,14 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ) as numero')
             ->where('c.isCompetiteur = true')
             ->andWhere('(SELECT COUNT(r.id) ' .
-                       ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
-                       ' WHERE e.idDivision IS NOT NULL' .
-                       ' AND e.numero < :numero' .
-                       ' AND e.idChampionnat = :idChampionnat' .
-                       ' AND r.idChampionnat = :idChampionnat' .
-                       ' AND r.idJournee < :idJournee' .
-	                   ' AND r.idEquipe = e.idEquipe' .
-                       ' AND (' . $str . ')) >= ' . $limiteBrulage)
+                ' FROM App\Entity\Rencontre r, App\Entity\Equipe e' .
+                ' WHERE e.idDivision IS NOT NULL' .
+                ' AND e.numero < :numero' .
+                ' AND e.idChampionnat = :idChampionnat' .
+                ' AND r.idChampionnat = :idChampionnat' .
+                ' AND r.idJournee < :idJournee' .
+                ' AND r.idEquipe = e.idEquipe' .
+                ' AND (' . $str . ')) >= ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
             ->setParameter('numero', $numero)
             ->setParameter('idChampionnat', $idChampionnat)
@@ -444,7 +447,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $joueursBrules = [];
-        foreach($query as $joueur) {
+        foreach ($query as $joueur) {
             $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : self::LABEL_SANS_EQUIPE;
             $joueursBrules[$labelEquipe][] = $joueur['nom'] . ' ' . $joueur['prenom'];
         }
@@ -471,11 +474,11 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('champ.idChampionnat')
             ->addSelect('j.undefined')
             ->addSelect('(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite d1 ' .
-                              'WHERE c.idCompetiteur = d1.idCompetiteur ' .
-                              'AND d1.idJournee = j.idJournee) AS idDisponibilite')
+                'WHERE c.idCompetiteur = d1.idCompetiteur ' .
+                'AND d1.idJournee = j.idJournee) AS idDisponibilite')
             ->addSelect('(SELECT d2.disponibilite FROM App\Entity\Disponibilite d2 ' .
-                              'WHERE c.idCompetiteur = d2.idCompetiteur ' .
-                              'AND d2.idJournee = j.idJournee) AS disponibilite')
+                'WHERE c.idCompetiteur = d2.idCompetiteur ' .
+                'AND d2.idJournee = j.idJournee) AS disponibilite')
             ->addSelect('j.dateJournee')
             ->addSelect('(SELECT MAX(pr.dateReport) FROM App\Entity\Rencontre pr ' .
                 'WHERE pr.idJournee = j.idJournee) as latestDate')
@@ -499,7 +502,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $nom = $item['nom'] . ' ' . $item['prenom'];
                 if (!array_key_exists('idChampionnat', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['idChampionnat'] = $item['idChampionnat'];
                 if (!array_key_exists('joueurs', $queryFinal[$championnat->getNom()])) $queryFinal[$championnat->getNom()]['joueurs'] = [];
-                if (!array_key_exists($nom, $queryFinal[$championnat->getNom()]['joueurs'])){
+                if (!array_key_exists($nom, $queryFinal[$championnat->getNom()]['joueurs'])) {
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom] = [];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['avatar'] = $item['avatar'];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['idCompetiteur'] = $item['idCompetiteur'];
@@ -539,7 +542,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function findAllPseudos(bool $justUsernames): array
     {
         $query = $this->createQueryBuilder('c')
-                ->select('c.username');
+            ->select('c.username');
         if (!$justUsernames) {
             $query = $query
                 ->addSelect('c.licence')
@@ -551,17 +554,17 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getResult();
 
         $result = [];
-        $result['usernames'] = array_map(function($pseudo) {
+        $result['usernames'] = array_map(function ($pseudo) {
             return $pseudo['username'];
         }, $query);
 
         if (!$justUsernames) {
-            $result['prenoms_noms'] = array_map(function($nomPrenom) {
+            $result['prenoms_noms'] = array_map(function ($nomPrenom) {
                 return $nomPrenom['prenom'] . $nomPrenom['nom'];
             }, $query);
-            $result['licences'] = array_filter(array_map(function($licence) {
+            $result['licences'] = array_filter(array_map(function ($licence) {
                 return $licence['licence'];
-            }, $query), function($licence) {
+            }, $query), function ($licence) {
                 return $licence;
             });
         }
@@ -621,10 +624,10 @@ class CompetiteurRepository extends ServiceEntityRepository
             if ($i < $nbMaxJoueurs - 1) $str .= ' OR ';
             $request = $request
                 ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
-                    ' FROM App\Entity\Rencontre p' . $i . ', App\Entity\Equipe e' . $i .'e' .
+                    ' FROM App\Entity\Rencontre p' . $i . ', App\Entity\Equipe e' . $i . 'e' .
                     ' WHERE p' . $i . '.idJournee = d.idJournee' .
-                    ' AND p' . $i . '.idEquipe = e' . $i .'e.idEquipe'.
-                    ' AND e' . $i .'e.numero <> :numero'.
+                    ' AND p' . $i . '.idEquipe = e' . $i . 'e.idEquipe' .
+                    ' AND e' . $i . 'e.numero <> :numero' .
                     ' AND p' . $i . '.idChampionnat = :idChampionnat)');
         }
 
@@ -650,7 +653,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
 
         $brulagesParEquipe = [];
-        foreach($request as $joueur) {
+        foreach ($request as $joueur) {
             $labelEquipe = $joueur['numero'] ? 'Équipe n°' . $joueur['numero'] : self::LABEL_SANS_EQUIPE;
             $brulagesParEquipe[$labelEquipe][] = $joueur[0];
         }
@@ -683,7 +686,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         });
 
         return array_filter($query, function ($joueur) {
-            return in_array((int) (new DateTime())->diff($joueur['dateNaissanceFormatted'])->format('%R%a'), range(0,30));
+            return in_array((int)(new DateTime())->diff($joueur['dateNaissanceFormatted'])->format('%R%a'), range(0, 30));
         });
     }
 }

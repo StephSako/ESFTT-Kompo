@@ -9,7 +9,8 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class MaintenanceListener {
+class MaintenanceListener
+{
 
     private $maintenanceFilePath;
     private $twig;
@@ -30,7 +31,8 @@ class MaintenanceListener {
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function onKernelRequest(RequestEvent $event) {
+    public function onKernelRequest(RequestEvent $event)
+    {
         if (!file_exists($this->maintenanceFilePath)) return;
         $event->setResponse(
             new Response($this->twig->render('maintenance.html.twig'), Response::HTTP_SERVICE_UNAVAILABLE)

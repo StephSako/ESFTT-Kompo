@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Exception;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -14,7 +15,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetiteurRepository")
@@ -43,17 +43,17 @@ class Competiteur implements UserInterface, Serializable
         ['libelle' => 'Vétéran 3', 'maxDate' => '/12/31', 'yearMinGap' => 69, 'yearMaxGap' => 60],
         ['libelle' => 'Vétéran 2', 'maxDate' => '/12/31', 'yearMinGap' => 59, 'yearMaxGap' => 50],
         ['libelle' => 'Vétéran 1', 'maxDate' => '/12/31', 'yearMinGap' => 49, 'yearMaxGap' => 40],
-        ['libelle' => 'Sénior',    'maxDate' => '/12/31', 'yearMinGap' => 39, 'yearMaxGap' => 18],
-        ['libelle' => 'Junior 3',  'maxDate' => '/12/31', 'yearMinGap' => 17, 'yearMaxGap' => 17],
-        ['libelle' => 'Junior 2',  'maxDate' => '/12/31', 'yearMinGap' => 16, 'yearMaxGap' => 16],
-        ['libelle' => 'Junior 1',  'maxDate' => '/12/31', 'yearMinGap' => 15, 'yearMaxGap' => 15],
-        ['libelle' => 'Cadet 2',   'maxDate' => '/12/31', 'yearMinGap' => 14, 'yearMaxGap' => 14],
-        ['libelle' => 'Cadet 1',   'maxDate' => '/12/31', 'yearMinGap' => 13, 'yearMaxGap' => 13],
-        ['libelle' => 'Minime 2',  'maxDate' => '/12/31', 'yearMinGap' => 12, 'yearMaxGap' => 12],
-        ['libelle' => 'Minime 1',  'maxDate' => '/12/31', 'yearMinGap' => 11, 'yearMaxGap' => 11],
-        ['libelle' => 'Benjamin 2','maxDate' => '/12/31', 'yearMinGap' => 10, 'yearMaxGap' => 10],
+        ['libelle' => 'Sénior', 'maxDate' => '/12/31', 'yearMinGap' => 39, 'yearMaxGap' => 18],
+        ['libelle' => 'Junior 3', 'maxDate' => '/12/31', 'yearMinGap' => 17, 'yearMaxGap' => 17],
+        ['libelle' => 'Junior 2', 'maxDate' => '/12/31', 'yearMinGap' => 16, 'yearMaxGap' => 16],
+        ['libelle' => 'Junior 1', 'maxDate' => '/12/31', 'yearMinGap' => 15, 'yearMaxGap' => 15],
+        ['libelle' => 'Cadet 2', 'maxDate' => '/12/31', 'yearMinGap' => 14, 'yearMaxGap' => 14],
+        ['libelle' => 'Cadet 1', 'maxDate' => '/12/31', 'yearMinGap' => 13, 'yearMaxGap' => 13],
+        ['libelle' => 'Minime 2', 'maxDate' => '/12/31', 'yearMinGap' => 12, 'yearMaxGap' => 12],
+        ['libelle' => 'Minime 1', 'maxDate' => '/12/31', 'yearMinGap' => 11, 'yearMaxGap' => 11],
+        ['libelle' => 'Benjamin 2', 'maxDate' => '/12/31', 'yearMinGap' => 10, 'yearMaxGap' => 10],
         ['libelle' => 'Benjamin 1', 'maxDate' => '/12/31', 'yearMinGap' => 9, 'yearMaxGap' => 9],
-        ['libelle' => 'Poussin',    'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
+        ['libelle' => 'Poussin', 'maxDate' => '', 'yearMinGap' => 8, 'yearMaxGap' => 0]
     ];
 
     /**
@@ -377,12 +377,12 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies", cascade={"persist"})
      * @ORM\JoinTable(name="prive_titularisation",
-                      joinColumns={
-                          @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
-                      },
-                      inverseJoinColumns={
-                          @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
-                      }
+    joinColumns={
+    @ORM\JoinColumn(name="id_competiteur", referencedColumnName="id_competiteur")
+    },
+    inverseJoinColumns={
+    @ORM\JoinColumn(name="id_equipe", referencedColumnName="id_equipe")
+    }
      * )
      */
     private $equipesAssociees;
@@ -813,68 +813,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int
-     */
-    public function getIdCompetiteur(): int
-    {
-        return $this->idCompetiteur;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLicence(): ?string
-    {
-        return $this->licence;
-    }
-
-    /**
-     * @param string|null $licence
-     * @return $this
-     */
-    public function setLicence(?string $licence): self
-    {
-        $this->licence = strlen(trim($licence)) > 0 ? trim($licence) : null;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAdmin(): bool
-    {
-        return $this->isAdmin;
-    }
-
-    /**
-     * @param bool $isAdmin
-     * @return Competiteur
-     */
-    public function setIsAdmin(bool $isAdmin): self
-    {
-        $this->isAdmin = $isAdmin;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    /**
-     * @param string|null $nom
-     * @return $this
-     */
-    public function setNom(?string $nom): self
-    {
-        $this->nom = mb_convert_case(trim($nom), MB_CASE_UPPER, "UTF-8");
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getPassword(): string
@@ -893,31 +831,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return string[]
-     */
-    public function getRoles(): array
-    {
-        $roles = [];
-        if (!$this->isArchive()){
-            if ($this->isEntraineur()) $roles[] = 'ROLE_ENTRAINEUR';
-            if ($this->isAdmin()) $roles[] = 'ROLE_ADMIN';
-            if ($this->isLoisir())  $roles[] = 'ROLE_LOISIR';
-            if ($this->isJeune())  $roles[] = 'ROLE_JEUNE';
-            if ($this->isCapitaine()) $roles[] = 'ROLE_CAPITAINE';
-            if ($this->isCompetiteur()) $roles[] = 'ROLE_COMPETITEUR';
-        } else $roles[] = 'ROLE_ARCHIVE';
-
-        return $roles;
-    }
-
-    public function getRolesFormatted() {
-        $formattedRoles = str_replace('Role_', '', implode(', ', array_map(function($role){
-            return mb_convert_case($role, MB_CASE_TITLE, "UTF-8");
-        }, $this->getRoles())));
-        return strrpos($formattedRoles, ',') ? substr_replace($formattedRoles, ' et', strrpos($formattedRoles, ','), 1) : $formattedRoles;
-    }
-
-    /**
      * @return null
      */
     public function getSalt()
@@ -925,26 +838,9 @@ class Competiteur implements UserInterface, Serializable
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string|null $username
-     * @return Competiteur
-     */
-    public function setUsername(?string $username): self
-    {
-        $this->username = (trim($username) ?: 'username');
-        return $this;
-    }
-
     public function eraseCredentials()
-    { }
+    {
+    }
 
     /**
      * @return string|null
@@ -971,30 +867,12 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @return int|null
-     */
-    public function getClassementOfficiel(): ?int
-    {
-        return $this->classement_officiel;
-    }
-
-    /**
-     * @param int|null $classement_officiel
-     * @return Competiteur
-     */
-    public function setClassementOfficiel(?int $classement_officiel): self
-    {
-        $this->classement_officiel = $classement_officiel;
-        return $this;
-    }
-
-    /**
      * @return int[]
      */
     public function getDispos(): array
     {
         $disposId = [];
-        foreach ($this->dispos as $dispo){
+        foreach ($this->dispos as $dispo) {
             $disposId[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
         }
         return $disposId;
@@ -1019,21 +897,218 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param bool $loisir
+     * @return string|null
+     */
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @param string|null $nom
+     * @return $this
+     */
+    public function setNom(?string $nom): self
+    {
+        $this->nom = mb_convert_case(trim($nom), MB_CASE_UPPER, "UTF-8");
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * @param string|null $prenom
      * @return Competiteur
      */
-    public function setIsLoisir(bool $loisir): self
+    public function setPrenom(?string $prenom): self
     {
-        $this->isLoisir = $loisir;
+        $this->prenom = mb_convert_case(trim($prenom), MB_CASE_TITLE, "UTF-8");
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return Competiteur
+     */
+    public function setImageFile(?File $imageFile): self
+    {
+        $this->imageFile = $imageFile;
+        if ($this->imageFile instanceof UploadedFile || $imageFile == null) {
+            $this->setUpdatedAt(new DateTime('now'));
+        }
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getUpdatedAt(): ?DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime|null $updatedAt
+     * @return Competiteur
+     */
+    public function setUpdatedAt(?DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * @return Competiteur
+     */
+    public function renouvelerAnneeCertificatMedical(): self
+    {
+        $this->anneeCertificatMedical = intval((new DateTime())->format('Y'));
+        return $this;
+    }
+
+    /**
+     * Retourne les informations serializées pour l'export en PDF
+     * @return array
+     * @throws Exception
+     */
+    public function serializeToPDF(): array
+    {
+        return [
+            $this->getLicence(),
+            $this->getNom(),
+            $this->getPrenom(),
+            $this->getDateNaissance() ? $this->getDateNaissance()->format('d/m/Y') : null,
+            $this->getClassementOfficiel(),
+            $this->getClassementOfficiel() ? intval($this->getClassementOfficiel() / 100) : null,
+            $this->isCritFed() ? 'Oui' : 'Non',
+            $this->getCategorieAgeLabel(),
+            $this->getAnneeCertificatMedical(),
+            $this->getMail(),
+            $this->getMail2(),
+            $this->getPhoneNumber(),
+            $this->getPhoneNumber2(),
+            $this->getRolesFormatted()
+        ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLicence(): ?string
+    {
+        return $this->licence;
+    }
+
+    /**
+     * @param string|null $licence
+     * @return $this
+     */
+    public function setLicence(?string $licence): self
+    {
+        $this->licence = strlen(trim($licence)) > 0 ? trim($licence) : null;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getDateNaissance(): ?DateTime
+    {
+        return $this->dateNaissance;
+    }
+
+    /**
+     * @param DateTime|null $dateNaissance
+     * @return Competiteur
+     */
+    public function setDateNaissance(?DateTime $dateNaissance): self
+    {
+        $this->dateNaissance = $dateNaissance;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getClassementOfficiel(): ?int
+    {
+        return $this->classement_officiel;
+    }
+
+    /**
+     * @param int|null $classement_officiel
+     * @return Competiteur
+     */
+    public function setClassementOfficiel(?int $classement_officiel): self
+    {
+        $this->classement_officiel = $classement_officiel;
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isLoisir(): bool
+    public function isCritFed(): bool
     {
-        return $this->isLoisir;
+        return $this->isCritFed;
+    }
+
+    /**
+     * @param bool $isCritFed
+     * @return Competiteur
+     */
+    public function setIsCritFed(bool $isCritFed): self
+    {
+        $this->isCritFed = $isCritFed;
+        return $this;
+    }
+
+    /**
+     * Renvoie la version longue de la catégorie d'âge
+     * @return string|null
+     * @throws Exception
+     */
+    public function getCategorieAgeLabel(): ?string
+    {
+        $gap = date('m') < 7 ? 1 : 0;
+        $categorie = array_values(array_filter(self::CATEGORIE_AGE_LABEL, function ($categorieRef) use ($gap) {
+            $minYear = date('Y') - $categorieRef['yearMinGap'] - $gap;
+            $maxYear = date('Y') - $categorieRef['yearMaxGap'] - $gap;
+            return new DateTime($minYear . '/01/01') <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
+        }));
+        return count($categorie) ? $categorie[0]['libelle'] : null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAnneeCertificatMedical(): ?int
+    {
+        return $this->anneeCertificatMedical;
+    }
+
+    /**
+     * @param int|null $annee
+     * @return Competiteur
+     */
+    public function setAnneeCertificatMedical(?int $annee): self
+    {
+        $this->anneeCertificatMedical = $annee;
+        return $this;
     }
 
     /**
@@ -1108,260 +1183,30 @@ class Competiteur implements UserInterface, Serializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isCapitaine(): bool
+    public function getRolesFormatted()
     {
-        return $this->isCapitaine;
-    }
-
-    /**
-     * @param bool $isCapitaine
-     * @return Competiteur
-     */
-    public function setIsCapitaine(bool $isCapitaine): self
-    {
-        $this->isCapitaine = $isCapitaine;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isContactableMail(): bool
-    {
-        return $this->contactableMail;
-    }
-
-    /**
-     * @param bool $contactableMail
-     * @return Competiteur
-     */
-    public function setContactableMail(bool $contactableMail): self
-    {
-        $this->contactableMail = $contactableMail;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isContactableMail2(): bool
-    {
-        return $this->contactableMail2;
-    }
-
-    /**
-     * @param bool $contactableMail2
-     * @return Competiteur
-     */
-    public function setContactableMail2(bool $contactableMail2): self
-    {
-        $this->contactableMail2 = $contactableMail2;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isContactablePhoneNumber(): bool
-    {
-        return $this->contactablePhoneNumber;
-    }
-
-    /**
-     * @param bool $contactablePhoneNumber
-     * @return Competiteur
-     */
-    public function setContactablePhoneNumber(bool $contactablePhoneNumber): self
-    {
-        $this->contactablePhoneNumber = $contactablePhoneNumber;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isContactablePhoneNumber2(): bool
-    {
-        return $this->contactablePhoneNumber2;
-    }
-
-    /**
-     * @param bool $contactablePhoneNumber2
-     * @return Competiteur
-     */
-    public function setContactablePhoneNumber2(bool $contactablePhoneNumber2): self
-    {
-        $this->contactablePhoneNumber2 = $contactablePhoneNumber2;
-        return $this;
-    }
-
-    /**
-     * @param File|null $imageFile
-     * @return Competiteur
-     */
-    public function setImageFile(?File $imageFile): self
-    {
-        $this->imageFile = $imageFile;
-        if ($this->imageFile instanceof UploadedFile || $imageFile == null) {
-            $this->setUpdatedAt(new DateTime('now'));
-        }
-        return $this;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getUpdatedAt(): ?DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param DateTime|null $updatedAt
-     * @return Competiteur
-     */
-    public function setUpdatedAt(?DateTime $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * @param string|null $avatar
-     * @return Competiteur
-     */
-    public function setAvatar(?string $avatar): self
-    {
-        $this->avatar = $avatar;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    /**
-     * @param string|null $prenom
-     * @return Competiteur
-     */
-    public function setPrenom(?string $prenom): self
-    {
-        $this->prenom = mb_convert_case(trim($prenom), MB_CASE_TITLE, "UTF-8");
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getAnneeCertificatMedical(): ?int
-    {
-        return $this->anneeCertificatMedical;
-    }
-
-    /**
-     * @return Competiteur
-     */
-    public function renouvelerAnneeCertificatMedical(): self
-    {
-        $this->anneeCertificatMedical = intval((new DateTime())->format('Y'));
-        return $this;
-    }
-
-    /**
-     * @param int|null $annee
-     * @return Competiteur
-     */
-    public function setAnneeCertificatMedical(?int $annee): self
-    {
-        $this->anneeCertificatMedical = $annee;
-        return $this;
-    }
-
-    public function getLabelCertificatRentree(): string {
-        return ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical()+3) . '/' . ($this->getAnneeCertificatMedical()+4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y'))+1));
+        $formattedRoles = str_replace('Role_', '', implode(', ', array_map(function ($role) {
+            return mb_convert_case($role, MB_CASE_TITLE, "UTF-8");
+        }, $this->getRoles())));
+        return strrpos($formattedRoles, ',') ? substr_replace($formattedRoles, ' et', strrpos($formattedRoles, ','), 1) : $formattedRoles;
     }
 
     /**
      * @return string[]
      */
-    public function isCertifMedicalInvalid(): array {
-        if (((new DateTime())->format('n') >= 6 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-3) && (($this->getAge() == null || $this->getAge() >= 18) &&
-            ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y')-2)))
-            return [
-                'status' => true,
-                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y'))+1) . '</b>',
-                'shortMessage' => $this->getLabelCertificatRentree()
-            ];
-        return [
-            'status' => false,
-            'message' => null,
-            'shortMessage' => $this->getLabelCertificatRentree()
-        ];
-    }
-
-    /**
-     * Retourne les informations serializées pour l'export en PDF
-     * @return array
-     * @throws Exception
-     */
-    public function serializeToPDF(): array {
-        return [
-            $this->getLicence(),
-            $this->getNom(),
-            $this->getPrenom(),
-            $this->getDateNaissance() ? $this->getDateNaissance()->format('d/m/Y') : null,
-            $this->getClassementOfficiel(),
-            $this->getClassementOfficiel() ? intval($this->getClassementOfficiel()/100) : null,
-            $this->isCritFed() ? 'Oui' : 'Non',
-            $this->getCategorieAgeLabel(),
-            $this->getAnneeCertificatMedical(),
-            $this->getMail(),
-            $this->getMail2(),
-            $this->getPhoneNumber(),
-            $this->getPhoneNumber2(),
-            $this->getRolesFormatted()
-        ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEntraineur(): bool
+    public function getRoles(): array
     {
-        return $this->isEntraineur;
-    }
+        $roles = [];
+        if (!$this->isArchive()) {
+            if ($this->isEntraineur()) $roles[] = 'ROLE_ENTRAINEUR';
+            if ($this->isAdmin()) $roles[] = 'ROLE_ADMIN';
+            if ($this->isLoisir()) $roles[] = 'ROLE_LOISIR';
+            if ($this->isJeune()) $roles[] = 'ROLE_JEUNE';
+            if ($this->isCapitaine()) $roles[] = 'ROLE_CAPITAINE';
+            if ($this->isCompetiteur()) $roles[] = 'ROLE_COMPETITEUR';
+        } else $roles[] = 'ROLE_ARCHIVE';
 
-    /**
-     * @param bool $isEntraineur
-     * @return Competiteur
-     */
-    public function setIsEntraineur(bool $isEntraineur): self
-    {
-        $this->isEntraineur = $isEntraineur;
-        return $this;
+        return $roles;
     }
 
     /**
@@ -1385,84 +1230,54 @@ class Competiteur implements UserInterface, Serializable
     /**
      * @return bool
      */
-    public function isCritFed(): bool
+    public function isEntraineur(): bool
     {
-        return $this->isCritFed;
+        return $this->isEntraineur;
     }
 
     /**
-     * @param bool $isCritFed
+     * @param bool $isEntraineur
      * @return Competiteur
      */
-    public function setIsCritFed(bool $isCritFed): self
+    public function setIsEntraineur(bool $isEntraineur): self
     {
-        $this->isCritFed = $isCritFed;
+        $this->isEntraineur = $isEntraineur;
         return $this;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getDateNaissance(): ?DateTime
-    {
-        return $this->dateNaissance;
-    }
-
-    /**
-     * @param DateTime|null $dateNaissance
-     * @return Competiteur
-     */
-    public function setDateNaissance(?DateTime $dateNaissance): self
-    {
-        $this->dateNaissance = $dateNaissance;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getAge(): ?int
-    {
-        if ($this->getDateNaissance()) {
-            $now = new DateTime();
-            $interval = $now->diff($this->getDateNaissance());
-            return $interval->y;
-        } else return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFirstContactableMail(): ?string {
-        if ($this->getMail() && $this->isContactableMail()) return $this->getMail();
-        if ($this->getMail2() && $this->isContactableMail2()) return $this->getMail2();
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFirstContactablePhoneNumber(): ?string {
-        if ($this->getPhoneNumber() && $this->isContactablePhoneNumber()) return $this->getPhoneNumber();
-        if ($this->getPhoneNumber2() && $this->isContactablePhoneNumber2()) return $this->getPhoneNumber2();
-        return null;
     }
 
     /**
      * @return bool
      */
-    public function isCompetiteur(): bool
+    public function isAdmin(): bool
     {
-        return $this->isCompetiteur;
+        return $this->isAdmin;
     }
 
     /**
-     * @param bool $isCompetiteur
+     * @param bool $isAdmin
      * @return Competiteur
      */
-    public function setIsCompetiteur(bool $isCompetiteur): self
+    public function setIsAdmin(bool $isAdmin): self
     {
-        $this->isCompetiteur = $isCompetiteur;
+        $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoisir(): bool
+    {
+        return $this->isLoisir;
+    }
+
+    /**
+     * @param bool $loisir
+     * @return Competiteur
+     */
+    public function setIsLoisir(bool $loisir): self
+    {
+        $this->isLoisir = $loisir;
         return $this;
     }
 
@@ -1485,18 +1300,39 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * Renvoie la version longue de la catégorie d'âge
-     * @return string|null
-     * @throws Exception
+     * @return bool
      */
-    public function getCategorieAgeLabel(): ?string {
-        $gap = date('m') < 7 ? 1 : 0;
-        $categorie = array_values(array_filter(self::CATEGORIE_AGE_LABEL, function($categorieRef) use($gap) {
-            $minYear = date('Y') - $categorieRef['yearMinGap'] - $gap;
-            $maxYear = date('Y') - $categorieRef['yearMaxGap'] - $gap;
-            return new DateTime($minYear . '/01/01') <= $this->getDateNaissance() && new DateTime($maxYear . $categorieRef['maxDate']) >= $this->getDateNaissance();
-        }));
-        return count($categorie) ? $categorie[0]['libelle'] : null;
+    public function isCapitaine(): bool
+    {
+        return $this->isCapitaine;
+    }
+
+    /**
+     * @param bool $isCapitaine
+     * @return Competiteur
+     */
+    public function setIsCapitaine(bool $isCapitaine): self
+    {
+        $this->isCapitaine = $isCapitaine;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompetiteur(): bool
+    {
+        return $this->isCompetiteur;
+    }
+
+    /**
+     * @param bool $isCompetiteur
+     * @return Competiteur
+     */
+    public function setIsCompetiteur(bool $isCompetiteur): self
+    {
+        $this->isCompetiteur = $isCompetiteur;
+        return $this;
     }
 
     /**
@@ -1504,14 +1340,23 @@ class Competiteur implements UserInterface, Serializable
      * @param Rencontre[] $compos
      * @return int|null
      */
-    public function isSelectedIn(array $compos): ?int {
-        $selectionArray = array_values(array_filter(array_map(function($compo) {
+    public function isSelectedIn(array $compos): ?int
+    {
+        $selectionArray = array_values(array_filter(array_map(function ($compo) {
             return in_array($this->getIdCompetiteur(), $compo->getSelectedPlayers()) ? $compo : null;
-        }, $compos), function($compoFiltree){
+        }, $compos), function ($compoFiltree) {
             return $compoFiltree != null;
         }));
 
         return count($selectionArray) ? $selectionArray[0]->getIdEquipe()->getNumero() : null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdCompetiteur(): int
+    {
+        return $this->idCompetiteur;
     }
 
     /**
@@ -1529,7 +1374,7 @@ class Competiteur implements UserInterface, Serializable
                 !$this->isCertifMedicalInvalid()['status'], $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
                 $this->getLicence(), $this->getAvatar()
             ] as $index => $field) {
-            if (!$field){
+            if (!$field) {
                 switch ($index) {
                     case 0:
                         $champsManquants[] = 'Nom';
@@ -1570,6 +1415,170 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string|null $username
+     * @return Competiteur
+     */
+    public function setUsername(?string $username): self
+    {
+        $this->username = (trim($username) ?: 'username');
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function isCertifMedicalInvalid(): array
+    {
+        if (((new DateTime())->format('n') >= 6 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 3) && (($this->getAge() == null || $this->getAge() >= 18) &&
+                ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 2)))
+            return [
+                'status' => true,
+                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y')) + 1) . '</b>',
+                'shortMessage' => $this->getLabelCertificatRentree()
+            ];
+        return [
+            'status' => false,
+            'message' => null,
+            'shortMessage' => $this->getLabelCertificatRentree()
+        ];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAge(): ?int
+    {
+        if ($this->getDateNaissance()) {
+            $now = new DateTime();
+            $interval = $now->diff($this->getDateNaissance());
+            return $interval->y;
+        } else return null;
+    }
+
+    public function getLabelCertificatRentree(): string
+    {
+        return ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical() + 3) . '/' . ($this->getAnneeCertificatMedical() + 4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y')) + 1));
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFirstContactableMail(): ?string
+    {
+        if ($this->getMail() && $this->isContactableMail()) return $this->getMail();
+        if ($this->getMail2() && $this->isContactableMail2()) return $this->getMail2();
+        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactableMail(): bool
+    {
+        return $this->contactableMail;
+    }
+
+    /**
+     * @param bool $contactableMail
+     * @return Competiteur
+     */
+    public function setContactableMail(bool $contactableMail): self
+    {
+        $this->contactableMail = $contactableMail;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactableMail2(): bool
+    {
+        return $this->contactableMail2;
+    }
+
+    /**
+     * @param bool $contactableMail2
+     * @return Competiteur
+     */
+    public function setContactableMail2(bool $contactableMail2): self
+    {
+        $this->contactableMail2 = $contactableMail2;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFirstContactablePhoneNumber(): ?string
+    {
+        if ($this->getPhoneNumber() && $this->isContactablePhoneNumber()) return $this->getPhoneNumber();
+        if ($this->getPhoneNumber2() && $this->isContactablePhoneNumber2()) return $this->getPhoneNumber2();
+        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactablePhoneNumber(): bool
+    {
+        return $this->contactablePhoneNumber;
+    }
+
+    /**
+     * @param bool $contactablePhoneNumber
+     * @return Competiteur
+     */
+    public function setContactablePhoneNumber(bool $contactablePhoneNumber): self
+    {
+        $this->contactablePhoneNumber = $contactablePhoneNumber;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContactablePhoneNumber2(): bool
+    {
+        return $this->contactablePhoneNumber2;
+    }
+
+    /**
+     * @param bool $contactablePhoneNumber2
+     * @return Competiteur
+     */
+    public function setContactablePhoneNumber2(bool $contactablePhoneNumber2): self
+    {
+        $this->contactablePhoneNumber2 = $contactablePhoneNumber2;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string|null $avatar
+     * @return Competiteur
+     */
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isPasswordResetting(): bool
@@ -1596,23 +1605,6 @@ class Competiteur implements UserInterface, Serializable
     }
 
     /**
-     * @param Championnat[] $championnats
-     * @return int[]
-     */
-    public function getTableEquipesAssociees(array $championnats): array
-    {
-        $equipesAssociees = [];
-        foreach ($championnats as $champ) {
-            $titusChampJoueur = array_filter($champ->getTitularisations()->toArray(), function($titu){
-                return $titu->getIdCompetiteur()->getIdCompetiteur() == $this->getIdCompetiteur();
-            });
-            $equipeTitu = array_shift($titusChampJoueur);
-            $equipesAssociees[$champ->getNom()] = $equipeTitu ? $equipeTitu->getIdEquipe()->getNumero() : null;
-        }
-        return $equipesAssociees;
-    }
-
-    /**
      * @param Collection $equipesAssociees
      * @return Competiteur
      */
@@ -1620,6 +1612,23 @@ class Competiteur implements UserInterface, Serializable
     {
         $this->equipesAssociees = $equipesAssociees;
         return $this;
+    }
+
+    /**
+     * @param Championnat[] $championnats
+     * @return int[]
+     */
+    public function getTableEquipesAssociees(array $championnats): array
+    {
+        $equipesAssociees = [];
+        foreach ($championnats as $champ) {
+            $titusChampJoueur = array_filter($champ->getTitularisations()->toArray(), function ($titu) {
+                return $titu->getIdCompetiteur()->getIdCompetiteur() == $this->getIdCompetiteur();
+            });
+            $equipeTitu = array_shift($titusChampJoueur);
+            $equipesAssociees[$champ->getNom()] = $equipeTitu ? $equipeTitu->getIdEquipe()->getNumero() : null;
+        }
+        return $equipesAssociees;
     }
 
     /**

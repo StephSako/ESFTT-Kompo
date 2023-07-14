@@ -9,7 +9,7 @@
 {% endif %}
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         const annees = JSON.parse('{{ annees | json_encode | raw }}');
         annees.push(1);
         const points = JSON.parse('{{ points | json_encode | raw }}');
@@ -35,15 +35,15 @@
                         display: false
                     }
                 },
-                scales:{
+                scales: {
                     x: {
                         display: false
                     },
                     y: {
                         display: false,
-                            beginAtZero: false,
-                            max: Math.max.apply(Math, points) + 30,
-                            min: Math.min.apply(Math, points) - 30
+                        beginAtZero: false,
+                        max: Math.max.apply(Math, points) + 30,
+                        min: Math.min.apply(Math, points) - 30
                     }
                 }
             },

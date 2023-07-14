@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DivisionRepository")
@@ -24,12 +24,17 @@ use Doctrine\ORM\Mapping\Index;
 class Division
 {
     /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idDivision")
+     */
+    protected $equipes;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", name="id_division", nullable=false)
      */
     private $idDivision;
-
     /**
      * @var Championnat
      *
@@ -37,7 +42,6 @@ class Division
      * @ORM\JoinColumn(name="id_championnat", referencedColumnName="id_championnat", nullable=false)
      */
     private $idChampionnat;
-
     /**
      * @var string
      *
@@ -55,7 +59,6 @@ class Division
      * @ORM\Column(type="string", name="short_name", nullable=false, length=2)
      */
     private $shortName;
-
     /**
      * @var string
      *
@@ -73,7 +76,6 @@ class Division
      * @ORM\Column(type="string", name="long_name", nullable=false, length=25)
      */
     private $longName;
-
     /**
      * @var int
      *
@@ -94,14 +96,6 @@ class Division
      * @ORM\Column(type="integer", name="nb_joueurs", nullable=false)
      */
     private $nbJoueurs;
-
-    /**
-     * @var Collection
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Equipe", mappedBy="idDivision")
-     */
-    protected $equipes;
-
     /**
      * @var string|null
      *

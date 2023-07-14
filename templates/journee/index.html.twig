@@ -73,9 +73,9 @@
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
                 {% if journeeStillEditable(journee.latestDate) %}
                     <div class="card-panel center setDispoCard"
-                        {% if userClassementLicenceIndefinies and (userCertifMedicalInvalid or hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff) %}
-                            style="margin-bottom: 10px;"
-                        {% endif %}
+                            {% if userClassementLicenceIndefinies and (userCertifMedicalInvalid or hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff) %}
+                                style="margin-bottom: 10px;"
+                            {% endif %}
                     >
                         {% if not userClassementLicenceIndefinies %}
                             {% if disponible != -1 %}
@@ -141,11 +141,11 @@
 
             {% if hasJoueursCertifMedicPerim %}
                 <div class="card-panel center setDispoCard"
-                    {% if userCertifMedicalInvalid or hasJoueursWithoutLicenceClassoff or userClassementLicenceIndefinies %}
-                        style="
-                            {% if userCertifMedicalInvalid or userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}
+                        {% if userCertifMedicalInvalid or hasJoueursWithoutLicenceClassoff or userClassementLicenceIndefinies %}
+                    style="
+                    {% if userCertifMedicalInvalid or userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}
                             {% if hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
-                    {% endif %}>
+                        {% endif %}>
                     <p class="red-text lighten-2"><i class="material-icons">health_and_safety</i>
                         Il y a <b>{{ countJoueursCertifMedicPerim }} compétiteur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now' | date('Y') }}/{{ 'now' | date('Y')+1 }}</b>
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
@@ -206,9 +206,11 @@
                                                     <div class="spinner-layer spinner-blue-only">
                                                         <div class="circle-clipper left">
                                                             <div class="circle"></div>
-                                                        </div><div class="gap-patch">
+                                                        </div>
+                                                        <div class="gap-patch">
                                                             <div class="circle"></div>
-                                                        </div><div class="circle-clipper right">
+                                                        </div>
+                                                        <div class="circle-clipper right">
                                                             <div class="circle"></div>
                                                         </div>
                                                     </div>
@@ -233,22 +235,22 @@
                                 </span>
                             {% endif %}
 
-                            <div class="col s4{% if not compo.exempt%} m2{% endif %}" style="padding-right: 0">
+                            <div class="col s4{% if not compo.exempt %} m2{% endif %}" style="padding-right: 0">
                                 <h5>
                                     <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <div class="poule">
                                     {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                        <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                    {% endif %}
+                                    <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                        {% endif %}
                                         Poule
                                         {% if compo.idEquipe.idPoule %}
                                             {{ compo.idEquipe.idPoule.poule }}
                                         {% else %}
                                             <span class="red-text">?</span>
                                         {% endif %}
-                                    {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                        </a>
+                                        {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                    </a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -269,13 +271,13 @@
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
-                                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                                    {% if compo.domicile%}
-                                                        home
-                                                    {% else%}
-                                                        directions_car
-                                                    {% endif %}
-                                                </i>
+                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif %}">
+                                                {% if compo.domicile %}
+                                                    home
+                                                {% else %}
+                                                    directions_car
+                                                {% endif %}
+                                            </i>
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -287,10 +289,10 @@
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
-                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                                {% if compo.domicile%}
+                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif %}">
+                                                {% if compo.domicile %}
                                                     home
-                                                {% else%}
+                                                {% else %}
                                                     directions_car
                                                 {% endif %}
                                             </i>
@@ -299,7 +301,7 @@
                                 </div>
                             {% endif %}
 
-                            <div class="col{% if not compo.exempt %} m5{% else %} s4{% endif%} hide-on-small-only">
+                            <div class="col{% if not compo.exempt %} m5{% else %} s4{% endif %} hide-on-small-only">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
@@ -326,7 +328,7 @@
                         </div>
 
                         <div class="hide-on-med-and-up adversaireLine center">
-                            <div class="{% if not compo.exempt %}m5{% endif%}">
+                            <div class="{% if not compo.exempt %}m5{% endif %}">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 5px" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
@@ -357,11 +359,11 @@
                                 <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                             {% endif %}
 
-                            <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
+                            <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif %}responsive-table composition-equipe">
                                 <tbody>
-                                    {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                        {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
-                                    {% endfor %}
+                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
+                                {% endfor %}
                                 </tbody>
                             </table>
 
@@ -396,14 +398,13 @@
                                             </a>
                                             {{ _modalContact.modalAlertPlayers
                                                 (
-                                                    compo.id,
-                                                    getListContactSelectedPlayers,
-                                                    'Alerter les joueurs',
-                                                    'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                                    'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
-                                                    false
-                                                )
-                                            }}
+                                                compo.id,
+                                                getListContactSelectedPlayers,
+                                                'Alerter les joueurs',
+                                                'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
+                                                false
+                                            ) }}
                                         {% endif %}
                                         <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: idJournee, idCompo: compo.id}) }}">
                                             <i class="material-icons">delete</i>
@@ -421,8 +422,7 @@
                                 compo.hrefWazeAdresse,
                                 compo.site,
                                 compo.telephone
-                                )
-                            }}
+                            ) }}
 
                             <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
                                 <div class="modal-content">
@@ -432,9 +432,11 @@
                                                 <div class="spinner-layer spinner-blue-only">
                                                     <div class="circle-clipper left">
                                                         <div class="circle"></div>
-                                                    </div><div class="gap-patch">
+                                                    </div>
+                                                    <div class="gap-patch">
                                                         <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
+                                                    </div>
+                                                    <div class="circle-clipper right">
                                                         <div class="circle"></div>
                                                     </div>
                                                 </div>
@@ -457,9 +459,11 @@
                                         <div class="spinner-layer spinner-blue-only">
                                             <div class="circle-clipper left">
                                                 <div class="circle"></div>
-                                            </div><div class="gap-patch">
+                                            </div>
+                                            <div class="gap-patch">
                                                 <div class="circle"></div>
-                                            </div><div class="circle-clipper right">
+                                            </div>
+                                            <div class="circle-clipper right">
                                                 <div class="circle"></div>
                                             </div>
                                         </div>
@@ -548,9 +552,11 @@
                             <div class="spinner-layer spinner-blue-only">
                                 <div class="circle-clipper left">
                                     <div class="circle"></div>
-                                </div><div class="gap-patch">
+                                </div>
+                                <div class="gap-patch">
                                     <div class="circle"></div>
-                                </div><div class="circle-clipper right">
+                                </div>
+                                <div class="circle-clipper right">
                                     <div class="circle"></div>
                                 </div>
                             </div>

@@ -47,10 +47,10 @@
             </a>
 
             <script type="text/javascript">
-                $(document).ready(function() {
+                $(document).ready(function () {
                     let btnSendMail = $('a#btn_{{ media }}_{{ id }}');
                     if (btnSendMail.length && !btnSendMail.attr('href').includes('mailto:') && !btnSendMail.attr('href').includes('sms:')) {
-                        btnSendMail.click(function() {
+                        btnSendMail.click(function () {
                             btnSendMail.addClass('disabled').html("<i class='material-icons rotating-icon'>sync</i>")
                         });
                     }
@@ -61,8 +61,8 @@
         {% if (response['contactables'] | length) == 0 %}
             <p style="margin-bottom: 10px; padding-top: 0; padding-bottom: 0; margin-top: 10px;"><span class="pastille red reset">Aucun membre contactable par {{ media }}</span></p>
         {% elseif response['notContactables'] | length %}
-            <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ (response['contactables'] | length) > 1 ? 's' : ''}} contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}}</p>
-            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 0;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : ''}} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : ''}}</p>
+            <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ (response['contactables'] | length) > 1 ? 's' : '' }} contactable{{ (response['notContactables'] | length) > 1 ? 's' : '' }}</p>
+            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 0;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : '' }} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : '' }}</p>
         {% endif %}
 
         {% if (response['contactables'] | length) != 0 and (response['notContactables'] | length) == 0 and not showListContactables %}
@@ -210,27 +210,27 @@
 
     <table class="striped centered responsive-table backoffice-table table-to-adapt-columns" id="search-table-custom">
         <tbody>
-            {% for joueur in response %}
-                <tr>
-                    <td>
-                        <label>
-                            <input onchange="addRemoveCustomContact(this.checked, '{{ joueur.joueur.idCompetiteur }}', '{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}', '{{ joueur.joueur.avatar }}')" value="{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}" id="{{ joueur.joueur.idCompetiteur }}" type="checkbox" class="filled-in" />
-                            <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
-                        </label>
-                    </td>
-                    <td style="padding-top: 8px; padding-bottom: 8px;">
-                        {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
-                    </td>
-                    <td class="td_picture_compet">
-                        <img class="picture_compet avatar" src="{{ (joueur.joueur.avatar ? vich_uploader_asset(joueur.joueur, 'imageFile') : asset('images/account.png')) | imagine_filter('thumb') }}" alt="Avatar" width="55px" height="55px">
-                    </td>
-                    <td>
-                        {{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}
-                    </td>
-                    <td><i class="material-icons {% if joueur.mail is null %}red-text{% else %}green-text text-darken-2{% endif %}">mail</i></td>
-                    <td><i class="material-icons {% if joueur.sms is null %}red-text{% else %}green-text text-darken-2{% endif %}">phone_iphone</i></td>
-                </tr>
-            {% endfor %}
+        {% for joueur in response %}
+            <tr>
+                <td>
+                    <label>
+                        <input onchange="addRemoveCustomContact(this.checked, '{{ joueur.joueur.idCompetiteur }}', '{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}', '{{ joueur.joueur.avatar }}')" value="{{ joueur.joueur.nom ~ ' ' ~ joueur.joueur.prenom }}" id="{{ joueur.joueur.idCompetiteur }}" type="checkbox" class="filled-in"/>
+                        <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
+                    </label>
+                </td>
+                <td style="padding-top: 8px; padding-bottom: 8px;">
+                    {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations: null, dejaInscrit: null}) }}
+                </td>
+                <td class="td_picture_compet">
+                    <img class="picture_compet avatar" src="{{ (joueur.joueur.avatar ? vich_uploader_asset(joueur.joueur, 'imageFile') : asset('images/account.png')) | imagine_filter('thumb') }}" alt="Avatar" width="55px" height="55px">
+                </td>
+                <td>
+                    {{ joueur.joueur.nom }} {{ joueur.joueur.prenom }}
+                </td>
+                <td><i class="material-icons {% if joueur.mail is null %}red-text{% else %}green-text text-darken-2{% endif %}">mail</i></td>
+                <td><i class="material-icons {% if joueur.sms is null %}red-text{% else %}green-text text-darken-2{% endif %}">phone_iphone</i></td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endmacro %}

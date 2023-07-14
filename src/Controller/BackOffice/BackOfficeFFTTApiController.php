@@ -31,13 +31,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeFFTTApiController extends AbstractController
 {
 
-    private $competiteurRepository;
-    private $championnatRepository;
-    private $em;
-    private $divisionRepository;
-    private $pouleRepository;
-    private $settingsRepository;
-
     /** Position des données dans les chaînes de caractères reçues de l'API */
     const REGEX_JOURNEE_NUMBER = '/^Poule [0-9]+ - tour n°([0-9]+) du \d{2}\/\d{2}\/\d{4}$/';
     const REGEX_ORGANISME_PERE = '/^cx_poule=[0-9]*&D1=[0-9]+&organisme_pere=([0-9]+)$/';
@@ -55,6 +48,12 @@ class BackOfficeFFTTApiController extends AbstractController
             "longName" => "Division 2"
         ]
     ];
+    private $competiteurRepository;
+    private $championnatRepository;
+    private $em;
+    private $divisionRepository;
+    private $pouleRepository;
+    private $settingsRepository;
 
     /**
      * @param CompetiteurRepository $competiteurRepository
@@ -64,12 +63,12 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      */
-    public function __construct(CompetiteurRepository $competiteurRepository,
-                                ChampionnatRepository $championnatRepository,
-                                DivisionRepository $divisionRepository,
-                                PouleRepository $pouleRepository,
+    public function __construct(CompetiteurRepository  $competiteurRepository,
+                                ChampionnatRepository  $championnatRepository,
+                                DivisionRepository     $divisionRepository,
+                                PouleRepository        $pouleRepository,
                                 EntityManagerInterface $em,
-                                SettingsRepository $settingsRepository)
+                                SettingsRepository     $settingsRepository)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
@@ -88,8 +87,10 @@ class BackOfficeFFTTApiController extends AbstractController
      */
     public function index(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
-        $allChampionnatsReset = []; /** Tableau où sera stockée toute la data à update par championnat */
-        $joueursIssued['competition'] = []; /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
+        $allChampionnatsReset = [];
+        /** Tableau où sera stockée toute la data à update par championnat */
+        $joueursIssued['competition'] = [];
+        /** Tableau où seront stockés tous les joueurs compétiteurs devant être mis à jour */
         $errorMajJoueurs = false;
         $errorMajRencontresEquipes = false;
 
@@ -98,23 +99,27 @@ class BackOfficeFFTTApiController extends AbstractController
         try {
             /** Gestion des joueurs */
             $joueursKompo = $this->competiteurRepository->findBy(['isArchive' => 0], ['nom' => 'ASC', 'prenom' => 'ASC']);
-            $joueursIssued['nbJoueursCritFed'] = count(array_filter($joueursKompo, function($joueur){
+            $joueursIssued['nbJoueursCritFed'] = count(array_filter($joueursKompo, function ($joueur) {
                 return $joueur->isCritFed();
             }));
             $joueursFFTT = $api->getJoueursByClub($this->getParameter('club_id'));
 
-            foreach ($joueursKompo as $competiteur){
+            foreach ($joueursKompo as $competiteur) {
                 $joueurFFTT = array_filter($joueursFFTT,
-                    function($joueurFFTT) use ($competiteur) {
+                    function ($joueurFFTT) use ($competiteur) {
                         return $competiteur->getLicence() == $joueurFFTT->getLicence();
                     });
 
-                if (count($joueurFFTT)){ /** Si la licence correspond bien */
+                if (count($joueurFFTT)) {
+                    /** Si la licence correspond bien */
                     $joueur = array_values($joueurFFTT)[0];
-                    $isCritFed = $competiteur->isCritFed(); /** Si le joueur est inscrit au critérium fédéral */
-                    $sameName = (new Slugify())->slugify($competiteur->getNom().$competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom().$joueur->getPrenom()); /** Si les noms/prénoms ne concordent pas */
-                    $sameClassement = $joueur->getPoints() == $competiteur->getClassementOfficiel(); /** Si les classements ne concordent pas */
-                    if ((!$sameClassement || !$sameName || $isCritFed) && intval($joueur->getPoints()) > 0){
+                    $isCritFed = $competiteur->isCritFed();
+                    /** Si le joueur est inscrit au critérium fédéral */
+                    $sameName = (new Slugify())->slugify($competiteur->getNom() . $competiteur->getPrenom()) == (new Slugify())->slugify($joueur->getNom() . $joueur->getPrenom());
+                    /** Si les noms/prénoms ne concordent pas */
+                    $sameClassement = $joueur->getPoints() == $competiteur->getClassementOfficiel();
+                    /** Si les classements ne concordent pas */
+                    if ((!$sameClassement || !$sameName || $isCritFed) && intval($joueur->getPoints()) > 0) {
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['joueur'] = $competiteur;
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['pointsFFTT'] = intval($joueur->getPoints());
                         $joueursIssued['competition'][$competiteur->getIdCompetiteur()]['nomFFTT'] = $joueur->getNom();
@@ -125,7 +130,9 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
                 }
             }
-            $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function($joueur) { return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement']; }));
+            $joueursIssued['nbJoueursCritFedOnly'] = count(array_filter($joueursIssued['competition'], function ($joueur) {
+                return $joueur['isCritFed'] && $joueur['sameName'] && $joueur['sameClassement'];
+            }));
 
         } catch (Exception $e) {
             $this->addFlash('fail', 'Mise à jour des membres impossible : API de la FFTT indisponible pour le moment');
@@ -135,7 +142,7 @@ class BackOfficeFFTTApiController extends AbstractController
         try {
             $allChampionnats = $this->championnatRepository->getChampionnatsUpdatableByFFTTApi();
 
-            foreach($allChampionnats as $championnatActif){
+            foreach ($allChampionnats as $championnatActif) {
                 $allChampionnatsReset[$championnatActif->getNom()] = [];
                 $journeesKompo = $championnatActif->getJournees()->toArray();
 
@@ -155,20 +162,24 @@ class BackOfficeFFTTApiController extends AbstractController
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
                 $allChampionnatsReset[$championnatActif->getNom()]["recorded"] = count($equipesFFTT) > 0;
 
-                if ($allChampionnatsReset[$championnatActif->getNom()]["recorded"]){
+                if ($allChampionnatsReset[$championnatActif->getNom()]["recorded"]) {
                     $allChampionnatsReset[$championnatActif->getNom()]["idChampionnat"] = $championnatActif->getIdChampionnat();
 
                     $equipesIssued = [];
 
-                    $equipesIDsFFTT = array_map(function($equipeFFTT) { return $this->getEquipeNumero($equipeFFTT->getLibelle()); }, $equipesFFTT);
-                    $equipesIDsKompo = array_map(function ($equipe) { return $equipe->getNumero(); }, $equipesKompo);
+                    $equipesIDsFFTT = array_map(function ($equipeFFTT) {
+                        return $this->getEquipeNumero($equipeFFTT->getLibelle());
+                    }, $equipesFFTT);
+                    $equipesIDsKompo = array_map(function ($equipe) {
+                        return $equipe->getNumero();
+                    }, $equipesKompo);
 
                     $equipesToCreateIDs = array_diff($equipesIDsFFTT, $equipesIDsKompo);
                     $equipesToCreate = array_filter($equipesFFTT, function ($indexEquipeFFTT) use ($equipesToCreateIDs) {
                         return in_array($this->getEquipeNumero($indexEquipeFFTT->getLibelle()), $equipesToCreateIDs);
                     });
 
-                    $equipesToCreate = array_combine(array_map(function($equipeToEditIndex) {
+                    $equipesToCreate = array_combine(array_map(function ($equipeToEditIndex) {
                         return preg_replace('/\D/', '', $this->getEquipeNumero($equipeToEditIndex->getLibelle()));
                     }, $equipesToCreate), array_values($equipesToCreate));
 
@@ -193,7 +204,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $equipeIssued = [];
 
                         /** L'équipe est recensée des 2 côtés */
-                        if (!in_array($numeroEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))){
+                        if (!in_array($numeroEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))) {
                             $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($numeroEquipeFFTT) {
                                 return $equipe->getNumero() == $numeroEquipeFFTT;
                             }))[0];
@@ -201,7 +212,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             $sameDivision = $equipeKompo->getIdDivision() && $equipeKompo->getIdDivision()->getShortName() == $divisionEquipeFFTT["shortName"];
                             $samePoule = ($equipeKompo->getIdPoule() && $equipeKompo->getIdPoule()->getPoule() == mb_strtoupper($pouleEquipeFFTT)) || ($equipeKompo->getIdPoule() == null && mb_strtoupper($pouleEquipeFFTT) == "");
                             $sameLienDivision = $equipeKompo->getLienDivision() && $equipeKompo->getLienDivision() == $equipe->getLienDivision();
-                            if (!$sameDivision || !$samePoule || !$sameLienDivision){
+                            if (!$sameDivision || !$samePoule || !$sameLienDivision) {
                                 $equipeIssued['equipe'] = $equipeKompo;
                                 $equipeIssued['divisionFFTTLongName'] = $divisionEquipeFFTT["longName"];
                                 $equipeIssued['divisionFFTTShortName'] = $divisionEquipeFFTT["shortName"];
@@ -212,7 +223,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                 $equipeIssued['sameLienDivision'] = $sameLienDivision;
                                 $equipesIssued[] = $equipeIssued;
                             }
-                        } else if (in_array($numeroEquipeFFTT, $equipesToCreateIDs)){
+                        } else if (in_array($numeroEquipeFFTT, $equipesToCreateIDs)) {
                             unset($equipesToCreate[$numeroEquipeFFTT]);
                             $equipesToCreate[$numeroEquipeFFTT]["poule"] = $pouleEquipeFFTT;
                             $equipesToCreate[$numeroEquipeFFTT]["lienDivision"] = $equipe->getLienDivision();
@@ -226,7 +237,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreate"] = $equipesToCreate;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreateIDs"] = $equipesToCreateIDs;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["kompo"] = $equipesKompo;
-                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toUpdate"] = array_map(function($equipe) {
+                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toUpdate"] = array_map(function ($equipe) {
                         return $equipe["equipe"]->getNumero();
                     }, $equipesIssued);
 
@@ -237,7 +248,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     $rencontresEquipeKompo = null;
                     $adressesClubs = [];
 
-                    foreach ($equipesFFTT as $index => $equipe){
+                    foreach ($equipesFFTT as $index => $equipe) {
                         $nbEquipe = $index + 1;
 
                         if (in_array($nbEquipe, array_merge($equipesIDsCommon, $equipesToCreateIDs))) {
@@ -302,8 +313,8 @@ class BackOfficeFFTTApiController extends AbstractController
                                         if (($isExempt != $rencontresEquipeKompo[$i]->isExempt()) ||
                                             (!$isExempt &&
                                                 ($rencontresEquipeKompo[$i]->getAdversaire() != $rencontreTemp['adversaireFFTT'] ||
-                                                $domicile != $rencontresEquipeKompo[$i]->getDomicile() ||
-                                                $noCoordonneesRencontreKompo))) {
+                                                    $domicile != $rencontresEquipeKompo[$i]->getDomicile() ||
+                                                    $noCoordonneesRencontreKompo))) {
 
                                             /** Si aucune information de contact n'est renseignée dans la rencontre Kompo, on les renseigne */
                                             if ($idClubAdversaire && !$adressesClubs[$idClubAdversaire]) {
@@ -457,21 +468,22 @@ class BackOfficeFFTTApiController extends AbstractController
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
                     /** Mode pré-phase où toutes les données des matches sont réinitialisées */
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $utilController->isPreRentreeLaunchable($championnatActif); /** On vérifie que la phase est terminée pour être reset **/
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["finished"] = $utilController->isPreRentreeLaunchable($championnatActif);
+                    /** On vérifie que la phase est terminée pour être reset **/
                     $preRentreeRencontres = $championnatActif->getRencontres()->toArray();
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function($compoPreRentree) {
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["compositions"] = array_filter($preRentreeRencontres, function ($compoPreRentree) {
                         return !$compoPreRentree->getIsEmpty();
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["rencontres"] = array_filter($preRentreeRencontres, function($rencontrePreRentree) {
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["rencontres"] = array_filter($preRentreeRencontres, function ($rencontrePreRentree) {
                         return $rencontrePreRentree->getAdversaire() != null ||
-                               $rencontrePreRentree->isExempt() ||
-                               $rencontrePreRentree->getDomicile() != null ||
-                               $rencontrePreRentree->getVilleHost() != null;
+                            $rencontrePreRentree->isExempt() ||
+                            $rencontrePreRentree->getDomicile() != null ||
+                            $rencontrePreRentree->getVilleHost() != null;
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["journees"] = array_filter($championnatActif->getJournees()->toArray(), function($journeePreRentree) {
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["journees"] = array_filter($championnatActif->getJournees()->toArray(), function ($journeePreRentree) {
                         return !$journeePreRentree->getUndefined();
                     });
-                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["teams"] = array_filter($championnatActif->getEquipes()->toArray(), function($equipePreRentree) {
+                    $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["teams"] = array_filter($championnatActif->getEquipes()->toArray(), function ($equipePreRentree) {
                         return $equipePreRentree->getIdDivision() || $equipePreRentree->getIdPoule();
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["countDispos"] = count($championnatActif->getDispos()->toArray());
@@ -490,17 +502,17 @@ class BackOfficeFFTTApiController extends AbstractController
                             $joueurIssued['joueur']
                                 ->setNom($joueurIssued['nomFFTT'])
                                 ->setPrenom($joueurIssued['prenomFFTT']);
-                            /** On désinscris tous les joueurs du critérium fédéral si la case est cochée */
-                            $joueurIssued['joueur']->setIsCritFed($request->request->get('unsubCritFedplayers') == 'on' ? false : $joueurIssued['joueur']->isCritFed());
-                            $joueurIssued['joueur']->setClassementOfficiel($joueurIssued['pointsFFTT']);
+                        /** On désinscris tous les joueurs du critérium fédéral si la case est cochée */
+                        $joueurIssued['joueur']->setIsCritFed($request->request->get('unsubCritFedplayers') == 'on' ? false : $joueurIssued['joueur']->isCritFed());
+                        $joueurIssued['joueur']->setClassementOfficiel($joueurIssued['pointsFFTT']);
                     }
                     $this->em->flush();
 
                     /** On retrie les compositions d'équipes */
-                    foreach (array_filter($allChampionnats, function($champ) {
+                    foreach (array_filter($allChampionnats, function ($champ) {
                         return $champ->isCompoSorted();
-                    }) as $championnatToSort){
-                        foreach ($championnatToSort->getRencontres()->toArray() as $rencontre){
+                    }) as $championnatToSort) {
+                        foreach ($championnatToSort->getRencontres()->toArray() as $rencontre) {
                             $rencontre->sortComposition();
                         }
                     }
@@ -512,8 +524,8 @@ class BackOfficeFFTTApiController extends AbstractController
 
                 $this->addFlash('success', 'Joueurs mis à jour');
                 return $this->redirectToRoute('backoffice.reset.phase');
-            }
-            else if ($request->request->get('idChampionnat')) { /** Mise à jour d'un championnat (pré-phase ou phase) */
+            } else if ($request->request->get('idChampionnat')) {
+                /** Mise à jour d'un championnat (pré-phase ou phase) */
                 $idChampionnat = intval($request->request->get('idChampionnat'));
                 $championnatSearch = array_filter($allChampionnats, function ($champ) use ($idChampionnat) {
                     return $champ->getIdChampionnat() == $idChampionnat;
@@ -539,8 +551,9 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         /** On vide les compositions d'équipe */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["preRentree"]["compositions"] as $compositionKompo) {
-                            $nbJoueursDiv = $compositionKompo->getIdEquipe()->getIdDivision() ? $compositionKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : $this->getParameter('nb_joueurs_default_division'); /** Nombre de joueurs par défaut dans une division */
-                            for ($i = 0; $i < $nbJoueursDiv; $i++){
+                            $nbJoueursDiv = $compositionKompo->getIdEquipe()->getIdDivision() ? $compositionKompo->getIdEquipe()->getIdDivision()->getNbJoueurs() : $this->getParameter('nb_joueurs_default_division');
+                            /** Nombre de joueurs par défaut dans une division */
+                            for ($i = 0; $i < $nbJoueursDiv; $i++) {
                                 $compositionKompo->setIdJoueurN($i, null);
                             }
                         }
@@ -574,8 +587,8 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
 
-                        $joueursToContact = array_filter($this->competiteurRepository->findJoueursByRole('Competiteur', null), function($j) use ($championnat) {
-                            return in_array($championnat->getIdChampionnat(), array_map(function($t) {
+                        $joueursToContact = array_filter($this->competiteurRepository->findJoueursByRole('Competiteur', null), function ($j) use ($championnat) {
+                            return in_array($championnat->getIdChampionnat(), array_map(function ($t) {
                                 return $t->getIdChampionnat()->getIdChampionnat();
                             }, $j->getTitularisations()->toArray()));
                         });
@@ -603,8 +616,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         } catch (Exception $e) {
                             $this->addFlash('fail', "L'alerte n'a pas pu être envoyée");
                         }
-                    }
-                    /** Mode lancement de la phase */
+                    } /** Mode lancement de la phase */
                     else if ($request->request->get('resetChampionnats')) {
                         /** On fix les dates des journées */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["dates"]["issued"] as $dateIssuedToFix) {
@@ -617,7 +629,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->refresh($championnat);
 
                         /** On fix le nombre de journées du championnat */
-                        if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()){
+                        if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()) {
                             $championnat
                                 ->setLastUpdate(null)
                                 ->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
@@ -693,7 +705,7 @@ class BackOfficeFFTTApiController extends AbstractController
                             } else {
                                 /** ... sinon on créé les rencontres inexistantes */
                                 $nbEquipe = $rencontresParEquipe['nbEquipe'];
-                                $equipeToSet = array_values(array_filter($championnat->getEquipes()->toArray(), function($eq) use ($nbEquipe) {
+                                $equipeToSet = array_values(array_filter($championnat->getEquipes()->toArray(), function ($eq) use ($nbEquipe) {
                                     return $eq->getNumero() == $nbEquipe;
                                 }))[0];
                                 $journeeToSet = ($championnat->getJournees()->toArray())[$rencontresParEquipe['journee'] - 1];
@@ -731,50 +743,47 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
+     * @param $regex
+     * @param string $value
+     * @param int|null $index Par défaut le premier match
+     * @return string
+     */
+    public function getValueFromRegex($regex, string $value, ?int $index = 1): string
+    {
+        preg_match($regex, $value, $matches);
+        return $matches[$index];
+    }
+
+    /**
      * Détermine la phase d'une date passée en paramètre
      * @return string
      */
-    public function getDatePhase(): string {
+    public function getDatePhase(): string
+    {
         $monthDate = (new DateTime())->format('n');
         if ($monthDate >= 1 && $monthDate <= 6) return "2";
         return "1";
     }
 
     /**
-     * @param string $divisionLongName
-     * @param string $divisionShortName
-     * @param string|null $pouleName
-     * @param Championnat $championnat
-     * @return array
+     * Retourne le numéro d'une équipe de l'API FFTT en passant son libellé en paramètre
+     * @param string $equipeLibelle
+     * @return int
      */
-    public function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
+    public function getEquipeNumero(string $equipeLibelle): int
     {
-        /** Si la division n'existe pas, on la créé **/
-        $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $divisionShortName, 'idChampionnat' => $championnat->getIdChampionnat()]);
-        $division = null;
-        if (count($divisionsSearch) == 0){
-            $division = new Division();
-            $division->setLongName($divisionLongName);
-            $division->setShortName($divisionShortName);
-            $division->setIdChampionnat($championnat);
-            $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division'));
-            $this->em->persist($division);
-        }
-        else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];
+        return intval(preg_replace('/\D/', '', $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $equipeLibelle)));
+    }
 
-        /** Si la poule n'existe pas, on la créé **/
-        $poule = null;
-        if ($pouleName) {
-            $poulesSearch = $this->pouleRepository->findBy(['poule' => $pouleName]);
-            if (count($poulesSearch) == 0){
-                $poule = new Poule();
-                $poule->setPoule($pouleName);
-                $this->em->persist($poule);
-            }
-            else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
-        }
-
-        return [$division, $poule];
+    public function labelDivisionFormatter(array $libelleBrutFFTT): array
+    {
+        $libelleLong = $libelleBrutFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX];
+        /** Si le libellé doit être traduit */
+        if (array_key_exists($libelleLong, self::CONVERTIONS)) return self::CONVERTIONS[$libelleLong];
+        return [
+            "longName" => mb_convert_case($libelleLong, MB_CASE_TITLE, "UTF-8"),
+            "shortName" => $libelleBrutFFTT[self::DIVISION_PARTIE_UN][0] . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX][0]
+        ];
     }
 
     /**
@@ -789,8 +798,8 @@ class BackOfficeFFTTApiController extends AbstractController
     public function maxDatesNextPhase(Datetime $date, int $nbJournees): array
     {
         if (new Datetime($date->format('Y') . '-' . '07-01') < $date && $date < new Datetime($date->format('Y') . '-' . '12-31')) {
-            $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '06-30'),'+1 day +1 year');
-        } else $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '12-31'),'+1 day');
+            $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '06-30'), '+1 day +1 year');
+        } else $lastDay = date_modify(new Datetime($date->format('Y') . '-' . '12-31'), '+1 day');
 
         $firstDay = clone $lastDay;
         $firstDay->sub(new DateInterval('P' . $nbJournees . 'D'));
@@ -801,33 +810,37 @@ class BackOfficeFFTTApiController extends AbstractController
     }
 
     /**
-     * Retourne le numéro d'une équipe de l'API FFTT en passant son libellé en paramètre
-     * @param string $equipeLibelle
-     * @return int
+     * @param string $divisionLongName
+     * @param string $divisionShortName
+     * @param string|null $pouleName
+     * @param Championnat $championnat
+     * @return array
      */
-    public function getEquipeNumero(string $equipeLibelle): int {
-        return intval(preg_replace('/\D/', '', $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $equipeLibelle)));
-    }
-
-    /**
-     * @param $regex
-     * @param string $value
-     * @param int|null $index Par défaut le premier match
-     * @return string
-     */
-    public function getValueFromRegex($regex, string $value, ?int $index = 1): string
+    public function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
     {
-        preg_match($regex, $value, $matches);
-        return $matches[$index];
-    }
+        /** Si la division n'existe pas, on la créé **/
+        $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $divisionShortName, 'idChampionnat' => $championnat->getIdChampionnat()]);
+        $division = null;
+        if (count($divisionsSearch) == 0) {
+            $division = new Division();
+            $division->setLongName($divisionLongName);
+            $division->setShortName($divisionShortName);
+            $division->setIdChampionnat($championnat);
+            $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division'));
+            $this->em->persist($division);
+        } else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];
 
-    public function labelDivisionFormatter(array $libelleBrutFFTT): array {
-        $libelleLong = $libelleBrutFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX];
-        /** Si le libellé doit être traduit */
-        if (array_key_exists($libelleLong, self::CONVERTIONS)) return self::CONVERTIONS[$libelleLong];
-        return [
-            "longName" => mb_convert_case($libelleLong, MB_CASE_TITLE, "UTF-8"),
-            "shortName" => $libelleBrutFFTT[self::DIVISION_PARTIE_UN][0] . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX][0]
-        ];
+        /** Si la poule n'existe pas, on la créé **/
+        $poule = null;
+        if ($pouleName) {
+            $poulesSearch = $this->pouleRepository->findBy(['poule' => $pouleName]);
+            if (count($poulesSearch) == 0) {
+                $poule = new Poule();
+                $poule->setPoule($pouleName);
+                $this->em->persist($poule);
+            } else if (count($poulesSearch) == 1) $poule = $poulesSearch[0];
+        }
+
+        return [$division, $poule];
     }
 }

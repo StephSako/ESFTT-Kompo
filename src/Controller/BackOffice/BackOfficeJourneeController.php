@@ -16,21 +16,17 @@ class BackOfficeJourneeController extends AbstractController
 {
     private $em;
     private $journeeRepository;
-    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param JourneeRepository $journeeRepository
-     * @param UtilController $utilController
      * @param EntityManagerInterface $em
      */
-    public function __construct(JourneeRepository $journeeRepository,
-                                UtilController $utilController,
+    public function __construct(JourneeRepository      $journeeRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->journeeRepository = $journeeRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -50,10 +46,10 @@ class BackOfficeJourneeController extends AbstractController
      * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit", requirements={"idJournee"="\d+"})
      * @param int $idJournee
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
      */
-    public function edit(int $idJournee, Request $request): Response
+    public function edit(int $idJournee, Request $request, UtilController $utilController): Response
     {
         if (!($journee = $this->journeeRepository->find($idJournee))) {
             $this->addFlash('fail', 'Journée inexistante');
@@ -63,18 +59,18 @@ class BackOfficeJourneeController extends AbstractController
         $form = $this->createForm(JourneeType::class, $journee);
         $form->handleRequest($request);
         $journees = $journee->getIdChampionnat()->getJournees()->toArray();
-        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+        $posJournee = array_keys(array_filter($journees, function ($journeeChamp) use ($journee) {
             return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-        }))[0]+=1;
+        }))[0] += 1;
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
-                    $journee->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
+                    $journee->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
                     $this->em->flush();
 
                     /** On reset les dates de report des Rencontres non décalées à la même date de la Journée */
-                    $rencontresToResetDatereport = array_filter($journee->getRencontres()->toArray(), function($r) {
+                    $rencontresToResetDatereport = array_filter($journee->getRencontres()->toArray(), function ($r) {
                         return !$r->isReporte();
                     });
                     if ($rencontresToResetDatereport) {

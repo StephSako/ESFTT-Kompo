@@ -29,10 +29,12 @@ class RencontreRepository extends ServiceEntityRepository
     public function getSelectedPlayers(array $compos): array
     {
         $selectedPlayers = [];
-        foreach ($compos as $compo){
+        foreach ($compos as $compo) {
             if ($compo->getIdEquipe()->getIdDivision()) $selectedPlayers = array_merge($selectedPlayers, $compo->getListSelectedPlayers());
         }
-        return array_map(function($joueur){ return $joueur->getIdCompetiteur(); }, $selectedPlayers);
+        return array_map(function ($joueur) {
+            return $joueur->getIdCompetiteur();
+        }, $selectedPlayers);
     }
 
     /**
@@ -41,7 +43,8 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $type
      * @return int|mixed|string
      */
-    public function getRencontres(int $idJournee, int $type){
+    public function getRencontres(int $idJournee, int $type)
+    {
         return $this->createQueryBuilder('r')
             ->leftJoin('r.idEquipe', 'e')
             ->where('e.idDivision IS NOT NULL')
@@ -63,15 +66,16 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $limiteBrulage, int $nbJoueurs, int $type) {
+    public function getSelectedWhenBurnt(int $idCompetiteur, int $idJournee, int $limiteBrulage, int $nbJoueurs, int $type)
+    {
         if (!$limiteBrulage) return [];
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
         $strP = $strRP = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
-            $strP .= 'p.idJoueur' .$i . ' = c.idCompetiteur';
-            $strRP .= 'r.idJoueur' .$i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs - 1){
+            $strP .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
+            $strRP .= 'r.idJoueur' . $i . ' = c.idCompetiteur';
+            if ($i < $nbJoueurs - 1) {
                 $strP .= ' OR ';
                 $strRP .= ' OR ';
             }
@@ -85,15 +89,14 @@ class RencontreRepository extends ServiceEntityRepository
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
             ->andWhere($strRP)
-
             /** Nombre de matches joués dans les équipes supèrieures depuis le début à aujourd'hui */
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe e1 ' .
-                       'WHERE (' . $strP . ') ' .
-                       'AND p.idEquipe = e1.idEquipe ' .
-                       'AND p.idJournee <= :idJournee ' .
-                       'AND p.idChampionnat = :idChampionnat ' .
-                       'AND e1.idDivision IS NOT NULL ' .
-                       'AND e1.numero < e.numero) >= :limite')
+                'WHERE (' . $strP . ') ' .
+                'AND p.idEquipe = e1.idEquipe ' .
+                'AND p.idJournee <= :idJournee ' .
+                'AND p.idChampionnat = :idChampionnat ' .
+                'AND e1.idDivision IS NOT NULL ' .
+                'AND e1.numero < e.numero) >= :limite')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->setParameter('limite', $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
@@ -110,12 +113,13 @@ class RencontreRepository extends ServiceEntityRepository
      * @param int $type
      * @return int|mixed|string
      */
-    public function getSelectedWhenIndispo(int $idCompetiteur, int $idJournee, int $nbJoueurs, int $type){
+    public function getSelectedWhenIndispo(int $idCompetiteur, int $idJournee, int $nbJoueurs, int $type)
+    {
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
         $str = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
-            $str .= 'r.idJoueur' .$i . ' = c.idCompetiteur';
+            $str .= 'r.idJoueur' . $i . ' = c.idCompetiteur';
             if ($i < $nbJoueurs - 1) $str .= ' OR ';
             $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, ' . $idCompetiteur . ', 0) as isPlayer' . $i);
         }
@@ -142,7 +146,7 @@ class RencontreRepository extends ServiceEntityRepository
     public function reset(int $nbJoueurs)
     {
         $query = $this->createQueryBuilder('r')->update('App\Entity\Rencontre', 'r');
-        for ($i = 0; $i < $nbJoueurs; $i++){
+        for ($i = 0; $i < $nbJoueurs; $i++) {
             $query = $query->set('r.idJoueur' . $i, null);
         }
 
@@ -183,7 +187,8 @@ class RencontreRepository extends ServiceEntityRepository
      * @param bool $inFutureCompos Récupérer les sélections de futures journées
      * @return array|string|null
      */
-    public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs, bool $inFutureCompos): array {
+    public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs, bool $inFutureCompos): array
+    {
         $str = '';
         for ($i = 0; $i < $nbMaxJoueurs; $i++) {
             $str .= 'r.idJoueur' . $i . ' = :idJoueur';
@@ -195,11 +200,11 @@ class RencontreRepository extends ServiceEntityRepository
             ->leftJoin('r.idJournee', 'j')
             ->leftJoin('r.idChampionnat', 'ch')
             ->where($str);
-            if ($inFutureCompos) $query = $query->andWhere("j.dateJournee >= DATE('" . (new DateTime())->format('Y-m-d') . "')");
+        if ($inFutureCompos) $query = $query->andWhere("j.dateJournee >= DATE('" . (new DateTime())->format('Y-m-d') . "')");
 
         return $query->setParameter('idJoueur', $idJoueur)
-        ->getQuery()
-        ->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -217,7 +222,9 @@ class RencontreRepository extends ServiceEntityRepository
             ->getResult();
 
         return [
-            'ids' => array_map(function (Rencontre $r) { return $r->getIdJournee()->getIdJournee(); }, $rencontres),
+            'ids' => array_map(function (Rencontre $r) {
+                return $r->getIdJournee()->getIdJournee();
+            }, $rencontres),
             'rencontres' => $rencontres
         ];
     }

@@ -138,7 +138,8 @@ class ChampionnatRepository extends ServiceEntityRepository
      * @param array $groupesOrganismes
      * @return array
      */
-    public function getOrganismesFormatted(array $groupesOrganismes): array {
+    public function getOrganismesFormatted(array $groupesOrganismes): array
+    {
         $organismes = [];
         foreach ($groupesOrganismes as $nomGroupeOrganismes => $groupeOrganismes) {
             usort($groupeOrganismes, function ($orga1, $orga2) {
@@ -158,7 +159,8 @@ class ChampionnatRepository extends ServiceEntityRepository
      * @param int $idChampionnat
      * @return void
      */
-    public function resetLastUpdateForChampEntities(int $idChampionnat) {
+    public function resetLastUpdateForChampEntities(int $idChampionnat)
+    {
         $tablesToResetLastUpdate = ['Championnat', 'Division', 'Journee', 'Rencontre', 'Equipe'];
 
         foreach ($tablesToResetLastUpdate as $table) {

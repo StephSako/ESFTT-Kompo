@@ -35,11 +35,11 @@ class ContactController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
      */
-    public function __construct(CompetiteurRepository $competiteurRepository,
-                                ChampionnatRepository $championnatRepository,
-                                RencontreRepository $rencontreRepository,
+    public function __construct(CompetiteurRepository   $competiteurRepository,
+                                ChampionnatRepository   $championnatRepository,
+                                RencontreRepository     $rencontreRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                MailerInterface $mailer)
+                                MailerInterface         $mailer)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
@@ -68,15 +68,14 @@ class ContactController extends AbstractController
             // Disponibilités du joueur
             $id = $championnat->getIdChampionnat();
             $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-            $disposJoueurFormatted = null;
             if ($this->getUser()->isCompetiteur()) {
                 $disposJoueurFormatted = [];
-                foreach($disposJoueur as $dispo) {
+                foreach ($disposJoueur as $dispo) {
                     $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
                 }
             }
 
-            $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+            $journees = $championnat->getJournees()->toArray();
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
             $allChampionnats = $this->championnatRepository->findAll();
         }
@@ -86,12 +85,22 @@ class ContactController extends AbstractController
         $idRedacteur = $this->getUser()->getIdCompetiteur();
         $allPlayersButMe = $this->competiteurRepository->findJoueursByRole(null, $idRedacteur);
         $categories['tous'] = ['joueurs' => $this->returnPlayersContactByMedia($allPlayersButMe), 'titleItem' => 'Tous', 'titleModale' => 'Tout le monde'];
-        $categories['loisirs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isLoisir(); })), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
+        $categories['loisirs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) {
+            return $j->isLoisir();
+        })), 'titleItem' => 'Loisirs', 'titleModale' => 'Les loisirs'];
         $categories['jeunes'] = ['joueurs' => $this->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Jeune', $idRedacteur)), 'titleItem' => 'Jeunes', 'titleModale' => 'Les jeunes'];
-        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCompetiteur(); })), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
-        $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCritFed(); })), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
-        $categories['capitaines'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isCapitaine(); })), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
-        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) { return $j->isEntraineur(); })), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
+        $categories['competiteurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) {
+            return $j->isCompetiteur();
+        })), 'titleItem' => 'Compétiteurs', 'titleModale' => 'Les compétiteurs'];
+        $categories['crit_fed'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) {
+            return $j->isCritFed();
+        })), 'titleItem' => 'Critérium fédéral', 'titleModale' => 'Les compétiteurs du critérium fédéral'];
+        $categories['capitaines'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) {
+            return $j->isCapitaine();
+        })), 'titleItem' => 'Capitaines', 'titleModale' => 'Les capitaines'];
+        $categories['entraineurs'] = ['joueurs' => $this->returnPlayersContactByMedia(array_filter($allPlayersButMe, function (Competiteur $j) {
+            return $j->isEntraineur();
+        })), 'titleItem' => 'Entraîneurs', 'titleModale' => 'Les entraîneurs'];
         $categories['administrateurs'] = ['joueurs' => $this->returnPlayersContactByMedia($this->competiteurRepository->findJoueursByRole('Admin', $idRedacteur)), 'titleItem' => 'Administrateurs', 'titleModale' => 'Les administrateurs'];
         $categories['custom'] = ['joueurs' => $this->returnPlayersContactByPlayer($allPlayersButMe), 'titleItem' => 'Personnalisée', 'titleModale' => 'Message personnalisé', 'isCustom' => true];
 
@@ -108,17 +117,6 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/contacter/custom-infos-contact", name="contact.custom.infos-contact")
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function getContactsInfosFromCustomMessage(Request $request): JsonResponse {
-        return new JsonResponse($this->render('ajax/modalContactCustomContacts.html.twig', [
-            'infosCustomContacts' => $this->returnPlayersContactByMedia($this->competiteurRepository->findBy(['idCompetiteur' => $request->query->get('contactIDs')]))
-        ])->getContent());
-    }
-
-    /**
      * Formatte les joueurs contactables par média
      * @param array $joueurs
      * @return array
@@ -129,7 +127,7 @@ class ContactController extends AbstractController
         $contactablesMails = [];
         $notContactablesMails = [];
         foreach ($joueurs as $joueur) {
-            if ($joueur->getFirstContactableMail()){
+            if ($joueur->getFirstContactableMail()) {
                 $contactablesMails[] = $joueur;
                 $mails[] = $joueur->getFirstContactableMail();
             } else $notContactablesMails[] = $joueur;
@@ -142,7 +140,7 @@ class ContactController extends AbstractController
         $contactablesPhoneNumbers = [];
         $notContactablesPhoneNumbers = [];
         foreach ($joueurs as $joueur) {
-            if ($joueur->getFirstContactablePhoneNumber()){
+            if ($joueur->getFirstContactablePhoneNumber()) {
                 $contactablesPhoneNumbers[] = $joueur;
                 $phoneNumbers[] = $joueur->getFirstContactablePhoneNumber();
             } else $notContactablesPhoneNumbers[] = $joueur;
@@ -168,6 +166,18 @@ class ContactController extends AbstractController
             $joueursByPlayer[$joueur->getIdCompetiteur()]['sms'] = $joueur->getFirstContactablePhoneNumber();
         }
         return $joueursByPlayer;
+    }
+
+    /**
+     * @Route("/contacter/custom-infos-contact", name="contact.custom.infos-contact")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getContactsInfosFromCustomMessage(Request $request): JsonResponse
+    {
+        return new JsonResponse($this->render('ajax/modalContactCustomContacts.html.twig', [
+            'infosCustomContacts' => $this->returnPlayersContactByMedia($this->competiteurRepository->findBy(['idCompetiteur' => $request->query->get('contactIDs')]))
+        ])->getContent());
     }
 
     /**

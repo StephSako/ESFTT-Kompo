@@ -34,7 +34,7 @@ $(document).ready(() => {
     });
 
     $('.collapsible').collapsible({
-        accordion : false
+        accordion: false
     });
 
     $('.fixed-action-btn').floatingActionButton();
