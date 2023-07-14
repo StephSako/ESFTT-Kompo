@@ -195,7 +195,7 @@
                                                 <i class="material-icons">rule</i> Équipe non confirmée
                                             {% endif %}
                                         </div>
-                                        {% if "ROLE_CAPITAINE" in app.user.roles %}
+                                        {% if "ROLE_CAPITAINE" in app.user.roles or 'ROLE_ADMIN' in app.token.roleNames %}
                                             <div>
                                                 <i class="material-icons blue-text text-lighten-1 swap-validation" id="compoValidation{{ compo.id }}" onclick="toggleCompoValidation('{{ compo.id }}')">
                                                     swap_horizontal_circle

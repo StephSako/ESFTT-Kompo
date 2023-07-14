@@ -62,10 +62,11 @@ class HomeController extends AbstractController
      */
     public function indexAction(UtilController $utilController): Response
     {
-        if ($utilController->nextJourneeToPlayAllChamps()) {
+        $nextJourneeToPlay = $utilController->nextJourneeToPlayAllChamps($this->get('session')->get('type'));
+        if ($nextJourneeToPlay) {
             return $this->redirectToRoute('journee.show', [
-                'type' => $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat(),
-                'idJournee' => $utilController->nextJourneeToPlayAllChamps()->getIdJournee()
+                'type' => $nextJourneeToPlay->getIdChampionnat()->getIdChampionnat(),
+                'idJournee' => $nextJourneeToPlay->getIdJournee()
             ]);
         } else return $this->render('journee/noChamp.html.twig', [
             'allChampionnats' => null,

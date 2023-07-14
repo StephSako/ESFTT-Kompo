@@ -153,27 +153,36 @@ class UtilController extends AbstractController
 
     /**
      * Retourne la prochaine journée à jouer depuis tous les championnats
-     * @return Journee
+     * @param int|null $idChampionnat
+     * @return Journee|null
      */
-    public function nextJourneeToPlayAllChamps(): Journee
+    public function nextJourneeToPlayAllChamps(?int $idChampionnat = null): ?Journee
     {
-        $allChamps = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
-        $array = array_filter(array_map(function ($c) {
+        $allChamps = $this->championnatRepository->findBy(
+            $idChampionnat ? ['idChampionnat' => $idChampionnat] : [],
+            ['nom' => 'ASC']
+        );
+
+        $nextJourneeByChampionnats = array_map(function ($c) {
             return $c->getNextJourneeToPlay();
-        }, $allChamps), function ($cNJTP) {
+        }, $allChamps);
+
+        $nextJourneeByChampionnats = array_filter($nextJourneeByChampionnats, function ($cNJTP) {
             return $cNJTP;
         });
 
         /** Si toutes les dates de tous les championnats sont indéfinies */
-        if (!$array) return $allChamps[0]->getJournees()[0];
+        if (!$nextJourneeByChampionnats) {
+            return $allChamps ? $allChamps[0]->getJournees()[0] : null;
+        }
 
-        usort($array, function ($a, $b) use ($allChamps) {
+        usort($nextJourneeByChampionnats, function ($a, $b) use ($allChamps) {
             if (!$a && !$b) return $allChamps[0]->getJournees()[0]->getDateJournee()->getTimestamp();
             if (!$a) return $b->getDateJournee()->getTimestamp();
             if (!$b) return $a->getDateJournee()->getTimestamp();
             return $a->getDateJournee()->getTimestamp() - $b->getDateJournee()->getTimestamp();
         });
-        return array_shift($array);
+        return array_shift($nextJourneeByChampionnats);
     }
 
     /**
