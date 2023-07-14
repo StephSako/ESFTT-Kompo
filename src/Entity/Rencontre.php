@@ -799,7 +799,7 @@ class Rencontre
     }
 
     /**
-     * Tri la composition d'équipe selon les classements dans l'ordre décroissant
+     * Trier la composition d'équipe selon les classements dans l'ordre décroissant
      * @return void
      */
     public function sortComposition(): void {

@@ -57,7 +57,7 @@ class Championnat
     private $nom;
 
     /**
-     * @var int
+     * @var int|null
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
@@ -73,7 +73,7 @@ class Championnat
      *     normalizer="trim"
      *)
      *
-     * @ORM\Column(type="integer", name="limite_brulage", nullable=false)
+     * @ORM\Column(type="integer", name="limite_brulage", nullable=true)
      */
     private $limiteBrulage;
 
@@ -199,9 +199,9 @@ class Championnat
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLimiteBrulage(): int
+    public function getLimiteBrulage(): ?int
     {
         return $this->limiteBrulage;
     }

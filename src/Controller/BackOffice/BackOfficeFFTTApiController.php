@@ -133,7 +133,7 @@ class BackOfficeFFTTApiController extends AbstractController
         }
 
         try {
-            $allChampionnats = $this->championnatRepository->findAll();
+            $allChampionnats = $this->championnatRepository->getChampionnatsUpdatableByFFTTApi();
 
             foreach($allChampionnats as $championnatActif){
                 $allChampionnatsReset[$championnatActif->getNom()] = [];

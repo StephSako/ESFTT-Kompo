@@ -26,9 +26,9 @@ class ChampionnatType extends AbstractType
             ])
             ->add('limiteBrulage', IntegerType::class, [
                 'label' => false,
-                'required' => true,
+                'required' => false,
                 'attr' => [
-                    'min' => 1,
+                    'min' => 0,
                     'max' => 4
                 ]
             ])
