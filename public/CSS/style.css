@@ -1102,6 +1102,9 @@ p.joueurAnniv {
   top: 0;
   right: 0;
 }
+.avatarSectionDelete img {
+  border: 1px solid #012242;
+}
 
 /* width */
 ::-webkit-scrollbar {

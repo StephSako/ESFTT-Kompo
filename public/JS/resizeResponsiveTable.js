@@ -27,7 +27,7 @@ $(document).ready(function () {
 });
 
 let resized = false;
-let observer = new MutationObserver(function (mutations) {
+let observer = $('#modalcustom').length ? new MutationObserver((mutations) => {
     if (!resized) {
         mutations.forEach(function (mutation) {
             if ($('#modalcustom').css('display') !== 'none' && !resized) {
@@ -36,7 +36,10 @@ let observer = new MutationObserver(function (mutations) {
             }
         });
     }
-});
+}) : {
+    observe: (_obj) => {
+    }
+};
 
 observer.observe(document.querySelector('#modalcustom'), {
     attributes: true,

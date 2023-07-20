@@ -191,7 +191,7 @@
                     </button>
                 {% endif %}
 
-                <p class="red-text"><i>* Une adresse e-mail minimum requise</i></p>
+                <p class="orange-text"><i><i class="material-icons">mark_email_read</i> Une adresse e-mail minimum requise</i></p>
 
                 {% if app.request.getPathInfo ends with '/new' %}
                     <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
@@ -360,9 +360,36 @@
             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
         {% endif %}
 
-        <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index", { 'code': 'y' }) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+        <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
+            <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
+                <div class="divProfileCompletion red-text orange-darken-4">
+                    <p>
+                        <i class="material-icons red-text">phonelink_erase</i>
+                        <b>
+                            Vous n'êtes pas contactable par mail<span class="parSMS" hidden="hidden"> ni par SMS</span>
+                        </b>
+                    </p>
+                    <div class="champsManquants">
+                        <p><b>Vous ne pourrez pas :</b></p>
+                        <ul>
+                            <li id="pageContacter"><b>-</b> être contacté depuis la page <a href="{{ path('contact') }}">Contacter</a> <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li id="alertSelection"><b>-</b> être alerté par les capitaines pour vous demander de signaler votre disponibilité pour une journée <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li id="alertSelection"><b>-</b> être alerté par les capitaines de votre sélection <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li><b>-</b> être alerté pour le renouvellement de votre certificat médical <b>(par mail uniquement)</b></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            let isNotContactableMail = '{{ form.vars.value.getFirstContactableMail() }}'.length === 0;
+            let isNotContactableSMS = '{{ form.vars.value.getFirstContactablePhoneNumber() }}'.length === 0;
+        </script>
+
+        <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index") }}" class="btn waves-effect grey btn_gestion">Annuler</a>
         <button
-                {% if editMode %}
+                {% if editMode and type == 'backoffice' %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
                 class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
