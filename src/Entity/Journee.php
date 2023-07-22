@@ -125,6 +125,10 @@ class Journee
         return $this;
     }
 
+    /**
+     * Détermine si une journée est passée ou non
+     * @return bool
+     */
     public function isOver(): bool
     {
         return !$this->getUndefined()

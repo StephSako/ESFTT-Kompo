@@ -16,7 +16,6 @@ class AppExtension extends AbstractExtension
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
             new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
-            new TwigFunction('journeePassee', [$this, 'journeePassee']),
             new TwigFunction('listeRemplacants', [$this, 'listeRemplacants'])
         ];
     }
