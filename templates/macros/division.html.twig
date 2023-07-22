@@ -2,17 +2,17 @@
     {% if divisions|length %}
         <table class="striped centered responsive-table backoffice-table table-to-adapt-columns">
             <thead>
-                <tr>
-                    <th>Diminutif</th>
-                    <th>Nom</th>
-                    <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
-                    <th class="hide-on-large-only">Nb joueurs/compo</th>
-                    <th>Nombre d'équipes</th>
-                    {% if app.user.admin %}
-                        <th></th>
-                        <th></th>
-                    {% endif %}
-                </tr>
+            <tr>
+                <th>Diminutif</th>
+                <th>Nom</th>
+                <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
+                <th class="hide-on-large-only">Nb joueurs/compo</th>
+                <th>Nombre d'équipes</th>
+                {% if app.user.admin %}
+                    <th></th>
+                    <th></th>
+                {% endif %}
+            </tr>
             </thead>
 
             <tbody>

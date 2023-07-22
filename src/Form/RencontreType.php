@@ -23,9 +23,11 @@ class RencontreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['editCompoMode']) {
-            $selectedPlayers = array_map(function($joueur) { return $joueur->getIdCompetiteur(); }, $builder->getData()->getListSelectedPlayers());
+            $selectedPlayers = array_map(function ($joueur) {
+                return $joueur->getIdCompetiteur();
+            }, $builder->getData()->getListSelectedPlayers());
 
-            for($j = 0; $j < $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
+            for ($j = 0; $j < $builder->getData()->getIdEquipe()->getIdDivision()->getNbJoueurs(); $j++) {
                 $builder->add('idJoueur' . $j, ChoiceType::class, [
                     'choice_label' => function ($competiteur) use ($builder) {
                         return $competiteur->getSelect();
@@ -42,33 +44,33 @@ class RencontreType extends AbstractType
             }
         } else {
             $builder
-                ->add('domicile', ChoiceType::class,[
+                ->add('domicile', ChoiceType::class, [
                     'label' => ' ',
                     'choices' => Rencontre::LIEU_RENCONTRE,
                     'required' => true
-                ])->add('adversaire', TextType::class,[
-                    'label' => false,
-                    'required' => false,
-                    'attr' => [
-                        'maxlength' => 50
-                    ]]
-                )->add('reporte', CheckboxType::class,[
+                ])->add('adversaire', TextType::class, [
+                        'label' => false,
+                        'required' => false,
+                        'attr' => [
+                            'maxlength' => 50
+                        ]]
+                )->add('reporte', CheckboxType::class, [
                     'label' => 'Match avancé/reporté',
                     'required' => false
-                ])->add('dateReport', DateType::class,[
+                ])->add('dateReport', DateType::class, [
                     'label' => false,
                     'format' => 'd MMMM y'
-                ])->add('exempt', CheckboxType::class,[
+                ])->add('exempt', CheckboxType::class, [
                     'label' => 'Equipe exemptée',
                     'required' => false
-                ])->add('villeHost', TextType::class,[
+                ])->add('villeHost', TextType::class, [
                     'label' => false,
                     'required' => false,
                     'attr' => [
                         'maxlength' => 200,
                         'placeholder' => 'Pas de délocalisation'
                     ]
-                ])->add('adresse', TextareaType::class,[
+                ])->add('adresse', TextareaType::class, [
                     'label' => false,
                     'required' => false,
                     'attr' => [
@@ -80,13 +82,13 @@ class RencontreType extends AbstractType
                     'attr' => [
                         'maxlength' => 10
                     ]
-                ])->add('site', TextType::class,[
+                ])->add('site', TextType::class, [
                     'label' => false,
                     'required' => false,
                     'attr' => [
                         'maxlength' => 100
                     ]
-                ])->add('complementAdresse', TextareaType::class,[
+                ])->add('complementAdresse', TextareaType::class, [
                     'label' => false,
                     'required' => false,
                     'attr' => [

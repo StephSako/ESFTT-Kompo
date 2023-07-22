@@ -1,4 +1,4 @@
-$(window).resize(function() {
+$(window).resize(function () {
     let tables = document.getElementsByClassName('table-to-adapt-columns')
     for (const table of tables) {
         if (table.offsetParent != null) {
@@ -22,21 +22,24 @@ function resizeTable() {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     resizeTable()
 });
 
 let resized = false;
-let observer = new MutationObserver(function(mutations) {
+let observer = $('#modalcustom').length ? new MutationObserver((mutations) => {
     if (!resized) {
-        mutations.forEach(function(mutation) {
+        mutations.forEach(function (mutation) {
             if ($('#modalcustom').css('display') !== 'none' && !resized) {
                 resizeTable()
                 resized = true
             }
         });
     }
-});
+}) : {
+    observe: (_obj) => {
+    }
+};
 
 observer.observe(document.querySelector('#modalcustom'), {
     attributes: true,

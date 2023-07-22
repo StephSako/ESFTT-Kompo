@@ -22,51 +22,51 @@
 
     <table class="striped centered responsive-table backoffice-table import-excel-table table-to-adapt-columns">
         <thead class="hide-on-med-and-down">
-            <tr>
-                {% if not sheetDataHasViolations %}
-                    <th><i class="material-icons">person_add_alt_1</i></th>
-                {% endif %}
-                {% if hasDoublon %}
-                    <th></th>
-                {% endif %}
-                <th>Rôles</th>
-                <th>Licence</th>
-                <th>Nom</th>
-                <th>Date de naissance</th>
-                <th>Certificat médical</th>
-                <th>Classement</th>
-                <th>Mail(s)</th>
-                <th>Téléphone(s)</th>
-            </tr>
+        <tr>
+            {% if not sheetDataHasViolations %}
+                <th><i class="material-icons">person_add_alt_1</i></th>
+            {% endif %}
+            {% if hasDoublon %}
+                <th></th>
+            {% endif %}
+            <th>Rôles</th>
+            <th>Licence</th>
+            <th>Nom</th>
+            <th>Date de naissance</th>
+            <th>Certificat médical</th>
+            <th>Classement</th>
+            <th>Mail(s)</th>
+            <th>Téléphone(s)</th>
+        </tr>
         </thead>
         <tbody>
-            {% for joueur in joueurs %}
-                <tr {% if joueur.dejaInscrit and not sheetDataHasViolations %}class="grey-text text-lighten-1"{% endif %} id="tr_{{ joueur.joueur.username }}">
-                    {% if not sheetDataHasViolations %}
-                        <td>
-                            <label>
-                                <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked" {% else %}disabled="disabled"{% endif %} />
-                                <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
-                            </label>
-                        </td>
-                    {% endif %}
-                    {% if hasDoublon and not sheetDataHasViolations %}
-                        <td>
-                            {% if joueur.doublon and not joueur.dejaInscrit %}
-                                <i class="material-icons orange-text">people_alt</i>
-                            {% endif %}
-                        </td>
-                    {% endif %}
-                    <td style="padding-top: 8px; padding-bottom: 8px;"
+        {% for joueur in joueurs %}
+            <tr {% if joueur.dejaInscrit and not sheetDataHasViolations %}class="grey-text text-lighten-1"{% endif %} id="tr_{{ joueur.joueur.username }}">
+                {% if not sheetDataHasViolations %}
+                    <td>
+                        <label>
+                            <input onchange="changeColor('{{ joueur.joueur.username }}')" value="{{ loop.index0 }}" id="{{ joueur.joueur.username }}" type="checkbox" class="filled-in" {% if not joueur.dejaInscrit and not sheetDataHasViolations %}checked="checked" {% else %}disabled="disabled"{% endif %} />
+                            <span style="padding-left: 20px;vertical-align: middle;height: 21px;"></span>
+                        </label>
+                    </td>
+                {% endif %}
+                {% if hasDoublon and not sheetDataHasViolations %}
+                    <td>
+                        {% if joueur.doublon and not joueur.dejaInscrit %}
+                            <i class="material-icons orange-text">people_alt</i>
+                        {% endif %}
+                    </td>
+                {% endif %}
+                <td style="padding-top: 8px; padding-bottom: 8px;"
                         {% if 'roles' in joueur.violations|keys %}
                             class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
                             data-tooltip="{{ joueur.violations['roles']['message'] }}"
                         {% endif %}
-                    >
-                        {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations, dejaInscrit: joueur.dejaInscrit}) }}
-                    </td>
-                    <td>
+                >
+                    {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations, dejaInscrit: joueur.dejaInscrit}) }}
+                </td>
+                <td>
                         <span {% if 'licence' in joueur.violations|keys %}
                             class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
@@ -79,13 +79,13 @@
                                 {{ joueur.joueur.licence }}
                             {% endif %}
                         </span>&nbsp;
-                    </td>
-                    <td>
+                </td>
+                <td>
                         <span {% if 'nom' in joueur.violations|keys %}
-                                class="pastille reset white-text red lighten-1 tooltipped"
-                                data-position="top"
-                                data-tooltip="{{ joueur.violations['nom']['message'] }}"
-                            {% endif %}
+                            class="pastille reset white-text red lighten-1 tooltipped"
+                            data-position="top"
+                            data-tooltip="{{ joueur.violations['nom']['message'] }}"
+                        {% endif %}
                         >
                             {% if 'nom' in joueur.violations|keys and 'value' in joueur.violations['nom']|keys %}
                                 {{ joueur.violations['nom']['value'] }}
@@ -93,11 +93,11 @@
                                 {{ joueur.joueur.nom }}
                             {% endif %}
                         </span>&nbsp;
-                        <span {% if 'prenom' in joueur.violations|keys %}
-                                class="pastille reset white-text red lighten-1 tooltipped"
-                                data-position="top"
-                                data-tooltip="{{ joueur.violations['prenom']['message'] }}"
-                            {% endif %}
+                    <span {% if 'prenom' in joueur.violations|keys %}
+                        class="pastille reset white-text red lighten-1 tooltipped"
+                        data-position="top"
+                        data-tooltip="{{ joueur.violations['prenom']['message'] }}"
+                    {% endif %}
                         >
                             {% if 'prenom' in joueur.violations|keys and 'value' in joueur.violations['prenom']|keys %}
                                 {{ joueur.violations['prenom']['value'] }}
@@ -105,12 +105,12 @@
                                 {{ joueur.joueur.prenom }}
                             {% endif %}
                         </span>
-                    </td>
-                    <td>
+                </td>
+                <td>
                         <span {% if 'dateNaissance' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
-                                data-position="top"
-                                data-tooltip="{{ joueur.violations['dateNaissance']['message'] }}"
+                            data-position="top"
+                            data-tooltip="{{ joueur.violations['dateNaissance']['message'] }}"
                             {% endif %}>
                             {% if 'dateNaissance' in joueur.violations|keys and 'value' in joueur.violations['dateNaissance']|keys %}
                                 {{ joueur.violations['dateNaissance']['value'] }}
@@ -121,28 +121,28 @@
                                 {% endif %}
                             {% endif %}
                         </span>
-                    </td>
-                    <td>
-                        {% if 'anneeCertificatMedical' in joueur.violations|keys %}
-                            <span class="pastille reset white-text red lighten-1 tooltipped" data-position="top" data-tooltip="{{ joueur.violations['anneeCertificatMedical']['message'] }}">
+                </td>
+                <td>
+                    {% if 'anneeCertificatMedical' in joueur.violations|keys %}
+                        <span class="pastille reset white-text red lighten-1 tooltipped" data-position="top" data-tooltip="{{ joueur.violations['anneeCertificatMedical']['message'] }}">
                                 {% if 'value' in joueur.violations['anneeCertificatMedical']|keys %}
                                     {{ joueur.violations['anneeCertificatMedical']['value'] }}
                                 {% else %}
                                     {{ joueur.joueur.anneeCertificatMedical }}
                                 {% endif %}
                             </span>
-                        {% else %}
-                            {% if joueur.joueur.age != null and joueur.joueur.age < 18 %}
-                                <span class="grey-text"><i>Mineur (facultatif)</i></span>
-                            {% elseif joueur.joueur.anneeCertificatMedical %}
-                                <span>
+                    {% else %}
+                        {% if joueur.joueur.age != null and joueur.joueur.age < 18 %}
+                            <span class="grey-text"><i>Mineur (facultatif)</i></span>
+                        {% elseif joueur.joueur.anneeCertificatMedical %}
+                            <span>
                                     <i class="{% if joueur.dejaInscrit and not sheetDataHasViolations %}text-lighten-3{% endif %} {% if not joueur.joueur.certifMedicalInvalid.status %}green{% else %}red{% endif %}-text material-icons" style="vertical-align: bottom;">health_and_safety</i>
                                     {{ joueur.joueur.anneeCertificatMedical }}
                                 </span>
-                            {% endif %}
                         {% endif %}
-                    </td>
-                    <td>
+                    {% endif %}
+                </td>
+                <td>
                         <span
                             {% if 'classement_officiel' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
@@ -156,8 +156,8 @@
                                 {{ joueur.joueur.classementOfficiel }}
                             {% endif %}
                         </span>
-                    </td>
-                    <td>
+                </td>
+                <td>
                         <span
                             {% if 'mail' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
@@ -167,9 +167,9 @@
                         >
                             {{ joueur.joueur.mail }}
                         </span>
-                        {% if not joueur.joueur.mail2 is null %}
-                            <br>
-                            <span
+                    {% if not joueur.joueur.mail2 is null %}
+                        <br>
+                        <span
                                 {% if 'mail2' in joueur.violations|keys %}
                                     style="margin-top: 2px"
                                     class="pastille reset white-text red lighten-1 tooltipped"
@@ -179,9 +179,9 @@
                             >
                                 {{ joueur.joueur.mail2 }}
                             </span>
-                        {% endif %}
-                    </td>
-                    <td>
+                    {% endif %}
+                </td>
+                <td>
                         <span
                             {% if 'phoneNumber' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
@@ -191,21 +191,21 @@
                         >
                             {{ joueur.joueur.phoneNumber | split('', 2) | join(' ') }}
                         </span>
-                        {% if not joueur.joueur.phoneNumber2 is null %}
-                            <br>
-                            <span
+                    {% if not joueur.joueur.phoneNumber2 is null %}
+                        <br>
+                        <span
                                 {% if 'phoneNumber2' in joueur.violations|keys %}
                                     class="pastille reset white-text red lighten-1 tooltipped"
                                     data-position="top"
                                     data-tooltip="{{ joueur.violations['phoneNumber2']['message'] }}"
                                 {% endif %}
                             >
-                                {{ joueur.joueur.phoneNumber2 | split('', 2) | join(' ')}}
+                                {{ joueur.joueur.phoneNumber2 | split('', 2) | join(' ') }}
                             </span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 

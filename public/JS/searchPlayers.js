@@ -1,14 +1,14 @@
 let searchValue = (table_id, input_id, i_nomPrenom, i_roles) => {
     let value = $(input_id).val().toUpperCase();
     let trs = $(table_id + " tbody tr");
-
-    trs.each(function(_index) {
+    
+    trs.each(function (_index) {
         let row = $(this);
         let tr_empty_result = $(table_id + ' tbody tr#tr-empty-result-search')[0]
 
         if (value.length && row[0].id !== 'tr-empty-result-search') {
             let nomPrenom = row.find("td:" + (i_nomPrenom === 0 ? "first" : "nth-child(" + i_nomPrenom + ")")).text().trim().toUpperCase();
-            let rolesTemp = Array.from(row.find("td:" + (i_roles === 0 ? "first" : "nth-child(" + (i_roles === 1 ? i_roles+=1 : i_roles) + ")"))[0].children).filter(e => e.classList.contains('badge')).map(e => e.dataset.badgeCaption.toUpperCase())
+            let rolesTemp = Array.from(row.find("td:" + (i_roles === 0 ? "first" : "nth-child(" + (i_roles === 1 ? i_roles += 1 : i_roles) + ")"))[0].children).filter(e => e.classList.contains('badge')).map(e => e.dataset.badgeCaption.toUpperCase())
 
             if ((nomPrenom.indexOf(value) < 0 && rolesTemp.filter(role => role.indexOf(value) >= 0).length === 0)) row.hide();
             else row.show();
@@ -48,18 +48,22 @@ function getInfosContactsSelectedPlayers() {
     let divCustomContactsCheckListElement = $($.parseHTML(divCustomContactsCheckList))
     let checkedIDs = Array.from($('#listSelectedContacts .chip.customMessage')).map(chip => chip.id)
     divCustomContactsCheckListElement.find('table#search-table-custom input:checkbox').removeAttr('checked')
-    divCustomContactsCheckListElement.find(checkedIDs.map(id => `table#search-table-custom input#${id}:checkbox`).join(', ')).attr('checked','checked')
+    divCustomContactsCheckListElement.find(checkedIDs.map(id => `table#search-table-custom input#${id}:checkbox`).join(', ')).attr('checked', 'checked')
     divCustomContactsCheckList = divCustomContactsCheckListElement.html()
 
     $.ajax({
-        url : '/contacter/custom-infos-contact',
-        type : 'GET',
+        url: '/contacter/custom-infos-contact',
+        type: 'GET',
         data: {
             contactIDs: checkedIDs
         },
-        dataType : 'json',
-        success : (response) => { endSendingGetInfosContact(response, true); },
-        error : () => { endSendingGetInfosContact(null, false); }
+        dataType: 'json',
+        success: (response) => {
+            endSendingGetInfosContact(response, true);
+        },
+        error: () => {
+            endSendingGetInfosContact(null, false);
+        }
     });
 }
 

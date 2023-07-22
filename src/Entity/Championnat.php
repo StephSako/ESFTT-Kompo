@@ -2,20 +2,21 @@
 
 namespace App\Entity;
 
+use Cocur\Slugify\Slugify;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping\UniqueConstraint;
-use Cocur\Slugify\Slugify;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChampionnatRepository")
  * @ORM\Table(
  *     name="prive_championnat",
  *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"})
+ *          @UniqueConstraint(name="UNIQ_champ", columns={"nom"}),
+ *          @UniqueConstraint(name="UNIQ_lien_fftt", columns={"lien_fftt_api"})
  *     }
  * )
  * @UniqueEntity(
@@ -56,7 +57,7 @@ class Championnat
     private $nom;
 
     /**
-     * @var int
+     * @var int|null
      *
      * @Assert\GreaterThanOrEqual(
      *     value = 1,
@@ -72,7 +73,7 @@ class Championnat
      *     normalizer="trim"
      *)
      *
-     * @ORM\Column(type="integer", name="limite_brulage", nullable=false)
+     * @ORM\Column(type="integer", name="limite_brulage", nullable=true)
      */
     private $limiteBrulage;
 
@@ -198,9 +199,9 @@ class Championnat
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLimiteBrulage(): int
+    public function getLimiteBrulage(): ?int
     {
         return $this->limiteBrulage;
     }
@@ -212,24 +213,6 @@ class Championnat
     public function setLimiteBrulage(?int $limiteBrulage): self
     {
         $this->limiteBrulage = $limiteBrulage;
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getJournees(): Collection
-    {
-        return $this->journees;
-    }
-
-    /**
-     * @param Collection $journees
-     * @return Championnat
-     */
-    public function setJournees(Collection $journees): self
-    {
-        $this->journees = $journees;
         return $this;
     }
 
@@ -332,14 +315,6 @@ class Championnat
     }
 
     /**
-     * @return string
-     */
-    public function getSlug(): string
-    {
-        return (new Slugify())->slugify($this->nom);
-    }
-
-    /**
      * @param string|null $nom
      * @return Championnat
      */
@@ -347,6 +322,14 @@ class Championnat
     {
         $this->nom = mb_convert_case($nom, MB_CASE_TITLE, "UTF-8");
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return (new Slugify())->slugify($this->nom);
     }
 
     /**
@@ -425,12 +408,30 @@ class Championnat
      * Retourne l'ID de la prochaine journée à jouer
      * @return Journee|null
      */
-    public function getNextJourneeToPlay():? Journee
+    public function getNextJourneeToPlay(): ?Journee
     {
-        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function($journee) {
-            return !$journee->getUndefined() && (int) (new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
+        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function ($journee) {
+            return !$journee->getUndefined() && (int)(new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
         });
         return array_shift($nextJourneeToPlay) ?: null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJournees(): Collection
+    {
+        return $this->journees;
+    }
+
+    /**
+     * @param Collection $journees
+     * @return Championnat
+     */
+    public function setJournees(Collection $journees): self
+    {
+        $this->journees = $journees;
+        return $this;
     }
 
     /**

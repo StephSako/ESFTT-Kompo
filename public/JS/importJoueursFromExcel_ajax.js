@@ -2,21 +2,20 @@ $(document).ready(() => {
     $('.tooltipped').tooltip();
 })
 
-function changeColor(id){
+function changeColor(id) {
     let input = $('input#' + id)
     let tr = $('tr#tr_' + id)
     let pastilles = $('tr#tr_' + id + '>td span.pastille')
     let badges = $('tr#tr_' + id + '>td span.new.badge')
     let icons = $('tr#tr_' + id + '>td i.material-icons')
 
-    if (input.is(":checked")){
+    if (input.is(":checked")) {
         tr.removeClass('grey-text lighten-1')
         badges.removeClass('lighten-3')
         pastilles.removeClass('lighten-3')
         icons.removeClass('text-lighten-3')
         tr.addClass('black-text')
-    }
-    else {
+    } else {
         tr.addClass('grey-text lighten-1')
         badges.addClass('lighten-3')
         pastilles.addClass('lighten-3')
@@ -25,7 +24,7 @@ function changeColor(id){
     }
 
     // On bloque/débloque le bouton 'Envoyer' si aucun joueur n'est sélectionné
-    if (!getCheckedJoueurs().length){
+    if (!getCheckedJoueurs().length) {
         $('#submitImportButton').addClass('hide')
         $('#noPeopleToImport').removeClass('hide')
         $('p#nbFutursMembres').addClass('hide');
@@ -45,14 +44,14 @@ function setNbFutursMembres() {
     $('p#nbFutursMembres span').text(' ' + textNbFutursMembres)
 }
 
-function getCheckedJoueurs(){
+function getCheckedJoueurs() {
     let checkboxJoueurs = Array.from($("input:checkbox:checked"))
     return checkboxJoueurs.map(el => {
         return el.value;
     })
 }
 
-function getUsernamesToRegister(){
+function getUsernamesToRegister() {
     $('div#progress-bar').removeClass('hide');
     $('div#importButtons').addClass('hide');
     $('button#enregistrerJoueurs').addClass('disabled');

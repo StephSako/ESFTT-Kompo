@@ -9,7 +9,6 @@
 {% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
 
 {% block body %}
-
     <header>
         {% include("components/navbar.html.twig") %}
         <script type="text/javascript" src="{{ asset('JS/chart.min.js') }}"></script>
@@ -22,6 +21,7 @@
     <div class="row main">
         <div class="col l3 hide-on-med-and-down">
             {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
+            {{ _brulage.cardAnniversaires(anniversaires, championnat.limiteBrulage) }}
         </div>
 
         <div class="col s12 l6">
@@ -49,13 +49,13 @@
             {% if journeesWithReportedRencontresFormatted %}
                 <div class="divProfileCompletionCol center">
                     <div class="divProfileCompletion orange-text text-darken-4">
-                        <p><i class="material-icons">update</i><b> Rencontres décalées - J{{ idJournee }}</b></p>
+                        <p><i class="material-icons">update</i><b> Rencontre{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} décalée{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} - J{{ idJournee }}</b></p>
 
                         <div class="champsManquants">
                             <ul>
                                 {% for rencontre in journeesWithReportedRencontresFormatted %}
                                     <li>
-                                        <b>-</b> Match de la <b>{{ rencontre.idEquipe.numero }}</b> contre <b>{{ rencontre.adversaire }} {{ (rencontre.idJournee.dateJournee > rencontre.dateReport ? ' avancé' : ' reporté') }}</b> au <b>{{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
+                                        <b>-</b> Match de la <b>{{ rencontre.idEquipe.numero }}</b> <b>{{ rencontre.adversaire ? 'contre ' ~ rencontre.adversaire : '' }} {{ (rencontre.idJournee.dateJournee > rencontre.dateReport ? ' avancé' : ' reporté') }}</b> au <b>{{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</b>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -65,16 +65,17 @@
             {% endif %}
 
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
-            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status %}
+            {# Certificat médical invalide à partir de mai #}
+            {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status and ("now" | date('m')) >= 4 %}
             {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
             {% set hasJoueursWithoutLicenceClassoff = (joueursWithoutLicence.count or competiteursWithoutClassement.count) and (app.user.admin or app.user.capitaine) %}
 
             {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
                 {% if journeeStillEditable(journee.latestDate) %}
                     <div class="card-panel center setDispoCard"
-                        {% if userClassementLicenceIndefinies and (userCertifMedicalInvalid or hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff) %}
-                            style="margin-bottom: 10px;"
-                        {% endif %}
+                            {% if userClassementLicenceIndefinies and (userCertifMedicalInvalid or hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff) %}
+                                style="margin-bottom: 10px;"
+                            {% endif %}
                     >
                         {% if not userClassementLicenceIndefinies %}
                             {% if disponible != -1 %}
@@ -107,7 +108,7 @@
                             {% endif %}
                         {% else %}
                             <p class="red-text lighten-2">
-                                <i class="material-icons red-text">dangerous</i>
+                                <i class="material-icons red-text">payment</i>
                                 {% if app.user.licence and not app.user.classementOfficiel %}
                                     Votre <b>classement</b> n'est pas renseigné : vous ne pouvez pas déclarer vos disponibilités
                                 {% elseif not app.user.licence and app.user.classementOfficiel %}
@@ -132,7 +133,7 @@
                 <div class="card-panel center setDispoCard"
                      style="{% if userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}{% if hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
                 >
-                    <p class="red-text lighten-2"><i class="material-icons red-text">dangerous</i>
+                    <p class="red-text lighten-2"><i class="material-icons red-text">health_and_safety</i>
                         {{ app.user.certifMedicalInvalid.message | raw }}
                     </p>
                 </div>
@@ -140,12 +141,12 @@
 
             {% if hasJoueursCertifMedicPerim %}
                 <div class="card-panel center setDispoCard"
-                    {% if userCertifMedicalInvalid or hasJoueursWithoutLicenceClassoff or userClassementLicenceIndefinies %}
-                        style="
-                            {% if userCertifMedicalInvalid or userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}
+                        {% if userCertifMedicalInvalid or hasJoueursWithoutLicenceClassoff or userClassementLicenceIndefinies %}
+                    style="
+                    {% if userCertifMedicalInvalid or userClassementLicenceIndefinies %}margin-top: 10px;{% endif %}
                             {% if hasJoueursWithoutLicenceClassoff %}margin-bottom: 10px;{% endif %}"
-                    {% endif %}>
-                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                        {% endif %}>
+                    <p class="red-text lighten-2"><i class="material-icons">health_and_safety</i>
                         Il y a <b>{{ countJoueursCertifMedicPerim }} compétiteur{{ countJoueursCertifMedicPerim > 1 ? 's' : '' }}</b> dont le certificat médical devra être renouvelé pour la rentrée <b>{{ 'now' | date('Y') }}/{{ 'now' | date('Y')+1 }}</b>
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer et alerter ici</a>
                     </p>
@@ -156,7 +157,7 @@
                 <div class="card-panel center setDispoCard"
                      {% if userCertifMedicalInvalid or hasJoueursCertifMedicPerim or userClassementLicenceIndefinies %}style="margin-top: 10px;" {% endif %}
                 >
-                    <p class="red-text lighten-2"><i class="material-icons">dangerous</i>
+                    <p class="red-text lighten-2"><i class="material-icons">payment</i>
                         {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
                         <br><a href="{{ path('backoffice.competiteurs') }}">Gérer ici</a>
                     </p>
@@ -194,7 +195,7 @@
                                                 <i class="material-icons">rule</i> Équipe non confirmée
                                             {% endif %}
                                         </div>
-                                        {% if "ROLE_CAPITAINE" in app.user.roles %}
+                                        {% if "ROLE_CAPITAINE" in app.user.roles or 'ROLE_ADMIN' in app.token.roleNames %}
                                             <div>
                                                 <i class="material-icons blue-text text-lighten-1 swap-validation" id="compoValidation{{ compo.id }}" onclick="toggleCompoValidation('{{ compo.id }}')">
                                                     swap_horizontal_circle
@@ -205,9 +206,11 @@
                                                     <div class="spinner-layer spinner-blue-only">
                                                         <div class="circle-clipper left">
                                                             <div class="circle"></div>
-                                                        </div><div class="gap-patch">
+                                                        </div>
+                                                        <div class="gap-patch">
                                                             <div class="circle"></div>
-                                                        </div><div class="circle-clipper right">
+                                                        </div>
+                                                        <div class="circle-clipper right">
                                                             <div class="circle"></div>
                                                         </div>
                                                     </div>
@@ -232,22 +235,22 @@
                                 </span>
                             {% endif %}
 
-                            <div class="col s4{% if not compo.exempt%} m2{% endif %}" style="padding-right: 0">
+                            <div class="col s4{% if not compo.exempt %} m2{% endif %}" style="padding-right: 0">
                                 <h5>
                                     <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}</span><br>
                                 </h5>
                                 <div class="poule">
                                     {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                        <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
-                                    {% endif %}
+                                    <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                        {% endif %}
                                         Poule
-                                        {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                        {% if compo.idEquipe.idPoule %}
                                             {{ compo.idEquipe.idPoule.poule }}
                                         {% else %}
                                             <span class="red-text">?</span>
                                         {% endif %}
-                                    {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                        </a>
+                                        {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                    </a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -268,13 +271,13 @@
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
-                                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                                    {% if compo.domicile%}
-                                                        home
-                                                    {% else%}
-                                                        directions_car
-                                                    {% endif %}
-                                                </i>
+                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif %}">
+                                                {% if compo.domicile %}
+                                                    home
+                                                {% else %}
+                                                    directions_car
+                                                {% endif %}
+                                            </i>
                                         {% endif %}
                                     </h5>
                                 </div>
@@ -286,10 +289,10 @@
                                         {% if compo.domicile is null %}
                                             <i class='material-icons red-text'>location_off</i>
                                         {% else %}
-                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                                {% if compo.domicile%}
+                                            <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif %}">
+                                                {% if compo.domicile %}
                                                     home
-                                                {% else%}
+                                                {% else %}
                                                     directions_car
                                                 {% endif %}
                                             </i>
@@ -298,7 +301,7 @@
                                 </div>
                             {% endif %}
 
-                            <div class="col{% if not compo.exempt %} m5{% else %} s4{% endif%} hide-on-small-only">
+                            <div class="col{% if not compo.exempt %} m5{% else %} s4{% endif %} hide-on-small-only">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
@@ -325,7 +328,7 @@
                         </div>
 
                         <div class="hide-on-med-and-up adversaireLine center">
-                            <div class="{% if not compo.exempt %}m5{% endif%}">
+                            <div class="{% if not compo.exempt %}m5{% endif %}">
                                 {% if compo.exempt %}
                                     <h5 style="margin-top: 5px" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                                 {% else %}
@@ -356,11 +359,11 @@
                                 <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                             {% endif %}
 
-                            <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif%}responsive-table composition-equipe">
+                            <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif %}responsive-table composition-equipe">
                                 <tbody>
-                                    {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                        {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
-                                    {% endfor %}
+                                {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
+                                {% endfor %}
                                 </tbody>
                             </table>
 
@@ -395,14 +398,13 @@
                                             </a>
                                             {{ _modalContact.modalAlertPlayers
                                                 (
-                                                    compo.id,
-                                                    getListContactSelectedPlayers,
-                                                    'Alerter les joueurs',
-                                                    'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                                    'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
-                                                    false
-                                                )
-                                            }}
+                                                compo.id,
+                                                getListContactSelectedPlayers,
+                                                'Alerter les joueurs',
+                                                'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                                'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
+                                                false
+                                            ) }}
                                         {% endif %}
                                         <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: idJournee, idCompo: compo.id}) }}">
                                             <i class="material-icons">delete</i>
@@ -420,8 +422,7 @@
                                 compo.hrefWazeAdresse,
                                 compo.site,
                                 compo.telephone
-                                )
-                            }}
+                            ) }}
 
                             <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
                                 <div class="modal-content">
@@ -431,9 +432,11 @@
                                                 <div class="spinner-layer spinner-blue-only">
                                                     <div class="circle-clipper left">
                                                         <div class="circle"></div>
-                                                    </div><div class="gap-patch">
+                                                    </div>
+                                                    <div class="gap-patch">
                                                         <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
+                                                    </div>
+                                                    <div class="circle-clipper right">
                                                         <div class="circle"></div>
                                                     </div>
                                                 </div>
@@ -456,9 +459,11 @@
                                         <div class="spinner-layer spinner-blue-only">
                                             <div class="circle-clipper left">
                                                 <div class="circle"></div>
-                                            </div><div class="gap-patch">
+                                            </div>
+                                            <div class="gap-patch">
                                                 <div class="circle"></div>
-                                            </div><div class="circle-clipper right">
+                                            </div>
+                                            <div class="circle-clipper right">
                                                 <div class="circle"></div>
                                             </div>
                                         </div>
@@ -479,41 +484,48 @@
             {% endif %}
         </div>
 
-        <ul class="collapsible hide-on-large-only">
-            <li>
-                <div class="collapsible-header">
-                    <div class="chip">
-                        <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
-                        <span class="lobster">Disponibilités</span>
+        <div class="hide-on-large-only">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">
+                        <div class="chip">
+                            <i class="blue-text material-icons" style="vertical-align: sub;">people</i>
+                            <span class="lobster">Disponibilités</span>
+                        </div>
+                        <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
-                </div>
-                <div class="collapsible-body">
-                    <div class="center-align">
-                        {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers) }}
+                    <div class="collapsible-body">
+                        <div class="center-align">
+                            {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
+                        </div>
                     </div>
-                </div>
-            </li>
-            <li>
-                <div class="collapsible-header">
-                    <div class="chip">
-                        <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
-                        <span class="lobster">Brûlage</span>
-                    </div>
-                    <i class="caret material-icons">keyboard_arrow_down</i>
-                </div>
-                <div class="collapsible-body">
-                    {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
-                </div>
-            </li>
-        </ul>
+                </li>
+                {% if championnat.limiteBrulage %}
+                    <li>
+                        <div class="collapsible-header">
+                            <div class="chip">
+                                <i class="red-text material-icons" style="vertical-align: sub;">whatshot</i>
+                                <span class="lobster">Brûlage</span>
+                            </div>
+                            <i class="caret material-icons">keyboard_arrow_down</i>
+                        </div>
+                        <div class="collapsible-body">
+                            {{ _brulage.table(championnat.limiteBrulage, brulages, idEquipes) }}
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+            <div class="col s12 l6">
+                {{ _brulage.cardAnniversaires(anniversaires, true) }}
+            </div>
+        </div>
 
         <div class="col l3 hide-on-med-and-down">
             <div class="center-align">
                 <div class="hide-on-med-and-down">
                     {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
                 </div>
-                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers) }}
+                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
             </div>
         </div>
 
@@ -540,9 +552,11 @@
                             <div class="spinner-layer spinner-blue-only">
                                 <div class="circle-clipper left">
                                     <div class="circle"></div>
-                                </div><div class="gap-patch">
+                                </div>
+                                <div class="gap-patch">
                                     <div class="circle"></div>
-                                </div><div class="circle-clipper right">
+                                </div>
+                                <div class="circle-clipper right">
                                     <div class="circle"></div>
                                 </div>
                             </div>

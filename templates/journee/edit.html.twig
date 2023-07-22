@@ -7,7 +7,6 @@
 {% block title %}J{{ idJournee }} - Équipe {{ compo.idEquipe.numero }}{% endblock %}
 
 {% block body %}
-
     <header>
         {% include("components/navbar.html.twig") %}
         <script type="text/javascript" src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
@@ -18,23 +17,25 @@
     <div class="row main">
         <div class="hide-on-large-only">
             <ul class="collapsible" style="margin-top: 20px; margin-bottom: 0;">
-                <li>
-                    <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
-                        <div class="chip" style="padding-left: 0; padding-right: 0;">
-                            <i class="red-text material-icons" style="vertical-align: middle; margin-right: 0;">whatshot</i>
-                            <span class="lobster">Joueurs brûlés</span>
+                {% if championnat.limiteBrulage %}
+                    <li>
+                        <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
+                            <div class="chip" style="padding-left: 0; padding-right: 0;">
+                                <i class="red-text material-icons" style="vertical-align: middle; margin-right: 0;">whatshot</i>
+                                <span class="lobster">Joueurs brûlés</span>
+                            </div>
+                            <i class="caret material-icons">keyboard_arrow_down</i>
                         </div>
-                        <i class="caret material-icons">keyboard_arrow_down</i>
-                    </div>
-                    <div class="collapsible-body">
-                        {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
-                    </div>
-                </li>
+                        <div class="collapsible-body">
+                            {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero, championnat.limiteBrulage) }}
+                        </div>
+                    </li>
+                {% endif %}
                 <li>
                     <div class="collapsible-header" style="padding-left: 5px; padding-right: 5px;">
                         <div class="chip" style="padding-left: 0; padding-right: 0;">
                             <i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i>
-                            <span class="lobster" id="collapsible_selectionnable_plus_1">Sélectionnables & brûlage J+1</span>
+                            <span class="lobster" id="collapsible_selectionnable_plus_1">Sélectionnables{% if championnat.limiteBrulage %} & brûlage J+1{% endif %}</span>
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
@@ -52,7 +53,7 @@
         </div>
 
         <div class="col l2 hide-on-med-and-down">
-            {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero) }}
+            {{ _brulage.joueursBrules(championnat, joueursBrules, compo.idEquipe.numero, championnat.limiteBrulage) }}
         </div>
 
         <div class="col s12 l7">
@@ -97,18 +98,18 @@
                         </h5>
                         <div class="poule">
                             {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                <a style="margin-bottom: 4px" onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger poule" href="#modalClassement{{ compo.idEquipe.numero }}">
-                            {% endif %}
+                            <a style="margin-bottom: 4px" onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}')" class="btn-small blue lighten-1 waves-effect modal-trigger poule" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                {% endif %}
                                 <span>
                                     Poule
-                                    {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                                    {% if compo.idEquipe.idPoule %}
                                         {{ compo.idEquipe.idPoule.poule }}
                                     {% else %}
                                         <span class="red-text">?</span>
                                     {% endif %}
                                 </span>
-                            {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                </a>
+                                {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
+                            </a>
                             {% endif %}
                         </div>
                     </div>
@@ -127,10 +128,10 @@
                             {% if compo.domicile is null %}
                                 <i class='material-icons red-text'>location_off</i>
                             {% else %}
-                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif%}">
-                                    {% if compo.domicile%}
+                                <i class="material-icons iconPlace{% if compo.villeHost %} orange-text darken-4{% endif %}">
+                                    {% if compo.domicile %}
                                         home
-                                    {% else%}
+                                    {% else %}
                                         directions_car
                                     {% endif %}
                                 </i>
@@ -166,7 +167,7 @@
                 </div>
 
                 <div class="hide-on-med-and-up adversaireLine center" style="margin-bottom: 8px">
-                    <div class="{% if not compo.exempt %}m5{% endif%}">
+                    <div class="{% if not compo.exempt %}m5{% endif %}">
                         {% if compo.exempt %}
                             <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
                         {% else %}
@@ -198,15 +199,14 @@
 
                 {{ _modalContact.modalGPS
                     (
-                        compo.id,
-                        compo.adresse,
-                        compo.complementAdresse,
-                        compo.hrefMapsAdresse,
-                        compo.hrefWazeAdresse,
-                        compo.site,
-                        compo.telephone
-                    )
-                }}
+                    compo.id,
+                    compo.adresse,
+                    compo.complementAdresse,
+                    compo.hrefMapsAdresse,
+                    compo.hrefWazeAdresse,
+                    compo.site,
+                    compo.telephone
+                ) }}
 
                 {% if not compo.exempt %}
                     <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
@@ -217,9 +217,11 @@
                                         <div class="spinner-layer spinner-blue-only">
                                             <div class="circle-clipper left">
                                                 <div class="circle"></div>
-                                            </div><div class="gap-patch">
+                                            </div>
+                                            <div class="gap-patch">
                                                 <div class="circle"></div>
-                                            </div><div class="circle-clipper right">
+                                            </div>
+                                            <div class="circle-clipper right">
                                                 <div class="circle"></div>
                                             </div>
                                         </div>
@@ -241,9 +243,11 @@
                                     <div class="spinner-layer spinner-blue-only">
                                         <div class="circle-clipper left">
                                             <div class="circle"></div>
-                                        </div><div class="gap-patch">
+                                        </div>
+                                        <div class="gap-patch">
                                             <div class="circle"></div>
-                                        </div><div class="circle-clipper right">
+                                        </div>
+                                        <div class="circle-clipper right">
                                             <div class="circle"></div>
                                         </div>
                                     </div>
@@ -256,43 +260,46 @@
                     </div>
                 </div>
 
-                {{ form_start(form)}}
-                    <div class="form_div_list">
-                        {% for i in 0..(nbJoueursDivision - 1) %}
-                            <div class="row">
-                                <div class="col s12 m3">
-                                    <h5 style="font-family: Lobster, cursive;" class="rank {% if compo.idEquipe.idDivision.nbJoueurs % 3 == 0 and i >= 3 and i < 6 %} rank_blue{% endif %}">Joueur {{ i + 1 }}</h5>
-                                </div>
-                                <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
+                {{ form_start(form) }}
+                <div class="form_div_list">
+                    {% for i in 0..(nbJoueursDivision - 1) %}
+                        <div class="row">
+                            <div class="col s12 m3">
+                                <h5 style="font-family: Lobster, cursive;" class="rank {% if compo.idEquipe.idDivision.nbJoueurs % 3 == 0 and i >= 3 and i < 6 %} rank_blue{% endif %}">Joueur {{ i + 1 }}</h5>
                             </div>
-                        {% endfor %}
-                    </div>
+                            <div class="col s12 m9">{{ form_row(attribute(form,'idJoueur' ~ i)) }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <br>
+                <div id="btnsEditCompo" style="height: 38px;">
+                    <a href="{{ path("journee.show", {type: championnat.idChampionnat, idJournee: compo.idJournee.idJournee}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                    <button style="margin-top: 5px" class="btn btn_form waves-effect blue lighten-2" onclick="preloaderConfirm()">Confirmer</button>
                     <br>
-                    <div id="btnsEditCompo" style="height: 38px;">
-                        <a href="{{ path("journee.show", {type: championnat.idChampionnat, idJournee: compo.idJournee.idJournee}) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
-                        <button style="margin-top: 5px" class="btn btn_form waves-effect blue lighten-2" onclick="preloaderConfirm()">Confirmer</button><br>
-                    </div>
+                </div>
 
-                    <div id="preloaderSetDispo" hidden style="height: 38px;">
-                        <div class="preloader-wrapper small active">
-                            <div class="spinner-layer spinner-blue-only">
-                                <div class="circle-clipper left">
-                                    <div class="circle"></div>
-                                </div><div class="gap-patch">
-                                    <div class="circle"></div>
-                                </div><div class="circle-clipper right">
-                                    <div class="circle"></div>
-                                </div>
+                <div id="preloaderSetDispo" hidden style="height: 38px;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <script type="text/javascript">
-                        function preloaderConfirm() {
-                            $('#preloaderSetDispo').removeAttr('hidden');
-                            $('#btnsEditCompo').attr('hidden', true);
-                        }
-                    </script>
+                <script type="text/javascript">
+                    function preloaderConfirm() {
+                        $('#preloaderSetDispo').removeAttr('hidden');
+                        $('#btnsEditCompo').attr('hidden', true);
+                    }
+                </script>
 
                 {{ form_end(form) }}
             </div>

@@ -36,11 +36,11 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param RencontreRepository $rencontreRepository
      */
     public function __construct(DisponibiliteRepository $disponibiliteRepository,
-                                CompetiteurRepository $competiteurRepository,
-                                JourneeRepository $journeeRepository,
-                                EntityManagerInterface $em,
-                                ChampionnatRepository $championnatRepository,
-                                RencontreRepository $rencontreRepository)
+                                CompetiteurRepository   $competiteurRepository,
+                                JourneeRepository       $journeeRepository,
+                                EntityManagerInterface  $em,
+                                ChampionnatRepository   $championnatRepository,
+                                RencontreRepository     $rencontreRepository)
     {
         $this->em = $em;
         $this->disponibiliteRepository = $disponibiliteRepository;
@@ -59,7 +59,7 @@ class BackOfficeDisponibiliteController extends AbstractController
     public function index(Request $request): Response
     {
         return $this->render('backoffice/disponibilites/index.html.twig', [
-            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($this->championnatRepository->findAll()),
+            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($this->championnatRepository->getAllChampionnats()),
             'active' => $request->query->get('active')
         ]);
     }
@@ -70,7 +70,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function new(Request $request):Response
+    public function new(Request $request): Response
     {
         /** On récupère les paramètres */
         $idJournee = $request->request->get('idJournee');
@@ -106,7 +106,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param UtilController $utilController
      * @return Response
      */
-    public function update(Request $request, UtilController $utilController):Response
+    public function update(Request $request, UtilController $utilController): Response
     {
         /** On récupère les paramètres */
         $idDisponibilite = $request->request->get('idDisponibilite');
@@ -121,12 +121,12 @@ class BackOfficeDisponibiliteController extends AbstractController
             $dispoJoueur->setDisponibilite($disponibiliteBoolean);
 
             /** On supprime le joueur des compositions d'équipe de la journée actuelle s'il est indisponible */
-            if (!$disponibiliteBoolean){
+            if (!$disponibiliteBoolean) {
                 $nbMaxJoueurs = $this->rencontreRepository->getNbJoueursMaxJournee($dispoJoueur->getIdJournee()->getIdJournee())['nbMaxJoueurs'];
                 $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
                 $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
-                foreach ($invalidCompos as $compo){
+                foreach ($invalidCompos as $compo) {
                     /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
                     $compo['compo']->sortComposition();
                 }
@@ -153,7 +153,7 @@ class BackOfficeDisponibiliteController extends AbstractController
      * @param UtilController $utilController
      * @return Response
      */
-    public function delete(Request $request, UtilController $utilController):Response
+    public function delete(Request $request, UtilController $utilController): Response
     {
         /** On récupère les paramètres */
         $idDisponibilite = $request->request->get('idDisponibilite');
@@ -169,7 +169,7 @@ class BackOfficeDisponibiliteController extends AbstractController
             $invalidCompos = $this->rencontreRepository->getSelectedWhenIndispo($competiteur->getIdCompetiteur(), $dispoJoueur->getIdJournee()->getIdJournee(), $nbMaxJoueurs, $dispoJoueur->getIdChampionnat()->getIdChampionnat());
             $utilController->deleteInvalidSelectedPlayers($invalidCompos, $nbMaxJoueurs, $competiteur->getIdCompetiteur());
 
-            foreach ($invalidCompos as $compo){
+            foreach ($invalidCompos as $compo) {
                 /** Si le joueur devient indisponible et qu'il est sélectionné, on re-trie la composition d'équipe */
                 $compo['compo']->sortComposition();
             }

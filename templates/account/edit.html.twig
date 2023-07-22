@@ -12,13 +12,8 @@
 {% endblock %}
 
 {% block body %}
-
     <header>
-        {% if type == 'general' %}
-            {% include("components/navbar.html.twig") %}
-        {% elseif type == 'backoffice' %}
-            {% include("components/navbar_backoffice.html.twig") %}
-        {% endif %}
+        {% include("components/navbar" ~ (type != 'general' or isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
     </header>
 
     <div class="container">

@@ -12,64 +12,64 @@
         </div>
 
         {{ form_start(form) }}
-            <div style="margin-top: 50px;">
-                <div class="row">
-                    <div class="col s10 offset-s1 l6 m8 offset-m2">
-                        <b>Adversaire + n° équipe</b>
-                        {{ form_row(form.adversaire, {'id': 'adversaire'}) }}
-                    </div>
-                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
-                        <b>Lieu de la rencontre</b><br>
-                        {{ form_row(form.domicile) }}
-                    </div>
+        <div style="margin-top: 50px;">
+            <div class="row">
+                <div class="col s10 offset-s1 l6 m8 offset-m2">
+                    <b>Adversaire + n° équipe</b>
+                    {{ form_row(form.adversaire, {'id': 'adversaire'}) }}
                 </div>
-
-                <br><h5>Coordonnées de l'adversaire</h5>
-                <div class="row" style="margin-bottom: 0;">
-                    <div class="col s10 offset-s1 l6 m8 offset-m2">
-                        <b>Adresse</b>
-                        {{ form_row(form.adresse, {'id': 'adresse'}) }}
-                    </div>
-                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
-                        <b>Complément d'adresse</b><br>
-                        {{ form_row(form.complementAdresse, {'id': 'complementAdresse'}) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
-                        <b>Site Internet</b><br>
-                        {{ form_row(form.site, {'id': 'siteInternet'}) }}
-                    </div>
-                    <div class="col s10 offset-s1 l6 m8 offset-m2">
-                        <b>Numéro de téléphone</b>
-                        {{ form_row(form.telephone, {'id': 'telephone'}) }}
-                    </div>
-                </div>
-
-                <div class="issue row" style="margin-top: 45px; margin-bottom: 45px;">
-                    <div class="col s10 offset-s1 m8 offset-m2">
-                        <b>Ville de remplacement</b><br><i>(en cas de salle indisponible)</i>
-                        {{ form_row(form.villeHost, {'id': 'ville_host'}) }}
-                    </div>
-                </div>
-                <div class="issue">
-                    <div>
-                        {{ form_row(form.reporte, {'id': 'reporte'}) }}
-                    </div>
-                    <div style="padding-left: 0; padding-right: 0;">
-                        <div class="container titlecase">
-                            {{ form_row(form.dateReport) }}
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top: 30px;">
-                    {{ form_row(form.exempt, {'id': 'exempt'}) }}
+                <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
+                    <b>Lieu de la rencontre</b><br>
+                    {{ form_row(form.domicile) }}
                 </div>
             </div>
 
-            <br>
-            <a href="{{ path('backoffice.rencontres', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat }) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
-            <button class="btn btn_form waves-effect light-blue btn_gestion darken-1">Modifier</button>
+            <br><h5>Coordonnées de l'adversaire</h5>
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col s10 offset-s1 l6 m8 offset-m2">
+                    <b>Adresse</b>
+                    {{ form_row(form.adresse, {'id': 'adresse'}) }}
+                </div>
+                <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
+                    <b>Complément d'adresse</b><br>
+                    {{ form_row(form.complementAdresse, {'id': 'complementAdresse'}) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s10 offset-s1 l6 m8 offset-m2 lieu_rencontre form_div_list">
+                    <b>Site Internet</b><br>
+                    {{ form_row(form.site, {'id': 'siteInternet'}) }}
+                </div>
+                <div class="col s10 offset-s1 l6 m8 offset-m2">
+                    <b>Numéro de téléphone</b>
+                    {{ form_row(form.telephone, {'id': 'telephone'}) }}
+                </div>
+            </div>
+
+            <div class="issue row" style="margin-top: 45px; margin-bottom: 45px;">
+                <div class="col s10 offset-s1 m8 offset-m2">
+                    <b>Ville de remplacement</b><br><i>(en cas de salle indisponible)</i>
+                    {{ form_row(form.villeHost, {'id': 'ville_host'}) }}
+                </div>
+            </div>
+            <div class="issue">
+                <div>
+                    {{ form_row(form.reporte, {'id': 'reporte'}) }}
+                </div>
+                <div style="padding-left: 0; padding-right: 0;">
+                    <div class="container titlecase">
+                        {{ form_row(form.dateReport) }}
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 30px;">
+                {{ form_row(form.exempt, {'id': 'exempt'}) }}
+            </div>
+        </div>
+
+        <br>
+        <a href="{{ path('backoffice.rencontres', form.vars.value.idChampionnat ? { 'active': form.vars.value.idChampionnat.idChampionnat }) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+        <button class="btn btn_form waves-effect light-blue btn_gestion darken-1">Modifier</button>
         {{ form_end(form) }}
 
         {% if form.vars.value.lastUpdate is not null %}

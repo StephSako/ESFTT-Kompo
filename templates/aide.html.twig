@@ -3,20 +3,18 @@
 {% block title %}Page d'aide de Kompo{% endblock %}
 
 {% block body %}
-
     <script type="text/javascript">
         function jumpTo(anchor) {
             window.location.href = '#' + anchor;
-            $(window).scrollTop($(window).scrollTop()-80);
+            $(window).scrollTop($(window).scrollTop() - 80);
         }
     </script>
 
     <header>
-        {% include("components/navbar.html.twig") %}
+        {% include("components/navbar" ~ (isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
     </header>
 
     <div class="container" id="aide_page">
-
         <div class="card-panel center-align white-text title_journee">
             <h4 style="font-family: Lobster, cursive">Page d'aide de Kompo</h4>
         </div>

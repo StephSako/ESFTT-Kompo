@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% block style %}
-    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection"/>
 {% endblock %}
 
 {% block title %}Modifier - {{ title }}{% endblock %}
@@ -28,21 +28,21 @@
 
         <div class="card-panel" id="settings-form">
             {{ form_start(form) }}
-                <div class="center">
+            <div class="center">
 
-                    {% if variables %}
-                        <p style="margin-bottom: 20px; border: 1px solid red" class="pastille reset black-text">
-                            <i style="font-size: 19px" class="material-icons red-text">warning</i> <b>Attention</b> : vous pouvez déplacer et styliser les variables (les blocs <span class="editor_variable_highlighted">[#...#]</span> ) dans le texte <b>mais ne pas les supprimer/modifier leurs noms, ni en ajouter</b>
-                        </p>
-                    {% endif %}
+                {% if variables %}
+                    <p style="margin-bottom: 20px; border: 1px solid red" class="pastille reset black-text">
+                        <i style="font-size: 19px" class="material-icons red-text">warning</i> <b>Attention</b> : vous pouvez déplacer et styliser les variables (les blocs <span class="editor_variable_highlighted">[#...#]</span> ) dans le texte <b>mais ne pas les supprimer/modifier leurs noms, ni en ajouter</b>
+                    </p>
+                {% endif %}
 
-                    <div id="editor"></div>
+                <div id="editor"></div>
 
-                    <br>
-                    <p style="margin-bottom: 5px" class="pastille red white-text reset" id="erreur_variables" hidden></p>
-                    <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
-                    <button class="btn waves-effect blue lighten-2 btn_gestion" id="submit_form">Modifier</button>
-                </div>
+                <br>
+                <p style="margin-bottom: 5px" class="pastille red white-text reset" id="erreur_variables" hidden></p>
+                <a href="{{ path('backoffice.competiteurs') }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+                <button class="btn waves-effect blue lighten-2 btn_gestion" id="submit_form">Modifier</button>
+            </div>
             {{ form_end(form) }}
         </div>
 
@@ -53,20 +53,19 @@
             let buttonSubmitForm = $('button#submit_form');
             let editor = $('#editor');
 
-            document.getElementById('editor').onkeyup = function() {
+            document.getElementById('editor').onkeyup = function () {
                 let passedArray = JSON.parse('{{ variables | json_encode | raw }}');
                 let variablesEditor = editor.html().match(/\[\#(.*?)\#\]/g) ?? [];
                 passedArray.sort();
                 variablesEditor.sort();
                 let difference = passedArray.filter(value => !variablesEditor.includes(value)).length;
 
-                if (difference === 0 && passedArray.length === variablesEditor.length){
+                if (difference === 0 && passedArray.length === variablesEditor.length) {
                     pErreurVariables.hide();
                     buttonSubmitForm.prop('disabled', false);
-                }
-                else {
+                } else {
                     pErreurVariables.show();
-                    pErreurVariables.text('Des variables ont été ' + (difference > 0 ? ' supprimées' :  ' ajoutées'));
+                    pErreurVariables.text('Des variables ont été ' + (difference > 0 ? ' supprimées' : ' ajoutées'));
                     buttonSubmitForm.prop('disabled', true);
                 }
             }

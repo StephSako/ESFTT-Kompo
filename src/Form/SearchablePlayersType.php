@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,7 +13,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchablePlayersType extends AbstractType {
+class SearchablePlayersType extends AbstractType
+{
 
     private $em;
 
@@ -59,6 +60,17 @@ class SearchablePlayersType extends AbstractType {
     }
 
     /**
+     * @param Collection $competiteurs
+     * @return array
+     */
+    private function choices(Collection $competiteurs): array
+    {
+        return array_map(function ($c) {
+            return new ChoiceView($c, (string)$c->getIdCompetiteur(), $c->getNom() . ' ' . $c->getPrenom());
+        }, $competiteurs->toArray());
+    }
+
+    /**
      * @return string
      */
     public function getBlockPrefix(): string
@@ -70,26 +82,15 @@ class SearchablePlayersType extends AbstractType {
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function (Collection $values): array {
-                return array_map(function($c) {
-                    return (string) $c->getIdCompetiteur();
+                return array_map(function ($c) {
+                    return (string)$c->getIdCompetiteur();
                 }, $values->toArray());
-            }, function (?array $ids = []) use ($options) : Collection {
-                if (empty($ids)) return new ArrayCollection([]);
-                return new ArrayCollection(
-                    $this->em->getRepository($options['class'])->findBy(['idCompetiteur' => $ids])
-                );
-            }
+            }, function (?array $ids = []) use ($options): Collection {
+            if (empty($ids)) return new ArrayCollection([]);
+            return new ArrayCollection(
+                $this->em->getRepository($options['class'])->findBy(['idCompetiteur' => $ids])
+            );
+        }
         ));
-    }
-
-    /**
-     * @param Collection $competiteurs
-     * @return array
-     */
-    private function choices(Collection $competiteurs): array
-    {
-        return array_map(function ($c) {
-            return new ChoiceView($c, (string)$c->getIdCompetiteur(), $c->getNom() . ' ' . $c->getPrenom());
-        }, $competiteurs->toArray());
     }
 }

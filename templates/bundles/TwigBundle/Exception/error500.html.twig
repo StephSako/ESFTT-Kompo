@@ -8,7 +8,6 @@
         <div class="card-panel center-align">
             <i class="red-text darken-2 large material-icons">sentiment_dissatisfied</i>
             <h5>Oups ... {{ exception.code != 0 ? exception.message : 'Une erreur est survenue ...' }}</h5>
-
             {% if exception.code == 500 %}
                 <p>Réessayez de réinitialiser votre mot de passe en cliquant <a href="{{ path('login.forgotten.password') }}">ici</a></p>
             {% endif %}

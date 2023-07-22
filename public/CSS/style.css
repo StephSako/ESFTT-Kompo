@@ -166,8 +166,10 @@ div.scrollableTable {
   height: auto;
   margin-top: 10px;
 }
-div.scrollableTable.brulages {
-  font-size: 90%;
+div.scrollableTable.brulages .bottom_0 {
+  padding: 0;
+  margin-left: 0;
+  width: 100%;
 }
 div.scrollableTable tr:nth-child(odd) > td {
   background-color: #f2f2f2;
@@ -912,6 +914,11 @@ table.rankingVirtualPoints td .chip .nom {
 .page-footer a:hover {
   color: #3691f8;
 }
+.page-footer a.active {
+  background-color: #1565c0;
+  padding: 1px 4px;
+  border-radius: 5px;
+}
 
 .missingTitle {
   font-size: 20px;
@@ -1046,6 +1053,13 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   transform-origin: 0.6em 0.5em;
 }
 
+p.joueurAnniv {
+  margin-top: 10px;
+  margin-bottom: 11px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .brand-logo {
   left: 50% !important;
 }
@@ -1087,6 +1101,9 @@ li.active .collapsible-header .caret:not(.caret-sidenav) {
   position: absolute;
   top: 0;
   right: 0;
+}
+.avatarSectionDelete img {
+  border: 1px solid #012242;
 }
 
 /* width */
@@ -1425,6 +1442,14 @@ a.reload_ranking {
   table.recapitulatifDispos:not(:first-of-type) {
     margin-top: 20px;
   }
+
+  .bottom_0.brulages {
+    padding: 0;
+    margin-top: 20px;
+  }
+  .bottom_0.brulages .row.bottom_0 {
+    font-size: 94%;
+  }
 }
 @media screen and (min-width: 1285px) {
   .exempt {
@@ -1501,10 +1526,6 @@ a.reload_ranking {
   .virtualPointsCard p {
     margin-top: -2px;
     margin-bottom: 4px;
-  }
-
-  .brulageCard {
-    margin-top: 10px;
   }
 
   table.composition-equipe tbody td {

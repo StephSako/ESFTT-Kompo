@@ -13,7 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EquipeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         if ($options['editListeTitulaires']) {
             $builder
                 ->add('joueursAssocies', SearchablePlayersType::class, [
@@ -23,8 +24,7 @@ class EquipeType extends AbstractType
                     'required' => false,
                     'label' => false,
                 ]);
-        }
-        else {
+        } else {
             if ($options['newEquipe']) {
                 $builder
                     ->add('idDivision', ChoiceType::class, [

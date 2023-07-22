@@ -1,4 +1,4 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers, isOver) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
 
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
@@ -7,54 +7,56 @@
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
         <div class="row bottom_0">
-            <div class="col s2 center"><span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">X</span></div>
-            <div class="col s10">Nombre de sélections sur la phase</div>
+            <div class="col s2 m1 l2 center"><span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">X</span></div>
+            <div class="col s10 m11 l10">Nombre de sélections sur la phase</div>
         </div>
         <div class="row bottom_0">
-            <div class="col s2 center"><i class="blue-text right-align material-icons">done</i></div>
-            <div class="col s10 m7">Sélectionnés pour cette journée</div>
+            <div class="col s2 m1 l2 center"><i class="blue-text right-align material-icons">done</i></div>
+            <div class="col s10 m11 l10">Sélectionnés pour cette journée</div>
         </div>
 
-        {% for numero, disposEquipe in disponibilitesJournee %}
+        {% for nomEquipe, disposEquipe in disponibilitesJournee %}
             <table class="striped">
-                <thead>
+                {% if not (disponibilitesJournee|length == 1 and 'Sans équipe' in disponibilitesJournee|keys) %}
+                    <thead>
                     <tr>
                         <th class="center">
-                            <h6>{{ numero }}</h6>
+                            <h6>{{ nomEquipe }}</h6>
                         </th>
                     </tr>
-                </thead>
+                    </thead>
+                {% endif %}
                 <tbody>
-                    {% for dispo in disposEquipe %}
-                        <tr>
-                            <td class="row">
-                                <div class="col s10">
-                                    <div class="valign-wrapper">
-                                        {% if not dispo.joueur.licence is null %}
-                                            {% if dispo.disponibilite is null %}
-                                                <span class="dot dot3 center">&nbsp;</span>
-                                            {% elseif dispo.disponibilite == 1 %}
-                                                <span class="dot dot1 center">&nbsp;</span>
-                                            {% elseif dispo.disponibilite == 0 %}
-                                                <span class="dot dot2 center">&nbsp;</span>
-                                            {% endif %}
-                                        {% else %}
-                                            <i class="material-icons red-text tooltipped" data-position="top" data-tooltip="Licence indéfinie" style="font-size: 18px">payment</i>
+                {% for dispo in disposEquipe %}
+                    <tr>
+                        <td class="row">
+                            <div class="col s10">
+                                <div class="valign-wrapper">
+                                    {% if not dispo.joueur.licence is null %}
+                                        {% if dispo.disponibilite is null %}
+                                            <span class="dot dot3 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 1 %}
+                                            <span class="dot dot1 center">&nbsp;</span>
+                                        {% elseif dispo.disponibilite == 0 %}
+                                            <span class="dot dot2 center">&nbsp;</span>
                                         {% endif %}
-                                        <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}{% if dispo.joueur.idCompetiteur == app.user.idCompetiteur %} bold{% endif %}">{{ dispo.joueur.nom }} {{dispo.joueur.prenom }}</span>
-                                    </div>
-                                </div>
-                                <div class="col s1 center" style="border-radius: 25%;">
-                                    <span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">{{ dispo.nbMatchesJoues }}</span>
-                                </div>
-                                <div class="col s1">
-                                    {% if dispo.joueur.idCompetiteur in selectedPlayers %}
-                                        <i class="blue-text right-align material-icons">done</i>
+                                    {% else %}
+                                        <i class="material-icons red-text tooltipped" data-position="top" data-tooltip="Licence indéfinie" style="font-size: 18px">payment</i>
                                     {% endif %}
+                                    <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}{% if dispo.joueur.idCompetiteur == app.user.idCompetiteur %} bold{% endif %}">{{ dispo.joueur.nom }} {{ dispo.joueur.prenom }}</span>
                                 </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                            </div>
+                            <div class="col s1 center" style="border-radius: 25%;">
+                                <span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">{{ dispo.nbMatchesJoues }}</span>
+                            </div>
+                            <div class="col s1">
+                                {% if dispo.joueur.idCompetiteur in selectedPlayers %}
+                                    <i class="blue-text right-align material-icons">done</i>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         {% endfor %}
@@ -62,7 +64,7 @@
         <div class="btnsDispos">
             <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
-            {% if nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+            {% if not isOver and nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
                 <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
             {% endif %}
         </div>
@@ -80,15 +82,14 @@
     {% if joueursNonDeclaresContact|length > 0 %}
         {{ _modalContact.modalAlertPlayers
             (
-                'AlertNoDispoSet' ~ nomModal,
-                joueursNonDeclaresContact,
-                'Joueurs non déclarés',
-                'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
-                'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?&body=' ~ messageJoueursSansDispo,
-                true,
-                { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
-            )
-        }}
+            'AlertNoDispoSet' ~ nomModal,
+            joueursNonDeclaresContact,
+            'Joueurs non déclarés',
+            'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
+        'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?&body=' ~ messageJoueursSansDispo,
+        true,
+        { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
+        ) }}
     {% endif %}
 {% endmacro %}
 
@@ -102,19 +103,26 @@
     {% endif %}
 
     {% for nomChamp, disponibilites in allDisponibilites %}
-        <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}">
+        <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}" style="margin-top: 15px">
 
-            {% for numero, disponibilitesEquipes in disponibilites["dispos"] %}
-                <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ numero }}</h6>
+            {% for nomEquipe, disponibilitesEquipes in disponibilites["dispos"] %}
+                {% if not (disponibilites["dispos"]|length == 1 and 'Sans équipe' in disponibilites["dispos"]|keys) %}
+                    <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ nomEquipe }}</h6>
+                {% endif %}
 
                 <table class="centered responsive-table striped recapitulatifDispos">
                     <thead>
-                        <tr>
-                            <th><h6 class="hide-on-med-and-down">{{ numero }}</h6></th>
-                            {% for i in 1..disponibilites["nbJournees"] %}
-                                <th>J{{ i }}</th>
-                            {% endfor %}
-                        </tr>
+                    <tr>
+                        <th>
+                            {% if not (disponibilites["dispos"]|length == 1 and 'Sans équipe' in disponibilites["dispos"]|keys) %}
+                                <h6 class="hide-on-med-and-down">{{ nomEquipe }}</h6>
+                            {% endif %}
+                        </th>
+
+                        {% for i in 1..disponibilites["nbJournees"] %}
+                            <th>J{{ i }}</th>
+                        {% endfor %}
+                    </tr>
                     </thead>
 
                     <tbody>
@@ -130,16 +138,14 @@
                             </td>
                             {% for i in 1..disponibilites["nbJournees"] %}
                                 <td>
-                                    {% if not disponibilite.licence is null %}
-                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                            {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
-                                                <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
-                                            {% else %}
-                                                <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
-                                            {% endif %}
+                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
+                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                            <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
                                         {% else %}
-                                            <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
+                                            <i style="vertical-align: middle;" class="red-text center material-icons">close</i>
                                         {% endif %}
+                                    {% else %}
+                                        <span style="vertical-align: middle;" class="dot dot3 center">&nbsp;</span>
                                     {% endif %}
                                 </td>
                             {% endfor %}
@@ -208,80 +214,82 @@
                     <div class="collapsible-body">
                         <table class="centered striped responsive-table table-backoffice-disponibilites">
                             <tbody>
-                                {% for dispos in infos.disponibilites %}
-                                    <tr>
-                                        <td><b>Journée {{ loop.index }}</b></td>
-                                        <td>
-                                            {% if dispos.undefined %}
-                                                <i class='material-icons red-text'>event_busy</i>
-                                            {% else %}
-                                                {{ dispos.dateJournee | date("d/m/Y") }}
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if dispos.classement_officiel and dispos.licence %}
-                                                <div id="dispoJoueur{{ dispos.idJournee ~ dispos.idCompetiteur }}">
-                                                    {% if dispos.idDisponibilite is null %}
-                                                        {% if journeeStillEditable(dispos.latestDate) %}
-                                                            <div class="row" style="margin-bottom: 0;">
-                                                                <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
-                                                                    <button onclick="newDisponibilite('{{ dispos.idJournee }}', 1, '{{ dispos.idCompetiteur }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
-                                                                </div>
-                                                                <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
-                                                                    <button onclick="newDisponibilite('{{ dispos.idJournee }}', 0, '{{ dispos.idCompetiteur }}')" class="btn waves-effect red tn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
-                                                                </div>
+                            {% for dispos in infos.disponibilites %}
+                                <tr>
+                                    <td><b>Journée {{ loop.index }}</b></td>
+                                    <td>
+                                        {% if dispos.undefined %}
+                                            <i class='material-icons red-text'>event_busy</i>
+                                        {% else %}
+                                            {{ dispos.dateJournee | date("d/m/Y") }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if dispos.classement_officiel and dispos.licence %}
+                                            <div id="dispoJoueur{{ dispos.idJournee ~ dispos.idCompetiteur }}">
+                                                {% if dispos.idDisponibilite is null %}
+                                                    {% if journeeStillEditable(dispos.latestDate) %}
+                                                        <div class="row" style="margin-bottom: 0;">
+                                                            <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
+                                                                <button onclick="newDisponibilite('{{ dispos.idJournee }}', 1, '{{ dispos.idCompetiteur }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer&nbsp;disponible</button>
                                                             </div>
-                                                        {% else %}
-                                                            <p class="grey-text" style="margin-top: 5px; margin-bottom: 5px;"><i>Disponibilité non signalée</i></p>
+                                                            <div class="col s12 xl6" style="padding-bottom: 5px; padding-top: 5px">
+                                                                <button onclick="newDisponibilite('{{ dispos.idJournee }}', 0, '{{ dispos.idCompetiteur }}')" class="btn waves-effect red tn_gestion" type="submit" name="action">Déclarer&nbsp;indisponible</button>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <p class="grey-text" style="margin-top: 5px; margin-bottom: 5px;"><i>Disponibilité non signalée</i></p>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if dispos.disponibilite == 1 %}
+                                                        <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="green-text"><b>disponible</b></span></p>
+                                                        {% if journeeStillEditable(dispos.latestDate) %}
+                                                            <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 0, '{{ dispos.idJournee }}')" class="btn waves-effect red btn_gestion" type="submit" name="action">Déclarer indisponible</button>
                                                         {% endif %}
                                                     {% else %}
-                                                        {% if dispos.disponibilite == 1 %}
-                                                            <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="green-text"><b>disponible</b></span></p>
-                                                            {% if journeeStillEditable(dispos.latestDate) %}
-                                                                <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 0, '{{ dispos.idJournee }}')" class="btn waves-effect red btn_gestion" type="submit" name="action">Déclarer indisponible</button>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="red-text"><b>indisponible</b></span></p>
-                                                            {% if journeeStillEditable(dispos.latestDate) %}
-                                                                <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 1, '{{ dispos.idJournee }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer disponible</button>
-                                                            {% endif %}
-                                                        {% endif %}
+                                                        <p style="margin-top: 5px; margin-bottom: 5px;">Joueur <span class="red-text"><b>indisponible</b></span></p>
                                                         {% if journeeStillEditable(dispos.latestDate) %}
-                                                            <button onclick="deleteDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', {{ dispos.disponibilite }}, '{{ dispos.idJournee }}')" class="btn waves-effect red lighten-1 btn_gestion"><i class="material-icons">close</i></button>
+                                                            <button onclick="updateDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', 1, '{{ dispos.idJournee }}')" class="btn waves-effect green btn_gestion" type="submit" name="action">Déclarer disponible</button>
                                                         {% endif %}
                                                     {% endif %}
-                                                </div>
-                                                <div id="preloader{{ dispos.idJournee ~ dispos.idCompetiteur }}" style="display: none; align-items: center; justify-content: center;">
-                                                    <div class="preloader-wrapper small active">
-                                                        <div class="spinner-layer spinner-blue-only">
-                                                            <div class="circle-clipper left">
-                                                                <div class="circle"></div>
-                                                            </div><div class="gap-patch">
-                                                                <div class="circle"></div>
-                                                            </div><div class="circle-clipper right">
-                                                                <div class="circle"></div>
-                                                            </div>
+                                                    {% if journeeStillEditable(dispos.latestDate) %}
+                                                        <button onclick="deleteDisponibilite('{{ dispos.idCompetiteur }}', '{{ dispos.idDisponibilite }}', {{ dispos.disponibilite }}, '{{ dispos.idJournee }}')" class="btn waves-effect red lighten-1 btn_gestion"><i class="material-icons">close</i></button>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div id="preloader{{ dispos.idJournee ~ dispos.idCompetiteur }}" style="display: none; align-items: center; justify-content: center;">
+                                                <div class="preloader-wrapper small active">
+                                                    <div class="spinner-layer spinner-blue-only">
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="circle-clipper right">
+                                                            <div class="circle"></div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            {% else %}
-                                                {% if not dispos.licence and dispos.classement_officiel %}
-                                                    <span class="red-text lighten-2">Licence indéfinie<br>
+                                            </div>
+                                        {% else %}
+                                            {% if not dispos.licence and dispos.classement_officiel %}
+                                                <span class="red-text lighten-2">Licence indéfinie<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
-                                                {% elseif dispos.licence and not dispos.classement_officiel %}
-                                                    <span class="red-text lighten-2">Classement indéfini<br>
+                                            {% elseif dispos.licence and not dispos.classement_officiel %}
+                                                <span class="red-text lighten-2">Classement indéfini<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
-                                                {% elseif not dispos.licence and not dispos.classement_officiel %}
-                                                    <span class="red-text lighten-2">Licence et classement indéfinis<br>
+                                            {% elseif not dispos.licence and not dispos.classement_officiel %}
+                                                <span class="red-text lighten-2">Licence et classement indéfinis<br>
                                                         <a href="{{ path('backoffice.competiteur.edit', {idCompetiteur: dispos.idCompetiteur}) }}">Corriger</a>
                                                     </span>
-                                                {% endif %}
                                             {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

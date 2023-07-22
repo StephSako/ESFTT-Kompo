@@ -2,67 +2,71 @@
     {% if equipes|length %}
         <table class="striped centered responsive-table backoffice-table">
             <thead>
-                <tr>
-                    <th>N°</th>
-                    <th>Division</th>
-                    <th>Poule</th>
+            <tr>
+                <th>N°</th>
+                <th>Division</th>
+                <th>Poule</th>
+                {% if equipes|filter(e => e.idChampionnat.organismePere != null)|length %}
                     <th>Liée à la FFTT</th>
+                {% endif %}
+                <th>Titulaires</th>
+                <th></th>
+                {% if app.user.admin %}
                     <th></th>
-                    <th></th>
-                    {% if app.user.admin %}
-                        <th></th>
-                    {% endif %}
-                </tr>
+                {% endif %}
+            </tr>
             </thead>
 
             <tbody>
-                {% for equipe in equipes %}
-                    <tr>
-                        <td>
-                            <b>{{ equipe.numero }}</b>
-                        </td>
-                        <td>
-                            {% if equipe.idDivision %}
-                                {{ equipe.idDivision.shortName }}
-                            {% else %}
-                                <span class="red-text lighten-2">Division indéfinie</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if equipe.idPoule %}
-                                {{ equipe.idPoule.poule }}
-                            {% else %}
-                                <span class="red-text lighten-2">Poule indéfinie</span>
-                            {% endif %}
-                        </td>
+            {% for equipe in equipes %}
+                <tr>
+                    <td>
+                        <b>{{ equipe.numero }}</b>
+                    </td>
+                    <td>
+                        {% if equipe.idDivision %}
+                            {{ equipe.idDivision.shortName }}
+                        {% else %}
+                            <span class="red-text lighten-2">Division indéfinie</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if equipe.idPoule %}
+                            {{ equipe.idPoule.poule }}
+                        {% else %}
+                            <span class="red-text lighten-2">Poule indéfinie</span>
+                        {% endif %}
+                    </td>
+                    {% if equipe.idChampionnat.organismePere %}
                         <td>
                             {% if equipe.lienDivision %} <i class='material-icons green-text'>leak_add</i>
                             {% else %} <i class='material-icons red-text'>leak_remove</i>
                             {% endif %}
                         </td>
+                    {% endif %}
+                    <td>
+                        <a href="{{ path('backoffice.equipe.edit.players', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect green lighten-1 btn_gestion">
+                            {{ equipe.joueursAssocies|length }} <i class="material-icons">groups</i>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ path('backoffice.equipe.edit', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect blue lighten-2 btn_gestion">
+                            <i class="material-icons">edit</i>
+                        </a>
+                    </td>
+                    {% if app.user.admin %}
                         <td>
-                            <a href="{{ path('backoffice.equipe.edit.players', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect green lighten-1 btn_gestion">
-                                {{ equipe.joueursAssocies|length}} <i class="material-icons">groups</i>
-                            </a>
+                            <form method="post" action="{{ path('backoffice.equipe.delete', {idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Supprimer une équipe peut entraîner de gros bugs sur Kompo. Êtes-vous sûr de supprimer l\'équipe ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
+                                <button class="btn waves-effect red lighten-2 btn_gestion">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
                         </td>
-                        <td>
-                            <a href="{{ path('backoffice.equipe.edit', {idEquipe: equipe.idEquipe}) }}" class="btn waves-effect blue lighten-2 btn_gestion">
-                                <i class="material-icons">edit</i>
-                            </a>
-                        </td>
-                        {% if app.user.admin %}
-                            <td>
-                                <form method="post" action="{{ path('backoffice.equipe.delete', {idEquipe: equipe.idEquipe}) }}" onsubmit="return confirm('Supprimer une équipe peut entraîner de gros bugs sur Kompo. Êtes-vous sûr de supprimer l\'équipe ?')">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
-                                    <button class="btn waves-effect red lighten-2 btn_gestion">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </form>
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     {% else %}

@@ -32,335 +32,368 @@
         <span style="color: red"><i>* Champs obligatoires</i></span>
 
         {{ form_start(form) }}
-            <div class="row section" style="margin-bottom: 0;">
-                <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
+        <div class="row section" style="margin-bottom: 0;">
+            <h5 class="dark_blue" style="margin-top: 0;">Informations personnelles</h5>
 
-                {% if type != 'backoffice' %}
-                    <div class="col s12 account_roles">
-                        {{ _membre.badgesRoles(app.user, {sheetDataHasViolations: null, dejaInscrit: null}) }}
-                    </div>
-                {% endif %}
+            {% if type != 'backoffice' %}
+                <div class="col s12 account_roles">
+                    {{ _membre.badgesRoles(app.user, {sheetDataHasViolations: null, dejaInscrit: null}) }}
+                </div>
+            {% endif %}
 
-                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
-                    {% if type == 'backoffice' and not form.vars.value.isArchive %}
-                        {{ form_row(form.nom) }}
-                    {% else %}
-                        <p>{{ form.vars.value.nom }}</p>
-                    {% endif %}
-                </div>
-                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
-                    {% if type == 'backoffice' and not form.vars.value.isArchive %}
-                        {{ form_row(form.prenom) }}
-                    {% else %}
-                        <p>{{ form.vars.value.prenom }}</p>
-                    {% endif %}
-                </div>
-                {% if options.usernameEditable %}
-                    <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                        <b><i class="material-icons prefix">account_circle</i> Pseudo <span class="red-text">*</span></b>
-                        {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
-                    </div>
+            <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
+                {% if type == 'backoffice' and not form.vars.value.isArchive %}
+                    {{ form_row(form.nom) }}
+                {% else %}
+                    <p>{{ form.vars.value.nom }}</p>
                 {% endif %}
-                <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
-                    <b><i class="material-icons prefix">cake</i> Date de  naissance</b>
-                    <div class="titlecase">
-                        {{ form_row(form.dateNaissance) }}
+            </div>
+            <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
+                {% if type == 'backoffice' and not form.vars.value.isArchive %}
+                    {{ form_row(form.prenom) }}
+                {% else %}
+                    <p>{{ form.vars.value.prenom }}</p>
+                {% endif %}
+            </div>
+            {% if options.usernameEditable %}
+                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+                    <b><i class="material-icons prefix">account_circle</i> Pseudo <span class="red-text">*</span></b>
+                    {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                </div>
+            {% endif %}
+            <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
+                <b><i class="material-icons prefix">cake</i> Date de naissance</b>
+                <div class="titlecase">
+                    {{ form_row(form.dateNaissance) }}
+                </div>
+            </div>
+        </div>
+
+        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+            <div class="section" style="margin-bottom: 0;">
+                <h5 class="dark_blue" style="margin-top: 0;">Statut(s) du joueur</h5>
+
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col s12 m4">
+                        {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
+                    </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
+                    </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col s12 m4">
+                        {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
+                    </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
+                    </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col s12 m4">
+                        {{ form_row(form.isJeune, {'id': 'cb_jeune'}) }}
+                    </div>
+                    <div class="col s12 m4">
+                        {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
                     </div>
                 </div>
             </div>
+        {% endif %}
 
-            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                <div class="section" style="margin-bottom: 0;">
-                    <h5 class="dark_blue" style="margin-top: 0;">Statut(s) du joueur</h5>
-
-                    <div class="row" style="margin-bottom: 0">
-                        <div class="col s12 m4">
-                            {{ form_row(form.isAdmin, {'id': 'cb_admin'}) }}
-                        </div>
-                        <div class="col s12 m4">
-                            {{ form_row(form.isCapitaine, {'id': 'cb_capitaine'}) }}
-                        </div>
-                        <div class="col s12 m4">
-                            {{ form_row(form.isEntraineur, {'id': 'cb_entraineur'}) }}
-                        </div>
+        {% if options.equipesAssociees is defined %}
+            <div class="row hide" id="equipesAssocieesForm">
+                <h5 class="dark_blue" style="margin-top: 0;">Titularisations</h5>
+                {% for nomChampionnat, infos in options.equipesAssociees %}
+                    <div class="form_div_list col m6 s12 l4">
+                        <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">{{ nomChampionnat }}</label>
+                        <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
+                            <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Sans équipe</option>
+                            {% for equipe in infos.listeEquipes %}
+                                <option value="{{ equipe.idEquipe }}" {% if equipe.idEquipe in options.idsEquipesAssociees %}selected{% endif %}>Équipe {{ equipe.numero }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="row" style="margin-bottom: 0">
-                        <div class="col s12 m4">
-                            {{ form_row(form.isCompetiteur, {'id': 'cb_competiteur'}) }}
-                        </div>
-                        <div class="col s12 m4">
-                            {{ form_row(form.isCritFed, {'id': 'cb_crit_fed'}) }}
-                        </div>
-                        <div class="col s12 m4">
-                            {{ form_row(form.isLoisir, {'id': 'cb_loisir'}) }}
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 0">
-                        <div class="col s12 m4">
-                            {{ form_row(form.isJeune, {'id': 'cb_jeune'}) }}
-                        </div>
-                        <div class="col s12 m4">
-                            {{ form_row(form.isArchive, {'id': 'cb_archive'}) }}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-            {% if options.equipesAssociees is defined %}
-                <div class="row hide" id="equipesAssocieesForm">
-                    <h5 class="dark_blue" style="margin-top: 0;">Titularisations</h5>
-                    {% for nomChampionnat, infos in options.equipesAssociees %}
-                        <div class="form_div_list col m6 s12 l5{% if loop.index0 == 0 %} offset-l1{% endif %}">
-                            <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">Championnat "{{ nomChampionnat }}"</label>
-                            <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
-                                <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Sans équipe</option>
-                                {% for equipe in infos.listeEquipes %}
-                                    <option value="{{ equipe.idEquipe }}" {% if equipe.idEquipe in options.idsEquipesAssociees %}selected{% endif %}>Équipe {{ equipe.numero }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if not options.isArchived %}
+            <div style="margin-bottom: 0;">
+                <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
+                {% if (age != null and age > 18) or age == null %}
+                {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
+                    <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                {% else %}
+                {% if anneeCertificatMedical != null %}
+                    <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
+                {% else %}
+                {% if editMode %}
+                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
+                {% else %}
+                    <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
+                {% endif %}
+                {% endif %}
+                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                {% if anneeCertificatMedical != null %}
+                    <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
+                        Renouveler
+                    </button>
 
-            {% if not options.isArchived %}
-                <div style="margin-bottom: 0;">
-                    <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
-                    {% if (age != null and age > 18) or age == null %}
-                        {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
-                            <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
-                        {% else %}
-                            {% if anneeCertificatMedical != null %}
-                                <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
-                            {% else %}
-                                {% if editMode %}
-                                    <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
-                                {% else %}
-                                    <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
-                                {% endif %}
-                            {% endif %}
-                            {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
-                                {% if anneeCertificatMedical != null %}
-                                    <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
-                                        Renouveler
-                                    </button>
-
-                                    <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
-                                        <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
-                                            <div class="spinner-layer spinner-blue-only">
-                                                <div class="circle-clipper left">
-                                                    <div class="circle"></div>
-                                                </div><div class="gap-patch">
-                                                    <div class="circle"></div>
-                                                </div><div class="circle-clipper right">
-                                                    <div class="circle"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
-                                {% else %}
-                                    <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
-
-                                    <div class="row" style="margin-bottom: 0;">
-                                        <div class="col s12 m4 offset-m4" style="margin-top: 0;">
-                                            {{ form_row(form.anneeCertificatMedical) }}
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        {% endif %}
-                    {% else %}
-                        <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
-                    {% endif %}
-                </div>
-
-                {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
-                    <div class="row section">
-                        <h5 class="dark_blue">Contact</h5>
-
-                        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
-                            <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
-                            <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
-                                <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
-                            </button>
-                        {% endif %}
-
-                        <p class="red-text"><i>* Une adresse e-mail minimum requise</i></p>
-
-                        {% if app.request.getPathInfo ends with '/new' %}
-                            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
-                                <i class="material-icons">info</i> Un e-mail de bienvenue sera envoyé !
-                            </p>
-                        {% endif %}
-
-                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">mail</i> Adresse e-mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
-                        </div>
-                        {% if not options.createMode is defined %}
-                            <div class="col s12 m3 left-align">
-                                {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
+                    <div hidden id="loaderCertif{{ form.vars.value.idCompetiteur }}">
+                        <div class="preloader-wrapper small active" style="width: 27px; height: 27px;">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
                             </div>
-                        {% endif %}
-                    </div>
-                    <div class="row">
-                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">mail</i> Adresse e-mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                         </div>
-                        {% if not options.createMode is defined %}
-                            <div class="col s12 m3 left-align">
-                                {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="row">
-                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
-                        </div>
-                        {% if not options.createMode is defined %}
-                            <div class="col s12 m3 left-align">
-                                {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="row">
-                        <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
-                            <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
-                        </div>
-                        {% if not options.createMode is defined %}
-                            <div class="col s12 m3 left-align">
-                                {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
-                            </div>
-                        {% endif %}
                     </div>
 
-                    <script>
-                        $('#i_num').on('keypress', function(e) { if (e.which === 32) return false; });
-                        $('#i_num_2').on('keypress', function(e) { if (e.which === 32) return false; });
-                    </script>
+                    <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
+                {% else %}
+                    <p style="margin-bottom: 0;"><b>Renseignez l'année du dernier certificat médical valide</b></p>
+
+                    <div class="row" style="margin-bottom: 0;">
+                        <div class="col s12 m4 offset-m4" style="margin-top: 0;">
+                            {{ form_row(form.anneeCertificatMedical) }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+                {% else %}
+                    <p class="pastille green white-text reset" style="margin-bottom: 10px"><b>Membre mineur</b> (certificat facultatif)</p>
+                {% endif %}
+            </div>
+
+        {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
+            <div class="row section">
+                <h5 class="dark_blue">Contact</h5>
+
+                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
+                    <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
+                    <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
+                        <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
+                    </button>
                 {% endif %}
 
-                <div class="section" style="margin-bottom: 0;">
-                    <h5 class="dark_blue">Informations licence</h5>
+                <p class="orange-text"><i><i class="material-icons">mark_email_read</i> Une adresse e-mail minimum requise</i></p>
 
+                {% if app.request.getPathInfo ends with '/new' %}
+                    <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
+                        <i class="material-icons">info</i> Un e-mail de bienvenue sera envoyé !
+                    </p>
+                {% endif %}
+
+                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                    <b><i class="material-icons prefix">mail</i> Adresse e-mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
+                </div>
+                {% if not options.createMode is defined %}
+                    <div class="col s12 m3 left-align">
+                        {{ form_row(form.contactableMail, {'id': 'cb_c_mail'}) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                    <b><i class="material-icons prefix">mail</i> Adresse e-mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
+                </div>
+                {% if not options.createMode is defined %}
+                    <div class="col s12 m3 left-align">
+                        {{ form_row(form.contactableMail2, {'id': 'cb_c_mail_2'}) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                    <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
+                </div>
+                {% if not options.createMode is defined %}
+                    <div class="col s12 m3 left-align">
+                        {{ form_row(form.contactablePhoneNumber, {'id': 'cb_c_num'}) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                    <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
+                </div>
+                {% if not options.createMode is defined %}
+                    <div class="col s12 m3 left-align">
+                        {{ form_row(form.contactablePhoneNumber2, {'id': 'cb_c_num_2'}) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <script>
+                $('#i_num').on('keypress', function (e) {
+                    if (e.which === 32) return false;
+                });
+                $('#i_num_2').on('keypress', function (e) {
+                    if (e.which === 32) return false;
+                });
+            </script>
+        {% endif %}
+
+            <div class="section" style="margin-bottom: 0;">
+                <h5 class="dark_blue">Informations licence</h5>
+
+                {% if app.request.getPathInfo ends with '/new' %}
+                    <div class="row">
+                        <div class="col s12 hide-on-med-and-down">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row">
                     {% if app.request.getPathInfo ends with '/new' %}
-                        <div class="row">
-                            <div class="col s12 hide-on-med-and-down">
-                                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                    <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                                </p>
-                            </div>
+                        <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                            </p>
                         </div>
                     {% endif %}
 
-                    <div class="row">
-                        {% if app.request.getPathInfo ends with '/new' %}
-                            <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
-                                <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                    <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                                </p>
-                            </div>
+                    <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
+                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.licence) }}
+                        {% else %}
+                            {% if options.licence %}
+                                <span class="pastille blue centered">{{ options.licence }}</span>
+                            {% else %}
+                                <p style="color: red">Licence indéfinie</p>
+                            {% endif %}
                         {% endif %}
+                    </div>
 
-                        <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
-                            <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
-                            {% if type == 'backoffice' %}
-                                {{ form_row(form.licence) }}
+                    <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
+                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
+                        {% if type == 'backoffice' %}
+                            {{ form_row(form.classementOfficiel) }}
+                        {% else %}
+                            {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
+                                <p><i>Vous n'êtes pas compétiteur</i></p>
                             {% else %}
-                                {% if options.licence %}
-                                    <span class="pastille blue centered">{{ options.licence }}</span>
+                                {% if app.user.classementOfficiel %}
+                                    <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
                                 {% else %}
-                                    <p style="color: red">Licence indéfinie</p>
+                                    <p style="color: red">Classement indéfini</p>
                                 {% endif %}
                             {% endif %}
-                        </div>
+                        {% endif %}
+                    </div>
 
-                        <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif%} col_infos_licence">
-                            <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
-                            {% if type == 'backoffice' %}
-                                {{ form_row(form.classementOfficiel) }}
-                            {% else %}
-                                {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
-                                    <p><i>Vous n'êtes pas compétiteur</i></p>
-                                {% else %}
-                                    {% if app.user.classementOfficiel %}
-                                        <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
-                                    {% else %}
-                                        <p style="color: red">Classement indéfini</p>
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-                        </div>
-
-                        {% if type != 'backoffice' %}
-                            <div class="col s12 l3 m6 col_infos_licence">
-                                <p><b>Titularisation{{ equipesAssociees|length ? 's' : '' }}</b></p>
-                                {% if equipesAssociees|length and type != 'backoffice' %}
-                                    <ul class="collection">
-                                        {% for championnat, numero in equipesAssociees %}
-                                            <li class="collection-item"><b>{{ championnat }} :</b>
-                                                {% if numero %}
-                                                    Équipe n° {{ numero }}
-                                                {% else %}
-                                                    <i>Sans équipe</i>
-                                                {% endif %}
+                    {% if type != 'backoffice' %}
+                        <div class="col s12 l3 m6 col_infos_licence">
+                            <p><b>Titularisation{{ equipesAssociees|length ? 's' : '' }}</b></p>
+                            {% if equipesAssociees|length and type != 'backoffice' %}
+                                <ul class="collection">
+                                    {% for championnat, numero in equipesAssociees %}
+                                    <li class="collection-item"><b>{{ championnat }} :</b>
+                                        {% if numero %}
+                                            Équipe n° {{ numero }}
+                                        {% else %}
+                                            <i>Sans équipe</i>
+                                        {% endif %}
                                         {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <i class="grey-text">Aucune équipe associée</i>
-                                {% endif %}
-                            </div>
+                                </ul>
+                            {% else %}
+                                <i class="grey-text">Aucune équipe associée</i>
+                            {% endif %}
+                        </div>
 
-                            <div class="col s12 m6 l3 col_infos_licence">
-                                <p><b>Crit. fédéral</b></p>
-                                <span class="centered">
+                        <div class="col s12 m6 l3 col_infos_licence">
+                            <p><b>Crit. fédéral</b></p>
+                            <span class="centered">
                                     {% if isCritFed %}
                                         <i class="material-icons green-text">check</i> Je participe
-                                    {% else%}
+                                    {% else %}
                                         <i class="material-icons red-text">clear</i> Je ne participe pas
                                     {% endif %}
                                 </span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-
-            <div class="section input_file" style="margin-bottom: 0;">
-                <h5 class="dark_blue">Image de profil</h5>
-                <p style="margin-top: 0; margin-bottom: 0;"><i>Formats acceptés : <b>JPEG, PNG et GIF </b></i></p>
-                {{ form_row(form.imageFile) }}
-
-                <div class="avatarSectionDelete">
-                    {% if urlImage %}
-                        <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
-                            {% if type == 'backoffice' %}
-                                href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
-                            {% else %}
-                                href="{{ path('account.delete.avatar') }}"
-                            {% endif %}>
-                            <i class="material-icons">delete</i>
-                        </a>
-
+                        </div>
                     {% endif %}
-                    <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
                 </div>
             </div>
+        {% endif %}
 
-            {% if app.request.getPathInfo ends with '/new' %}
-                <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
-            {% endif %}
+        <div class="section input_file" style="margin-bottom: 0;">
+            <h5 class="dark_blue">Image de profil</h5>
+            <p style="margin-top: 0; margin-bottom: 0;"><i>Formats acceptés : <b>JPEG, PNG et GIF </b></i></p>
+            {{ form_row(form.imageFile) }}
 
-            <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index", { 'code': 'y' }) }}" class="btn waves-effect grey btn_gestion">Annuler</a>
-            <button
-                {% if editMode %}
+            <div class="avatarSectionDelete">
+                {% if urlImage %}
+                    <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
+                            {% if type == 'backoffice' %}
+                        href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
+                    {% else %}
+                        href="{{ path('account.delete.avatar') }}"
+                            {% endif %}>
+                        <i class="material-icons">delete</i>
+                    </a>
+
+                {% endif %}
+                <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
+            </div>
+        </div>
+
+        {% if app.request.getPathInfo ends with '/new' %}
+            <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
+        {% endif %}
+
+        <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
+            <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
+                <div class="divProfileCompletion red-text orange-darken-4">
+                    <p>
+                        <i class="material-icons red-text">phonelink_erase</i>
+                        <b>
+                            Vous n'êtes pas contactable par mail<span class="parSMS" hidden="hidden"> ni par SMS</span>
+                        </b>
+                    </p>
+                    <div class="champsManquants">
+                        <p><b>Vous ne pourrez pas :</b></p>
+                        <ul>
+                            <li id="pageContacter"><b>-</b> être contacté depuis la page <a href="{{ path('contact') }}">Contacter</a> <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li id="alertSelection"><b>-</b> être alerté par les capitaines pour vous demander de signaler votre disponibilité pour une journée <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li id="alertSelection"><b>-</b> être alerté par les capitaines de votre sélection <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
+                            <li><b>-</b> être alerté pour le renouvellement de votre certificat médical <b>(par mail uniquement)</b></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            let isNotContactableMail = '{{ form.vars.value.getFirstContactableMail() }}'.length === 0;
+            let isNotContactableSMS = '{{ form.vars.value.getFirstContactablePhoneNumber() }}'.length === 0;
+        </script>
+
+        <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index") }}" class="btn waves-effect grey btn_gestion">Annuler</a>
+        <button
+                {% if editMode and type == 'backoffice' %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
                 class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
-            </button>
+        </button>
         {{ form_end(form) }}
 
         {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and editMode %}
@@ -421,7 +454,8 @@
                     <label for="new_password_validate">Saisir de nouveau</label>
                 </div>
             </div>
-            <br><button id="btnEditPassword" class="btn btn_form waves-effect light-blue darken-1" disabled>Modifier</button>
+            <br>
+            <button id="btnEditPassword" class="btn btn_form waves-effect light-blue darken-1" disabled>Modifier</button>
         </form>
     </div>
 

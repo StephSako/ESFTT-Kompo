@@ -5,11 +5,11 @@
 {% block title %}Les disponibilités{% endblock %}
 
 {% block body %}
-
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
 
     <div class='container'>
-
         {% for message in app.flashes('success') %}
             {{ _flash.message(message, 'green') }}
         {% endfor %}

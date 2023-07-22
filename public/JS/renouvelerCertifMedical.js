@@ -3,21 +3,25 @@ function renouvelerCertifMedical(idCompetiteur, prenom, isFromAdmin) {
     if (r) {
         sendingRenouvelerCertifMedical(idCompetiteur);
         $.ajax({
-            url : '/backoffice/competiteur/renouveler/certificat/' + idCompetiteur,
-            type : 'POST',
-            dataType : 'json',
-            success : (response) => { endSendingRenouvelerCertifMedical(response, idCompetiteur, isFromAdmin, prenom) },
-            error : () => { endSendingRenouvelerCertifMedical({ status: false, message: 'Une erreur est survenue' }, idCompetiteur, isFromAdmin, prenom) }
+            url: '/backoffice/competiteur/renouveler/certificat/' + idCompetiteur,
+            type: 'POST',
+            dataType: 'json',
+            success: (response) => {
+                endSendingRenouvelerCertifMedical(response, idCompetiteur, isFromAdmin, prenom)
+            },
+            error: () => {
+                endSendingRenouvelerCertifMedical({status: false, message: 'Une erreur est survenue'}, idCompetiteur, isFromAdmin, prenom)
+            }
         });
     }
 }
 
-function sendingRenouvelerCertifMedical(idCompetiteur){
+function sendingRenouvelerCertifMedical(idCompetiteur) {
     $('#loaderCertif' + idCompetiteur).show()
     $('#btnCertif' + idCompetiteur).hide()
 }
 
-function endSendingRenouvelerCertifMedical(response, idCompetiteur, isFromAdmin, prenom){
+function endSendingRenouvelerCertifMedical(response, idCompetiteur, isFromAdmin, prenom) {
     if (!response.status) {
         M.toast({html: response.message})
         $('#btnCertif' + idCompetiteur).show()

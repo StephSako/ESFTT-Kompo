@@ -45,14 +45,14 @@ class SecurityController extends AbstractController
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(CompetiteurRepository $competiteurRepository,
-                                ChampionnatRepository $championnatRepository,
-                                EntityManagerInterface $em,
-                                SettingsRepository $settingsRepository,
-                                AuthenticationUtils $utils,
-                                RencontreRepository $rencontreRepository,
-                                UploadHandler $uploadHandler,
-                                DisponibiliteRepository $disponibiliteRepository,
+    public function __construct(CompetiteurRepository        $competiteurRepository,
+                                ChampionnatRepository        $championnatRepository,
+                                EntityManagerInterface       $em,
+                                SettingsRepository           $settingsRepository,
+                                AuthenticationUtils          $utils,
+                                RencontreRepository          $rencontreRepository,
+                                UploadHandler                $uploadHandler,
+                                DisponibiliteRepository      $disponibiliteRepository,
                                 UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
@@ -87,33 +87,42 @@ class SecurityController extends AbstractController
      * @param UtilController $utilController
      * @return RedirectResponse|Response
      */
-    public function edit(Request $request, UtilController $utilController){
-        if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-        else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+    public function edit(Request $request, UtilController $utilController)
+    {
+        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('account', [], $request->query->get('backoffice'));
+        if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
+        else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+        $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $this->championnatRepository->getAllChampionnats();
+        $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
 
-        // Disponibilités du joueur
-        $id = $championnat->getIdChampionnat();
-        $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-        $disposJoueurFormatted = null;
-        if ($this->getUser()->isCompetiteur()) {
-            $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
-                $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+        if (!$isBackoffice) {
+            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+
+            $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+
+            // Disponibilités du joueur
+            $id = $championnat->getIdChampionnat();
+            $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
+            if ($this->getUser()->isCompetiteur()) {
+                $disposJoueurFormatted = [];
+                foreach ($disposJoueur as $dispo) {
+                    $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
+                }
             }
+
+            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
-
-        $allChampionnats = $this->championnatRepository->findAll();
         $user = $this->getUser();
-
         $form = $this->createForm(CompetiteurType::class, $user, [
             'dateNaissanceRequired' => $this->getUser()->getDateNaissance() != null
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()){
+            if ($form->isValid()) {
                 try {
                     if ($user->getDateNaissance() > new DateTime()) $this->addFlash('fail', 'Date de naissance dans le futur');
                     else {
@@ -123,8 +132,8 @@ class SecurityController extends AbstractController
                         $this->addFlash('success', 'Informations modifiées');
                         return $this->redirectToRoute('account');
                     }
-                } catch(Exception $e){
-                    if ($e->getPrevious()->getCode() == "23000"){
+                } catch (Exception $e) {
+                    if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
@@ -145,14 +154,15 @@ class SecurityController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
-            'equipesAssociees' => $this->getUser()->getTableEquipesAssociees($allChampionnats),
-            'form' => $form->createView()
+            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
+            'equipesAssociees' => $equipesAssociees,
+            'form' => $form->createView(),
+            'isBackOffice' => $isBackoffice
         ]);
     }
 
     /**
-     * @Route("/compte/update_password", name="account.update.password")
+     * @Route("/compte/update-password", name="account.update.password")
      * @param Request $request
      * @return Response
      */
@@ -181,7 +191,7 @@ class SecurityController extends AbstractController
      */
     public function deleteAvatar(): Response
     {
-        if ($this->getUser() != null){
+        if ($this->getUser() != null) {
             $this->uploadHandler->remove($this->getUser(), 'imageFile');
             $this->getUser()->setAvatar(null);
             $this->getUser()->setImageFile(null);
@@ -198,7 +208,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/contact/forgotten_password", name="contact.reset.password", methods={"POST"})
+     * @Route("/login/contact/forgotten-password", name="contact.reset.password", methods={"POST"})
      * @param Request $request
      * @param UtilController $utilController
      * @param ContactController $contactController
@@ -213,14 +223,14 @@ class SecurityController extends AbstractController
             $username = $request->request->get('username');
             $competiteur = $this->competiteurRepository->findJoueurResetPassword($username, $mail);
 
-            if (!$competiteur){
+            if (!$competiteur) {
                 $response = new Response(json_encode(['message' => 'Ce pseudo et cet e-mail ne sont pas associés', 'success' => false]));
                 $response->headers->set('Content-Type', 'application/json');
                 return $response;
             }
 
             $data = $this->settingsRepository->find('mail-mdp-oublie')->getContent();
-            $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'PT' . $this->getParameter('time_reset_password_hour'). 'H');
+            $resetPasswordLink = $utilController->generateGeneratePasswordLink($competiteur->getIdCompetiteur(), 'PT' . $this->getParameter('time_reset_password_hour') . 'H');
             $str_replacers = [
                 'old' => ['[#lien_reset_password#]', '[#time_reset_password_hour#]'],
                 'new' => ["ce <a href=\"$resetPasswordLink\">lien</a>", $this->getParameter('time_reset_password_hour')]
@@ -239,46 +249,43 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login/forgotten_password", name="login.forgotten.password")
+     * @Route("/login/forgotten-password", name="login.forgotten.password")
      * @return Response
      */
     public function forgottenPassword(): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
-        else return $this->render('account/forgotten_password.html.twig', []);
+        else return $this->render('account/forgotten_password.html.twig');
     }
 
     /**
-     * @Route("/login/reset_password/{token}", name="login.reset.password")
+     * @Route("/login/reset-password/{token}", name="login.reset.password")
      * @param Request $request
      * @param string $token
+     * @param UtilController $utilController
      * @return Response
      * @throws Exception
      */
-    public function resetPassword(Request $request, string $token): Response
+    public function resetPassword(Request $request, UtilController $utilController, string $token): Response
     {
         if ($this->getUser() != null) return $this->redirectToRoute('index');
         else {
-            $tokenDecoded = base64_decode($token);
-            $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-            $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
-
-            $idCompetiteur = json_decode($decryption, true)['idCompetiteur'];
+            $tokenDecoded = $utilController->decryptToken($token);
+            $idCompetiteur = $tokenDecoded['idCompetiteur'];
             $competiteur = $this->competiteurRepository->find($idCompetiteur);
-            $dateValid = json_decode($decryption, true)['dateValidation'];
+            $dateValid = $tokenDecoded['dateValidation'];
 
             /** On vérifie que le lien de réinitialisation du mot de passe soit toujours actif **/
-            if ($dateValid <= (new DateTime())->getTimestamp()){
+            if ($dateValid <= (new DateTime())->getTimestamp()) {
                 $competiteur->setIsPasswordResetting(false);
                 $this->em->flush();
                 throw new Exception('Ce lien n\'est plus actif', 500);
-            }
-            /** Si le mot de passe a déjà été changé et que l'user est toujours dans les délais */
+            } /** Si le mot de passe a déjà été changé et que l'user est toujours dans les délais */
             else if (!$competiteur->isPasswordResetting()) throw new Exception('Le mot de passe a déjà été changé', 500);
 
             /** Formulaire soumis **/
             if ($request->request->get('new_password') && $request->request->get('new_password_validate')) {
-                if ($request->request->get('new_password') == $request->request->get('new_password_validate')){
+                if ($request->request->get('new_password') == $request->request->get('new_password_validate')) {
                     $competiteur
                         ->setIsPasswordResetting(false)
                         ->setPassword($this->encoder->encodePassword($competiteur, $request->get('new_password_validate')));

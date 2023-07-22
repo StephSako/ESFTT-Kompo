@@ -1,15 +1,19 @@
 function toggleCompoValidation(idRencontre) {
     sendingCompoValidation(idRencontre);
     $.ajax({
-        url : '/backoffice/rencontre/update/validation/' + idRencontre,
-        type : 'POST',
-        dataType : 'json',
-        success : function(response) { endSendingCompoValidation(response, idRencontre, true); },
-        error : function(error) { endSendingCompoValidation(error, idRencontre, false); }
+        url: '/backoffice/rencontre/update/validation/' + idRencontre,
+        type: 'POST',
+        dataType: 'json',
+        success: function (response) {
+            endSendingCompoValidation(response, idRencontre, true);
+        },
+        error: function (error) {
+            endSendingCompoValidation(error, idRencontre, false);
+        }
     });
 }
 
-function sendingCompoValidation(divSuffixe){
+function sendingCompoValidation(divSuffixe) {
     $('#preloader' + divSuffixe).show();
     $('#compoValidation' + divSuffixe).hide();
 }

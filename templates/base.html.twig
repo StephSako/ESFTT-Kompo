@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
-        <meta name="description" content="Kompo est un site interne de l'ESFTT permettant de gérer ses membres et les compositions d'équipes durant les journées de compétition">
-        <link rel="icon" href="https://www.esftt.com/favicon.ico?v3">
-        <title>{% block title %}{{ club_diminutif }} - Kompo{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{{ asset('fonts/material_icon.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('CSS/materialize-v1.0.0/materialize/css/materialize.min.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('CSS/style.css') }}" media="screen,projection"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lato.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lobster.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lobster_two.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lora.css') }}"/>
-        <script type="text/javascript" src="{{ asset('JS/jquery.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('CSS/materialize-v1.0.0/materialize/js/materialize.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('JS/script.min.js') }}"></script>
-        {% block style %}{% endblock %}
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="Kompo est un site interne de l'ESFTT permettant de gérer ses membres et les compositions d'équipes durant les journées de compétition">
+    <link rel="icon" href="https://www.esftt.com/favicon.ico?v3">
+    <title>{% block title %}{{ club_diminutif }} - Kompo{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ asset('fonts/material_icon.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('CSS/materialize-v1.0.0/materialize/css/materialize.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('CSS/style.css') }}" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lato.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lobster.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lobster_two.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('fonts/lora.css') }}"/>
+    <script type="text/javascript" src="{{ asset('JS/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('CSS/materialize-v1.0.0/materialize/js/materialize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/script.min.js') }}"></script>
+    {% block style %}{% endblock %}
+</head>
 
-    <body>
-        <div id="wrap">
-            <div id="main">
-                {% block body %}{% endblock %}
-            </div>
+<body>
+<div id="wrap">
+    <div id="main">
+        {% block body %}{% endblock %}
+    </div>
 
-            {% include('components/footer.html.twig') %}
-        </div>
-    </body>
+    {% include('components/footer.html.twig') %}
+</div>
+</body>
 </html>

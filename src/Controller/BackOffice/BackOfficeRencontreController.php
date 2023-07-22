@@ -3,7 +3,6 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\UtilController;
-use App\Entity\Competiteur;
 use App\Entity\Rencontre;
 use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
@@ -20,24 +19,20 @@ class BackOfficeRencontreController extends AbstractController
     private $em;
     private $rencontreRepository;
     private $championnatRepository;
-    private $utilController;
 
     /**
      * BackOfficeController constructor.
      * @param RencontreRepository $rencontreRepository
-     * @param UtilController $utilController
      * @param ChampionnatRepository $championnatRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(RencontreRepository $rencontreRepository,
-                                UtilController $utilController,
-                                ChampionnatRepository $championnatRepository,
+    public function __construct(RencontreRepository    $rencontreRepository,
+                                ChampionnatRepository  $championnatRepository,
                                 EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
-        $this->utilController = $utilController;
     }
 
     /**
@@ -57,10 +52,10 @@ class BackOfficeRencontreController extends AbstractController
      * @Route("/backoffice/rencontre/edit/{idRencontre}", name="backoffice.rencontre.edit", requirements={"idRencontre"="\d+"})
      * @param int $idRencontre
      * @param Request $request
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
      */
-    public function edit(int $idRencontre, Request $request): Response
+    public function edit(int $idRencontre, Request $request, UtilController $utilController): Response
     {
         if (!($rencontre = $this->rencontreRepository->find($idRencontre))) {
             $this->addFlash('fail', 'Rencontre inexistante');
@@ -71,12 +66,12 @@ class BackOfficeRencontreController extends AbstractController
 
         $journees = $rencontre->getIdChampionnat()->getJournees()->toArray();
         $journee = $rencontre->getIDJournee();
-        $posJournee = array_keys(array_filter($journees, function($journeeChamp) use ($journee) {
+        $posJournee = array_keys(array_filter($journees, function ($journeeChamp) use ($journee) {
             return $journeeChamp->getDateJournee() == $journee->getDateJournee();
-        }))[0]+=1;
+        }))[0] += 1;
 
-        if ($form->isSubmitted()){
-            if ($form->isValid()){
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
                 try {
                     /** Si l'équipe est exemptée, on remet les champs à zéro et on vide la composition d'équipe */
                     if ($rencontre->isExempt()) {
@@ -85,7 +80,7 @@ class BackOfficeRencontreController extends AbstractController
                         $rencontre->setReporte(false);
                         $rencontre->emptyCompo();
                         $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
-                        $rencontre->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
+                        $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
 
                         $this->em->flush();
                         $this->addFlash('success', 'Rencontre modifiée');
@@ -112,7 +107,7 @@ class BackOfficeRencontreController extends AbstractController
                             if ($journeeBefore && $journeeBefore->getIdJournee() > $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être ultèrieure ou égale à la date de journées suivantes');
                             else if ($journeeAfter && $journeeAfter->getIdJournee() < $rencontre->getIdJournee()->getIdJournee()) $this->addFlash('fail', 'La date de report ne peut pas être postèrieure ou égale à la date de journées précédentes');
                             else {
-                                $rencontre->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
+                                $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
                                 $this->em->flush();
                                 $this->addFlash('success', 'Rencontre modifiée');
                                 return $this->redirectToRoute('backoffice.rencontres', [
@@ -121,7 +116,7 @@ class BackOfficeRencontreController extends AbstractController
                             }
                         } else {
                             $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
-                            $rencontre->setLastUpdate($this->utilController->getAdminUpdateLog('Modifiée par '));
+                            $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
                             $this->em->flush();
                             $this->addFlash('success', 'Rencontre modifiée');
                             return $this->redirectToRoute('backoffice.rencontres', [
@@ -129,7 +124,7 @@ class BackOfficeRencontreController extends AbstractController
                             ]);
                         }
                     }
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
                     else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }

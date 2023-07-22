@@ -1,18 +1,22 @@
 function importJoueursFromExcel(file) {
     $.ajax({
-        url : '/backoffice/competiteurs/import-file/read',
-        type : 'POST',
+        url: '/backoffice/competiteurs/import-file/read',
+        type: 'POST',
         data: file,
         processData: false,
         contentType: false,
         cache: false,
-        dataType:'json',
-        success : function(responseTemplate) { endSendingImportJoueursFromExcel(responseTemplate, false); },
-        error : function() { endSendingImportJoueursFromExcel("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide, utilisez le template fourni dans Instructions !</span>", true); }
+        dataType: 'json',
+        success: function (responseTemplate) {
+            endSendingImportJoueursFromExcel(responseTemplate, false);
+        },
+        error: function () {
+            endSendingImportJoueursFromExcel("<span class='pastille reset red lighten-1 white-text'>Le document importé n\'est pas valide, utilisez le template fourni dans Instructions !</span>", true);
+        }
     });
 }
 
-function sendingImportJoueursFromExcel(){
+function sendingImportJoueursFromExcel() {
     $('a#retourMembres').addClass('hide');
     $('div#tableJoueursImportesLoader').removeClass('hide');
     $('div#tableJoueursImportes').addClass('hide');
@@ -21,7 +25,7 @@ function sendingImportJoueursFromExcel(){
     $('input#excelDocument').prop('disabled', true);
 }
 
-function endSendingImportJoueursFromExcel(responseTemplate, isError){
+function endSendingImportJoueursFromExcel(responseTemplate, isError) {
     if (isError) $('a#retourMembres').removeClass('hide');
     $('div#tableJoueursImportesLoader').addClass('hide');
     $('div#tableJoueursImportes').removeClass('hide');

@@ -6,8 +6,9 @@
 {% block title %}Créer une division{% endblock %}
 
 {% block body %}
-
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
 
     <div class="container">
         {% for message in app.flashes('fail') %}
@@ -15,7 +16,7 @@
         {% endfor %}
 
         {{ form_errors(form) }}
-
+        
         {{ _division.form(form, 'Créer', false, hasChampionnats) }}
     </div>
 

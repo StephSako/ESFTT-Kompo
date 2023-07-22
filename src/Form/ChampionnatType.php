@@ -6,8 +6,8 @@ use App\Entity\Championnat;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,9 +26,9 @@ class ChampionnatType extends AbstractType
             ])
             ->add('limiteBrulage', IntegerType::class, [
                 'label' => false,
-                'required' => true,
+                'required' => false,
                 'attr' => [
-                    'min' => 1,
+                    'min' => 0,
                     'max' => 4
                 ]
             ])
@@ -40,21 +40,21 @@ class ChampionnatType extends AbstractType
                     'max' => 10
                 ]
             ])
-            ->add('j2Rule', CheckboxType::class,[
+            ->add('j2Rule', CheckboxType::class, [
                 'label' => ' ',
                 'required' => false
             ])
-            ->add('organismePere', ChoiceType::class,[
+            ->add('organismePere', ChoiceType::class, [
                 'label' => ' ',
                 'choices' => $options['organismesOptGroup'],
                 'required' => false,
                 'placeholder' => 'Définir vide'
             ])
-            ->add('compoSorted', CheckboxType::class,[
+            ->add('compoSorted', CheckboxType::class, [
                 'label' => ' ',
                 'required' => false
             ])
-            ->add('periodicite', ChoiceType::class,[
+            ->add('periodicite', ChoiceType::class, [
                 'label' => ' ',
                 'choices' => Championnat::PERIODICITE,
                 'required' => true

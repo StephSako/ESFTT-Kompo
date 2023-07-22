@@ -4,8 +4,9 @@
 {% import 'macros/flash.html.twig' as _flash %}
 
 {% block body %}
-
-    {{ include('components/navbar_backoffice.html.twig') }}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
 
     <div class='container center'>
 
@@ -56,7 +57,13 @@
                             </td>
                             <td>{{ championnat.nbJournees }} journée{% if championnat.nbJournees > 1 %}s{% endif %}</td>
                             <td>{{ championnat.periodicite ? 'Phase' : 'Saison' }}</td>
-                            <td>Après {{ championnat.limiteBrulage }} journée{% if championnat.nbJournees > 1 %}s{% endif %}</td>
+                            <td>
+                                {% if championnat.limiteBrulage %}
+                                    Après {{ championnat.limiteBrulage }} journée{% if championnat.nbJournees > 1 %}s{% endif %}
+                                {% else %}
+                                    <i>Pas de brûlage</i>
+                                {% endif %}
+                            </td>
                             <td>
                                 <i class='material-icons'>{% if championnat.j2Rule %}check{% else %}clear{% endif %}</i>
                             </td>
