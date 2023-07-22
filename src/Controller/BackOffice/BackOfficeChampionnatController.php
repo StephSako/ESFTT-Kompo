@@ -45,7 +45,7 @@ class BackOfficeChampionnatController extends AbstractController
     public function index(): Response
     {
         return $this->render('backoffice/championnat/index.html.twig', [
-            'championnats' => $this->championnatRepository->findBy([], ['nom' => 'ASC'])
+            'championnats' => $this->championnatRepository->getAllChampionnats()
         ]);
     }
 

@@ -3,9 +3,9 @@
 <div class="navbar-fixed">
     <nav class="nav-extended">
         <div class="nav-wrapper navbar-general">
-            <div class="esftt_logo" {% if app.user %}hidden{% endif %}>
+            <a href="#" class="esftt_logo" {% if app.user %}hidden{% endif %}>
                 <img class="brand-logo" width="180px" src="{{ asset('images/esftt-logo.png') | imagine_filter('logo_esftt') }}" alt="logo {{ club_diminutif }}">
-            </div>
+            </a>
 
             {% if linkNextJournee is defined and linkNextJournee %}
                 <a class="right btn-floating light-blue tooltipped pulse hide-on-large-only hide-on-extra-large-only" href="{{ linkNextJournee }}" data-position="left" data-tooltip="Aller à la journée à venir">
@@ -43,7 +43,7 @@
                                 {% endif %}
                                 <span style="font-family: 'Lora', serif;">J</span>
                                 {{ i+1 }}
-                                {% if not journeePassee(journee) %}
+                                {% if not journee.isOver %}
                                     {% if journee.undefined %}
                                         <i class="journee_passee material-icons red-text right" style="padding-top: 2px">event_busy</i>
                                     {% else %}
@@ -125,7 +125,7 @@
                 <li class="journee li_in_line {% if app.request.getPathInfo == '/journee/' ~ championnat.idChampionnat ~ '/' ~ journee.idJournee or journee.idJournee == idJourneeCompo %}active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path('journee.show', {type: championnat.idChampionnat, idJournee: journee.idJournee}) }}">
                         <span>Journée {{ i+1 }}</span>
-                        {% if not journeePassee(journee) %}
+                        {% if not journee.isOver %}
                             {% if journee.undefined %}
                                 <i class="material-icons red-text">event_busy</i>
                             {% else %}

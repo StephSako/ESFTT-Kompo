@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use App\Entity\Journee;
 use Cocur\Slugify\Slugify;
 use DateTime;
 use Twig\Extension\AbstractExtension;
@@ -135,15 +134,6 @@ class AppExtension extends AbstractExtension
         $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 ? 's' : '');
 
         return $str;
-    }
-
-    /**
-     * @param Journee $journee
-     * @return bool
-     */
-    public function journeePassee(Journee $journee): bool
-    {
-        return !$journee->getUndefined() && intval((new DateTime())->diff($journee->getDateJournee())->format('%R%a')) < 0;
     }
 
     /**

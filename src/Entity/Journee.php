@@ -125,6 +125,15 @@ class Journee
         return $this;
     }
 
+    public function isOver(): bool
+    {
+        return !$this->getUndefined()
+            && intval((new DateTime())->diff($this->getDateJournee())->format('%R%a')) < 0
+            && !count(array_filter($this->getRencontres()->toArray(), function ($r) {
+                return !$r->isOver();
+            }));
+    }
+
     /**
      * @return bool
      */
@@ -144,18 +153,6 @@ class Journee
     }
 
     /**
-     * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
-     */
-    public function getLatestDate(): DateTime
-    {
-        $datesEtReportsJournee = array_map(function ($rencontre) {
-            return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
-        }, $this->getRencontres()->toArray());
-
-        return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
-    }
-
-    /**
      * @return mixed
      */
     public function getRencontres()
@@ -171,6 +168,18 @@ class Journee
     {
         $this->rencontres = $rencontres;
         return $this;
+    }
+
+    /**
+     * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
+     */
+    public function getLatestDate(): DateTime
+    {
+        $datesEtReportsJournee = array_map(function ($rencontre) {
+            return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
+        }, $this->getRencontres()->toArray());
+
+        return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
     }
 
     /**

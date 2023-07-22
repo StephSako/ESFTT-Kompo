@@ -112,8 +112,8 @@
             <div class="row hide" id="equipesAssocieesForm">
                 <h5 class="dark_blue" style="margin-top: 0;">Titularisations</h5>
                 {% for nomChampionnat, infos in options.equipesAssociees %}
-                    <div class="form_div_list col m6 s12 l5{% if loop.index0 == 0 %} offset-l1{% endif %}">
-                        <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">Championnat "{{ nomChampionnat }}"</label>
+                    <div class="form_div_list col m6 s12 l4">
+                        <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">{{ nomChampionnat }}</label>
                         <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
                             <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Sans équipe</option>
                             {% for equipe in infos.listeEquipes %}

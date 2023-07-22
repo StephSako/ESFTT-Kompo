@@ -1,4 +1,4 @@
-{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers) %}
+{% macro table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, type, nbMinJoueurs, nbMaxSelectedJoueurs, nomModal, hasCompos, nbMaxPotentielPlayers, isOver) %}
     {% import 'macros/modalContact.html.twig' as _modalContact %}
 
     {{ _self.labelDispoSelec(selectedPlayers|length, nbDispos, nbMinJoueurs, nbMaxSelectedJoueurs, hasCompos, false, nbMaxPotentielPlayers) }}
@@ -64,7 +64,7 @@
         <div class="btnsDispos">
             <a href="#{{ nomModal }}" class="btn-small modal-trigger btn waves-effect blue" style="margin-top: 10px; margin-bottom: 10px;">Tout afficher</a>
 
-            {% if nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
+            {% if not isOver and nbNonDeclares > 0 and ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) %}
                 <a href="#modalAlertNoDispoSet{{ nomModal }}" id="modalAlertNoDispoSet{{ nomModal }}Style" class="modalAlertNoDispoSet btn-small btn waves-effect blue lighten-2 modal-trigger orange darken-1"><i class="material-icons">voice_over_off</i></a>
             {% endif %}
         </div>

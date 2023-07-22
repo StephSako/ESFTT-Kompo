@@ -77,7 +77,7 @@ class ContactController extends AbstractController
 
             $journees = $championnat->getJournees()->toArray();
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
-            $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
+            $allChampionnats = $this->championnatRepository->getAllChampionnats();
         }
 
         $competiteurs = $this->competiteurRepository->findBy(['isArchive' => false], ['nom' => 'ASC', 'prenom' => 'ASC',]);

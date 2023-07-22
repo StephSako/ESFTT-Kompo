@@ -49,7 +49,7 @@
             {% if journeesWithReportedRencontresFormatted %}
                 <div class="divProfileCompletionCol center">
                     <div class="divProfileCompletion orange-text text-darken-4">
-                        <p><i class="material-icons">update</i><b> Rencontres décalées - J{{ idJournee }}</b></p>
+                        <p><i class="material-icons">update</i><b> Rencontre{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} décalée{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} - J{{ idJournee }}</b></p>
 
                         <div class="champsManquants">
                             <ul>
@@ -496,7 +496,7 @@
                     </div>
                     <div class="collapsible-body">
                         <div class="center-align">
-                            {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers) }}
+                            {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'mobile', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
                         </div>
                     </div>
                 </li>
@@ -525,7 +525,7 @@
                 <div class="hide-on-med-and-down">
                     {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
                 </div>
-                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers) }}
+                {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
             </div>
         </div>
 

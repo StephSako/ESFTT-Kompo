@@ -93,7 +93,10 @@ class SecurityController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = $equipesAssociees = null;
+        $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $this->championnatRepository->getAllChampionnats();
+        $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
+
         if (!$isBackoffice) {
             if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
             else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
@@ -110,8 +113,6 @@ class SecurityController extends AbstractController
                 }
             }
 
-            $allChampionnats = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
-            $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
             $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
         $user = $this->getUser();
