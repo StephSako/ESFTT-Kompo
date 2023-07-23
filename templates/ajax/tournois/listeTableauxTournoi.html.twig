@@ -1,0 +1,26 @@
+<table class="striped centered responsive-table">
+    <thead>
+    <tr>
+        <th class="description"></th>
+        <th>Coût</th>
+        <th>Type</th>
+        <th>Dotation</th>
+        <th>Genres</th>
+        <th>Licence</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tableau in tableaux %}
+        <tr>
+            <td class="description">
+                <b>{{ tableau.name ~ (tableau.description ? ((tableau.name ? ' - ' : '') ~ tableau.description) : '') }}</b>
+            </td>
+            <td>{{ tableau.cout }}</td>
+            <td>{{ tableau.type }}</td>
+            <td>{{ tableau.dotation }}</td>
+            <td>{{ tableau.genres }}</td>
+            <td>{{ tableau.typesLicences }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

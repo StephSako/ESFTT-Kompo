@@ -7,8 +7,35 @@ use Exception;
 
 class Tableau
 {
-    function __construct($item) {
-        $this->setFee($item['fee']);
+    /** @var string */
+    private $name;
+    /**
+     * I : individuel
+     * E : double
+     * @var string
+     */
+    private $type;
+    /** @var string|null */
+    private $description;
+    /** @var DateTime|null */
+    private $date;
+    /** @var string|null */
+    private $time;
+    /** @var number */
+    private $cout;
+    /** @var number */
+    private $dotation;
+    /** @var string */
+    private $genres;
+    /** @var string */
+    private $typesLicences;
+    /** @var number */
+    private $id;
+
+    function __construct($item)
+    {
+        $this->setId($item['id']);
+        $this->setCout($item['fee']);
         try {
             $this->setDate(new DateTime($item['date']));
         } catch (Exception $e) {
@@ -19,32 +46,73 @@ class Tableau
         $this->setDotation($item['endowment']);
         $this->setName($item['name']);
         $this->setType($item['type']);
+        $this->setGenres($item);
+        $this->setTypesLicences($item);
     }
 
-    /** @var string */
-    private $name;
+    /**
+     * @return number
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
-     * I : individuel
-     * E : double
-     * @var string
+     * @param number $id
+     * @return Tableau
      */
-    private $type;
+    public function setId($id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
 
-    /** @var string|null */
-    private $description;
+    /**
+     * @return string
+     */
+    public function getTypesLicences(): string
+    {
+        return $this->typesLicences;
+    }
 
-    /** @var DateTime|null */
-    private $date;
+    /**
+     * @param array $item
+     * @return Tableau
+     */
+    public function setTypesLicences(array $item): self
+    {
+        if (key_exists('licenceTypes', $item)) {
+            $this->typesLicences = implode(array_map(function ($g) {
+                return $g['name'];
+            }, $item['licenceTypes']), '/');
+        } else $this->typesLicences = '';
 
-    /** @var string|null */
-    private $time;
+        return $this;
+    }
 
-    /** @var number */
-    private $fee;
+    /**
+     * @return string
+     */
+    public function getGenres(): string
+    {
+        return $this->genres;
+    }
 
-    /** @var number */
-    private $dotation;
+    /**
+     * @param array $item
+     * @return Tableau
+     */
+    public function setGenres(array $item): self
+    {
+        if (key_exists('genders', $item)) {
+            $this->genres = implode(array_map(function ($g) {
+                return $g['name'][0];
+            }, $item['genders']), '/');
+        } else $this->genres = 'Indéfini';
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -144,29 +212,29 @@ class Tableau
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getFee(): float
+    public function getCout(): string
     {
-        return floatval($this->fee/100);
+        return floatval($this->cout / 100) . '€';
     }
 
     /**
-     * @param number $fee
+     * @param number $cout
      * @return Tableau
      */
-    public function setFee($fee): self
+    public function setCout($cout): self
     {
-        $this->fee = $fee;
+        $this->cout = $cout;
         return $this;
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getDotation(): float
+    public function getDotation(): string
     {
-        return floatval($this->dotation/100);
+        return $this->dotation ? floatval($this->dotation / 100) . '€' : '';
     }
 
     /**

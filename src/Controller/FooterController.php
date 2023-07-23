@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\TournoiFFTT\Tableau;
 use App\Entity\TournoiFFTT\Tournoi;
 use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
@@ -9,6 +10,7 @@ use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,13 +44,13 @@ class FooterController extends AbstractController
      * @param HttpClientInterface $clientHTTP
      * @param EntityManagerInterface $em
      */
-    public function __construct(ChampionnatRepository $championnatRepository,
+    public function __construct(ChampionnatRepository   $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
-                                CompetiteurRepository $competiteurRepository,
-                                RencontreRepository $rencontreRepository,
-                                SettingsRepository $settingsRepository,
-                                HttpClientInterface $clientHTTP,
-                                EntityManagerInterface $em)
+                                CompetiteurRepository   $competiteurRepository,
+                                RencontreRepository     $rencontreRepository,
+                                SettingsRepository      $settingsRepository,
+                                HttpClientInterface     $clientHTTP,
+                                EntityManagerInterface  $em)
     {
         $this->em = $em;
         $this->rencontreRepository = $rencontreRepository;
@@ -79,7 +81,7 @@ class FooterController extends AbstractController
         $disposJoueurFormatted = null;
         if ($this->getUser()->isCompetiteur()) {
             $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
+            foreach ($disposJoueur as $dispo) {
                 $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
             }
         }
@@ -90,7 +92,7 @@ class FooterController extends AbstractController
 
         $form = null;
         $isAdmin = $this->getUser()->isAdmin();
-        if ($isAdmin){
+        if ($isAdmin) {
             $form = $this->createForm(SettingsType::class, $setting, [
                 'show_title_form' => true
             ]);
@@ -139,7 +141,7 @@ class FooterController extends AbstractController
         $disposJoueurFormatted = null;
         if ($this->getUser()->isCompetiteur()) {
             $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
+            foreach ($disposJoueur as $dispo) {
                 $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
             }
         }
@@ -172,7 +174,7 @@ class FooterController extends AbstractController
         $disposJoueurFormatted = null;
         if ($this->getUser()->isCompetiteur()) {
             $disposJoueurFormatted = [];
-            foreach($disposJoueur as $dispo) {
+            foreach ($disposJoueur as $dispo) {
                 $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
             }
         }
@@ -200,13 +202,13 @@ class FooterController extends AbstractController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getListeTournois(Request $request): JsonResponse {
-        $errors = null;
+    public function getListeTournois(Request $request): JsonResponse
+    {
         $tournois = [];
         try {
             $response = $this->clientHTTP->request(
                 'GET',
-                $this->getParameter('url_get_tournois') . '?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=2023-05-29T15:24:57&endDate[before]=2023-12-31T23:59:58',
+                $this->getParameter('url_get_tournois') . '/api/tournament_requests?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=' . (new DateTime())->format('Y-m-d\Th:i:s') . '&endDate[before]=' . date('Y') . '-12-31T23:59:58',
                 [
                     'headers' => [
                         'Accept' => '*/*',
@@ -224,11 +226,75 @@ class FooterController extends AbstractController
                 return new Tournoi($tournoi);
             }, $content["hydra:member"]);
         } catch (Exception $e) {
+        }
+
+        return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
+            'tournois' => $tournois
+        ))->getContent());
+    }
+
+    /**
+     * Renvoie la liste des tableaux d'un tournoi selon l'id du tournoi passé en paramètre
+     * @Route("/liste/tableaux/tournois", name="tournois.tableaux", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getDetailsTableauxTournoi(Request $request): JsonResponse
+    {
+        $tableaux = [];
+        try {
+            $response = $this->clientHTTP->request(
+                'GET',
+                $this->getParameter('url_get_tournois') . '/api/tournament_requests/' . $request->get('id'),
+                [
+                    'headers' => [
+                        'Accept' => '*/*',
+                        'Accept-Encoding' => 'gzip, deflate, br',
+                        'Connection' => 'keep-alive',
+                        'Referer' => $this->getParameter('referer_get_tournois'),
+                        'Origin' => $this->getParameter('origin_get_tournois'),
+                        'Host' => $this->getParameter('host_get_tournois'),
+                    ]
+                ]
+            );
+            $content = $response->toArray();
+
+            $tableaux = array_map(function ($tournoi) {
+                return new Tableau($tournoi);
+            }, $content["tables"]);
+        } catch (Exception $e) {
             dump($e);
         }
 
-        return new JsonResponse($this->render('ajax/listeTournois.html.twig', array(
-            'tournois' => $tournois
+        return new JsonResponse($this->render('ajax/tournois/listeTableauxTournoi.html.twig', array(
+            'tableaux' => $tableaux
         ))->getContent());
+    }
+
+    /**
+     * @param array $typesLicences
+     * @return string
+     */
+    public function getTypesLicences(array $typesLicences): string
+    {
+        return implode(array_map(function ($g) {
+            return $g['name'];
+        }, $typesLicences), '/');
+    }
+
+    /**
+     * @param array $genres
+     * @return string
+     */
+    public function setGenres(array $genres): string
+    {
+        return implode(array_map(function ($g) {
+            return $g['name'];
+        }, $genres), '/');
     }
 }

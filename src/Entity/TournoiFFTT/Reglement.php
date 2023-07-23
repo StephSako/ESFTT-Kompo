@@ -2,24 +2,21 @@
 
 namespace App\Entity\TournoiFFTT;
 
-use DateTime;
-
 class Reglement
 {
-    function __construct($item) {
-        $this->setUrl($item['url']);
-        $this->setMimeType($item['mimeType']);
-        $this->setOriginalFilename($item['originalFilename']);
-    }
-
     /** @var string */
     private $originalFilename;
-
     /** @var string */
     private $mimeType;
-
     /** @var string */
     private $url;
+
+    function __construct($item)
+    {
+        $this->setUrl($item['url'] ?? '');
+        $this->setMimeType($item['mimeType'] ?? '');
+        $this->setOriginalFilename($item['originalFilename'] ?? '');
+    }
 
     /**
      * @return string

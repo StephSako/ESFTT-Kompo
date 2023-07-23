@@ -7,9 +7,34 @@ use Exception;
 
 class Tournoi
 {
-    function __construct($item) {
+    /** @var string */
+    private $id;
+    /** @var string */
+    private $type;
+    /** @var DateTime|null */
+    private $startDate;
+    /** @var DateTime|null */
+    private $endDate;
+    /** @var string */
+    private $clubName;
+    /** @var string|null */
+    private $dotationTotale;
+    /** @var Adresse */
+    private $address;
+    /** @var string */
+    private $name;
+    /** @var Reglement */
+    private $reglement;
+    /** @var Reglement */
+    private $autreFichier;
+    /** @var Tableau[] */
+    private $tableaux;
+
+    function __construct($item)
+    {
+        $this->setDotationTotale($item['endowment']);
         $this->setAddress(new Adresse($item['address']));
-        $this->setId($item['@id']);
+        $this->setId($item['id']);
         $this->setName($item['name']);
         try {
             $this->setStartDate(new DateTime($item['startDate']));
@@ -22,33 +47,87 @@ class Tournoi
             $this->setEndDate(null);
         }
         $this->setReglement(new Reglement($item['rules']));
+        $this->setAutreFichier(new Reglement($item['engagmentSheet']));
         $this->setClubName($item['club']['name']);
         $this->setTableaux($item['tables']);
+        $this->setType($item['type']);
     }
 
-    /** @var string */
-    private $id;
+    /**
+     * @return Reglement
+     */
+    public function getAutreFichier(): Reglement
+    {
+        return $this->autreFichier;
+    }
 
-    /** @var DateTime|null */
-    private $startDate;
+    /**
+     * @param Reglement $autreFichier
+     * @return Tournoi
+     */
+    public function setAutreFichier(Reglement $autreFichier): Tournoi
+    {
+        $this->autreFichier = $autreFichier;
+        return $this;
+    }
 
-    /** @var DateTime|null */
-    private $endDate;
+    /**
+     * @return string|null
+     */
+    public function getDotationTotale(): ?string
+    {
+        return $this->dotationTotale ? floatval($this->dotationTotale / 100) . '€' : '';
+    }
 
-    /** @var string */
-    private $clubName;
+    /**
+     * @param string|null $dotationTotale
+     * @return Tournoi
+     */
+    public function setDotationTotale(?string $dotationTotale): Tournoi
+    {
+        $this->dotationTotale = $dotationTotale;
+        return $this;
+    }
 
-    /** @var Adresse */
-    private $address;
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
-    /** @var string */
-    private $name;
-
-    /** @var Reglement */
-    private $reglement;
-
-    /** @var Tableau[] */
-    private $tableaux;
+    /**
+     * @param string $type
+     * @return Tournoi
+     */
+    public function setType(string $type): Tournoi
+    {
+        switch ($type) {
+            case 'I':
+                $this->type = 'International';
+                break;
+            case 'A':
+                $this->type = 'National A';
+                break;
+            case 'B':
+                $this->type = 'National B';
+                break;
+            case 'R':
+                $this->type = 'Régional';
+                break;
+            case 'D':
+                $this->type = 'Départemental';
+                break;
+            case 'P':
+                $this->type = 'Promotionnel';
+                break;
+            default:
+                $this->type = 'Indéfini';
+                break;
+        }
+        return $this;
+    }
 
     /**
      * @return string
