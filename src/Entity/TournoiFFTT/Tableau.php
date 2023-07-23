@@ -216,7 +216,7 @@ class Tableau
      */
     public function getCout(): string
     {
-        return floatval($this->cout / 100) . '€';
+        return number_format(floatval($this->cout / 100), 0, ',', ' ') . '€';
     }
 
     /**
@@ -234,7 +234,7 @@ class Tableau
      */
     public function getDotation(): string
     {
-        return $this->dotation ? floatval($this->dotation / 100) . '€' : '';
+        return $this->dotation ? number_format(floatval($this->dotation / 100), 0, ',', ' ') . '€' : '';
     }
 
     /**

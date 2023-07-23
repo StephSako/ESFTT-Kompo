@@ -30,7 +30,7 @@ html, body {
 
 #main {
   position: relative;
-  padding-bottom: 75px;
+  padding-bottom: 110px;
 }
 
 .card-panel {
@@ -1411,7 +1411,7 @@ a.reload_ranking {
 }
 
 #listTournois .collapsible-body .col.sectQuote {
-  padding: 0;
+  padding: 0 5px 0 0;
 }
 #listTournois .collapsible-body .card {
   border-radius: 10px;
@@ -1650,6 +1650,10 @@ blockquote {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
+  }
+
+  #listTournois .collapsible blockquote#reglement {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 550px) {

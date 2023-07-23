@@ -29,6 +29,8 @@ class Tournoi
     private $autreFichier;
     /** @var Tableau[] */
     private $tableaux;
+    /** @var string|null */
+    private $page;
 
     function __construct($item)
     {
@@ -51,6 +53,25 @@ class Tournoi
         $this->setClubName($item['club']['name']);
         $this->setTableaux($item['tables']);
         $this->setType($item['type']);
+        $this->setPage($item['page']);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPage(): ?string
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param string|null $page
+     * @return Tournoi
+     */
+    public function setPage(?string $page): self
+    {
+        $this->page = $page;
+        return $this;
     }
 
     /**
@@ -65,7 +86,7 @@ class Tournoi
      * @param Reglement $autreFichier
      * @return Tournoi
      */
-    public function setAutreFichier(Reglement $autreFichier): Tournoi
+    public function setAutreFichier(Reglement $autreFichier): self
     {
         $this->autreFichier = $autreFichier;
         return $this;
@@ -76,14 +97,14 @@ class Tournoi
      */
     public function getDotationTotale(): ?string
     {
-        return $this->dotationTotale ? floatval($this->dotationTotale / 100) . '€' : '';
+        return $this->dotationTotale ? number_format(floatval($this->dotationTotale / 100), 0, ',', ' ') . '€' : '';
     }
 
     /**
      * @param string|null $dotationTotale
      * @return Tournoi
      */
-    public function setDotationTotale(?string $dotationTotale): Tournoi
+    public function setDotationTotale(?string $dotationTotale): self
     {
         $this->dotationTotale = $dotationTotale;
         return $this;
@@ -101,7 +122,7 @@ class Tournoi
      * @param string $type
      * @return Tournoi
      */
-    public function setType(string $type): Tournoi
+    public function setType(string $type): self
     {
         switch ($type) {
             case 'I':
@@ -141,7 +162,7 @@ class Tournoi
      * @param string $id
      * @return Tournoi
      */
-    public function setId(string $id): Tournoi
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
@@ -159,7 +180,7 @@ class Tournoi
      * @param DateTime|null $startDate
      * @return Tournoi
      */
-    public function setStartDate(?DateTime $startDate): Tournoi
+    public function setStartDate(?DateTime $startDate): self
     {
         $this->startDate = $startDate;
         return $this;
@@ -177,7 +198,7 @@ class Tournoi
      * @param DateTime|null $endDate
      * @return Tournoi
      */
-    public function setEndDate(?DateTime $endDate): Tournoi
+    public function setEndDate(?DateTime $endDate): self
     {
         $this->endDate = $endDate;
         return $this;
@@ -195,7 +216,7 @@ class Tournoi
      * @param string $clubName
      * @return Tournoi
      */
-    public function setClubName(string $clubName): Tournoi
+    public function setClubName(string $clubName): self
     {
         $this->clubName = $clubName;
         return $this;
@@ -213,7 +234,7 @@ class Tournoi
      * @param Adresse $address
      * @return Tournoi
      */
-    public function setAddress(Adresse $address): Tournoi
+    public function setAddress(Adresse $address): self
     {
         $this->address = $address;
         return $this;
@@ -231,7 +252,7 @@ class Tournoi
      * @param string $name
      * @return Tournoi
      */
-    public function setName(string $name): Tournoi
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -249,7 +270,7 @@ class Tournoi
      * @param Reglement $reglement
      * @return Tournoi
      */
-    public function setReglement(Reglement $reglement): Tournoi
+    public function setReglement(Reglement $reglement): self
     {
         $this->reglement = $reglement;
         return $this;
@@ -267,7 +288,7 @@ class Tournoi
      * @param Tableau[] $tableaux
      * @return Tournoi
      */
-    public function setTableaux(array $tableaux): Tournoi
+    public function setTableaux(array $tableaux): self
     {
         $this->tableaux = array_map(function ($tableau) {
             return new Tableau($tableau);

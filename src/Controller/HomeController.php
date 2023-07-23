@@ -260,7 +260,7 @@ class HomeController extends AbstractController
 
         return $this->render('journee/index.html.twig', [
             'journee' => $journee,
-            'idJournee' => $numJournee,
+            'numJournee' => $numJournee,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
             'journeesWithReportedRencontres' => $journeesWithReportedRencontres['ids'],
@@ -329,7 +329,9 @@ class HomeController extends AbstractController
         }
 
         $journees = $championnat->getJournees()->toArray();
-        $idJournee = array_search($compo->getIdJournee(), $journees) + 1;
+        $numJournee = array_search($compo->getIdJournee()->getIdJournee(), array_map(function ($j) {
+                return $j->getIdJournee();
+            }, $journees)) + 1;
         if (!$compo->getIdEquipe()->getIdDivision()) {
             $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
@@ -390,7 +392,7 @@ class HomeController extends AbstractController
 
                     if ($championnat->getLimiteBrulage()) {
                         /** On vérifie que chaque joueur devenant brûlé pour de futures compositions y soit désélectionné pour chaque journée **/
-                        $journeesToRecalculate = array_slice($journees, $idJournee - 1, count($journees) - 1);
+                        $journeesToRecalculate = array_slice($journees, $numJournee - 1, count($journees) - 1);
                         $invalidCompos = [];
 
                         foreach ($journeesToRecalculate as $journeeToRecalculate) {
@@ -447,7 +449,7 @@ class HomeController extends AbstractController
             'compo' => $compo,
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
-            'idJournee' => $idJournee,
+            'numJournee' => $numJournee,
             'form' => $form->createView(),
             'disposJoueur' => $disposJoueurFormatted
         ]);

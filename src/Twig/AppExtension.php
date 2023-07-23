@@ -145,11 +145,11 @@ class AppExtension extends AbstractExtension
     public function listeRemplacants(int $numeroEquipe, array $allBrulages, array $allDispos, array $selectedIdsPlayersEquipe): array
     {
         /** on récupère la liste des brûlages de l'équipe */
-        if (!array_key_exists('Équipe n°' . $numeroEquipe, $allBrulages)) return [];
-        else $brulagesEquipe = $allBrulages['Équipe n°' . $numeroEquipe];
+        if (!array_key_exists('Équipe ' . $numeroEquipe, $allBrulages)) return [];
+        else $brulagesEquipe = $allBrulages['Équipe ' . $numeroEquipe];
 
         /** On filtre les joueurs de l'équipe disponibles non sélectionnés pour cette journée */
-        $disposNonSelectionnesEquipe = array_filter($allDispos['Équipe n°' . $numeroEquipe], function ($joueurDisposNonSelectionne) use ($selectedIdsPlayersEquipe) {
+        $disposNonSelectionnesEquipe = array_filter($allDispos['Équipe ' . $numeroEquipe], function ($joueurDisposNonSelectionne) use ($selectedIdsPlayersEquipe) {
             return $joueurDisposNonSelectionne['disponibilite'] == "1" && !in_array($joueurDisposNonSelectionne['joueur']->getIdCompetiteur(), $selectedIdsPlayersEquipe);
         });
 

@@ -1,11 +1,11 @@
 <script type="text/javascript" defer src="{{ asset('JS/copyPaste.min.js') }}"></script>
 <script type="text/javascript" defer src="{{ asset('JS/getDetailsTableauxTournoi.min.js') }}"></script>
-<ul class="collapsible backoffice_disponibilites">
+<ul class="collapsible">
     {% for tournoi in tournois %}
         <li>
             <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class=" collapsible-header" style="padding: 6px 0 !important;">
                 <div class="chip" style="padding: 0 !important;">
-                    <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
+                    <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
                     <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMMM', locale='fr')|title : '') }}</span>
                 </div>
                 <i class="caret material-icons">keyboard_arrow_down</i>
@@ -16,35 +16,44 @@
                         <blockquote>Nom du tournoi</blockquote>
                         <span>{{ tournoi.name }}</span>
                     </div>
-                    <div class="col s12 m4 sectQuote">
+                    <div class="col s8 m4 sectQuote">
                         <blockquote>Club</blockquote>
                         <span>{{ tournoi.clubName }}</span>
                     </div>
-                    <div class="col s12 m2 sectQuote">
+                    <div class="col s4 m2 sectQuote">
                         <blockquote>Type</blockquote>
                         <span>{{ tournoi.type }}</span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col s12 m6 sectQuote">
-                        <blockquote>Le règlement</blockquote>
-                        <a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>
-                        <a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>
-                    </div>
-                    <div class="col s12 m6 sectQuote">
-                        <blockquote>Dotation totale</blockquote>
+                    {% if tournoi.reglement.url or tournoi.autreFichier.url %}
+                        <div class="col s12 m6 sectQuote">
+                            <blockquote id="reglement">Documents</blockquote>
+                            {% if tournoi.reglement.url %}<a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
+                            {% if tournoi.autreFichier.url %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="col s8 m4 l4 sectQuote">
+                        <blockquote>Dotation</blockquote>
                         <span>{{ tournoi.dotationTotale }}</span>
                     </div>
+                    {% if tournoi.page %}
+                        <div class="col s4 m2 l2 sectQuote">
+                            <blockquote>Page Web</blockquote>
+                            <a target="_blank" href="{{ tournoi.page }}">Cliquez ici</a><br>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <blockquote>S'y rendre</blockquote>
-                <p class="adresse_{{ tournoi.id }}">{{ tournoi.address.GPSAddress }}</p>
+                <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %} class="adresse_{{ tournoi.id }}">{{ tournoi.address.GPSAddress }}</p>
+                {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
 
                 <div class="center">
                     <div class="btn-gps">
                         <div class="row_btns">
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Maps</h6></div>
                                 <div>
                                     <a target="_blank" href="https://www.google.fr/maps?q={{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
@@ -52,7 +61,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Waze</h6></div>
                                 <div>
                                     <a target="_blank" href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
@@ -60,7 +69,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Copier</h6></div>
                                 <div>
                                     <button onclick="copyPaste('{{ tournoi.id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
@@ -88,6 +97,7 @@
                         </div>
                     </div>
                 </div>
+                <br>
             </div>
         </li>
     {% endfor %}

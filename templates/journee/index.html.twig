@@ -6,7 +6,7 @@
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
 {% import 'macros/virtualPointsClassement.html.twig' as _virtualPointsClassement %}
 
-{% block title %}J{{ idJournee }} - {{ championnat.nom }}{% endblock %}
+{% block title %}J{{ numJournee }} - {{ championnat.nom }}{% endblock %}
 
 {% block body %}
     <header>
@@ -38,7 +38,7 @@
             {% endfor %}
 
             <div class="card-panel center-align white-text title_journee">
-                <h4>Journée {{ idJournee }} - {{ championnat.nom }}</h4>
+                <h4>Journée {{ numJournee }} - {{ championnat.nom }}</h4>
                 {% if journee.undefined %}
                     <h5 class="red-text"><b>Date indéfinie</b></h5>
                 {% else %}
@@ -49,7 +49,7 @@
             {% if journeesWithReportedRencontresFormatted %}
                 <div class="divProfileCompletionCol center">
                     <div class="divProfileCompletion orange-text text-darken-4">
-                        <p><i class="material-icons">update</i><b> Rencontre{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} décalée{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} - J{{ idJournee }}</b></p>
+                        <p><i class="material-icons">update</i><b> Rencontre{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} décalée{{ journeesWithReportedRencontresFormatted|length > 1 ? 's' : '' }} - J{{ numJournee }}</b></p>
 
                         <div class="champsManquants">
                             <ul>
@@ -362,7 +362,7 @@
                             <table class="{% if compo.idEquipe.idDivision.nbJoueurs > 4 %}striped_table {% endif %}responsive-table composition-equipe">
                                 <tbody>
                                 {% for i in 0..(compo.idEquipe.idDivision.getNbJoueurs - 1) %}
-                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, idJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
+                                    {{ _composition.joueur(i, compo.idJoueurN(i), compo.idEquipe.idDivision.getNbJoueurs, brulages, numJournee, loop.parent.loop.index0, compo.getSelectedPlayers, championnat.j2Rule, compo.idEquipe.numero) }}
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -406,7 +406,7 @@
                                                 false
                                             ) }}
                                         {% endif %}
-                                        <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: idJournee, idCompo: compo.id}) }}">
+                                        <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: numJournee, idCompo: compo.id}) }}">
                                             <i class="material-icons">delete</i>
                                         </a>
                                     {% endif %}

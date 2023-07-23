@@ -51,7 +51,7 @@ class EquipeRepository extends ServiceEntityRepository
         foreach ($data as $item) {
             if (!array_key_exists($item->getIdChampionnat()->getNom(), $querySorted)) $querySorted[$item->getIdChampionnat()->getNom()] = [];
             $querySorted[$item->getIdChampionnat()->getNom()]['idChampionnat'] = $item->getIdChampionnat();
-            $querySorted[$item->getIdChampionnat()->getNom()]['listeEquipes']['Équipe n°' . $item->getNumero()] = $item;
+            $querySorted[$item->getIdChampionnat()->getNom()]['listeEquipes']['Équipe ' . $item->getNumero()] = $item;
         }
         return $querySorted;
     }
