@@ -1710,6 +1710,10 @@ blockquote {
   margin-bottom: 6px;
 }
 
+p#nbTournois {
+  padding: 0;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general {
     .right_items_navbar {
@@ -1802,6 +1806,12 @@ blockquote {
   #title_points_virtuels {
     font-size: 15px;
     margin-left: 10px;
+  }
+}
+
+@media screen and (min-width: 993px) {
+  table tbody .rowspan:not(.firstBorder), .firstBorderTd {
+    border-top: 3px solid $scroll_blue;
   }
 }
 
@@ -2070,6 +2080,12 @@ blockquote {
   }
 }
 
+@media screen and (max-width: 383px) {
+  p#nbTournois {
+    font-size: 12px;
+  }
+}
+
 @media screen and (max-width: 381px) {
   .setDispoCard {
     h5.unsetTitle {
@@ -2088,6 +2104,12 @@ blockquote {
 @media screen and (max-width: 344px) {
   .virtualRankButtons {
     font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 336px) {
+  p#nbTournois {
+    font-size: 10px;
   }
 }
 

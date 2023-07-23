@@ -21,7 +21,7 @@ class Tableau
     private $date;
     /** @var string|null */
     private $time;
-    /** @var number */
+    /** @var number|null */
     private $cout;
     /** @var number */
     private $dotation;
@@ -37,9 +37,8 @@ class Tableau
         $this->setId($item['id']);
         $this->setCout($item['fee']);
         try {
-            $this->setDate(new DateTime($item['date']));
+            $this->setDate($item['date'] ? new DateTime($item['date']) : null);
         } catch (Exception $e) {
-            $this->setDate(null);
         }
         $this->setTime($item['time']);
         $this->setDescription($item['description']);
@@ -139,9 +138,9 @@ class Tableau
     {
         switch ($this->type) {
             case 'I':
-                return "Individuel";
+                return "Simple";
             case 'E':
-                return "Par équipe";
+                return "Double";
             default:
                 return $this->type;
         }
@@ -216,14 +215,14 @@ class Tableau
      */
     public function getCout(): string
     {
-        return number_format(floatval($this->cout / 100), 0, ',', ' ') . '€';
+        return $this->cout ? number_format(floatval($this->cout / 100), 0, ',', ' ') . '€' : 'Gratuit';
     }
 
     /**
-     * @param number $cout
+     * @param int|null $cout
      * @return Tableau
      */
-    public function setCout($cout): self
+    public function setCout(?int $cout): self
     {
         $this->cout = $cout;
         return $this;

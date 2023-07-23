@@ -241,7 +241,7 @@ class FooterController extends AbstractController
         try {
             $response = $this->clientHTTP->request(
                 'GET',
-                $this->getParameter('url_get_tournois') . '/api/tournament_requests?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=' . (new DateTime())->format('Y-m-d\Th:i:s') . '&endDate[before]=' . date('Y') . '-12-31T23:59:58',
+                $this->getParameter('url_get_tournois') . '/api/tournament_requests?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=' . (new DateTime())->format('Y-m-d\Th:i:s') . '&endDate[before]=' . date('Y-m-d\T', strtotime('+1 year')) . '23:59:58',
                 [
                     'headers' => [
                         'Accept' => '*/*',
@@ -262,7 +262,9 @@ class FooterController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
-            'tournois' => $tournois
+            'tournois' => $tournois,
+            'dateStart' => (new DateTime())->format('d/m/Y'),
+            'dateEnd' => date('d/m/Y', strtotime('+1 year'))
         ))->getContent());
     }
 
@@ -303,8 +305,13 @@ class FooterController extends AbstractController
         } catch (Exception $e) {
         }
 
+        $tableauxPerDay = [];
+        foreach ($tableaux as $tableau) {
+            $tableauxPerDay[mb_convert_case(utf8_encode(strftime('%A', $tableau->getDate()->getTimestamp())), MB_CASE_TITLE, "UTF-8")][] = $tableau;
+        }
+
         return new JsonResponse($this->render('ajax/tournois/listeTableauxTournoi.html.twig', array(
-            'tableaux' => $tableaux
+            'tableaux' => $tableauxPerDay
         ))->getContent());
     }
 }

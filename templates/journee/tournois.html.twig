@@ -15,11 +15,23 @@
         </div>
 
         <div class="card-panel" style="padding: 0 10px;">
-            <div id="listTournois" class="hide"></div>
+            <div id="listTournois" class="center">
+                <div class="preloader-wrapper small active" style="margin: 10px;">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <script type="text/javascript">
-            getListeTournois();
-        </script>
+        <script type="text/javascript">getListeTournois();</script>
     </div>
 {% endblock %}

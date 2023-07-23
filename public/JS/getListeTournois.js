@@ -13,7 +13,7 @@ function getListeTournois() {
 }
 
 function templatingListeTournois(selector, response) {
-    $('#listTournois').removeClass('hide').html(response);
+    $('#listTournois').removeClass('center').html(response);
     $('.collapsible').collapsible({
         accordion: false
     });
