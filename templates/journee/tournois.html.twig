@@ -5,7 +5,7 @@
 {% block body %}
 
     <header>
-        {% include("components/navbar.html.twig") %}
+        {% include("components/navbar" ~ (isBackOffice ? '_backoffice' : '') ~ ".html.twig") %}
         <script type="text/javascript" src="{{ asset('JS/getListeTournois.min.js') }}"></script>
     </header>
 

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Rencontre;
 use App\Form\RencontreType;
-use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
@@ -487,128 +486,6 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('journee.show', [
             'type' => $compo->getIdChampionnat()->getIdChampionnat(),
             'idJournee' => $compo->getIdJournee()->getIdJournee()
-        ]);
-    }
-
-    /**
-     * @Route("/informations/{type}", name="informations")
-     * @param Request $request
-     * @param string $type
-     * @param UtilController $utilController
-     * @return Response
-     */
-    public function getInformations(Request $request, string $type, UtilController $utilController): Response
-    {
-        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('informations', ['type' => $type], $request->query->get('backoffice'));
-        if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
-        else $isBackoffice = $request->query->get('backoffice') == 'true';
-
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
-        if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
-
-            $setting = $this->settingsRepository->find($type);
-            if (!$setting) {
-                $this->addFlash('fail', 'Page d\'information inexistante');
-                return $this->redirectToRoute('index.type', ['type' => $championnat->getIdChampionnat()]);
-            }
-
-            // Disponibilités du joueur
-            $id = $championnat->getIdChampionnat();
-            $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-            if ($this->getUser()->isCompetiteur()) {
-                $disposJoueurFormatted = [];
-                foreach ($disposJoueur as $dispo) {
-                    $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
-                }
-            }
-
-            $journees = $championnat->getJournees()->toArray();
-            $allChampionnats = $this->championnatRepository->getAllChampionnats(true);
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
-        }
-
-        $setting = $this->settingsRepository->find($type);
-        $form = null;
-        $isAdmin = $this->getUser()->isAdmin();
-        if ($isAdmin) {
-            $form = $this->createForm(SettingsType::class, $setting, [
-                'show_title_form' => true
-            ]);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted()) {
-                if ($form->isValid()) {
-                    $this->em->flush();
-                    $this->addFlash('success', 'Informations modifiées');
-                    return $this->redirectToRoute('informations', [
-                        'type' => $type
-                    ]);
-                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-            }
-        }
-
-        $showConcernedPlayers = $setting->getDisplayTableRole();
-        $concernedPlayers = $showConcernedPlayers ? $this->competiteurRepository->findJoueursByRole($showConcernedPlayers, null) : null;
-
-        return $this->render('journee/infos.html.twig', [
-            'allChampionnats' => $allChampionnats,
-            'championnat' => $championnat,
-            'form' => $isAdmin ? $form->createView() : null,
-            'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
-            'disposJoueur' => $disposJoueurFormatted,
-            'HTMLContent' => $setting->getContent(),
-            'showConcernedPlayers' => $showConcernedPlayers,
-            'concernedPlayers' => $concernedPlayers,
-            'title' => $setting->getTitle(),
-            'label' => $setting->getLabel(),
-            'isBackOffice' => $isBackoffice
-        ]);
-    }
-
-    /**
-     * @Route("/aide", name="aide")
-     * @param Request $request
-     * @param UtilController $utilController
-     * @return Response
-     */
-    public function getHelpPage(Request $request, UtilController $utilController): Response
-    {
-        $checkIsBackOffice = $utilController->keepBackOfficeNavbar('aide', [], $request->query->get('backoffice'));
-        if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
-        else $isBackoffice = $request->query->get('backoffice') == 'true';
-
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
-        if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
-
-            // Disponibilités du joueur
-            $id = $championnat->getIdChampionnat();
-            $disposJoueur = $this->disponibiliteRepository->findBy(['idCompetiteur' => $this->getUser()->getIdCompetiteur(), 'idChampionnat' => $id]);
-            if ($this->getUser()->isCompetiteur()) {
-                $disposJoueurFormatted = [];
-                foreach ($disposJoueur as $dispo) {
-                    $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
-                }
-            }
-
-            $journees = $championnat->getJournees()->toArray();
-            $allChampionnats = $this->championnatRepository->getAllChampionnats();
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
-        }
-
-        $markdown_data = file_get_contents(__DIR__ . $this->getParameter('read_md_path'));
-        return $this->render('aide.html.twig', [
-            'allChampionnats' => $allChampionnats,
-            'championnat' => $championnat,
-            'disposJoueur' => $disposJoueurFormatted,
-            'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
-            'markdown_data' => $markdown_data,
-            'isBackOffice' => $isBackoffice
         ]);
     }
 
