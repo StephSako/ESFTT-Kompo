@@ -9,16 +9,16 @@ function getDetailsTableauxTournoi(idTournoi) {
             },
             dataType: 'json',
             success: (responseTemplate) => {
-                templatingClassementPoule(idTournoi, responseTemplate);
+                templatingDetailsTableauxTournoi(idTournoi, responseTemplate);
             },
             error: () => {
-                templatingClassementPoule(idTournoi, "<p style='margin: 8px auto' class='pastille reset red'>Le service de l'Espace MonClub rencontre des perturbations. Réessayez plus tard</p>");
+                templatingDetailsTableauxTournoi(idTournoi, "<p style='margin: 8px auto' class='pastille reset red'>Le service de l'Espace MonClub rencontre des perturbations. Réessayez plus tard</p>");
             }
         });
     }
 }
 
-function templatingClassementPoule(idTournoi, tableaux) {
+function templatingDetailsTableauxTournoi(idTournoi, tableaux) {
     $('#preloaderTableauxTournoi' + idTournoi).html(tableaux);
 }
 
