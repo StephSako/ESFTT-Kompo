@@ -4,7 +4,7 @@
     {% for tournoi in tournois %}
         <li>
             <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class=" collapsible-header" style="padding: 6px 0 !important;">
-                <div class="chip" style="padding: 0 !important;">
+                <div class="chip">
                     <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
                     <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMMM', locale='fr')|title : '') }}</span>
                 </div>
@@ -34,13 +34,15 @@
                             {% if tournoi.autreFichier.url %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
                         </div>
                     {% endif %}
-                    <div class="col s8 m4 l4 sectQuote">
-                        <blockquote>Dotation</blockquote>
-                        <span>{{ tournoi.dotationTotale }}</span>
-                    </div>
+                    {% if tournoi.dotationTotale %}
+                        <div class="col s8 m4 l4 sectQuote">
+                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url) %}id="reglement"{% endif %}>Dotation</blockquote>
+                            <span>{{ tournoi.dotationTotale }}</span>
+                        </div>
+                    {% endif %}
                     {% if tournoi.page %}
                         <div class="col s4 m2 l2 sectQuote">
-                            <blockquote>Page Web</blockquote>
+                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url or tournoi.dotationTotale) %}id="reglement"{% endif %}>Page Web</blockquote>
                             <a target="_blank" href="{{ tournoi.page }}">Cliquez ici</a><br>
                         </div>
                     {% endif %}

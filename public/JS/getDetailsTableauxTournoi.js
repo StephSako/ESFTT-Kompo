@@ -12,7 +12,7 @@ function getDetailsTableauxTournoi(idTournoi) {
                 templatingClassementPoule(idTournoi, responseTemplate);
             },
             error: () => {
-                templatingClassementPoule(idTournoi, "<p style='margin-top: 10px' class='pastille reset red'>Le service de l'Espace MonClub rencontre des perturbations. Réessayez plus tard</p>");
+                templatingClassementPoule(idTournoi, "<p style='margin: 8px auto' class='pastille reset red'>Le service de l'Espace MonClub rencontre des perturbations. Réessayez plus tard</p>");
             }
         });
     }

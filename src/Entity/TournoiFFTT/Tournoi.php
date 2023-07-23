@@ -97,14 +97,14 @@ class Tournoi
      */
     public function getDotationTotale(): ?string
     {
-        return $this->dotationTotale ? number_format(floatval($this->dotationTotale / 100), 0, ',', ' ') . '€' : '';
+        return $this->dotationTotale ? number_format(floatval($this->dotationTotale / 100), 0, ',', ' ') . '€' : null;
     }
 
     /**
-     * @param string|null $dotationTotale
+     * @param int|null $dotationTotale
      * @return Tournoi
      */
-    public function setDotationTotale(?string $dotationTotale): self
+    public function setDotationTotale(?int $dotationTotale): self
     {
         $this->dotationTotale = $dotationTotale;
         return $this;
@@ -245,7 +245,7 @@ class Tournoi
      */
     public function getName(): string
     {
-        return $this->name;
+        return mb_convert_case($this->name, MB_CASE_UPPER, "UTF-8");
     }
 
     /**

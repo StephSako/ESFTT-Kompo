@@ -6,7 +6,7 @@ class Adresse
 {
     /** @var string */
     private $postalCode;
-    /** @var string */
+    /** @var string|null */
     private $streetAddress;
     /** @var string|null */
     private $disambiguatingDescription;
@@ -93,18 +93,18 @@ class Adresse
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getStreetAddress(): string
+    public function getStreetAddress(): ?string
     {
         return $this->streetAddress;
     }
 
     /**
-     * @param string $streetAddress
+     * @param string|null $streetAddress
      * @return Adresse
      */
-    public function setStreetAddress(string $streetAddress): self
+    public function setStreetAddress(?string $streetAddress): self
     {
         $this->streetAddress = $streetAddress;
         return $this;

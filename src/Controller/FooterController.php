@@ -194,7 +194,6 @@ class FooterController extends AbstractController
     /**
      * Renvoie la liste des tournois selon les paramètres envoyés
      * @Route("/liste/tournois", name="tournois", methods={"GET"})
-     * @param Request $request
      * @return JsonResponse
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -202,7 +201,7 @@ class FooterController extends AbstractController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getListeTournois(Request $request): JsonResponse
+    public function getListeTournois(): JsonResponse
     {
         $tournois = [];
         try {

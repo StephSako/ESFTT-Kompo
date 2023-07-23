@@ -230,18 +230,18 @@ class Tableau
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDotation(): string
+    public function getDotation(): ?string
     {
-        return $this->dotation ? number_format(floatval($this->dotation / 100), 0, ',', ' ') . '€' : '';
+        return $this->dotation ? number_format(floatval($this->dotation / 100), 0, ',', ' ') . '€' : null;
     }
 
     /**
-     * @param number $dotation
+     * @param int|null $dotation
      * @return Tableau
      */
-    public function setDotation($dotation): self
+    public function setDotation(?int $dotation): self
     {
         $this->dotation = $dotation;
         return $this;

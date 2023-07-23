@@ -1678,6 +1678,14 @@ a.reload_ranking {
 }
 
 #listTournois {
+  padding: 1px;
+
+  .collapsible-header .chip {
+    background-color: #e8f3ff;
+    border-radius: 10px;
+    padding: 0 5px;
+  }
+
   .collapsible-body {
     .col.sectQuote {
       padding: 0 5px 0 0;
