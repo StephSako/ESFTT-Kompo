@@ -40,7 +40,7 @@ html, body {
 
 #main {
   position: relative;
-  padding-bottom: 75px;
+  padding-bottom: 110px;
 }
 
 .card-panel {
@@ -977,53 +977,6 @@ table.rankingVirtualPoints {
         margin: 0;
       }
 
-      .btn-gps {
-        p.adr {
-          margin: 0;
-        }
-
-        p.adr {
-          margin-top: 4px;
-        }
-
-        .row_btns {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 0;
-
-          p {
-            margin-top: 5px;
-          }
-
-          .card.grey {
-            padding: 5px 10px 10px 10px;
-            margin: 5px 10px;
-            min-width: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-
-            &:nth-child(2) a.btn-small {
-              background-color: #3cf;
-            }
-
-            button.btn-small {
-              margin-top: 8px;
-            }
-
-            i {
-              font-size: 21px;
-            }
-
-            img {
-              width: 26px;
-              aspect-ratio: auto;
-              margin-top: 3px;
-            }
-          }
-        }
-      }
-
       .telephoneDiv {
         display: flex;
         justify-content: center;
@@ -1031,6 +984,53 @@ table.rankingVirtualPoints {
         div {
           margin: 0 5px;
         }
+      }
+    }
+  }
+}
+
+.btn-gps {
+  p.adr {
+    margin: 0;
+  }
+
+  p.adr {
+    margin-top: 4px;
+  }
+
+  .row_btns {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+
+    p {
+      margin-top: 5px;
+    }
+
+    .card.grey {
+      padding: 5px 10px 10px 10px;
+      margin: 5px 10px;
+      min-width: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      &:nth-child(2) a.btn-small {
+        background-color: #3cf;
+      }
+
+      button.btn-small {
+        margin-top: 8px;
+      }
+
+      i {
+        font-size: 21px;
+      }
+
+      img {
+        width: 26px;
+        aspect-ratio: auto;
+        margin-top: 3px;
       }
     }
   }
@@ -1677,6 +1677,39 @@ a.reload_ranking {
   }
 }
 
+#listTournois {
+  padding: 1px;
+
+  .collapsible-header .chip {
+    background-color: #e8f3ff;
+    border-radius: 10px;
+    padding: 0 5px;
+  }
+
+  .collapsible-body {
+    .col.sectQuote {
+      padding: 0 5px 0 0;
+    }
+
+    .card {
+      border-radius: 10px;
+      width: auto;
+      margin: 5px 15px;
+    }
+
+    table tbody tr td.description, table thead tr th.description {
+      max-width: 250px;
+      white-space: normal;
+    }
+  }
+}
+
+blockquote {
+  font-weight: bold;
+  border-left-color: $light_blue;
+  margin-bottom: 6px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general {
     .right_items_navbar {
@@ -1944,6 +1977,12 @@ a.reload_ranking {
   #ckeditor-render {
     figure.table {
       margin: 0 !important;
+    }
+  }
+
+  #listTournois .collapsible {
+    blockquote#reglement {
+      margin-top: 0;
     }
   }
 }

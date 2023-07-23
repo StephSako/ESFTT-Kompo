@@ -112,8 +112,8 @@
             {% if adresse or complementAdresse %}
                 {% if adresse %}
                     <div class="btn-gps">
-                        <div class="row_btns row">
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                        <div class="row_btns">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Maps</h6></div>
                                 <div>
                                     <a href="https://www.google.fr/maps?q={{ hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
@@ -121,7 +121,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Waze</h6></div>
                                 <div>
                                     <a href="https://waze.com/ul?q={{ hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
@@ -129,7 +129,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="card grey lighten-3 z-depth-0 col m4">
+                            <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Copier</h6></div>
                                 <div>
                                     <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">

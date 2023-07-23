@@ -30,7 +30,7 @@ html, body {
 
 #main {
   position: relative;
-  padding-bottom: 75px;
+  padding-bottom: 110px;
 }
 
 .card-panel {
@@ -821,21 +821,29 @@ table.rankingVirtualPoints td .chip .nom {
 .modal.modal-small .modal-gps p.complAdr {
   margin: 0;
 }
-.modal.modal-small .modal-gps .btn-gps p.adr {
+.modal.modal-small .modal-gps .telephoneDiv {
+  display: flex;
+  justify-content: center;
+}
+.modal.modal-small .modal-gps .telephoneDiv div {
+  margin: 0 5px;
+}
+
+.btn-gps p.adr {
   margin: 0;
 }
-.modal.modal-small .modal-gps .btn-gps p.adr {
+.btn-gps p.adr {
   margin-top: 4px;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns {
+.btn-gps .row_btns {
   display: flex;
   justify-content: center;
   margin-bottom: 0;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns p {
+.btn-gps .row_btns p {
   margin-top: 5px;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey {
+.btn-gps .row_btns .card.grey {
   padding: 5px 10px 10px 10px;
   margin: 5px 10px;
   min-width: 80px;
@@ -843,26 +851,19 @@ table.rankingVirtualPoints td .chip .nom {
   flex-direction: column;
   justify-content: space-around;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey:nth-child(2) a.btn-small {
+.btn-gps .row_btns .card.grey:nth-child(2) a.btn-small {
   background-color: #3cf;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey button.btn-small {
+.btn-gps .row_btns .card.grey button.btn-small {
   margin-top: 8px;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey i {
+.btn-gps .row_btns .card.grey i {
   font-size: 21px;
 }
-.modal.modal-small .modal-gps .btn-gps .row_btns .card.grey img {
+.btn-gps .row_btns .card.grey img {
   width: 26px;
   aspect-ratio: auto;
   margin-top: 3px;
-}
-.modal.modal-small .modal-gps .telephoneDiv {
-  display: flex;
-  justify-content: center;
-}
-.modal.modal-small .modal-gps .telephoneDiv div {
-  margin: 0 5px;
 }
 
 .preloaderSendMail {
@@ -1409,6 +1410,33 @@ a.reload_ranking {
   margin-bottom: 1px;
 }
 
+#listTournois {
+  padding: 1px;
+}
+#listTournois .collapsible-header .chip {
+  background-color: #e8f3ff;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+#listTournois .collapsible-body .col.sectQuote {
+  padding: 0 5px 0 0;
+}
+#listTournois .collapsible-body .card {
+  border-radius: 10px;
+  width: auto;
+  margin: 5px 15px;
+}
+#listTournois .collapsible-body table tbody tr td.description, #listTournois .collapsible-body table thead tr th.description {
+  max-width: 250px;
+  white-space: normal;
+}
+
+blockquote {
+  font-weight: bold;
+  border-left-color: #1565c0;
+  margin-bottom: 6px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1630,6 +1658,10 @@ a.reload_ranking {
 
   #ckeditor-render figure.table {
     margin: 0 !important;
+  }
+
+  #listTournois .collapsible blockquote#reglement {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 550px) {

@@ -4,7 +4,7 @@
 {% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 
-{% block title %}J{{ idJournee }} - Équipe {{ compo.idEquipe.numero }}{% endblock %}
+{% block title %}J{{ numJournee }} - Équipe {{ compo.idEquipe.numero }}{% endblock %}
 
 {% block body %}
     <header>
@@ -40,12 +40,12 @@
                         <i class="caret material-icons">keyboard_arrow_down</i>
                     </div>
                     <div class="collapsible-body">
-                        {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
+                        {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, numJournee, idEquipesBrulagePrint) }}
                     </div>
                 </li>
             </ul>
 
-            {% if compo.idEquipe.numero in idEquipesBrulagePrint and idJournee == 2 and championnat.j2Rule %}
+            {% if compo.idEquipe.numero in idEquipesBrulagePrint and numJournee == 2 and championnat.j2Rule %}
                 <div class="card-panel center-align hide-on-large-only blue lighten-5" style="margin: 20px 10px 0 10px; padding: 8px 4px;">
                     <span style="margin-top: 0; margin-bottom: 0;">En J2, un seul joueur marqué <i class="material-icons red-text">whatshot</i> dans la liste <span class="truncate"><i class="blue-text material-icons" style="vertical-align: middle; margin-right: 0;">check</i><span class="lobster" style="font-size: 100%;">Sélectionnables & brûlage J+1</span></span> peut être sélectionné</span>
                 </div>
@@ -78,7 +78,7 @@
                 {% endif %}
 
                 <div>
-                    <h4 style="margin-bottom: 15px; margin-top: 0; margin-right: 10px;"><span class="hide-on-med-and-up">J</span><span class="hide-on-small-only">Journée</span> {{ idJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
+                    <h4 style="margin-bottom: 15px; margin-top: 0; margin-right: 10px;"><span class="hide-on-med-and-up">J</span><span class="hide-on-small-only">Journée </span>{{ numJournee }} - Équipe {{ compo.idEquipe.numero }}</h4>
                 </div>
 
                 <div class="row header_compo">
@@ -305,7 +305,7 @@
             </div>
         </div>
         <div class="col l3 hide-on-med-and-down">
-            {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, idJournee, idEquipesBrulagePrint) }}
+            {{ _brulage.selectionnables(championnat.j2Rule, championnat.limiteBrulage, brulageSelectionnables, compo.idEquipe.numero, numJournee, idEquipesBrulagePrint) }}
         </div>
     </div>
 

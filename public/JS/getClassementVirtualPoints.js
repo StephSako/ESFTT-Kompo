@@ -23,24 +23,20 @@ function getGeneralClassementsVirtuels(forceReload = null) {
 let alreadyCalledClassement = false;
 
 function getPersonnalClassementVirtuel(licence) {
-    if (!licence) templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
+    if (!licence) templatingClassementVirtuel('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
     else {
         $.ajax({
-            url: '/journee/personnal-classement-virtuel',
-            type: 'POST',
-            dataType: 'json',
-            success: (responseTemplate) => {
-                templating('.preloader_personnal_virtual_rank', responseTemplate);
-            },
-            error: () => {
-                templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>");
-            }
+            url : '/journee/personnal-classement-virtuel',
+            type : 'POST',
+            dataType : 'json',
+            success : (responseTemplate) => { templating('.preloader_personnal_virtual_rank', responseTemplate); },
+            error : () => { templating('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>"); }
         });
     }
 }
 
-function templating(selector, response, general = false) {
-    $(selector).each(function () {
+function templating(selector, response, general = false){
+    $(selector).each(function() {
         if (general) {
             $('a.reload_ranking').removeClass('hide');
             $('div#rankingContentLoader').addClass('hide');
