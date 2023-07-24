@@ -1426,7 +1426,7 @@ a.reload_ranking {
   width: auto;
   margin: 5px 15px;
 }
-#listTournois .collapsible-body table tbody tr td.description, #listTournois .collapsible-body table thead tr th.description {
+#listTournois .collapsible-body table tbody tr td.description {
   max-width: 250px;
   white-space: normal;
 }
@@ -1669,7 +1669,7 @@ p#nbTournois {
     margin: 0 !important;
   }
 
-  #listTournois .collapsible blockquote#reglement {
+  #listTournois .collapsible .collapsible-body .sectQuote#reglement blockquote {
     margin-top: 0;
   }
 }

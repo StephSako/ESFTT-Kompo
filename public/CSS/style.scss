@@ -1697,7 +1697,7 @@ a.reload_ranking {
       margin: 5px 15px;
     }
 
-    table tbody tr td.description, table thead tr th.description {
+    table tbody tr td.description {
       max-width: 250px;
       white-space: normal;
     }
@@ -1990,10 +1990,8 @@ p#nbTournois {
     }
   }
 
-  #listTournois .collapsible {
-    blockquote#reglement {
-      margin-top: 0;
-    }
+  #listTournois .collapsible .collapsible-body .sectQuote#reglement blockquote {
+    margin-top: 0;
   }
 }
 

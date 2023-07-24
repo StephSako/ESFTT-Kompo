@@ -32,10 +32,10 @@
 
                 <div class="row">
                     {% if tournoi.reglement.url or tournoi.autreFichier.url %}
-                        <div class="col s12 m6 sectQuote">
-                            <blockquote id="reglement">Documents</blockquote>
+                        <div class="col s12 m6 sectQuote" id="reglement">
+                            <blockquote>Documents</blockquote>
                             {% if tournoi.reglement.url %}<a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
-                            {% if tournoi.autreFichier.url %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
+                            {% if tournoi.autreFichier.url and tournoi.reglement.originalFilename != tournoi.autreFichier.originalFilename %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
                         </div>
                     {% endif %}
                     {% if tournoi.dotationTotale %}
@@ -46,7 +46,7 @@
                     {% endif %}
                     {% if tournoi.page %}
                         <div class="col s4 m2 l2 sectQuote">
-                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url or tournoi.dotationTotale) %}id="reglement"{% endif %}>Page Web</blockquote>
+                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url or tournoi.dotationTotale) %}id="reglement"{% endif %}>Page</blockquote>
                             <a target="_blank" href="{{ tournoi.page }}">Cliquez ici</a><br>
                         </div>
                     {% endif %}
@@ -62,7 +62,7 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Maps</h6></div>
                                 <div>
-                                    <a target="_blank" href="https://www.google.fr/maps?q={{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                    <a href="https://www.google.fr/maps?q={{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
                                     </a>
                                 </div>
@@ -70,7 +70,7 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Waze</h6></div>
                                 <div>
-                                    <a target="_blank" href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
+                                    <a href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
                                         <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
                                     </a>
                                 </div>

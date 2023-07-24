@@ -140,6 +140,8 @@ class Tableau
             case 'I':
                 return "Simple";
             case 'E':
+                return "Par équipe";
+            case 'D':
                 return "Double";
             default:
                 return $this->type;

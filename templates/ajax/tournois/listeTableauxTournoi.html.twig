@@ -1,35 +1,32 @@
-<table class="striped centered responsive-table">
-    <thead>
-    <tr>
-        <th>Jour</th>
-        <th class="description">Tableau</th>
-        <th>Coût</th>
-        <th>Type</th>
-        {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
-            <th>Dotation</th>
-        {% endif %}
-        <th>Genres</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for jour, tableauxPerDay in tableaux %}
-        {% for tableau in tableauxPerDay %}
-            <tr>
-                {% if loop.first %}
-                    <td class="hide-on-med-and-down rowspan{{ loop.parent.loop.first ? ' firstBorder' : '' }}" rowspan="{{ tableauxPerDay|length }}">{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}</td>
-                {% endif %}
-                <td class="show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}</td>
-                <td class="description{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">
-                    <b>{{ tableau.name ~ (tableau.description ? ((tableau.name ? ' | ' : '') ~ tableau.description) : '') }}</b>
-                </td>
-                <td class="{{ loop.first and not loop.parent.loop.first ? 'firstBorderTd' : '' }}">{{ tableau.cout }}</td>
-                <td class="{{ loop.first and not loop.parent.loop.first ? 'firstBorderTd' : '' }}">{{ tableau.type }}</td>
-                {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
-                    <td class="{{ loop.first and not loop.parent.loop.first ? 'firstBorderTd' : '' }}">{{ tableau.dotation }}</td>
-                {% endif %}
-                <td class="{{ loop.first and not loop.parent.loop.first ? 'firstBorderTd' : '' }}">{{ tableau.genres }}</td>
-            </tr>
+{% if tableaux|length %}
+    <table class="striped centered responsive-table">
+        <tbody>
+        {% for jour, tableauxPerDay in tableaux %}
+            {% for tableau in tableauxPerDay %}
+                <tr>
+                    {% if loop.first %}
+                        <td class="hide-on-med-and-down rowspan{{ loop.parent.loop.first ? ' firstBorder' : '' }}" rowspan="{{ tableauxPerDay|length }}">{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}</td>
+                    {% endif %}
+                    <td class="show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}</td>
+                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>
+                        <b>{{ tableau.name }}</b>
+                    </td>
+                    {% if tableaux|filter((v, k) => (v|filter(t => t.description != null)))|length %}
+                        <td class="description{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">
+                            <b>{{ tableau.description }}</b>
+                        </td>
+                    {% endif %}
+                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.cout }}</td>
+                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.type }}</td>
+                    {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
+                        <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.dotation }}</td>
+                    {% endif %}
+                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.genres }}</td>
+                </tr>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+{% else %}
+    <p><i>Non communiqués pour le moment ...</i></p>
+{% endif %}

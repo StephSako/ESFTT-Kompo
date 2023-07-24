@@ -19,7 +19,7 @@ function getDetailsTableauxTournoi(idTournoi) {
 }
 
 function templatingDetailsTableauxTournoi(idTournoi, tableaux) {
-    $('#preloaderTableauxTournoi' + idTournoi).html(tableaux);
+    $('#preloaderTableauxTournoi' + idTournoi).removeClass('center').html(tableaux);
 }
 
 let alreadyCalledTournois = [];
