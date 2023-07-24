@@ -20,6 +20,7 @@ function getDetailsTableauxTournoi(idTournoi) {
 
 function templatingDetailsTableauxTournoi(idTournoi, tableaux) {
     $('#preloaderTableauxTournoi' + idTournoi).removeClass('center').html(tableaux);
+    resizeTable();
 }
 
 let alreadyCalledTournois = [];

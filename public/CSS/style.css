@@ -1426,6 +1426,9 @@ a.reload_ranking {
   width: auto;
   margin: 5px 15px;
 }
+#listTournois .collapsible-body table {
+  margin-top: 15px;
+}
 #listTournois .collapsible-body table tbody tr td.description {
   max-width: 250px;
   white-space: normal;
@@ -1512,7 +1515,7 @@ p#nbTournois {
   }
 }
 @media screen and (min-width: 993px) {
-  table tbody .rowspan:not(.firstBorder), .firstBorderTd {
+  #listTournois .collapsible table tbody td.rowspan:not(.firstBorder), td.firstBorderTd {
     border-top: 3px solid #1b5fac;
   }
 }
@@ -1611,6 +1614,14 @@ p#nbTournois {
   }
   .cardJoueursEditJournee td {
     font-size: 95%;
+  }
+
+  #listTournois .collapsible .collapsible-body table tbody tr td {
+    padding: 8px 5px;
+  }
+
+  #listTournois .collapsible table tbody tr.firstBorderTr {
+    border-left: 3px solid #1b5fac;
   }
 }
 @media screen and (max-width: 850px) {

@@ -199,7 +199,8 @@ class Tableau
      */
     public function getTime(): ?string
     {
-        return $this->time;
+        $replaceByH = str_replace(':', 'H', mb_convert_case($this->time, MB_CASE_LOWER, "UTF-8"));
+        return str_replace(' ', '', $replaceByH);
     }
 
     /**
