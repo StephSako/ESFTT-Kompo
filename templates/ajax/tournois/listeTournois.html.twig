@@ -56,13 +56,15 @@
                 <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %} class="adresse_{{ tournoi.id }}">{{ tournoi.address.GPSAddress }}</p>
                 {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
 
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2696.1573075487363!2d-0.5248402!3d47.4868488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x480878532b9af879%3A0x41ad956cda444e64!2s2%20Rue%20de%20l&#39;%C3%89criture%2C%2049100%20Angers!5e0!3m2!1sfr!2sfr!4v1690572090830!5m2!1sfr!2sfr" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
                 <div class="center">
                     <div class="btn-gps">
                         <div class="row_btns">
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Maps</h6></div>
                                 <div>
-                                    <a href="https://www.google.fr/maps?q={{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                    <a target="_blank" href="{{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
                                     </a>
                                 </div>
@@ -70,7 +72,7 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Waze</h6></div>
                                 <div>
-                                    <a href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
+                                    <a target="_blank" href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
                                         <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
                                     </a>
                                 </div>

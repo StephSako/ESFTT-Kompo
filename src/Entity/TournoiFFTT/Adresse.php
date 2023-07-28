@@ -2,6 +2,8 @@
 
 namespace App\Entity\TournoiFFTT;
 
+use Transliterator;
+
 class Adresse
 {
     /** @var string */
@@ -24,36 +26,32 @@ class Adresse
     /**
      * @return string|null
      */
-    public function getDisambiguatingDescription(): ?string
+    public function getHrefMapsAdresse(): ?string
     {
-        return $this->disambiguatingDescription;
-    }
-
-    /**
-     * @param string|null $disambiguatingDescription
-     * @return Adresse
-     */
-    public function setDisambiguatingDescription(?string $disambiguatingDescription): self
-    {
-        $this->disambiguatingDescription = $disambiguatingDescription;
-        return $this;
+        return str_replace(',', '%2C', str_replace(' ', '%20', 'https://www.google.com/maps/place/' .
+            ($this->getStreetAddress() ?
+                Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getStreetAddress()) : '') .
+            ($this->getPostalCode() ? ',+' . Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getPostalCode()) : '') .
+            ($this->getAddressLocality() ? ',+' . Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getAddressLocality()) : '') . '/'
+        ));
     }
 
     /**
      * @return string|null
      */
-    public function getHrefMapsAdresse(): ?string
+    public function getStreetAddress(): ?string
     {
-        return str_replace(' ', '+', $this->GPSAddress());
+        return trim($this->streetAddress);
     }
 
     /**
-     * Retiurne l'addresse formattée pour GPS
-     * @return string
+     * @param string|null $streetAddress
+     * @return Adresse
      */
-    public function GPSAddress(): string
+    public function setStreetAddress(?string $streetAddress): self
     {
-        return $this->getPostalCode() . ' ' . $this->getAddressLocality() . ' ' . $this->getStreetAddress();
+        $this->streetAddress = $streetAddress;
+        return $this;
     }
 
     /**
@@ -61,7 +59,7 @@ class Adresse
      */
     public function getPostalCode(): string
     {
-        return $this->postalCode;
+        return trim($this->postalCode);
     }
 
     /**
@@ -79,7 +77,7 @@ class Adresse
      */
     public function getAddressLocality(): string
     {
-        return $this->addressLocality;
+        return trim($this->addressLocality);
     }
 
     /**
@@ -95,18 +93,18 @@ class Adresse
     /**
      * @return string|null
      */
-    public function getStreetAddress(): ?string
+    public function getDisambiguatingDescription(): ?string
     {
-        return $this->streetAddress;
+        return trim($this->disambiguatingDescription);
     }
 
     /**
-     * @param string|null $streetAddress
+     * @param string|null $disambiguatingDescription
      * @return Adresse
      */
-    public function setStreetAddress(?string $streetAddress): self
+    public function setDisambiguatingDescription(?string $disambiguatingDescription): self
     {
-        $this->streetAddress = $streetAddress;
+        $this->disambiguatingDescription = $disambiguatingDescription;
         return $this;
     }
 
@@ -116,5 +114,14 @@ class Adresse
     public function getHrefWazeAdresse(): ?string
     {
         return str_replace(' ', '%20', $this->GPSAddress());
+    }
+
+    /**
+     * Retiurne l'addresse formattée pour GPS
+     * @return string
+     */
+    public function GPSAddress(): string
+    {
+        return $this->getPostalCode() . ' ' . $this->getAddressLocality() . ' ' . $this->getStreetAddress();
     }
 }
