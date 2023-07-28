@@ -153,7 +153,7 @@
             {% endif %}
 
             {% for joueur in anniversaires %}
-                <p class="joueurAnniv">{{ joueur.nom ~ ' ' ~ joueur.prenom }} <b>{{ joueur.dateNaissance|format_datetime(pattern='EEE d/LL', locale='fr')|title }}</b></p>
+                <p class="joueurAnniv">{% if joueur.isToday %}🎉 {% endif %}{{ joueur.nom ~ ' ' ~ joueur.prenom }} <b>{{ joueur.dateNaissanceSameYear|format_datetime(pattern='EEE d/LL', locale='fr')|title }}</b>{% if joueur.isToday %} 🍾{% endif %}</p>
             {% endfor %}
         </div>
     {% endif %}
