@@ -2,8 +2,6 @@
 
 namespace App\Entity\TournoiFFTT;
 
-use Transliterator;
-
 class Adresse
 {
     /** @var string */
@@ -24,16 +22,31 @@ class Adresse
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getHrefMapsAdresse(): ?string
+    public function getHrefMapsAdresse(): string
     {
-        return str_replace(',', '%2C', str_replace(' ', '%20', 'https://www.google.com/maps/place/' .
-            ($this->getStreetAddress() ?
-                Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getStreetAddress()) : '') .
-            ($this->getPostalCode() ? ',+' . Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getPostalCode()) : '') .
-            ($this->getAddressLocality() ? ',+' . Transliterator::create('NFD; [:Nonspacing Mark:] Remove;')->transliterate($this->getAddressLocality()) : '') . '/'
-        ));
+        return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' . $this->GPSAddressEncoded();
+    }
+
+    /**
+     * Retourne l'addresse encodée pour URL
+     * @return string
+     */
+    public function GPSAddressEncoded(): string
+    {
+        return urlencode($this->GPSAddress());
+    }
+
+    /**
+     * Retourne l'addresse
+     * @return string
+     */
+    public function GPSAddress(): string
+    {
+        return $this->getStreetAddress() .
+            ($this->getPostalCode() ? ', ' . $this->getPostalCode() : '') .
+            ($this->getAddressLocality() ? ', ' . $this->getAddressLocality() : '');
     }
 
     /**
@@ -91,6 +104,14 @@ class Adresse
     }
 
     /**
+     * @return string
+     */
+    public function getHrefIframeLink(): string
+    {
+        return 'https://maps.google.com/maps?width=400&amp;height=300&amp;hl=fr&amp;q=' . $this->GPSAddressEncoded() . '+()&amp;t=&amp;z=5&amp;ie=UTF8&amp;iwloc=B&amp;output=embed';
+    }
+
+    /**
      * @return string|null
      */
     public function getDisambiguatingDescription(): ?string
@@ -113,15 +134,6 @@ class Adresse
      */
     public function getHrefWazeAdresse(): ?string
     {
-        return str_replace(' ', '%20', $this->GPSAddress());
-    }
-
-    /**
-     * Retiurne l'addresse formattée pour GPS
-     * @return string
-     */
-    public function GPSAddress(): string
-    {
-        return $this->getPostalCode() . ' ' . $this->getAddressLocality() . ' ' . $this->getStreetAddress();
+        return $this->GPSAddressEncoded();
     }
 }
