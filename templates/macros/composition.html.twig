@@ -7,7 +7,7 @@
             {% endif %}
         </td>
         <td>
-            {% if competiteur is not null %}
+            {% if competiteur is not null and competiteur.licence %}
                 {{ competiteur.licence }}
             {% else %}
                 <span>&nbsp</span>
@@ -28,7 +28,7 @@
             <td style="height: 45px;" class="grey-text text-lighten-1 center-align">Pas de sélection</td>
         {% endif %}
         <td>
-            {% if competiteur is not null %}
+            {% if competiteur is not null and competiteur.classementOfficiel %}
                 <b>Class. off: </b>{{ competiteur.classementOfficiel }}
             {% else %}
                 <span>&nbsp</span>

@@ -506,6 +506,8 @@ class CompetiteurRepository extends ServiceEntityRepository
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom] = [];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['avatar'] = $item['avatar'];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['idCompetiteur'] = $item['idCompetiteur'];
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom]['licence'] = $item['licence'];
+                    $queryFinal[$championnat->getNom()]['joueurs'][$nom]['classement_officiel'] = $item['classement_officiel'];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['disponibilites'] = [];
                 }
                 $item['latestDate'] = max(new DateTime($item['latestDate']), $item['dateJournee']);
@@ -676,17 +678,23 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('c.isArchive = false')
             ->getQuery()
             ->getResult();
+
+        if (!$query) return [];
         $query = array_map(function ($joueur) {
-            $joueur['dateNaissanceFormatted'] = new DateTime((date("Y") + (date('n') > $joueur['dateNaissance']->format('n') ? 1 : 0)) . substr($joueur['dateNaissance']->format('Y-m-d'), -6));
+            $joueur['dateNaissanceNextYear'] = new DateTime((date("Y") + (date('n') > $joueur['dateNaissance']->format('n') ? 1 : 0)) . substr($joueur['dateNaissance']->format('Y-m-d'), -6));
+            $joueur['dateNaissanceSameYear'] = new DateTime(date("Y") . $joueur['dateNaissance']->format('-m-d'));
+            $joueur['isToday'] = $joueur['dateNaissance']->format('m-d') == (new DateTime())->format('m-d');
             return $joueur;
         }, $query);
 
-        usort($query, function ($j1, $j2) {
-            return $j2['dateNaissanceFormatted'] < $j1['dateNaissanceFormatted'];
+        $query = array_filter($query, function ($joueur) {
+            return in_array((int)(new DateTime())->diff($joueur['dateNaissanceNextYear'])->format('%R%a'), range(0, 30));
         });
 
-        return array_filter($query, function ($joueur) {
-            return in_array((int)(new DateTime())->diff($joueur['dateNaissanceFormatted'])->format('%R%a'), range(0, 30));
+        usort($query, function ($j1, $j2) {
+            return $j2['dateNaissanceNextYear'] < $j1['dateNaissanceNextYear'];
         });
+
+        return $query;
     }
 }
