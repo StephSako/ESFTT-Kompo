@@ -64,7 +64,7 @@
             {% endif %}
 
             {% if joueursWithoutLicence.count or competiteursWithoutClassement.count %}
-                <p class="red-text lighten-2" style="margin: 10px auto"><i class="material-icons">payment</i>
+                <p class="red-text lighten-2" style="margin: 10px auto"><i class="material-icons">warning_amber</i>
                     {{ joueursWithoutLicence.message | raw }}{{ competiteursWithoutClassement.message | raw }}
                 </p>
             {% endif %}
