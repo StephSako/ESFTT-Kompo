@@ -74,7 +74,8 @@ class RencontreType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'attr' => [
-                        'maxlength' => 300
+                        'maxlength' => 300,
+                        'placeholder' => 'Adresse, Code postal Ville'
                     ]
                 ])->add('telephone', TelType::class, [
                     'label' => false,

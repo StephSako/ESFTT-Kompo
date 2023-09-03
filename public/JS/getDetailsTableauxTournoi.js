@@ -23,4 +23,16 @@ function templatingDetailsTableauxTournoi(idTournoi, tableaux) {
     resizeTable();
 }
 
+function showIframe(idMap) {
+    let iframe = $('iframe#tournoi-' + idMap)[0];
+    iframe.width = "65%";
+    iframe.height = "350px";
+    iframe.style.opacity = "1";
+    $('#preloader-tournoi-' + idMap).attr("hidden", "")
+}
+
+function hideIframe(idMap) {
+    $('iframe#div-tournoi-' + idMap)[0].attr("hidden", "");
+}
+
 let alreadyCalledTournois = [];

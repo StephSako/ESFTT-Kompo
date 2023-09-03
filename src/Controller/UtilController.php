@@ -16,6 +16,9 @@ use Transliterator;
 
 class UtilController extends AbstractController
 {
+    const MAPS_URI = "https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=";
+    const WAZE_URI = "https://waze.com/ul?navigate=yes&q=";
+    const IFRAME_URI = "https://maps.google.com/maps?hl=fr&z=6&ie=UTF8&output=embed&q=";
     private $rencontreRepository;
     private $championnatRepository;
     private $logger;
@@ -32,6 +35,20 @@ class UtilController extends AbstractController
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
         $this->logger = $logger;
+    }
+
+    /**
+     * Formatte une adresse avec adresse, code postal et ville
+     * @param string $address
+     * @param string $postalCode
+     * @param string $ville
+     * @return string
+     */
+    public static function formatAddress(string $address, string $postalCode, string $ville): string
+    {
+        return $address .
+            ($postalCode ? ($address ? ', ' : '') . $postalCode : '') .
+            ($ville ? ' ' . $ville : '');
     }
 
     /**

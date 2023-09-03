@@ -2,6 +2,8 @@
 
 namespace App\Entity\TournoiFFTT;
 
+use App\Controller\UtilController;
+
 class Adresse
 {
     /** @var string */
@@ -22,38 +24,47 @@ class Adresse
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getDisambiguatingDescription(): ?string
+    public function getHrefMapsAdresse(): string
     {
-        return $this->disambiguatingDescription;
+        return UtilController::MAPS_URI . $this->GPSAddressEncoded();
     }
 
     /**
-     * @param string|null $disambiguatingDescription
-     * @return Adresse
+     * Retourne l'addresse encodée pour URL
+     * @return string
      */
-    public function setDisambiguatingDescription(?string $disambiguatingDescription): self
+    public function GPSAddressEncoded(): string
     {
-        $this->disambiguatingDescription = $disambiguatingDescription;
-        return $this;
+        return urlencode($this->GPSAddress());
     }
 
     /**
-     * @return string|null
-     */
-    public function getHrefMapsAdresse(): ?string
-    {
-        return str_replace(' ', '+', $this->GPSAddress());
-    }
-
-    /**
-     * Retiurne l'addresse formattée pour GPS
+     * Retourne l'addresse
      * @return string
      */
     public function GPSAddress(): string
     {
-        return $this->getPostalCode() . ' ' . $this->getAddressLocality() . ' ' . $this->getStreetAddress();
+        return UtilController::formatAddress($this->getStreetAddress(), $this->getPostalCode(), $this->getAddressLocality());
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStreetAddress(): ?string
+    {
+        return trim($this->streetAddress);
+    }
+
+    /**
+     * @param string|null $streetAddress
+     * @return Adresse
+     */
+    public function setStreetAddress(?string $streetAddress): self
+    {
+        $this->streetAddress = $streetAddress;
+        return $this;
     }
 
     /**
@@ -61,7 +72,7 @@ class Adresse
      */
     public function getPostalCode(): string
     {
-        return $this->postalCode;
+        return trim($this->postalCode);
     }
 
     /**
@@ -79,7 +90,7 @@ class Adresse
      */
     public function getAddressLocality(): string
     {
-        return $this->addressLocality;
+        return trim($this->addressLocality);
     }
 
     /**
@@ -93,20 +104,28 @@ class Adresse
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getStreetAddress(): ?string
+    public function getHrefIframeLink(): string
     {
-        return $this->streetAddress;
+        return UtilController::IFRAME_URI . $this->GPSAddressEncoded();
     }
 
     /**
-     * @param string|null $streetAddress
+     * @return string|null
+     */
+    public function getDisambiguatingDescription(): ?string
+    {
+        return trim($this->disambiguatingDescription);
+    }
+
+    /**
+     * @param string|null $disambiguatingDescription
      * @return Adresse
      */
-    public function setStreetAddress(?string $streetAddress): self
+    public function setDisambiguatingDescription(?string $disambiguatingDescription): self
     {
-        $this->streetAddress = $streetAddress;
+        $this->disambiguatingDescription = $disambiguatingDescription;
         return $this;
     }
 
@@ -115,6 +134,6 @@ class Adresse
      */
     public function getHrefWazeAdresse(): ?string
     {
-        return str_replace(' ', '%20', $this->GPSAddress());
+        return UtilController::WAZE_URI . $this->GPSAddressEncoded();
     }
 }
