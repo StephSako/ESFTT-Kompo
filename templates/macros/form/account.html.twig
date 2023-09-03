@@ -360,27 +360,31 @@
             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
         {% endif %}
 
-        <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
-            <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
-                <div class="divProfileCompletion red-text orange-darken-4">
-                    <p>
-                        <i class="material-icons red-text">phonelink_erase</i>
-                        <b>
-                            Vous n'êtes pas contactable par mail<span class="parSMS" hidden="hidden"> ni par SMS</span>
-                        </b>
-                    </p>
-                    <div class="champsManquants">
-                        <p><b>Vous ne pourrez pas :</b></p>
-                        <ul>
-                            <li id="pageContacter"><b>-</b> être contacté depuis la page <a href="{{ path('contact') }}">Contacter</a> <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
-                            <li id="alertSelection"><b>-</b> être alerté par les capitaines pour vous demander de signaler votre disponibilité pour une journée <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
-                            <li id="alertSelection"><b>-</b> être alerté par les capitaines de votre sélection <b>par mail<span class="parSMS" hidden="hidden"> ni par SMS</span></b></li>
-                            <li><b>-</b> être alerté pour le renouvellement de votre certificat médical <b>(par mail uniquement)</b></li>
-                        </ul>
+        {% if type != 'backoffice' or (type == 'backoffice' and editMode) %}
+            <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
+                <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
+                    <div class="divProfileCompletion red-text orange-darken-4">
+                        <p>
+                            <i class="material-icons red-text">phonelink_erase</i>
+                            <b>
+                                {{ type == 'backoffice' ? "Le joueur n'est" : "Vous n'êtes" }} pas contactable <span class="parMail" hidden="hidden">par mail</span><span class="niMailSMS" hidden="hidden"> ni</span><span class="parSMS" hidden="hidden"> par SMS</span>
+                            </b>
+                        </p>
+                        <div class="champsManquants">
+                            <p><b>{{ type == 'backoffice' ? "Le joueur ne pourra" : "Vous ne pourrez" }} pas :</b></p>
+                            <ul>
+                                <li id="pageContacter"><b>-</b> être contacté depuis la page <a href="{{ path('contact') }}">Contacter</a> <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
+                                <li id="alertSelection"><b>-</b> être alerté par les capitaines pour {{ type == 'backoffice' ? "lui" : "vous" }} demander de signaler {{ type == 'backoffice' ? "sa" : "votre" }} disponibilité pour une journée <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
+                                <li id="alertSelection"><b>-</b> être alerté par les capitaines de {{ type == 'backoffice' ? "sa" : "votre" }} sélection <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
+                                <div class="parMail" hidden="hidden">
+                                    <li><b>-</b> être alerté pour le renouvellement de {{ type == 'backoffice' ? "son" : "votre" }} certificat médical <b>(par mail uniquement)</b></li>
+                                </div>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
 
         <script type="text/javascript">
             let isNotContactableMail = '{{ form.vars.value.getFirstContactableMail() }}'.length === 0;
