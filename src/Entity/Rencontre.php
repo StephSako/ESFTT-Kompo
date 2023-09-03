@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Controller\UtilController;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -803,7 +804,7 @@ class Rencontre
      */
     public function getHrefMapsAdresse(): ?string
     {
-        return str_replace(' ', '+', $this->getAdresse());
+        return UtilController::MAPS_URI . urlencode($this->getAdresse());
     }
 
     /**
@@ -829,7 +830,7 @@ class Rencontre
      */
     public function getHrefWazeAdresse(): ?string
     {
-        return str_replace(' ', '%20', $this->getAdresse());
+        return UtilController::WAZE_URI . urlencode($this->getAdresse());
     }
 
     /**

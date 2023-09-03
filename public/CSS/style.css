@@ -1440,10 +1440,6 @@ blockquote {
   margin-bottom: 6px;
 }
 
-p#nbTournois {
-  padding: 0;
-}
-
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1623,6 +1619,10 @@ p#nbTournois {
   #listTournois .collapsible table tbody tr.firstBorderTr {
     border-left: 3px solid #1b5fac;
   }
+
+  .iframe-map-tournoi {
+    width: 100%;
+  }
 }
 @media screen and (max-width: 850px) {
   .modal.modal-small {
@@ -1765,6 +1765,11 @@ p#nbTournois {
   a.reload_ranking {
     top: 6px;
     right: 6px;
+  }
+}
+@media screen and (max-width: 355px) {
+  .btn-gps .row_btns .card {
+    margin: 5px !important;
   }
 }
 @media screen and (max-width: 344px) {

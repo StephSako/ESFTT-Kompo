@@ -2,6 +2,8 @@
 
 namespace App\Entity\TournoiFFTT;
 
+use App\Controller\UtilController;
+
 class Adresse
 {
     /** @var string */
@@ -26,7 +28,7 @@ class Adresse
      */
     public function getHrefMapsAdresse(): string
     {
-        return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' . $this->GPSAddressEncoded();
+        return UtilController::MAPS_URI . $this->GPSAddressEncoded();
     }
 
     /**
@@ -44,9 +46,7 @@ class Adresse
      */
     public function GPSAddress(): string
     {
-        return $this->getStreetAddress() .
-            ($this->getPostalCode() ? ', ' . $this->getPostalCode() : '') .
-            ($this->getAddressLocality() ? ', ' . $this->getAddressLocality() : '');
+        return UtilController::formatAddress($this->getStreetAddress(), $this->getPostalCode(), $this->getAddressLocality());
     }
 
     /**
@@ -108,7 +108,7 @@ class Adresse
      */
     public function getHrefIframeLink(): string
     {
-        return 'https://maps.google.com/maps?width=400&amp;height=300&amp;hl=fr&amp;q=' . $this->GPSAddressEncoded() . '+()&amp;t=&amp;z=5&amp;ie=UTF8&amp;iwloc=B&amp;output=embed';
+        return UtilController::IFRAME_URI . $this->GPSAddressEncoded();
     }
 
     /**
@@ -134,6 +134,6 @@ class Adresse
      */
     public function getHrefWazeAdresse(): ?string
     {
-        return $this->GPSAddressEncoded();
+        return UtilController::WAZE_URI . $this->GPSAddressEncoded();
     }
 }

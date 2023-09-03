@@ -322,9 +322,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             }
 
                                             /** On indique l'adresse, complément d'adresse et site web du club adverse */
-                                            $adresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
-                                                $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
-                                                $adressesClubs[$idClubAdversaire]->getVilleSalle() : '';
+                                            $adresseAdversaire = $idClubAdversaire ? UtilController::formatAddress($adressesClubs[$idClubAdversaire]->getAdresseSalle1(), $adressesClubs[$idClubAdversaire]->getCodePostaleSalle(), $adressesClubs[$idClubAdversaire]->getVilleSalle()) : '';
                                             $complementAdresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
                                                 $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
                                                 $adressesClubs[$idClubAdversaire]->getAdresseSalle3() : '';
@@ -362,9 +360,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             $adressesClubs[$idClubAdversaire] = $api->getClubDetails($idClubAdversaire);
                                         }
 
-                                        $adresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
-                                            $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
-                                            $adressesClubs[$idClubAdversaire]->getVilleSalle() : '';
+                                        $adresseAdversaire = $idClubAdversaire ? UtilController::formatAddress($adressesClubs[$idClubAdversaire]->getAdresseSalle1(), $adressesClubs[$idClubAdversaire]->getCodePostaleSalle(), $adressesClubs[$idClubAdversaire]->getVilleSalle()) : '';
                                         $complementAdresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
                                             $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
                                             $adressesClubs[$idClubAdversaire]->getAdresseSalle3() : '';
@@ -401,9 +397,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                         $adressesClubs[$idClubAdversaire] = $api->getClubDetails($idClubAdversaire);
                                     }
 
-                                    $adresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getAdresseSalle1() . ' ' .
-                                        $adressesClubs[$idClubAdversaire]->getCodePostaleSalle() . ' ' .
-                                        $adressesClubs[$idClubAdversaire]->getVilleSalle() : '';
+                                    $adresseAdversaire = $idClubAdversaire ? UtilController::formatAddress($adressesClubs[$idClubAdversaire]->getAdresseSalle1(), $adressesClubs[$idClubAdversaire]->getCodePostaleSalle(), $adressesClubs[$idClubAdversaire]->getVilleSalle()) : '';
                                     $complementAdresseAdversaire = $idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getNomSalle() . ' ' .
                                         $adressesClubs[$idClubAdversaire]->getAdresseSalle2() . ' ' .
                                         $adressesClubs[$idClubAdversaire]->getAdresseSalle3() : '';

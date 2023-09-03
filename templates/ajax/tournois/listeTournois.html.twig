@@ -53,34 +53,9 @@
                 </div>
 
                 <blockquote>S'y rendre</blockquote>
+
                 <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %} class="adresse_{{ tournoi.id }}">{{ tournoi.address.GPSAddress }}</p>
                 {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
-
-                <div class="center" style="width: 100%" id="div-tournoi-{{ tournoi.id }}">
-                    <div id="preloader-tournoi-{{ tournoi.id }}" class="center">
-                        <div class="preloader-wrapper small active">
-                            <div class="spinner-layer spinner-blue-only">
-                                <div class="circle-clipper left">
-                                    <div class="circle"></div>
-                                </div>
-                                <div class="gap-patch">
-                                    <div class="circle"></div>
-                                </div>
-                                <div class="circle-clipper right">
-                                    <div class="circle"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="https://maps.google.com/maps?width=400&height=300&iwloc=near&hl=fr&q={{ tournoi.address.GPSAddressEncoded }}+()&t=&z=6&ie=UTF8&iwloc=B&output=embed"
-                            onload="showIframe('{{ tournoi.id }}')"
-                            onerror="hideIframe('{{ tournoi.id }}')"
-                            loading="lazy"
-                            frameborder="0"
-                            style="opacity: 0;"
-                            id="tournoi-{{ tournoi.id }}"
-                    ></iframe>
-                </div>
 
                 <div class="center">
                     <div class="btn-gps">
@@ -96,7 +71,7 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Waze</h6></div>
                                 <div>
-                                    <a target="_blank" href="https://waze.com/ul?q={{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
+                                    <a target="_blank" href="{{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
                                         <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
                                     </a>
                                 </div>
@@ -111,6 +86,34 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="center" style="width: 100%" id="div-tournoi-{{ tournoi.id }}">
+                    <br>
+                    <div id="preloader-tournoi-{{ tournoi.id }}" class="center">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-blue-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <iframe width="0" height="0" src="{{ tournoi.address.hrefIframeLink }}"
+                            onload="showIframe('{{ tournoi.id }}')"
+                            onerror="hideIframe('{{ tournoi.id }}')"
+                            loading="lazy"
+                            frameborder="0"
+                            style="opacity: 0;"
+                            class="iframe-map-tournoi"
+                            id="tournoi-{{ tournoi.id }}"
+                    ></iframe>
                 </div>
 
                 <blockquote>Les tableaux</blockquote>
