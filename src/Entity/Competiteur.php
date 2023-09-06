@@ -335,8 +335,8 @@ class Competiteur implements UserInterface, Serializable
      * @var File|null
      *
      * @Assert\Image(
-     *      mimeTypes = {"image/jpg", "image/jpeg", "image/png", "image/gif"},
-     *      mimeTypesMessage = "L'image doit être au format JPEG/JPG, PNG ou GIF"
+     *      mimeTypes = {"image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"},
+     *      mimeTypesMessage = "L'image doit être au format JPEG/JPG, PNG, GIF ou WEBP"
      * )
      *
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")

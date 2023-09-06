@@ -12,6 +12,7 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Transliterator;
 
 class UtilController extends AbstractController
@@ -245,5 +246,19 @@ class UtilController extends AbstractController
             'redirect' => $this->redirectToRoute($redirection, $options),
             'issue' => ($backOfficeParam && $backOfficeParam != 'true') || ($backOfficeParam == 'true' && !($this->getUser()->isCapitaine() || $this->getUser()->isAdmin()))
         ];
+    }
+
+    /**
+     * Retourne les erreurs profondes d'un formulaire
+     * @param FormInterface $form
+     * @return string
+     */
+    public function getFormDeepErrors(FormInterface $form): string
+    {
+        $errors = '';
+        foreach ($form->getErrors(true) as $i => $error) {
+            $errors .= $error->getMessage() . (!$i ? '<br>' : '');
+        }
+        return strlen($errors) ? $errors : 'Le formulaire n\'est pas valide';
     }
 }

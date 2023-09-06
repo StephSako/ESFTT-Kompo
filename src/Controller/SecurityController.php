@@ -141,7 +141,7 @@ class SecurityController extends AbstractController
                         else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                     } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', $utilController->getFormDeepErrors($form));
         }
 
         return $this->render('account/edit.html.twig', [

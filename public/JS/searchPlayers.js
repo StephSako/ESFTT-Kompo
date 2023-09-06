@@ -1,7 +1,7 @@
 let searchValue = (table_id, input_id, i_nomPrenom, i_roles) => {
     let value = $(input_id).val().toUpperCase();
     let trs = $(table_id + " tbody tr");
-    
+
     trs.each(function (_index) {
         let row = $(this);
         let tr_empty_result = $(table_id + ' tbody tr#tr-empty-result-search')[0]
@@ -48,6 +48,8 @@ function getInfosContactsSelectedPlayers() {
     let divCustomContactsCheckListElement = $($.parseHTML(divCustomContactsCheckList))
     let checkedIDs = Array.from($('#listSelectedContacts .chip.customMessage')).map(chip => chip.id)
     divCustomContactsCheckListElement.find('table#search-table-custom input:checkbox').removeAttr('checked')
+    let inputFiltre = $('input#search-input-custom');
+    divCustomContactsCheckListElement.find('input#search-input-custom').attr('value', inputFiltre[0] ? inputFiltre[0].value : '')
     divCustomContactsCheckListElement.find(checkedIDs.map(id => `table#search-table-custom input#${id}:checkbox`).join(', ')).attr('checked', 'checked')
     divCustomContactsCheckList = divCustomContactsCheckListElement.html()
 
