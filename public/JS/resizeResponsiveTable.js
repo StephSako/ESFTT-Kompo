@@ -2,25 +2,14 @@ $(window).resize(function () {
     let tables = document.getElementsByClassName('table-to-adapt-columns')
     for (const table of tables) {
         if (table.offsetParent != null) {
-            let trs = [...table.rows];
+            let trs = [...table.rows].filter(tr => tr.id !== "tr-empty-result-search");
             if ($(window).width() <= 983) {
-                trs.forEach(element => element.style.height = Math.max(...trs.map(x => x.offsetHeight)) + 'px');
+                let newHeight = Math.max(...trs.map(x => x.offsetHeight));
+                if (newHeight) trs.forEach(element => element.style.height = newHeight + 'px');
             } else trs.forEach(element => element.style.height = 'auto');
         }
     }
 });
-
-function resizeTable() {
-    if ($(window).width() <= 992) {
-        let tables = document.getElementsByClassName('table-to-adapt-columns')
-        for (const table of tables) {
-            if (table.offsetParent != null) {
-                let trs = [...table.rows];
-                trs.forEach(tr => tr.style.height = Math.max(...trs.map(x => x.offsetHeight)) + 'px');
-            }
-        }
-    }
-}
 
 $(document).ready(function () {
     resizeTable()

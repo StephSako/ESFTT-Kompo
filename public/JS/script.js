@@ -1,3 +1,16 @@
+function resizeTable() {
+    if ($(window).width() <= 992) {
+        let tables = document.getElementsByClassName('table-to-adapt-columns')
+        for (const table of tables) {
+            if (table.offsetParent != null) {
+                let trs = [...table.rows].filter(tr => tr.id !== "tr-empty-result-search");
+                let newHeight = Math.max(...trs.map(x => x.offsetHeight));
+                if (newHeight) trs.forEach(tr => tr.style.height = newHeight + 'px');
+            }
+        }
+    }
+}
+
 $(document).ready(() => {
     $('.modal').modal();
 
@@ -15,15 +28,7 @@ $(document).ready(() => {
 
     $('.tabs').tabs({
         onShow: () => {
-            if ($(window).width() <= 992) {
-                let tables = document.getElementsByClassName('table-to-adapt-columns')
-                for (const table of tables) {
-                    if (table.offsetParent != null) {
-                        let trs = [...table.rows];
-                        trs.forEach(tr => tr.style.height = Math.max(...trs.map(x => x.offsetHeight)) + 'px');
-                    }
-                }
-            }
+            resizeTable()
         }
     });
 
