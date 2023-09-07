@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use Cocur\Slugify\Slugify;
 use DateTime;
+use Symfony\Component\Form\FormView;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -16,7 +17,10 @@ class AppExtension extends AbstractExtension
             new TwigFunction('journeeStillEditable', [$this, 'journeeStillEditable']),
             new TwigFunction('brulageCumule', [$this, 'brulageCumule']),
             new TwigFunction('isBrulesJ2', [$this, 'isBrulesJ2']),
-            new TwigFunction('listeRemplacants', [$this, 'listeRemplacants'])
+            new TwigFunction('listeRemplacants', [$this, 'listeRemplacants']),
+            new TwigFunction('isFieldEditable', [$this, 'isFieldEditable']),
+            new TwigFunction('editableMandatoryFields', [$this, 'editableMandatoryFields']),
+            new TwigFunction('isFieldEditableMandatory', [$this, 'isFieldEditableMandatory'])
         ];
     }
 
@@ -36,6 +40,40 @@ class AppExtension extends AbstractExtension
     public function journeeStillEditable(DateTime $latestDate): bool
     {
         return intval($latestDate->diff(new DateTime())->format('%R%a')) <= 0;
+    }
+
+    /**
+     * Détermine les champs éditables obligatoires dans le formulaire de la page
+     * @param array $champs
+     * @return array
+     */
+    public function editableMandatoryFields(array $champs): array
+    {
+        return array_map(function (FormView $champ) {
+            return count($champ->vars) && array_key_exists('attr', $champ->vars) && count($champ->vars['attr']) && array_key_exists('class', $champ->vars['attr']) && str_contains($champ->vars['attr']['class'], 'validate');
+        }, $champs);
+    }
+
+    /**
+     * Détermine si un champ est éditable et obligatoire dans le formulaire de la page
+     * @param string $champ
+     * @param array $champsEditables
+     * @return bool
+     */
+    public function isFieldEditableMandatory(string $champ, array $champsEditables): bool
+    {
+        return array_key_exists($champ, $champsEditables) && $champsEditables[$champ];
+    }
+
+    /**
+     * Détermine si un champ est éditable dans le formulaire de la page
+     * @param string $champ
+     * @param array $champsEditables
+     * @return bool
+     */
+    public function isFieldEditable(string $champ, array $champsEditables): bool
+    {
+        return array_key_exists($champ, $champsEditables);
     }
 
     /**

@@ -61,7 +61,7 @@
         {% if (response['contactables'] | length) == 0 %}
             <p style="margin-bottom: 10px; padding-top: 0; padding-bottom: 0; margin-top: 10px;"><span class="pastille red reset">Aucun membre contactable par {{ media }}</span></p>
         {% elseif response['notContactables'] | length %}
-            <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ (response['contactables'] | length) > 1 ? 's' : '' }} contactable{{ (response['notContactables'] | length) > 1 ? 's' : '' }}</p>
+            <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ (response['contactables'] | length) > 1 ? 's' : '' }} contactable{{ (response['contactables'] | length) > 1 ? 's' : '' }}</p>
             <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 0;">{{ response['notContactables'] | length }} membre{{ (response['notContactables'] | length) > 1 ? 's' : '' }} non contactable{{ (response['notContactables'] | length) > 1 ? 's' : '' }}</p>
         {% endif %}
 

@@ -1,6 +1,8 @@
 {% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, isCritFed, profileCompletion, equipesAssociees, options) %}
     {% import 'macros/membre.html.twig' as _membre %}
 
+    {% set champsEditablesObligatoires = editableMandatoryFields(form.children) %}
+
     <div class="card-panel center-align account-card">
 
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
@@ -29,7 +31,9 @@
             </div>
         {% endif %}
 
-        <span style="color: red"><i>* Champs obligatoires</i></span>
+        {% if champsEditablesObligatoires | filter(c => c) | length %}
+            <span style="color: red"><i>* Champs obligatoires</i></span>
+        {% endif %}
 
         {{ form_start(form) }}
         <div class="row section" style="margin-bottom: 0;">
@@ -42,7 +46,7 @@
             {% endif %}
 
             <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                <b><i class="material-icons prefix">person</i> NOM <span class="red-text">*</span></b>
+                <b><i class="material-icons prefix">person</i> NOM{% if isFieldEditableMandatory("nom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.nom) }}
                 {% else %}
@@ -50,16 +54,16 @@
                 {% endif %}
             </div>
             <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                <b><i class="material-icons prefix">person</i> Prénom <span class="red-text">*</span></b>
+                <b><i class="material-icons prefix">person</i> Prénom{% if isFieldEditableMandatory("prenom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.prenom) }}
                 {% else %}
                     <p>{{ form.vars.value.prenom }}</p>
                 {% endif %}
             </div>
-            {% if options.usernameEditable %}
-                <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
-                    <b><i class="material-icons prefix">account_circle</i> Pseudo <span class="red-text">*</span></b>
+            {% if isFieldEditable("username", champsEditablesObligatoires) %}
+                <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
+                    <b><i class="material-icons prefix">account_circle</i> Pseudo{% if isFieldEditableMandatory("username", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                     {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
             {% endif %}
@@ -191,7 +195,7 @@
                     </button>
                 {% endif %}
 
-                <p class="orange-text"><i><i class="material-icons">mark_email_read</i> Une adresse e-mail minimum requise</i></p>
+                <p class="orange-text"><i><i class="material-icons">mark_email_read</i> Une adresse e-mail minimum requise{% if isFieldEditable("mail", champsEditablesObligatoires) and isFieldEditable("mail2", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</i></p>
 
                 {% if app.request.getPathInfo ends with '/new' %}
                     <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text">
