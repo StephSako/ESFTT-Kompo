@@ -6,7 +6,7 @@
     {% for tournoi in tournois %}
         <li>
             <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class=" collapsible-header" style="padding: 6px 0 !important;">
-                <div class="chip">
+                <div class="chip" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                     <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
                     <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMM', locale='fr')|title : '') }}</span>
                 </div>

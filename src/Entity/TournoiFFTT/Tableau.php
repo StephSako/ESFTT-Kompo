@@ -140,7 +140,7 @@ class Tableau
             case 'I':
                 return "Simple";
             case 'E':
-                return "Par équipe";
+                return "Équipe";
             case 'D':
                 return "Double";
             default:
@@ -199,8 +199,17 @@ class Tableau
      */
     public function getTime(): ?string
     {
-        $replaceByH = str_replace(':', 'H', mb_convert_case($this->time, MB_CASE_LOWER, "UTF-8"));
-        return str_replace(' ', '', $replaceByH);
+        if ($this->time != null) {
+            $formattedTime = str_replace([':', '.', ' '], ['h', 'h', ''], mb_convert_case($this->time, MB_CASE_LOWER, "UTF-8"));
+
+            preg_match_all('/^(?<heure>\d{2})$/', $formattedTime, $heure);
+            if (count($heure['heure']) && $heure['heure'][0] == $formattedTime) $formattedTime = $heure['heure'][0] . 'h00';
+
+            if ($formattedTime[0] == '0') $formattedTime = substr($formattedTime, 1);
+            if ($formattedTime[strlen($formattedTime) - 1] == 'h') $formattedTime .= '00';
+
+            return $formattedTime;
+        } else return $this->time;
     }
 
     /**
