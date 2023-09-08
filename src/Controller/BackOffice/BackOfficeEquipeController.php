@@ -56,7 +56,7 @@ class BackOfficeEquipeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/equipe/new/", name="backoffice.equipe.new")
+     * @Route("/backoffice/equipe/new", name="backoffice.equipe.new")
      * @param Request $request
      * @param UtilController $utilController
      * @return Response

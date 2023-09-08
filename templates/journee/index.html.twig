@@ -70,7 +70,7 @@
             {% set hasJoueursCertifMedicPerim = countJoueursCertifMedicPerim and app.user.admin %}
             {% set hasJoueursWithoutLicenceClassoff = (joueursWithoutLicence.count or competiteursWithoutClassement.count) and (app.user.admin or app.user.capitaine) %}
 
-            {% if 'ROLE_COMPETITEUR' in app.token.roleNames %}
+            {% if app.user.competiteur %}
                 {% if journeeStillEditable(journee.latestDate) %}
                     <div class="card-panel center setDispoCard"
                             {% if userClassementLicenceIndefinies and (userCertifMedicalInvalid or hasJoueursCertifMedicPerim or hasJoueursWithoutLicenceClassoff) %}
@@ -121,7 +121,7 @@
                     </div>
                 {% endif %}
 
-                {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and equipesSansDivision | length %}
+                {% if (app.user.capitaine or app.user.admin) and equipesSansDivision | length %}
                     <div class="card-panel center cardTeamsWithoutDiv">
                         <p class="red-text" style="margin-bottom: 0;"><b>{{ equipesSansDivision | listeEquipesSansDivision }}</b></p>
                         <a href="{{ path('backoffice.equipes', {focusedTab: championnat.nom | customSlug}) }}">Corriger</a>
@@ -195,7 +195,7 @@
                                                 <i class="material-icons">rule</i> Équipe non confirmée
                                             {% endif %}
                                         </div>
-                                        {% if "ROLE_CAPITAINE" in app.user.roles or 'ROLE_ADMIN' in app.token.roleNames %}
+                                        {% if "ROLE_CAPITAINE" in app.user.roles or app.user.admin %}
                                             <div>
                                                 <i class="material-icons blue-text text-lighten-1 swap-validation" id="compoValidation{{ compo.id }}" onclick="toggleCompoValidation('{{ compo.id }}')">
                                                     swap_horizontal_circle
@@ -355,7 +355,7 @@
                         </div>
 
                         {% if not compo.exempt %}
-                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and not compo.isOver %}
+                            {% if (app.user.capitaine or app.user.admin) and not compo.isOver %}
                                 <p class="center" style="margin: 0;"><b>N° {{ club_diminutif }} : {{ club_id }}</b></p>
                             {% endif %}
 
@@ -385,7 +385,7 @@
                                 {% endif %}
                             {% endif %}
 
-                            {% if ('ROLE_CAPITAINE' in app.token.roleNames or 'ROLE_ADMIN' in app.token.roleNames) and not compo.isOver %}
+                            {% if (app.user.capitaine or app.user.admin) and not compo.isOver %}
                                 <div style="margin-bottom: 10px; margin-top: 5px;">
                                     <a id="compoEdition{{ compo.id }}" href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2{% if compo.isValidationCompo %} hide{% endif %}">
                                         <i class="material-icons">group_add</i>

@@ -43,7 +43,7 @@ class BackOfficeJourneeController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/journee/edit/journee/{idJournee}", name="backoffice.journee.edit", requirements={"idJournee"="\d+"})
+     * @Route("/backoffice/journee/edit/{idJournee}", name="backoffice.journee.edit", requirements={"idJournee"="\d+"})
      * @param int $idJournee
      * @param Request $request
      * @param UtilController $utilController

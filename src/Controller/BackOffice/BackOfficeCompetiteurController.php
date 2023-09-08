@@ -190,7 +190,6 @@ class BackOfficeCompetiteurController extends AbstractController
             ->setUsername('username_temp');
 
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
-            'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'dateNaissanceRequired' => false,
             'isCertificatInvalid' => true,
@@ -406,7 +405,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteur/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
+     * @Route("/backoffice/competiteur/edit/{idCompetiteur}", name="backoffice.competiteur.edit", requirements={"idCompetiteur"="\d+"})
      * @param int $idCompetiteur
      * @param Request $request
      * @param UtilController $utilController
@@ -419,14 +418,11 @@ class BackOfficeCompetiteurController extends AbstractController
             return $this->redirectToRoute('backoffice.competiteurs');
         }
 
-        $usernameEditable = !(($this->getUser()->isCapitaine() && !$this->getUser()->isAdmin()) && $competiteur->isAdmin() && $this->getUser()->getIdCompetiteur() != $competiteur->getIdCompetiteur());
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
-            'capitaineAccess' => $this->getUser()->isCapitaine(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
-            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null,
-            'usernameEditable' => $usernameEditable
+            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null
         ]);
         $form->handleRequest($request);
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
@@ -569,7 +565,6 @@ class BackOfficeCompetiteurController extends AbstractController
             'isAdmin' => $competiteur->isAdmin(),
             'onlyOneAdmin' => $onlyOneAdmin,
             'competiteurId' => $competiteur->getIdCompetiteur(),
-            'usernameEditable' => $usernameEditable,
             'form' => $form->createView(),
             'profileCompletion' => $competiteur->profileCompletion(),
             'equipesAssociees' => $equipesAssociees,
@@ -605,9 +600,7 @@ class BackOfficeCompetiteurController extends AbstractController
      */
     public function updatePassword(Competiteur $competiteur, Request $request)
     {
-        $form = $this->createForm(CompetiteurType::class, $competiteur, [
-            'capitaineAccess' => true
-        ]);
+        $form = $this->createForm(CompetiteurType::class, $competiteur);
         $form->handleRequest($request);
 
         if (strlen($request->request->get('new_password')) && strlen($request->request->get('new_password_validate'))) {

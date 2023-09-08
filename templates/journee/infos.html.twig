@@ -61,7 +61,7 @@
             </p>
         </div>
 
-        {% if 'ROLE_ADMIN' in app.token.roleNames %}
+        {% if app.user.admin %}
             <div class="card-panel" id="settings-form">
                 {{ form_start(form) }}
                 <div class="center">

@@ -39,6 +39,9 @@ security:
     - { path: ^/backoffice/division/edit, roles: [ ROLE_ADMIN ] }
     - { path: ^/backoffice/division/new, roles: [ ROLE_ADMIN ] }
     - { path: ^/backoffice/equipe/delete, roles: [ ROLE_ADMIN ] }
+    - { path: ^/backoffice/equipe/new, roles: [ ROLE_ADMIN ] }
+    - { path: ^/backoffice/competiteur/edit, roles: [ ROLE_ADMIN ] }
+    - { path: ^/backoffice/competiteur/new, roles: [ ROLE_ADMIN ] }
     - { path: ^/backoffice/competiteur/renouveler/certificat, roles: [ ROLE_ADMIN ] }
     - { path: ^/backoffice/competiteur/resend-welcome-mail, roles: [ ROLE_ADMIN ] }
     - { path: ^/backoffice/competiteur/delete, roles: [ ROLE_ADMIN ] }

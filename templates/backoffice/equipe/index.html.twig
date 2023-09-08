@@ -33,10 +33,12 @@
                 </a>
             </div>
         {% else %}
-            <a href='{{ path('backoffice.equipe.new') }}'
-               class='btn waves-effect blue lighten-1 btn_gestion'>
-                Créer une équipe
-            </a>
+            {% if app.user.admin %}
+                <a href='{{ path('backoffice.equipe.new') }}'
+                   class='btn waves-effect blue lighten-1 btn_gestion'>
+                    Créer une équipe
+                </a>
+            {% endif %}
 
             {% if equipes|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>

@@ -45,7 +45,7 @@
                 </div>
             {% endif %}
 
-            <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
                 <b><i class="material-icons prefix">person</i> NOM{% if isFieldEditableMandatory("nom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.nom) }}
@@ -53,7 +53,7 @@
                     <p>{{ form.vars.value.nom }}</p>
                 {% endif %}
             </div>
-            <div class="col s12 m6 l{% if options.usernameEditable %}3{% else %}4{% endif %}">
+            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
                 <b><i class="material-icons prefix">person</i> Prénom{% if isFieldEditableMandatory("prenom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.prenom) }}
@@ -67,7 +67,7 @@
                     {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
                 </div>
             {% endif %}
-            <div class="col s12 {% if options.usernameEditable %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
+            <div class="col s12 {% if isFieldEditable("username", champsEditablesObligatoires) %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
                 <b><i class="material-icons prefix">cake</i> Date de naissance</b>
                 <div class="titlecase">
                     {{ form_row(form.dateNaissance) }}
@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+        {% if app.user.admin and type == 'backoffice' %}
             <div class="section" style="margin-bottom: 0;">
                 <h5 class="dark_blue" style="margin-top: 0;">Statut(s) du joueur</h5>
 
@@ -145,7 +145,7 @@
                     <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
                 {% endif %}
                 {% endif %}
-                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' %}
+                {% if app.user.admin and type == 'backoffice' %}
                 {% if anneeCertificatMedical != null %}
                     <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
                         Renouveler
@@ -184,11 +184,10 @@
                 {% endif %}
             </div>
 
-        {% if type == 'general' or ('ROLE_ADMIN' in app.token.roleNames and type == 'backoffice') %}
             <div class="row section">
                 <h5 class="dark_blue">Contact</h5>
 
-                {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
+                {% if app.user.admin and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
                     <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
                     <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
                         <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
@@ -251,7 +250,6 @@
                     if (e.which === 32) return false;
                 });
             </script>
-        {% endif %}
 
             <div class="section" style="margin-bottom: 0;">
                 <h5 class="dark_blue">Informations licence</h5>
@@ -293,7 +291,7 @@
                         {% if type == 'backoffice' %}
                             {{ form_row(form.classementOfficiel) }}
                         {% else %}
-                            {% if 'ROLE_COMPETITEUR' not in app.token.roleNames %}
+                            {% if not app.user.competiteur %}
                                 <p><i>Vous n'êtes pas compétiteur</i></p>
                             {% else %}
                                 {% if app.user.classementOfficiel %}
@@ -380,9 +378,9 @@
                                 <li id="pageContacter"><b>-</b> être contacté depuis la page <a href="{{ path('contact') }}">Contacter</a> <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
                                 <li id="alertSelection"><b>-</b> être alerté par les capitaines pour {{ type == 'backoffice' ? "lui" : "vous" }} demander de signaler {{ type == 'backoffice' ? "sa" : "votre" }} disponibilité pour une journée <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
                                 <li id="alertSelection"><b>-</b> être alerté par les capitaines de {{ type == 'backoffice' ? "sa" : "votre" }} sélection <b><span class="parMail" hidden="hidden">par mail</span><span class="parSMS" hidden="hidden"><span class="niMailSMS" hidden="hidden"> ni</span> par SMS</span></b></li>
-                                <div class="parMail" hidden="hidden">
-                                    <li><b>-</b> être alerté pour le renouvellement de {{ type == 'backoffice' ? "son" : "votre" }} certificat médical <b>(par mail uniquement)</b></li>
-                                </div>
+                                <li class="parMail" hidden="hidden">
+                                    <b>-</b> être alerté pour le renouvellement de {{ type == 'backoffice' ? "son" : "votre" }} certificat médical <b>(par mail uniquement)</b>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -404,7 +402,7 @@
         </button>
         {{ form_end(form) }}
 
-        {% if 'ROLE_ADMIN' in app.token.roleNames and type == 'backoffice' and editMode %}
+        {% if app.user.admin and type == 'backoffice' and editMode %}
             {% if options.onlyOneAdmin is defined and options.onlyOneAdmin and form.vars.value.isAdmin %}
                 <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
                     <button class='btn red lighten-2 btn_gestion' disabled="">

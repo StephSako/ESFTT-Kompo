@@ -19,8 +19,8 @@
             <th>Licence</th>
             <th>Classement</th>
             <th class="truncate">Certificat médical</th>
-            <th></th>
-            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+            {% if app.user.admin %}
+                <th></th>
                 <th></th>
             {% endif %}
         </tr>
@@ -86,10 +86,10 @@
                         {% endif %}
                     {% endif %}
                 </td>
-                <td style="padding-bottom: 0; padding-top: 0;">
-                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
-                </td>
-                {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                {% if app.user.admin %}
+                    <td style="padding-bottom: 0; padding-top: 0;">
+                        <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                    </td>
                     <td>
                         {% if not (onlyOneAdmin and competiteur.admin) %}
                             <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
@@ -124,8 +124,8 @@
             <th>Nom</th>
             <th>Licence</th>
             <th>Dernier classement</th>
-            <th></th>
-            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+            {% if app.user.admin %}
+                <th></th>
                 <th></th>
             {% endif %}
         </tr>
@@ -161,10 +161,10 @@
                         Classement indéfini
                     {% endif %}
                 </td>
-                <td style="padding-bottom: 0; padding-top: 0;">
-                    <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
-                </td>
-                {% if 'ROLE_ADMIN' in app.token.roleNames %}
+                {% if app.user.admin %}
+                    <td style="padding-bottom: 0; padding-top: 0;">
+                        <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
+                    </td>
                     <td>
                         <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
                             <input type='hidden' name='_method' value='DELETE'>

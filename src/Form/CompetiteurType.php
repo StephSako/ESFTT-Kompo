@@ -31,43 +31,7 @@ class CompetiteurType extends AbstractType
                 'required' => false
             ]);
 
-        if ($options['adminAccess']) {
-            $builder
-                ->add('isCapitaine', CheckboxType::class, [
-                    'label' => 'Capitaine',
-                    'required' => false
-                ])
-                ->add('isAdmin', CheckboxType::class, [
-                    'label' => 'Administrateur',
-                    'required' => false
-                ])
-                ->add('isLoisir', CheckboxType::class, [
-                    'label' => 'Loisir',
-                    'required' => false
-                ])
-                ->add('isArchive', CheckboxType::class, [
-                    'label' => 'Archivé',
-                    'required' => false
-                ])
-                ->add('isEntraineur', CheckboxType::class, [
-                    'label' => 'Entraîneur',
-                    'required' => false
-                ])
-                ->add('isCompetiteur', CheckboxType::class, [
-                    'label' => 'Compétiteur',
-                    'required' => false
-                ])
-                ->add('isCritFed', CheckboxType::class, [
-                    'label' => 'Critérium fédéral',
-                    'required' => false
-                ])
-                ->add('isJeune', CheckboxType::class, [
-                    'label' => 'Jeune',
-                    'required' => false
-                ]);
-        }
-
-        if ((($options['capitaineAccess'] && $options['adminAccess']) || !$options['capitaineAccess']) && !$options['isArchived']) {
+        if (!$options['isArchived']) {
             $builder
                 ->add('mail', EmailType::class, [
                     'label' => false,
@@ -119,53 +83,89 @@ class CompetiteurType extends AbstractType
             }
         }
 
-        if ($options['adminAccess'] && $options['isCertificatInvalid']) {
-            $builder->add('anneeCertificatMedical', IntegerType::class, [
-                'label' => 'Année certificat médical',
-                'required' => false,
-                'attr' => [
-                    'min' => 2016,
-                    'max' => 9999
-                ]
-            ]);
-        }
-
-        if (($options['adminAccess'] || $options['capitaineAccess']) && !$options['isArchived']) {
+        if ($options['adminAccess']) {
             $builder
-                ->add('nom', TextType::class, [
-                    'label' => false,
-                    'required' => true,
-                    'attr' => [
-                        'class' => 'uppercase validate',
-                        'maxlength' => 50
-                    ]
+                ->add('isCapitaine', CheckboxType::class, [
+                    'label' => 'Capitaine',
+                    'required' => false
                 ])
-                ->add('prenom', TextType::class, [
-                    'label' => false,
-                    'required' => true,
-                    'attr' => [
-                        'class' => 'validate',
-                        'maxlength' => 50
-                    ]
+                ->add('isAdmin', CheckboxType::class, [
+                    'label' => 'Administrateur',
+                    'required' => false
                 ])
-                ->add('licence', TelType::class, [
-                    'label' => false,
+                ->add('isLoisir', CheckboxType::class, [
+                    'label' => 'Loisir',
+                    'required' => false
+                ])
+                ->add('isArchive', CheckboxType::class, [
+                    'label' => 'Archivé',
+                    'required' => false
+                ])
+                ->add('isEntraineur', CheckboxType::class, [
+                    'label' => 'Entraîneur',
+                    'required' => false
+                ])
+                ->add('isCompetiteur', CheckboxType::class, [
+                    'label' => 'Compétiteur',
+                    'required' => false
+                ])
+                ->add('isCritFed', CheckboxType::class, [
+                    'label' => 'Critérium fédéral',
+                    'required' => false
+                ])
+                ->add('isJeune', CheckboxType::class, [
+                    'label' => 'Jeune',
+                    'required' => false
+                ]);
+            
+            if ($options['isCertificatInvalid']) {
+                $builder->add('anneeCertificatMedical', IntegerType::class, [
+                    'label' => 'Année certificat médical',
                     'required' => false,
                     'attr' => [
-                        'maxlength' => 11
-                    ]
-                ])
-                ->add('classementOfficiel', IntegerType::class, [
-                    'label' => false,
-                    'required' => false,
-                    'attr' => [
-                        'min' => 300,
-                        'max' => 40000
+                        'min' => 2016,
+                        'max' => 9999
                     ]
                 ]);
+            }
+
+            if (!$options['isArchived']) {
+                $builder
+                    ->add('nom', TextType::class, [
+                        'label' => false,
+                        'required' => true,
+                        'attr' => [
+                            'class' => 'uppercase validate',
+                            'maxlength' => 50
+                        ]
+                    ])
+                    ->add('prenom', TextType::class, [
+                        'label' => false,
+                        'required' => true,
+                        'attr' => [
+                            'class' => 'validate',
+                            'maxlength' => 50
+                        ]
+                    ])
+                    ->add('licence', TelType::class, [
+                        'label' => false,
+                        'required' => false,
+                        'attr' => [
+                            'maxlength' => 11
+                        ]
+                    ])
+                    ->add('classementOfficiel', IntegerType::class, [
+                        'label' => false,
+                        'required' => false,
+                        'attr' => [
+                            'min' => 300,
+                            'max' => 40000
+                        ]
+                    ]);
+            }
         }
 
-        if ($options['usernameEditable']) {
+        if ($options['usernameEditable'] && !$options['createMode']) {
             $builder->add('username', TextType::class, [
                 'label' => false,
                 'required' => true,
@@ -183,11 +183,10 @@ class CompetiteurType extends AbstractType
             'data_class' => Competiteur::class,
             'translation_domain' => 'forms',
             'isCertificatInvalid' => false,
-            'capitaineAccess' => false,
+            'usernameEditable' => true,
             'adminAccess' => false,
             'isArchived' => false,
             'dateNaissanceRequired' => false,
-            'usernameEditable' => true,
             'createMode' => false
         ]);
     }

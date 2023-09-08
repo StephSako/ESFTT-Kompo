@@ -26,11 +26,11 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.critFed, app.user.profileCompletion, equipesAssociees, {licence: app.user.licence, isArchived: false, usernameEditable: true}) }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.critFed, app.user.profileCompletion, equipesAssociees, {licence: app.user.licence, isArchived: false}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, isCritFed, profileCompletion, null, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, usernameEditable: usernameEditable, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
-            {% if 'ROLE_ADMIN' in app.token.roleNames %}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, isCritFed, profileCompletion, null, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
+            {% if app.user.admin %}
                 {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
             {% endif %}
         {% endif %}
