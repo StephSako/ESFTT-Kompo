@@ -88,7 +88,7 @@ class BackOfficeEquipeController extends AbstractController
                     /** On vérifie qu'il ne manque pas des numéros d'équipes */
                     else if ($numerosManquants && !in_array($equipe->getNumero(), $numerosManquants)) {
                         $nbMissingEquipes = count($numerosManquants);
-                        $str = $nbMissingEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+                        $str = $nbMissingEquipes > 1 ? 'Les équipes ' : "L'équipe ";
 
                         foreach (array_values($numerosManquants) as $i => $numEquipe) {
                             $str .= $numEquipe;
@@ -96,10 +96,10 @@ class BackOfficeEquipeController extends AbstractController
                             elseif ($i < $nbMissingEquipes - 1) $str .= ', ';
                         }
 
-                        $str .= $nbMissingEquipes > 1 ? ' doivent d\'abord être créées' : ' doit d\'abord être créée';
+                        $str .= $nbMissingEquipes > 1 ? " doivent d'abord être créées" : " doit d'abord être créée";
                         throw new Exception($str, 12341);
                         /** Sinon le numéro attribué doit être le suivant de la dernière équipe */
-                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants) throw new Exception('Le prochain numéro d\'équipe pour ce championnat doit être le ' . $lastNumero, 12343);
+                    } else if ($equipe->getNumero() != $lastNumero && !$numerosManquants) throw new Exception("Le prochain numéro d'équipe pour ce championnat doit être le " . $lastNumero, 12343);
 
                     $equipe->setIdChampionnat($equipe->getIdDivision()->getIdChampionnat());
                     $equipe->setLastUpdate($utilController->getAdminUpdateLog('Créée par '));
@@ -113,12 +113,12 @@ class BackOfficeEquipeController extends AbstractController
                 } catch (Exception $e) {
                     if ($e->getPrevious()) {
                         if ($e->getPrevious()->getCode() == "23000") {
-                            if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro \'' . $equipe->getNumero() . '\' est déjà attribué');
-                            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                        } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                            if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', "Le numéro '" . $equipe->getNumero() . "' est déjà attribué");
+                            else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                        } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                     } else if (in_array($e->getCode(), ["12340", "12341", "12342", "12343"])) $this->addFlash('fail', $e->getMessage());
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/equipe/new.html.twig', [
@@ -218,10 +218,10 @@ class BackOfficeEquipeController extends AbstractController
                 } catch (Exception $e) {
                     if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'numero')) $this->addFlash('fail', 'Le numéro ' . $equipe->getNumero() . ' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/equipe/edit.html.twig', [
@@ -249,7 +249,7 @@ class BackOfficeEquipeController extends AbstractController
             $this->em->remove($equipe);
             $this->em->flush();
             $this->addFlash('success', 'Équipe supprimée');
-        } else $this->addFlash('error', 'L\'équipe n\'a pas pu être supprimée');
+        } else $this->addFlash('fail', "L'équipe n'a pas pu être supprimée");
 
         return $this->redirectToRoute('backoffice.equipes', [
             'active' => $equipe->getIdChampionnat()->getIdChampionnat()
@@ -328,7 +328,7 @@ class BackOfficeEquipeController extends AbstractController
                     }
                     $this->em->flush();
 
-                    $this->addFlash('success', 'Titulaires de l\'équipe ' . $equipe->getNumero() . ' modifiés');
+                    $this->addFlash('success', "Titulaires de l'équipe " . $equipe->getNumero() . ' modifiés');
 
                     return $this->redirectToRoute('backoffice.equipes', [
                         'active' => $equipe->getIdChampionnat()->getIdChampionnat()
@@ -336,7 +336,7 @@ class BackOfficeEquipeController extends AbstractController
                 } catch (Exception $e) {
                     $this->addFlash('fail', 'Une erreur est survenue');
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/equipe/editPlayers.html.twig', [

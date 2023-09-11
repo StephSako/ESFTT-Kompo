@@ -237,7 +237,7 @@ class HomeController extends AbstractController
         }));
         $joueursWithoutLicence = [
             'count' => $countJoueursWithoutLicence,
-            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' compétiteur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . '</b> dont la licence n\'est pas définie' : ''
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' compétiteur' . ($countJoueursWithoutLicence > 1 ? 's' : '') . "</b> dont la licence n'est pas définie" : ''
         ];
 
         // Compétiteurs sans classement officiel défini
@@ -246,7 +246,7 @@ class HomeController extends AbstractController
         }));
         $competiteursWithoutClassement = [
             'count' => $countCompetiteursWithoutClassement,
-            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . "</b> dont le classement officiel n'est pas défini" : ''
         ];
 
         $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
@@ -316,14 +316,14 @@ class HomeController extends AbstractController
         }
 
         if ($compo->isExempt()) {
-            $this->addFlash('fail', 'Journée exemptée pour l\'équipe ' . $compo->getIdEquipe()->getNumero());
+            $this->addFlash('fail', "Journée exemptée pour l'équipe " . $compo->getIdEquipe()->getNumero());
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
-            $this->addFlash('fail', 'Cette rencontre n\'est plus modifiable : date de journée dépassée');
+            $this->addFlash('fail', "Cette rencontre n'est plus modifiable : date de journée dépassée");
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
@@ -332,7 +332,7 @@ class HomeController extends AbstractController
                 return $j->getIdJournee();
             }, $journees)) + 1;
         if (!$compo->getIdEquipe()->getIdDivision()) {
-            $this->addFlash('fail', 'Cette rencontre n\'est pas modifiable car l\'équipe n\'a pas de division associée');
+            $this->addFlash('fail', "Cette rencontre n'est pas modifiable car l'équipe n'a pas de division associée");
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
@@ -424,9 +424,9 @@ class HomeController extends AbstractController
                     ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
-                        if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', 'Un joueur ne peut être sélectionné qu\'une seule fois');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        if (str_contains($e->getPrevious()->getMessage(), 'CHK_renc_joueurs')) $this->addFlash('fail', "Un joueur ne peut être sélectionné qu'une seule fois");
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
             }
         }
@@ -469,14 +469,14 @@ class HomeController extends AbstractController
         }
 
         if ($compo->isExempt()) {
-            $this->addFlash('fail', 'Journée exemptée pour l\'équipe ' . $compo->getIdEquipe()->getNumero());
+            $this->addFlash('fail', "Journée exemptée pour l'équipe " . $compo->getIdEquipe()->getNumero());
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
-            $this->addFlash('fail', 'Cette rencontre n\'est plus modifiable : date de journée dépassée');
+            $this->addFlash('fail', "Cette rencontre n'est plus modifiable : date de journée dépassée");
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 

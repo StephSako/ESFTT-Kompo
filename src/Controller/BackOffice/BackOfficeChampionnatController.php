@@ -92,10 +92,10 @@ class BackOfficeChampionnatController extends AbstractController
                 return $this->redirectToRoute('backoffice.championnats');
             } catch (Exception $e) {
                 if ($e->getPrevious()->getCode() == "23000") {
-                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
-                    else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', 'Il existe déjà un championnat pour \'' . array_search($championnat->getOrganismePere(), array_merge(...array_values($organismes))) . '\'');
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', "Le nom '" . $championnat->getNom() . "' est déjà attribué");
+                    else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', "Il existe déjà un championnat pour '" . array_search($championnat->getOrganismePere(), array_merge(...array_values($organismes))) . "'");
+                    else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                } else $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
         }
 
@@ -216,9 +216,9 @@ class BackOfficeChampionnatController extends AbstractController
                 return $this->redirectToRoute('backoffice.championnats');
             } catch (Exception $e) {
                 if ($e->getPrevious()->getCode() == "23000") {
-                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', 'Le nom \'' . $championnat->getNom() . '\' est déjà attribué');
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', "Le nom '" . $championnat->getNom() . "' est déjà attribué");
+                    else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                } else $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
         }
 
@@ -249,7 +249,7 @@ class BackOfficeChampionnatController extends AbstractController
             $this->em->remove($championnat);
             $this->em->flush();
             $this->addFlash('success', 'Championnat supprimé');
-        } else $this->addFlash('error', 'Le championnat n\'a pas pu être supprimé');
+        } else $this->addFlash('fail', "Le championnat n'a pas pu être supprimé");
 
         return $this->redirectToRoute('backoffice.championnats');
     }

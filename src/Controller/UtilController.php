@@ -64,7 +64,7 @@ class UtilController extends AbstractController
         $maxDate = clone max($latestDate);
         $latestDateMax = new DateTime(date_format(($maxDate->add(new DateInterval('P1D'))), 'Y-m-d'));
         $today = new DateTime();
-        if (!count($latestDate)) return ['launchable' => false, 'message' => 'Ce championnat n\'a pas d\'équipes enregistrées'];
+        if (!count($latestDate)) return ['launchable' => false, 'message' => "Ce championnat n'a pas d'équipes enregistrées"];
         else if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase est prête à être lancée'];
         else return ['launchable' => false, 'message' => null];
     }
@@ -259,6 +259,6 @@ class UtilController extends AbstractController
         foreach ($form->getErrors(true) as $i => $error) {
             $errors .= $error->getMessage() . (!$i ? '<br>' : '');
         }
-        return strlen($errors) ? $errors : 'Le formulaire n\'est pas valide';
+        return strlen($errors) ? $errors : "Le formulaire n'est pas valide";
     }
 }

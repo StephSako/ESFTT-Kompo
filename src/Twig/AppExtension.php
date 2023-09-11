@@ -93,7 +93,7 @@ class AppExtension extends AbstractExtension
     public function listeEquipesSansDivision(array $numEquipes): string
     {
         $nbEquipes = count($numEquipes);
-        $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+        $str = $nbEquipes > 1 ? 'Les équipes ' : "L'équipe ";
         $numEquipes = array_values($numEquipes);
         sort($numEquipes);
 
@@ -103,9 +103,9 @@ class AppExtension extends AbstractExtension
             elseif ($i < $nbEquipes - 1) $str .= ', ';
         }
 
-        $str .= $nbEquipes > 1 ? ' n\'ont ' : ' n\'a ';
+        $str .= $nbEquipes > 1 ? " n'ont " : " n'a ";
         $str .= 'pas de division' . ($nbEquipes > 1 ? 's' : '') . ' affiliée' . ($nbEquipes > 1 ? 's' : '') . ' : vous ne pouvez donc pas accéder à';
-        $str .= ($nbEquipes > 1 ? ' leurs ' : ' ses ') . 'compositions d\'équipe';
+        $str .= ($nbEquipes > 1 ? ' leurs ' : ' ses ') . "compositions d'équipe";
 
         return $str;
     }
@@ -159,7 +159,7 @@ class AppExtension extends AbstractExtension
     public function listeEquipeToManage(array $teams, int $mode): string
     {
         $nbEquipes = count($teams);
-        $str = $nbEquipes > 1 ? 'Les équipes ' : 'L\'équipe ';
+        $str = $nbEquipes > 1 ? 'Les équipes ' : "L'équipe ";
 
         foreach (array_values($teams) as $i => $numEquipe) {
             $str .= $numEquipe;

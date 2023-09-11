@@ -148,7 +148,7 @@ class BackOfficeCompetiteurController extends AbstractController
         }));
         $joueursWithoutLicence = [
             'count' => $countJoueursWithoutLicence,
-            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' membre' . ($countJoueursWithoutLicence > 1 ? 's' : '') . '</b> dont la licence n\'est pas définie' : ''
+            'message' => $countJoueursWithoutLicence ? 'Il y a <b>' . $countJoueursWithoutLicence . ' membre' . ($countJoueursWithoutLicence > 1 ? 's' : '') . "</b> dont la licence n'est pas définie" : ''
         ];
 
         /** Compétiteurs sans classement officiel défini */
@@ -157,7 +157,7 @@ class BackOfficeCompetiteurController extends AbstractController
         }));
         $competiteursWithoutClassement = [
             'count' => $countCompetiteursWithoutClassement,
-            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . '</b> dont le classement officiel n\'est pas défini' : ''
+            'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . "</b> dont le classement officiel n'est pas défini" : ''
         ];
 
         return $this->render('backoffice/competiteur/index.html.twig', [
@@ -210,7 +210,7 @@ class BackOfficeCompetiteurController extends AbstractController
                             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
                             $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
                         } catch (Exception $e) {
-                            throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas à ' . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
+                            throw new Exception("Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
                         }
                     }
 
@@ -282,7 +282,7 @@ class BackOfficeCompetiteurController extends AbstractController
                     }
                 }
 
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
         }
 
@@ -301,7 +301,7 @@ class BackOfficeCompetiteurController extends AbstractController
     {
         if (!count($competiteur->getRoles())) throw new Exception('Le joueur doit avoir au moins un rôle', 1234);
         if (count($competiteur->getRoles()) == 1 && $competiteur->isJeune()) throw new Exception('Le jeune doit avoir au moins un autre rôle', 1234);
-        if ($competiteur->isArchive() && count($competiteur->getRoles()) > 1) throw new Exception('Le joueur archivé ne doit pas avoir d\'autres rôles', 1234);
+        if ($competiteur->isArchive() && count($competiteur->getRoles()) > 1) throw new Exception("Le joueur archivé ne doit pas avoir d'autres rôles", 1234);
         if (!$competiteur->isCompetiteur() && $competiteur->isCapitaine()) throw new Exception('Un capitaine doit être compétiteur', 1234);
         if (!$competiteur->isCompetiteur() && $competiteur->isCritFed()) throw new Exception('Un joueur du crit. féd. doit être compétiteur', 1234);
         if ($competiteur->isLoisir() && ($competiteur->isCritFed() || $competiteur->isCompetiteur() || $competiteur->isArchive() || $competiteur->isCapitaine())) throw new Exception('Un loisir ne peut pas avoir de rôle(s) lié(s) à la compétition', 1234);
@@ -367,14 +367,14 @@ class BackOfficeCompetiteurController extends AbstractController
     private function showFlashBOAccount(Exception $e, Competiteur $competiteur)
     {
         if ($e->getPrevious() && $e->getPrevious()->getCode() == "23000") {
-            if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', 'La licence \'' . $competiteur->getLicence() . '\' est déjà attribuée');
-            else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $competiteur->getUsername() . '\' est déjà attribué');
+            if (str_contains($e->getPrevious()->getMessage(), 'licence')) $this->addFlash('fail', "La licence '" . $competiteur->getLicence() . "' est déjà attribuée");
+            else if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', "Le pseudo '" . $competiteur->getUsername() . "' est déjà attribué");
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
             else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-            else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            else $this->addFlash('fail', "Le formulaire n'est pas valide");
         } else if ($e->getCode() == '1234') $this->addFlash('fail', $e->getMessage());
-        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+        else $this->addFlash('fail', "Le formulaire n'est pas valide");
     }
 
     /**
@@ -451,7 +451,7 @@ class BackOfficeCompetiteurController extends AbstractController
                                 $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
                                 $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
                             } catch (Exception $e) {
-                                throw new Exception('Le joueur avec la licence \'' . $competiteur->getLicence() . '\' n\'existe pas à ' . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
+                                throw new Exception("Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
                             }
                         }
 
@@ -549,7 +549,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 }
             } else {
                 $competiteur->setIsArchive(false);
-                $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
         }
 
@@ -609,7 +609,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 $competiteur->setPassword($password);
 
                 $this->em->flush();
-                $this->addFlash('success', 'Mot de passe de l\'utilisateur modifié');
+                $this->addFlash('success', "Mot de passe de l'utilisateur modifié");
                 return $this->redirectToRoute('backoffice.competiteurs');
             } else $this->addFlash('fail', 'Champs du nouveau mot de passe différents');
         } else $this->addFlash('fail', 'Remplissez tous les champs');
@@ -629,6 +629,13 @@ class BackOfficeCompetiteurController extends AbstractController
     public function delete(Competiteur $competiteur, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $competiteur->getIdCompetiteur(), $request->get('_token'))) {
+
+            // On ne peux supprimer que des joueurs archivés
+            if (!$competiteur->isArchive()) {
+                $this->addFlash('fail', 'Vous ne pouvez pas supprimer un membre non archivé');
+                return $this->redirectToRoute('backoffice.competiteurs');
+            }
+
             $rencontres = $this->rencontreRepository->getSelectionInChampCompos($competiteur->getIdCompetiteur(), $this->divisionRepository->getNbJoueursMax()["nbMaxJoueurs"], false);
 
             /** On supprime le joueur des compos d'équipe ... */
@@ -655,7 +662,7 @@ class BackOfficeCompetiteurController extends AbstractController
                 $this->get('session')->invalidate();
                 return $this->redirectToRoute('logout');
             }
-        } else $this->addFlash('error', 'Le membre n\'a pas pu être supprimé');
+        } else $this->addFlash('fail', "Le membre n'a pas pu être supprimé");
 
         return $this->redirectToRoute('backoffice.competiteurs');
     }
@@ -1097,7 +1104,7 @@ class BackOfficeCompetiteurController extends AbstractController
             }
 
             $this->addFlash('success', 'Joueurs inscrits par importation');
-            if ($nbErrorMail) $this->addFlash('fail', $nbErrorMail . ($nbErrorMail == 1 ? ' mail n\'a pas été envoyé' : ' mails n\'ont pas été envoyés'));
+            if ($nbErrorMail) $this->addFlash('fail', $nbErrorMail . ($nbErrorMail == 1 ? " mail n'a pas été envoyé" : " mails n'ont pas été envoyés"));
             else $this->addFlash('success', 'Tous les joueurs ont reçu le mail de bienvenu');
             return $this->redirectToRoute('backoffice.competiteurs');
         } else {
@@ -1147,10 +1154,10 @@ class BackOfficeCompetiteurController extends AbstractController
                 if (count($matches[0]) != count($input[0])) $this->addFlash('fail', 'Il y a une différence de ' . abs((count($input[0]) - count($matches[0]))) . ' variable' . (abs((count($input[0]) - count($matches[0]))) > 1 ? 's' : ''));
                 else {
                     $this->em->flush();
-                    $this->addFlash('success', 'Contenu de l\'e-mail modifié');
+                    $this->addFlash('success', "Contenu de l'e-mail modifié");
                     return $this->redirectToRoute('backoffice.competiteurs');
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/competiteur/mailContentEditor.hml.twig', [

@@ -87,10 +87,10 @@ class BackOfficeJourneeController extends AbstractController
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'date_journee')) $this->addFlash('fail', 'La date ' . ($journee->getDateJournee())->format('d/m/Y') . ' est déjà attribuée');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/journee/edit.html.twig', [

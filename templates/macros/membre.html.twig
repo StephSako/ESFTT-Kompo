@@ -1,4 +1,4 @@
-{% macro tableActifs(joueurs, onlyOneAdmin) %}
+{% macro tableActifs(joueurs) %}
     <p style="margin: 10px auto 14px auto" class="blue-text">
         <i class="material-icons">groups</i><b> {{ joueurs|length }} membre{{ joueurs|length > 1 ? 's' : '' }} inscrits sur Kompo</b>
     </p>
@@ -20,7 +20,6 @@
             <th>Classement</th>
             <th class="truncate">Certificat médical</th>
             {% if app.user.admin %}
-                <th></th>
                 <th></th>
             {% endif %}
         </tr>
@@ -90,23 +89,6 @@
                     <td style="padding-bottom: 0; padding-top: 0;">
                         <a href='{{ path('backoffice.competiteur.edit', {idCompetiteur: competiteur.idCompetiteur}) }}' class='btn waves-effect blue lighten-2 btn_gestion'><i class='material-icons'>edit</i></a>
                     </td>
-                    <td>
-                        {% if not (onlyOneAdmin and competiteur.admin) %}
-                            <form method='post' action='{{ path('backoffice.competiteur.delete', {id: competiteur.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
-                                <input type='hidden' name='_method' value='DELETE'>
-                                <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ competiteur.idCompetiteur) }}'>
-                                <button class='btn waves-effect red lighten-2 btn_gestion'>
-                                    <i class='material-icons'>delete</i>
-                                </button>
-                            </form>
-                        {% else %}
-                            <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
-                                <a class='btn red lighten-2 btn_gestion' disabled="">
-                                    <i class='material-icons'>delete</i>
-                                </a>
-                            </div>
-                        {% endif %}
-                    </td>
                 {% endif %}
             </tr>
         {% endfor %}
@@ -115,7 +97,7 @@
     <script type="text/javascript" src="{{ asset('JS/renouvelerCertifMedical.min.js') }}" defer></script>
 {% endmacro %}
 
-{% macro tableArchives(joueursArchives, onlyOneAdmin) %}
+{% macro tableArchives(joueursArchives) %}
     <table class='striped centered responsive-table backoffice-table table-to-adapt-columns'>
         <thead>
         <tr class='hide-on-med-and-down'>

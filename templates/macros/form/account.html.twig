@@ -402,7 +402,7 @@
         </button>
         {{ form_end(form) }}
 
-        {% if app.user.admin and type == 'backoffice' and editMode %}
+        {% if (app.user.admin and type == 'backoffice' and editMode) and options.isArchived %}
             {% if options.onlyOneAdmin is defined and options.onlyOneAdmin and form.vars.value.isAdmin %}
                 <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
                     <button class='btn red lighten-2 btn_gestion' disabled="">

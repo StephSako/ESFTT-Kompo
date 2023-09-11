@@ -84,12 +84,12 @@ class BackOfficeDivisionController extends AbstractController
                     ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
-                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
-                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', "Le diminutif '" . $division->getShortName() . "' est déjà attribué");
+                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', "Le nom '" . $division->getLongName() . "' est déjà attribué");
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/division/new.html.twig', [
@@ -145,12 +145,12 @@ class BackOfficeDivisionController extends AbstractController
                     ]);
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
-                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', 'Le diminutif \'' . $division->getShortName() . '\' est déjà attribué');
-                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', 'Le nom \'' . $division->getLongName() . '\' est déjà attribué');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', "Le diminutif '" . $division->getShortName() . "' est déjà attribué");
+                        else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', "Le nom '" . $division->getLongName() . "' est déjà attribué");
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/division/edit.html.twig', [
@@ -189,7 +189,7 @@ class BackOfficeDivisionController extends AbstractController
             $this->em->remove($division);
             $this->em->flush();
             $this->addFlash('success', 'Division supprimée');
-        } else $this->addFlash('error', 'La division n\'a pas pu être supprimée');
+        } else $this->addFlash('fail', "La division n'a pas pu être supprimée");
 
         return $this->redirectToRoute('backoffice.divisions', [
             'active' => $division->getIdChampionnat()->getIdChampionnat()

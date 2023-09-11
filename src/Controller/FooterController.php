@@ -81,7 +81,7 @@ class FooterController extends AbstractController
 
             $setting = $this->settingsRepository->find($type);
             if (!$setting) {
-                $this->addFlash('fail', 'Page d\'information inexistante');
+                $this->addFlash('fail', "Page d'information inexistante");
                 return $this->redirectToRoute('index.type', ['type' => $championnat->getIdChampionnat()]);
             }
 
@@ -116,7 +116,7 @@ class FooterController extends AbstractController
                     return $this->redirectToRoute('informations', [
                         'type' => $type
                     ]);
-                } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                } else $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
         }
 

@@ -134,12 +134,12 @@ class SecurityController extends AbstractController
                     }
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
-                        if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', 'Le pseudo \'' . $user->getUsername() . '\' est déjà attribué');
+                        if (str_contains($e->getPrevious()->getMessage(), 'username')) $this->addFlash('fail', "Le pseudo '" . $user->getUsername() . "' est déjà attribué");
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail_mandatory')) $this->addFlash('fail', 'Au moins une adresse e-mail doit être renseignée');
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_mail')) $this->addFlash('fail', 'Les deux adresses e-mail doivent être différentes');
                         else if (str_contains($e->getPrevious()->getMessage(), 'CHK_phone_number')) $this->addFlash('fail', 'Les deux numéros de téléphone doivent être différents');
-                        else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
-                    } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                        else $this->addFlash('fail', "Le formulaire n'est pas valide");
+                    } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
             } else $this->addFlash('fail', $utilController->getFormDeepErrors($form));
         }
@@ -279,7 +279,7 @@ class SecurityController extends AbstractController
             if ($dateValid <= (new DateTime())->getTimestamp()) {
                 $competiteur->setIsPasswordResetting(false);
                 $this->em->flush();
-                throw new Exception('Ce lien n\'est plus actif', 500);
+                throw new Exception("Ce lien n'est plus actif", 500);
             } /** Si le mot de passe a déjà été changé et que l'user est toujours dans les délais */
             else if (!$competiteur->isPasswordResetting()) throw new Exception('Le mot de passe a déjà été changé', 500);
 

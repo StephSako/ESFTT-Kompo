@@ -126,9 +126,9 @@ class BackOfficeRencontreController extends AbstractController
                     }
                 } catch (Exception $e) {
                     if ($e->getCode() == "12345") $this->addFlash('fail', $e->getMessage());
-                    else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+                    else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }
-            } else $this->addFlash('fail', 'Le formulaire n\'est pas valide');
+            } else $this->addFlash('fail', "Le formulaire n'est pas valide");
         }
 
         return $this->render('backoffice/rencontre/edit.html.twig', [
