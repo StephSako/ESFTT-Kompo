@@ -32,27 +32,25 @@
                         <td class="row">
                             <div class="col s10">
                                 <div class="valign-wrapper">
-                                    {% if not dispo.joueur.licence is null %}
-                                        {% if dispo.disponibilite is null %}
-                                            <span class="dot dot3 center">&nbsp;</span>
-                                        {% elseif dispo.disponibilite == 1 %}
-                                            <span class="dot dot1 center">&nbsp;</span>
-                                        {% elseif dispo.disponibilite == 0 %}
-                                            <span class="dot dot2 center">&nbsp;</span>
-                                        {% endif %}
-                                    {% else %}
-                                        <i class="material-icons red-text tooltipped" data-position="top" data-tooltip="Licence indéfinie" style="font-size: 18px">warning_amber</i>
+                                    {% if dispo.disponibilite is null %}
+                                        <span class="dot dot3 center">&nbsp;</span>
+                                    {% elseif dispo.disponibilite == 1 and dispo.joueur.idCompetiteur in selectedPlayers %}
+                                        <span class="dot dot4 center">&nbsp;</span>
+                                    {% elseif dispo.disponibilite == 1 %}
+                                        <span class="dot dot1 center">&nbsp;</span>
+                                    {% elseif dispo.disponibilite == 0 %}
+                                        <span class="dot dot2 center">&nbsp;</span>
                                     {% endif %}
-                                    <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}{% if dispo.joueur.idCompetiteur == app.user.idCompetiteur %} bold{% endif %}">{{ dispo.joueur.nom }} {{ dispo.joueur.prenom }}</span>
+                                    <span class="{% if dispo.disponibilite is null %}grey-text {% elseif dispo.disponibilite == 1 %}green-text {% elseif dispo.disponibilite == 0 %} red-text {% endif %}{% if dispo.joueur.idCompetiteur == app.user.idCompetiteur %} bold{% endif %}">
+                                        {{ dispo.joueur.nom }} {{ dispo.joueur.prenom }}
+                                    </span>
+                                    {% if dispo.joueur.licence is null %}
+                                        &nbsp;<i class="material-icons red-text tooltipped" data-position="top" data-tooltip="Licence indéfinie" style="font-size: 18px">warning_amber</i>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="col s1 center" style="border-radius: 25%;">
+                            <div class="col s2 center" style="border-radius: 25%;">
                                 <span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">{{ dispo.nbMatchesJoues }}</span>
-                            </div>
-                            <div class="col s1">
-                                {% if dispo.joueur.idCompetiteur in selectedPlayers %}
-                                    <i class="blue-text right-align material-icons">done</i>
-                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -138,8 +136,12 @@
                             </td>
                             {% for i in 1..disponibilites["nbJournees"] %}
                                 <td>
-                                    {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] != -1 %}
-                                        {% if ((disponibilite[nomChamp|slug|lower])|split(','))[i-1] == 1 %}
+                                    {% if (disponibilite[disponibilites.slug]|split(','))[i-1] != -1 %}
+                                        {% if ((disponibilite['selections' ~ disponibilites.slug])|split(','))[i-1] != -1 %}
+                                            <b class="blue-text center">
+                                                {{ ((disponibilite['selections' ~ disponibilites.slug])|split(','))[i-1] }}
+                                            </b>
+                                        {% elseif (disponibilite[disponibilites.slug]|split(','))[i-1] == 1 %}
                                             <i style="vertical-align: middle;" class="green-text center material-icons">check</i>
                                         {% else %}
                                             <i style="vertical-align: middle;" class="red-text center material-icons">close</i>

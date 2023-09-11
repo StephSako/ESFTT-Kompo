@@ -102,10 +102,11 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Récapitulatif de toutes les disponibilités dans la modale
-     * @param Championnat[] $championnats
+     * @param array $championnats
+     * @param int $nbPlayers
      * @return array
      */
-    public function findAllDisposRecapitulatif(array $championnats): array
+    public function findAllDisposRecapitulatif(array $championnats, int $nbPlayers): array
     {
         $result = $this->createQueryBuilder('c')
             ->select('c.avatar')
@@ -116,19 +117,36 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('c.idCompetiteur');
 
         foreach ($championnats as $championnat) {
-            $strDispos = '';
+            $strDispos = $strSelections = '';
             $journees = $championnat->getJournees()->toArray();
             foreach ($journees as $i => $journee) {
                 $suffixe = $journee->getIdJournee() . $championnat->getIdChampionnat();
+
+                // Résultat des disponibilités
                 $strDispos .= 'IFNULL((SELECT dt' . $suffixe . '.disponibilite' .
                     ' FROM App\Entity\Disponibilite dt' . $suffixe .
                     ' WHERE dt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
                     ' AND c.idCompetiteur = dt' . $suffixe . '.idCompetiteur' .
                     ' AND dt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
-                if ($i < count($journees) - 1) $strDispos .= ", ',' , ";
+
+                // Résultat des numéros d'équipes des sélections
+                $strSelections .= 'IFNULL((SELECT es' . $suffixe . '.numero' .
+                    ' FROM App\Entity\Rencontre rt' . $suffixe . ', App\Entity\Equipe es' . $suffixe .
+                    ' WHERE rt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
+                    ' AND c.idCompetiteur ' . $this->generateIdJoueurToX($nbPlayers, 'rt' . $suffixe) .
+                    ' AND rt' . $suffixe . '.idEquipe = es' . $suffixe . '.idEquipe' .
+                    ' AND rt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
+
+                if ($i < count($journees) - 1) {
+                    $strDispos .= ", ',' , ";
+                    $strSelections .= ", ',' , ";
+                }
             }
             $result = $result
+                ->addSelect((count($journees) > 1 ? 'CONCAT(' . $strSelections . ')' : $strSelections) . ' AS selections' . $championnat->getSlug())
                 ->addSelect((count($journees) > 1 ? 'CONCAT(' . $strDispos . ')' : $strDispos) . ' AS ' . $championnat->getSlug())
+
+                // Résultat des numéros d'équipes des titularisations
                 ->addSelect('(
                     SELECT et' . $championnat->getIdChampionnat() . '.numero
                     FROM App\Entity\Titularisation t' . $championnat->getIdChampionnat() . ', App\Entity\Equipe et' . $championnat->getIdChampionnat() . '
@@ -154,6 +172,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             foreach ($result as $key => $item) {
                 $queryResult[$championnat->getSlug()][$key] = $item;
                 $queryChamp[$championnat->getNom()]["nbJournees"] = $championnat->getNbJournees();
+                $queryChamp[$championnat->getNom()]["slug"] = $championnat->getSlug();
                 $queryChamp[$championnat->getNom()]["dispos"] = $queryResult[$championnat->getSlug()];
             }
         }
@@ -175,6 +194,17 @@ class CompetiteurRepository extends ServiceEntityRepository
             return $champ1 > $champ2;
         });
         return $queryChamp;
+    }
+
+    public function generateIdJoueurToX(int $nbPlayers, string $alias): string
+    {
+        $str = ' IN (';
+        for ($j = 0; $j < $nbPlayers; $j++) {
+            $str .= $alias . '.idJoueur' . $j;
+            if ($j < $nbPlayers - 1) $str .= ', ';
+        }
+        $str .= ')';
+        return $str;
     }
 
     /**

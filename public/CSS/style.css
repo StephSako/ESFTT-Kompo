@@ -575,8 +575,8 @@ button.renew_certif_table i {
 }
 
 .dot {
-  height: 5px;
-  width: 5px;
+  height: 6px;
+  width: 6px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -599,6 +599,10 @@ button.renew_certif_table i {
   background-color: #918c8c;
 }
 
+.dot4 {
+  background-color: #2196F3;
+}
+
 .first_sidenav {
   margin-top: 5px;
 }
@@ -613,8 +617,6 @@ button.renew_certif_table i {
 .first_sidenav .journee.li_in_line a .dot {
   position: relative;
   top: 45%;
-  width: 6px;
-  height: 6px;
 }
 .first_sidenav .collapsible-header {
   border-radius: 5px;
@@ -1381,8 +1383,6 @@ a.reload_ranking {
   position: absolute;
   top: 15%;
   left: 50%;
-  width: 6px;
-  height: 6px;
 }
 .navbar-general .btn-floating {
   top: 13px;

@@ -690,8 +690,8 @@ button.renew_certif_table {
 }
 
 .dot {
-  height: 5px;
-  width: 5px;
+  height: 6px;
+  width: 6px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -714,6 +714,10 @@ button.renew_certif_table {
   background-color: $grey;
 }
 
+.dot4 {
+  background-color: #2196F3;
+}
+
 .first_sidenav {
   margin-top: 5px;
 
@@ -729,8 +733,6 @@ button.renew_certif_table {
     .dot {
       position: relative;
       top: 45%;
-      width: 6px;
-      height: 6px;
     }
   }
 
@@ -1642,8 +1644,6 @@ a.reload_ranking {
     position: absolute;
     top: 15%;
     left: 50%;
-    width: 6px;
-    height: 6px;
   }
 
   .btn-floating {

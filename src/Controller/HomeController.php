@@ -218,7 +218,7 @@ class HomeController extends AbstractController
         $selection = $this->getUser()->isSelectedIn($compos);
 
         $allChampionnats = $this->championnatRepository->getAllChampionnats();
-        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats);
+        $allDisponibilites = $this->competiteurRepository->findAllDisposRecapitulatif($allChampionnats, $this->getParameter('nb_joueurs_default_division'));
 
         // Brûlages des joueurs
         $divisions = $championnat->getDivisions()->toArray();
