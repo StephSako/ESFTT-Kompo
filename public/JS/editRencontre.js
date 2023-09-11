@@ -4,9 +4,9 @@ $(document).ready(() => {
     let adversaire = $('#adversaire');
     let ville_host = $('#ville_host');
     let reported = $('#reporte');
-    let selects = $('#rencontre_dateReport .select-dropdown');
+    let selectsDateReport = $('#rencontre_dateReport');
 
-    if (!reported.is(':checked')) selects.prop('disabled', true);
+    if (!reported.is(':checked')) selectsDateReport.hide();
 
     if (exempt.is(':checked')) {
         reported.prop('disabled', true);
@@ -20,7 +20,7 @@ $(document).ready(() => {
         adversaire.prop('disabled', e.currentTarget.checked);
         ville_host.prop('disabled', e.currentTarget.checked);
         lieu_rencontre.prop('disabled', e.currentTarget.checked);
-        selects.prop('disabled', true);
+        selectsDateReport.hide();
         if (e.currentTarget.checked) {
             reported.prop('checked', false);
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
@@ -31,6 +31,7 @@ $(document).ready(() => {
     });
 
     reported.change((e) => {
-        $('#rencontre_dateReport .select-dropdown').prop('disabled', !e.currentTarget.checked);
+        if (e.currentTarget.checked) selectsDateReport.show();
+        else selectsDateReport.hide();
     });
 });
