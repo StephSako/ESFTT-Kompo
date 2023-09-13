@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    <div class="col s4 m2" style="padding-left: 0; padding-right: 0">
+                    <div class="col {% if not compo.exempt %}s4 m2{% else %}s3 m4{% endif %}" style="padding-left: 0; padding-right: 0">
                         <h5>
                             <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName|length == 1 %}&thinsp;{% endif %}</span><br>
                         </h5>
@@ -119,12 +119,11 @@
                             <i class="material-icons red-text" style="font-size: 2.1rem !important;">event_busy</i>
                         </h5>
                     {% else %}
-                        <h5 class="col s4 m3 lobster_2">{{ compo.idJournee.dateJournee|date('d/m') }}</h5>
+                        <h5 class="col s4 {% if not compo.exempt %}m3 {% endif %}lobster_2">{{ compo.idJournee.dateJournee|date('d/m') }}</h5>
                     {% endif %}
 
-
-                    <h5 class="col s4 m2">
-                        {% if not compo.exempt %}
+                    {% if not compo.exempt %}
+                        <h5 class="col s4 m2">
                             {% if compo.domicile is null %}
                                 <i class='material-icons red-text'>location_off</i>
                             {% else %}
@@ -136,12 +135,12 @@
                                     {% endif %}
                                 </i>
                             {% endif %}
-                        {% endif %}
-                    </h5>
+                        </h5>
+                    {% endif %}
 
-                    <div class="col m5 hide-on-small-only">
+                    <div class="col {% if not compo.exempt %}m5 hide-on-small-only{% else %}s5 m4 exempt{% endif %}">
                         {% if compo.exempt %}
-                            <h5 style="margin-top: 11px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
+                            <h5 class="lobster_2 pastille reset red">Exemptée</h5>
                         {% else %}
                             <div class="row" style="margin-top: 12px">
                                 <div class="col offset-s2" style="padding-left: 0; padding-right: 6px;">
@@ -166,11 +165,9 @@
                     </div>
                 </div>
 
-                <div class="hide-on-med-and-up adversaireLine center" style="margin-bottom: 8px">
-                    <div class="{% if not compo.exempt %}m5{% endif %}">
-                        {% if compo.exempt %}
-                            <h5 style="margin-top: 5px;" class="lobster_2 pastille exempt reset red">Exemptée</h5>
-                        {% else %}
+                {% if not compo.exempt %}
+                    <div class="hide-on-med-and-up adversaireLine center" style="margin-bottom: 8px">
+                        <div class="m5">
                             <div class="advDefined">
                                 <div>
                                     {% if compo.adversaire is null %}
@@ -189,9 +186,9 @@
                                     </div>
                                 {% endif %}
                             </div>
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
                 {% if compo.idChampionnat.compoSorted %}
                     <p class="blue pastille reset" style="margin-bottom: 8px; max-width: 590px;"><b>Joueurs triés automatiquement selon le classement</b> : ne vous embêtez pas à trier, sélectionnez les joueurs comme bon vous semble, même dans le désordre</p>
@@ -205,7 +202,8 @@
                     compo.hrefMapsAdresse,
                     compo.hrefWazeAdresse,
                     compo.site,
-                    compo.telephone
+                    compo.telephone,
+                    compo.adversaire
                 ) }}
 
                 {% if not compo.exempt %}
@@ -260,7 +258,7 @@
                     </div>
                 </div>
 
-                {{ form_start(form) }}
+                {{ form_start(form, {'attr': {'id': 'form_joueurs_compo'}}) }}
                 <div class="form_div_list">
                     {% for i in 0..(nbJoueursDivision - 1) %}
                         <div class="row">

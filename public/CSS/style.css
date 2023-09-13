@@ -750,11 +750,6 @@ table.rankingVirtualPoints td .chip .nom {
   cursor: pointer;
 }
 
-.exempt {
-  margin-left: 50px;
-  margin-right: 50px;
-}
-
 .gold-color {
   color: #ecc70a;
 }
@@ -1440,6 +1435,13 @@ blockquote {
   margin-bottom: 6px;
 }
 
+.exempt h5 {
+  font-size: 1.5rem;
+  margin-top: 11px !important;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
 @media screen and (max-width: 1466px) {
   .right_items_navbar_general .right_items_navbar {
     display: none;
@@ -1483,7 +1485,7 @@ blockquote {
   }
 }
 @media screen and (min-width: 1285px) {
-  .exempt {
+  .exempt h5 {
     margin-left: 80px;
     margin-right: 80px;
   }
@@ -1632,6 +1634,11 @@ blockquote {
 @media screen and (max-width: 720px) {
   .modal.modal-medium {
     width: 96% !important;
+  }
+}
+@media screen and (min-width: 601px) {
+  form#form_joueurs_compo {
+    margin-top: 10px;
   }
 }
 @media screen and (max-width: 601px) {

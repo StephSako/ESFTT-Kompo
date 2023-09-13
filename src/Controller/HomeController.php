@@ -179,7 +179,7 @@ class HomeController extends AbstractController
 
         // Nombre maximal de joueurs pour les compos du championnat sélectionné
         $nbMaxSelectedJoueurs = array_sum(array_map(function ($compo) use ($type) {
-            return !$compo->isExempt() ? $compo->getIdEquipe()->getIdDivision()->getNbJoueurs() : 0;
+            return $compo->getIdEquipe()->getIdDivision()->getNbJoueurs();
         }, $compos));
 
         // Numéros des équipes valides pour le brûlage
@@ -313,11 +313,6 @@ class HomeController extends AbstractController
         if (!($compo = $this->rencontreRepository->find($compo))) {
             $this->addFlash('fail', 'Journée inexistante pour ce championnat');
             return $this->redirectToRoute('index.type', ['type' => $type]);
-        }
-
-        if ($compo->isExempt()) {
-            $this->addFlash('fail', "Journée exemptée pour l'équipe " . $compo->getIdEquipe()->getNumero());
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
@@ -466,11 +461,6 @@ class HomeController extends AbstractController
         if (!($compo = $this->rencontreRepository->find($idCompo))) {
             $this->addFlash('fail', 'Rencontre inexistante');
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $idJournee]);
-        }
-
-        if ($compo->isExempt()) {
-            $this->addFlash('fail', "Journée exemptée pour l'équipe " . $compo->getIdEquipe()->getNumero());
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
