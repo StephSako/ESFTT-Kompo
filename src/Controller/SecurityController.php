@@ -11,6 +11,7 @@ use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,7 @@ class SecurityController extends AbstractController
     private $disponibiliteRepository;
     private $settingsRepository;
     private $rencontreRepository;
+    private $logger;
 
     /**
      * SecurityController constructor.
@@ -43,6 +45,7 @@ class SecurityController extends AbstractController
      * @param RencontreRepository $rencontreRepository
      * @param UploadHandler $uploadHandler
      * @param DisponibiliteRepository $disponibiliteRepository
+     * @param LoggerInterface $logger
      * @param UserPasswordEncoderInterface $encoder
      */
     public function __construct(CompetiteurRepository        $competiteurRepository,
@@ -53,6 +56,7 @@ class SecurityController extends AbstractController
                                 RencontreRepository          $rencontreRepository,
                                 UploadHandler                $uploadHandler,
                                 DisponibiliteRepository      $disponibiliteRepository,
+                                LoggerInterface              $logger,
                                 UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
@@ -64,6 +68,7 @@ class SecurityController extends AbstractController
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->settingsRepository = $settingsRepository;
         $this->rencontreRepository = $rencontreRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -279,6 +284,7 @@ class SecurityController extends AbstractController
             if ($dateValid <= (new DateTime())->getTimestamp()) {
                 $competiteur->setIsPasswordResetting(false);
                 $this->em->flush();
+                $this->logger->error("RESET PASSWORD TEMPS IMPARTI : " . $idCompetiteur . ' - ' . $competiteur->getNom() . ' - ' . $competiteur->getPrenom());
                 throw new Exception("Ce lien n'est plus actif", 500);
             } /** Si le mot de passe a déjà été changé et que l'user est toujours dans les délais */
             else if (!$competiteur->isPasswordResetting()) throw new Exception('Le mot de passe a déjà été changé', 500);
