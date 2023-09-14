@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Controller\UtilController;
 use App\Entity\Rencontre;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -71,14 +72,7 @@ class RencontreRepository extends ServiceEntityRepository
         if (!$limiteBrulage) return [];
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
-        $strP = $strRP = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
-            $strP .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
-            $strRP .= 'r.idJoueur' . $i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs - 1) {
-                $strP .= ' OR ';
-                $strRP .= ' OR ';
-            }
             $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, ' . $idCompetiteur . ', 0) as isPlayer' . $i);
         }
         return $query
@@ -88,10 +82,10 @@ class RencontreRepository extends ServiceEntityRepository
             ->andWhere('e.idChampionnat = :idChampionnat')
             ->andWhere('e.idDivision IS NOT NULL')
             ->andWhere('c.idCompetiteur = :idCompetiteur')
-            ->andWhere($strRP)
+            ->andWhere('c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'r'))
             /** Nombre de matches joués dans les équipes supèrieures depuis le début à aujourd'hui */
             ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe e1 ' .
-                'WHERE (' . $strP . ') ' .
+                'WHERE (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'p') . ') ' .
                 'AND p.idEquipe = e1.idEquipe ' .
                 'AND p.idJournee <= :idJournee ' .
                 'AND p.idChampionnat = :idChampionnat ' .
@@ -117,10 +111,7 @@ class RencontreRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('r')
             ->select('r as compo');
-        $str = '';
         for ($i = 0; $i < $nbJoueurs; $i++) {
-            $str .= 'r.idJoueur' . $i . ' = c.idCompetiteur';
-            if ($i < $nbJoueurs - 1) $str .= ' OR ';
             $query = $query->addSelect('IF(r.idJoueur' . $i . ' = :idCompetiteur, ' . $idCompetiteur . ', 0) as isPlayer' . $i);
         }
         return $query
@@ -133,7 +124,7 @@ class RencontreRepository extends ServiceEntityRepository
             ->andWhere('c.idCompetiteur = c.idCompetiteur')
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->setParameter('idChampionnat', $type)
-            ->andWhere($str)
+            ->andWhere('c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'r'))
             ->getQuery()
             ->getResult();
     }
@@ -189,17 +180,11 @@ class RencontreRepository extends ServiceEntityRepository
      */
     public function getSelectionInChampCompos(int $idJoueur, int $nbMaxJoueurs, bool $inFutureCompos): array
     {
-        $str = '';
-        for ($i = 0; $i < $nbMaxJoueurs; $i++) {
-            $str .= 'r.idJoueur' . $i . ' = :idJoueur';
-            if ($i < $nbMaxJoueurs - 1) $str .= ' OR ';
-        }
-
         $query = $this->createQueryBuilder('r')
             ->select('r')
             ->leftJoin('r.idJournee', 'j')
             ->leftJoin('r.idChampionnat', 'ch')
-            ->where($str);
+            ->where(':idJoueur' . UtilController::generateIdJoueurToX($nbMaxJoueurs, 'r'));
         if ($inFutureCompos) $query = $query->andWhere("j.dateJournee >= DATE('" . (new DateTime())->format('Y-m-d') . "')");
 
         return $query->setParameter('idJoueur', $idJoueur)

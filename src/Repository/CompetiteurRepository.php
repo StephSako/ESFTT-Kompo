@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Controller\UtilController;
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
 use App\Entity\Rencontre;
@@ -34,18 +35,12 @@ class CompetiteurRepository extends ServiceEntityRepository
      */
     public function findDisposJoueurs(int $idJournee, int $idChampionnat, int $nbJoueurs): array
     {
-        $strMJ = '';
-        for ($j = 0; $j < $nbJoueurs; $j++) {
-            $strMJ .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
-            if ($j < $nbJoueurs - 1) $strMJ .= ' OR ';
-        }
-
         $query = $this->createQueryBuilder('c')
             ->select('c')
             ->addSelect('(
                     SELECT COUNT(r.id)
                     from App\Entity\Rencontre r, App\Entity\Equipe e
-                    where (' . $strMJ . ')
+                    where (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'r') . ')
                     AND r.idEquipe = e.idEquipe
                     AND e.idDivision IS NOT NULL
                     AND r.idChampionnat = :idChampionnat
@@ -133,7 +128,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $strSelections .= 'IFNULL((SELECT es' . $suffixe . '.numero' .
                     ' FROM App\Entity\Rencontre rt' . $suffixe . ', App\Entity\Equipe es' . $suffixe .
                     ' WHERE rt' . $suffixe . '.idChampionnat = ' . $championnat->getIdChampionnat() .
-                    ' AND c.idCompetiteur ' . $this->generateIdJoueurToX($nbPlayers, 'rt' . $suffixe) .
+                    ' AND c.idCompetiteur' . UtilController::generateIdJoueurToX($nbPlayers, 'rt' . $suffixe) .
                     ' AND rt' . $suffixe . '.idEquipe = es' . $suffixe . '.idEquipe' .
                     ' AND rt' . $suffixe . '.idJournee = ' . $journee->getIdJournee() . '), -1)';
 
@@ -196,17 +191,6 @@ class CompetiteurRepository extends ServiceEntityRepository
         return $queryChamp;
     }
 
-    public function generateIdJoueurToX(int $nbPlayers, string $alias): string
-    {
-        $str = ' IN (';
-        for ($j = 0; $j < $nbPlayers; $j++) {
-            $str .= $alias . '.idJoueur' . $j;
-            if ($j < $nbPlayers - 1) $str .= ', ';
-        }
-        $str .= ')';
-        return $str;
-    }
-
     /**
      * Liste du brûlage
      * @param int $idChampionnat
@@ -236,18 +220,13 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ) as idEquipeAssociee');
 
         foreach ($numEquipes as $numEquipe) {
-            $str = '';
-            for ($i = 0; $i < $nbJoueurs; $i++) {
-                $str .= 'p' . $numEquipe . '.idJoueur' . $i . ' = c.idCompetiteur';
-                if ($i < $nbJoueurs - 1) $str .= ' OR ';
-            }
             $brulages = $brulages
                 ->addSelect('(SELECT COUNT(p' . $numEquipe . '.id) ' .
                     'FROM App\Entity\Rencontre p' . $numEquipe . ', ' .
                     'App\Entity\Equipe e' . $numEquipe . ' ' .
                     'WHERE p' . $numEquipe . '.idChampionnat = :idChampionnat ' .
                     'AND e' . $numEquipe . '.idChampionnat = :idChampionnat ' .
-                    'AND (' . $str . ') AND p' . $numEquipe . '.idJournee < :idJournee ' .
+                    'AND (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'p' . $numEquipe) . ') AND p' . $numEquipe . '.idJournee < :idJournee ' .
                     'AND e' . $numEquipe . '.idEquipe = p' . $numEquipe . '.idEquipe ' .
                     'AND e' . $numEquipe . '.numero = ' . $numEquipe . ' ' .
                     'AND e' . $numEquipe . '.idDivision IS NOT NULL) AS E' . $numEquipe)
@@ -304,15 +283,12 @@ class CompetiteurRepository extends ServiceEntityRepository
         $idFirstJournee = $journees[0]->getIdJournee();
         $j2Condition = $limiteBrulage && (count($journees) >= 2 && $journees[1]->getIdJournee() == $idJournee) && $championnat->isJ2Rule();
         if ($j2Condition) $strJ2 = '';
-        $strD = '';
 
         if ($limiteBrulage) {
             for ($j = 0; $j < $nbJoueurs; $j++) {
-                if ($j2Condition) $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
-                $strD .= 'p.idJoueur' . $j . ' = c.idCompetiteur';
-                if ($j < $nbJoueurs - 1) {
-                    $strD .= ' OR ';
-                    if ($j2Condition) $strJ2 .= ' OR ';
+                if ($j2Condition) {
+                    $strJ2 .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
+                    if ($j < $nbJoueurs - 1) $strJ2 .= ' OR ';
                 }
             }
         }
@@ -342,15 +318,10 @@ class CompetiteurRepository extends ServiceEntityRepository
         }
 
         foreach ($idEquipes as $equipe) {
-            $strB = '';
-            for ($i = 0; $i < $nbJoueurs; $i++) {
-                $strB .= 'r' . $equipe . '.idJoueur' . $i . ' = c.idCompetiteur';
-                if ($i < $nbJoueurs - 1) $strB .= ' OR ';
-            }
             $brulages = $brulages
                 ->addSelect('(SELECT COUNT(r' . $equipe . '.id)' .
                     ' FROM App\Entity\Rencontre r' . $equipe . ', App\Entity\Equipe e' . $equipe .
-                    ' WHERE (' . $strB . ') AND r' . $equipe . '.idJournee < :idJournee' .
+                    ' WHERE (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'r' . $equipe) . ') AND r' . $equipe . '.idJournee < :idJournee' .
                     ' AND e' . $equipe . '.idEquipe = r' . $equipe . '.idEquipe' .
                     ' AND e' . $equipe . '.numero = ' . $equipe .
                     ' AND r' . $equipe . '.idChampionnat = :idChampionnat' .
@@ -376,7 +347,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         if ($limiteBrulage) {
             $brulages = $brulages
                 ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
-                    ' WHERE (' . $strD . ')' .
+                    ' WHERE (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'p') . ')' .
                     ' AND p.idJournee < :idJournee' .
                     ' AND p.idChampionnat = :idChampionnat' .
                     ' AND p.idEquipe = eBis.idEquipe' .
@@ -441,11 +412,6 @@ class CompetiteurRepository extends ServiceEntityRepository
     public function getBrulesDansEquipe(int $numero, int $idJournee, int $idChampionnat, int $nbJoueurs, ?int $limiteBrulage): array
     {
         if (!$limiteBrulage) return [];
-        $str = '';
-        for ($j = 0; $j < $nbJoueurs; $j++) {
-            $str .= 'r.idJoueur' . $j . ' = c.idCompetiteur';
-            if ($j < $nbJoueurs - 1) $str .= ' OR ';
-        }
         $query = $this->createQueryBuilder('c')
             ->select('c.nom')
             ->addSelect('c.prenom')
@@ -465,7 +431,7 @@ class CompetiteurRepository extends ServiceEntityRepository
                 ' AND r.idChampionnat = :idChampionnat' .
                 ' AND r.idJournee < :idJournee' .
                 ' AND r.idEquipe = e.idEquipe' .
-                ' AND (' . $str . ')) >= ' . $limiteBrulage)
+                ' AND (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbJoueurs, 'r') . ')) >= ' . $limiteBrulage)
             ->setParameter('idJournee', $idJournee)
             ->setParameter('numero', $numero)
             ->setParameter('idChampionnat', $idChampionnat)
@@ -650,10 +616,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->andWhere('d.idChampionnat = :idChampionnat')
             ->andWhere('c.isCompetiteur = true');
 
-        $str = '';
         for ($i = 0; $i < $nbMaxJoueurs; $i++) {
-            $str .= 'p.idJoueur' . $i . ' = c.idCompetiteur';
-            if ($i < $nbMaxJoueurs - 1) $str .= ' OR ';
             $request = $request
                 ->andWhere('c.idCompetiteur NOT IN (SELECT IF(p' . $i . '.idJoueur' . $i . ' IS NOT NULL, p' . $i . '.idJoueur' . $i . ', 0) ' .
                     ' FROM App\Entity\Rencontre p' . $i . ', App\Entity\Equipe e' . $i . 'e' .
@@ -667,7 +630,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         if ($limiteBrulage) {
             $request = $request
                 ->andWhere('(SELECT COUNT(p.id) FROM App\Entity\Rencontre p, App\Entity\Equipe eBis' .
-                    ' WHERE (' . $str . ')' .
+                    ' WHERE (c.idCompetiteur' . UtilController::generateIdJoueurToX($nbMaxJoueurs, 'p') . ')' .
                     ' AND p.idJournee < :idJournee' .
                     ' AND p.idEquipe = eBis.idEquipe' .
                     ' AND eBis.numero < :numero ' .

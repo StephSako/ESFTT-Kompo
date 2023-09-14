@@ -53,6 +53,18 @@ class UtilController extends AbstractController
     }
 
     /**
+     * @param int $nbPlayers
+     * @param string $alias
+     * @return string
+     */
+    public static function generateIdJoueurToX(int $nbPlayers, string $alias): string
+    {
+        return ' IN (' . implode(', ', array_map(function ($r) use ($alias) {
+                return $alias . '.idJoueur' . $r;
+            }, range(0, $nbPlayers - 1))) . ')';
+    }
+
+    /**
      * Retourne un message selon que le championnat est terminé ou pas pour autoriser la pré-phase
      * @param Championnat $championnat
      * @return array
