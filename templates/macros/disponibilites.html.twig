@@ -6,13 +6,17 @@
     <div class="card-panel dispos merged_cards bottom">
         <h5 class="hide-on-med-and-down">Les dispos</h5>
 
-        <div class="row bottom_0">
-            <div class="col s2 m1 l2 center"><span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">X</span></div>
-            <div class="col s10 m11 l10">Nombre de sélections sur la phase</div>
-        </div>
-        <div class="row bottom_0">
-            <div class="col s2 m1 l2 center"><i class="blue-text right-align material-icons">done</i></div>
-            <div class="col s10 m11 l10">Sélectionnés pour cette journée</div>
+        <div class="legends">
+            <div class="row bottom_0">
+                <div class="col s2 m1 l2 center"><span class="bold light_blue grey lighten-3" style="border-radius: 25%; padding: 1px 6px;">X</span></div>
+                <div class="col s10 m11 l10">Nombre de sélections sur la phase</div>
+            </div>
+            <div class="row bottom_0">
+                <div class="col s2 m1 l2 center">
+                    <span class="dot dot4 center">&nbsp;</span>
+                </div>
+                <div class="col s10 m11 l10">Sélectionnés pour cette journée</div>
+            </div>
         </div>
 
         {% for nomEquipe, disposEquipe in disponibilitesJournee %}

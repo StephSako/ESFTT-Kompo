@@ -1,4 +1,4 @@
-{% macro edit_account(type, title, form, urlImage, editMode, anneeCertificatMedical, age, isCritFed, profileCompletion, equipesAssociees, options) %}
+{% macro edit_account(type, title, form, equipesAssociees, options) %}
     {% import 'macros/membre.html.twig' as _membre %}
 
     {% set champsEditablesObligatoires = editableMandatoryFields(form.children) %}
@@ -7,21 +7,21 @@
 
         <h4 class="h4_form" style="margin-bottom: 0;">{{ title }}</h4><br>
 
-        {% if profileCompletion and profileCompletion.completude < 100 %}
+        {% if not form.vars.value.isArchive and not options.createMode is defined and form.vars.value.profileCompletion and form.vars.value.profileCompletion.completude < 100 %}
             <div class="row">
                 <div class="col m8 offset-m2 s12 l6 offset-l3 divProfileCompletionCol">
                     <div class="divProfileCompletion orange-text text-darken-4">
-                        <p><i class="material-icons red-text">rule</i><b>Profil complété à {{ profileCompletion.completude }}%</b></p>
+                        <p><i class="material-icons red-text">rule</i><b>Profil complété à {{ form.vars.value.profileCompletion.completude }}%</b></p>
                         <div style="display: flex; align-items: center; justify-content: center;">
                             <div class="progress white center" style="width: 90%">
-                                <div class="determinate orange" style="width: {{ profileCompletion.completude }}%"></div>
+                                <div class="determinate orange" style="width: {{ form.vars.value.profileCompletion.completude }}%"></div>
                             </div>
                         </div>
 
                         <div class="champsManquants">
-                            <p><b>Champ{{ profileCompletion.champsManquants|length > 1 ? 's' : '' }} manquant{{ profileCompletion.champsManquants|length > 1 ? 's' : '' }}</b></p>
+                            <p><b>Champ{{ form.vars.value.profileCompletion.champsManquants|length > 1 ? 's' : '' }} manquant{{ form.vars.value.profileCompletion.champsManquants|length > 1 ? 's' : '' }}</b></p>
                             <ul>
-                                {% for champ in profileCompletion.champsManquants %}
+                                {% for champ in form.vars.value.profileCompletion.champsManquants %}
                                     <li><b>-</b> {{ champ }}</li>
                                 {% endfor %}
                             </ul>
@@ -129,24 +129,24 @@
             </div>
         {% endif %}
 
-        {% if not options.isArchived %}
+        {% if not form.vars.value.isArchive %}
             <div style="margin-bottom: 0;">
                 <p><b><i class="material-icons">health_and_safety</i>Certificat médical</b></p>
-                {% if (age != null and age > 18) or age == null %}
-                {% if anneeCertificatMedical != null and anneeCertificatMedical >= "now"|date('Y')-2 %}
-                    <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ anneeCertificatMedical+3 }}/{{ anneeCertificatMedical+4 }}</b></p>
+                {% if (form.vars.value.age != null and form.vars.value.age > 18) or form.vars.value.age == null %}
+                {% if form.vars.value.anneeCertificatMedical != null and form.vars.value.anneeCertificatMedical >= "now"|date('Y')-2 %}
+                    <p class="pastille green white-text reset" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ form.vars.value.anneeCertificatMedical+3 }}/{{ form.vars.value.anneeCertificatMedical+4 }}</b></p>
                 {% else %}
-                {% if anneeCertificatMedical != null %}
+                {% if form.vars.value.anneeCertificatMedical != null %}
                     <p class="pastille red white-text reset label-renew-certif{{ form.vars.value.idCompetiteur }}" style="margin-bottom: 10px">Renouvellement pour la rentrée <br><b>{{ "now"|date('Y') }}/{{ "now"|date('Y')+1 }}</b></p>
                 {% else %}
-                {% if editMode %}
+                {% if options.editMode is defined %}
                     <p class="pastille red white-text reset" style="margin-bottom: 10px">Certificat médical non présenté</p>
                 {% else %}
                     <p class="blue-text"><i class="material-icons">info</i> Laissez le champ vide si le joueur n'a pas encore fourni de certificat médical valide</p>
                 {% endif %}
                 {% endif %}
                 {% if app.user.admin and type == 'backoffice' %}
-                {% if anneeCertificatMedical != null %}
+                {% if form.vars.value.anneeCertificatMedical != null %}
                     <button type="button" id="btnCertif{{ form.vars.value.idCompetiteur }}" onclick="renouvelerCertifMedical({{ form.vars.value.idCompetiteur }}, '{{ form.vars.value.prenom }}', false)" class='btn waves-effect green btn_gestion'>
                         Renouveler
                     </button>
@@ -189,7 +189,7 @@
 
                 {% if app.user.admin and type == 'backoffice' and not (app.request.getPathInfo ends with '/new') %}
                     <script type="text/javascript" src="{{ asset('JS/resendWelcomeMail.min.js') }}" defer></script>
-                    <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ options.competiteurId }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
+                    <button type="button" id="btnRenvoiMailBienvenue" onclick="renvoyerMailBienvenue('{{ form.vars.value.idCompetiteur }}', '{{ form.vars.value.prenom }}')" data-tooltip="Renvoyer l'e-mail de bienvenue" data-position="top" class="btn-small tooltipped btn-floating blue">
                         <i class="material-icons" id="iconRenvoiMailBienvenue">outgoing_mail</i>
                     </button>
                 {% endif %}
@@ -278,8 +278,8 @@
                         {% if type == 'backoffice' %}
                             {{ form_row(form.licence) }}
                         {% else %}
-                            {% if options.licence %}
-                                <span class="pastille blue centered">{{ options.licence }}</span>
+                            {% if form.vars.value.licence %}
+                                <span class="pastille blue centered">{{ form.vars.value.licence }}</span>
                             {% else %}
                                 <p style="color: red">Licence indéfinie</p>
                             {% endif %}
@@ -325,7 +325,7 @@
                         <div class="col s12 m6 l3 col_infos_licence">
                             <p><b>Crit. fédéral</b></p>
                             <span class="centered">
-                                    {% if isCritFed %}
+                                    {% if form.vars.value.isCritFed %}
                                         <i class="material-icons green-text">check</i> Je participe
                                     {% else %}
                                         <i class="material-icons red-text">clear</i> Je ne participe pas
@@ -343,10 +343,10 @@
             {{ form_row(form.imageFile) }}
 
             <div class="avatarSectionDelete">
-                {% if urlImage %}
+                {% if form.vars.value.avatar %}
                     <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
                             {% if type == 'backoffice' %}
-                        href="{{ path('backoffice.competiteur.delete.avatar', {id: options.competiteurId}) }}"
+                        href="{{ path('backoffice.competiteur.delete.avatar', {id: form.vars.value.idCompetiteur}) }}"
                     {% else %}
                         href="{{ path('account.delete.avatar') }}"
                             {% endif %}>
@@ -354,7 +354,7 @@
                     </a>
 
                 {% endif %}
-                <img class="avatar" width="120" height="120" src="{{ asset(urlImage ? 'images/profile_pictures/' ~ urlImage : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
+                <img class="avatar" width="120" height="120" src="{{ asset(form.vars.value.avatar ? 'images/profile_pictures/' ~ form.vars.value.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
             </div>
         </div>
 
@@ -362,7 +362,7 @@
             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
         {% endif %}
 
-        {% if type != 'backoffice' or (type == 'backoffice' and editMode) %}
+        {% if type != 'backoffice' or (type == 'backoffice' and options.editMode is defined) %}
             <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
                 <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
                     <div class="divProfileCompletion red-text orange-darken-4">
@@ -395,14 +395,14 @@
 
         <a href="{{ type == 'backoffice' ? path('backoffice.competiteurs') : path("index") }}" class="btn waves-effect grey btn_gestion">Annuler</a>
         <button
-                {% if editMode and type == 'backoffice' %}
+                {% if options.editMode is defined and type == 'backoffice' %}
                     onclick="alertBecomingLoisirOrArchived()"
                 {% endif %}
-                class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ editMode ? 'Modifier' : 'Créer' }}
+                class="btn_gestion btn waves-effect light-blue darken-1" id="btn_modifier">{{ options.editMode is defined ? 'Modifier' : 'Créer' }}
         </button>
         {{ form_end(form) }}
 
-        {% if (app.user.admin and type == 'backoffice' and editMode) and options.isArchived %}
+        {% if (app.user.admin and type == 'backoffice' and options.editMode is defined) and form.vars.value.isArchive %}
             {% if options.onlyOneAdmin is defined and options.onlyOneAdmin and form.vars.value.isAdmin %}
                 <div class="tooltipped" data-position="top" data-tooltip="Un administrateur minimum requis">
                     <button class='btn red lighten-2 btn_gestion' disabled="">
@@ -410,9 +410,9 @@
                     </button>
                 </div>
             {% else %}
-                <form method='post' action='{{ path('backoffice.competiteur.delete', {id: options.competiteurId}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
+                <form method='post' action='{{ path('backoffice.competiteur.delete', {id: form.vars.value.idCompetiteur}) }}' onsubmit="return confirm('Êtes-vous sûr de supprimer le membre ?')">
                     <input type='hidden' name='_method' value='DELETE'>
-                    <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ options.competiteurId) }}'>
+                    <input type='hidden' name='_token' value='{{ csrf_token('delete' ~ form.vars.value.idCompetiteur) }}'>
                     <button class='btn waves-effect red lighten-2 btn_gestion'>
                         Supprimer
                     </button>
@@ -426,8 +426,9 @@
     </script>
     {% if type == 'backoffice' %}
         <script type="text/javascript">
-            let isArchived = Boolean({{ options.isArchived ? 1 : 0 }});
-            let isLoisir = Boolean({{ options.isLoisir ? 1 : 0 }});
+            let isArchived = Boolean({{ form.vars.value.isArchive ? 1 : 0 }});
+            let isLoisir = Boolean({{ form.vars.value.isLoisir ? 1 : 0 }});
+            let isCompetiteur = Boolean({{ form.vars.value.isCompetiteur ? 1 : 0 }});
         </script>
         <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAdminAccount.min.js') }}" defer></script>
     {% endif %}
@@ -435,12 +436,12 @@
     <script type="text/javascript" src="{{ asset('JS/eventsCheckboxAccount.min.js') }}" defer></script>
 {% endmacro %}
 
-{% macro edit_password(title, path, type, options) %}
+{% macro edit_password(title, path, type, idCompetiteur) %}
     <script type="text/javascript" src="{{ asset('JS/togglePasswordField.min.js') }}"></script>
     <div class="card-panel center-align">
         <h4 class="h4_form">{{ title }}</h4>
 
-        <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: options.competiteurId}) }}{% endif %}" method="POST">
+        <form action="{% if type == 'general' %}{{ path(path) }}{% elseif type == 'backoffice' %}{{ path(path, {id: idCompetiteur}) }}{% endif %}" method="POST">
             <div class="row">
                 {% if type == 'general' %}
                     <div class="input-field col s12 l4">

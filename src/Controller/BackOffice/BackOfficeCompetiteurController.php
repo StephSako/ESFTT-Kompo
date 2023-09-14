@@ -479,7 +479,6 @@ class BackOfficeCompetiteurController extends AbstractController
                             $this->titularisationRepository->setDeleteTitularisation($competiteur->getIdCompetiteur());
                         }
 
-                        if ($competiteur->isArchive()) $competiteur->setAnneeCertificatMedical(null);
                         $competiteur->setNom($competiteur->getNom());
                         $competiteur->setPrenom($competiteur->getPrenom());
 
@@ -555,18 +554,9 @@ class BackOfficeCompetiteurController extends AbstractController
 
         return $this->render('account/edit.html.twig', [
             'type' => 'backoffice',
-            'urlImage' => $competiteur->getAvatar(),
-            'anneeCertificatMedical' => $competiteur->getAnneeCertificatMedical(),
-            'age' => $competiteur->getAge(),
-            'isCritFed' => $competiteur->isCritFed(),
             'path' => 'backoffice.competiteur.password.edit',
-            'isArchived' => $competiteur->isArchive(),
-            'isLoisir' => $competiteur->isLoisir(),
-            'isAdmin' => $competiteur->isAdmin(),
             'onlyOneAdmin' => $onlyOneAdmin,
-            'competiteurId' => $competiteur->getIdCompetiteur(),
             'form' => $form->createView(),
-            'profileCompletion' => $competiteur->profileCompletion(),
             'equipesAssociees' => $equipesAssociees,
             'idsEquipesAssociees' => $idsEquipesAssociees
         ]);

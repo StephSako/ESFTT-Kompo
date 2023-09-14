@@ -1363,7 +1363,7 @@ class Competiteur implements UserInterface, Serializable
      * Retourne les champs incomplétés du profil d'un joueur
      * @return array
      */
-    public function profileCompletion(): array
+    public function getProfileCompletion(): array
     {
         $champsManquants = [];
         $completude = 0;

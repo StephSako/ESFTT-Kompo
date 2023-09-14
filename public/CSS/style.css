@@ -101,6 +101,9 @@ html, body {
 .dispos tbody tr > td:last-child {
   padding-left: 0;
 }
+.dispos .legends .dot.dot4 {
+  margin-top: 8px;
+}
 
 .dispos.merged_cards .row.bottom_0, .brulageCard.merged_cards .row.bottom_0 {
   padding: 0;

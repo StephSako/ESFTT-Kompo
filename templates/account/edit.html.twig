@@ -26,12 +26,12 @@
         {% endfor %}
 
         {% if type == 'general' %}
-            {{ edit_account.edit_account(type, 'Modifier mon compte', form, app.user.avatar, true, app.user.anneeCertificatMedical, app.user.age, app.user.critFed, app.user.profileCompletion, equipesAssociees, {licence: app.user.licence, isArchived: false}) }}
-            {{ edit_account.edit_password('Modifier mon mot de passe', path, type, 'Modifier') }}
+            {{ edit_account.edit_account(type, 'Modifier mon compte', form, equipesAssociees, {editMode: true}) }}
+            {{ edit_account.edit_password('Modifier mon mot de passe', path, type, form.vars.value.idCompetiteur) }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, urlImage, true, anneeCertificatMedical, age, isCritFed, profileCompletion, null, {competiteurId: competiteurId, isLoisir: isLoisir, isArchived: isArchived, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, null, {editMode: true, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
             {% if app.user.admin %}
-                {{ edit_account.edit_password('Modifier le mot de passe', path, type, {competiteurId: competiteurId}) }}
+                {{ edit_account.edit_password('Modifier le mot de passe', path, type, form.vars.value.idCompetiteur) }}
             {% endif %}
         {% endif %}
     </div>
