@@ -191,10 +191,10 @@ class BackOfficeCompetiteurController extends AbstractController
 
         $form = $this->createForm(CompetiteurType::class, $competiteur, [
             'adminAccess' => $this->getUser()->isAdmin(),
-            'dateNaissanceRequired' => false,
             'isCertificatInvalid' => true,
             'createMode' => true,
-            'usernameEditable' => false
+            'usernameEditable' => false,
+            'dateNaissanceRequired' => true
         ]);
         $form->handleRequest($request);
 
@@ -210,7 +210,12 @@ class BackOfficeCompetiteurController extends AbstractController
                             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
                             $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
                         } catch (Exception $e) {
-                            throw new Exception("Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
+                            $this->addFlash('fail', "Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"));
+                            return $this->render('backoffice/competiteur/new.html.twig', [
+                                'form' => $form->createView(),
+                                'equipesAssociees' => $equipesAssociees,
+                                'idsEquipesAssociees' => $idsEquipesAssociees
+                            ]);
                         }
                     }
 
@@ -422,7 +427,7 @@ class BackOfficeCompetiteurController extends AbstractController
             'isCertificatInvalid' => (!$competiteur->getAge() || $competiteur->getAge() >= 18) && $competiteur->getAnneeCertificatMedical() == null && !$competiteur->isArchive(),
             'adminAccess' => $this->getUser()->isAdmin(),
             'isArchived' => $competiteur->isArchive(),
-            'dateNaissanceRequired' => $competiteur->getDateNaissance() != null
+            'dateNaissanceRequired' => $competiteur->getDateNaissance() == null
         ]);
         $form->handleRequest($request);
         $equipesAssociees = $this->equipeRepository->getEquipesOptgroup();
@@ -439,6 +444,12 @@ class BackOfficeCompetiteurController extends AbstractController
                 try {
                     $idsEquipesAssociees = [];
 
+                    /** Si le joueur est archivé, on historise sa licence */
+                    if ($competiteur->isArchive() && strlen($competiteur->getLicence())) {
+                        $competiteur->setHistoLicence($competiteur->getLicence());
+                        $competiteur->setLicence(null);
+                    }
+
                     /** On vérifie qu'il y aie au minimum un administrateur restant parmi les membres actifs si l'utilisateur admin actuel est le dernier administrateur souhaitant ne plus l'être */
                     if ($onlyOneAdmin && !in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
                         $competiteur->setIsArchive(false);
@@ -450,8 +461,18 @@ class BackOfficeCompetiteurController extends AbstractController
                             try {
                                 $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
                                 $api->getJoueurDetailsByLicence($competiteur->getLicence(), $this->getParameter('club_id'));
+                                $competiteur->setHistoLicence(null); // Si la licence existe, on supprime l'historique de la licence
                             } catch (Exception $e) {
-                                throw new Exception("Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"), '1234');
+                                $this->addFlash('fail', "Le joueur avec la licence '" . $competiteur->getLicence() . "' n'existe pas à " . mb_convert_case($this->getParameter('club_name'), MB_CASE_TITLE, "UTF-8"));
+                                return $this->render('account/edit.html.twig', [
+                                    'type' => 'backoffice',
+                                    'path' => 'backoffice.competiteur.password.edit',
+                                    'onlyOneAdmin' => $onlyOneAdmin,
+                                    'form' => $form->createView(),
+                                    'equipesAssociees' => $equipesAssociees,
+                                    'idsEquipesAssociees' => $idsEquipesAssociees,
+                                    'hasErrorLicenceAPI' => true
+                                ]);
                             }
                         }
 

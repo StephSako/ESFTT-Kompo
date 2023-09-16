@@ -29,7 +29,7 @@
             {{ edit_account.edit_account(type, 'Modifier mon compte', form, equipesAssociees, {editMode: true}) }}
             {{ edit_account.edit_password('Modifier mon mot de passe', path, type, form.vars.value.idCompetiteur) }}
         {% elseif type == 'backoffice' %}
-            {{ edit_account.edit_account(type, 'Modifier le compte', form, null, {editMode: true, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
+            {{ edit_account.edit_account(type, 'Modifier le compte', form, null, {hasErrorLicenceAPI: hasErrorLicenceAPI is defined ? hasErrorLicenceAPI : false, editMode: true, onlyOneAdmin: onlyOneAdmin, equipesAssociees: equipesAssociees, idsEquipesAssociees: idsEquipesAssociees}) }}
             {% if app.user.admin %}
                 {{ edit_account.edit_password('Modifier le mot de passe', path, type, form.vars.value.idCompetiteur) }}
             {% endif %}

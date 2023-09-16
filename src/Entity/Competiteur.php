@@ -81,6 +81,23 @@ class Competiteur implements UserInterface, Serializable
     private $licence;
 
     /**
+     * @var string
+     *
+     * @Assert\Length(
+     *      max = 11,
+     *      maxMessage = "La licence doit contenir au maximum {{ limit }} chiffres"
+     * )
+     *
+     * @Assert\Regex(
+     *     pattern="/^[0-9]{0,11}$/",
+     *     message="La licence doit contenir au maximum 11 chiffres"
+     * )
+     *
+     * @ORM\Column(name="histo_licence", type="string", length=11, nullable=true)
+     */
+    private $histoLicence;
+
+    /**
      * @var int
      *
      * @Assert\GreaterThanOrEqual(
@@ -96,7 +113,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(name="classement_officiel", type="integer", nullable=true)
      */
     private $classement_officiel;
-
     /**
      * @var string
      *
@@ -114,7 +130,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=50, name="nom", nullable=false)
      */
     private $nom;
-
     /**
      * @var string
      *
@@ -132,14 +147,12 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=50, name="prenom", nullable=false)
      */
     private $prenom;
-
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="date", name="date_naissance", nullable=true)
      */
     private $dateNaissance;
-
     /**
      * @var string
      *
@@ -157,7 +170,6 @@ class Competiteur implements UserInterface, Serializable
      *)
      */
     private $password;
-
     /**
      * @var string
      *
@@ -175,7 +187,6 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $username;
-
     /**
      * @var string|null
      *
@@ -191,7 +202,6 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $mail;
-
     /**
      * @var string|null
      *
@@ -207,7 +217,6 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $mail2;
-
     /**
      * @var string|null
      *
@@ -219,7 +228,6 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $phoneNumber;
-
     /**
      * @var string|null
      *
@@ -231,91 +239,78 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $phoneNumber2;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_capitaine", nullable=false)
      */
     private $isCapitaine = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_entraineur", nullable=false)
      */
     private $isEntraineur = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_admin", nullable=false)
      */
     private $isAdmin = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_loisir", nullable=false)
      */
     private $isLoisir = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_crit_fed", nullable=false)
      */
     private $isCritFed = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_competiteur", nullable=false)
      */
     private $isCompetiteur = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_jeune", nullable=false)
      */
     private $isJeune = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_archive", nullable=false)
      */
     private $isArchive = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="contactable_mail", nullable=false)
      */
     private $contactableMail = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="contactable_mail2", nullable=false)
      */
     private $contactableMail2 = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="contactable_phone_number", nullable=false)
      */
     private $contactablePhoneNumber = false;
-
     /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="contactable_phone_number2", nullable=false)
      */
     private $contactablePhoneNumber2 = false;
-
     /**
      * Permet de rendre les liens d'init/reset password invalides (si encore dans les délais) si le password a déjà été initialisé/reset
      * @var boolean
@@ -323,14 +318,12 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="boolean", name="is_password_resetting", nullable=false)
      */
     private $isPasswordResetting = false;
-
     /**
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, name="avatar", nullable=true)
      */
     private $avatar;
-
     /**
      * @var File|null
      *
@@ -342,7 +335,6 @@ class Competiteur implements UserInterface, Serializable
      * @Vich\UploadableField(mapping="property_image", fileNameProperty="avatar")
      */
     private $imageFile;
-
     /**
      * @var integer|null
      *
@@ -359,21 +351,18 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="integer", length=4, name="annee_certificat_medical", nullable=true)
      */
     private $anneeCertificatMedical;
-
     /**
      * @var Collection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Titularisation", mappedBy="idCompetiteur")
      */
     private $titularisations;
-
     /**
      * @var DateTime|null
      *
      * @ORM\Column(type="datetime", name="updatedAt", nullable=true)
      */
     private $updatedAt;
-
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Equipe", inversedBy="joueursAssocies", cascade={"persist"})
      * @ORM\JoinTable(name="prive_titularisation",
@@ -386,12 +375,10 @@ class Competiteur implements UserInterface, Serializable
      * )
      */
     private $equipesAssociees;
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Disponibilite", mappedBy="idCompetiteur", cascade={"remove"}, orphanRemoval=true)
      */
     private $dispos;
-
     /**
      * @var string|null
      *
@@ -403,7 +390,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code1", nullable=true)
      */
     private $code1;
-
     /**
      * @var string|null
      *
@@ -415,7 +401,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code2", nullable=true)
      */
     private $code2;
-
     /**
      * @var string|null
      *
@@ -427,7 +412,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code3", nullable=true)
      */
     private $code3;
-
     /**
      * @var string|null
      *
@@ -439,7 +423,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code4", nullable=true)
      */
     private $code4;
-
     /**
      * @var string|null
      *
@@ -451,7 +434,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code5", nullable=true)
      */
     private $code5;
-
     /**
      * @var string|null
      *
@@ -463,7 +445,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code6", nullable=true)
      */
     private $code6;
-
     /**
      * @var string|null
      *
@@ -475,7 +456,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code7", nullable=true)
      */
     private $code7;
-
     /**
      * @var string|null
      *
@@ -487,7 +467,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code8", nullable=true)
      */
     private $code8;
-
     /**
      * @var string|null
      *
@@ -499,7 +478,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code9", nullable=true)
      */
     private $code9;
-
     /**
      * @var string|null
      *
@@ -511,7 +489,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code10", nullable=true)
      */
     private $code10;
-
     /**
      * @var string|null
      *
@@ -523,7 +500,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code11", nullable=true)
      */
     private $code11;
-
     /**
      * @var string|null
      *
@@ -535,7 +511,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code12", nullable=true)
      */
     private $code12;
-
     /**
      * @var string|null
      *
@@ -547,7 +522,6 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code13", nullable=true)
      */
     private $code13;
-
     /**
      * @var string|null
      *
@@ -559,6 +533,24 @@ class Competiteur implements UserInterface, Serializable
      * @ORM\Column(type="string", length=5, name="code14", nullable=true)
      */
     private $code14;
+
+    /**
+     * @return string|null
+     */
+    public function getHistoLicence(): ?string
+    {
+        return $this->histoLicence;
+    }
+
+    /**
+     * @param string|null $histoLicence
+     * @return Competiteur
+     */
+    public function setHistoLicence(?string $histoLicence): self
+    {
+        $this->histoLicence = $histoLicence;
+        return $this;
+    }
 
     /**
      * @return string|null

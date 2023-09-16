@@ -1693,6 +1693,11 @@ blockquote {
   #listTournois .collapsible .collapsible-body .sectQuote#reglement blockquote {
     margin-top: 0;
   }
+
+  .input_file .file-field.input-field {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 }
 @media screen and (max-width: 550px) {
   #bo_mail_certif_medic_perim {

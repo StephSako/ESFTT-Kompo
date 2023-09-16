@@ -18,21 +18,22 @@ class CompetiteurType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('dateNaissance', BirthdayType::class, [
-                'required' => $options['dateNaissanceRequired'],
-                'invalid_message' => 'Cette date de naissance est invalide',
-                'label' => false,
-                'widget' => 'choice',
-                'format' => 'd MMMM y',
-            ])
-            ->add('imageFile', FileType::class, [
-                'label' => false,
-                'required' => false
-            ]);
-
         if (!$options['isArchived']) {
+            if ($options['dateNaissanceRequired'] || $options['adminAccess']) {
+                $builder
+                    ->add('dateNaissance', BirthdayType::class, [
+                        'required' => false,
+                        'invalid_message' => 'Cette date de naissance est invalide',
+                        'label' => false,
+                        'widget' => 'choice',
+                        'format' => 'd MMMM y',
+                    ]);
+            }
             $builder
+                ->add('imageFile', FileType::class, [
+                    'label' => false,
+                    'required' => false
+                ])
                 ->add('mail', EmailType::class, [
                     'label' => false,
                     'required' => false,
@@ -117,7 +118,7 @@ class CompetiteurType extends AbstractType
                     'label' => 'Jeune',
                     'required' => false
                 ]);
-            
+
             if ($options['isCertificatInvalid']) {
                 $builder->add('anneeCertificatMedical', IntegerType::class, [
                     'label' => 'Année certificat médical',
@@ -165,7 +166,7 @@ class CompetiteurType extends AbstractType
             }
         }
 
-        if ($options['usernameEditable'] && !$options['createMode']) {
+        if ($options['usernameEditable'] && !$options['createMode'] && !$options['isArchived']) {
             $builder->add('username', TextType::class, [
                 'label' => false,
                 'required' => true,

@@ -45,7 +45,7 @@
                 </div>
             {% endif %}
 
-            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
+            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) or options.createMode is not defined %}3{% else %}4{% endif %}">
                 <b><i class="material-icons prefix">person</i> NOM{% if isFieldEditableMandatory("nom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.nom) }}
@@ -53,7 +53,7 @@
                     <p>{{ form.vars.value.nom }}</p>
                 {% endif %}
             </div>
-            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
+            <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) or options.createMode is not defined %}3{% else %}4{% endif %}">
                 <b><i class="material-icons prefix">person</i> Prénom{% if isFieldEditableMandatory("prenom", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
                 {% if type == 'backoffice' and not form.vars.value.isArchive %}
                     {{ form_row(form.prenom) }}
@@ -61,16 +61,28 @@
                     <p>{{ form.vars.value.prenom }}</p>
                 {% endif %}
             </div>
-            {% if isFieldEditable("username", champsEditablesObligatoires) %}
-                <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) %}3{% else %}4{% endif %}">
+            {% if isFieldEditable("username", champsEditablesObligatoires) or options.createMode is not defined %}
+                <div class="col s12 m6 l{% if isFieldEditable("username", champsEditablesObligatoires) or options.createMode is not defined %}3{% else %}4{% endif %}">
                     <b><i class="material-icons prefix">account_circle</i> Pseudo{% if isFieldEditableMandatory("username", champsEditablesObligatoires) %} <span class="red-text">*</span>{% endif %}</b>
-                    {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    {% if not form.vars.value.isArchive %}
+                        {{ form_row(form.username, {'attr': {'autocapitalize': 'off'}}) }}
+                    {% else %}
+                        <p>{{ form.vars.value.username }}</p>
+                    {% endif %}
                 </div>
             {% endif %}
-            <div class="col s12 {% if isFieldEditable("username", champsEditablesObligatoires) %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
+            <div class="col s12 {% if isFieldEditable("username", champsEditablesObligatoires) or options.createMode is not defined %}m6 l3{% else %}offset-m2 m8 l4{% endif %}">
                 <b><i class="material-icons prefix">cake</i> Date de naissance</b>
                 <div class="titlecase">
-                    {{ form_row(form.dateNaissance) }}
+                    {% if isFieldEditable("dateNaissance", champsEditablesObligatoires) %}
+                        {{ form_row(form.dateNaissance) }}
+                    {% else %}
+                        {% if form.vars.value.dateNaissance is not null %}
+                            <p>{{ form.vars.value.dateNaissance | date("m/d/Y") }}</p>
+                        {% else %}
+                            <p><i>Indéfinie</i></p>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -250,100 +262,108 @@
                     if (e.which === 32) return false;
                 });
             </script>
+        {% endif %}
 
-            <div class="section" style="margin-bottom: 0;">
-                <h5 class="dark_blue">Informations licence</h5>
+        <div class="section" style="margin-bottom: 0;">
+            <h5 class="dark_blue">Informations licence</h5>
 
+            {% if app.request.getPathInfo ends with '/new' %}
+                <div class="row">
+                    <div class="col s12 hide-on-med-and-down">
+                        <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                            <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row">
                 {% if app.request.getPathInfo ends with '/new' %}
-                    <div class="row">
-                        <div class="col s12 hide-on-med-and-down">
-                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                            </p>
-                        </div>
+                    <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                        <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
+                            <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
+                        </p>
                     </div>
                 {% endif %}
 
-                <div class="row">
-                    {% if app.request.getPathInfo ends with '/new' %}
-                        <div class="col s12 show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
-                            <p style="margin-top: 0; margin-bottom: 0;" class="blue-text">
-                                <i class="material-icons">info</i> Si le joueur n'est actuellement pas licencié auprès de la FFTT, renseignez sa licence une fois qu'il devient licencié.<br>Laissez le champ <b>N° licence</b> vide pour l'instant.
-                            </p>
-                        </div>
-                    {% endif %}
-
-                    <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
-                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">payment</i> N° licence</b></p>
-                        {% if type == 'backoffice' %}
+                <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
+                    <p {% if type == 'backoffice' and not form.vars.value.isArchive %}style="margin-bottom: 0" {% endif %}>
+                        <b><i class="material-icons prefix">payment</i> N° licence</b>
+                    </p>
+                    {% if type == 'backoffice' %}
+                        {% if not form.vars.value.isArchive %}
                             {{ form_row(form.licence) }}
-                        {% else %}
-                            {% if form.vars.value.licence %}
-                                <span class="pastille blue centered">{{ form.vars.value.licence }}</span>
-                            {% else %}
-                                <p style="color: red">Licence indéfinie</p>
-                            {% endif %}
                         {% endif %}
-                    </div>
-
-                    <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
-                        <p {% if type == 'backoffice' %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
-                        {% if type == 'backoffice' %}
-                            {{ form_row(form.classementOfficiel) }}
+                        {% if form.vars.value.histoLicence and (options.hasErrorLicenceAPI is defined or form.vars.value.isArchive) %}
+                            <span class="grey-text centered"><i>Historique : {{ form.vars.value.histoLicence }}</i></span>
                         {% else %}
-                            {% if not app.user.competiteur %}
-                                <p><i>Vous n'êtes pas compétiteur</i></p>
-                            {% else %}
-                                {% if app.user.classementOfficiel %}
-                                    <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
-                                {% else %}
-                                    <p style="color: red">Classement indéfini</p>
-                                {% endif %}
-                            {% endif %}
+                            <p><i>Indéfinie</i></p>
                         {% endif %}
-                    </div>
-
-                    {% if type != 'backoffice' %}
-                        <div class="col s12 l3 m6 col_infos_licence">
-                            <p><b>Titularisation{{ equipesAssociees|length ? 's' : '' }}</b></p>
-                            {% if equipesAssociees|length and type != 'backoffice' %}
-                                <ul class="collection">
-                                    {% for championnat, numero in equipesAssociees %}
-                                    <li class="collection-item"><b>{{ championnat }} :</b>
-                                        {% if numero %}
-                                            Équipe {{ numero }}
-                                        {% else %}
-                                            <i>Sans équipe</i>
-                                        {% endif %}
-                                        {% endfor %}
-                                </ul>
-                            {% else %}
-                                <i class="grey-text">Aucune équipe associée</i>
-                            {% endif %}
-                        </div>
-
-                        <div class="col s12 m6 l3 col_infos_licence">
-                            <p><b>Crit. fédéral</b></p>
-                            <span class="centered">
-                                    {% if form.vars.value.isCritFed %}
-                                        <i class="material-icons green-text">check</i> Je participe
-                                    {% else %}
-                                        <i class="material-icons red-text">clear</i> Je ne participe pas
-                                    {% endif %}
-                                </span>
-                        </div>
+                    {% else %}
+                        {% if form.vars.value.licence %}
+                            <span class="pastille blue centered">{{ form.vars.value.licence }}</span>
+                        {% else %}
+                            <p style="color: red">Licence indéfinie</p>
+                        {% endif %}
                     {% endif %}
                 </div>
+
+                <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
+                    <p {% if type == 'backoffice' and not form.vars.value.isArchive %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
+                    {% if type == 'backoffice' and not form.vars.value.isArchive %}
+                        {{ form_row(form.classementOfficiel) }}
+                    {% else %}
+                        {% if app.user.classementOfficiel %}
+                            <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
+                        {% else %}
+                            <p class="red-text">Classement indéfini</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if type != 'backoffice' %}
+                    <div class="col s12 l3 m6 col_infos_licence">
+                        <p><b>Titularisation{{ equipesAssociees|length ? 's' : '' }}</b></p>
+                        {% if equipesAssociees|length and type != 'backoffice' %}
+                            <ul class="collection">
+                                {% for championnat, numero in equipesAssociees %}
+                                <li class="collection-item"><b>{{ championnat }} :</b>
+                                    {% if numero %}
+                                        Équipe {{ numero }}
+                                    {% else %}
+                                        <i>Sans équipe</i>
+                                    {% endif %}
+                                    {% endfor %}
+                            </ul>
+                        {% else %}
+                            <i class="grey-text">Aucune équipe associée</i>
+                        {% endif %}
+                    </div>
+
+                    <div class="col s12 m6 l3 col_infos_licence">
+                        <p><b>Crit. fédéral</b></p>
+                        <span class="centered">
+                            {% if form.vars.value.isCritFed %}
+                                <i class="material-icons green-text">check</i> Je participe
+                            {% else %}
+                                <i class="material-icons red-text">clear</i> Je ne participe pas
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
+
 
         <div class="section input_file" style="margin-bottom: 0;">
             <h5 class="dark_blue">Image de profil</h5>
-            <p style="margin-top: 0; margin-bottom: 0;"><i>Formats acceptés : <b>JPEG, PNG, GIF et WEBP</b></i></p>
-            {{ form_row(form.imageFile) }}
+            {% if isFieldEditable("imageFile", champsEditablesObligatoires) %}
+                <p style="margin-top: 0; margin-bottom: 0;"><i>Formats acceptés : <b>JPEG, PNG, GIF et WEBP</b></i></p>
+                {{ form_row(form.imageFile) }}
+            {% endif %}
 
             <div class="avatarSectionDelete">
-                {% if form.vars.value.avatar %}
+                {% if form.vars.value.avatar and isFieldEditable("imageFile", champsEditablesObligatoires) %}
                     <a onclick="return confirm('Êtes-vous sûr de supprimer l\'avatar ?')" class='deleteAvatar btn waves-effect red lighten-2'
                             {% if type == 'backoffice' %}
                         href="{{ path('backoffice.competiteur.delete.avatar', {id: form.vars.value.idCompetiteur}) }}"
@@ -352,7 +372,6 @@
                             {% endif %}>
                         <i class="material-icons">delete</i>
                     </a>
-
                 {% endif %}
                 <img class="avatar" width="120" height="120" src="{{ asset(form.vars.value.avatar ? 'images/profile_pictures/' ~ form.vars.value.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="image de profil du membre">
             </div>
@@ -362,7 +381,7 @@
             <p style="margin-top: 0; margin-bottom: 25px;" class="blue-text"><i class="material-icons">info</i> Le mot de passe par défaut est <b>{{ default_password }}</b></p>
         {% endif %}
 
-        {% if type != 'backoffice' or (type == 'backoffice' and options.editMode is defined) %}
+        {% if type != 'backoffice' or (type == 'backoffice' and options.editMode is defined and not form.vars.value.isArchive) %}
             <div class="row" id="encadreNotContactable" hidden="hidden" style="margin-top: 20px;">
                 <div class="col s12 m10 offset-m1 l10 offset-l1 divProfileCompletionCol">
                     <div class="divProfileCompletion red-text orange-darken-4">
