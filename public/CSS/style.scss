@@ -77,6 +77,10 @@ html, body {
   }
 }
 
+.noWrap {
+  white-space: nowrap;
+}
+
 .btn {
   margin-top: 15px;
 }
@@ -560,12 +564,8 @@ p.lobster {
   margin-top: 5px;
 }
 
-.rank {
-  white-space: nowrap;
-
-  &.rank_blue, .light_blue {
-    color: $light_blue;
-  }
+.rank.rank_blue, .light_blue {
+  color: $light_blue;
 }
 
 button.renew_certif_table {
@@ -1342,6 +1342,7 @@ p.joueurAnniv {
 
 .dark_blue {
   color: $scroll_blue;
+  margin-top: 20px;
 }
 
 button.btn_renouveler_certif_mobile {
@@ -1703,15 +1704,9 @@ a.reload_ranking {
     table {
       margin-top: 15px;
 
-      tbody tr td {
-        &.description {
-          max-width: 250px;
-          white-space: normal;
-        }
-
-        &.noWrap {
-          white-space: nowrap;
-        }
+      tbody tr td.description {
+        max-width: 250px;
+        white-space: normal;
       }
     }
   }
@@ -1728,6 +1723,42 @@ blockquote {
   margin-top: 11px !important;
   margin-left: 50px;
   margin-right: 50px;
+}
+
+#sendMailForm {
+  h5#title {
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: #0c3565
+  }
+
+  p#consigne {
+    margin-bottom: 0;
+  }
+
+  #preloaderResetPassword {
+    height: 38px;
+  }
+
+  #buttonsResetPassword button {
+    margin-left: 10px;
+  }
+
+  p#errorResetPassword {
+    margin-bottom: 4px;
+  }
+}
+
+#divMailSent {
+  h5 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: #0c3565;
+  }
+
+  a {
+    margin-top: 0;
+  }
 }
 
 @media screen and (max-width: 1466px) {

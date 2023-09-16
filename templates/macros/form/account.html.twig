@@ -32,7 +32,7 @@
         {% endif %}
 
         {% if champsEditablesObligatoires | filter(c => c) | length %}
-            <span style="color: red"><i>* Champs obligatoires</i></span>
+            <span class="red-text"><i>* Champs obligatoires</i></span>
         {% endif %}
 
         {{ form_start(form) }}
@@ -78,7 +78,7 @@
                         {{ form_row(form.dateNaissance) }}
                     {% else %}
                         {% if form.vars.value.dateNaissance is not null %}
-                            <p>{{ form.vars.value.dateNaissance | date("m/d/Y") }}</p>
+                            <p>{{ form.vars.value.dateNaissance | date("d/m/Y") }}</p>
                         {% else %}
                             <p><i>Indéfinie</i></p>
                         {% endif %}
@@ -294,27 +294,33 @@
                         {% if not form.vars.value.isArchive %}
                             {{ form_row(form.licence) }}
                         {% endif %}
-                        {% if form.vars.value.histoLicence and (options.hasErrorLicenceAPI is defined or form.vars.value.isArchive) %}
-                            <span class="grey-text centered"><i>Historique : {{ form.vars.value.histoLicence }}</i></span>
-                        {% else %}
-                            <p><i>Indéfinie</i></p>
+                        {% if options.createMode is not defined and form.vars.value.licence is null %}
+                            {% if form.vars.value.histoLicence is not null and (options.hasErrorLicenceAPI is defined) %}
+                                <span class="grey-text centered"><i>Historique : {{ form.vars.value.histoLicence }}</i></span>
+                            {% else %}
+                                {% if form.vars.value.isArchive %}
+                                    <p><i>Pas d'historique</i></p>
+                                {% endif %}
+                            {% endif %}
                         {% endif %}
                     {% else %}
                         {% if form.vars.value.licence %}
                             <span class="pastille blue centered">{{ form.vars.value.licence }}</span>
                         {% else %}
-                            <p style="color: red">Licence indéfinie</p>
+                            <p class="red-text">Licence indéfinie</p>
                         {% endif %}
                     {% endif %}
                 </div>
 
                 <div class="col s12 m6 {% if type != 'backoffice' %}l3{% else %}l4 offset-l1{% endif %} col_infos_licence">
-                    <p {% if type == 'backoffice' and not form.vars.value.isArchive %}style="margin-bottom: 0" {% endif %}><b><i class="material-icons prefix">show_chart</i> Classement officiel</b></p>
+                    <p class="noWrap" {% if type == 'backoffice' and not form.vars.value.isArchive %}style="margin-bottom: 0" {% endif %}>
+                        <b><i class="material-icons prefix">show_chart</i> Classement officiel</b>
+                    </p>
                     {% if type == 'backoffice' and not form.vars.value.isArchive %}
                         {{ form_row(form.classementOfficiel) }}
                     {% else %}
                         {% if app.user.classementOfficiel %}
-                            <p class="pastille blue centered">{{ app.user.classementOfficiel }} pts</p>
+                            <span class="pastille blue centered">{{ app.user.classementOfficiel }} pts</span>
                         {% else %}
                             <p class="red-text">Classement indéfini</p>
                         {% endif %}

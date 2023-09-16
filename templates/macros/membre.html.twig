@@ -104,7 +104,7 @@
             <th class='th_picture_compet_table'></th>
             <th>Avatar</th>
             <th>Nom</th>
-            <th>Licence</th>
+            <th>Historique licence</th>
             <th>Dernier classement</th>
             {% if app.user.admin %}
                 <th></th>
@@ -130,8 +130,8 @@
                     {{ competiteur.nom }} {{ competiteur.prenom }}
                 </td>
                 <td class="hide-on-med-and-down">
-                    {% if competiteur.licence %}
-                        {{ competiteur.licence }}
+                    {% if competiteur.histoLicence %}
+                        {{ competiteur.histoLicence }}
                     {% else %}
                         Licence indéfinie
                     {% endif %}

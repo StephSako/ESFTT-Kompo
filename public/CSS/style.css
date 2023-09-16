@@ -60,6 +60,10 @@ html, body {
   line-height: 24px;
 }
 
+.noWrap {
+  white-space: nowrap;
+}
+
 .btn {
   margin-top: 15px;
 }
@@ -469,10 +473,7 @@ p.lobster {
   margin-top: 5px;
 }
 
-.rank {
-  white-space: nowrap;
-}
-.rank.rank_blue, .rank .light_blue {
+.rank.rank_blue, .light_blue {
   color: #1565c0;
 }
 
@@ -1128,6 +1129,7 @@ p.joueurAnniv {
 
 .dark_blue {
   color: #1b5fac;
+  margin-top: 20px;
 }
 
 button.btn_renouveler_certif_mobile {
@@ -1434,9 +1436,6 @@ a.reload_ranking {
   max-width: 250px;
   white-space: normal;
 }
-#listTournois .collapsible-body table tbody tr td.noWrap {
-  white-space: nowrap;
-}
 
 blockquote {
   font-weight: bold;
@@ -1449,6 +1448,33 @@ blockquote {
   margin-top: 11px !important;
   margin-left: 50px;
   margin-right: 50px;
+}
+
+#sendMailForm h5#title {
+  margin-top: 0;
+  margin-bottom: 6px;
+  color: #0c3565;
+}
+#sendMailForm p#consigne {
+  margin-bottom: 0;
+}
+#sendMailForm #preloaderResetPassword {
+  height: 38px;
+}
+#sendMailForm #buttonsResetPassword button {
+  margin-left: 10px;
+}
+#sendMailForm p#errorResetPassword {
+  margin-bottom: 4px;
+}
+
+#divMailSent h5 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  color: #0c3565;
+}
+#divMailSent a {
+  margin-top: 0;
 }
 
 @media screen and (max-width: 1466px) {

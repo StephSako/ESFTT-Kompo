@@ -7,7 +7,6 @@ use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\RencontreRepository;
-use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -207,11 +206,9 @@ class ContactController extends AbstractController
 
         try {
             $this->mailer->send($email);
-            $json = json_encode(['message' => "L'e-mail a été envoyé !", 'success' => true]);
+            $json = json_encode(['message' => "L'e-mail a été envoyé", 'success' => true]);
         } catch (TransportExceptionInterface $e) {
-            $json = json_encode(['message' => "L'e-mail n'a pas pu être envoyé !", 'success' => false, 'error' => $e->getMessage()]);
-        } catch (Exception $e) {
-            $json = json_encode(['message' => "L'e-mail n'a pas pu être envoyé !", 'success' => false, 'error' => $e->getMessage()]);
+            $json = json_encode(['message' => "L'e-mail n'a pas pu être envoyé", 'success' => false, 'error' => $e->getMessage()]);
         }
 
         $response = new Response($json);

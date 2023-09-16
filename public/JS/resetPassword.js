@@ -1,13 +1,20 @@
+let email = $('input#email');
+let username = $('input#username');
+let errorResetPassword = $('p#errorResetPassword');
+
 function resetPassword() {
-    if (!$('#username').val() || !$('#email').val()) M.toast({html: 'Renseignez votre pseudo et votre adresse e-mail'});
-    else {
+    errorResetPassword.attr("hidden", "");
+    
+    if (!username.val() || !email.val()) {
+        errorResetPassword.removeAttr('hidden').html('Renseignez votre pseudo et votre adresse e-mail');
+    } else {
         sendingResetPassword();
         $.ajax({
             url: '/login/contact/forgotten-password',
             type: 'POST',
             data: {
-                mail: $('#email').val(),
-                username: $('#username').val(),
+                mail: email.val(),
+                username: username.val(),
             },
             dataType: 'json',
             success: (response) => {
@@ -23,31 +30,32 @@ function resetPassword() {
 function sendingResetPassword() {
     $("#preloaderResetPassword").show();
     $('#buttonsResetPassword').hide();
-    $('#email').prop('disabled', true);
-    $('#username').prop('disabled', true);
+    email.prop('disabled', true);
+    username.prop('disabled', true);
 }
 
 function endSendingResetPassword(message, success) {
     $("#preloaderResetPassword").hide();
     $('#buttonsResetPassword').show();
-    $('#email').prop('disabled', false);
-    $('#username').prop('disabled', false);
+    email.prop('disabled', false);
+    username.prop('disabled', false);
 
-    if (!success) M.toast({html: message});
-    else {
+    if (!success) {
+        errorResetPassword.removeAttr('hidden').html(message);
+    } else {
         $('#divMailSent').removeClass('hide');
         $('#sendMailForm').addClass('hide');
     }
 }
 
 $(document).ready(() => {
-    $('#username').on('keyup', () => {
-        if ($('#username').val() && $('#email').val()) $('#btnResetPassword').removeClass('disabled');
+    username.on('keyup', () => {
+        if (username.val() && email.val()) $('#btnResetPassword').removeClass('disabled');
         else $('#btnResetPassword').addClass('disabled');
     });
 
-    $('#email').on('keyup', () => {
-        if ($('#username').val() && $('#email').val()) $('#btnResetPassword').removeClass('disabled');
+    email.on('keyup', () => {
+        if (username.val() && email.val()) $('#btnResetPassword').removeClass('disabled');
         else $('#btnResetPassword').addClass('disabled');
     });
 });
