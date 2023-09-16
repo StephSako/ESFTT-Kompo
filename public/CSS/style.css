@@ -469,7 +469,10 @@ p.lobster {
   margin-top: 5px;
 }
 
-.rank.rank_blue, .light_blue {
+.rank {
+  white-space: nowrap;
+}
+.rank.rank_blue, .rank .light_blue {
   color: #1565c0;
 }
 
@@ -1430,6 +1433,9 @@ a.reload_ranking {
 #listTournois .collapsible-body table tbody tr td.description {
   max-width: 250px;
   white-space: normal;
+}
+#listTournois .collapsible-body table tbody tr td.noWrap {
+  white-space: nowrap;
 }
 
 blockquote {

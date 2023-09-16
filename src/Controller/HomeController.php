@@ -315,6 +315,11 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
 
+        if (($compo->isValidationCompo())) {
+            $this->addFlash('success', "La compo d'équipe est déjà validée");
+            return $this->redirectToRoute('index.type', ['type' => $type]);
+        }
+
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
         $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {

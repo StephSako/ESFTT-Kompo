@@ -1,16 +1,31 @@
 {% if tableaux|length %}
     <table class="striped centered responsive-table table-to-adapt-columns">
+        <thead class="hide-on-med-and-down">
+        <tr>
+            <th>Jour</th>
+            <th>Pointage</th>
+            <th>Tableau</th>
+            <th>Coût</th>
+            <th>Dotation</th>
+            <th>Type</th>
+            <th>Genres</th>
+        </tr>
+        </thead>
         <tbody>
         {% for jour, tableauxPerDay in tableaux %}
             {% for tableau in tableauxPerDay %}
                 <tr {% if loop.first and not loop.parent.loop.first %}class="firstBorderTr"{% endif %}>
                     {% if loop.first %}
-                        <td class="hide-on-med-and-down rowspan{{ loop.parent.loop.first ? ' firstBorder' : '' }}" rowspan="{{ tableauxPerDay|length }}">{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}</td>
+                        <td class="hide-on-med-and-down rowspan{{ loop.parent.loop.first ? ' firstBorder' : '' }}" rowspan="{{ tableauxPerDay|length }}">
+                            {{ tableau.date|format_datetime(pattern='EEEE dd/MM', locale='fr')|title }}
+                        </td>
                     {% endif %}
                     {% if tableaux|filter((v, k) => (v|filter(t => t.time != null)))|length %}
-                        <td class="hide-on-med-and-down{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">{{ tableau.time }}</td>
+                        <td class="noWrap hide-on-med-and-down{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">{{ tableau.time }}</td>
                     {% endif %}
-                    <td class="show-on-medium-and-down hide-on-large-only hide-on-extra-large-only"><u>{{ tableau.date|format_datetime(pattern='EEEE', locale='fr')|title }}{% if tableau.time %}{{ ' - ' ~ tableau.time }}{% endif %}</u></td>
+                    <td class="show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
+                        <u>{{ tableau.date|format_datetime(pattern='EEEE dd/MM', locale='fr')|title }}{% if tableau.time %}{{ ' - ' ~ tableau.time }}{% endif %}</u>
+                    </td>
                     <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>
                         <b>{{ tableau.name }}</b>
                     </td>
@@ -19,12 +34,12 @@
                             <b>{{ tableau.description }}</b>
                         </td>
                     {% endif %}
-                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.cout }}</td>
-                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.type }}</td>
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.cout }}</td>
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.type }}</td>
                     {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
-                        <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.dotation }}</td>
+                        <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.dotation }}</td>
                     {% endif %}
-                    <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>{{ tableau.genres }}</td>
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.genres }}</td>
                 </tr>
             {% endfor %}
         {% endfor %}

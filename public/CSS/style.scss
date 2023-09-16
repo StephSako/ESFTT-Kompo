@@ -560,8 +560,12 @@ p.lobster {
   margin-top: 5px;
 }
 
-.rank.rank_blue, .light_blue {
-  color: $light_blue;
+.rank {
+  white-space: nowrap;
+
+  &.rank_blue, .light_blue {
+    color: $light_blue;
+  }
 }
 
 button.renew_certif_table {
@@ -1699,9 +1703,15 @@ a.reload_ranking {
     table {
       margin-top: 15px;
 
-      tbody tr td.description {
-        max-width: 250px;
-        white-space: normal;
+      tbody tr td {
+        &.description {
+          max-width: 250px;
+          white-space: normal;
+        }
+
+        &.noWrap {
+          white-space: nowrap;
+        }
       }
     }
   }
