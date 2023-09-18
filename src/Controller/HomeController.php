@@ -13,7 +13,6 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FFTTApi\FFTTApi;
-use FFTTApi\Model\VirtualPoints;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -866,18 +865,18 @@ class HomeController extends AbstractController
     public function getPersonnalClassementVirtuelsClub(): JsonResponse
     {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
-        $erreur = null;
-        $virtualPointsProgression = null;
-        $points = null;
-        $annees = null;
-
+        $erreur = '';
+        $virtualPointsProgression = 0.0;
+        $virtualPoints = 0.0;
+        $points = [];
+        $annees = [];
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-        $virtualPoints = new VirtualPoints(0, 0, 0);
+
         if ($this->getUser()->getLicence()) {
             try {
-                $virtualPoints = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
-                $virtualPointsProgression = $virtualPoints->getSeasonlyPointsWon();
-                $virtualPoints = $virtualPoints->getVirtualPoints();
+                $virtualPointsApi = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+                $virtualPointsProgression = $virtualPointsApi->getSeasonlyPointsWon();
+                $virtualPoints = $virtualPointsApi->getVirtualPoints();
                 $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
                 $points = array_map(function ($histo) {
                     return $histo->getPoints();
@@ -887,6 +886,9 @@ class HomeController extends AbstractController
                 }, $historique);
             } catch (Exception $e) {
                 $erreur = 'Points virtuels indisponibles';
+                $virtualPointsProgression = 0.0;
+                $virtualPoints = 0.0;
+                $points = [];
             }
         } else $erreur = 'Licence du joueur inexistante';
 

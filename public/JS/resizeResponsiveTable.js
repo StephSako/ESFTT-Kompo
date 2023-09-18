@@ -18,7 +18,7 @@ $(document).ready(function () {
 let resized = false;
 let observer = $('#modalcustom').length ? new MutationObserver((mutations) => {
     if (!resized) {
-        mutations.forEach(function (mutation) {
+        mutations.forEach(function () {
             if ($('#modalcustom').css('display') !== 'none' && !resized) {
                 resizeTable()
                 resized = true
