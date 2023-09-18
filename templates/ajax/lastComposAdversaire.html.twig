@@ -3,9 +3,8 @@
 {% else %}
     <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
 
-    <p style="max-width: 375px; margin-top: 15px;" class="pastille reset blue lighten-2">Les points <b>mensuels</b> sont présentés ci-dessous</p>
-
     {% if journees|length > 0 %}
+        <p style="max-width: 375px; margin-top: 15px;" class="pastille reset blue lighten-2">Les points <b>mensuels</b> sont présentés ci-dessous</p>
         {% for journee in journees %}
             {% if journee.exempt %}
                 <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille grey darken-1 reset"><b>J{{ loop.index }} :</b> Exemptée</span></p>
@@ -88,6 +87,6 @@
             {% endif %}
         {% endfor %}
     {% else %}
-        <h6 class="center pastille reset orange">Aucune rencontre n'est enregistrée pour le moment</h6>
+        <p style="margin-top: 15px" class="center pastille reset orange">Aucune rencontre n'est enregistrée pour le moment</p>
     {% endif %}
 {% endif %}

@@ -241,7 +241,7 @@ class FooterController extends AbstractController
         try {
             $response = $this->clientHTTP->request(
                 'GET',
-                $this->getParameter('url_get_tournois') . '/api/tournament_requests?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=' . (new DateTime())->format('Y-m-d\Th:i:s') . '&endDate[before]=' . date('Y-m-d\T', strtotime('+1 year')) . '23:59:58',
+                $this->getParameter('url_get_tournois') . '/api/tournament_requests?page=1&itemsPerPage=100&order[startDate]=asc&startDate[after]=' . date('Y-m-d', strtotime('-7 days')) . 'T00:00:00&endDate[before]=' . date('Y-m-d\T', strtotime('+1 year')) . '23:59:58',
                 [
                     'headers' => [
                         'Accept' => '*/*',
@@ -258,6 +258,12 @@ class FooterController extends AbstractController
             $tournois = array_map(function ($tournoi) {
                 return new Tournoi($tournoi);
             }, $content["hydra:member"]);
+
+            // On récupère les tournois qui ont également commencé avant aujourd'hui mais qui finissent aujourd'hui ou plus tard
+            $today = (new DateTime())->setTime(0, 0)->getTimestamp();
+            $tournois = array_filter($tournois, function (Tournoi $tournoi) use ($today) {
+                return $tournoi->getEndDate()->getTimestamp() >= $today;
+            });
         } catch (Exception $e) {
         }
 

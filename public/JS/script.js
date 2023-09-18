@@ -43,4 +43,8 @@ $(document).ready(() => {
     });
 
     $('.fixed-action-btn').floatingActionButton();
+
+    Array.from($('.trimInput')).forEach(el => el.addEventListener('input', () => {
+        el.value = el.value.trim();
+    }))
 });
