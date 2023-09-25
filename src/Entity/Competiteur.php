@@ -1359,41 +1359,35 @@ class Competiteur implements UserInterface, Serializable
     {
         $champsManquants = [];
         $completude = 0;
+        $criteres = [
+            $this->getDateNaissance(), $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(), $this->getAvatar(),
+            !$this->isCertifMedicalInvalid()['status'], $this->getLicence(), $this->getClassementOfficiel()
+        ];
 
         foreach (
-            [
-                $this->getNom(), $this->getPrenom(), $this->getUsername(), $this->getDateNaissance(),
-                !$this->isCertifMedicalInvalid()['status'], $this->getFirstContactableMail(), $this->getFirstContactablePhoneNumber(),
-                $this->getLicence(), $this->getAvatar()
-            ] as $index => $field) {
+            $criteres as $index => $field) {
             if (!$field) {
                 switch ($index) {
                     case 0:
-                        $champsManquants[] = 'Nom';
-                        break;
-                    case 1:
-                        $champsManquants[] = 'Prénom';
-                        break;
-                    case 2:
-                        $champsManquants[] = 'Pseudo';
-                        break;
-                    case 3:
                         $champsManquants[] = 'Date de naissance';
                         break;
+                    case 1:
+                        $champsManquants[] = 'Adresse e-mail <b>contactable</b>';
+                        break;
+                    case 2:
+                        $champsManquants[] = 'Numéro de téléphone <b>contactable</b>';
+                        break;
+                    case 3:
+                        $champsManquants[] = 'Photo de profil';
+                        break;
                     case 4:
-                        $champsManquants[] = 'Année du certificat médical';
+                        $champsManquants[] = 'Année du certificat médical <i>(action ADMIN)</i>';
                         break;
                     case 5:
-                        $champsManquants[] = 'Une adresse e-mail contactable';
+                        $champsManquants[] = 'Licence <i>(action ADMIN)</i>';
                         break;
                     case 6:
-                        $champsManquants[] = 'Un numéro de téléphone contactable';
-                        break;
-                    case 7:
-                        $champsManquants[] = 'Licence';
-                        break;
-                    case 8:
-                        $champsManquants[] = 'Photo de profil';
+                        $champsManquants[] = 'Classement officiel <i>(action ADMIN)</i>';
                         break;
                 }
                 $completude++;
@@ -1402,62 +1396,8 @@ class Competiteur implements UserInterface, Serializable
 
         return [
             "champsManquants" => $champsManquants,
-            "completude" => round(((9 - $completude) * 100) / 9)
+            "completude" => round(((count($criteres) - $completude) * 100) / count($criteres))
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string|null $username
-     * @return Competiteur
-     */
-    public function setUsername(?string $username): self
-    {
-        $this->username = (trim($username) ?: 'username');
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function isCertifMedicalInvalid(): array
-    {
-        if (((new DateTime())->format('n') >= 6 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 3) && (($this->getAge() == null || $this->getAge() >= 18) &&
-                ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 2)))
-            return [
-                'status' => true,
-                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y')) + 1) . '</b>',
-                'shortMessage' => $this->getLabelCertificatRentree()
-            ];
-        return [
-            'status' => false,
-            'message' => null,
-            'shortMessage' => $this->getLabelCertificatRentree()
-        ];
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getAge(): ?int
-    {
-        if ($this->getDateNaissance()) {
-            $now = new DateTime();
-            $interval = $now->diff($this->getDateNaissance());
-            return $interval->y;
-        } else return null;
-    }
-
-    public function getLabelCertificatRentree(): string
-    {
-        return ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical() + 3) . '/' . ($this->getAnneeCertificatMedical() + 4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y')) + 1));
     }
 
     /**
@@ -1567,6 +1507,60 @@ class Competiteur implements UserInterface, Serializable
     public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function isCertifMedicalInvalid(): array
+    {
+        if (((new DateTime())->format('n') >= 6 || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 3) && (($this->getAge() == null || $this->getAge() >= 18) &&
+                ($this->getAnneeCertificatMedical() == null || $this->getAnneeCertificatMedical() < (new DateTime())->format('Y') - 2)))
+            return [
+                'status' => true,
+                'message' => 'Votre certificat médical est à renouveler pour la rentrée <b>' . (new DateTime())->format('Y') . '/' . (intval((new DateTime())->format('Y')) + 1) . '</b>',
+                'shortMessage' => $this->getLabelCertificatRentree()
+            ];
+        return [
+            'status' => false,
+            'message' => null,
+            'shortMessage' => $this->getLabelCertificatRentree()
+        ];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAge(): ?int
+    {
+        if ($this->getDateNaissance()) {
+            $now = new DateTime();
+            $interval = $now->diff($this->getDateNaissance());
+            return $interval->y;
+        } else return null;
+    }
+
+    public function getLabelCertificatRentree(): string
+    {
+        return ($this->getAnneeCertificatMedical() != null ? ($this->getAnneeCertificatMedical() + 3) . '/' . ($this->getAnneeCertificatMedical() + 4) : (new DateTime())->format('Y') . '-' . (intval((new DateTime())->format('Y')) + 1));
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string|null $username
+     * @return Competiteur
+     */
+    public function setUsername(?string $username): self
+    {
+        $this->username = (trim($username) ?: 'username');
         return $this;
     }
 

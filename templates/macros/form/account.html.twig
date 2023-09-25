@@ -22,7 +22,7 @@
                             <p><b>Champ{{ form.vars.value.profileCompletion.champsManquants|length > 1 ? 's' : '' }} manquant{{ form.vars.value.profileCompletion.champsManquants|length > 1 ? 's' : '' }}</b></p>
                             <ul>
                                 {% for champ in form.vars.value.profileCompletion.champsManquants %}
-                                    <li><b>-</b> {{ champ }}</li>
+                                    <li><b>-</b> {{ champ | raw }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
