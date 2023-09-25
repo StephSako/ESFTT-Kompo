@@ -260,21 +260,28 @@ i.iconPlace {
   height: auto !important;
 }
 
-#menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
+#menu_dropdown_settings, #menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
 }
-#menu_dropdown_champs li, #menu_dropdown_contact li, #collapsible-sidenav li {
+#menu_dropdown_settings li, #menu_dropdown_champs li, #menu_dropdown_contact li, #collapsible-sidenav li {
   border-radius: 5px;
   margin: 2px 0 2px 2px;
   white-space: nowrap;
   width: 98% !important;
 }
-#menu_dropdown_champs li:hover, #menu_dropdown_contact li:hover, #collapsible-sidenav li:hover {
+#menu_dropdown_settings li:hover, #menu_dropdown_champs li:hover, #menu_dropdown_contact li:hover, #collapsible-sidenav li:hover {
   background-color: #1565c0;
 }
 
-#menu_dropdown_champs, #menu_dropdown_contact {
+ul.sidenav ul.collapsible-accordion .collapsible-body ul {
+  margin: 2px 0 2px 0;
+}
+ul.sidenav ul.collapsible-accordion .collapsible-body ul li.li_in_line {
+  margin: 3px 4px 3px 4px !important;
+}
+
+#menu_dropdown_settings, #menu_dropdown_champs, #menu_dropdown_contact {
   padding: 2px 2px;
   border-radius: 5px;
 }
@@ -1475,6 +1482,16 @@ blockquote {
 }
 #divMailSent a {
   margin-top: 0;
+}
+
+.container.logs {
+  width: 95% !important;
+}
+.container.logs p#logContent {
+  overflow: scroll;
+  white-space: unset;
+  font-family: "Lucida Console", Regular, serif;
+  font-size: 12px;
 }
 
 @media screen and (max-width: 1466px) {
