@@ -23,16 +23,12 @@ class BackOfficeSettingsController extends AbstractController
     public function index(): Response
     {
         $fileContent = '';
-        $hasError = false;
         try {
             $fileContent = str_replace("\n", "<br><br>", (new SplFileInfo(__DIR__ . $this->getParameter('log_file_path'), '', ''))->getContents());
         } catch (Exception $e) {
-            $hasError = true;
-            $this->addFlash("fail", "Les logs n'ont pas pu être récupérés");
         }
         return $this->render('backoffice/settings/logs.html.twig', [
             'logs' => $fileContent,
-            'hasError' => $hasError
         ]);
     }
 }
