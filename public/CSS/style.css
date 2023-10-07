@@ -829,6 +829,12 @@ table.rankingVirtualPoints td .chip .nom {
 .modal.modal-small .modal-gps a.btn.phone {
   margin-top: 0;
 }
+.modal.modal-small .modal-gps .complAdrDiv {
+  width: fit-content;
+  margin: 5px auto 0 auto;
+  padding: 4px;
+  max-width: 380px;
+}
 .modal.modal-small .modal-gps p.complAdr {
   margin: 0;
 }

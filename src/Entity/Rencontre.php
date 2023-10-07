@@ -731,7 +731,7 @@ class Rencontre
      */
     public function setVilleHost(?string $villeHost): self
     {
-        $this->villeHost = $villeHost;
+        $this->villeHost = mb_convert_case($villeHost, MB_CASE_TITLE, "UTF-8");
         return $this;
     }
 
@@ -883,7 +883,7 @@ class Rencontre
      */
     public function setComplementAdresse(?string $complementAdresse): self
     {
-        $this->complementAdresse = strlen(trim($complementAdresse)) ? trim(mb_convert_case($complementAdresse, MB_CASE_TITLE, "UTF-8")) : null;
+        $this->complementAdresse = strlen(trim($complementAdresse)) ? trim($complementAdresse) : null;
         return $this;
     }
 

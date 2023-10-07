@@ -145,7 +145,11 @@
                 {% endif %}
 
                 {% if complementAdresse %}
-                    <p class="complAdr adresse_{{ id }}">{{ complementAdresse }}</p>
+                    <div class="card grey lighten-3 z-depth-0 complAdrDiv blue-text">
+                        <p class="complAdr adresse_{{ id }}">
+                            <i class="material-icons text-lighten-1">info_outline</i><br>{{ complementAdresse }}
+                        </p>
+                    </div>
                 {% endif %}
                 <br>
             {% else %}
