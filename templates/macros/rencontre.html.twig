@@ -25,22 +25,11 @@
                         {% endif %}
 
                         <table class="striped centered responsive-table">
-                            <thead>
-                            <tr>
-                                <th>Journée</th>
-                                <th>Date</th>
-                                <th>Adversaire</th>
-                                <th>Lieu</th>
-                                <th>Salle hôte dispo</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-
                             <tbody>
                             {% for rencontre in matches %}
                                 <tr>
                                     <td>
-                                        <b>{{ loop.index }}</b>
+                                        <b>J{{ loop.index }}</b>
                                     </td>
                                     <td>
                                         {% if rencontre.undefined %}
@@ -77,9 +66,9 @@
                                             {% endif %}
                                         {% endif %}
                                     </td>
-                                    <td style="height: 59px; padding-top: 8px;">
+                                    <td style="max-width: 160px; white-space: normal; padding-top: 8px;">
                                         {% if not rencontre.exempt %}
-                                            {% if not rencontre.villeHost %} <i class="green-text material-icons">check</i>
+                                            {% if not rencontre.villeHost %} Hôte <i class="green-text material-icons">where_to_vote</i>
                                             {% else %} <span class="red-text"><i class="material-icons">wrong_location</i>(à {{ rencontre.villeHost }})</span>
                                             {% endif %}
                                         {% endif %}

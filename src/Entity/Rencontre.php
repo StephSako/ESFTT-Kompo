@@ -731,7 +731,7 @@ class Rencontre
      */
     public function setVilleHost(?string $villeHost): self
     {
-        $this->villeHost = mb_convert_case($villeHost, MB_CASE_TITLE, "UTF-8");
+        $this->villeHost = $villeHost;
         return $this;
     }
 

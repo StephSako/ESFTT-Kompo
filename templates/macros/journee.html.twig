@@ -1,19 +1,11 @@
 {% macro table(journees) %}
     {% if journees|length %}
         <table class="striped centered">
-            <thead>
-            <tr>
-                <th>Journée n°</th>
-                <th>Date</th>
-                <th></th>
-            </tr>
-            </thead>
-
             <tbody>
             {% for journee in journees %}
                 <tr>
                     <td>
-                        <b>{{ loop.index }}</b>
+                        <b>J{{ loop.index }}</b>
                     </td>
                     <td>
                         {% if journee.undefined %} <span class="red-text">Date indéfinie</span>
