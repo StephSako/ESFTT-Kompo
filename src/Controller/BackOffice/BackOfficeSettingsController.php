@@ -30,7 +30,6 @@ class BackOfficeSettingsController extends AbstractController
             $hasError = true;
             $this->addFlash("fail", "Les logs n'ont pas pu être récupérés");
         }
-        dump($fileContent);
         return $this->render('backoffice/settings/logs.html.twig', [
             'logs' => $fileContent,
             'hasError' => $hasError
