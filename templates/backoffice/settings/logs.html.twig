@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les logs{% endblock %}
+{% import 'macros/flash.html.twig' as _flash %}
+
+{% block body %}
+    <header>
+        {% include("components/navbar_backoffice.html.twig") %}
+    </header>
+
+    <div class="container">
+        <div class="card-panel center-align white-text title_journee">
+            <h4>Les logs</h4>
+        </div>
+    </div>
+
+    <div class="container {% if logs %} logs{% endif %}">
+
+        {% for message in app.flashes('fail') %}
+            {{ _flash.message(message, 'red') }}
+        {% endfor %}
+
+        {% if not hasError %}
+            <div class="card-panel{% if not logs %} center{% endif %}">
+                {% if logs %}
+                    <p id="logContent">{{ logs | raw }}</p>
+                {% else %}
+                    <p><i>Les logs sont vides</i></p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

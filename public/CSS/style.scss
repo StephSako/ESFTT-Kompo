@@ -326,7 +326,7 @@ i.iconPlace {
   height: auto !important;
 }
 
-#menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
+#menu_dropdown_settings, #menu_dropdown_champs, #menu_dropdown_contact, #collapsible-sidenav {
   width: auto !important;
   background-color: #032d56;
 
@@ -342,7 +342,15 @@ i.iconPlace {
   }
 }
 
-#menu_dropdown_champs, #menu_dropdown_contact {
+ul.sidenav ul.collapsible-accordion .collapsible-body ul {
+  margin: 2px 0 2px 0;
+
+  & li.li_in_line {
+    margin: 3px 4px 3px 4px !important;
+  }
+}
+
+#menu_dropdown_settings, #menu_dropdown_champs, #menu_dropdown_contact {
   padding: 2px 2px;
   border-radius: 5px;
 }
@@ -1758,6 +1766,17 @@ blockquote {
 
   a {
     margin-top: 0;
+  }
+}
+
+.container.logs {
+  width: 95% !important;
+
+  p#logContent {
+    overflow: scroll;
+    white-space: unset;
+    font-family: "Lucida Console", Regular, serif;
+    font-size: 12px;
   }
 }
 
