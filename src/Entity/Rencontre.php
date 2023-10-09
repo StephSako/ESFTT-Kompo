@@ -158,6 +158,17 @@ class Rencontre
      *
      * @Assert\Length(
      *      max = 300,
+     *      maxMessage = "L'alerte doit contenir au maximum {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(name="consigne", nullable=true, type="string", length=200)
+     */
+    private $consigne;
+    /**
+     * @var string|null
+     *
+     * @Assert\Length(
+     *      max = 300,
      *      maxMessage = "L'adresse doit contenir au maximum {{ limit }} caractères"
      * )
      *
@@ -675,7 +686,9 @@ class Rencontre
 
             $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
-            $message .= '.' . $br . 'A ' . strtok($date, ' ') . ' !';
+            $message .= '.' . $br;
+            if ($this->getConsigne()) $message .= $this->getConsigne() . '.' . $br;
+            $message .= 'A ' . strtok($date, ' ') . ' !';
         }
 
         return $message;
@@ -731,7 +744,7 @@ class Rencontre
      */
     public function setVilleHost(?string $villeHost): self
     {
-        $this->villeHost = mb_convert_case($villeHost, MB_CASE_TITLE, "UTF-8");
+        $this->villeHost = $villeHost;
         return $this;
     }
 
@@ -750,6 +763,24 @@ class Rencontre
     public function setAdversaire(?string $adversaire): self
     {
         $this->adversaire = ($adversaire == null ? null : mb_convert_case($adversaire, MB_CASE_TITLE, "UTF-8"));
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getConsigne(): ?string
+    {
+        return $this->consigne;
+    }
+
+    /**
+     * @param string|null $consigne
+     * @return Rencontre
+     */
+    public function setConsigne(?string $consigne): Rencontre
+    {
+        $this->consigne = $consigne;
         return $this;
     }
 

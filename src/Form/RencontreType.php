@@ -70,6 +70,12 @@ class RencontreType extends AbstractType
                         'maxlength' => 200,
                         'placeholder' => 'Pas de délocalisation'
                     ]
+                ])->add('consigne', TextType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 300
+                    ]
                 ])->add('adresse', TextareaType::class, [
                     'label' => false,
                     'required' => false,

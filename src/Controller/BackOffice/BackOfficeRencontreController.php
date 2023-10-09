@@ -77,6 +77,7 @@ class BackOfficeRencontreController extends AbstractController
                     if ($rencontre->isExempt()) {
                         $rencontre->setAdversaire(null);
                         $rencontre->setVilleHost(null);
+                        $rencontre->setConsigne(null);
                         $rencontre->setReporte(false);
                         $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                         $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));

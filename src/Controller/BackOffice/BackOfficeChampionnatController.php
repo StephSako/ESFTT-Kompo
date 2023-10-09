@@ -200,6 +200,7 @@ class BackOfficeChampionnatController extends AbstractController
                                 ->setIdEquipe($equipe)
                                 ->setDomicile(null)
                                 ->setVilleHost(false)
+                                ->setConsigne(null)
                                 ->setDateReport($journee->getDateJournee())
                                 ->setReporte(false)
                                 ->setAdversaire(null)

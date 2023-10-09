@@ -235,6 +235,13 @@
                                 </span>
                             {% endif %}
 
+                            {% if compo.consigne %}
+                                <span style="margin-top: 0; margin-bottom: 10px; padding-left: 4px; padding-right: 4px;" class="col s12 orange-text">
+                                    <i class="material-icons">warning</i>
+                                    <b>{{ compo.consigne }}</b>
+                                </span>
+                            {% endif %}
+
                             <div class="col {% if not compo.exempt %}s4 m2{% else %}s3 m4{% endif %}" style="padding-right: 0">
                                 <h5>
                                     <span class="white-text divisionBubble">{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}{{ compo.idEquipe.idDivision.shortName }}{% if compo.idEquipe.idDivision.shortName | length == 1 %}&thinsp;{% endif %}</span><br>
