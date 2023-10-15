@@ -43,10 +43,10 @@ security:
     - { path: ^/journee/empty, roles: [ ROLE_CAPITAINE, ROLE_ADMIN ] }
     - { path: ^/journee, roles: ROLE_LOISIR }
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/aide, roles: IS_AUTHENTICATED_FULLY }
-    - { path: ^/contacter, roles: IS_AUTHENTICATED_FULLY }
-    - { path: ^/informations, roles: IS_AUTHENTICATED_FULLY }
-    - { path: ^/tournois, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/aide, roles: IS_AUTHENTICATED_REMEMBERED }
+    - { path: ^/contacter, roles: IS_AUTHENTICATED_REMEMBERED }
+    - { path: ^/informations, roles: IS_AUTHENTICATED_REMEMBERED }
+    - { path: ^/tournois, roles: IS_AUTHENTICATED_REMEMBERED }
 
   encoders:
     App\Entity\Competiteur:
