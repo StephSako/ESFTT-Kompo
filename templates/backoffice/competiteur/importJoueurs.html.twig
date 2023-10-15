@@ -54,7 +54,7 @@
 
                         <p>Pour que le processus se déroule sans encombre, le document doit respecter ce template :</p>
                         <div style="display: flex; justify-content: center;">
-                            <a href='{{ path('backoffice.competiteurs.download.template.import.excel') }}' style="margin-top: 0" class="blue btn"><i class="material-icons">download</i> Template d'exemple</a>
+                            <a href='{{ path('backoffice.competiteur.download.template.import.excel') }}' style="margin-top: 0" class="blue btn"><i class="material-icons">download</i> Template d'exemple</a>
                         </div>
 
                         <p><b>Etape 2</b> Une fois le document lu, la liste des joueurs vous sera affichée.</p>
@@ -74,7 +74,7 @@
                 </div>
             </div>
 
-            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteurs.import.file.save') }}" method="POST" enctype="multipart/form-data">
+            <form id="inputFileJoueurs" action="{{ path('backoffice.competiteur.import.file.save') }}" method="POST" enctype="multipart/form-data">
                 <div class="row" style="margin-bottom: 0;">
                     <div class="file-field input-field col s12 m10 offset-m1 l6 offset-l3">
                         <div class="btn blue" id="btnFileInputExcelDocument">

@@ -2,7 +2,7 @@ function getDetailsTableauxTournoi(idTournoi) {
     if (!alreadyCalledTournois.includes(idTournoi)) {
         alreadyCalledTournois.push(idTournoi);
         $.ajax({
-            url: '/liste/tableaux/tournois',
+            url: '/tournois/liste/tableaux',
             type: 'POST',
             data: {
                 id: idTournoi

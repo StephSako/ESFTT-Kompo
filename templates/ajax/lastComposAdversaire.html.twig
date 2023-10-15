@@ -29,7 +29,7 @@
                                             <span class="truncate">{{ nomFormatted }}</span>
                                         </td>
                                         <td>{% if donnees.points %}
-                                                <span class="new badge light-blue darken-3" data-badge-caption="">{{ donnees.points }}</span>
+                                                <span class="reset pastille light-blue darken-3">{{ donnees.points }}</span>
                                             {% else %}
                                                 <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help</i>
                                             {% endif %}
@@ -44,7 +44,7 @@
                             {% for id, donnees in journee.doubles %}
                                 <tr>
                                     <td style="max-width: 50px" colspan="2">
-                                    <span class="new badge {{ 'isBinomeWO' in donnees|keys ? 'blue lighten-2' : 'light-blue darken-3' }}" data-badge-caption="">
+                                    <span class="reset pastille {{ 'isBinomeWO' in donnees|keys ? 'blue lighten-2' : 'light-blue darken-3' }}">
                                         {% if 'isBinomeWO' not in donnees|keys %}
                                             {% for points in donnees.binomeAdversaire %}
                                                 {% if points %}

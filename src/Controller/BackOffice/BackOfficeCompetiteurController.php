@@ -721,7 +721,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/export-excel", name="backoffice.competiteurs.export.excel")
+     * @Route("/backoffice/competiteur/export-excel", name="backoffice.competiteur.export.excel")
      * @return Response
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -790,7 +790,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * Télécharge le fichier template pour l'import de joueurs par fichier Excel
-     * @Route("/backoffice/competiteurs/download/template-import-excel", name="backoffice.competiteurs.download.template.import.excel")
+     * @Route("/backoffice/competiteurs/download/template-import-excel", name="backoffice.competiteur.download.template.import.excel")
      * @return Response
      */
     public function downloadTemplateFile(): Response
@@ -806,7 +806,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/import-file", name="backoffice.competiteurs.import.file")
+     * @Route("/backoffice/competiteur/import-file", name="backoffice.competiteur.import.file")
      * @return Response
      */
     public function importCompetiteursExcel(): Response
@@ -816,7 +816,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * Appelée depuis un appel Ajax et renvoie un template sous forme d'un tableau listant les joueurs récupérés depuis un fichier Excel
-     * @Route("/backoffice/competiteurs/import-file/read", name="backoffice.competiteurs.import.file.read", methods={"POST"})
+     * @Route("/backoffice/competiteur/import-file/read", name="backoffice.competiteur.import.file.read", methods={"POST"})
      * @param Request $request
      * @param UtilController $utilController
      * @return JsonResponse
@@ -1082,7 +1082,7 @@ class BackOfficeCompetiteurController extends AbstractController
 
     /**
      * Inscrit les joueurs depuis un fichier Excel importé
-     * @Route("/backoffice/competiteurs/import-file/save", name="backoffice.competiteurs.import.file.save", methods={"POST"})
+     * @Route("/backoffice/competiteur/import-file/save", name="backoffice.competiteur.import.file.save", methods={"POST"})
      * @param Request $request
      * @param ContactController $contactController
      * @param UtilController $utilController
@@ -1114,18 +1114,18 @@ class BackOfficeCompetiteurController extends AbstractController
                 }
             }
 
-            $this->addFlash('success', 'Joueurs inscrits par importation');
+            $this->addFlash('success', 'Joueurs inscrits par importation Excel');
             if ($nbErrorMail) $this->addFlash('fail', $nbErrorMail . ($nbErrorMail == 1 ? " mail n'a pas été envoyé" : " mails n'ont pas été envoyés"));
-            else $this->addFlash('success', 'Tous les joueurs ont reçu le mail de bienvenu');
+            else $this->addFlash('success', 'Tous les joueurs ont reçu le mail de bienvenue');
             return $this->redirectToRoute('backoffice.competiteurs');
         } else {
             $this->addFlash('fail', 'Il y a des erreurs dans le document importé, réessayez');
-            return $this->redirectToRoute('backoffice.competiteurs.import.file');
+            return $this->redirectToRoute('backoffice.competiteur.import.file');
         }
     }
 
     /**
-     * @Route("/backoffice/competiteurs/mail/edit/{type}", name="backoffice.mail.edit")
+     * @Route("/backoffice/competiteur/mail/edit/{type}", name="backoffice.mail.edit")
      * @param Request $request
      * @param string $type
      * @return Response
@@ -1181,7 +1181,7 @@ class BackOfficeCompetiteurController extends AbstractController
     }
 
     /**
-     * @Route("/backoffice/competiteurs/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
+     * @Route("/backoffice/competiteur/mail/certif-medic-perim", name="backoffice.alert.certif-medic-perim")
      * @param ContactController $contactController
      * @return Response
      */

@@ -555,6 +555,9 @@ button.renew_certif_table i {
 .tabs .tab a {
   color: black;
 }
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+  background-color: rgba(21, 101, 192, 0.2);
+}
 .tabs .tab a:hover {
   color: black;
 }

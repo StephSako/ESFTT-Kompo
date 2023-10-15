@@ -227,7 +227,7 @@ class FooterController extends AbstractController
 
     /**
      * Renvoie la liste des tournois selon les paramètres envoyés
-     * @Route("/liste/tournois", name="tournois", methods={"GET"})
+     * @Route("/tournois/liste", name="tournois.liste", methods={"GET"})
      * @return JsonResponse
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -276,7 +276,7 @@ class FooterController extends AbstractController
 
     /**
      * Renvoie la liste des tableaux d'un tournoi selon l'id du tournoi passé en paramètre
-     * @Route("/liste/tableaux/tournois", name="tournois.tableaux", methods={"POST"})
+     * @Route("/tournois/liste/tableaux", name="tournois.liste.tableaux", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      * @throws ClientExceptionInterface

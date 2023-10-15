@@ -71,7 +71,7 @@
             {% endif %}
         </div>
     </div>
-    <div id="{{ nomModal }}" class="modal modal-fixed-footer">
+    <div id="{{ nomModal }}" class="modal modal-medium modal-fixed-footer">
         <div class="modal-content" style="padding: 10px;">
             {{ _self.recapitulatif(allDisponibilites, nomModal, type) }}
         </div>
@@ -117,7 +117,7 @@
                     <tr>
                         <th>
                             {% if not (disponibilites["dispos"]|length == 1 and 'Sans équipe' in disponibilites["dispos"]|keys) %}
-                                <h6 class="hide-on-med-and-down">{{ nomEquipe }}</h6>
+                                <h6 class="hide-on-med-and-down"><b>{{ nomEquipe }}</b></h6>
                             {% endif %}
                         </th>
 
@@ -131,7 +131,7 @@
                     {% for disponibilite in disponibilitesEquipes %}
                         <tr>
                             <td style="padding-top: 5px; padding-bottom: 5px;">
-                                <div class="chip" style="margin-right: 0; margin-bottom: 0;">
+                                <div class="chip" style="margin-right: 0; margin-bottom: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                                     <img src="{{ asset(disponibilite.avatar ? 'images/profile_pictures/' ~ disponibilite.avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                                     <span {% if disponibilite.idCompetiteur == app.user.idCompetiteur %}class="bold light_blue"{% endif %}>
                                         {{ disponibilite.nom }} {{ disponibilite.prenom }} {% if disponibilite.licence is null %}<i class="material-icons red-text tooltipped" style="vertical-align: middle; margin-bottom: 3px;" data-position="top" data-tooltip="Licence indéfinie">warning_amber</i>{% endif %}

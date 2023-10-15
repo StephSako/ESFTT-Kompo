@@ -1,6 +1,6 @@
 function importJoueursFromExcel(file) {
     $.ajax({
-        url: '/backoffice/competiteurs/import-file/read',
+        url: '/backoffice/competiteur/import-file/read',
         type: 'POST',
         data: file,
         processData: false,

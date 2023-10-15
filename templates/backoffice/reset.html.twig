@@ -39,7 +39,7 @@
                         </span>
                     </p>
 
-                    <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
+                    <form class="center" action="{{ path('backoffice.settings.update') }}" method="POST" onsubmit="return confirm('Mettre à jour les joueurs ?')">
                         {% if joueursIssued.nbJoueursCritFed > 0 %}
                             <p style="margin-top: 10px; margin-bottom: 10px;">
                                 <label>
@@ -199,7 +199,7 @@
 
                                 <div style="margin-top: 25px; margin-bottom: 35px;"></div>
 
-                                <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
+                                <form class="center" action="{{ path('backoffice.settings.update') }}" method="POST" onsubmit="return preRentreeResetPhasePreloader('{{ nomChampionnat }}')">
                                     <input type="hidden" name="preRentreeResetChampionnats" value="1">
                                     <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
                                     <button id="PreRentreeBtnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Lancer la pré-phase</button>
@@ -456,7 +456,7 @@
                                     {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
                                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
-                                        <form class="center" action="{{ path('backoffice.reset.phase') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
+                                        <form class="center" action="{{ path('backoffice.settings.update') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">
                                             <input type="hidden" name="resetChampionnats" value="1">
                                             <input type="hidden" name="idChampionnat" value="{{ data.idChampionnat }}">
                                             <button id="btnResetPhase{{ nomChampionnat }}" class='btn waves-effect green btn_gestion' style="margin-bottom: 10px">Mettre à jour</button>

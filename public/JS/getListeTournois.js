@@ -1,6 +1,6 @@
 function getListeTournois() {
     $.ajax({
-        url: '/liste/tournois',
+        url: '/tournois/liste',
         type: 'GET',
         dataType: 'json',
         success: (responseTemplate) => {

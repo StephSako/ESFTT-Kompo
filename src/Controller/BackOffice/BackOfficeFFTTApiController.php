@@ -83,7 +83,7 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param ContactController $contactController
      * @param UtilController $utilController
      * @return Response
-     * @Route("/backoffice/update", name="backoffice.reset.phase")
+     * @Route("/backoffice/settings/update", name="backoffice.settings.update")
      */
     public function index(Request $request, ContactController $contactController, UtilController $utilController): Response
     {
@@ -519,7 +519,7 @@ class BackOfficeFFTTApiController extends AbstractController
                 }
 
                 $this->addFlash('success', 'Joueurs mis à jour');
-                return $this->redirectToRoute('backoffice.reset.phase');
+                return $this->redirectToRoute('backoffice.settings.update');
             } else if ($request->request->get('idChampionnat')) {
                 /** Mise à jour d'un championnat (pré-phase ou phase) */
                 $idChampionnat = intval($request->request->get('idChampionnat'));
@@ -724,7 +724,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     /** On reset tous les last_update des entités liées au championnat */
                     $this->championnatRepository->resetLastUpdateForChampEntities($idChampionnat);
 
-                    return $this->redirectToRoute('backoffice.reset.phase');
+                    return $this->redirectToRoute('backoffice.settings.update');
                 } else $this->addFlash('fail', 'Championnat inconnu !');
             }
         } catch (Exception $e) {

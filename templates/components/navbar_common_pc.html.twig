@@ -1,6 +1,6 @@
 {% if app.user %}
     <ul class="right_items_navbar right">
-        <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/compte' %}active blue darken-3{% endif %}">
+        <li class="waves-effect li_in_line{% if app.request.getPathInfo starts with '/compte' %} active blue darken-3{% endif %}">
             <a class="white-text" href="{{ path('account', app.request.get('backoffice') == 'true' or app.request.getPathInfo starts with '/backoffice' ? {backoffice: 'true'} : {}) }}">
                 <div class="chip chip-menu">
                     {% if app.user.avatar %}
@@ -13,12 +13,12 @@
             </a>
         </li>
 
-        <li class="li_in_line waves-effect {% if app.request.getPathInfo starts with '/contacter' %}active blue darken-3{% endif %}">
+        <li class="li_in_line waves-effect{% if app.request.getPathInfo starts with '/contacter' %} active blue darken-3{% endif %}">
             <a class="white-text" href="{{ path('contact', app.request.get('backoffice') == 'true' or app.request.getPathInfo starts with '/backoffice' ? {backoffice: 'true'} : {}) }}">Contacter</a>
         </li>
 
         {% if (app.user.capitaine or app.user.admin) %}
-            <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice' %}active blue darken-3{% endif %}">
+            <li class="waves-effect li_in_line{% if app.request.getPathInfo starts with '/backoffice' %} active blue darken-3{% endif %}">
                 <a class="white-text" href="{{ path('backoffice') }}">Gestion</a>
             </li>
         {% endif %}
