@@ -997,8 +997,12 @@ table.rankingVirtualPoints {
         max-width: 380px;
       }
 
-      p.complAdr {
+      .complAdr {
         margin: 0;
+
+        p {
+          margin: 4px 0;
+        }
       }
 
       .telephoneDiv {
@@ -1015,11 +1019,7 @@ table.rankingVirtualPoints {
 
 .btn-gps {
   p.adr {
-    margin: 0;
-  }
-
-  p.adr {
-    margin-top: 4px;
+    margin: 8px 0 10px 0;
   }
 
   .row_btns {

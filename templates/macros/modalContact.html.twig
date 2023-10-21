@@ -145,10 +145,11 @@
                 {% endif %}
 
                 {% if complementAdresse %}
-                    <div class="card grey lighten-3 z-depth-0 complAdrDiv blue-text">
-                        <p class="complAdr adresse_{{ id }}">
-                            <i class="material-icons text-lighten-1">info_outline</i><br>{{ complementAdresse }}
-                        </p>
+                    <div class="card grey lighten-3 z-depth-0 complAdrDiv">
+                        <div class="complAdr adresse_{{ id }}">
+                            <i class="material-icons text-lighten-1 blue-text">info_outline</i><br>
+                            <p>{{ complementAdresse }}</p>
+                        </div>
                     </div>
                 {% endif %}
                 <br>
@@ -158,7 +159,6 @@
 
             <h6><i class="material-icons green-text">contact_phone</i> Numéro de téléphone</h6>
             {% if telephone %}
-                <p style="margin-top: 2px;" class="complAdr hide-on-small-only"><i>Rendez-vous sur smartphone pour contacter</i></p>
                 <div class="valign-wrapper telephoneDiv">
                     <div>
                         <span>{{ telephone | split('', 2) | join(' ') }}</span>
@@ -182,7 +182,7 @@
 
             <h6><i class="material-icons blue-text lighten-3">language</i> Site Internet</h6>
             {% if siteWeb %}
-                <a href="{{ siteWeb }}">{{ siteWeb }}</a>
+                <a href="{{ siteWeb }}" target="_blank">{{ siteWeb }}</a>
             {% else %}
                 <p style="margin-top: 2px;"><i>Non fourni par l'adversaire</i></p>
             {% endif %}

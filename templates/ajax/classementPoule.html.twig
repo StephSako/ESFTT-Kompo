@@ -1,21 +1,21 @@
 {% if erreur %}
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
-    <h6><b>Classement de la poule - {{ ourTeam }}</b></h6>
+    <h6><b>{{ equipe.division }} - Poule {{ equipe.poule }} - {{ equipe.nom }}</b></h6>
     {% if classementPoule|length > 0 %}
         <table class="striped classementPoule">
-            {% for equipe in classementPoule %}
+            {% for equipeClassement in classementPoule %}
                 <tr>
                     <td style="max-width: 45px">
-                        {% if equipe.classement %}
-                            <span class="badge light-blue darken-2 white-text">{{ equipe.classement }}</span>
+                        {% if equipeClassement.classement %}
+                            <span class="badge light-blue darken-2 white-text">{{ equipeClassement.classement }}</span>
                         {% endif %}
                     </td>
-                    <td class="{{ equipe.isOurClub }}" style="max-width: 160px; padding-left: 10px; font-size: 15px;">
-                        <span class="truncate">{{ equipe.nom }}</span>
+                    <td class="{{ equipeClassement.isOurClub }}" style="max-width: 160px; padding-left: 10px; font-size: 15px;">
+                        <span class="truncate">{{ equipeClassement.nom }}</span>
                     </td>
                     <td>
-                        <span class="pastille reset virtualPoints truncate">{{ equipe.points }} pts</span>
+                        <span class="pastille reset virtualPoints truncate">{{ equipeClassement.points }} pts</span>
                     </td>
                 </tr>
             {% endfor %}

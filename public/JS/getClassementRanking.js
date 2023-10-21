@@ -1,11 +1,13 @@
-function getClassementPoule(lienDivision, numeroEquipe) {
+function getClassementPoule(lienDivision, numeroEquipe, division, poule) {
     if (!alreadyCalledClassementPoule.includes(numeroEquipe)) {
         alreadyCalledClassementPoule.push(numeroEquipe);
         $.ajax({
             url: '/journee/classement-poule',
             type: 'POST',
             data: {
-                lienDivision: lienDivision /** Propriété d'Equipe pour récupérer le classement de la poule */
+                lienDivision: lienDivision, /** Propriété d'Equipe pour récupérer le classement de la poule */
+                division: division,
+                poule: poule
             },
             dataType: 'json',
             success: (responseTemplate) => {

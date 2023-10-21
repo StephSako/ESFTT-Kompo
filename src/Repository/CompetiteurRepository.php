@@ -657,7 +657,7 @@ class CompetiteurRepository extends ServiceEntityRepository
     }
 
     /**
-     * Liste des annniversaires
+     * Liste des annniversaires à venir
      * @return array
      * @throws Exception
      */
@@ -681,7 +681,7 @@ class CompetiteurRepository extends ServiceEntityRepository
         }, $query);
 
         $query = array_filter($query, function ($joueur) {
-            return in_array((int)(new DateTime())->diff($joueur['dateNaissanceNextYear'])->format('%R%a'), range(0, 30));
+            return in_array((int)(new DateTime())->diff($joueur['dateNaissanceNextYear'])->format('%R%a'), range(0, 15));
         });
 
         usort($query, function ($j1, $j2) {

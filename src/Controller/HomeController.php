@@ -912,7 +912,7 @@ class HomeController extends AbstractController
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementPoule = [];
         $erreur = null;
-        $ourTeam = null;
+        $equipe = ['division' => $request->get('division'), 'poule' => $request->get('poule')];
 
         try {
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
@@ -921,26 +921,28 @@ class HomeController extends AbstractController
             $points = null;
             $classement = 0;
 
-            foreach ($classementPouleAPI as $equipe) {
-                if ($points != $equipe->getPoints()) $classement++;
-                if (!$ourTeam) $ourTeam = str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8") : null;
+            foreach ($classementPouleAPI as $equipeClassement) {
+                if ($points != $equipeClassement->getPoints()) $classement++;
+                if (!array_key_exists('nom', $equipe) || !$equipe['nom']) {
+                    $equipe['nom'] = str_contains(mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_TITLE, "UTF-8") : null;
+                }
 
                 $classementPoule[] = [
-                    'nom' => mb_convert_case($equipe->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
-                    'points' => $equipe->getPoints(),
-                    'classement' => $points != $equipe->getPoints() ? $classement : null,
-                    'isOurClub' => str_contains(mb_convert_case($equipe->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? 'bold' : null
+                    'nom' => mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
+                    'points' => $equipeClassement->getPoints(),
+                    'classement' => $points != $equipeClassement->getPoints() ? $classement : null,
+                    'isOurClub' => str_contains(mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? 'bold' : null
                 ];
-                $points = $equipe->getPoints();
+                $points = $equipeClassement->getPoints();
             }
-        } catch (Exception $exception) {
+        } catch (Exception $e) {
             $erreur = 'Classement de la poule indisponible';
         }
 
         return new JsonResponse($this->render('ajax/classementPoule.html.twig', [
             'classementPoule' => $classementPoule,
             'erreur' => $erreur,
-            'ourTeam' => $ourTeam
+            'equipe' => $equipe
         ])->getContent());
     }
 }

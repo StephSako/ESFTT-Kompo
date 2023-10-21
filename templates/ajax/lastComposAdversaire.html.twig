@@ -1,13 +1,13 @@
 {% if erreur %}
     <p class="pastille red white-text">{{ erreur }}</p>
 {% else %}
-    <h6><b>Joueurs alignés par {{ nomAdversaire }}</b></h6>
+    <h6><b>Compos et résultats - {{ nomAdversaire }}</b></h6>
 
     {% if journees|length > 0 %}
-        <p style="max-width: 375px; margin-top: 15px;" class="pastille reset blue lighten-2">Les points <b>mensuels</b> sont présentés ci-dessous</p>
+        <p style="max-width: 375px; margin-top: 15px;" class="pastille reset blue lighten-1">Points <b>mensuels</b> présentés</p>
         {% for journee in journees %}
             {% if journee.exempt %}
-                <p style="margin-top: 30px; margin-bottom: 8px"><span class="pastille grey darken-1 reset"><b>J{{ loop.index }} :</b> Exemptée</span></p>
+                <p style="margin-top: 25px; margin-bottom: 8px"><span class="pastille grey darken-1 reset"><b>J{{ loop.index }} :</b> Exemptée</span></p>
             {% else %}
                 <p style="margin-top: 30px; margin-bottom: 8px">
                     <i style="margin-right: 4px" class="material-icons">{% if journee.domicile %}home{% else %}directions_car{% endif %}</i>
