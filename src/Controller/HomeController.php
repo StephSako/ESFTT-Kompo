@@ -858,6 +858,19 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Renvoie un template de l'historique des matches du compétiteur actif
+     * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
+     */
+    public function getHistoMatchesTemplate(Request $request): JsonResponse
+    {
+        dump($this->get('session')->get('histoMatches'));
+        return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
+            'matches' => $this->get('session')->get('histoMatches'),
+            'erreur' => 'Erreur',
+        ])->getContent());
+    }
+
+    /**
      * Renvoie un template des points virtuels mensuels de l'utilisateur actif avec un historique sur les 8 dernières phases
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
      * @return JsonResponse
@@ -884,6 +897,9 @@ class HomeController extends AbstractController
                 $annees = array_map(function ($histo) {
                     return $histo->getAnneeFin();
                 }, $historique);
+
+                // Cache pour l'historique des matches
+                $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches()); // TODO
             } catch (Exception $e) {
                 $erreur = 'Points virtuels indisponibles';
                 $virtualPointsProgression = 0.0;

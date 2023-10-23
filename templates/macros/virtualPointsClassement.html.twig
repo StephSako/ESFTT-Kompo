@@ -1,9 +1,13 @@
-{% macro labelVirtualPoints(tooltipPosition, id) %}
+{% macro labelVirtualPoints(id) %}
     <div class="card-panel bottom_0 virtualPointsCard">
         <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">trending_up</i></a></span>
+            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">timeline</i></a></span>
             <h6 class="lobster_2"><b id="title_points_virtuels">Points virtuels</b></h6>
-            <span></span>
+            {% if app.user.competiteur %}
+                <span style="margin-right: 6px"><a onclick="getHistoMatches()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#histoMatches"><i class="material-icons">format_list_bulleted</i></a></span>
+            {% else %}
+                <span></span>
+            {% endif %}
         </div>
         <div class="preloader_personnal_virtual_rank" id="{{ id }}">
             <div class="preloader-wrapper active tiny">
@@ -19,6 +23,38 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro modaleGeneralRanking() %}
+    <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-medium center">
+        <div class="modal-content">
+            <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
+                <i class="material-icons">refresh</i>
+            </a>
+            <h6><b>Progressions et points virtuels</b></h6>
+            <div id="rankingContent"></div>
+            <div id="rankingContentLoader" style="padding-right: 4px; padding-left: 4px;">
+                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
         </div>
     </div>
 {% endmacro %}

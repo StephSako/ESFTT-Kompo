@@ -1,0 +1,5 @@
+<div class="card">
+    {% for match in matches %}
+        <p>{{ match.adversaire }} {{ match.isVictoire ? 'V' : 'D' }} {{ match.pointsAdversaire }} {{ match.pointsGagnes }} {{ match.coefficient }}</p>
+    {% endfor %}
+</div>

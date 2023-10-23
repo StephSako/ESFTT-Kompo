@@ -13,6 +13,7 @@
         {% include("components/navbar.html.twig") %}
         <script type="text/javascript" src="{{ asset('JS/chart.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/getHistoMatches.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/lastComposAdversaire.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/getClassementRanking.min.js') }}"></script>
         <script type="text/javascript" defer src="{{ asset('JS/toggleCompoValidation.min.js') }}"></script>
@@ -63,6 +64,8 @@
                     </div>
                 </div>
             {% endif %}
+
+            <button onclick="getPersonnalClassementVirtuel({{ app.user.licence ?: 'null' }});">TEST</button>
 
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
             {# Certificat médical invalide à partir de mai #}
@@ -174,7 +177,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _virtualPointsClassement.labelVirtualPoints('top', 1) }}
+                {{ _virtualPointsClassement.labelVirtualPoints(1) }}
             </div>
 
             <div class="hide-on-large-only center-align">
@@ -529,7 +532,7 @@
         <div class="col l3 hide-on-med-and-down">
             <div class="center-align">
                 <div class="hide-on-med-and-down">
-                    {{ _virtualPointsClassement.labelVirtualPoints('left', 2) }}
+                    {{ _virtualPointsClassement.labelVirtualPoints(2) }}
                 </div>
                 {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
             </div>
@@ -544,36 +547,13 @@
         {% endif %}
 
         {# Modale des classement des points virtuels #}
-        <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-medium center">
-            <div class="modal-content">
-                <p hidden="hidden" class="test">TEST</p>
-                <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
-                    <i class="material-icons">refresh</i>
-                </a>
-                <h6><b>Progressions et points virtuels</b></h6>
-                <div id="rankingContent"></div>
-                <div id="rankingContentLoader" style="padding-right: 4px; padding-left: 4px;">
-                    <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                        <div class="preloader-wrapper small active">
-                            <div class="spinner-layer spinner-blue-only">
-                                <div class="circle-clipper left">
-                                    <div class="circle"></div>
-                                </div>
-                                <div class="gap-patch">
-                                    <div class="circle"></div>
-                                </div>
-                                <div class="circle-clipper right">
-                                    <div class="circle"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
-            </div>
-        </div>
+        {{ _virtualPointsClassement.modaleGeneralRanking() }}
+
+        {# Modale de l'historique des matches #}
+        {% if app.user.competiteur %}
+            {% import 'macros/modales/histoMatches.html.twig' as _histoMatches %}
+            {{ _histoMatches.histoMatches() }}
+        {% endif %}
     </div>
 
     <script type="text/javascript">

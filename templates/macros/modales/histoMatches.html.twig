@@ -1,0 +1,31 @@
+{% macro histoMatches() %}
+    <div id="histoMatches" class="modal modal-fixed-footer modal-medium center">
+        <div class="modal-content">
+            <a onclick="getHistoMatches(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_histoMatches" href="#histoMatches">
+                <i class="material-icons">refresh</i>
+            </a>
+            <h6><b>Historique des matches</b></h6>
+            <div id="histoMatchesContent"></div>
+            <div id="histoMatchesContentLoader" style="padding-right: 4px; padding-left: 4px;">
+                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+        </div>
+    </div>
+{% endmacro %}
