@@ -50,19 +50,29 @@ const DEFEAT_POINTS = [
 class PointCalculator
 {
 
-    public function getPointDefeat(float $joueurPoints, float $adversairePoints){
+    /**
+     * @param float $joueurPoints
+     * @param float $adversairePoints
+     * @return mixed|void
+     */
+    public function getPointDefeat(float $joueurPoints, float $adversairePoints) {
         $calculatedDiff = $joueurPoints - $adversairePoints;
-        foreach (DEFEAT_POINTS as $diff => $value){
-            if($calculatedDiff <= $diff){
+        foreach (DEFEAT_POINTS as $diff => $value) {
+            if ($calculatedDiff <= $diff) {
                 return $value;
             }
         }
     }
 
-    public function getPointVictory(float $joueurPoints, float $adversairePoints){
+    /**
+     * @param float $joueurPoints
+     * @param float $adversairePoints
+     * @return mixed|void
+     */
+    public function getPointVictory(float $joueurPoints, float $adversairePoints) {
         $calculatedDiff = $joueurPoints - $adversairePoints;
-        foreach ( VICTORY_POINTS as $diff => $value){
-            if($calculatedDiff <= $diff){
+        foreach ( VICTORY_POINTS as $diff => $value) {
+            if ($calculatedDiff <= $diff) {
                 return $value;
             }
         }

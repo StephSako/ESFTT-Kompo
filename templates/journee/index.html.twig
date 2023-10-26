@@ -65,8 +65,6 @@
                 </div>
             {% endif %}
 
-            <button onclick="getPersonnalClassementVirtuel({{ app.user.licence ?: 'null' }});">TEST</button>
-
             {% set userClassementLicenceIndefinies = not (app.user.licence and app.user.classementOfficiel) %}
             {# Certificat médical invalide à partir de mai #}
             {% set userCertifMedicalInvalid = app.user.certifMedicalInvalid.status and ("now" | date('m')) >= 4 %}
@@ -454,7 +452,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                                    <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">FERMER</a>
                                 </div>
                             </div>
                         {% endif %}
@@ -481,7 +479,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">OK</a>
+                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">FERMER</a>
                         </div>
                     </div>
 

@@ -860,12 +860,14 @@ class HomeController extends AbstractController
     /**
      * Renvoie un template de l'historique des matches du compétiteur actif
      * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
+     * @param Request $request
+     * @param UtilController $utilController
+     * @return JsonResponse
      */
-    public function getHistoMatchesTemplate(Request $request): JsonResponse
+    public function getHistoMatchesTemplate(Request $request, UtilController $utilController): JsonResponse
     {
-        dump($this->get('session')->get('histoMatches'));
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
-            'matches' => $this->get('session')->get('histoMatches'),
+            'matchesDates' => $utilController->formatHistoMatches($this->get('session')->get('histoMatches')),
             'erreur' => 'Erreur',
         ])->getContent());
     }
@@ -899,7 +901,8 @@ class HomeController extends AbstractController
                 }, $historique);
 
                 // Cache pour l'historique des matches
-                $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches()); // TODO
+                $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches());
+                $this->get('session')->set('pointsMensuels', $virtualPointsApi->getMensualPoints());
             } catch (Exception $e) {
                 $erreur = 'Points virtuels indisponibles';
                 $virtualPointsProgression = 0.0;

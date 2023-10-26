@@ -46,7 +46,7 @@ class FFTTApi
      * Dates de publication des matches (on part du principe qu'il n'y aura pas de matches officiels le 30 et 31 Décembre et que la publication aura lieu le 1er Janvier ...)
      * mois => jour
      **/
-    const DATES_PUBLICATION = [1 => 1, 2 => 6, 3 => 4, 4 => 6, 5 => 4, 6 => 10, 7 => self::PREMIER_JOUR_SAISON, 10 => 4, 11 => 3];
+    const DATES_PUBLICATION = [1 => 1, 2 => 6, 3 => 4, 4 => 6, 5 => 4, 6 => 10, 7 => self::PREMIER_JOUR_SAISON, 10 => 5, 11 => 6];
 
     public function __construct(string $id, string $password)
     {
@@ -562,13 +562,15 @@ class FFTTApi
                         ? $pointCalculator->getPointVictory($monthPoints, floatval($adversairePoints))
                         : $pointCalculator->getPointDefeat($monthPoints, floatval($adversairePoints));
                     $virtualMonthlyPointsWon += $points * $coeff;
+
                     $matches[] = new CalculatedUnvalidatedPartie(
                         $unvalidatedParty->getAdversaireNom() . ' ' . $unvalidatedParty->getAdversairePrenom(),
+                        $unvalidatedParty->isForfait(),
                         $unvalidatedParty->isVictoire(),
-                        $classementJoueur->getPoints(),
+                        $adversairePoints,
                         $points * $coeff,
-                        $unvalidatedParty->getDate()->format('dd/mm/yyyy'),
-                        $unvalidatedParty->getEpreuve(),
+                        $unvalidatedParty->getDate()->format('d/m/o'),
+                        str_replace('FED_', '', $unvalidatedParty->getEpreuve()),
                         $coeff
                     );
                 }
@@ -576,13 +578,14 @@ class FFTTApi
 
             $virtualMonthlyPoints = $monthPoints + $virtualMonthlyPointsWon;
             return new VirtualPoints(
+                $classement->getPointsMensuel(),
                 $virtualMonthlyPointsWon,
                 $virtualMonthlyPoints,
                 $virtualMonthlyPoints - $classement->getPointsDebutSaison(),
                 $matches
             );
         } catch (JoueurNotFound $e) {
-            return new VirtualPoints(0.0, $this->getJoueurDetailsByLicence($joueurId)->getPointsLicence(), 0.0, $matches);
+            return new VirtualPoints($classement->getPointsMensuel(), 0.0, $classement->getPointsLicence(), 0.0, $matches);
         }
     }
 

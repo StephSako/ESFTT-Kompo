@@ -11,14 +11,34 @@ class VirtualPoints
     private $seasonlyPointsWon;
     private $monthlyPointsWon;
     private $virtualPoints;
+    private $mensualPoints;
     private $matches;
 
-    public function __construct(float $monthlyPointsWon, float $virtualPoints, float $seasonlyPointsWon, array $matches)
+    public function __construct(float $mensualPoints, float $monthlyPointsWon, float $virtualPoints, float $seasonlyPointsWon, array $matches)
     {
         $this->monthlyPointsWon = $monthlyPointsWon;
         $this->virtualPoints = $virtualPoints;
         $this->seasonlyPointsWon = $seasonlyPointsWon;
+        $this->mensualPoints = $mensualPoints;
         $this->matches = $matches;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMensualPoints(): float
+    {
+        return $this->mensualPoints;
+    }
+
+    /**
+     * @param float $mensualPoints
+     * @return VirtualPoints
+     */
+    public function setMensualPoints(float $mensualPoints): VirtualPoints
+    {
+        $this->mensualPoints = $mensualPoints;
+        return $this;
     }
 
     /**

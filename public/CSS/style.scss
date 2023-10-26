@@ -935,17 +935,13 @@ table.rankingVirtualPoints {
     max-width: 100% !important;
 
     h5 {
-      margin-bottom: 4px;
+      margin-bottom: 10px;
     }
 
     & .card {
       border-radius: 10px;
       width: auto;
       margin: 5px 15px;
-
-      & p.red-text {
-        padding-top: 8px;
-      }
 
       & a {
         margin-top: 8px;
@@ -957,6 +953,79 @@ table.rankingVirtualPoints {
 
       & .row {
         margin: 10px 0 12px 0 !important;
+      }
+    }
+  }
+
+  &#histoMatches .modal-content {
+    padding: 2px;
+
+    h6 {
+      margin-top: 15px;
+    }
+
+    #histoMatchesContent {
+      margin-top: 18px;
+
+      .rencontre {
+        padding: 1px;
+        width: 90%;
+        margin: 10px auto 15px auto;
+
+        p {
+          margin: 5px auto;
+
+          &.date {
+            position: absolute;
+            top: -5px;
+            left: 0;
+            border-radius: 0 0 5px 0;
+          }
+
+          &.evolution {
+            position: absolute;
+            top: -1px;
+            right: 0;
+            border-radius: 0 0 0 5px;
+          }
+
+          &.epreuve {
+            margin-top: 30px;
+            width: 95%;
+            text-align: end;
+            font-size: 12px;
+          }
+
+          &.nomAdversaire {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .row {
+          margin: 0;
+
+          .col {
+            padding: 0;
+
+            &.finalPointsWon {
+              p {
+                padding-top: 4px;
+                border-top: 1px solid #646464;
+
+                &.coeff {
+                  font-size: 12px;
+                  padding-top: 6px;
+                }
+              }
+
+              &:last-child {
+                padding-right: 4px;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -1656,7 +1725,7 @@ span.field-icon {
   }
 }
 
-a.reload_ranking {
+a.reload_ranking, a.reload_histoMatches {
   position: absolute;
   right: 8px;
   top: 8px;
@@ -2016,8 +2085,14 @@ blockquote {
 }
 
 @media screen and (max-width: 850px) {
-  .modal.modal-small {
-    width: 96% !important;
+  .modal {
+    &.modal-small {
+      width: 96% !important;
+    }
+
+    &#histoMatches .modal-content #histoMatchesContent .rencontre {
+      width: 96%;
+    }
   }
 }
 
@@ -2193,7 +2268,7 @@ blockquote {
 }
 
 @media screen and (min-width: 351px) and (max-width: 430px) {
-  a.reload_ranking {
+  a.reload_ranking, a.reload_histoMatches {
     top: 6px;
     right: 6px;
   }
@@ -2278,7 +2353,7 @@ blockquote {
 }
 
 @media screen and (max-width: 275px) {
-  a.reload_ranking {
+  a.reload_ranking, a.reload_histoMatches {
     display: none;
   }
 }
