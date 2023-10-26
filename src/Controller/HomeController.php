@@ -656,13 +656,12 @@ class HomeController extends AbstractController
                 $journees[] = $journee;
             }
         } catch (Exception $e) {
-            $erreur = 'Liste des joueurs adversaires indisponible';
+            $erreur = 'Précédents résultats indisponibles';
         }
 
         return new JsonResponse($this->render('ajax/lastComposAdversaire.html.twig', [
             'journees' => $journees,
-            'erreur' => $erreur,
-            'nomAdversaire' => mb_convert_case($nomAdversaire, MB_CASE_TITLE, "UTF-8")
+            'erreur' => $erreur
         ])->getContent());
     }
 
@@ -803,7 +802,7 @@ class HomeController extends AbstractController
             });
             $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
         } catch (Exception $exception) {
-            $erreur = 'Classement virtuel général indisponible.';
+            $erreur = 'Classement virtuel général indisponible';
         }
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
@@ -866,9 +865,16 @@ class HomeController extends AbstractController
      */
     public function getHistoMatchesTemplate(Request $request, UtilController $utilController): JsonResponse
     {
+        $erreur = null;
+        $matches = [];
+        try {
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
+        } catch (Exception $e) {
+            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
+        }
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
-            'matchesDates' => $utilController->formatHistoMatches($this->get('session')->get('histoMatches')),
-            'erreur' => 'Erreur',
+            'matchesDates' => $matches,
+            'erreur' => $erreur,
         ])->getContent());
     }
 

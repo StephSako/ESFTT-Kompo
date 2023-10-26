@@ -2,6 +2,7 @@
 {% form_theme form 'components/materialize_form_theme.html.twig' %}
 {% import 'macros/flash.html.twig' as _flash %}
 {% import 'macros/modalContact.html.twig' as _modalContact %}
+{% import 'macros/modales/previousResultatsAdversaire.html.twig' as _previousResultatsAdversaire %}
 {% import 'macros/brulages.html.twig' as _brulage %}
 
 {% block title %}J{{ numJournee }} - Équipe {{ compo.idEquipe.numero }}{% endblock %}
@@ -214,30 +215,7 @@
                 ) }}
 
                 {% if not compo.exempt %}
-                    <div id="modalJoueursAdv{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
-                        <div class="modal-content">
-                            <div id="joueursAdv{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                    <div class="preloader-wrapper small active">
-                                        <div class="spinner-layer spinner-blue-only">
-                                            <div class="circle-clipper left">
-                                                <div class="circle"></div>
-                                            </div>
-                                            <div class="gap-patch">
-                                                <div class="circle"></div>
-                                            </div>
-                                            <div class="circle-clipper right">
-                                                <div class="circle"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect btn-flat grey-text">FERMER</a>
-                        </div>
-                    </div>
+                    {{ _previousResultatsAdversaire.previousResultats(compo.idEquipe.numero, compo.adversaire | title) }}
                 {% endif %}
 
                 <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
