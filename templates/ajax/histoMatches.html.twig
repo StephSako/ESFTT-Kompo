@@ -6,7 +6,7 @@
         {% for date, matches in matchesDates %}
             <div class="card grey lighten-3 z-depth-0 rencontre">
                 <p class="date blue white-text">{{ date }}</p>
-                <p class="epreuve"><i>{{ matches.epreuve }}</i>&nbsp;&nbsp;<b>Coeff. {{ matches.coefficient }}</b></p>
+                <p class="epreuve"><i>{{ matches.epreuve }}</i></p>
                 <p class="evolution">
                     <b>{{ matches.startVirtualPoints }}
                         <i class="material-icons {{ matches.startVirtualPoints == matches.updatedVirtualPoints ? 'grey' : (matches.startVirtualPoints > matches.updatedVirtualPoints ? 'red' : 'green') }}-text">navigate_next</i>
@@ -20,12 +20,12 @@
                             <p class="nomAdversaire">{{ match.adversaire }}</p>
                         </div>
                         <div class="col s2">
-                            <p class="{{ match.isForfait ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text">
+                            <p class="{{ match.isForfait ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text ta-end">
                                 {{ (match.pointsGagnes > 0 ? '+' : '') ~ match.pointsGagnes }}
                             </p>
                         </div>
                         <div class="col s3">
-                            <p class="{{ match.isForfait ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text">
+                            <p class="{{ match.isForfait ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text ta-end">
                                 {{ match.pointsAdversaire }}
                             </p>
                         </div>
@@ -33,10 +33,10 @@
                 {% endfor %}
                 <div class="row">
                     <div class="col s7 trending_icon">
-                        <i class="material-icons blue-text text-darken-3">trending_flat</i>
+                        <b>Coeff. {{ matches.coefficient }} </b><i class="material-icons blue-text text-darken-3">trending_flat</i>
                     </div>
                     <div class="col s2 finalPointsWon">
-                        <p class="{{ matches.totalPointsWon > 0 ? 'green' : 'red' }}-text">
+                        <p class="{{ matches.totalPointsWon > 0 ? 'green' : 'red' }}-text ta-end">
                             <b>{{ (matches.totalPointsWon > 0 ? '+' : '') ~ matches.totalPointsWon }}</b>
                         </p>
                     </div>

@@ -819,11 +819,12 @@ table.rankingVirtualPoints td .chip .nom {
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre {
   padding: 1px;
   width: 90%;
-  margin: 10px auto 15px auto;
+  margin: 15px auto 20px auto;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .trending_icon {
   margin: 5px auto;
   text-align: end;
+  vertical-align: middle;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p {
   margin: 5px auto;
@@ -836,7 +837,7 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p.evolution {
   position: absolute;
-  top: -1px;
+  top: 1px;
   right: 0;
   border-radius: 0 0 0 5px;
 }
@@ -857,6 +858,9 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col {
   padding: 0;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col p.ta-end {
+  text-align: end;
 }
 .modal.modal-medium {
   margin-top: 4% !important;
