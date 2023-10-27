@@ -6,7 +6,9 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
-/vendor/
+!/vendor/*
+/vendor/*
+!/vendor/al37350/
 /.env
 /public/.htaccess
 /src/Migrations

@@ -1,0 +1,34 @@
+{
+    "name": "al37350/fftt-api",
+    "description": "Permet de consommer l'api FFTT",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antoine Lamirault",
+            "email": "lamiraultantoine@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "ext-simplexml": "*",
+        "ext-json": "*",
+        "reisraff/accentuation": "^2.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "symfony/polyfill-iconv": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "FFTTApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FFTTApi\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "symfony/var-dumper": "^4.0",
+        "symfony/dotenv": "^4.1"
+    }
+}

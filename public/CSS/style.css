@@ -736,10 +736,6 @@ ul.dropdown-content.select-dropdown li.optgroup span {
   width: 15%;
 }
 
-span.virtualPoints {
-  background-color: #0c3a69;
-}
-
 table.rankingVirtualPoints {
   font-size: 13px !important;
 }
@@ -779,6 +775,11 @@ table.rankingVirtualPoints td .chip .nom {
   color: #CD7F32;
 }
 
+.erreurXHR {
+  width: fit-content;
+  margin: 0 auto;
+}
+
 .modal {
   width: 92% !important;
   height: 87% !important;
@@ -790,15 +791,12 @@ table.rankingVirtualPoints td .chip .nom {
   max-width: 100% !important;
 }
 .modal .modal-content h5 {
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 .modal .modal-content .card {
   border-radius: 10px;
   width: auto;
   margin: 5px 15px;
-}
-.modal .modal-content .card p.red-text {
-  padding-top: 8px;
 }
 .modal .modal-content .card a {
   margin-top: 8px;
@@ -808,6 +806,57 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal .modal-content > .row .row {
   margin: 10px 0 12px 0 !important;
+}
+.modal#histoMatches .modal-content {
+  padding: 2px;
+}
+.modal#histoMatches .modal-content h6 {
+  margin-top: 15px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent {
+  margin-top: 18px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre {
+  padding: 1px;
+  width: 90%;
+  margin: 10px auto 15px auto;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .trending_icon {
+  margin: 5px auto;
+  text-align: end;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p {
+  margin: 5px auto;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.date {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  border-radius: 0 0 5px 0;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.evolution {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  border-radius: 0 0 0 5px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.epreuve {
+  padding-top: 10px;
+  margin-top: 30px;
+  width: 95%;
+  text-align: end;
+  font-size: 12px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.nomAdversaire {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row {
+  margin: 0;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col {
+  padding: 0;
 }
 .modal.modal-medium {
   margin-top: 4% !important;
@@ -1363,6 +1412,16 @@ span.field-icon {
   padding: 2px 2px 3px 2px;
 }
 
+.personnal_virtual_rank {
+  margin-top: 6px;
+}
+.personnal_virtual_rank span.virtualPoints {
+  background-color: #0c3a69;
+}
+.personnal_virtual_rank span.progression {
+  margin: auto 10px auto 4px;
+}
+
 .preloader_personnal_virtual_rank canvas {
   position: relative;
   left: 5px;
@@ -1392,7 +1451,7 @@ span.field-icon {
   border-radius: 0 8px 8px 0;
 }
 
-a.reload_ranking {
+a.reload_ranking, a.reload_histoMatches {
   position: absolute;
   right: 8px;
   top: 8px;
@@ -1686,10 +1745,17 @@ blockquote {
   .iframe-map-tournoi {
     width: 100%;
   }
+
+  .personnal_virtual_rank {
+    margin-top: 0;
+  }
 }
 @media screen and (max-width: 850px) {
   .modal.modal-small {
     width: 96% !important;
+  }
+  .modal#histoMatches .modal-content #histoMatchesContent .rencontre {
+    width: 96%;
   }
 }
 @media screen and (max-width: 720px) {
@@ -1835,7 +1901,7 @@ blockquote {
   }
 }
 @media screen and (min-width: 351px) and (max-width: 430px) {
-  a.reload_ranking {
+  a.reload_ranking, a.reload_histoMatches {
     top: 6px;
     right: 6px;
   }
@@ -1908,7 +1974,7 @@ blockquote {
   }
 }
 @media screen and (max-width: 275px) {
-  a.reload_ranking {
+  a.reload_ranking, a.reload_histoMatches {
     display: none;
   }
 }

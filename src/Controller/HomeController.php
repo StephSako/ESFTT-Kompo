@@ -656,13 +656,12 @@ class HomeController extends AbstractController
                 $journees[] = $journee;
             }
         } catch (Exception $e) {
-            $erreur = 'Liste des joueurs adversaires indisponible';
+            $erreur = 'Précédents résultats indisponibles';
         }
 
         return new JsonResponse($this->render('ajax/lastComposAdversaire.html.twig', [
             'journees' => $journees,
-            'erreur' => $erreur,
-            'nomAdversaire' => mb_convert_case($nomAdversaire, MB_CASE_TITLE, "UTF-8")
+            'erreur' => $erreur
         ])->getContent());
     }
 
@@ -803,7 +802,7 @@ class HomeController extends AbstractController
             });
             $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
         } catch (Exception $exception) {
-            $erreur = 'Classement virtuel général indisponible.';
+            $erreur = 'Classement virtuel général indisponible';
         }
 
         return new JsonResponse($this->render('ajax/classementVirtualPoints.html.twig', [
@@ -858,6 +857,28 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Renvoie un template de l'historique des matches du compétiteur actif
+     * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
+     * @param Request $request
+     * @param UtilController $utilController
+     * @return JsonResponse
+     */
+    public function getHistoMatchesTemplate(Request $request, UtilController $utilController): JsonResponse
+    {
+        $erreur = null;
+        $matches = [];
+        try {
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
+        } catch (Exception $e) {
+            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
+        }
+        return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
+            'matchesDates' => $matches,
+            'erreur' => $erreur,
+        ])->getContent());
+    }
+
+    /**
      * Renvoie un template des points virtuels mensuels de l'utilisateur actif avec un historique sur les 8 dernières phases
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
      * @return JsonResponse
@@ -884,6 +905,10 @@ class HomeController extends AbstractController
                 $annees = array_map(function ($histo) {
                     return $histo->getAnneeFin();
                 }, $historique);
+
+                // Cache pour l'historique des matches
+                $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches());
+                $this->get('session')->set('pointsMensuels', $virtualPointsApi->getMensualPoints());
             } catch (Exception $e) {
                 $erreur = 'Points virtuels indisponibles';
                 $virtualPointsProgression = 0.0;

@@ -1,8 +1,6 @@
 {% if erreur %}
-    <p class="pastille red white-text">{{ erreur }}</p>
+    <p class="pastille red white-text erreurXHR">{{ erreur }}</p>
 {% else %}
-    <h6><b>Compos et résultats - {{ nomAdversaire }}</b></h6>
-
     {% if journees|length > 0 %}
         <p style="max-width: 375px; margin-top: 15px;" class="pastille reset blue lighten-1">Points <b>mensuels</b> présentés</p>
         {% for journee in journees %}

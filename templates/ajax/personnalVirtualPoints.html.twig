@@ -1,7 +1,7 @@
 {% if not erreur %}
     <p>
         <span class="pastille reset virtualPoints">{{ virtualPoints | round(1, 'floor') }} pts</span>
-        <span class="{% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
+        <span class="progression {% if virtualPointsProgression > 0 %}green{% elseif virtualPointsProgression == 0 %}grey{% else %}red{% endif %}-text"><i class="material-icons">{% if virtualPointsProgression >= 0 %}keyboard_arrow_up{% else %}keyboard_arrow_down{% endif %}</i>{{ virtualPointsProgression | round(1, 'floor') }}</span>
         <span><canvas id="chart_js_historique_id" width="40vw" height="25vw" style="display: inline-block"></canvas></span>
     </p>
 

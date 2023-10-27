@@ -10,6 +10,7 @@ use App\Repository\RencontreRepository;
 use DateInterval;
 use DateTime;
 use Exception;
+use FFTTApi\Model\CalculatedUnvalidatedPartie;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -272,5 +273,32 @@ class UtilController extends AbstractController
             $errors .= $error->getMessage() . (!$i ? '<br>' : '');
         }
         return strlen($errors) ? $errors : "Le formulaire n'est pas valide";
+    }
+
+    /**
+     * Formatte les matches joués par le joueur par date
+     * @param array $matches
+     * @return array
+     */
+    public function formatHistoMatches(array $matches = []): array
+    {
+        $formattedMatches = [];
+        $virtualPoints = intval($this->get('session')->get('pointsMensuels'));
+
+        /** @var CalculatedUnvalidatedPartie $match */
+        foreach ($matches as $match) {
+            $formattedMatches[$match->getDate()]['matches'][] = $match;
+
+            if (!array_key_exists('epreuve', $formattedMatches[$match->getDate()])) $formattedMatches[$match->getDate()]['epreuve'] = $match->getEpreuve();
+            if (!array_key_exists('coefficient', $formattedMatches[$match->getDate()])) $formattedMatches[$match->getDate()]['coefficient'] = $match->getCoefficient();
+            if (!array_key_exists('startVirtualPoints', $formattedMatches[$match->getDate()])) $formattedMatches[$match->getDate()]['startVirtualPoints'] = $virtualPoints;
+
+            $virtualPoints += $match->getPointsGagnes();
+            $formattedMatches[$match->getDate()]['updatedVirtualPoints'] = $virtualPoints;
+
+            if (!array_key_exists('totalPointsWon', $formattedMatches[$match->getDate()])) $formattedMatches[$match->getDate()]['totalPointsWon'] = $match->getPointsGagnes();
+            else $formattedMatches[$match->getDate()]['totalPointsWon'] += $match->getPointsGagnes();
+        }
+        return array_reverse($formattedMatches);
     }
 }
