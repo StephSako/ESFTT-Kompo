@@ -1,7 +1,7 @@
 {% macro histoMatches() %}
     <div id="histoMatches" class="modal modal-fixed-footer modal-small center">
         <div class="modal-content">
-            <a onclick="getHistoMatches(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_histoMatches" href="#histoMatches">
+            <a onclick="getHistoMatches(true, {{ app.user.licence ?: 'null' }})" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_histoMatches" href="#histoMatches">
                 <i class="material-icons">refresh</i>
             </a>
             <h6><b>Calculs virtuels anticipés</b></h6>

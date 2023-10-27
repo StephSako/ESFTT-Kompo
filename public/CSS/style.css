@@ -736,10 +736,6 @@ ul.dropdown-content.select-dropdown li.optgroup span {
   width: 15%;
 }
 
-span.virtualPoints {
-  background-color: #0c3a69;
-}
-
 table.rankingVirtualPoints {
   font-size: 13px !important;
 }
@@ -825,6 +821,10 @@ table.rankingVirtualPoints td .chip .nom {
   width: 90%;
   margin: 10px auto 15px auto;
 }
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .trending_icon {
+  margin: 5px auto;
+  text-align: end;
+}
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p {
   margin: 5px auto;
 }
@@ -841,6 +841,7 @@ table.rankingVirtualPoints td .chip .nom {
   border-radius: 0 0 0 5px;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p.epreuve {
+  padding-top: 10px;
   margin-top: 30px;
   width: 95%;
   text-align: end;
@@ -856,17 +857,6 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col {
   padding: 0;
-}
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col.finalPointsWon p {
-  padding-top: 4px;
-  border-top: 1px solid #646464;
-}
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col.finalPointsWon p.coeff {
-  font-size: 12px;
-  padding-top: 6px;
-}
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col.finalPointsWon:last-child {
-  padding-right: 4px;
 }
 .modal.modal-medium {
   margin-top: 4% !important;
@@ -1422,6 +1412,16 @@ span.field-icon {
   padding: 2px 2px 3px 2px;
 }
 
+.personnal_virtual_rank {
+  margin-top: 6px;
+}
+.personnal_virtual_rank span.virtualPoints {
+  background-color: #0c3a69;
+}
+.personnal_virtual_rank span.progression {
+  margin: auto 10px auto 4px;
+}
+
 .preloader_personnal_virtual_rank canvas {
   position: relative;
   left: 5px;
@@ -1744,6 +1744,10 @@ blockquote {
 
   .iframe-map-tournoi {
     width: 100%;
+  }
+
+  .personnal_virtual_rank {
+    margin-top: 0;
   }
 }
 @media screen and (max-width: 850px) {

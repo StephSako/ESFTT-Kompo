@@ -873,10 +873,6 @@ ul.dropdown-content.select-dropdown li.optgroup {
   }
 }
 
-span.virtualPoints {
-  background-color: #0c3a69;
-}
-
 table.rankingVirtualPoints {
   font-size: 13px !important;
 
@@ -977,6 +973,11 @@ table.rankingVirtualPoints {
         width: 90%;
         margin: 10px auto 15px auto;
 
+        .trending_icon {
+          margin: 5px auto;
+          text-align: end
+        }
+
         p {
           margin: 5px auto;
 
@@ -995,6 +996,7 @@ table.rankingVirtualPoints {
           }
 
           &.epreuve {
+            padding-top: 10px;
             margin-top: 30px;
             width: 95%;
             text-align: end;
@@ -1013,22 +1015,6 @@ table.rankingVirtualPoints {
 
           .col {
             padding: 0;
-
-            &.finalPointsWon {
-              p {
-                padding-top: 4px;
-                border-top: 1px solid #646464;
-
-                &.coeff {
-                  font-size: 12px;
-                  padding-top: 6px;
-                }
-              }
-
-              &:last-child {
-                padding-right: 4px;
-              }
-            }
           }
         }
       }
@@ -1695,6 +1681,18 @@ span.field-icon {
   padding: 2px 2px 3px 2px;
 }
 
+.personnal_virtual_rank {
+  margin-top: 6px;
+
+  span.virtualPoints {
+    background-color: #0c3a69;
+  }
+
+  span.progression {
+    margin: auto 10px auto 4px;
+  }
+}
+
 .preloader_personnal_virtual_rank {
   canvas {
     position: relative;
@@ -2086,6 +2084,10 @@ blockquote {
 
   .iframe-map-tournoi {
     width: 100%;
+  }
+
+  .personnal_virtual_rank {
+    margin-top: 0;
   }
 }
 

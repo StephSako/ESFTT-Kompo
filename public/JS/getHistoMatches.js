@@ -1,23 +1,28 @@
-function getHistoMatches(forceReloadHistoMatches = null) {
+function getHistoMatches(forceReloadHistoMatches = false, licence = null) {
     if (!alreadyCalledHistoMatches || forceReloadHistoMatches) {
         alreadyCalledHistoMatches = true;
         if (forceReloadHistoMatches) {
+            alreadyCalledHistoMatches = false;
             $('a.reload_histoMatches').addClass('hide');
             $('div#histoMatchesContentLoader').removeClass('hide');
             $('div#histoMatchesContent').addClass('hide');
-        }
-        $.ajax({
-            url: '/journee/histo-matches',
-            type: 'POST',
-            dataType: 'json',
-            success: (responseTemplate) => {
-                templatingHistoMatches('#histoMatchesContent', responseTemplate, true);
-            },
-            error: () => {
-                templatingHistoMatches('#histoMatchesContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true);
-            }
-        });
+            getPersonnalClassementVirtuel(licence, true);
+        } else XHRGetHistoMatches();
     }
+}
+
+function XHRGetHistoMatches() {
+    $.ajax({
+        url: '/journee/histo-matches',
+        type: 'POST',
+        dataType: 'json',
+        success: (responseTemplate) => {
+            templatingHistoMatches('#histoMatchesContent', responseTemplate, true);
+        },
+        error: () => {
+            templatingHistoMatches('#histoMatchesContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true);
+        }
+    });
 }
 
 let alreadyCalledHistoMatches = false;
@@ -29,6 +34,6 @@ function templatingHistoMatches(selector, response, general = false) {
             $('div#histoMatchesContentLoader').addClass('hide');
             $('div#histoMatchesContent').removeClass('hide');
         }
-        $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
+        $(this).removeClass('hide').html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
     })
 }
