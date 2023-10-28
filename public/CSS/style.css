@@ -1419,10 +1419,12 @@ span.field-icon {
 .personnal_virtual_rank {
   margin-top: 6px;
 }
-.personnal_virtual_rank span.virtualPoints {
+
+span.virtualPoints {
   background-color: #0c3a69;
 }
-.personnal_virtual_rank span.progression {
+
+span.progression {
   margin: auto 10px auto 4px;
 }
 
