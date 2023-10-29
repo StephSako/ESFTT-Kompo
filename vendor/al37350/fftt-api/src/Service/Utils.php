@@ -51,7 +51,7 @@ class Utils
     /**
      * Permet de supprimer des séparateurs (espaces, tirets) dupliqués.
      */
-    public function removeSeparatorsDuplication(string $raw): string
+    public static function removeSeparatorsDuplication(string $raw): string
     {
         return preg_replace(['/\s+/', '/(?:\s*\-\s*)+|-+/'], [' ', '-'], $raw) ?? '';
     }
