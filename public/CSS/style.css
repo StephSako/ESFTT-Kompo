@@ -834,6 +834,7 @@ table.rankingVirtualPoints td .chip .nom {
   top: -5px;
   left: 0;
   border-radius: 0 0 5px 0;
+  background-color: #1d5db9;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p.evolution {
   position: absolute;
@@ -845,7 +846,7 @@ table.rankingVirtualPoints td .chip .nom {
   padding-top: 10px;
   margin-top: 30px;
   width: 95%;
-  text-align: end;
+  text-align: center;
   font-size: 12px;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p.nomAdversaire {
@@ -861,6 +862,9 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col p.ta-end {
   text-align: end;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .finalPointsWon p {
+  margin-top: 7px;
 }
 .modal.modal-medium {
   margin-top: 4% !important;

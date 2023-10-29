@@ -987,6 +987,7 @@ table.rankingVirtualPoints {
             top: -5px;
             left: 0;
             border-radius: 0 0 5px 0;
+            background-color: #1d5db9;
           }
 
           &.evolution {
@@ -1000,7 +1001,7 @@ table.rankingVirtualPoints {
             padding-top: 10px;
             margin-top: 30px;
             width: 95%;
-            text-align: end;
+            text-align: center;
             font-size: 12px;
           }
 
@@ -1021,6 +1022,10 @@ table.rankingVirtualPoints {
               text-align: end;
             }
           }
+        }
+
+        .finalPointsWon p {
+          margin-top: 7px;
         }
       }
     }

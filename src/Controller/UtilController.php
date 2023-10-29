@@ -277,10 +277,10 @@ class UtilController extends AbstractController
 
     /**
      * Formatte les matches joués par le joueur par date
-     * @param array $matches
+     * @param array|null $matches
      * @return array
      */
-    public function formatHistoMatches(array $matches = []): array
+    public function formatHistoMatches(?array $matches = []): array
     {
         $formattedMatches = [];
         $virtualPoints = intval($this->get('session')->get('pointsMensuels'));
