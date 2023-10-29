@@ -387,8 +387,8 @@ class FFTTApi
         try {
             $parties = $this->apiRequest->get('xml_partie_mysql', [
                 'licence' => $joueurId,
-            ])['partie'];
-            $parties = $this->wrappedArrayIfUnique($parties);
+            ]);
+            $parties = array_key_exists('partie', $parties) ? $this->wrappedArrayIfUnique($parties['partie']) : [];
         } catch (NoFFTTResponseException $e) {
             $parties = [];
         }

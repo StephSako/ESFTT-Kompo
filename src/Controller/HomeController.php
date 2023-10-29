@@ -801,7 +801,7 @@ class HomeController extends AbstractController
                 return $b['pointsVirtuelsVirtualPoints'] > $a['pointsVirtuelsVirtualPoints'];
             });
             $classementPointsPhase = $this->getClassementVirtuelClubGapped($gaps, $classementPointsPhase);
-        } catch (Exception $exception) {
+        } catch (Exception $e) {
             $erreur = 'Classement virtuel général indisponible';
         }
 
@@ -868,7 +868,7 @@ class HomeController extends AbstractController
         $erreur = null;
         $matches = [];
         try {
-            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches') ?? []);
         } catch (Exception $e) {
             $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
         }
