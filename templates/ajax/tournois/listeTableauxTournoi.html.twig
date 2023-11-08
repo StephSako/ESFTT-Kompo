@@ -46,5 +46,11 @@
         </tbody>
     </table>
 {% else %}
-    <p><i>Non communiqués pour le moment ...</i></p>
+    <p>
+        {% if hasDocuments %}
+            <i>Tableaux non communiqués à la FFTT, référez-vous aux liens dans la section </i><b>Documents</b><i> ci-dessus</i>
+        {% else %}
+            <i>Non communiqués pour le moment</i>
+        {% endif %}
+    </p>
 {% endif %}

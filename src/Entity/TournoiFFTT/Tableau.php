@@ -82,9 +82,9 @@ class Tableau
     public function setTypesLicences(array $item): self
     {
         if (key_exists('licenceTypes', $item)) {
-            $this->typesLicences = implode(array_map(function ($g) {
+            $this->typesLicences = implode('/', array_map(function ($g) {
                 return $g['name'];
-            }, $item['licenceTypes']), '/');
+            }, $item['licenceTypes']));
         } else $this->typesLicences = '';
 
         return $this;
@@ -105,11 +105,11 @@ class Tableau
     public function setGenres(array $item): self
     {
         if (key_exists('genders', $item)) {
-            $this->genres = implode(array_map(function ($g) {
+            $this->genres = implode('/', array_map(function ($g) {
                 return $g['name'][0];
-            }, $item['genders']), '/');
+            }, $item['genders']));
         } else $this->genres = 'Indéfini';
-
+        
         return $this;
     }
 

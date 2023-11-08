@@ -288,6 +288,7 @@ class FooterController extends AbstractController
     public function getDetailsTableauxTournoi(Request $request): JsonResponse
     {
         $tableaux = [];
+        $hasDocuments = false;
         try {
             $response = $this->clientHTTP->request(
                 'GET',
@@ -304,6 +305,7 @@ class FooterController extends AbstractController
                 ]
             );
             $content = $response->toArray();
+            $hasDocuments = $content['engagmentSheet'] != null && $content['rules'] != null;
 
             $tableaux = array_map(function ($tournoi) {
                 return new Tableau($tournoi);
@@ -317,7 +319,8 @@ class FooterController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/tournois/listeTableauxTournoi.html.twig', array(
-            'tableaux' => $tableauxPerDay
+            'tableaux' => $tableauxPerDay,
+            'hasDocuments' => $hasDocuments
         ))->getContent());
     }
 }
