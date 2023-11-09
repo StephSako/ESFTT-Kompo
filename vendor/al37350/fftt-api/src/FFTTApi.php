@@ -441,9 +441,18 @@ class FFTTApi
      * @throws InvalidURIParametersException
      * @throws URIPartNotValidException
      */
-    public function getUnvalidatedPartiesJoueurByLicence(string $joueurId): array
+    public function getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints(string $joueurId): array
     {
-        $validatedParties = $this->getPartiesJoueurByLicence($joueurId);
+        try {
+            $validatedParties = $this->getPartiesJoueurByLicence($joueurId);
+            $totalPointsObtenus = array_sum(array_map(function($partie) {
+                return $partie->getPointsObtenus();
+            }, $validatedParties));
+        } catch (NoFFTTResponseException $e) {
+            $validatedParties = [];
+            $totalPointsObtenus = 0.0;
+        }
+
         try {
             $allParties = $this->apiRequest->get('xml_partie', [
                     'numlic' => $joueurId,
@@ -452,7 +461,7 @@ class FFTTApi
             $allParties = [];
         }
 
-        $result = [];
+        $result = ['unvalidatedParties' => [], 'totalPointsObtenus' => $totalPointsObtenus];
         try {
             foreach ($allParties as $partie) {
                 if ($partie["forfait"] === "0") {
@@ -483,7 +492,7 @@ class FFTTApi
                     }));
 
                     if (!$found) {
-                        $result[] = new UnvalidatedPartie(
+                        $result['unvalidatedParties'][] = new UnvalidatedPartie(
                             $partie["epreuve"],
                             $partie["idpartie"],
                             floatval($partie["coefchamp"]),
@@ -499,7 +508,8 @@ class FFTTApi
             }
             return $result;
         } catch (\Exception $e) {
-            return [];
+            $result['unvalidatedParties'] = [];
+            return $result;
         }
     }
 
@@ -517,8 +527,8 @@ class FFTTApi
             $virtualMonthlyPointsWon = 0.0;
             $virtualMonthlyPoints = 0.0;
             $latestMonth = null;
-            $monthPoints = round($classement->getPointsMensuel(), 1);
-            $unvalidatedParties = $this->getUnvalidatedPartiesJoueurByLicence($joueurId);
+            $monthPoints = round(($classement->getPointsLicence() + $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId)['totalPointsObtenus']), 1);
+            $unvalidatedParties = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId)['unvalidatedParties'];
 
             usort($unvalidatedParties, function (UnvalidatedPartie $a, UnvalidatedPartie $b) {
                 return $a->getDate() >= $b->getDate();
