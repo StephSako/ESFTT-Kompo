@@ -437,7 +437,7 @@ class FFTTApi
 
     /**
      * @param string $joueurId
-     * @return UnvalidatedPartie[]
+     * @return array
      * @throws InvalidURIParametersException
      * @throws URIPartNotValidException
      */
@@ -527,8 +527,9 @@ class FFTTApi
             $virtualMonthlyPointsWon = 0.0;
             $virtualMonthlyPoints = 0.0;
             $latestMonth = null;
-            $monthPoints = round(($classement->getPointsLicence() + $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId)['totalPointsObtenus']), 1);
-            $unvalidatedParties = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId)['unvalidatedParties'];
+            $data = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId);
+            $monthPoints = round(($classement->getPointsLicence() + $data['totalPointsObtenus']), 1);
+            $unvalidatedParties = $data['unvalidatedParties'];
 
             usort($unvalidatedParties, function (UnvalidatedPartie $a, UnvalidatedPartie $b) {
                 return $a->getDate() >= $b->getDate();
@@ -538,12 +539,13 @@ class FFTTApi
                 return !($classement->getPointsDebutSaison() != $classement->getPointsLicence() && $p->getDate()->format('n') == 12 && ($p->getDate()->format('n') . '/' . $p->getDate()->format('Y')) == (date('n', strtotime('-1 month')) . '/' . date('Y', strtotime('-1 month'))));
             });
 
+            /** @var UnvalidatedPartie $unvalidatedParty */
             foreach ($unvalidatedParties as $unvalidatedParty) {
-                if (!$latestMonth) {
+                if ($latestMonth == null) {
                     $latestMonth = $unvalidatedParty->getDate()->format("m");
                 } else {
                     if ($latestMonth != $unvalidatedParty->getDate()->format("m") && $this->isNouveauMoisVirtuel($unvalidatedParty->getDate())) {
-                        $monthPoints = round($classement->getPointsMensuel() + $virtualMonthlyPointsWon, 1);
+                        $monthPoints = round($classement->getPointsLicence() + $data['totalPointsObtenus'] + $virtualMonthlyPointsWon, 1);
                         $latestMonth = $unvalidatedParty->getDate()->format("m");
                     }
                 }
@@ -573,6 +575,7 @@ class FFTTApi
                         : $pointCalculator->getPointDefeat($monthPoints, floatval($adversairePoints));
                     $virtualMonthlyPointsWon += $points * $coeff;
 
+                    /** TODO Supprimer les matches en 0 qui valent 0 du mois dernier **/
                     $matches[] = new CalculatedUnvalidatedPartie(
                         $unvalidatedParty->getAdversaireNom() . ' ' . $unvalidatedParty->getAdversairePrenom(),
                         $unvalidatedParty->isForfait(),
@@ -588,14 +591,14 @@ class FFTTApi
 
             $virtualMonthlyPoints = $monthPoints + $virtualMonthlyPointsWon;
             return new VirtualPoints(
-                $classement->getPointsMensuel(),
+                ($classement->getPointsLicence() + $data['totalPointsObtenus']),
                 $virtualMonthlyPointsWon,
                 $virtualMonthlyPoints,
                 $virtualMonthlyPoints - $classement->getPointsDebutSaison(),
                 $matches
             );
         } catch (JoueurNotFound $e) {
-            return new VirtualPoints($classement->getPointsMensuel(), 0.0, $classement->getPointsLicence(), 0.0, $matches);
+            return new VirtualPoints(($classement->getPointsLicence() + $data['totalPointsObtenus']), 0.0, $classement->getPointsLicence(), 0.0, $matches);
         }
     }
 
