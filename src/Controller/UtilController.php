@@ -283,7 +283,7 @@ class UtilController extends AbstractController
     public function formatHistoMatches(array $matches = []): array
     {
         $formattedMatches = [];
-        $virtualPoints = intval($this->get('session')->get('pointsMensuels'));
+        $virtualPoints = floatval($this->get('session')->get('pointsMensuels'));
 
         /** @var CalculatedUnvalidatedPartie $match */
         foreach ($matches as $match) {

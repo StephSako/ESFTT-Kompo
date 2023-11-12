@@ -418,6 +418,7 @@ class FFTTApi
      */
     public function isNouveauMoisVirtuel(Datetime $date): bool {
         try {
+            $date = $date->setTime(0, 0);
             $jour = $date->format('j');
             $mois = $date->format('n');
             $annee = $date->format('Y');
@@ -429,10 +430,20 @@ class FFTTApi
                     $annee++;
                 } else $mois++;
             }
-            return $date->getTimestamp() >= (new Datetime($annee . '/' . $mois . '/' . self::DATES_PUBLICATION[$mois]))->getTimestamp();
+            return $date->setTime(0,0)->getTimestamp() >= (new Datetime($annee . '/' . $mois . '/' . self::DATES_PUBLICATION[$mois]))->setTime(0,0)->getTimestamp();
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Détermine la date de la dernière journée dont au moins un match est validé (pour lequel les points gagnés sont différents de 0.0)
+     * @param Partie[] $validatedParties
+     * @return int
+     */
+    public function lastValidatedMatchDate(array $validatedParties): int {
+        $lastValidatedMatch = array_filter($validatedParties, function($partie) { return $partie->getPointsObtenus() != 0.0; });
+        return (count($lastValidatedMatch) ? array_values($lastValidatedMatch)[0]->getDate() : new DateTime())->setTime(0, 0)->getTimestamp();
     }
 
     /**
@@ -446,7 +457,7 @@ class FFTTApi
         try {
             $validatedParties = $this->getPartiesJoueurByLicence($joueurId);
             $totalPointsObtenus = array_sum(array_map(function($partie) {
-                return $partie->getPointsObtenus();
+                return round($partie->getPointsObtenus(), 1);
             }, $validatedParties));
         } catch (NoFFTTResponseException $e) {
             $validatedParties = [];
@@ -461,13 +472,15 @@ class FFTTApi
             $allParties = [];
         }
 
+        $lastValidatedMatchDate = $this->lastValidatedMatchDate($validatedParties);
+
         $result = ['unvalidatedParties' => [], 'totalPointsObtenus' => $totalPointsObtenus];
         try {
             foreach ($allParties as $partie) {
                 if ($partie["forfait"] === "0") {
                     list($nom, $prenom) = Utils::returnNomPrenom($partie['nom']);
-                    $found = count(array_filter($validatedParties, function ($validatedPartie) use ($partie, $nom, $prenom) {
-                        $datePartie = \DateTime::createFromFormat('d/m/Y', $partie['date']);
+                    $datePartie = \DateTime::createFromFormat('d/m/Y', $partie['date'])->setTime(0, 0);
+                    $found = count(array_filter($validatedParties, function ($validatedPartie) use ($partie, $nom, $prenom, $datePartie, $lastValidatedMatchDate) {
                         return $partie["date"] === $validatedPartie->getDate()->format("d/m/Y")
                             /** Si le nom du joueur correspond bien */
                             && Utils::removeAccentLowerCaseRegex($nom) === Utils::removeAccentLowerCaseRegex($validatedPartie->getAdversaireNom())
@@ -480,15 +493,8 @@ class FFTTApi
                             && $validatedPartie->getCoefficient() === floatval($partie['coefchamp'])
                             /** Si le joueur n'est pas absent */
                             && !str_contains($prenom, "Absent") and !str_contains($nom, "Absent")
-                            /** Si la partie a été réalisée durant le mois dernier ou durant le mois actuel */
-                            && !(
-                                $validatedPartie->getPointsObtenus() === 0.0
-                                && (
-                                    ($datePartie->format('n') === (new DateTime())->format('n')
-                                        && $datePartie->format('Y') === (new DateTime())->format('Y'))
-                                    || ($datePartie->format('n') . '/' . $datePartie->format('Y')) === date('n', strtotime('-1 month')) . '/' . date('Y', strtotime('-1 month'))
-                                )
-                            );
+                            /** Si le match s'est déroulé après la date du dernier match validé */
+                            && $datePartie->getTimestamp() <= $lastValidatedMatchDate;
                     }));
 
                     if (!$found) {
@@ -545,7 +551,8 @@ class FFTTApi
                     $latestMonth = $unvalidatedParty->getDate()->format("m");
                 } else {
                     if ($latestMonth != $unvalidatedParty->getDate()->format("m") && $this->isNouveauMoisVirtuel($unvalidatedParty->getDate())) {
-                        $monthPoints = round($classement->getPointsLicence() + $data['totalPointsObtenus'] + $virtualMonthlyPointsWon, 1);
+                        $monthPoints = round($monthPoints + $virtualMonthlyPointsWon, 1);
+                        $virtualMonthlyPointsWon = 0.0;
                         $latestMonth = $unvalidatedParty->getDate()->format("m");
                     }
                 }
