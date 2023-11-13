@@ -746,6 +746,16 @@ table.rankingVirtualPoints td:not(.td-chip) {
 table.rankingVirtualPoints td.td-name {
   display: none;
 }
+table.rankingVirtualPoints td.ratio-td {
+  min-width: 120px;
+  max-width: 120px;
+  width: 120px;
+}
+table.rankingVirtualPoints td.progression-td {
+  min-width: 75px;
+  max-width: 75px;
+  width: 75px;
+}
 table.rankingVirtualPoints td i {
   vertical-align: middle;
   font-size: 20px;

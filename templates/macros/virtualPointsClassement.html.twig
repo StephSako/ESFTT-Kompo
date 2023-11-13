@@ -1,7 +1,7 @@
-{% macro labelVirtualPoints(id) %}
+{% macro labelVirtualPoints(id, idChampionnat, nomChampionnat) %}
     <div class="card-panel bottom_0 virtualPointsCard">
         <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">timeline</i></a></span>
+            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels('{{ idChampionnat }}', '{{ nomChampionnat }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">timeline</i></a></span>
             <h6 class="lobster_2"><b id="title_points_virtuels">Points virtuels</b></h6>
             {% if app.user.competiteur %}
                 <span style="margin-right: 6px"><a onclick="getHistoMatches()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#histoMatches"><i class="material-icons">format_list_bulleted</i></a></span>
@@ -28,10 +28,10 @@
     </div>
 {% endmacro %}
 
-{% macro modaleGeneralRanking() %}
+{% macro modaleGeneralRanking(idChampionnat, nomChampionnat) %}
     <div id="rankingVirtualPoints" class="modal modal-fixed-footer modal-medium center">
         <div class="modal-content">
-            <a onclick="getGeneralClassementsVirtuels(true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
+            <a onclick="getGeneralClassementsVirtuels('{{ idChampionnat }}', '{{ nomChampionnat }}', true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_ranking" href="#rankingVirtualPoints">
                 <i class="material-icons">refresh</i>
             </a>
             <h6 style="margin-bottom: 14px;"><b>Progressions et points virtuels</b></h6>

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Competiteur;
 use App\Entity\Rencontre;
+use App\Entity\Titularisation;
 use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
@@ -666,11 +668,12 @@ class HomeController extends AbstractController
     }
 
     /**
-     * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs
+     * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs et des équipes
      * @Route("/journee/general-classement-virtuel", name="index.generalClassementsVirtuels", methods={"POST"})
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getClassementVirtuelsClub(): JsonResponse
+    public function getClassementVirtuelsClub(Request $request): JsonResponse
     {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
@@ -679,12 +682,22 @@ class HomeController extends AbstractController
         $classementProgressionPhase = [];
         $classementPointsMensuel = [];
         $classementPointsPhase = [];
+        $classementProgressionMensuelEquipe = [];
         $erreur = null;
+        $nomChampionnatEquipe = $request->get('nom_championnat');
 
         try {
             $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $classementProgressionMensuel = array_map(function ($joueur) use ($api) {
+
+            $classementProgressionMensuel = array_map(function (Competiteur $joueur) use ($api, $request) {
+                /** @var Titularisation[] $search */
+                $search = array_filter($joueur->getTitularisations()->toArray(), function (Titularisation $titu) use ($request) {
+                    return $titu->getIdChampionnat()->getIdChampionnat() == $request->get('id_championnat');
+                });
+                /** @var Titularisation $numEquipeTitulaire */
+                $numEquipeTitulaire = count($search) ? array_values($search)[0]->getIdEquipe()->getNumero() : null;
+
                 $virtualPoint = null;
                 if ($joueur->getLicence()) {
                     try {
@@ -695,6 +708,7 @@ class HomeController extends AbstractController
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
                     'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
+                    'numEquipe' => $numEquipeTitulaire,
                     'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $virtualPoint && $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
@@ -703,11 +717,38 @@ class HomeController extends AbstractController
                     'pointsVirtuelsPointsWonPhase' => $virtualPoint && $joueur->getLicence() ? $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel() : null
                 ];
             }, $competiteurs);
-            $classementProgressionSaison = $classementProgressionMensuel;
+            $classementProgressionSaison =
             $classementPointsSaison = $classementProgressionMensuel;
             $classementProgressionPhase = $classementProgressionMensuel;
             $classementPointsMensuel = $classementProgressionMensuel;
             $classementPointsPhase = $classementProgressionMensuel;
+
+            /**
+             * On regroupe les équipes pour créer leurs progressions
+             */
+            foreach ($classementProgressionMensuel as $joueur) {
+                if ($joueur['numEquipe']) $classementProgressionMensuelEquipe[$joueur['numEquipe']][] = $joueur;
+            }
+            $classementProgressionMensuelEquipe = array_map(function ($joueurs, $numEquipe) {
+                $totalPointsVirtuelsPointsWonPhase = array_reduce($joueurs, function ($carry, $item) {
+                    $carry += $item['pointsVirtuelsPointsWonPhase'];
+                    return $carry;
+                });
+                return [
+                    'numEquipe' => $numEquipe,
+                    'nbJoueurs' => count($joueurs),
+                    'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase,
+                    'ratioEquipe' => round((count($joueurs) / $totalPointsVirtuelsPointsWonPhase) * 100, 2)
+                ];
+            }, $classementProgressionMensuelEquipe, array_keys($classementProgressionMensuelEquipe));
+
+            /** Classement des équipes sur la saison selon les progressions */
+            usort($classementProgressionMensuelEquipe, function ($a, $b) {
+                if ($a['progressionEquipe'] == $b['progressionEquipe']) {
+                    return $b['ratioEquipe'] > $a['ratioEquipe'];
+                }
+                return $b['progressionEquipe'] > $a['progressionEquipe'];
+            });
 
             /** Classement sur la saison selon les progressions */
             usort($classementProgressionSaison, function ($a, $b) {
@@ -740,6 +781,8 @@ class HomeController extends AbstractController
                 return $joueur['idCompetiteur'];
             }, $referenceTable);
 
+
+            // TODO Factoriser
             /** Classement sur la saison selon les points */
             usort($classementPointsSaison, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
@@ -812,7 +855,9 @@ class HomeController extends AbstractController
             'classementPointsMensuel' => $classementPointsMensuel,
             'classementPointsPhase' => $classementPointsPhase,
             'classementPointsSaison' => $classementPointsSaison,
-            'erreur' => $erreur,
+            'classementProgressionMensuelEquipe' => $classementProgressionMensuelEquipe,
+            'nomChampionnatEquipe' => $nomChampionnatEquipe,
+            'erreur' => $erreur
         ])->getContent());
     }
 
@@ -859,11 +904,10 @@ class HomeController extends AbstractController
     /**
      * Renvoie un template de l'historique des matches du compétiteur actif
      * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
-     * @param Request $request
      * @param UtilController $utilController
      * @return JsonResponse
      */
-    public function getHistoMatchesTemplate(Request $request, UtilController $utilController): JsonResponse
+    public function getHistoMatchesTemplate(UtilController $utilController): JsonResponse
     {
         $erreur = null;
         $matches = [];

@@ -887,6 +887,18 @@ table.rankingVirtualPoints {
       display: none;
     }
 
+    &.ratio-td {
+      min-width: 120px;
+      max-width: 120px;
+      width: 120px;
+    }
+
+    &.progression-td {
+      min-width: 75px;
+      max-width: 75px;
+      width: 75px;
+    }
+
     i {
       vertical-align: middle;
       font-size: 20px;

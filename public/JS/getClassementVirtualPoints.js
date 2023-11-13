@@ -1,4 +1,4 @@
-function getGeneralClassementsVirtuels(forceReload = false) {
+function getGeneralClassementsVirtuels(idChampionnat, nomChampionnat, forceReload = false) {
     if (!alreadyCalledClassement || forceReload) {
         alreadyCalledClassement = true;
         if (forceReload) {
@@ -9,6 +9,10 @@ function getGeneralClassementsVirtuels(forceReload = false) {
         $.ajax({
             url: '/journee/general-classement-virtuel',
             type: 'POST',
+            data: {
+                id_championnat: idChampionnat,
+                nom_championnat: nomChampionnat
+            },
             dataType: 'json',
             success: (responseTemplate) => {
                 templatingClassementVirtuel('#rankingContent', responseTemplate, false, true);
