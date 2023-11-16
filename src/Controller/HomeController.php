@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Championnat;
 use App\Entity\Competiteur;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
@@ -684,19 +685,30 @@ class HomeController extends AbstractController
         $classementPointsPhase = [];
         $classementProgressionMensuelEquipe = [];
         $erreur = null;
-        $nomChampionnatEquipe = $request->get('nom_championnat');
+        $idChampActif = $request->get('idChampActif');
 
         try {
+            /** @var Championnat[] $allChampionnats */
+            $allChampionnats = array_filter($this->championnatRepository->getAllChampionnats(), function (Championnat $champ) {
+                return count($champ->getTitularisations()->toArray());
+            });
             $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
-            $classementProgressionMensuel = array_map(function (Competiteur $joueur) use ($api, $request) {
-                /** @var Titularisation[] $search */
-                $search = array_filter($joueur->getTitularisations()->toArray(), function (Titularisation $titu) use ($request) {
-                    return $titu->getIdChampionnat()->getIdChampionnat() == $request->get('id_championnat');
-                });
-                /** @var Titularisation $numEquipeTitulaire */
-                $numEquipeTitulaire = count($search) ? array_values($search)[0]->getIdEquipe()->getNumero() : null;
+            $classementProgressionMensuel = array_map(function (Competiteur $joueur) use ($api, $allChampionnats) {
+                $titularisations = [];
+                foreach ($allChampionnats as $championnat) {
+                    /** @var Titularisation[] $search */
+                    $search = array_filter($joueur->getTitularisations()->toArray(), function (Titularisation $titu) use ($championnat) {
+                        return $titu->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
+                    });
+
+                    if (count($search)) {
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['idChampionnat'] = $championnat->getIdChampionnat();
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['nomChampionnat'] = $championnat->getNom();
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['numEquipe'] = array_values($search)[0]->getIdEquipe()->getNumero();
+                    }
+                }
 
                 $virtualPoint = null;
                 if ($joueur->getLicence()) {
@@ -708,7 +720,7 @@ class HomeController extends AbstractController
                 return [
                     'idCompetiteur' => $joueur->getIdCompetiteur(),
                     'nom' => $joueur->getNom() . ' ' . $joueur->getPrenom(),
-                    'numEquipe' => $numEquipeTitulaire,
+                    'titularisations' => $titularisations,
                     'hasLicence' => (bool)$joueur->getLicence(),
                     'avatar' => ($joueur->getAvatar() ? 'images/profile_pictures/' . $joueur->getAvatar() : 'images/account.png'),
                     'pointsVirtuelsPointsWonSaison' => $virtualPoint && $joueur->getLicence() && $virtualPoint->getVirtualPoints() != 0.0 ? $virtualPoint->getSeasonlyPointsWon() : null,
@@ -717,38 +729,55 @@ class HomeController extends AbstractController
                     'pointsVirtuelsPointsWonPhase' => $virtualPoint && $joueur->getLicence() ? $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel() : null
                 ];
             }, $competiteurs);
-            $classementProgressionSaison =
+            $classementProgressionSaison = $classementProgressionMensuel;
             $classementPointsSaison = $classementProgressionMensuel;
             $classementProgressionPhase = $classementProgressionMensuel;
             $classementPointsMensuel = $classementProgressionMensuel;
             $classementPointsPhase = $classementProgressionMensuel;
 
             /**
-             * On regroupe les équipes pour créer leurs progressions
+             * On regroupe les équipes par championnat pour créer leurs progressions
              */
-            foreach ($classementProgressionMensuel as $joueur) {
-                if ($joueur['numEquipe']) $classementProgressionMensuelEquipe[$joueur['numEquipe']][] = $joueur;
-            }
-            $classementProgressionMensuelEquipe = array_map(function ($joueurs, $numEquipe) {
-                $totalPointsVirtuelsPointsWonPhase = array_reduce($joueurs, function ($carry, $item) {
-                    $carry += $item['pointsVirtuelsPointsWonPhase'];
-                    return $carry;
-                });
-                return [
-                    'numEquipe' => $numEquipe,
-                    'nbJoueurs' => count($joueurs),
-                    'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase,
-                    'ratioEquipe' => round((count($joueurs) / $totalPointsVirtuelsPointsWonPhase) * 100, 2)
-                ];
-            }, $classementProgressionMensuelEquipe, array_keys($classementProgressionMensuelEquipe));
+            $joueursParEquipe = [];
+            foreach ($allChampionnats as $championnat) {
 
-            /** Classement des équipes sur la saison selon les progressions */
-            usort($classementProgressionMensuelEquipe, function ($a, $b) {
-                if ($a['progressionEquipe'] == $b['progressionEquipe']) {
-                    return $b['ratioEquipe'] > $a['ratioEquipe'];
+                /**
+                 * On construit un tableau où chaque joueurs est répertorié dans son équipe par championnat
+                 */
+                foreach ($classementProgressionMensuel as $joueur) {
+                    if (array_key_exists('champId_' . $championnat->getIdChampionnat(), $joueur['titularisations'])) {
+                        $championnatStat = $joueur['titularisations']['champId_' . $championnat->getIdChampionnat()];
+                        $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs'][$championnatStat['numEquipe']][] = $joueur;
+                        $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'] =
+                            [
+                                'idChampionnat' => strval($championnatStat['idChampionnat']),
+                                'nomChampionnat' => $championnatStat['nomChampionnat'],
+                            ];
+                    }
                 }
-                return $b['progressionEquipe'] > $a['progressionEquipe'];
-            });
+
+                $classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['progression'] = array_map(function ($joueurs, $numEquipe) {
+                    $totalPointsVirtuelsPointsWonPhase = array_reduce($joueurs, function ($progression, $item) {
+                        $progression += $item['pointsVirtuelsPointsWonPhase'];
+                        return $progression;
+                    });
+                    return [
+                        'numEquipe' => $numEquipe,
+                        'nbJoueurs' => count($joueurs),
+                        'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase,
+                        'ratioEquipe' => round((count($joueurs) / $totalPointsVirtuelsPointsWonPhase) * 100, 2)
+                    ];
+                }, $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs'], array_keys($joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs']));
+                $classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'] = $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'];
+
+                /** Classement des équipes sur la saison selon les progressions */
+                usort($classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['progression'], function ($a, $b) {
+                    if ($a['progressionEquipe'] == $b['progressionEquipe']) {
+                        return $b['ratioEquipe'] > $a['ratioEquipe'];
+                    }
+                    return $b['progressionEquipe'] > $a['progressionEquipe'];
+                });
+            }
 
             /** Classement sur la saison selon les progressions */
             usort($classementProgressionSaison, function ($a, $b) {
@@ -856,7 +885,7 @@ class HomeController extends AbstractController
             'classementPointsPhase' => $classementPointsPhase,
             'classementPointsSaison' => $classementPointsSaison,
             'classementProgressionMensuelEquipe' => $classementProgressionMensuelEquipe,
-            'nomChampionnatEquipe' => $nomChampionnatEquipe,
+            'idChampActif' => $idChampActif,
             'erreur' => $erreur
         ])->getContent());
     }
@@ -912,9 +941,10 @@ class HomeController extends AbstractController
         $erreur = null;
         $matches = [];
         try {
-            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches') ?? []);
+            if (!$this->get('session')->get('histoMatches')) throw new Exception("Rechargez les matches à l'aide du bouton rond bleu", 1234);
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
         } catch (Exception $e) {
-            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
+            $erreur = $e->getCode() == 1234 ? $e->getMessage() : 'Un problème est survenu lors du calcul anticipé des matches';
         }
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
             'matchesDates' => $matches,

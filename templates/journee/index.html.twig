@@ -176,7 +176,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _virtualPointsClassement.labelVirtualPoints(1, championnat.idChampionnat, championnat.nom) }}
+                {{ _virtualPointsClassement.labelVirtualPoints(1, championnat.idChampionnat) }}
             </div>
 
             <div class="hide-on-large-only center-align">
@@ -508,7 +508,7 @@
         <div class="col l3 hide-on-med-and-down">
             <div class="center-align">
                 <div class="hide-on-med-and-down">
-                    {{ _virtualPointsClassement.labelVirtualPoints(2, championnat.idChampionnat, championnat.nom) }}
+                    {{ _virtualPointsClassement.labelVirtualPoints(2, championnat.idChampionnat) }}
                 </div>
                 {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
             </div>
@@ -523,7 +523,7 @@
         {% endif %}
 
         {# Modale des classement des points virtuels #}
-        {{ _virtualPointsClassement.modaleGeneralRanking(championnat.idChampionnat, championnat.nom) }}
+        {{ _virtualPointsClassement.modaleGeneralRanking(championnat.idChampionnat) }}
 
         {# Modale de l'historique des matches #}
         {% if app.user.competiteur %}

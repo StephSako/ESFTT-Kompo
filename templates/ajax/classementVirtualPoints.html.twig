@@ -1,6 +1,9 @@
 {% if erreur %}
     <p class="pastille red white-text erreurXHR">{{ erreur }}</p>
 {% else %}
+    <script type="text/javascript">
+        $('.tabs').tabs({});
+    </script>
 
     <div class="virtualRankButtons">
         <div class="buttonGroup">
@@ -49,35 +52,49 @@
         </table>
     </div>
 
-    <div id="entite-equipe" class="row" hidden="hidden">
-        <p style="margin-bottom: 0; margin-top: 8px;"><b>Équipes du Champ. {{ nomChampionnatEquipe }}</b></p>
-        <div class="col s12 m8 offset-m2">
-            <table class="striped rankingVirtualPoints">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Ratio</th>
-                    <th>Progression</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for equipe in classementProgressionMensuelEquipe %}
-                    <tr>
-                        <td class="td-chips">
-                            <span class="nom">Équipe <b>{{ equipe["numEquipe"] }}</b></span>
-                        </td>
-                        <td class="ratio-td">
-                            <span class="pastille reset virtualPoints">{{ equipe["ratioEquipe"] }}</span> <i class="material-icons">keyboard_arrow_right</i> <b>{{ equipe['nbJoueurs'] }} j.</b>
-                        </td>
-                        <td class="progression-td">
-                    <span class="{% if equipe['progressionEquipe'] > 0 %}green{% elseif equipe['progressionEquipe'] == 0 %}grey{% else %}red{% endif %}-text">
-                        <i class="material-icons">{% if equipe['progressionEquipe'] > 0 %}keyboard_arrow_up{% elseif equipe['progressionEquipe'] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>{{ equipe['progressionEquipe'] | abs }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div id="entite-equipe" hidden="hidden">
+
+        <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
+            {% for statsChamp in classementProgressionMensuelEquipe %}
+                <li class='tab'>
+                    <a href='{{ '#statsChamp_' ~ statsChamp.championnat.idChampionnat }}' {% if statsChamp.championnat.idChampionnat == idChampActif %} class="active" {% endif %}>{{ statsChamp.championnat.nomChampionnat }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% for statsChamp in classementProgressionMensuelEquipe %}
+            <div class='row center' id='{{ 'statsChamp_' ~ statsChamp.championnat.idChampionnat }}'>
+                <div class="col s12 m8 offset-m2">
+                    <table class="striped rankingVirtualPoints">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Ratio</th>
+                            <th>Progression</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for equipe in statsChamp.progression %}
+                            <tr>
+                                <td class="td-chips">
+                                    <span class="nom">Équipe <b>{{ equipe["numEquipe"] }}</b></span>
+                                </td>
+                                <td class="ratio-td">
+                                    <span class="pastille reset virtualPoints">{{ equipe["ratioEquipe"] }}</span> <i class="material-icons">keyboard_arrow_right</i> <b>{{ equipe['nbJoueurs'] }} j.</b>
+                                </td>
+                                <td class="progression-td">
+                                    <span class="{% if equipe['progressionEquipe'] > 0 %}green{% elseif equipe['progressionEquipe'] == 0 %}grey{% else %}red{% endif %}-text">
+                                        <i class="material-icons">{% if equipe['progressionEquipe'] > 0 %}keyboard_arrow_up{% elseif equipe['progressionEquipe'] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>
+                                        {{ equipe['progressionEquipe'] | abs }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 
     <script type="text/javascript">

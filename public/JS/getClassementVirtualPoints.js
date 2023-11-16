@@ -1,4 +1,4 @@
-function getGeneralClassementsVirtuels(idChampionnat, nomChampionnat, forceReload = false) {
+function getGeneralClassementsVirtuels(idChampActif, forceReload = false) {
     if (!alreadyCalledClassement || forceReload) {
         alreadyCalledClassement = true;
         if (forceReload) {
@@ -10,8 +10,7 @@ function getGeneralClassementsVirtuels(idChampionnat, nomChampionnat, forceReloa
             url: '/journee/general-classement-virtuel',
             type: 'POST',
             data: {
-                id_championnat: idChampionnat,
-                nom_championnat: nomChampionnat
+                idChampActif: idChampActif
             },
             dataType: 'json',
             success: (responseTemplate) => {
