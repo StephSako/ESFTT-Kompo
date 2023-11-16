@@ -1,10 +1,6 @@
 {% if erreur %}
     <p class="pastille red white-text erreurXHR">{{ erreur }}</p>
 {% else %}
-    <script type="text/javascript">
-        $('.tabs').tabs({});
-    </script>
-
     <div class="virtualRankButtons">
         <div class="buttonGroup">
             <button class="btn waves-effect firstBtnVirtualPoints" type="submit" name="action" onclick="changeEntite('individuel')" id="btnIndividuel">Individuel</button>
@@ -51,43 +47,25 @@
             </tbody>
         </table>
     </div>
-
     <div id="entite-equipe" hidden="hidden">
-
-        <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
-            {% for statsChamp in classementProgressionMensuelEquipe %}
-                <li class='tab'>
-                    <a href='{{ '#statsChamp_' ~ statsChamp.championnat.idChampionnat }}' {% if statsChamp.championnat.idChampionnat == idChampActif %} class="active" {% endif %}>{{ statsChamp.championnat.nomChampionnat }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-
-        {% for statsChamp in classementProgressionMensuelEquipe %}
-            <div class='row center' id='{{ 'statsChamp_' ~ statsChamp.championnat.idChampionnat }}' style="margin-top: 20px">
-                <div class="col s12 m8 offset-m2">
-                    <table class="striped rankingVirtualPoints">
-                        <tbody>
-                        {% for equipe in statsChamp.progression %}
-                            <tr>
-                                <td class="td-chips">
-                                    <span class="nom"><b>Équipe {{ equipe["numEquipe"] }}</b></span>
-                                </td>
-                                <td class="nbJoueurs-td">
-                                    <span>{{ equipe["nbJoueurs"] }} joueur{{ equipe["nbJoueurs"] > 1 ? 's' : '' }}</span>
-                                </td>
-                                <td class="progression-td">
-                                    <span class="{% if equipe['progressionEquipe'] > 0 %}green{% elseif equipe['progressionEquipe'] == 0 %}grey{% else %}red{% endif %}-text">
-                                        <i class="material-icons">{% if equipe['progressionEquipe'] > 0 %}keyboard_arrow_up{% elseif equipe['progressionEquipe'] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>
-                                        {{ equipe['progressionEquipe'] | abs }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+        <div id="progressionsEquipes"></div>
+        <div id="preloaderProgressionsEquipes" style="padding-right: 4px; padding-left: 4px;">
+            <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                <div class="preloader-wrapper small active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -114,6 +92,8 @@
         btnMois.css('background-color', '#64b5f6');
         btnProgression.css('background-color', '#64b5f6');
 
+        progressionsEquipeAlreadyCalled = false;
+
         function changeEntite(newEntite) {
             entite = newEntite;
 
@@ -127,6 +107,11 @@
                 btnEquipe.css('background-color', '#64b5f6');
                 div_entite_equipe.removeAttr('hidden');
                 div_entite_individuel.attr('hidden', '');
+
+                if (!progressionsEquipeAlreadyCalled) {
+                    progressionsEquipeAlreadyCalled = true;
+                    getEquipesClassementsVirtuels('{{ idChampActif }}');
+                }
             }
         }
 

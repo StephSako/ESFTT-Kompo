@@ -772,6 +772,10 @@ table.rankingVirtualPoints td .chip .nom {
   font-size: 13px !important;
 }
 
+#entite-equipe {
+  margin-left: 10px;
+  margin-right: 10px;
+}
 #entite-equipe table.rankingVirtualPoints span.nom {
   margin-left: 15px;
 }

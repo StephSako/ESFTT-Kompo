@@ -7,22 +7,20 @@ function getHistoMatches(forceReloadHistoMatches = false, licence = null) {
             $('div#histoMatchesContentLoader').removeClass('hide');
             $('div#histoMatchesContent').addClass('hide');
             getPersonnalClassementVirtuel(licence, true);
-        } else XHRGetHistoMatches();
-    }
-}
-
-function XHRGetHistoMatches() {
-    $.ajax({
-        url: '/journee/histo-matches',
-        type: 'POST',
-        dataType: 'json',
-        success: (responseTemplate) => {
-            templatingHistoMatches('#histoMatchesContent', responseTemplate, true);
-        },
-        error: () => {
-            templatingHistoMatches('#histoMatchesContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true);
+        } else {
+            $.ajax({
+                url: '/journee/histo-matches',
+                type: 'POST',
+                dataType: 'json',
+                success: (responseTemplate) => {
+                    templatingHistoMatches('#histoMatchesContent', responseTemplate, true);
+                },
+                error: () => {
+                    templatingHistoMatches('#histoMatchesContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", true);
+                }
+            });
         }
-    });
+    }
 }
 
 let alreadyCalledHistoMatches = false;

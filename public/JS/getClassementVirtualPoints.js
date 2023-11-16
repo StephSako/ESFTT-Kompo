@@ -3,8 +3,8 @@ function getGeneralClassementsVirtuels(idChampActif, forceReload = false) {
         alreadyCalledClassement = true;
         if (forceReload) {
             $('a.reload_ranking').addClass('hide');
-            $('div#rankingContentLoader').removeClass('hide');
-            $('div#rankingContent').addClass('hide');
+            $('#rankingContentLoader').removeClass('hide');
+            $('#rankingContent').addClass('hide');
         }
         $.ajax({
             url: '/journee/general-classement-virtuel',
@@ -14,19 +14,48 @@ function getGeneralClassementsVirtuels(idChampActif, forceReload = false) {
             },
             dataType: 'json',
             success: (responseTemplate) => {
-                templatingClassementVirtuel('#rankingContent', responseTemplate, false, true);
+                templatingClassementVirtuel('#rankingContent', responseTemplate, '#rankingContentLoader', false, true);
+
+                // On met à jour les progressions par équipe si le tableau a déjà été chargé
+                if (alreadyCalledClassementEquipes) getEquipesClassementsVirtuels(idChampActif, true)
             },
             error: () => {
-                templatingClassementVirtuel('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", false, true);
+                templatingClassementVirtuel('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#rankingContentLoader', false, true);
+            }
+        });
+    }
+}
+
+function getEquipesClassementsVirtuels(idChampActif, forceReload = false) {
+    if (!alreadyCalledClassementEquipes || forceReload) {
+        alreadyCalledClassementEquipes = true;
+        if (forceReload) {
+            $('a.reload_ranking').addClass('hide');
+            $('#preloaderProgressionsEquipes').removeClass('hide');
+            $('#progressionsEquipes').addClass('hide');
+        }
+        $.ajax({
+            url: '/journee/equipes-classement-virtuel',
+            type: 'POST',
+            data: {
+                idChampActif: idChampActif
+            },
+            dataType: 'json',
+            success: (responseTemplate) => {
+                templatingClassementVirtuel('#progressionsEquipes', responseTemplate, '#preloaderProgressionsEquipes', false, true);
+            },
+            error: () => {
+                templatingClassementVirtuel('#progressionsEquipes', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#preloaderProgressionsEquipes', false, true);
             }
         });
     }
 }
 
 let alreadyCalledClassement = false;
+let alreadyCalledClassementEquipes = false;
 
 function getPersonnalClassementVirtuel(licence, isReloadFromHistoMatches = false) {
-    if (!licence) templatingClassementVirtuel('.preloader_personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>");
+    if (!licence) templatingClassementVirtuel('.personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>", '.preloader_personnal_virtual_rank');
     else {
         if (isReloadFromHistoMatches) {
             $('.personnal_virtual_rank').each(function () {
@@ -48,12 +77,12 @@ function getPersonnalClassementVirtuel(licence, isReloadFromHistoMatches = false
     }
 }
 
-function templatingClassementVirtuel(selector, response, reloadHistoMatches = false, general = false) {
+function templatingClassementVirtuel(selector, response, preloader, reloadHistoMatches = false, general = false) {
     $(selector).each(function () {
         if (general) {
             $('a.reload_ranking').removeClass('hide');
-            $('div#rankingContentLoader').addClass('hide');
-            $('div#rankingContent').removeClass('hide');
+            $(preloader).addClass('hide');
+            $(selector).removeClass('hide');
             $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
         } else {
             $('.preloader_personnal_virtual_rank').addClass('hide'); // On cache le préloader

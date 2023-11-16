@@ -920,8 +920,13 @@ table.rankingVirtualPoints {
   }
 }
 
-#entite-equipe table.rankingVirtualPoints span.nom {
-  margin-left: 15px;
+#entite-equipe {
+  margin-left: 10px;
+  margin-right: 10px;
+
+  table.rankingVirtualPoints span.nom {
+    margin-left: 15px;
+  }
 }
 
 .tooltipped {
