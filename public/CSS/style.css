@@ -746,10 +746,13 @@ table.rankingVirtualPoints td:not(.td-chip) {
 table.rankingVirtualPoints td.td-name {
   display: none;
 }
-table.rankingVirtualPoints td.ratio-td {
+table.rankingVirtualPoints td.nbJoueurs-td {
   min-width: 120px;
   max-width: 120px;
   width: 120px;
+}
+table.rankingVirtualPoints td.nbJoueurs-td span {
+  font-style: italic;
 }
 table.rankingVirtualPoints td.progression-td {
   min-width: 75px;
@@ -767,6 +770,10 @@ table.rankingVirtualPoints td .chip {
 }
 table.rankingVirtualPoints td .chip .nom {
   font-size: 13px !important;
+}
+
+#entite-equipe table.rankingVirtualPoints span.nom {
+  margin-left: 15px;
 }
 
 .tooltipped {
@@ -1902,8 +1909,15 @@ blockquote {
     max-width: 82px;
     width: 82px;
   }
+  table.rankingVirtualPoints td.nbJoueurs-td {
+    min-width: 64px;
+    max-width: 64px;
+    width: 64px;
+  }
   table.rankingVirtualPoints td.progression-td {
-    width: 48px;
+    min-width: 60px;
+    max-width: 60px;
+    width: 60px;
     padding-left: 0;
   }
   table.rankingVirtualPoints td.progression-td:nth-child(1) {

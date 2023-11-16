@@ -63,24 +63,17 @@
         </ul>
 
         {% for statsChamp in classementProgressionMensuelEquipe %}
-            <div class='row center' id='{{ 'statsChamp_' ~ statsChamp.championnat.idChampionnat }}'>
+            <div class='row center' id='{{ 'statsChamp_' ~ statsChamp.championnat.idChampionnat }}' style="margin-top: 20px">
                 <div class="col s12 m8 offset-m2">
                     <table class="striped rankingVirtualPoints">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Ratio</th>
-                            <th>Progression</th>
-                        </tr>
-                        </thead>
                         <tbody>
                         {% for equipe in statsChamp.progression %}
                             <tr>
                                 <td class="td-chips">
-                                    <span class="nom">Équipe <b>{{ equipe["numEquipe"] }}</b></span>
+                                    <span class="nom"><b>Équipe {{ equipe["numEquipe"] }}</b></span>
                                 </td>
-                                <td class="ratio-td">
-                                    <span class="pastille reset virtualPoints">{{ equipe["ratioEquipe"] }}</span> <i class="material-icons">keyboard_arrow_right</i> <b>{{ equipe['nbJoueurs'] }} j.</b>
+                                <td class="nbJoueurs-td">
+                                    <span>{{ equipe["nbJoueurs"] }} joueur{{ equipe["nbJoueurs"] > 1 ? 's' : '' }}</span>
                                 </td>
                                 <td class="progression-td">
                                     <span class="{% if equipe['progressionEquipe'] > 0 %}green{% elseif equipe['progressionEquipe'] == 0 %}grey{% else %}red{% endif %}-text">

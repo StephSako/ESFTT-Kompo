@@ -740,7 +740,6 @@ class HomeController extends AbstractController
              */
             $joueursParEquipe = [];
             foreach ($allChampionnats as $championnat) {
-
                 /**
                  * On construit un tableau où chaque joueurs est répertorié dans son équipe par championnat
                  */
@@ -764,8 +763,7 @@ class HomeController extends AbstractController
                     return [
                         'numEquipe' => $numEquipe,
                         'nbJoueurs' => count($joueurs),
-                        'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase,
-                        'ratioEquipe' => round((count($joueurs) / $totalPointsVirtuelsPointsWonPhase) * 100, 2)
+                        'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase
                     ];
                 }, $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs'], array_keys($joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs']));
                 $classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'] = $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'];
@@ -773,7 +771,7 @@ class HomeController extends AbstractController
                 /** Classement des équipes sur la saison selon les progressions */
                 usort($classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['progression'], function ($a, $b) {
                     if ($a['progressionEquipe'] == $b['progressionEquipe']) {
-                        return $b['ratioEquipe'] > $a['ratioEquipe'];
+                        return $b['nbJoueurs'] < $a['nbJoueurs'];
                     }
                     return $b['progressionEquipe'] > $a['progressionEquipe'];
                 });
