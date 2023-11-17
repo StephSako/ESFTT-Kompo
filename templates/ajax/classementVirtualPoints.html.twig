@@ -216,7 +216,7 @@
     {% for joueur in classementVirtuel %}
         <tr>
             {% if joueur["gap"] is defined %}
-                <td class="progression-td">
+                <td class="progression-classement-td">
                     {% if joueur["hasLicence"] %}
                         <i class="material-icons {{ joueur["gap"]["color"] }}-text">{% if joueur["gap"]["gap"] > 0 %}keyboard_arrow_up{% elseif joueur["gap"]["gap"] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur["gap"]["color"] }}-text">{{ joueur["gap"]["gap"] | abs }}</span>
                     {% endif %}
