@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Championnat;
+use App\Entity\Competiteur;
 use App\Entity\Rencontre;
+use App\Entity\Titularisation;
 use App\Form\RencontreType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
@@ -668,9 +671,10 @@ class HomeController extends AbstractController
     /**
      * Renvoie un template du classement des points virtuels mensuels et de la phase des joueurs compétiteurs
      * @Route("/journee/general-classement-virtuel", name="index.generalClassementsVirtuels", methods={"POST"})
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getClassementVirtuelsClub(): JsonResponse
+    public function getClassementVirtuelsClub(Request $request): JsonResponse
     {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $classementProgressionMensuel = [];
@@ -679,12 +683,14 @@ class HomeController extends AbstractController
         $classementProgressionPhase = [];
         $classementPointsMensuel = [];
         $classementPointsPhase = [];
+        $idChampActif = $request->get('idChampActif');
         $erreur = null;
 
         try {
             $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
             $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $classementProgressionMensuel = array_map(function ($joueur) use ($api) {
+
+            $classementProgressionMensuel = array_map(function (Competiteur $joueur) use ($api) {
                 $virtualPoint = null;
                 if ($joueur->getLicence()) {
                     try {
@@ -703,6 +709,8 @@ class HomeController extends AbstractController
                     'pointsVirtuelsPointsWonPhase' => $virtualPoint && $joueur->getLicence() ? $virtualPoint->getVirtualPoints() - $joueur->getClassementOfficiel() : null
                 ];
             }, $competiteurs);
+            $this->get('session')->set('classementProgressionMensuel', $classementProgressionMensuel);
+
             $classementProgressionSaison = $classementProgressionMensuel;
             $classementPointsSaison = $classementProgressionMensuel;
             $classementProgressionPhase = $classementProgressionMensuel;
@@ -740,6 +748,8 @@ class HomeController extends AbstractController
                 return $joueur['idCompetiteur'];
             }, $referenceTable);
 
+
+            // TODO Factoriser
             /** Classement sur la saison selon les points */
             usort($classementPointsSaison, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
@@ -812,7 +822,8 @@ class HomeController extends AbstractController
             'classementPointsMensuel' => $classementPointsMensuel,
             'classementPointsPhase' => $classementPointsPhase,
             'classementPointsSaison' => $classementPointsSaison,
-            'erreur' => $erreur,
+            'idChampActif' => $idChampActif,
+            'erreur' => $erreur
         ])->getContent());
     }
 
@@ -857,20 +868,120 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Renvoie un template du classement des points virtuels mensuels gagnés par équipe
+     * @Route("/journee/equipes-classement-virtuel", name="index.classementsVirtuelsEquipes", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getClassementVirtuelsEquipes(Request $request): JsonResponse
+    {
+        $classementProgressionMensuelEquipe = [];
+        $erreur = null;
+        $idChampActif = $request->get('idChampActif');
+
+        try {
+            if (!$this->get('session')->get('classementProgressionMensuel')) throw new Exception("Rechargez les progressions à l'aide du bouton rond bleu", 1234);
+            $classementProgressionMensuel = $this->get('session')->get('classementProgressionMensuel');
+
+            $competiteurs = $this->competiteurRepository->findJoueursByRole('Competiteur', null);
+
+            /** @var Championnat[] $allChampionnats */
+            $allChampionnats = array_filter($this->championnatRepository->getAllChampionnats(), function (Championnat $champ) {
+                return count($champ->getTitularisations()->toArray());
+            });
+
+            $classementProgressionMensuelJoueurs = array_map(function (Competiteur $joueur) use ($allChampionnats, $classementProgressionMensuel) {
+                $titularisations = [];
+                foreach ($allChampionnats as $championnat) {
+                    /** @var Titularisation[] $search */
+                    $search = array_filter($joueur->getTitularisations()->toArray(), function (Titularisation $titu) use ($championnat) {
+                        return $titu->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
+                    });
+
+                    if (count($search)) {
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['idChampionnat'] = $championnat->getIdChampionnat();
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['nomChampionnat'] = $championnat->getNom();
+                        $titularisations['champId_' . $championnat->getIdChampionnat()]['numEquipe'] = array_values($search)[0]->getIdEquipe()->getNumero();
+                    }
+                }
+
+                $joueurProgression = array_values(array_filter($classementProgressionMensuel, function ($joueurStats) use ($joueur) {
+                    return $joueurStats['idCompetiteur'] == $joueur->getIdCompetiteur();
+                }));
+
+                return [
+                    'titularisations' => $titularisations,
+                    'pointsVirtuelsPointsWonPhase' => $joueurProgression ? $joueurProgression[0]['pointsVirtuelsPointsWonPhase'] : 0
+                ];
+            }, $competiteurs);
+
+            /**
+             * On regroupe les équipes par championnat pour créer leurs progressions
+             */
+            $joueursParEquipe = [];
+            foreach ($allChampionnats as $championnat) {
+                /**
+                 * On construit un tableau où chaque joueurs est répertorié dans son équipe par championnat
+                 */
+                foreach ($classementProgressionMensuelJoueurs as $joueur) {
+                    if (array_key_exists('champId_' . $championnat->getIdChampionnat(), $joueur['titularisations'])) {
+                        $championnatStat = $joueur['titularisations']['champId_' . $championnat->getIdChampionnat()];
+                        $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs'][$championnatStat['numEquipe']][] = $joueur;
+                        $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'] =
+                            [
+                                'idChampionnat' => strval($championnatStat['idChampionnat']),
+                                'nomChampionnat' => $championnatStat['nomChampionnat'],
+                            ];
+                    }
+                }
+
+                $classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['progression'] = array_map(function ($joueurs, $numEquipe) {
+                    $totalPointsVirtuelsPointsWonPhase = array_reduce($joueurs, function ($progression, $item) {
+                        $progression += $item['pointsVirtuelsPointsWonPhase'];
+                        return $progression;
+                    });
+                    return [
+                        'numEquipe' => $numEquipe,
+                        'nbJoueurs' => count($joueurs),
+                        'progressionEquipe' => $totalPointsVirtuelsPointsWonPhase
+                    ];
+                }, $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs'], array_keys($joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['joueurs']));
+                $classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'] = $joueursParEquipe['champId_' . $championnat->getIdChampionnat()]['championnat'];
+
+                /** Classement des équipes sur la saison selon les progressions */
+                usort($classementProgressionMensuelEquipe['champId_' . $championnat->getIdChampionnat()]['progression'], function ($a, $b) {
+                    if ($a['progressionEquipe'] == $b['progressionEquipe']) {
+                        return $b['numEquipe'] < $a['numEquipe'];
+                    }
+                    return $b['progressionEquipe'] > $a['progressionEquipe'];
+                });
+            }
+        } catch (Exception $e) {
+            $erreur = $e->getCode() == 1234 ? $e->getMessage() : 'Progressions par équipes indisponibles';
+        }
+
+        return new JsonResponse($this->render('ajax/classementsVirtuelsEquipes.html.twig', [
+            'classementProgressionMensuelEquipe' => $classementProgressionMensuelEquipe,
+            'idChampActif' => $idChampActif,
+            'erreur' => $erreur
+        ])->getContent());
+    }
+
+    /**
      * Renvoie un template de l'historique des matches du compétiteur actif
      * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
-     * @param Request $request
      * @param UtilController $utilController
      * @return JsonResponse
      */
-    public function getHistoMatchesTemplate(Request $request, UtilController $utilController): JsonResponse
+    public function getHistoMatchesTemplate(UtilController $utilController): JsonResponse
     {
         $erreur = null;
         $matches = [];
         try {
-            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches') ?? []);
+            if (!$this->get('session')->get('histoMatches')) throw new Exception("Rechargez les matches à l'aide du bouton rond bleu", 1234);
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
         } catch (Exception $e) {
-            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
+            $erreur = $e->getCode() == 1234 ? $e->getMessage() : 'Un problème est survenu lors du calcul anticipé des matches';
         }
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
             'matchesDates' => $matches,
