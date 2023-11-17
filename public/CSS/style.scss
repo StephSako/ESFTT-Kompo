@@ -887,6 +887,12 @@ table.rankingVirtualPoints {
       display: none;
     }
 
+    &.progression-classement-td {
+      min-width: 39px;
+      max-width: 39px;
+      width: 39px;
+    }
+
     &.nbJoueurs-td {
       min-width: 120px;
       max-width: 120px;
@@ -895,12 +901,6 @@ table.rankingVirtualPoints {
       & span {
         font-style: italic;
       }
-    }
-
-    &.progression-td {
-      min-width: 75px;
-      max-width: 75px;
-      width: 75px;
     }
 
     i {
@@ -924,8 +924,23 @@ table.rankingVirtualPoints {
   margin-left: 10px;
   margin-right: 10px;
 
-  table.rankingVirtualPoints span.nom {
-    margin-left: 15px;
+  table.rankingVirtualPoints td {
+    &.td-equipe {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 20px;
+
+      span.nom {
+        margin-left: 15px;
+      }
+    }
+
+    &.progression-td {
+      min-width: 75px;
+      max-width: 75px;
+      width: 75px;
+    }
   }
 }
 

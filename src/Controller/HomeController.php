@@ -748,8 +748,6 @@ class HomeController extends AbstractController
                 return $joueur['idCompetiteur'];
             }, $referenceTable);
 
-
-            // TODO Factoriser
             /** Classement sur la saison selon les points */
             usort($classementPointsSaison, function ($a, $b) {
                 if (!$a['pointsVirtuelsVirtualPoints']) return true;
