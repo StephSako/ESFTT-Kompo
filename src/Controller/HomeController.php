@@ -547,7 +547,7 @@ class HomeController extends AbstractController
                         $detailsRencontre->getScoreEquipeB() . ' - ' . $detailsRencontre->getScoreEquipeA()
                     ];
 
-                    $isTeamForfeit = $detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) && $detailsRencontre->getScoreEquipeB() != 0 && count($detailsRencontre->getJoueursB()) ?
+                    $isTeamForfait = $detailsRencontre->getScoreEquipeA() == 0 && !count($detailsRencontre->getJoueursA()) && $detailsRencontre->getScoreEquipeB() != 0 && count($detailsRencontre->getJoueursB()) ?
                         $detailsRencontre->getNomEquipeA() :
                         (($detailsRencontre->getScoreEquipeB() == 0 && !count($detailsRencontre->getJoueursB()) && $detailsRencontre->getScoreEquipeA() != 0 && count($detailsRencontre->getJoueursA())) ?
                             $detailsRencontre->getNomEquipeB() : null);
@@ -568,9 +568,9 @@ class HomeController extends AbstractController
                         })) == count($joueursAdversaireBis);
 
                     /** On formatte la liste des joueurs et on leur associe leurs résultats avec les points de leurs adversaires s'il n'y a pas d'erreur dans la feuille de match */
-                    if ($isTeamForfeit) {
+                    if ($isTeamForfait) {
                         $joueursAdversaireFormatted = [1];
-                        $journee['teamForfeit'] = mb_convert_case($isTeamForfeit, MB_CASE_TITLE, "UTF-8");
+                        $journee['teamForfait'] = mb_convert_case($isTeamForfait, MB_CASE_TITLE, "UTF-8");
                     } else if (!$errorMatchSheet) {
                         /** Liste des parties des joueurs lors de la rencontre */
                         $parties = $detailsRencontre->getParties();
@@ -958,9 +958,16 @@ class HomeController extends AbstractController
             $erreur = $e->getCode() == 1234 ? $e->getMessage() : 'Progressions par équipes indisponibles';
         }
 
+        $titularisationsJoueurActif = [];
+        /** @var Titularisation $titularisation */
+        foreach ($this->getUser()->getTitularisations()->toArray() as $titularisation) {
+            $titularisationsJoueurActif[$titularisation->getIdChampionnat()->getIdChampionnat()] = $titularisation->getIdEquipe()->getNumero();
+        }
+
         return new JsonResponse($this->render('ajax/classementsVirtuelsEquipes.html.twig', [
             'classementProgressionMensuelEquipe' => $classementProgressionMensuelEquipe,
             'idChampActif' => $idChampActif,
+            'titularisationsJoueurActif' => $titularisationsJoueurActif,
             'erreur' => $erreur
         ])->getContent());
     }
@@ -976,10 +983,9 @@ class HomeController extends AbstractController
         $erreur = null;
         $matches = [];
         try {
-            if (!$this->get('session')->get('histoMatches')) throw new Exception("Rechargez les matches à l'aide du bouton rond bleu", 1234);
-            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches'));
+            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches')) ?? [];
         } catch (Exception $e) {
-            $erreur = $e->getCode() == 1234 ? $e->getMessage() : 'Un problème est survenu lors du calcul anticipé des matches';
+            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
         }
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
             'matchesDates' => $matches,
@@ -1064,6 +1070,8 @@ class HomeController extends AbstractController
                 $classementPoule[] = [
                     'nom' => mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_TITLE, "UTF-8"),
                     'points' => $equipeClassement->getPoints(),
+                    'victoires' => $equipeClassement->getVictoires(),
+                    'defaites' => $equipeClassement->getDefaites(),
                     'classement' => $points != $equipeClassement->getPoints() ? $classement : null,
                     'isOurClub' => str_contains(mb_convert_case($equipeClassement->getNomEquipe(), MB_CASE_LOWER, "UTF-8"), mb_convert_case($this->getParameter('club_name'), MB_CASE_LOWER, "UTF-8")) ? 'bold' : null
                 ];

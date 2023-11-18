@@ -855,6 +855,34 @@ ul.dropdown-content.select-dropdown li.optgroup {
 .virtualRankButtons {
   display: flex;
   justify-content: space-evenly;
+  padding-top: 4px;
+
+  .buttonGroup button {
+    height: 20px;
+    line-height: 20px;
+    border-radius: 0;
+    font-size: 80%;
+    padding: 0 7px;
+    margin: 5px 0;
+    background-color: #2196f3;
+
+    &:hover {
+      background-color: #64b5f6 !important;
+    }
+
+    &.firstBtnVirtualPoints {
+      border-radius: 8px 0 0 8px;
+
+      &.withMiddle {
+        right: -3px !important;
+      }
+    }
+
+    &.lastBtnVirtualPoints {
+      left: -3px !important;
+      border-radius: 0 8px 8px 0;
+    }
+  }
 }
 
 .virtualPointsDiv {
@@ -876,7 +904,14 @@ ul.dropdown-content.select-dropdown li.optgroup {
 table.rankingVirtualPoints {
   font-size: 13px !important;
 
+  &:not(.rankingVirtualPointsEquipes) {
+    margin-top: 8px;
+  }
+
   td {
+    i.material-icons {
+      width: 18px;
+    }
 
     &:not(.td-chip) {
       padding-left: 0;
@@ -888,14 +923,10 @@ table.rankingVirtualPoints {
     }
 
     &.progression-classement-td {
-      min-width: 39px;
-      max-width: 39px;
-      width: 39px;
+      width: 34px;
     }
 
     &.nbJoueurs-td {
-      min-width: 120px;
-      max-width: 120px;
       width: 120px;
 
       & span {
@@ -932,13 +963,11 @@ table.rankingVirtualPoints {
       max-width: 20px;
 
       span.nom {
-        margin-left: 15px;
+        margin-left: 10px;
       }
     }
 
     &.progression-td {
-      min-width: 75px;
-      max-width: 75px;
       width: 75px;
     }
   }
@@ -1038,7 +1067,7 @@ table.rankingVirtualPoints {
           }
 
           &.epreuve {
-            padding-top: 10px;
+            padding-top: 4px;
             margin-top: 30px;
             width: 95%;
             text-align: center;
@@ -1290,6 +1319,29 @@ table.rankingVirtualPoints {
 table.classementPoule {
   td {
     padding: 14px 5px;
+
+    &.td-position_club {
+      width: 60px;
+    }
+
+    &.td-club_points, &.td-pg_pp {
+      width: 70px;
+
+      .pg_pp {
+        display: flex;
+        justify-content: space-evenly;
+      }
+    }
+
+    &.td-club_name {
+      display: table-cell;
+      padding-left: 10px;
+      font-size: 15px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 20px;
+    }
   }
 }
 
@@ -1748,33 +1800,6 @@ span.progression {
     position: relative;
     left: 5px;
     top: 7px;
-  }
-}
-
-.buttonGroup button {
-  height: 20px;
-  line-height: 20px;
-  border-radius: 0;
-  font-size: 80%;
-  padding: 0 7px;
-  margin: 10px 0;
-  background-color: #2196f3;
-
-  &:hover {
-    background-color: #64b5f6 !important;
-  }
-
-  &.firstBtnVirtualPoints {
-    border-radius: 8px 0 0 8px;
-
-    &.withMiddle {
-      right: -3px !important;
-    }
-  }
-
-  &.lastBtnVirtualPoints {
-    left: -3px !important;
-    border-radius: 0 8px 8px 0;
   }
 }
 
@@ -2259,12 +2284,6 @@ blockquote {
   }
 }
 
-@media screen and (min-width: 325px) and (max-width: 460px) {
-  .virtualRankButtons {
-    padding-top: 8px;
-  }
-}
-
 @media screen and (max-width: 411px) {
   table.rankingVirtualPoints td {
     .chip {
@@ -2294,26 +2313,16 @@ blockquote {
     }
 
     &.points-td {
-      min-width: 82px;
-      max-width: 82px;
       width: 82px;
     }
 
     &.nbJoueurs-td {
-      min-width: 64px;
-      max-width: 64px;
       width: 64px;
     }
 
     &.progression-td {
-      min-width: 60px;
-      max-width: 60px;
-      width: 60px;
+      width: 56px;
       padding-left: 0;
-
-      &:nth-child(1) {
-        width: 39px;
-      }
     }
   }
 }
@@ -2380,9 +2389,10 @@ blockquote {
 @media screen and (max-width: 325px) {
   .virtualRankButtons {
     flex-direction: column;
+    padding-top: 0;
 
-    .buttonGroup:first-child button {
-      margin-bottom: 0;
+    &:not(.indivEquipe) .buttonGroup:first-child button, &.indivEquipe .buttonGroup button {
+      margin: 5px 0;
     }
   }
 }

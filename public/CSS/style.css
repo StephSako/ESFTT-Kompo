@@ -722,6 +722,29 @@ ul.dropdown-content.select-dropdown li.optgroup span {
 .virtualRankButtons {
   display: flex;
   justify-content: space-evenly;
+  padding-top: 4px;
+}
+.virtualRankButtons .buttonGroup button {
+  height: 20px;
+  line-height: 20px;
+  border-radius: 0;
+  font-size: 80%;
+  padding: 0 7px;
+  margin: 5px 0;
+  background-color: #2196f3;
+}
+.virtualRankButtons .buttonGroup button:hover {
+  background-color: #64b5f6 !important;
+}
+.virtualRankButtons .buttonGroup button.firstBtnVirtualPoints {
+  border-radius: 8px 0 0 8px;
+}
+.virtualRankButtons .buttonGroup button.firstBtnVirtualPoints.withMiddle {
+  right: -3px !important;
+}
+.virtualRankButtons .buttonGroup button.lastBtnVirtualPoints {
+  left: -3px !important;
+  border-radius: 0 8px 8px 0;
 }
 
 .virtualPointsDiv {
@@ -739,6 +762,12 @@ ul.dropdown-content.select-dropdown li.optgroup span {
 table.rankingVirtualPoints {
   font-size: 13px !important;
 }
+table.rankingVirtualPoints:not(.rankingVirtualPointsEquipes) {
+  margin-top: 8px;
+}
+table.rankingVirtualPoints td i.material-icons {
+  width: 18px;
+}
 table.rankingVirtualPoints td:not(.td-chip) {
   padding-left: 0;
   padding-right: 0;
@@ -747,13 +776,9 @@ table.rankingVirtualPoints td.td-name {
   display: none;
 }
 table.rankingVirtualPoints td.progression-classement-td {
-  min-width: 39px;
-  max-width: 39px;
-  width: 39px;
+  width: 34px;
 }
 table.rankingVirtualPoints td.nbJoueurs-td {
-  min-width: 120px;
-  max-width: 120px;
   width: 120px;
 }
 table.rankingVirtualPoints td.nbJoueurs-td span {
@@ -783,11 +808,9 @@ table.rankingVirtualPoints td .chip .nom {
   max-width: 20px;
 }
 #entite-equipe table.rankingVirtualPoints td.td-equipe span.nom {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 #entite-equipe table.rankingVirtualPoints td.progression-td {
-  min-width: 75px;
-  max-width: 75px;
   width: 75px;
 }
 
@@ -875,7 +898,7 @@ table.rankingVirtualPoints td .chip .nom {
   border-radius: 0 0 0 5px;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre p.epreuve {
-  padding-top: 10px;
+  padding-top: 4px;
   margin-top: 30px;
   width: 95%;
   text-align: center;
@@ -1078,6 +1101,25 @@ table.rankingVirtualPoints td .chip .nom {
 
 table.classementPoule td {
   padding: 14px 5px;
+}
+table.classementPoule td.td-position_club {
+  width: 60px;
+}
+table.classementPoule td.td-club_points, table.classementPoule td.td-pg_pp {
+  width: 70px;
+}
+table.classementPoule td.td-club_points .pg_pp, table.classementPoule td.td-pg_pp .pg_pp {
+  display: flex;
+  justify-content: space-evenly;
+}
+table.classementPoule td.td-club_name {
+  display: table-cell;
+  padding-left: 10px;
+  font-size: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 20px;
 }
 
 table.table-backoffice-disponibilites tbody td {
@@ -1468,29 +1510,6 @@ span.progression {
   position: relative;
   left: 5px;
   top: 7px;
-}
-
-.buttonGroup button {
-  height: 20px;
-  line-height: 20px;
-  border-radius: 0;
-  font-size: 80%;
-  padding: 0 7px;
-  margin: 10px 0;
-  background-color: #2196f3;
-}
-.buttonGroup button:hover {
-  background-color: #64b5f6 !important;
-}
-.buttonGroup button.firstBtnVirtualPoints {
-  border-radius: 8px 0 0 8px;
-}
-.buttonGroup button.firstBtnVirtualPoints.withMiddle {
-  right: -3px !important;
-}
-.buttonGroup button.lastBtnVirtualPoints {
-  left: -3px !important;
-  border-radius: 0 8px 8px 0;
 }
 
 a.reload_ranking, a.reload_histoMatches {
@@ -1892,11 +1911,6 @@ blockquote {
     padding: 10px 0;
   }
 }
-@media screen and (min-width: 325px) and (max-width: 460px) {
-  .virtualRankButtons {
-    padding-top: 8px;
-  }
-}
 @media screen and (max-width: 411px) {
   table.rankingVirtualPoints td .chip {
     padding: 0;
@@ -1920,23 +1934,14 @@ blockquote {
     padding-left: 5px;
   }
   table.rankingVirtualPoints td.points-td {
-    min-width: 82px;
-    max-width: 82px;
     width: 82px;
   }
   table.rankingVirtualPoints td.nbJoueurs-td {
-    min-width: 64px;
-    max-width: 64px;
     width: 64px;
   }
   table.rankingVirtualPoints td.progression-td {
-    min-width: 60px;
-    max-width: 60px;
-    width: 60px;
+    width: 56px;
     padding-left: 0;
-  }
-  table.rankingVirtualPoints td.progression-td:nth-child(1) {
-    width: 39px;
   }
 }
 @media screen and (max-width: 383px) {
@@ -1990,9 +1995,10 @@ blockquote {
 @media screen and (max-width: 325px) {
   .virtualRankButtons {
     flex-direction: column;
+    padding-top: 0;
   }
-  .virtualRankButtons .buttonGroup:first-child button {
-    margin-bottom: 0;
+  .virtualRankButtons:not(.indivEquipe) .buttonGroup:first-child button, .virtualRankButtons.indivEquipe .buttonGroup button {
+    margin: 5px 0;
   }
 }
 @media screen and (max-width: 324px) {

@@ -18,19 +18,19 @@ function importJoueursFromExcel(file) {
 
 function sendingImportJoueursFromExcel() {
     $('a#retourMembres').addClass('hide');
-    $('div#tableJoueursImportesLoader').removeClass('hide');
-    $('div#tableJoueursImportes').addClass('hide');
-    $('div#btnFileInputExcelDocument').addClass('disabled');
+    $('#tableJoueursImportesLoader').removeClass('hide');
+    $('#tableJoueursImportes').addClass('hide');
+    $('#btnFileInputExcelDocument').addClass('disabled');
     $('input#filePathExcelDocument').prop('disabled', true);
     $('input#excelDocument').prop('disabled', true);
 }
 
 function endSendingImportJoueursFromExcel(responseTemplate, isError) {
     if (isError) $('a#retourMembres').removeClass('hide');
-    $('div#tableJoueursImportesLoader').addClass('hide');
-    $('div#tableJoueursImportes').removeClass('hide');
-    $('div#tableJoueursImportes').html(responseTemplate);
-    $('div#btnFileInputExcelDocument').removeClass('disabled');
+    $('#tableJoueursImportesLoader').addClass('hide');
+    $('#tableJoueursImportes').removeClass('hide');
+    $('#tableJoueursImportes').html(responseTemplate);
+    $('#btnFileInputExcelDocument').removeClass('disabled');
     $('input#filePathExcelDocument').prop('disabled', false);
     $('input#excelDocument').prop('disabled', false);
 }

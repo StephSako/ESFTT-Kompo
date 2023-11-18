@@ -582,7 +582,6 @@ class FFTTApi
                         : $pointCalculator->getPointDefeat($monthPoints, floatval($adversairePoints));
                     $virtualMonthlyPointsWon += $points * $coeff;
 
-                    /** TODO Supprimer les matches en 0 qui valent 0 du mois dernier **/
                     $matches[] = new CalculatedUnvalidatedPartie(
                         $unvalidatedParty->getAdversaireNom() . ' ' . $unvalidatedParty->getAdversairePrenom(),
                         $unvalidatedParty->isForfait(),

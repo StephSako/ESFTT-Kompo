@@ -153,11 +153,6 @@ class CompetiteurRepository extends ServiceEntityRepository
 
         $result = $result
             ->where('c.isCompetiteur = true')
-            ->orderBy(implode(', ', array_map(function ($c) {
-                return 'numero' . $c->getSlug();
-            }, $championnats)))
-            ->addOrderBy('c.nom')
-            ->addOrderBy('c.prenom')
             ->getQuery()
             ->getResult();
 
@@ -179,9 +174,16 @@ class CompetiteurRepository extends ServiceEntityRepository
                 $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe ' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : self::LABEL_SANS_EQUIPE;
                 $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
                 usort($queryChamp[$nomChamp]["dispos"][$labelEquipe], function ($dispo1, $dispo2) {
+                    if ($dispo2['classement_officiel'] == $dispo1['classement_officiel']) {
+                        if ($dispo2['nom'] == $dispo1['nom']) {
+                            return strcmp($dispo2['prenom'], $dispo1['prenom']);
+                        }
+                        return strcmp($dispo2['nom'], $dispo1['nom']);
+                    }
                     return $dispo2['classement_officiel'] - $dispo1['classement_officiel'];
                 });
             }
+            ksort($queryChamp[$nomChamp]["dispos"]);
             $queryChamp[$nomChamp]["dispos"] = $this->moveSansEquipesInEndList($queryChamp[$nomChamp]["dispos"]);
         }
 

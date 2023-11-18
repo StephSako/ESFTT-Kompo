@@ -10,7 +10,9 @@
                 <th>Nombre d'équipes</th>
                 {% if app.user.admin %}
                     <th></th>
-                    <th></th>
+                    {% if divisions|filter((v, k) => (v.nbEquipes == 0))|length %}
+                        <th></th>
+                    {% endif %}
                 {% endif %}
             </tr>
             </thead>
@@ -30,17 +32,19 @@
                                 <i class="material-icons">edit</i>
                             </a>
                         </td>
-                        <td>
-                            {% if division.nbEquipes == 0 %}
-                                <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
-                                    <button class="btn waves-effect red lighten-2 btn_gestion">
-                                        <i class="material-icons">delete</i>
-                                    </button>
-                                </form>
-                            {% endif %}
-                        </td>
+                        {% if divisions|filter((v, k) => (v.nbEquipes == 0))|length %}
+                            <td>
+                                {% if division.nbEquipes == 0 %}
+                                    <form method="post" action="{{ path('backoffice.division.delete', {idDivision: division.idDivision}) }}" onsubmit="return confirm('Êtes-vous sûr de supprimer la division ?')">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ division.idDivision) }}">
+                                        <button class="btn waves-effect red lighten-2 btn_gestion">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}

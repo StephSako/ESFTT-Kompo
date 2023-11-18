@@ -61,7 +61,7 @@
                         {% if 'roles' in joueur.violations|keys %}
                             class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
-                            data-tooltip="{{ joueur.violations['roles']['message'] }}"
+                            data-tooltip="{{ joueur.violations.roles.message }}"
                         {% endif %}
                 >
                     {{ _membre.badgesRoles(joueur.joueur, {sheetDataHasViolations, dejaInscrit: joueur.dejaInscrit}) }}
@@ -70,11 +70,11 @@
                         <span {% if 'licence' in joueur.violations|keys %}
                             class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
-                            data-tooltip="{{ joueur.violations['licence']['message'] }}"
+                            data-tooltip="{{ joueur.violations.licence.message }}"
                         {% endif %}
                         >
-                            {% if 'licence' in joueur.violations|keys and 'value' in joueur.violations['licence']|keys %}
-                                {{ joueur.violations['licence']['value'] }}
+                            {% if 'licence' in joueur.violations|keys and 'value' in joueur.violations.licence|keys %}
+                                {{ joueur.violations.licence.value }}
                             {% else %}
                                 {{ joueur.joueur.licence }}
                             {% endif %}
@@ -84,11 +84,11 @@
                         <span {% if 'nom' in joueur.violations|keys %}
                             class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
-                            data-tooltip="{{ joueur.violations['nom']['message'] }}"
+                            data-tooltip="{{ joueur.violations.nom.message }}"
                         {% endif %}
                         >
-                            {% if 'nom' in joueur.violations|keys and 'value' in joueur.violations['nom']|keys %}
-                                {{ joueur.violations['nom']['value'] }}
+                            {% if 'nom' in joueur.violations|keys and 'value' in joueur.violations.nom|keys %}
+                                {{ joueur.violations.nom.value }}
                             {% else %}
                                 {{ joueur.joueur.nom }}
                             {% endif %}
@@ -96,11 +96,11 @@
                     <span {% if 'prenom' in joueur.violations|keys %}
                         class="pastille reset white-text red lighten-1 tooltipped"
                         data-position="top"
-                        data-tooltip="{{ joueur.violations['prenom']['message'] }}"
+                        data-tooltip="{{ joueur.violations.prenom.message }}"
                     {% endif %}
                         >
-                            {% if 'prenom' in joueur.violations|keys and 'value' in joueur.violations['prenom']|keys %}
-                                {{ joueur.violations['prenom']['value'] }}
+                            {% if 'prenom' in joueur.violations|keys and 'value' in joueur.violations.prenom|keys %}
+                                {{ joueur.violations.prenom.value }}
                             {% else %}
                                 {{ joueur.joueur.prenom }}
                             {% endif %}
@@ -110,10 +110,10 @@
                         <span {% if 'dateNaissance' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
                             data-position="top"
-                            data-tooltip="{{ joueur.violations['dateNaissance']['message'] }}"
+                            data-tooltip="{{ joueur.violations.dateNaissance.message }}"
                             {% endif %}>
-                            {% if 'dateNaissance' in joueur.violations|keys and 'value' in joueur.violations['dateNaissance']|keys %}
-                                {{ joueur.violations['dateNaissance']['value'] }}
+                            {% if 'dateNaissance' in joueur.violations|keys and 'value' in joueur.violations.dateNaissance|keys %}
+                                {{ joueur.violations.dateNaissance.value }}
                             {% else %}
                                 {% if joueur.joueur.dateNaissance %}
                                     {{ joueur.joueur.dateNaissance|date('d/m/Y') }}
@@ -124,9 +124,9 @@
                 </td>
                 <td>
                     {% if 'anneeCertificatMedical' in joueur.violations|keys %}
-                        <span class="pastille reset white-text red lighten-1 tooltipped" data-position="top" data-tooltip="{{ joueur.violations['anneeCertificatMedical']['message'] }}">
-                                {% if 'value' in joueur.violations['anneeCertificatMedical']|keys %}
-                                    {{ joueur.violations['anneeCertificatMedical']['value'] }}
+                        <span class="pastille reset white-text red lighten-1 tooltipped" data-position="top" data-tooltip="{{ joueur.violations.anneeCertificatMedical.message }}">
+                                {% if 'value' in joueur.violations.anneeCertificatMedical|keys %}
+                                    {{ joueur.violations.anneeCertificatMedical.value }}
                                 {% else %}
                                     {{ joueur.joueur.anneeCertificatMedical }}
                                 {% endif %}
@@ -147,11 +147,11 @@
                             {% if 'classement_officiel' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
                                 data-position="top"
-                                data-tooltip="{{ joueur.violations['classement_officiel']['message'] }}"
+                                data-tooltip="{{ joueur.violations.classement_officiel.message }}"
                             {% endif %}
                         >
-                            {% if 'classement_officiel' in joueur.violations|keys and 'value' in joueur.violations['classement_officiel']|keys %}
-                                {{ joueur.violations['classement_officiel']['value'] }}
+                            {% if 'classement_officiel' in joueur.violations|keys and 'value' in joueur.violations.classement_officiel|keys %}
+                                {{ joueur.violations.classement_officiel.value }}
                             {% else %}
                                 {{ joueur.joueur.classementOfficiel }}
                             {% endif %}
@@ -162,7 +162,7 @@
                             {% if 'mail' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
                                 data-position="top"
-                                data-tooltip="{{ joueur.violations['mail']['message'] }}"
+                                data-tooltip="{{ joueur.violations.mail.message }}"
                             {% endif %}
                         >
                             {{ joueur.joueur.mail }}
@@ -174,7 +174,7 @@
                                     style="margin-top: 2px"
                                     class="pastille reset white-text red lighten-1 tooltipped"
                                     data-position="top"
-                                    data-tooltip="{{ joueur.violations['mail2']['message'] }}"
+                                    data-tooltip="{{ joueur.violations.mail2.message }}"
                                 {% endif %}
                             >
                                 {{ joueur.joueur.mail2 }}
@@ -186,7 +186,7 @@
                             {% if 'phoneNumber' in joueur.violations|keys %}
                                 class="pastille reset white-text red lighten-1 tooltipped"
                                 data-position="top"
-                                data-tooltip="{{ joueur.violations['phoneNumber']['message'] }}"
+                                data-tooltip="{{ joueur.violations.phoneNumber.message }}"
                             {% endif %}
                         >
                             {{ joueur.joueur.phoneNumber | split('', 2) | join(' ') }}
@@ -197,7 +197,7 @@
                                 {% if 'phoneNumber2' in joueur.violations|keys %}
                                     class="pastille reset white-text red lighten-1 tooltipped"
                                     data-position="top"
-                                    data-tooltip="{{ joueur.violations['phoneNumber2']['message'] }}"
+                                    data-tooltip="{{ joueur.violations.phoneNumber2.message }}"
                                 {% endif %}
                             >
                                 {{ joueur.joueur.phoneNumber2 | split('', 2) | join(' ') }}

@@ -21,14 +21,14 @@
                 {% if options.isCustom is defined and options.isCustom %}
                     {{ _self.modalCustomMessage(id, response) }}
                 {% else %}
-                    {% if response['sms'].contactables is empty and response['sms'].notContactables is empty and response['mail'].contactables is empty and response['mail'].notContactables is empty %}
+                    {% if response.sms.contactables is empty and response.sms.notContactables is empty and response.mail.contactables is empty and response.mail.notContactables is empty %}
                         <p style="margin-bottom: 10px; padding-top: 0; padding-bottom: 0; margin-top: 10px;"><span class="pastille orange reset">Aucun joueur trouvé</span></p>
                     {% else %}
                         {% if not options.noSMS is defined %}
-                            {{ _self.cardAlertPlayers(response['sms'], 'hide-on-med-and-up', 'SMS', 'par SMS', linkSMS, id, showListContactables) }}
+                            {{ _self.cardAlertPlayers(response.sms, 'hide-on-med-and-up', 'SMS', 'par SMS', linkSMS, id, showListContactables) }}
                         {% endif %}
 
-                        {{ _self.cardAlertPlayers(response['mail'], null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id, showListContactables) }}
+                        {{ _self.cardAlertPlayers(response.mail, null, 'mail', options.btnTxtMail ?? 'par e-mail', linkMail, id, showListContactables) }}
                     {% endif %}
                 {% endif %}
             </div>
@@ -41,7 +41,7 @@
 
 {% macro cardAlertPlayers(response, hideClass, media, btnTxt, link, id, showListContactables) %}
     <div class="{{ hideClass }} card grey lighten-3 z-depth-0" style="overflow:auto;{% if media == 'SMS' %}margin-bottom: 10px;{% endif %}">
-        {% if response['contactables'] is not empty %}
+        {% if response.contactables is not empty %}
             <a href="{{ link }}" class="center-align btn blue lighten-2" id="btn_{{ media }}_{{ id }}">
                 {{ btnTxt }}
             </a>
@@ -58,20 +58,20 @@
             </script>
         {% endif %}
 
-        {% if response['notContactables'] is not empty %}
-            {% if response['contactables'] is not empty %}
-                <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response['contactables'] | length }} membre{{ response['contactables'] | length > 1 ? 's' : '' }} contactable{{ response['contactables'] | length > 1 ? 's' : '' }}</p>
+        {% if response.notContactables is not empty %}
+            {% if response.contactables is not empty %}
+                <p class="green-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: 10px;">{{ response.contactables | length }} membre{{ response.contactables | length > 1 ? 's' : '' }} contactable{{ response.contactables | length > 1 ? 's' : '' }}</p>
             {% endif %}
-            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: {{ response['contactables'] is empty ? '4px' : '0' }};">{{ response['notContactables'] | length }} membre{{ response['notContactables'] | length > 1 ? 's' : '' }} non contactable{{ response['notContactables'] | length > 1 ? 's' : '' }}{% if response['contactables'] is empty %} par {{ media }}{% endif %}</p>
+            <p class="red-text" style="margin-bottom: 0; padding-top: 0; padding-bottom: 4px; margin-top: {{ response.contactables is empty ? '4px' : '0' }};">{{ response.notContactables | length }} membre{{ response.notContactables | length > 1 ? 's' : '' }} non contactable{{ response.notContactables | length > 1 ? 's' : '' }}{% if response.contactables is empty %} par {{ media }}{% endif %}</p>
         {% endif %}
 
-        {% if response['contactables'] is not empty and response['notContactables'] is empty and not showListContactables %}
+        {% if response.contactables is not empty and response.notContactables is empty and not showListContactables %}
             <p class="pastille green reset center lighten-1" style="margin-top: 10px; margin-bottom: 10px;">Tous les joueurs sont contactables</p>
         {% else %}
-            {% if response['notContactables'] is not empty or showListContactables %}
+            {% if response.notContactables is not empty or showListContactables %}
                 <ul class="row" style="margin-bottom: 0 !important">
-                    {% if showListContactables and response['contactables'] is not empty %}
-                        {% for joueurContactable in response['contactables'] %}
+                    {% if showListContactables and response.contactables is not empty %}
+                        {% for joueurContactable in response.contactables %}
                             <li class="col s12 m6" id="contactable_{{ joueurContactable.idCompetiteur }}">
                                 <div class="chip">
                                     {% if joueurContactable.avatar %}
@@ -84,7 +84,7 @@
                             </li>
                         {% endfor %}
                     {% endif %}
-                    {% for joueurNotContactable in response['notContactables'] %}
+                    {% for joueurNotContactable in response.notContactables %}
                         <li class="col s12 m6" id="notContactables_{{ joueurNotContactable.idCompetiteur }}">
                             <div class="chip">
                                 {% if joueurNotContactable.avatar %}

@@ -52,8 +52,8 @@ function getCheckedJoueurs() {
 }
 
 function getUsernamesToRegister() {
-    $('div#progress-bar').removeClass('hide');
-    $('div#importButtons').addClass('hide');
+    $('#progress-bar').removeClass('hide');
+    $('#importButtons').addClass('hide');
     $('button#enregistrerJoueurs').addClass('disabled');
     $('a#annulerImportJoueurs').addClass('disabled');
     $("input:hidden[name='usernamesToRegister']")[0].value = JSON.stringify(getCheckedJoueurs());

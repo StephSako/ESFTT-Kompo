@@ -1,7 +1,7 @@
 {% if erreur %}
     <p class="pastille red white-text erreurXHR">{{ erreur }}</p>
 {% else %}
-    <div class="virtualRankButtons">
+    <div class="virtualRankButtons indivEquipe">
         <div class="buttonGroup">
             <button class="btn waves-effect firstBtnVirtualPoints" type="submit" name="action" onclick="changeEntite('individuel')" id="btnIndividuel">Individuel</button>
             <button class="btn waves-effect lastBtnVirtualPoints" type="submit" name="action" onclick="changeEntite('equipe')" id="btnEquipe">Par équipe</button>
@@ -215,25 +215,25 @@
 {% macro classement(classementVirtuel, pointsWonField) %}
     {% for joueur in classementVirtuel %}
         <tr>
-            {% if joueur["gap"] is defined %}
+            {% if joueur.gap is defined %}
                 <td class="progression-classement-td">
-                    {% if joueur["hasLicence"] %}
-                        <i class="material-icons {{ joueur["gap"]["color"] }}-text">{% if joueur["gap"]["gap"] > 0 %}keyboard_arrow_up{% elseif joueur["gap"]["gap"] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur["gap"]["color"] }}-text">{{ joueur["gap"]["gap"] | abs }}</span>
+                    {% if joueur.hasLicence %}
+                        <i class="material-icons {{ joueur.gap.color }}-text">{% if joueur.gap.gap > 0 %}keyboard_arrow_up{% elseif joueur.gap.gap == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i><span class="{{ joueur.gap.color }}-text">{{ joueur.gap.gap | abs }}</span>
                     {% endif %}
                 </td>
             {% endif %}
             <td class="td-chip">
                 <div class="chip">
-                    <img src="{{ asset(joueur["avatar"]) | imagine_filter('thumb') }}" alt="Avatar">
-                    <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
+                    <img src="{{ asset(joueur.avatar) | imagine_filter('thumb') }}" alt="Avatar">
+                    <span class="nom{% if joueur.idCompetiteur == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur.nom }}</span>
                 </div>
             </td>
-            <td class="td-name{% if joueur["gap"] is not defined %} pl5{% endif %}">
-                <span class="nom{% if joueur["idCompetiteur"] == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur["nom"] }}</span>
+            <td class="td-name{% if joueur.gap is not defined %} pl5{% endif %}">
+                <span class="nom{% if joueur.idCompetiteur == app.user.idCompetiteur %} bold light_blue{% endif %}">{{ joueur.nom }}</span>
             </td>
-            {% if joueur["hasLicence"] %}
+            {% if joueur.hasLicence %}
                 <td class="points-td">
-                    <span class="pastille reset virtualPoints">{{ joueur["pointsVirtuelsVirtualPoints"] | round(1, 'floor') }} pts</span>
+                    <span class="pastille reset virtualPoints">{{ joueur.pointsVirtuelsVirtualPoints | round(1, 'floor') }} pts</span>
                 </td>
                 <td class="progression-td">
                     <span class="{% if joueur[pointsWonField] > 0 %}green{% elseif joueur[pointsWonField] == 0 %}grey{% else %}red{% endif %}-text">

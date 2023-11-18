@@ -6,16 +6,22 @@
         <table class="striped classementPoule">
             {% for equipeClassement in classementPoule %}
                 <tr>
-                    <td style="max-width: 45px">
+                    <td class="td-position_club">
                         {% if equipeClassement.classement %}
                             <span class="badge light-blue darken-2 white-text">{{ equipeClassement.classement }}</span>
                         {% endif %}
                     </td>
-                    <td class="{{ equipeClassement.isOurClub }}" style="max-width: 160px; padding-left: 10px; font-size: 15px;">
+                    <td class="{{ equipeClassement.isOurClub }} td-club_name">
                         <span class="truncate">{{ equipeClassement.nom }}</span>
                     </td>
-                    <td>
+                    <td class="td-club_points">
                         <span class="pastille reset virtualPoints truncate">{{ equipeClassement.points }} pts</span>
+                    </td>
+                    <td class="td-pg_pp">
+                        <div class="pg_pp">
+                            <div class="green-text">{{ equipeClassement.victoires }}</div>
+                            <div class="red-text">{{ equipeClassement.defaites }}</div>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

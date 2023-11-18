@@ -398,7 +398,7 @@
                                 </a>
                                 {% if not compo.isEmpty %}
                                     {% set getListContactSelectedPlayers = compo.getListContactSelectedPlayers(app.user.idCompetiteur) %}
-                                    {% if getListContactSelectedPlayers['nbJoueursWithoutMe'] > 0 %}
+                                    {% if getListContactSelectedPlayers.nbJoueursWithoutMe > 0 %}
                                         <a href="#modal{{ compo.id }}" class="center-align btn waves-effect blue lighten-2 modal-trigger">
                                             <i class="material-icons campaign">campaign</i>
                                         </a>
@@ -407,8 +407,8 @@
                                             compo.id,
                                             getListContactSelectedPlayers,
                                             'Convoquer les joueurs',
-                                            'mailto:' ~ getListContactSelectedPlayers['mail']['toString'] ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                            'sms:' ~ getListContactSelectedPlayers['sms']['toString'] ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
+                                            'mailto:' ~ getListContactSelectedPlayers.mail.toString ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
+                                            'sms:' ~ getListContactSelectedPlayers.sms.toString ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
                                             false
                                         ) }}
                                     {% endif %}

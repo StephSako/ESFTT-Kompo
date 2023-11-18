@@ -4,8 +4,8 @@ function getHistoMatches(forceReloadHistoMatches = false, licence = null) {
         if (forceReloadHistoMatches) {
             alreadyCalledHistoMatches = false;
             $('a.reload_histoMatches').addClass('hide');
-            $('div#histoMatchesContentLoader').removeClass('hide');
-            $('div#histoMatchesContent').addClass('hide');
+            $('#histoMatchesContentLoader').removeClass('hide');
+            $('#histoMatchesContent').addClass('hide');
             getPersonnalClassementVirtuel(licence, true);
         } else {
             $.ajax({
@@ -29,8 +29,8 @@ function templatingHistoMatches(selector, response, general = false) {
     $(selector).each(function () {
         if (general) {
             $('a.reload_histoMatches').removeClass('hide');
-            $('div#histoMatchesContentLoader').addClass('hide');
-            $('div#histoMatchesContent').removeClass('hide');
+            $('#histoMatchesContentLoader').addClass('hide');
+            $('#histoMatchesContent').removeClass('hide');
         }
         $(this).removeClass('hide').html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
     })

@@ -32,20 +32,20 @@
                 <a class="dropdown-trigger btn btn_form waves-effect light-blue darken-1" href="#!" data-target="menu_dropdown_contact">Catégories</a>
                 <ul id="menu_dropdown_contact" class="dropdown-content white-text">
                     {% for nom, categorie in categories %}
-                        <li><a class="white-text modal-trigger" href="#modal{{ nom }}">{{ categorie['titleItem'] }}</a></li>
+                        <li><a class="white-text modal-trigger" href="#modal{{ nom }}">{{ categorie.titleItem }}</a></li>
                     {% endfor %}
                 </ul>
 
                 {% for nom, categorie in categories %}
                     {{ _modalContact.modalAlertPlayers(
                         nom,
-                        categorie['joueurs'],
-                        categorie['titleModale'],
-                        (categorie['isCustom'] is not defined ? ('mailto:' ~ categorie['joueurs']['mail']['toString']) : null),
-                    (categorie['isCustom'] is not defined ? ('sms:' ~ categorie['joueurs']['sms']['toString']) : null),
+                        categorie.joueurs,
+                        categorie.titleModale,
+                        (categorie.isCustom is not defined ? ('mailto:' ~ categorie.joueurs.mail.toString) : null),
+                    (categorie.isCustom is not defined ? ('sms:' ~ categorie.joueurs.sms.toString) : null),
                     true,
                     {
-                        isCustom: categorie['isCustom'] is defined
+                        isCustom: categorie.isCustom is defined
                     }) }}
                 {% endfor %}
 

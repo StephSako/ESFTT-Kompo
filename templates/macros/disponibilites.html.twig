@@ -87,10 +87,10 @@
             'AlertNoDispoSet' ~ nomModal,
             joueursNonDeclaresContact,
             'Joueurs non déclarés',
-            'mailto:' ~ joueursNonDeclaresContact['mail']['toString'] ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
-        'sms:' ~ joueursNonDeclaresContact['sms']['toString'] ~ ';?&body=' ~ messageJoueursSansDispo,
+            'mailto:' ~ joueursNonDeclaresContact.mail.toString ~ '?subject=Kompo - ' ~ objetJoueursSansDispos ~ '&body=' ~ (messageJoueursSansDispo|raw),
+        'sms:' ~ joueursNonDeclaresContact.sms.toString ~ ';?&body=' ~ messageJoueursSansDispo,
         true,
-        { info: "Alerter les joueurs n'ayant pas déclaré leur disponiblité pour cette journée" }
+        { info: "Alerter les joueurs n'ayant pas déclaré leurs disponiblités pour cette journée" }
         ) }}
     {% endif %}
 {% endmacro %}
@@ -109,8 +109,8 @@
     {% for nomChamp, disponibilites in allDisponibilites %}
         <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}" style="margin-top: 15px">
 
-            {% for nomEquipe, disponibilitesEquipes in disponibilites["dispos"] %}
-                {% if not (disponibilites["dispos"]|length == 1 and 'Sans équipe' in disponibilites["dispos"]|keys) %}
+            {% for nomEquipe, disponibilitesEquipes in disponibilites.dispos %}
+                {% if not (disponibilites.dispos|length == 1 and 'Sans équipe' in disponibilites.dispos|keys) %}
                     <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ nomEquipe }}</h6>
                 {% endif %}
 
@@ -118,12 +118,12 @@
                     <thead>
                     <tr>
                         <th>
-                            {% if not (disponibilites["dispos"]|length == 1 and 'Sans équipe' in disponibilites["dispos"]|keys) %}
+                            {% if not (disponibilites.dispos|length == 1 and 'Sans équipe' in disponibilites.dispos|keys) %}
                                 <h6 class="hide-on-med-and-down"><b>{{ nomEquipe }}</b></h6>
                             {% endif %}
                         </th>
 
-                        {% for i in 1..disponibilites["nbJournees"] %}
+                        {% for i in 1..disponibilites.nbJournees %}
                             <th>J{{ i }}</th>
                         {% endfor %}
                     </tr>
@@ -140,7 +140,7 @@
                                     </span>
                                 </div>
                             </td>
-                            {% for i in 1..disponibilites["nbJournees"] %}
+                            {% for i in 1..disponibilites.nbJournees %}
                                 <td>
                                     {% if (disponibilite[disponibilites.slug]|split(','))[i-1] != -1 %}
                                         {% if ((disponibilite['selections' ~ disponibilites.slug])|split(','))[i-1] != -1 %}
@@ -213,7 +213,7 @@
                 <li>
                     <div class="collapsible-header">
                         <div class="chip">
-                            <img src="{{ asset((infos)['avatar'] ? 'images/profile_pictures/' ~ (infos)['avatar'] : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
+                            <img src="{{ asset((infos).avatar ? 'images/profile_pictures/' ~ (infos).avatar : 'images/account.png') | imagine_filter('thumb') }}" alt="Avatar">
                             <span>{{ nomJoueur }}</span>
                         </div>
                         <i class="caret material-icons">keyboard_arrow_down</i>

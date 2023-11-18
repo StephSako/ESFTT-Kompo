@@ -28,14 +28,14 @@
                         <tbody>
                         {% for nom, brulage in brulagesEquipe %}
                             <tr>
-                                <td {% if brulage['idCompetiteur'] == app.user.idCompetiteur %}class="bold light_blue"{% endif %}>
+                                <td {% if brulage.idCompetiteur == app.user.idCompetiteur %}class="bold light_blue"{% endif %}>
                                     {{ nom }}
                                 </td>
-                                {% for b in brulage['brulage'] %}
+                                {% for b in brulage.brulage %}
                                     <td class="center">
-                                        {% if brulageCumule(brulage['brulage'], loop.index) >= limiteBrulage %}
+                                        {% if brulageCumule(brulage.brulage, loop.index) >= limiteBrulage %}
                                             <i class="red-text material-icons">highlight_off</i>
-                                        {% elseif brulageCumule(brulage['brulage'], loop.index) == limiteBrulage - 1 %}
+                                        {% elseif brulageCumule(brulage.brulage, loop.index) == limiteBrulage - 1 %}
                                             <i class="orange-text material-icons">error_outline</i>
                                         {% endif %}
                                     </td>
@@ -113,13 +113,13 @@
                         {% for nom, brulage in brulagesEquipe %}
                             <tr>
                                 <td>
-                                    {% if brulage["bruleJ2"] == true %}<i class="material-icons red-text">whatshot</i>{% endif %}{{ nom }}
+                                    {% if brulage.bruleJ2 == true %}<i class="material-icons red-text">whatshot</i>{% endif %}{{ nom }}
                                 </td>
-                                {% for brulageJournee in brulage['brulage'] %}
+                                {% for brulageJournee in brulage.brulage %}
                                     <td class="center">
-                                        {% if brulageCumule(brulage['brulage'], loop.index) >= championnatLimiteBrulage %}
+                                        {% if brulageCumule(brulage.brulage, loop.index) >= championnatLimiteBrulage %}
                                             <i class="red-text material-icons">highlight_off</i>
-                                        {% elseif brulageCumule(brulage['brulage'], loop.index) == championnatLimiteBrulage - 1 %}
+                                        {% elseif brulageCumule(brulage.brulage, loop.index) == championnatLimiteBrulage - 1 %}
                                             <i class="orange-text material-icons">error_outline</i>
                                         {% endif %}
                                     </td>

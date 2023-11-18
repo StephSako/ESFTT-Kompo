@@ -15,12 +15,12 @@
                     {% endif %}
                 </p>
                 {% if not journee.errorMatchSheet %}
-                    {% if 'teamForfeit' in journee|keys %}
-                        <p><span style="border-radius: 5px; padding: 5px;" class="pastille grey darken-5">{{ journee.teamForfeit }} forfait</span></p>
+                    {% if 'teamForfait' in journee|keys %}
+                        <p><span style="border-radius: 5px; padding: 5px;" class="pastille grey darken-5">{{ journee.teamForfait }} forfait</span></p>
                     {% elseif journee.joueurs|length > 0 %}
                         <table class="striped centered table-last-compos">
                             {% for nom, donnees in journee.joueurs %}
-                                {% set nomFormatted = nom|split('#')[0] %}
+                                {% set nomFormatted = nom|split('#')|first %}
                                 {% if nomFormatted %}
                                     <tr>
                                         <td style="max-width: 50px">

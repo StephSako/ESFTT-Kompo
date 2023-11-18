@@ -68,10 +68,10 @@ function getPersonnalClassementVirtuel(licence, isReloadFromHistoMatches = false
             type: 'POST',
             dataType: 'json',
             success: (responseTemplate) => {
-                templatingClassementVirtuel('.personnal_virtual_rank', responseTemplate, isReloadFromHistoMatches);
+                templatingClassementVirtuel('.personnal_virtual_rank', responseTemplate, '.preloader_personnal_virtual_rank', isReloadFromHistoMatches);
             },
             error: () => {
-                templatingClassementVirtuel('.personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>", isReloadFromHistoMatches);
+                templatingClassementVirtuel('.personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>", '.preloader_personnal_virtual_rank', isReloadFromHistoMatches);
             }
         });
     }
@@ -85,7 +85,7 @@ function templatingClassementVirtuel(selector, response, preloader, reloadHistoM
             $(selector).removeClass('hide');
             $(this).html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
         } else {
-            $('.preloader_personnal_virtual_rank').addClass('hide'); // On cache le préloader
+            $(preloader).addClass('hide');
             $(this).removeClass('hide').html(response.replaceAll('chart_js_historique_id', 'chart_js_historique_id' + $(this)[0].id));
         }
     })
