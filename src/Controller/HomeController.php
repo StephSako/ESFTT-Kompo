@@ -1013,13 +1013,15 @@ class HomeController extends AbstractController
                 $virtualPointsApi = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
                 $virtualPointsProgression = $virtualPointsApi->getSeasonlyPointsWon();
                 $virtualPoints = $virtualPointsApi->getVirtualPoints();
-                $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -8);
+                $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -3);
                 $points = array_map(function ($histo) {
                     return $histo->getPoints();
                 }, $historique);
                 $annees = array_map(function ($histo) {
                     return $histo->getAnneeFin();
                 }, $historique);
+                $annees[] = 1;
+                $points[] = $virtualPoints;
 
                 // Cache pour l'historique des matches
                 $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches());
@@ -1028,6 +1030,7 @@ class HomeController extends AbstractController
                 $erreur = 'Points virtuels indisponibles';
                 $virtualPointsProgression = 0.0;
                 $virtualPoints = 0.0;
+                $annees = [];
                 $points = [];
             }
         } else $erreur = 'Licence du joueur inexistante';

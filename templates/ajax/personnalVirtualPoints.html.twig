@@ -8,9 +8,7 @@
     <script>
         $(document).ready(function () {
             const annees = JSON.parse('{{ annees | json_encode | raw }}');
-            annees.push(1);
             const points = JSON.parse('{{ points | json_encode | raw }}');
-            points.push({{ virtualPoints | round(1, 'floor') }});
             const ctx = document.getElementById('chart_js_historique_id').getContext('2d');
             const options = {
                 type: 'line',
@@ -39,8 +37,8 @@
                         y: {
                             display: false,
                             beginAtZero: false,
-                            max: Math.max.apply(Math, points) + 30,
-                            min: Math.min.apply(Math, points) - 30
+                            max: Math.max.apply(Math, points) + 20,
+                            min: Math.min.apply(Math, points) - 20
                         }
                     }
                 },
