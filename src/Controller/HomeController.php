@@ -251,7 +251,8 @@ class HomeController extends AbstractController
             'message' => $countCompetiteursWithoutClassement ? ($countJoueursWithoutLicence ? ' et ' : 'Il y a ') . '<b>' . $countCompetiteursWithoutClassement . ' compétiteur' . ($countCompetiteursWithoutClassement > 1 ? 's' : '') . "</b> dont le classement officiel n'est pas défini" : ''
         ];
 
-        $linkNextJournee = ($utilController->nextJourneeToPlayAllChamps()->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat()->getIdChampionnat() . '/' . $utilController->nextJourneeToPlayAllChamps()->getIdJournee() : null);
+        $nextJourneeToPlayAllChamps = $utilController->nextJourneeToPlayAllChamps();
+        $linkNextJournee = ($nextJourneeToPlayAllChamps->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $nextJourneeToPlayAllChamps->getIdChampionnat()->getIdChampionnat() . '/' . $nextJourneeToPlayAllChamps->getIdJournee() : null);
         $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat());
         $journeesWithReportedRencontresFormatted = array_filter($journeesWithReportedRencontres['rencontres'], function (Rencontre $r) use ($idJournee) {
             return $r->getIdJournee()->getIdJournee() == $idJournee;

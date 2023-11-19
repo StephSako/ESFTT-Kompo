@@ -103,8 +103,9 @@ class SecurityController extends AbstractController
         $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
 
         if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+            $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $nextJourneeToPlayAllChampsIdChamp);
 
             $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
 

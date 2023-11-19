@@ -76,8 +76,9 @@ class FooterController extends AbstractController
 
         $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
         if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+            $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $nextJourneeToPlayAllChampsIdChamp);
 
             $setting = $this->settingsRepository->find($type);
             if (!$setting) {
@@ -153,8 +154,9 @@ class FooterController extends AbstractController
 
         $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
         if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+            $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $nextJourneeToPlayAllChampsIdChamp);
 
             // Disponibilités du joueur
             $id = $championnat->getIdChampionnat();
@@ -197,8 +199,9 @@ class FooterController extends AbstractController
 
         $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
         if (!$isBackoffice) {
-            if (!$this->get('session')->get('type')) $championnat = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
-            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat());
+            $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
+            if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
+            else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $nextJourneeToPlayAllChampsIdChamp);
 
             // Disponibilités du joueur
             $id = $championnat->getIdChampionnat();
