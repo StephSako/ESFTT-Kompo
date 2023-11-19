@@ -934,6 +934,12 @@ table.rankingVirtualPoints td .chip .nom {
 .modal.modal-small {
   width: 45% !important;
 }
+.modal.modal-small .modal-gps .row.hostConsigne span {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
 .modal.modal-small .modal-gps h5 {
   margin-top: 0;
   margin-bottom: 10px;

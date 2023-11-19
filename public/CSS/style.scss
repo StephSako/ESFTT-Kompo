@@ -1116,6 +1116,13 @@ table.rankingVirtualPoints {
     width: 45% !important;
 
     & .modal-gps {
+      .row.hostConsigne span {
+        margin-top: 0;
+        margin-bottom: 10px;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+
       h5 {
         margin-top: 0;
         margin-bottom: 10px;
