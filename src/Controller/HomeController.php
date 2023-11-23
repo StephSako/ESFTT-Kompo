@@ -985,9 +985,13 @@ class HomeController extends AbstractController
         $erreur = null;
         $matches = [];
         try {
-            $matches = $utilController->formatHistoMatches($this->get('session')->get('histoMatches')) ?? [];
+            $histoMatches = $this->get('session')->get('histoMatches');
+            if ($histoMatches == null) {
+                throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
+            }
+            $matches = $utilController->formatHistoMatches($histoMatches);
         } catch (Exception $e) {
-            $erreur = 'Un problème est survenu lors du calcul anticipé des matches';
+            $erreur = $e->getCode() === 12345 ? $e->getMessage() : 'Un problème est survenu lors du calcul anticipé des matches';
         }
         return new JsonResponse($this->render('ajax/histoMatches.html.twig', [
             'matchesDates' => $matches,
