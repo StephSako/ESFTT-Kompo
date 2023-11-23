@@ -9,7 +9,9 @@
         $(document).ready(function () {
             const annees = JSON.parse('{{ annees | json_encode | raw }}');
             const points = JSON.parse('{{ points | json_encode | raw }}');
-            const ctx = document.getElementById('chart_js_historique_id').getContext('2d');
+            const contexte = document.getElementById('chart_js_historique_id').getContext('2d');
+            const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y && ctx.p1DataIndex === points.length - 1 ? value : undefined;
+            const up = (ctx, value) => ctx.p0.parsed.y < ctx.p1.parsed.y && ctx.p1DataIndex === points.length - 1 ? value : undefined;
             const options = {
                 type: 'line',
                 data: {
@@ -18,7 +20,10 @@
                         data: points,
                         borderWidth: 2,
                         fill: false,
-                        borderColor: '#2196f3',
+                        borderColor: 'black',
+                        segment: {
+                            borderColor: (ctx) => down(ctx, '#F44336') || up(ctx, '#4CAF50')
+                        },
                         tension: 0,
                         pointRadius: 0
                     }]
@@ -43,7 +48,7 @@
                     }
                 },
             };
-            new Chart(ctx, options);
+            new Chart(contexte, options);
         });
     </script>
 {% else %}

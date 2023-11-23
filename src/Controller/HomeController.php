@@ -26,6 +26,7 @@ class HomeController extends AbstractController
 {
     const ABSENT_ABSENT = 'Absent Absent';
     const WO = 'WO';
+    const LENGTH_GRAPH_CLASSEMENT = 4;
     private $em;
     private $competiteurRepository;
     private $championnatRepository;
@@ -1021,8 +1022,18 @@ class HomeController extends AbstractController
                 $annees = array_map(function ($histo) {
                     return $histo->getAnneeFin();
                 }, $historique);
-                $annees[] = 1;
+                $annees[] = date("Y");
                 $points[] = $virtualPoints;
+
+                // Si le joueur n'a qu'un seul classement référencé
+                if (count($points) < self::LENGTH_GRAPH_CLASSEMENT) {
+                    $onlyPoint = $points[0] - $virtualPointsProgression;
+                    $l = self::LENGTH_GRAPH_CLASSEMENT - count($points);
+                    for ($i = 1; $i <= $l; $i++) {
+                        array_unshift($points, $onlyPoint);
+                        array_unshift($annees, intval(date("Y")) - $i);
+                    }
+                }
 
                 // Cache pour l'historique des matches
                 $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches());
