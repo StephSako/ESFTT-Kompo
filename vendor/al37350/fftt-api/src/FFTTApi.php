@@ -216,6 +216,20 @@ class FFTTApi
         return $result;
     }
 
+    /**
+     * Appel de service de récupération de joueurs par nom et prénom
+     * @param string $nom
+     * @param string $prenom
+     * @return array
+     */
+    public function getJoueursByNomXHR(string $nom, string $prenom = ""): array
+    {
+        return $this->apiRequest->get('xml_liste_joueur', [
+                'nom' => addslashes(Accentuation::remove($nom)),
+                'prenom' => addslashes(Accentuation::remove($prenom)),
+            ]
+        );
+    }
 
     /**
      * @param string $nom
@@ -227,11 +241,33 @@ class FFTTApi
      */
     public function getJoueursByNom(string $nom, string $prenom = ""): array
     {
-        $arrayJoueurs = $this->apiRequest->get('xml_liste_joueur', [
-                'nom' => addslashes(Accentuation::remove($nom)),
-                'prenom' => addslashes(Accentuation::remove($prenom)),
-            ]
-        )['joueur'];
+        $nom = addslashes(mb_convert_case(Accentuation::remove($nom), MB_CASE_UPPER, "UTF-8"));
+        $prenom = addslashes(mb_convert_case(Accentuation::remove($prenom), MB_CASE_UPPER, "UTF-8"));
+
+        $arrayJoueurs = $this->getJoueursByNomXHR($nom, $prenom);
+
+        // Si le joueur est trouvé du 1er coup
+        if (array_key_exists('joueur', $arrayJoueurs)) {
+            $arrayJoueurs = $arrayJoueurs['joueur'];
+        } else {
+            // Sinon on affine en ne cherchant que la 1ère partie alphabétique du nom et du prénom
+            preg_match('/^(?<nom>[A-ZÀ-Ý]*)/', $nom, $nomLettres);
+            preg_match('/^(?<prenom>[A-ZÀ-Ý]*)/', $prenom, $prenomLettres);
+            $arrayJoueurs = $this->getJoueursByNomXHR($nomLettres['nom'], $prenomLettres['prenom']);
+
+            if (count($arrayJoueurs) === 0) {
+                Utils::writeLog("Joueur [" . $nom . ' ' . $prenom . "] non trouvé après affinage");
+                throw new JoueurNotFound($nom . ' ' . $prenom);
+            } else {
+                // S'il s'agit de plusieurs joueurs ...
+                if (!array_key_exists('nom', $arrayJoueurs['joueur'])) $arrayJoueurs = $arrayJoueurs['joueur'];
+
+                $arrayJoueurs = array_filter($arrayJoueurs, function ($joueur) use ($nom, $prenom) {
+                    return Utils::removeSeparatorsDuplication(trim(mb_convert_case(Accentuation::remove($joueur['nom']), MB_CASE_UPPER, "UTF-8"))) === Utils::removeSeparatorsDuplication(trim($nom))
+                        && Utils::removeSeparatorsDuplication(trim(mb_convert_case(Accentuation::remove($joueur['prenom']), MB_CASE_UPPER, "UTF-8"))) === Utils::removeSeparatorsDuplication(trim($prenom));
+                });
+            }
+        }
 
         $arrayJoueurs = $this->wrappedArrayIfUnique($arrayJoueurs);
 
@@ -571,9 +607,7 @@ class FFTTApi
                                 break;
                             }
                         }
-                    } catch (NoFFTTResponseException $e) {
-                        $adversairePoints = $unvalidatedParty->getAdversaireClassement();
-                    } catch (InvalidURIParametersException $e) {
+                    } catch (\Exception $e) {
                         $adversairePoints = $unvalidatedParty->getAdversaireClassement();
                     }
 

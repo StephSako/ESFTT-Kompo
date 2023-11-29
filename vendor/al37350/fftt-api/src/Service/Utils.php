@@ -55,4 +55,15 @@ class Utils
     {
         return preg_replace(['/\s+/', '/(?:\s*\-\s*)+|-+/'], [' ', '-'], $raw) ?? '';
     }
+
+    /**
+     * Ecrire dans le fichier de logs de l'API FFTT
+     * @param string $message
+     * @return void
+     */
+    public static function writeLog(string $message) {
+        $fp = fopen('..\var\log\prod.log', 'a');
+        fwrite($fp, $message . PHP_EOL);
+        fclose($fp);
+    }
 }
