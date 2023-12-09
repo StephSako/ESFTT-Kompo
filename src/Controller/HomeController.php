@@ -986,7 +986,7 @@ class HomeController extends AbstractController
         $matches = [];
         try {
             $histoMatches = $this->get('session')->get('histoMatches');
-            if ($histoMatches == null) {
+            if ($histoMatches === null) {
                 throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
             }
             $matches = $utilController->formatHistoMatches($histoMatches);
