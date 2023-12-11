@@ -1,11 +1,12 @@
 <footer class="page-footer">
     <div class="footer-copyright">
+        {% set suffixebackoffice = (app.request.get('backoffice') == 'true' or app.request.getPathInfo starts with '/backoffice' ? 'true' : null) %}
         <div class="container center">
+            <a class="center{% if app.request.getPathInfo starts with '/informations/les-actus' %} active{% endif %}" href="{{ path('informations', {type: 'les-actus', backoffice: suffixebackoffice}) }}">Les Actus'</a><br>
             <a target="_blank" class="center" href="https://www.esftt.com">Site du club</a><br>
             <a target="_blank" class="center" href="https://www.esftt.com/forum">Forum privé</a><br>
             <a target="_blank" class="center" href="https://www.facebook.com/groups/46831155736">Notre Facebook</a>
         </div>
-        {% set suffixebackoffice = (app.request.get('backoffice') == 'true' or app.request.getPathInfo starts with '/backoffice' ? 'true' : null) %}
         <div class="container center">
             <div class="lien_long">
                 <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-departemental' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-departemental', backoffice: suffixebackoffice}) }}">Championnat départemental</a><br>
