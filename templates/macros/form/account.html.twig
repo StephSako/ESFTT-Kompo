@@ -319,10 +319,18 @@
                     {% if type == 'backoffice' and not form.vars.value.isArchive %}
                         {{ form_row(form.classementOfficiel) }}
                     {% else %}
-                        {% if app.user.classementOfficiel %}
-                            <span class="pastille blue centered">{{ app.user.classementOfficiel }} pts</span>
+                        {% if form.vars.value.isArchive %}
+                            {% if form.vars.value.classementOfficiel %}
+                                <span class="pastille blue centered">{{ form.vars.value.classementOfficiel }} pts</span>
+                            {% else %}
+                                <p class="red-text">Classement indéfini</p>
+                            {% endif %}
                         {% else %}
-                            <p class="red-text">Classement indéfini</p>
+                            {% if app.user.classementOfficiel %}
+                                <span class="pastille blue centered">{{ app.user.classementOfficiel }} pts</span>
+                            {% else %}
+                                <p class="red-text">Classement indéfini</p>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
