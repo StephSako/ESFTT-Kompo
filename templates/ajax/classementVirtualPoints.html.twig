@@ -214,6 +214,15 @@
 
 {% macro classement(classementVirtuel, pointsWonField) %}
     {% for joueur in classementVirtuel %}
+        {% set indexBefore = loop.index0 - 1 %}
+        {% if joueur.pointsVirtuelsVirtualPoints is not null and joueur.gap is defined and (loop.first or (indexBefore in (classementVirtuel | keys) and (joueur.pointsVirtuelsVirtualPoints | classement) != (classementVirtuel[indexBefore].pointsVirtuelsVirtualPoints | classement))) %}
+            <tr class="tr-classement empty"></tr>
+            <tr class="tr-classement margin"></tr>
+            <tr class="tr-classement classement">
+                <td class="classement"><p class="white-text"><b>{{ joueur.pointsVirtuelsVirtualPoints | classement }}</b></p></td>
+            </tr>
+            <tr class="tr-classement empty"></tr>
+        {% endif %}
         <tr>
             {% if joueur.gap is defined %}
                 <td class="progression-classement-td">
@@ -237,7 +246,7 @@
                 </td>
                 <td class="progression-td">
                     <span class="{% if joueur[pointsWonField] > 0 %}green{% elseif joueur[pointsWonField] == 0 %}grey{% else %}red{% endif %}-text">
-                        <i class="material-icons">{% if joueur[pointsWonField] > 0 %}keyboard_arrow_up{% elseif joueur[pointsWonField] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur[pointsWonField] | round(1, 'floor') | abs }}</span>
+                    <i class="material-icons">{% if joueur[pointsWonField] > 0 %}keyboard_arrow_up{% elseif joueur[pointsWonField] == 0 %}keyboard_arrow_right{% else %}keyboard_arrow_down{% endif %}</i>{{ joueur[pointsWonField] | round(1, 'floor') | abs }}</span>
                 </td>
             {% else %}
                 <td colspan="2" class="center">

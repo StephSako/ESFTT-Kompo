@@ -29,7 +29,8 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision']),
             new TwigFilter('customSlug', [$this, 'customSlug']),
-            new TwigFilter('listeEquipeToManage', [$this, 'listeEquipeToManage'])
+            new TwigFilter('listeEquipeToManage', [$this, 'listeEquipeToManage']),
+            new TwigFilter('classement', [$this, 'classement'])
         ];
     }
 
@@ -171,6 +172,15 @@ class AppExtension extends AbstractExtension
         $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 ? 's' : '');
 
         return $str;
+    }
+
+    /**
+     * @param float $pointsVirtuels
+     * @return int
+     */
+    public function classement(float $pointsVirtuels): int
+    {
+        return intval(substr(floor($pointsVirtuels), 0, -2));
     }
 
     /**

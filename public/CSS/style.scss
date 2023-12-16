@@ -912,6 +912,32 @@ table.rankingVirtualPoints {
     margin-top: 8px;
   }
 
+  tr.tr-classement {
+    padding: 0;
+
+    &.classement td {
+      padding: 1px;
+
+      border-radius: 5px 0;
+      background-color: #0c3a69;
+
+      p {
+        margin: 0;
+        width: 60px;
+        text-align: center;
+      }
+    }
+
+    &.empty {
+      height: 0;
+    }
+
+    &.margin {
+      background-color: white;
+      height: 12px;
+    }
+  }
+
   td {
     i.material-icons {
       width: 18px;
@@ -928,6 +954,7 @@ table.rankingVirtualPoints {
 
     &.progression-classement-td {
       width: 34px;
+      text-align: center;
     }
 
     &.nbJoueurs-td {
@@ -2307,7 +2334,7 @@ blockquote {
   }
 }
 
-@media screen and (max-width: 411px) {
+@media screen and (max-width: 432px) {
   table.rankingVirtualPoints td {
     .chip {
       padding: 0;
@@ -2315,6 +2342,14 @@ blockquote {
       img {
         display: none;
       }
+    }
+
+    &.classement p {
+      width: 36px !important;
+    }
+
+    &.progression-classement-td {
+      text-align: left;
     }
 
     &.td-chip {

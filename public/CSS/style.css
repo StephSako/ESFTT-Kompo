@@ -768,6 +768,26 @@ table.rankingVirtualPoints {
 table.rankingVirtualPoints:not(.rankingVirtualPointsEquipes) {
   margin-top: 8px;
 }
+table.rankingVirtualPoints tr.tr-classement {
+  padding: 0;
+}
+table.rankingVirtualPoints tr.tr-classement.classement td {
+  padding: 1px;
+  border-radius: 5px 0;
+  background-color: #0c3a69;
+}
+table.rankingVirtualPoints tr.tr-classement.classement td p {
+  margin: 0;
+  width: 60px;
+  text-align: center;
+}
+table.rankingVirtualPoints tr.tr-classement.empty {
+  height: 0;
+}
+table.rankingVirtualPoints tr.tr-classement.margin {
+  background-color: white;
+  height: 12px;
+}
 table.rankingVirtualPoints td i.material-icons {
   width: 18px;
 }
@@ -780,6 +800,7 @@ table.rankingVirtualPoints td.td-name {
 }
 table.rankingVirtualPoints td.progression-classement-td {
   width: 34px;
+  text-align: center;
 }
 table.rankingVirtualPoints td.nbJoueurs-td {
   width: 120px;
@@ -1930,12 +1951,18 @@ blockquote {
     padding: 10px 0;
   }
 }
-@media screen and (max-width: 411px) {
+@media screen and (max-width: 432px) {
   table.rankingVirtualPoints td .chip {
     padding: 0;
   }
   table.rankingVirtualPoints td .chip img {
     display: none;
+  }
+  table.rankingVirtualPoints td.classement p {
+    width: 36px !important;
+  }
+  table.rankingVirtualPoints td.progression-classement-td {
+    text-align: left;
   }
   table.rankingVirtualPoints td.td-chip {
     padding-left: 0;
