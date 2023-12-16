@@ -751,6 +751,9 @@ ul.dropdown-content.select-dropdown li.optgroup span {
   display: flex;
   justify-content: space-between;
 }
+.virtualPointsDiv.from-account {
+  justify-content: space-evenly;
+}
 .virtualPointsDiv h6 {
   margin-top: 0;
   margin-bottom: 0;
@@ -914,6 +917,9 @@ table.rankingVirtualPoints td .chip .nom {
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col {
   padding: 0;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col:not(.trending_icon) {
+  margin: 0;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col p.ta-end {
   text-align: end;
@@ -1888,6 +1894,13 @@ blockquote {
   .input_file .file-field.input-field {
     margin-left: 5%;
     margin-right: 5%;
+  }
+
+  .virtualPointsDiv.from-account {
+    justify-content: space-between;
+  }
+  .virtualPointsDiv.from-account span:nth-child(3) a {
+    margin-bottom: 8px;
   }
 }
 @media screen and (max-width: 550px) {

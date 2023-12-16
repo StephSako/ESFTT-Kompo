@@ -6,7 +6,7 @@
         {% for date, matches in matchesDates %}
             <div class="card grey lighten-3 z-depth-0 rencontre">
                 <p class="date white-text">{{ date }}</p>
-                <p class="epreuve"><i>{{ matches.epreuve }}</i></p>
+                <p class="epreuve"><b>{{ matches.epreuve }}</b></p>
                 <p class="evolution">
                     <b>{{ matches.startVirtualPoints }}
                         <i class="material-icons {{ matches.startVirtualPoints == matches.updatedVirtualPoints ? 'grey' : (matches.startVirtualPoints > matches.updatedVirtualPoints ? 'red' : 'green') }}-text">navigate_next</i>

@@ -1,6 +1,15 @@
 {% macro edit_account(type, title, form, equipesAssociees, options) %}
     {% import 'macros/membre.html.twig' as _membre %}
 
+    {% set showPointsVirtuels = type == 'backoffice' and not form.vars.value.isArchive and form.vars.value.isCompetiteur and options.createMode is not defined %}
+    {% if showPointsVirtuels %}
+        {% import 'macros/virtualPointsClassement.html.twig' as _virtualPointsClassement %}
+        <script type="text/javascript" src="{{ asset('JS/chart.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/getClassementVirtualPoints.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('JS/getHistoMatches.min.js') }}"></script>
+        {% import 'macros/modales/histoMatches.html.twig' as _histoMatches %}
+    {% endif %}
+
     {% set champsEditablesObligatoires = editableMandatoryFields(form.children) %}
 
     <div class="card-panel center-align account-card">
@@ -366,6 +375,15 @@
                     </div>
                 {% endif %}
             </div>
+
+            {% if showPointsVirtuels %}
+                {{ _virtualPointsClassement.labelVirtualPoints('1', null, form.vars.value.licence) }}
+                {{ _histoMatches.histoMatches(form.vars.value.licence) }}
+
+                <script type="text/javascript">
+                    getPersonnalClassementVirtuel('{{ form.vars.value.licence }}', false);
+                </script>
+            {% endif %}
         </div>
 
 

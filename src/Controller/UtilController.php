@@ -278,12 +278,13 @@ class UtilController extends AbstractController
     /**
      * Formatte les matches joués par le joueur par date
      * @param array $matches
+     * @param string $licence
      * @return array
      */
-    public function formatHistoMatches(array $matches = []): array
+    public function formatHistoMatches(string $licence, array $matches = []): array
     {
         $formattedMatches = [];
-        $virtualPoints = floatval($this->get('session')->get('pointsMensuels'));
+        $virtualPoints = floatval($this->get('session')->get('pointsMensuels' . $licence));
 
         /** @var CalculatedUnvalidatedPartie $match */
         foreach ($matches as $match) {

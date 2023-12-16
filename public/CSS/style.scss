@@ -889,6 +889,10 @@ ul.dropdown-content.select-dropdown li.optgroup {
   display: flex;
   justify-content: space-between;
 
+  &.from-account {
+    justify-content: space-evenly;
+  }
+
   & {
     h6 {
       margin-top: 0;
@@ -1086,6 +1090,10 @@ table.rankingVirtualPoints {
 
           .col {
             padding: 0;
+
+            &:not(.trending_icon) {
+              margin: 0;
+            }
 
             p.ta-end {
               text-align: end;
@@ -2256,6 +2264,14 @@ blockquote {
   .input_file .file-field.input-field {
     margin-left: 5%;
     margin-right: 5%;
+  }
+
+  .virtualPointsDiv.from-account {
+    justify-content: space-between;
+
+    span:nth-child(3) a {
+      margin-bottom: 8px;
+    }
   }
 }
 

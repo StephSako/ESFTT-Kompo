@@ -498,7 +498,6 @@ class HomeController extends AbstractController
     {
         $journees = [];
         $erreur = null;
-        $nomAdversaire = null;
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
 
         try {
@@ -978,18 +977,20 @@ class HomeController extends AbstractController
      * Renvoie un template de l'historique des matches du compétiteur actif
      * @Route("/journee/histo-matches", name="index.histo.matches", methods={"POST"})
      * @param UtilController $utilController
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getHistoMatchesTemplate(UtilController $utilController): JsonResponse
+    public function getHistoMatchesTemplate(UtilController $utilController, Request $request): JsonResponse
     {
+        $licence = $request->get('licence');
         $erreur = null;
         $matches = [];
         try {
-            $histoMatches = $this->get('session')->get('histoMatches');
+            $histoMatches = $this->get('session')->get('histoMatches' . $licence);
             if ($histoMatches === null) {
                 throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
             }
-            $matches = $utilController->formatHistoMatches($histoMatches);
+            $matches = $utilController->formatHistoMatches($licence, $histoMatches);
         } catch (Exception $e) {
             $erreur = $e->getCode() === 12345 ? $e->getMessage() : 'Un problème est survenu lors du calcul anticipé des matches';
         }
@@ -1002,10 +1003,12 @@ class HomeController extends AbstractController
     /**
      * Renvoie un template des points virtuels mensuels de l'utilisateur actif avec un historique sur les 8 dernières phases
      * @Route("/journee/personnal-classement-virtuel", name="index.personnelClassementVirtuel", methods={"POST"})
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getPersonnalClassementVirtuelsClub(): JsonResponse
+    public function getPersonnalClassementVirtuelsClub(Request $request): JsonResponse
     {
+        $licence = $request->get('licence');
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
         $erreur = '';
         $virtualPointsProgression = 0.0;
@@ -1014,12 +1017,12 @@ class HomeController extends AbstractController
         $annees = [];
         $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
-        if ($this->getUser()->getLicence()) {
+        if ($licence) {
             try {
-                $virtualPointsApi = $api->getJoueurVirtualPoints($this->getUser()->getLicence());
+                $virtualPointsApi = $api->getJoueurVirtualPoints($licence);
                 $virtualPointsProgression = $virtualPointsApi->getSeasonlyPointsWon();
                 $virtualPoints = $virtualPointsApi->getVirtualPoints();
-                $historique = array_slice($api->getHistoriqueJoueurByLicence($this->getUser()->getLicence()), -3);
+                $historique = array_slice($api->getHistoriqueJoueurByLicence($licence), -3);
                 $points = array_map(function ($histo) {
                     return $histo->getPoints();
                 }, $historique);
@@ -1039,9 +1042,9 @@ class HomeController extends AbstractController
                     }
                 }
 
-                // Cache pour l'historique des matches
-                $this->get('session')->set('histoMatches', $virtualPointsApi->getMatches());
-                $this->get('session')->set('pointsMensuels', $virtualPointsApi->getMensualPoints());
+                // Cache pour l'historique des matches pour le joueur actif
+                $this->get('session')->set('histoMatches' . $licence, $virtualPointsApi->getMatches());
+                $this->get('session')->set('pointsMensuels' . $licence, $virtualPointsApi->getMensualPoints());
             } catch (Exception $e) {
                 $erreur = 'Points virtuels indisponibles';
                 $virtualPointsProgression = 0.0;

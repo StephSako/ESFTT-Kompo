@@ -176,7 +176,7 @@
             {% endif %}
 
             <div class="hide-on-large-only center-align">
-                {{ _virtualPointsClassement.labelVirtualPoints(1, championnat.idChampionnat) }}
+                {{ _virtualPointsClassement.labelVirtualPoints(1, championnat.idChampionnat, app.user.licence) }}
             </div>
 
             <div class="hide-on-large-only center-align">
@@ -510,7 +510,7 @@
         <div class="col l3 hide-on-med-and-down">
             <div class="center-align">
                 <div class="hide-on-med-and-down">
-                    {{ _virtualPointsClassement.labelVirtualPoints(2, championnat.idChampionnat) }}
+                    {{ _virtualPointsClassement.labelVirtualPoints(2, championnat.idChampionnat, app.user.licence) }}
                 </div>
                 {{ _disponibilites.table(objetJoueursSansDispos, messageJoueursSansDispo, joueursNonDeclaresContact, selectedPlayers, disponibilitesJournee, nbDispos, nbNonDeclares, allDisponibilites, championnat.slug, nbMinJoueurs, nbMaxSelectedJoueurs, 'pc', (compos | length), nbMaxPotentielPlayers, journee.isOver) }}
             </div>
@@ -530,11 +530,11 @@
         {# Modale de l'historique des matches #}
         {% if app.user.competiteur %}
             {% import 'macros/modales/histoMatches.html.twig' as _histoMatches %}
-            {{ _histoMatches.histoMatches() }}
+            {{ _histoMatches.histoMatches(app.user.licence) }}
         {% endif %}
     </div>
 
     <script type="text/javascript">
-        getPersonnalClassementVirtuel({{ app.user.licence ?: 'null' }});
+        getPersonnalClassementVirtuel({{ app.user.licence ?: 'null' }}, false);
     </script>
 {% endblock %}

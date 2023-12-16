@@ -1,10 +1,16 @@
-{% macro labelVirtualPoints(id, idChampActif) %}
-    <div class="card-panel bottom_0 virtualPointsCard">
-        <div class="virtualPointsDiv">
-            <span style="margin-left: 6px"><a onclick="getGeneralClassementsVirtuels('{{ idChampActif }}')" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints"><i class="material-icons">timeline</i></a></span>
+{% macro labelVirtualPoints(id, idChampActif, licence) %}
+    <div class="{% if idChampActif %}card-panel {% endif %}bottom_0 virtualPointsCard">
+        <div class="virtualPointsDiv{% if not idChampActif %} from-account{% endif %}">
+            <span style="margin-left: 6px">
+                {% if idChampActif %}
+                    <a onclick="getGeneralClassementsVirtuels('{{ idChampActif }}', false)" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#rankingVirtualPoints">
+                    <i class="material-icons">timeline</i>
+                </a>
+                {% endif %}
+            </span>
             <h6 class="lobster_2"><b id="title_points_virtuels">Points virtuels</b></h6>
             {% if app.user.competiteur %}
-                <span style="margin-right: 6px"><a onclick="getHistoMatches()" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#histoMatches"><i class="material-icons">format_list_bulleted</i></a></span>
+                <span style="margin-right: 6px"><a onclick="getHistoMatches('{{ licence }}', false)" class="btn-small btn-floating blue lighten-1 waves-effect modal-trigger" href="#histoMatches"><i class="material-icons">format_list_bulleted</i></a></span>
             {% else %}
                 <span></span>
             {% endif %}

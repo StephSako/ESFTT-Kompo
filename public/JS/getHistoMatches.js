@@ -1,4 +1,4 @@
-function getHistoMatches(forceReloadHistoMatches = false, licence = null) {
+function getHistoMatches(licence, forceReloadHistoMatches) {
     if (!alreadyCalledHistoMatches || forceReloadHistoMatches) {
         alreadyCalledHistoMatches = true;
         if (forceReloadHistoMatches) {
@@ -11,6 +11,9 @@ function getHistoMatches(forceReloadHistoMatches = false, licence = null) {
             $.ajax({
                 url: '/journee/histo-matches',
                 type: 'POST',
+                data: {
+                    licence: licence
+                },
                 dataType: 'json',
                 success: (responseTemplate) => {
                     templatingHistoMatches('#histoMatchesContent', responseTemplate, true);

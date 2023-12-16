@@ -623,7 +623,7 @@ class FFTTApi
                         $adversairePoints,
                         $points * $coeff,
                         $unvalidatedParty->getDate()->format('d/m/o'),
-                        str_replace('FED_', '', $unvalidatedParty->getEpreuve()),
+                        str_replace(['FED_', 'L08_'], ['', ''], $unvalidatedParty->getEpreuve()),
                         $coeff
                     );
                 }
