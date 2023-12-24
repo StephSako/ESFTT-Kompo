@@ -52,6 +52,10 @@ function getInfosContactsSelectedPlayers() {
     divCustomContactsCheckListElement.find('input#search-input-custom').attr('value', inputFiltre[0] ? inputFiltre[0].value : '')
     divCustomContactsCheckListElement.find(checkedIDs.map(id => `table#search-table-custom input#${id}:checkbox`).join(', ')).attr('checked', 'checked')
     divCustomContactsCheckList = divCustomContactsCheckListElement.html()
+    $('#customMessageLoader').removeClass('hide');
+    $('button#btn_display_medias').addClass('hide');
+    $('i#removeAllCustomContacts').addClass('hide');
+    $('input:checkbox').attr('disabled', 'disabled');
 
     $.ajax({
         url: '/contacter/custom-infos-contact',
@@ -74,7 +78,13 @@ function endSendingGetInfosContact(response, isOK) {
         let HTMLResponse = $.parseHTML(response)[1].firstElementChild.innerHTML
         $('#modalcustom .modal-content').html(HTMLResponse);
         $('#listSelectedContacts .chip.customMessage').remove()
-    } else M.toast({html: 'Une erreur est survenue'});
+    } else {
+        $('#customMessageLoader').addClass('hide');
+        $('button#btn_display_medias').removeClass('hide');
+        $('i#removeAllCustomContacts').removeClass('hide');
+        $('input:checkbox').removeAttr('disabled');
+        M.toast({html: 'Une erreur est survenue'});
+    }
 }
 
 function backToCustomContactsCheckList() {
