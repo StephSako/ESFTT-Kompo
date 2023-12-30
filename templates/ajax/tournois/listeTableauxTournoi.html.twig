@@ -3,11 +3,18 @@
         <thead class="hide-on-med-and-down">
         <tr>
             <th>Jour</th>
-            <th>Pointage</th>
+            {% if tableaux|filter((v, k) => (v|filter(t => t.time != null)))|length %}
+                <th>Pointage</th>
+            {% endif %}
             <th>Tableau</th>
+            {% if tableaux|filter((v, k) => (v|filter(t => t.description != null)))|length %}
+                <th></th>
+            {% endif %}
             <th>Coût</th>
-            <th>Dotation</th>
-            <th>Type</th>
+            <th>Format</th>
+            {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
+                <th>Dotation</th>
+            {% endif %}
             <th>Genres</th>
         </tr>
         </thead>
@@ -15,31 +22,48 @@
         {% for jour, tableauxPerDay in tableaux %}
             {% for tableau in tableauxPerDay %}
                 <tr {% if loop.first and not loop.parent.loop.first %}class="firstBorderTr"{% endif %}>
+
                     {% if loop.first %}
                         <td class="hide-on-med-and-down rowspan{{ loop.parent.loop.first ? ' firstBorder' : '' }}" rowspan="{{ tableauxPerDay|length }}">
                             {{ tableau.date|format_datetime(pattern='EEEE dd/MM', locale='fr')|title }}
                         </td>
                     {% endif %}
+
                     {% if tableaux|filter((v, k) => (v|filter(t => t.time != null)))|length %}
                         <td class="noWrap hide-on-med-and-down{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">{{ tableau.time }}</td>
                     {% endif %}
+
                     <td class="show-on-medium-and-down hide-on-large-only hide-on-extra-large-only">
                         <u>{{ tableau.date|format_datetime(pattern='EEEE dd/MM', locale='fr')|title }}{% if tableau.time %}{{ ' - ' ~ tableau.time }}{% endif %}</u>
                     </td>
+
                     <td {% if loop.first and not loop.parent.loop.first %}class="firstBorderTd"{% endif %}>
                         <b>{{ tableau.name }}</b>
                     </td>
+
                     {% if tableaux|filter((v, k) => (v|filter(t => t.description != null)))|length %}
                         <td class="description{{ loop.first and not loop.parent.loop.first ? ' firstBorderTd' : '' }}">
                             <b>{{ tableau.description }}</b>
                         </td>
                     {% endif %}
-                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.cout }}</td>
-                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.type }}</td>
+
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">
+                        <span class="hide-on-large-only hide-on-extra-large-only"><b>Coût :</b></span> {{ tableau.cout }}
+                    </td>
+
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">
+                        <span class="hide-on-large-only hide-on-extra-large-only"><b>Format</b></span> {{ tableau.type }}
+                    </td>
+
                     {% if tableaux|filter((v, k) => (v|filter(t => t.dotation != null)))|length %}
-                        <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.dotation }}</td>
+                        <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">
+                            <span class="hide-on-large-only hide-on-extra-large-only"><b>Dotation :</b></span> {{ tableau.dotation }}
+                        </td>
                     {% endif %}
-                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">{{ tableau.genres }}</td>
+
+                    <td class="noWrap{% if loop.first and not loop.parent.loop.first %} firstBorderTd{% endif %}">
+                        <span class="hide-on-large-only hide-on-extra-large-only"><b>Pour</b></span> <b>{{ tableau.genres }}</b>
+                    </td>
                 </tr>
             {% endfor %}
         {% endfor %}

@@ -103,7 +103,6 @@
 {% endmacro %}
 
 {% macro modalGPS(id, adresse, complementAdresse, hrefMapsAdresse, hrefWazeAdresse, siteWeb, telephone, adversaire, villeHost, consigne) %}
-    <script type="text/javascript" defer src="{{ asset('JS/copyPaste.min.js') }}"></script>
     <div id="modalGPS{{ id }}" class="modal modal-small modal-fixed-footer">
         <div class="modal-content modal-gps center">
             <h6>Coordonnées de <b>{{ adversaire }}</b></h6>
@@ -148,13 +147,13 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Copier</h6></div>
                                 <div>
-                                    <button onclick="copyPaste('{{ id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                    <button onclick='copyPaste("{{ adresse }}", "Adresse copiée", "modalGPS{{ id }}")' class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <i class="material-icons white black-text">content_copy</i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <p class="adr adresse_{{ id }}"><b>{{ adresse }}</b></p>
+                        <p class="adr"><b>{{ adresse }}</b></p>
                     </div>
                 {% elseif not adresse and complementAdresse %}
                     <p class="complAdr" style="margin-top: 2px;"><i>Non fournie par l'adversaire</i></p>
@@ -162,7 +161,7 @@
 
                 {% if complementAdresse %}
                     <div class="card grey lighten-3 z-depth-0 complAdrDiv">
-                        <div class="complAdr adresse_{{ id }}">
+                        <div class="complAdr">
                             <i class="material-icons text-lighten-1 blue-text">info_outline</i><br>
                             <p>{{ complementAdresse }}</p>
                         </div>

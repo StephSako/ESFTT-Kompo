@@ -11,6 +11,22 @@ function resizeTable() {
     }
 }
 
+function jumpTo(anchor) {
+    window.location.href = '#' + anchor;
+    $(window).scrollTop($(window).scrollTop() - 80);
+}
+
+function copyPaste(value, message, modalId = null) {
+    let refDoc = modalId != null ? document.getElementById(modalId) : document.body;
+    let temp = document.createElement("input");
+    temp.value = value;
+    refDoc.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    refDoc.removeChild(temp);
+    M.toast({html: message})
+}
+
 $(document).ready(() => {
     $('.modal').modal();
 
