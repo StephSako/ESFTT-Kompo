@@ -577,10 +577,6 @@ class FFTTApi
                 return $a->getDate() >= $b->getDate();
             });
 
-            $unvalidatedParties = array_filter($unvalidatedParties, function ($p) use ($classement) {
-                return !($classement->getPointsDebutSaison() != $classement->getPointsLicence() && $p->getDate()->format('n') == 12 && ($p->getDate()->format('n') . '/' . $p->getDate()->format('Y')) == (date('n', strtotime('-1 month')) . '/' . date('Y', strtotime('-1 month'))));
-            });
-
             /** @var UnvalidatedPartie $unvalidatedParty */
             foreach ($unvalidatedParties as $unvalidatedParty) {
                 if ($latestMonth == null) {
