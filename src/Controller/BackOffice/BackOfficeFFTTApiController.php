@@ -626,7 +626,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $this->em->refresh($championnat);
 
                         /** On fix le nombre de journées du championnat */
-                        if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()) {
+                        if ($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] > 0 && $allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"] != $championnat->getNbJournees()) {
                             $championnat
                                 ->setLastUpdate(null)
                                 ->setNbJournees($allChampionnatsReset[$championnat->getNom()]["dates"]["realNbDates"]);
