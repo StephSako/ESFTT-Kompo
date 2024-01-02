@@ -459,7 +459,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     }
 
                     /** On supprime, ajoute et corrige les journées en surplus */
-                    $allChampionnatsReset[$championnatActif->getNom()]["dates"]["surplus"] = count($journeesKompo) > count($journeesFFTT) ? array_slice($journeesKompo, count($journeesFFTT), count($journeesKompo) - count($journeesFFTT)) : [];
+                    $allChampionnatsReset[$championnatActif->getNom()]["dates"]["surplus"] = count($journeesKompo) > count($journeesFFTT) && count($journeesFFTT) > 0 ? array_slice($journeesKompo, count($journeesFFTT), count($journeesKompo) - count($journeesFFTT)) : [];
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["missing"] = $datesMissing;
                     $allChampionnatsReset[$championnatActif->getNom()]["dates"]["issued"] = $datesIssued;
 
