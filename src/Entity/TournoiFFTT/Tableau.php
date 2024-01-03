@@ -108,8 +108,8 @@ class Tableau
             $this->genres = implode('/', array_map(function ($g) {
                 return $g['name'][0];
             }, $item['genders']));
-        } else $this->genres = 'Indéfini';
-        
+        } else $this->genres = 'Genre(s) indéfini(s)';
+
         return $this;
     }
 

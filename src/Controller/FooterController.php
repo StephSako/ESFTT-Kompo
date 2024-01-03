@@ -308,7 +308,7 @@ class FooterController extends AbstractController
                 ]
             );
             $content = $response->toArray();
-            $hasDocuments = $content['engagmentSheet'] != null && $content['rules'] != null;
+            $hasDocuments = !($content['engagmentSheet'] == null && $content['rules'] == null);
 
             $tableaux = array_map(function ($tournoi) {
                 return new Tableau($tournoi);

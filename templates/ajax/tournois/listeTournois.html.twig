@@ -1,10 +1,14 @@
-<script type="text/javascript" defer src="{{ asset('JS/copyPaste.min.js') }}"></script>
 <script type="text/javascript" defer src="{{ asset('JS/getDetailsTableauxTournoi.min.js') }}"></script>
+
+<div class="card-panel center-align white-text red lighten-1 title_journee" hidden="hidden" id="expiredLink">
+    <p class="flash">Lien invalide : le tournoi visé n'est plus disponible</p>
+</div>
+
 <p class="center" id="nbTournois"><i>{{ tournois|length }} tournoi{{ tournois|length > 1 ? 's' : '' }} trouvé{{ tournois|length > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</i></p>
 
 <ul class="collapsible">
     {% for tournoi in tournois %}
-        <li>
+        <li id="{{ tournoi.id }}">
             <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class=" collapsible-header" style="padding: 6px 0 !important;">
                 <div class="chip" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                     <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
@@ -12,7 +16,10 @@
                 </div>
                 <i class="caret material-icons">keyboard_arrow_down</i>
             </div>
-            <div class="collapsible-body">
+            <div class="collapsible-body" id="c-b{{ tournoi.id }}">
+                <div class="row">
+                    <button onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="right center btn waves-effect blue lighten-2 share-tournoi"><i style="margin: 0" class="material-icons right">share</i></button>
+                </div>
                 <h6 class="center"><b>{{ tournoi.startDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title : '') }}</b></h6>
 
                 <div class="row">
@@ -54,7 +61,7 @@
 
                 <blockquote>S'y rendre</blockquote>
 
-                <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %} class="adresse_{{ tournoi.id }}">{{ tournoi.address.GPSAddress }}</p>
+                <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %}>{{ tournoi.address.GPSAddress }}</p>
                 {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
 
                 <div class="center">
@@ -79,7 +86,7 @@
                             <div class="card grey lighten-3 z-depth-0">
                                 <div><h6>Copier</h6></div>
                                 <div>
-                                    <button onclick="copyPaste('{{ tournoi.id }}')" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                    <button onclick='copyPaste("{{ tournoi.address.GPSAddress }}", "Adresse copiée")' class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
                                         <i class="material-icons white black-text">content_copy</i>
                                     </button>
                                 </div>
