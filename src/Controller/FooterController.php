@@ -13,6 +13,8 @@ use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use League\Csv\Reader;
+use League\Csv\Statement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +29,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class FooterController extends AbstractController
 {
+    const EXCEl_DEPARTEMENTS_CHAMP_CODE_DEPARTEMENT = 0;
+    const EXCEl_DEPARTEMENTS_CHAMP_CODE_REGION = 2;
     private $em;
     private $competiteurRepository;
     private $championnatRepository;
@@ -256,10 +260,24 @@ class FooterController extends AbstractController
                     ]
                 ]
             );
+
+            $regions = $this->getListDepartementsByCodeRegion();
+            $codeRegionClub = array_key_first(array_filter($regions, function ($region) {
+                return in_array(intval(substr($this->getParameter('club_id'), 2, 2)), $region);
+            }));
+
             $content = $response->toArray();
 
-            $tournois = array_map(function ($tournoi) {
-                return new Tournoi($tournoi);
+            $tournois = array_map(function ($tournoi) use ($codeRegionClub, $regions) {
+                try {
+                    $codeRegionTournoi = array_key_first(array_filter($regions, function ($region) use ($tournoi) {
+                        return in_array(intval(substr($tournoi['address']['postalCode'], 0, 2)), $region);
+                    }));
+                    $departementClub = intval(substr($this->getParameter('club_id'), 2, 2));
+                } catch (Exception $e) {
+                    $codeRegionTournoi = $departementClub = null;
+                }
+                return new Tournoi($tournoi, $codeRegionClub, $codeRegionTournoi, $departementClub);
             }, $content["hydra:member"]);
 
             // On récupère les tournois qui ont également commencé avant aujourd'hui mais qui finissent aujourd'hui ou plus tard
@@ -270,11 +288,39 @@ class FooterController extends AbstractController
         } catch (Exception $e) {
         }
 
+        // TODO Légendes
+        // TODO Filtres avec listes déroulantes
+        // TODO "non-joignables"
+
         return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
             'tournois' => $tournois,
             'dateStart' => (new DateTime())->format('d/m/Y'),
             'dateEnd' => date('d/m/Y', strtotime('+1 year'))
         ))->getContent());
+    }
+
+    /**
+     * Récupérer la liste des départements par code région
+     * @return array
+     */
+    public function getListDepartementsByCodeRegion(): array
+    {
+        try {
+            $csv = Reader::createFromPath(__DIR__ . $this->getParameter('departements_path'));
+            $records = (new Statement())->process($csv);
+            $regions = [];
+            foreach ($records as $i => $record) {
+                if ($i > 0) { // On ignore la 1ère ligne des en-têtes
+                    $codeRegion = intval($record[self::EXCEl_DEPARTEMENTS_CHAMP_CODE_REGION]);
+                    $codeDepartement = intval($record[self::EXCEl_DEPARTEMENTS_CHAMP_CODE_DEPARTEMENT]);
+                    if (array_key_exists($codeRegion, $regions)) $regions[$codeRegion][] = $codeDepartement;
+                    else $regions[$codeRegion] = [$codeDepartement];
+                }
+            }
+            return $regions;
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     /**

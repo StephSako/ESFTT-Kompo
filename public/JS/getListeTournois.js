@@ -24,6 +24,7 @@ function templatingListeTournois(selector, response, isSuccess) {
         let elem = $('li' + hash);
         if (hash.length > 0 && elem.length > 0) {
             hash = hash.replace('#', '');
+            elem.removeClass('hide');
             elem.addClass('active');
             $('#c-b' + hash).css('display', 'block');
             jumpTo(hash);
@@ -33,3 +34,17 @@ function templatingListeTournois(selector, response, isSuccess) {
         }
     }
 }
+
+function switchUnjoinableTournois() {
+    displayUnjoinableTournois = !displayUnjoinableTournois;
+
+    if (displayUnjoinableTournois) {
+        $('li.notJoinable').removeClass('hide');
+        $('p.notJoinable.message').removeClass('hide');
+    } else {
+        $('li.notJoinable').addClass('hide');
+        $('p.notJoinable.message').addClass('hide');
+    }
+}
+
+let displayUnjoinableTournois = false;

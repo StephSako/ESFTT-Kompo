@@ -7,6 +7,12 @@ use Exception;
 
 class Tournoi
 {
+    const TYPE_INTERNATIONAL = 'I';
+    const TYPE_NATIONAL_A = 'A';
+    const TYPE_NATIONAL_B = 'B';
+    const TYPE_REGIONAL = 'R';
+    const TYPE_DEPARTEMENTAL = 'D';
+    const TYPE_PROMOTIONNEL = 'P';
     /** @var string */
     private $id;
     /** @var string */
@@ -31,8 +37,20 @@ class Tournoi
     private $tableaux;
     /** @var string|null */
     private $page;
+    /** @var bool */
+    private $isJoinableRegion;
+    /** @var bool */
+    private $isJoinableDepartement;
+    /** @var bool */
+    private $isSameRegion;
 
-    function __construct($item)
+    /**
+     * @param $item
+     * @param $codeRegionClub
+     * @param $codeRegionTournoi
+     * @param $departementClub
+     */
+    function __construct($item, $codeRegionClub, $codeRegionTournoi, $departementClub)
     {
         $this->setDotationTotale($item['endowment']);
         $this->setAddress(new Adresse($item['address']));
@@ -54,6 +72,160 @@ class Tournoi
         $this->setTableaux($item['tables']);
         $this->setType($item['type']);
         $this->setPage($item['page']);
+
+        $this->setIsSameRegion($codeRegionTournoi !== null && $codeRegionClub === $codeRegionTournoi);
+        // Si un tournoi est régional, il n'est pas joignable si la région du joueur n'est pas la même
+        $this->setIsJoinableRegion(!($codeRegionTournoi !== null && $item['type'] === self::TYPE_REGIONAL && !$this->isSameRegion()));
+        // SiPareil pour le département
+        $this->setIsJoinableDepartement(!($item['type'] === self::TYPE_DEPARTEMENTAL && $departementClub !== intval(substr($this->getAddress()->getPostalCode(), 0, 2))));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSameRegion(): bool
+    {
+        return $this->isSameRegion;
+    }
+
+    /**
+     * @param bool $isSameRegion
+     * @return Tournoi
+     */
+    public function setIsSameRegion(bool $isSameRegion): Tournoi
+    {
+        $this->isSameRegion = $isSameRegion;
+        return $this;
+    }
+
+    /**
+     * @return Adresse
+     */
+    public function getAddress(): Adresse
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Adresse $address
+     * @return Tournoi
+     */
+    public function setAddress(Adresse $address): self
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJoinableDepartement(): bool
+    {
+        return $this->isJoinableDepartement;
+    }
+
+    /**
+     * @param bool $isJoinableDepartement
+     * @return Tournoi
+     */
+    public function setIsJoinableDepartement(bool $isJoinableDepartement): Tournoi
+    {
+        $this->isJoinableDepartement = $isJoinableDepartement;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClubName(): string
+    {
+        return $this->clubName;
+    }
+
+    /**
+     * @param string $clubName
+     * @return Tournoi
+     */
+    public function setClubName(string $clubName): self
+    {
+        $this->clubName = $clubName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return mb_convert_case($this->name, MB_CASE_UPPER, "UTF-8");
+    }
+
+    /**
+     * @param string $name
+     * @return Tournoi
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return Tournoi
+     */
+    public function setType(string $type): self
+    {
+        switch ($type) {
+            case self::TYPE_INTERNATIONAL:
+                $this->type = 'International';
+                break;
+            case self::TYPE_NATIONAL_A:
+                $this->type = 'National A';
+                break;
+            case self::TYPE_NATIONAL_B:
+                $this->type = 'National B';
+                break;
+            case self::TYPE_REGIONAL:
+                $this->type = 'Régional';
+                break;
+            case self::TYPE_DEPARTEMENTAL:
+                $this->type = 'Départemental';
+                break;
+            case self::TYPE_PROMOTIONNEL:
+                $this->type = 'Promotionnel';
+                break;
+            default:
+                $this->type = 'Indéfini';
+                break;
+        }
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJoinableRegion(): bool
+    {
+        return $this->isJoinableRegion;
+    }
+
+    /**
+     * @param bool $isJoinableRegion
+     * @return Tournoi
+     */
+    public function setIsJoinableRegion(bool $isJoinableRegion): Tournoi
+    {
+        $this->isJoinableRegion = $isJoinableRegion;
+        return $this;
     }
 
     /**
@@ -113,46 +285,6 @@ class Tournoi
     /**
      * @return string
      */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     * @return Tournoi
-     */
-    public function setType(string $type): self
-    {
-        switch ($type) {
-            case 'I':
-                $this->type = 'International';
-                break;
-            case 'A':
-                $this->type = 'National A';
-                break;
-            case 'B':
-                $this->type = 'National B';
-                break;
-            case 'R':
-                $this->type = 'Régional';
-                break;
-            case 'D':
-                $this->type = 'Départemental';
-                break;
-            case 'P':
-                $this->type = 'Promotionnel';
-                break;
-            default:
-                $this->type = 'Indéfini';
-                break;
-        }
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
@@ -201,60 +333,6 @@ class Tournoi
     public function setEndDate(?DateTime $endDate): self
     {
         $this->endDate = $endDate;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClubName(): string
-    {
-        return $this->clubName;
-    }
-
-    /**
-     * @param string $clubName
-     * @return Tournoi
-     */
-    public function setClubName(string $clubName): self
-    {
-        $this->clubName = $clubName;
-        return $this;
-    }
-
-    /**
-     * @return Adresse
-     */
-    public function getAddress(): Adresse
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param Adresse $address
-     * @return Tournoi
-     */
-    public function setAddress(Adresse $address): self
-    {
-        $this->address = $address;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return mb_convert_case($this->name, MB_CASE_UPPER, "UTF-8");
-    }
-
-    /**
-     * @param string $name
-     * @return Tournoi
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
         return $this;
     }
 

@@ -1,24 +1,42 @@
-<script type="text/javascript" defer src="{{ asset('JS/getDetailsTableauxTournoi.min.js') }}"></script>
-
 <div class="card-panel center-align white-text red lighten-1 title_journee" hidden="hidden" id="expiredLink">
     <p class="flash">Lien invalide : le tournoi visé n'est plus disponible</p>
 </div>
 
-<p class="center" id="nbTournois"><i>{{ tournois|length }} tournoi{{ tournois|length > 1 ? 's' : '' }} trouvé{{ tournois|length > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</i></p>
+<div id="entete">
+    <p class="center" id="nbTournois"><b>{{ tournois|length }} tournoi{{ tournois|length > 1 ? 's' : '' }} trouvé{{ tournois|length > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</b></p>
+
+    {% if tournois|filter((v, k) => (not v.joinableRegion or not v.joinableDepartement))|length %}
+        <label id="checkboxSwitchUnjoinableTournois">
+            <input onchange="switchUnjoinableTournois()" type="checkbox" class="filled-in" checked="checked"/>
+            <span>Masquer les tournois non-joignables <i>({{ tournois|filter((v, k) => (not v.joinableRegion or not v.joinableDepartement))|length }})</i></span>
+        </label>
+
+        <p class="notJoinable message blue lighten-1 pastille reset hide">
+            Un joueur ne peut pas participer aux tournois de type "<b>Régional</b>" si la région de son club est différente.
+            <br>De même pour les tournois de type "<b>Départemental</b>".
+        </p>
+    {% endif %}
+</div>
 
 <ul class="collapsible">
     {% for tournoi in tournois %}
-        <li id="{{ tournoi.id }}">
-            <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class=" collapsible-header" style="padding: 6px 0 !important;">
-                <div class="chip" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        <li id="{{ tournoi.id }}" class="{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %}notJoinable hide{% endif %}">
+            <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class="collapsible-header">
+                <div class="chip{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %} notJoinable{% endif %}{% if tournoi.sameRegion %} sameRegion{% endif %}">
                     <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
                     <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMM', locale='fr')|title : '') }}</span>
                 </div>
                 <i class="caret material-icons">keyboard_arrow_down</i>
             </div>
             <div class="collapsible-body" id="c-b{{ tournoi.id }}">
-                <div class="row">
-                    <button onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="right center btn waves-effect blue lighten-2 share-tournoi"><i style="margin: 0" class="material-icons right">share</i></button>
+                <div class="row c-b_entete">
+                    <div class="col s11 m6 offset-m4">
+                        {% if not tournoi.joinableRegion %}<p class="pastille red centered center">Tournoi régional non-joignable</p>
+                        {% elseif not tournoi.joinableDepartement %}<p class="pastille red centered center">Tournoi départemental non-joignable</p>{% endif %}
+                    </div>
+                    <div class="col s1">
+                        <i onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="material-icons blue lighten-1 white-text right">share</i>
+                    </div>
                 </div>
                 <h6 class="center"><b>{{ tournoi.startDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title : '') }}</b></h6>
 
@@ -143,5 +161,4 @@
             </div>
         </li>
     {% endfor %}
-    <script type="text/javascript" defer src="{{ asset('JS/resizeResponsiveTable.min.js') }}"></script>
 </ul>
