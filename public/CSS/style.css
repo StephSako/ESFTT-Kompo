@@ -1585,23 +1585,75 @@ a.reload_ranking, a.reload_histoMatches {
 #listTournois {
   padding: 1px;
 }
-#listTournois .collapsible-header .chip {
-  background-color: #e8f3ff;
+#listTournois #entete {
+  margin-bottom: 20px;
+}
+#listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+  padding-left: 25px;
+  vertical-align: middle;
+  height: 28px;
+  color: black;
+}
+#listTournois #entete .notJoinable.message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 5px;
+}
+#listTournois ul.collapsible p.mois {
+  color: #1b5fac;
+  margin: 20px auto 10px auto;
+  font-size: 105%;
+}
+#listTournois ul.collapsible .collapsible-header {
+  padding: 6px 0 !important;
+}
+#listTournois ul.collapsible .collapsible-header .chip {
   border-radius: 10px;
   padding: 0 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-#listTournois .collapsible-body .col.sectQuote {
+#listTournois ul.collapsible .collapsible-header .chip.notJoinable {
+  background-color: #ffe8e8;
+}
+#listTournois ul.collapsible .collapsible-header .chip.sameRegion {
+  background-color: #eef5fd;
+  border-style: inherit;
+  border-color: cornflowerblue;
+  border-width: 3px;
+}
+#listTournois ul.collapsible .collapsible-body {
+  padding: 0;
+}
+#listTournois ul.collapsible .collapsible-body .c-b_entete {
+  margin: 15px auto;
+}
+#listTournois ul.collapsible .collapsible-body .c-b_entete .col {
+  padding: 1px;
+}
+#listTournois ul.collapsible .collapsible-body .c-b_entete .col p {
+  margin: 0;
+}
+#listTournois ul.collapsible .collapsible-body .c-b_entete .col i.material-icons {
+  font-size: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px 7px 5px 5px;
+}
+#listTournois ul.collapsible .collapsible-body .col.sectQuote {
   padding: 0 5px 0 0;
 }
-#listTournois .collapsible-body .card {
+#listTournois ul.collapsible .collapsible-body .card {
   border-radius: 10px;
   width: auto;
   margin: 5px 15px;
 }
-#listTournois .collapsible-body table {
+#listTournois ul.collapsible .collapsible-body table {
   margin-top: 15px;
 }
-#listTournois .collapsible-body table tbody tr td.description {
+#listTournois ul.collapsible .collapsible-body table tbody tr td.description {
   max-width: 250px;
   white-space: normal;
 }
@@ -2056,6 +2108,11 @@ blockquote {
     display: block;
   }
 }
+@media screen and (max-width: 316px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 13px;
+  }
+}
 @media screen and (max-width: 307px) {
   #collapsible_selectionnable_plus_1 {
     font-size: 16px;
@@ -2063,6 +2120,16 @@ blockquote {
 
   .card-panel.relative {
     padding-bottom: 47px;
+  }
+}
+@media screen and (max-width: 299px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 12px;
+  }
+}
+@media screen and (max-width: 284px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 11px;
   }
 }
 @media screen and (max-width: 283px) {
@@ -2077,6 +2144,11 @@ blockquote {
 @media screen and (max-width: 275px) {
   a.reload_ranking, a.reload_histoMatches {
     display: none;
+  }
+}
+@media screen and (max-width: 267px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 10px;
   }
 }
 @media screen and (max-width: 260px) {
