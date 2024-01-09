@@ -660,7 +660,7 @@ class Rencontre
      */
     public function getMessageAlertPlayers(string $prenomSender): string
     {
-        setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
+        setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
         date_default_timezone_set('Europe/Paris');
         $br = '%0D%0A%0D%0A';
         $date = !$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench();

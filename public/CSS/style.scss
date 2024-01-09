@@ -1893,7 +1893,7 @@ a.reload_ranking, a.reload_histoMatches {
   padding: 1px;
 
   #entete {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
     label#checkboxSwitchUnjoinableTournois span {
       padding-left: 25px;
@@ -1910,11 +1910,16 @@ a.reload_ranking, a.reload_histoMatches {
   }
 
   ul.collapsible {
+    p.mois {
+      color: $scroll_blue;
+      margin: 20px auto 10px auto;
+      font-size: 105%;
+    }
+
     .collapsible-header {
       padding: 6px 0 !important;
 
       .chip {
-        background-color: #eef5fd;
         border-radius: 10px;
         padding: 0 5px;
         overflow: hidden;
@@ -1926,6 +1931,7 @@ a.reload_ranking, a.reload_histoMatches {
         }
 
         &.sameRegion {
+          background-color: #eef5fd;
           border-style: inherit;
           border-color: cornflowerblue;
           border-width: 3px;
@@ -2464,12 +2470,6 @@ blockquote {
   }
 }
 
-@media screen and (max-width: 361px) {
-  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
-    font-size: 13px;
-  }
-}
-
 @media screen and (max-width: 355px) {
   .btn-gps .row_btns .card {
     margin: 5px !important;
@@ -2479,12 +2479,6 @@ blockquote {
 @media screen and (max-width: 344px) {
   .virtualRankButtons {
     font-size: 13px;
-  }
-}
-
-@media screen and (max-width: 342px) {
-  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
-    font-size: 12px;
   }
 }
 
@@ -2535,9 +2529,9 @@ blockquote {
   }
 }
 
-@media screen and (max-width: 321px) {
+@media screen and (max-width: 316px) {
   #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
-    font-size: 11px;
+    font-size: 13px;
   }
 }
 
@@ -2551,9 +2545,15 @@ blockquote {
   }
 }
 
-@media screen and (max-width: 301px) {
+@media screen and (max-width: 299px) {
   #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
-    font-size: 10px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 284px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 11px;
   }
 }
 
@@ -2567,15 +2567,15 @@ blockquote {
   }
 }
 
-@media screen and (max-width: 282px) {
-  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
-    font-size: 9px;
-  }
-}
-
 @media screen and (max-width: 275px) {
   a.reload_ranking, a.reload_histoMatches {
     display: none;
+  }
+}
+
+@media screen and (max-width: 267px) {
+  #listTournois #entete label#checkboxSwitchUnjoinableTournois span {
+    font-size: 10px;
   }
 }
 

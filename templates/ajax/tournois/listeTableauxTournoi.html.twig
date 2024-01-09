@@ -8,7 +8,7 @@
             {% endif %}
             <th>Tableau</th>
             {% if tableaux|filter((v, k) => (v|filter(t => t.description != null)))|length %}
-                <th></th>
+                <th>Description</th>
             {% endif %}
             <th>Coût</th>
             <th>Format</th>

@@ -244,7 +244,10 @@ class FooterController extends AbstractController
      */
     public function getListeTournois(): JsonResponse
     {
-        $tournois = [];
+        setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
+        date_default_timezone_set('Europe/Paris');
+
+        $tournois = $tournoisParMois = [];
         try {
             $response = $this->clientHTTP->request(
                 'GET',
@@ -285,15 +288,20 @@ class FooterController extends AbstractController
             $tournois = array_filter($tournois, function (Tournoi $tournoi) use ($today) {
                 return $tournoi->getEndDate()->getTimestamp() >= $today;
             });
+
+            // On découpe les tournois par mois
+            foreach ($tournois as $tournoi) {
+                $mois = mb_convert_case(utf8_encode(strftime("%B", $tournoi->getStartDate()->getTimestamp())), MB_CASE_TITLE, "UTF-8");
+                $tournoisParMois[$mois][] = $tournoi;
+            }
         } catch (Exception $e) {
         }
 
         // TODO Légendes
-        // TODO Filtres avec listes déroulantes
-        // TODO "non-joignables"
 
         return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
-            'tournois' => $tournois,
+            'nbTournois' => count($tournois),
+            'tournoisParMois' => $tournoisParMois,
             'dateStart' => (new DateTime())->format('d/m/Y'),
             'dateEnd' => date('d/m/Y', strtotime('+1 year'))
         ))->getContent());

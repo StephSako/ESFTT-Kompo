@@ -3,12 +3,13 @@
 </div>
 
 <div id="entete">
-    <p class="center" id="nbTournois"><b>{{ tournois|length }} tournoi{{ tournois|length > 1 ? 's' : '' }} trouvé{{ tournois|length > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</b></p>
+    <p class="center" id="nbTournois"><b>{{ nbTournois }} tournoi{{ nbTournois > 1 ? 's' : '' }} trouvé{{ nbTournois > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</b></p>
 
-    {% if tournois|filter((v, k) => (not v.joinableRegion or not v.joinableDepartement))|length %}
+    {% set nbTournoisNonJoignables = tournoisParMois|filter((v, k) => (v|filter(t => not t.joinableRegion or not t.joinableDepartement)))|length %}
+    {% if nbTournoisNonJoignables %}
         <label id="checkboxSwitchUnjoinableTournois">
             <input onchange="switchUnjoinableTournois()" type="checkbox" class="filled-in" checked="checked"/>
-            <span>Masquer les tournois non-joignables <i>({{ tournois|filter((v, k) => (not v.joinableRegion or not v.joinableDepartement))|length }})</i></span>
+            <span>Masquer les tournois non jouables</span>
         </label>
 
         <p class="notJoinable message blue lighten-1 pastille reset hide">
@@ -19,102 +20,132 @@
 </div>
 
 <ul class="collapsible">
-    {% for tournoi in tournois %}
-        <li id="{{ tournoi.id }}" class="{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %}notJoinable hide{% endif %}">
-            <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class="collapsible-header">
-                <div class="chip{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %} notJoinable{% endif %}{% if tournoi.sameRegion %} sameRegion{% endif %}">
-                    <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
-                    <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMM', locale='fr')|title : '') }}</span>
+    {% for mois, tournois in tournoisParMois %}
+        <p class="mois"><b>{{ mois }}</b></p>
+        {% for tournoi in tournois %}
+            <li id="{{ tournoi.id }}" class="{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %}notJoinable hide{% endif %}">
+                <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class="collapsible-header">
+                    <div class="chip{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %} notJoinable{% endif %}{% if tournoi.sameRegion %} sameRegion{% endif %}">
+                        <span class="hide-on-med-and-up"><b>{{ tournoi.address.addressLocality }}</b>{{ ' - ' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') }}</span>
+                        <span class="hide-on-small-and-down"><b>{{ tournoi.address.addressLocality }}</b>{{ ' (' ~ tournoi.address.postalCode ~ ') - ' ~ tournoi.startDate|format_datetime(pattern='EEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEE d MMM', locale='fr')|title : '') }}</span>
+                    </div>
+                    <i class="caret material-icons">keyboard_arrow_down</i>
                 </div>
-                <i class="caret material-icons">keyboard_arrow_down</i>
-            </div>
-            <div class="collapsible-body" id="c-b{{ tournoi.id }}">
-                <div class="row c-b_entete">
-                    <div class="col s11 m6 offset-m4">
-                        {% if not tournoi.joinableRegion %}<p class="pastille red centered center">Tournoi régional non-joignable</p>
-                        {% elseif not tournoi.joinableDepartement %}<p class="pastille red centered center">Tournoi départemental non-joignable</p>{% endif %}
-                    </div>
-                    <div class="col s1">
-                        <i onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="material-icons blue lighten-1 white-text right">share</i>
-                    </div>
-                </div>
-                <h6 class="center"><b>{{ tournoi.startDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title : '') }}</b></h6>
-
-                <div class="row">
-                    <div class="col s12 m6 sectQuote">
-                        <blockquote>Nom du tournoi</blockquote>
-                        <span>{{ tournoi.name }}</span>
-                    </div>
-                    <div class="col s8 m4 sectQuote">
-                        <blockquote>Club</blockquote>
-                        <span>{{ tournoi.clubName }}</span>
-                    </div>
-                    <div class="col s4 m2 sectQuote">
-                        <blockquote>Type</blockquote>
-                        <span>{{ tournoi.type }}</span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    {% if tournoi.reglement.url or tournoi.autreFichier.url %}
-                        <div class="col s12 m6 sectQuote" id="reglement">
-                            <blockquote>Documents</blockquote>
-                            {% if tournoi.reglement.url %}<a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
-                            {% if tournoi.autreFichier.url and tournoi.reglement.originalFilename != tournoi.autreFichier.originalFilename %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
+                <div class="collapsible-body" id="c-b{{ tournoi.id }}">
+                    <div class="row c-b_entete">
+                        <div class="col s11 m6 offset-m4">
+                            {% if not tournoi.joinableRegion %}<p class="pastille red centered center">Tournoi régional non jouable</p>
+                            {% elseif not tournoi.joinableDepartement %}<p class="pastille red centered center">Tournoi départemental non jouable</p>{% endif %}
                         </div>
-                    {% endif %}
-                    {% if tournoi.dotationTotale %}
-                        <div class="col s8 m4 l4 sectQuote">
-                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url) %}id="reglement"{% endif %}>Dotation</blockquote>
-                            <span>{{ tournoi.dotationTotale }}</span>
+                        <div class="col s1">
+                            <i onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="material-icons blue lighten-1 white-text right">share</i>
                         </div>
-                    {% endif %}
-                    {% if tournoi.page %}
-                        <div class="col s4 m2 l2 sectQuote">
-                            <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url or tournoi.dotationTotale) %}id="reglement"{% endif %}>Page web</blockquote>
-                            <a target="_blank" href="{{ tournoi.page }}">Cliquez ici</a><br>
+                    </div>
+                    <h6 class="center"><b>{{ tournoi.startDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title : '') }}</b></h6>
+
+                    <div class="row">
+                        <div class="col s12 m6 sectQuote">
+                            <blockquote>Nom du tournoi</blockquote>
+                            <span>{{ tournoi.name }}</span>
                         </div>
-                    {% endif %}
-                </div>
+                        <div class="col s8 m4 sectQuote">
+                            <blockquote>Club</blockquote>
+                            <span>{{ tournoi.clubName }}</span>
+                        </div>
+                        <div class="col s4 m2 sectQuote">
+                            <blockquote>Type</blockquote>
+                            <span>{{ tournoi.type }}</span>
+                        </div>
+                    </div>
 
-                <blockquote>S'y rendre</blockquote>
+                    <div class="row">
+                        {% if tournoi.reglement.url or tournoi.autreFichier.url %}
+                            <div class="col s12 m6 sectQuote" id="reglement">
+                                <blockquote>Documents</blockquote>
+                                {% if tournoi.reglement.url %}<a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
+                                {% if tournoi.autreFichier.url and tournoi.reglement.originalFilename != tournoi.autreFichier.originalFilename %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
+                            </div>
+                        {% endif %}
+                        {% if tournoi.dotationTotale %}
+                            <div class="col s8 m4 l4 sectQuote">
+                                <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url) %}id="reglement"{% endif %}>Dotation</blockquote>
+                                <span>{{ tournoi.dotationTotale }}</span>
+                            </div>
+                        {% endif %}
+                        {% if tournoi.page %}
+                            <div class="col s4 m2 l2 sectQuote">
+                                <blockquote {% if not (tournoi.reglement.url or tournoi.autreFichier.url or tournoi.dotationTotale) %}id="reglement"{% endif %}>Page web</blockquote>
+                                <a target="_blank" href="{{ tournoi.page }}">Cliquez ici</a><br>
+                            </div>
+                        {% endif %}
+                    </div>
 
-                <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %}>{{ tournoi.address.GPSAddress }}</p>
-                {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
+                    <blockquote>S'y rendre</blockquote>
 
-                <div class="center">
-                    <div class="btn-gps">
-                        <div class="row_btns">
-                            <div class="card grey lighten-3 z-depth-0">
-                                <div><h6>Maps</h6></div>
-                                <div>
-                                    <a target="_blank" href="{{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
-                                        <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
-                                    </a>
+                    <p {% if tournoi.address.disambiguatingDescription %}style="margin-bottom: 0;"{% endif %}>{{ tournoi.address.GPSAddress }}</p>
+                    {% if tournoi.address.disambiguatingDescription %}<p style="margin-top: 2px">{{ tournoi.address.disambiguatingDescription }}</p>{% endif %}
+
+                    <div class="center">
+                        <div class="btn-gps">
+                            <div class="row_btns">
+                                <div class="card grey lighten-3 z-depth-0">
+                                    <div><h6>Maps</h6></div>
+                                    <div>
+                                        <a target="_blank" href="{{ tournoi.address.hrefMapsAdresse }}" class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                            <img src="{{ asset('images/maps.svg') }}" alt="logo de google maps">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card grey lighten-3 z-depth-0">
+                                    <div><h6>Waze</h6></div>
+                                    <div>
+                                        <a target="_blank" href="{{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
+                                            <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card grey lighten-3 z-depth-0">
+                                    <div><h6>Copier</h6></div>
+                                    <div>
+                                        <button onclick='copyPaste("{{ tournoi.address.GPSAddress }}", "Adresse copiée")' class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
+                                            <i class="material-icons white black-text">content_copy</i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="card grey lighten-3 z-depth-0">
-                                <div><h6>Waze</h6></div>
-                                <div>
-                                    <a target="_blank" href="{{ tournoi.address.hrefWazeAdresse }}" class="z-depth-3 btn-small btn-floating waves-effect modal-trigger">
-                                        <img src="{{ asset('images/waze.svg') }}" alt="logo de waze">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="card grey lighten-3 z-depth-0">
-                                <div><h6>Copier</h6></div>
-                                <div>
-                                    <button onclick='copyPaste("{{ tournoi.address.GPSAddress }}", "Adresse copiée")' class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger">
-                                        <i class="material-icons white black-text">content_copy</i>
-                                    </button>
+                        </div>
+                    </div>
+                    <div class="center" style="width: 100%" id="div-tournoi-{{ tournoi.id }}">
+                        <br>
+                        <div id="preloader-tournoi-{{ tournoi.id }}" class="center">
+                            <div class="preloader-wrapper small active">
+                                <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <iframe width="0" height="0" src="{{ tournoi.address.hrefIframeLink }}"
+                                onload="showIframe('{{ tournoi.id }}')"
+                                onerror="hideIframe('{{ tournoi.id }}')"
+                                loading="lazy"
+                                frameborder="0"
+                                style="opacity: 0;"
+                                class="iframe-map-tournoi"
+                                id="tournoi-{{ tournoi.id }}"
+                        ></iframe>
                     </div>
-                </div>
-                <div class="center" style="width: 100%" id="div-tournoi-{{ tournoi.id }}">
-                    <br>
-                    <div id="preloader-tournoi-{{ tournoi.id }}" class="center">
+
+                    <blockquote>Tableaux</blockquote>
+                    <div id="preloaderTableauxTournoi{{ tournoi.id }}" class="center">
                         <div class="preloader-wrapper small active">
                             <div class="spinner-layer spinner-blue-only">
                                 <div class="circle-clipper left">
@@ -129,36 +160,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <iframe width="0" height="0" src="{{ tournoi.address.hrefIframeLink }}"
-                            onload="showIframe('{{ tournoi.id }}')"
-                            onerror="hideIframe('{{ tournoi.id }}')"
-                            loading="lazy"
-                            frameborder="0"
-                            style="opacity: 0;"
-                            class="iframe-map-tournoi"
-                            id="tournoi-{{ tournoi.id }}"
-                    ></iframe>
+                    <br>
                 </div>
-
-                <blockquote>Tableaux</blockquote>
-                <div id="preloaderTableauxTournoi{{ tournoi.id }}" class="center">
-                    <div class="preloader-wrapper small active">
-                        <div class="spinner-layer spinner-blue-only">
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-            </div>
-        </li>
+            </li>
+        {% endfor %}
     {% endfor %}
 </ul>

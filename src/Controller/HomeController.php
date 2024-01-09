@@ -163,7 +163,7 @@ class HomeController extends AbstractController
             $messageJoueursSansDispo = $this->settingsRepository->find('mail-sans-dispo')->getContent();
 
             /** Formattage du message **/
-            setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
+            setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
             date_default_timezone_set('Europe/Paris');
             $str_replacers = [
                 'old' => ['[#n_journee#]', '[#date_journee#]', '[#nom_redacteur#]', '[#nom_championnat#]'],

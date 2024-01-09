@@ -117,24 +117,6 @@ class Tournoi
     }
 
     /**
-     * @return bool
-     */
-    public function isJoinableDepartement(): bool
-    {
-        return $this->isJoinableDepartement;
-    }
-
-    /**
-     * @param bool $isJoinableDepartement
-     * @return Tournoi
-     */
-    public function setIsJoinableDepartement(bool $isJoinableDepartement): Tournoi
-    {
-        $this->isJoinableDepartement = $isJoinableDepartement;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getClubName(): string
@@ -149,6 +131,24 @@ class Tournoi
     public function setClubName(string $clubName): self
     {
         $this->clubName = $clubName;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJoinableDepartement(): bool
+    {
+        return $this->isJoinableDepartement;
+    }
+
+    /**
+     * @param bool $isJoinableDepartement
+     * @return Tournoi
+     */
+    public function setIsJoinableDepartement(bool $isJoinableDepartement): Tournoi
+    {
+        $this->isJoinableDepartement = $isJoinableDepartement;
         return $this;
     }
 
