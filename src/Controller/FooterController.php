@@ -297,8 +297,6 @@ class FooterController extends AbstractController
         } catch (Exception $e) {
         }
 
-        // TODO Légendes
-
         return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
             'nbTournois' => count($tournois),
             'tournoisParMois' => $tournoisParMois,
