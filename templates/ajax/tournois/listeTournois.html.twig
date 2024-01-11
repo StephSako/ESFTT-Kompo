@@ -21,7 +21,7 @@
 
 <ul class="collapsible">
     {% for mois, tournois in tournoisParMois %}
-        <p class="mois"><b>{{ mois }}</b></p>
+        <p class="mois"><b>{{ mois | format_datetime(pattern='MMMM', locale='fr') | title }}</b></p>
         {% for tournoi in tournois %}
             <li id="{{ tournoi.id }}" class="{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %}notJoinable hide{% endif %}">
                 <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class="collapsible-header">

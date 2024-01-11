@@ -291,7 +291,7 @@ class FooterController extends AbstractController
 
             // On découpe les tournois par mois
             foreach ($tournois as $tournoi) {
-                $mois = mb_convert_case(utf8_encode(strftime("%B", $tournoi->getStartDate()->getTimestamp())), MB_CASE_TITLE, "UTF-8");
+                $mois = $tournoi->getStartDate()->format('m') . '/01/2000';
                 $tournoisParMois[$mois][] = $tournoi;
             }
         } catch (Exception $e) {
