@@ -30,7 +30,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('listeEquipesSansDivision', [$this, 'listeEquipesSansDivision']),
             new TwigFilter('customSlug', [$this, 'customSlug']),
             new TwigFilter('listeEquipeToManage', [$this, 'listeEquipeToManage']),
-            new TwigFilter('classement', [$this, 'classement'])
+            new TwigFilter('classement', [$this, 'classement']),
+            new TwigFilter('array_sum', [$this, 'array_sum'])
         ];
     }
 
@@ -75,6 +76,16 @@ class AppExtension extends AbstractExtension
     public function isFieldEditable(string $champ, array $champsEditables): bool
     {
         return array_key_exists($champ, $champsEditables);
+    }
+
+    /**
+     * Retourne la somme des valeurs numérique d'une tableau
+     * @param array $array
+     * @return int
+     */
+    public function array_sum(array $array): int
+    {
+        return array_sum($array);
     }
 
     /**

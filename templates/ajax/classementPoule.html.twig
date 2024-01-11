@@ -1,5 +1,5 @@
 {% if erreur %}
-    <p class="pastille red white-text">{{ erreur }}</p>
+    <p class="pastille red white-text erreurXHR" style="margin-top: 15px">{{ erreur }}</p>
 {% else %}
     <h6><b>{{ equipe.division }} - Poule {{ equipe.poule }} - {{ equipe.nom }}</b></h6>
     {% if classementPoule|length > 0 %}

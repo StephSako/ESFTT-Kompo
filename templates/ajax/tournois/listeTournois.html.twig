@@ -3,10 +3,11 @@
 </div>
 
 <div id="entete">
-    <p class="center" id="nbTournois"><b>{{ nbTournois }} tournoi{{ nbTournois > 1 ? 's' : '' }} trouvé{{ nbTournois > 1 ? 's' : '' }} ({{ dateStart }} - {{ dateEnd }})</b></p>
+    {% set nbTournoisJouables = tournoisParMois | map(tpm => (tpm | filter(t => t.joinableRegion == true and t.joinableDepartement == true))) | map((v) => v | length) | array_sum %}
 
-    {% set nbTournoisNonJoignables = tournoisParMois|filter((v, k) => (v|filter(t => not t.joinableRegion or not t.joinableDepartement)))|length %}
-    {% if nbTournoisNonJoignables %}
+    <p class="center" id="nbTournois"><b>{{ nbTournoisJouables }} tournoi{{ nbTournoisJouables > 1 ? 's' : '' }} jouable{{ nbTournoisJouables > 1 ? 's' : '' }} jusqu'au {{ dateEnd }}</b></p>
+
+    {% if tournoisParMois | filter(v => (v | filter(t => not t.joinableRegion or not t.joinableDepartement))) | length %}
         <label id="checkboxSwitchUnjoinableTournois">
             <input onchange="switchUnjoinableTournois()" type="checkbox" class="filled-in" checked="checked"/>
             <span>Masquer les tournois non jouables</span>
@@ -62,8 +63,8 @@
                         {% if tournoi.reglement.url or tournoi.autreFichier.url %}
                             <div class="col s12 m6 sectQuote" id="reglement">
                                 <blockquote>Documents</blockquote>
-                                {% if tournoi.reglement.url %}<a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
-                                {% if tournoi.autreFichier.url and tournoi.reglement.originalFilename != tournoi.autreFichier.originalFilename %}<a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
+                                {% if tournoi.reglement.url %}- <a target="_blank" href="{{ tournoi.reglement.url }}">{{ tournoi.reglement.originalFilename }}</a><br>{% endif %}
+                                {% if tournoi.autreFichier.url and tournoi.reglement.originalFilename != tournoi.autreFichier.originalFilename %}- <a target="_blank" href="{{ tournoi.autreFichier.url }}">{{ tournoi.autreFichier.originalFilename }}</a>{% endif %}
                             </div>
                         {% endif %}
                         {% if tournoi.dotationTotale %}
