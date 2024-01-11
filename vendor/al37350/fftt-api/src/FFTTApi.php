@@ -488,12 +488,13 @@ class FFTTApi
      * @throws InvalidURIParametersException
      * @throws URIPartNotValidException
      */
-    public function getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints(string $joueurId): array
+    public function getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints(string $joueurId, bool $arePointdPhase2Updated): array
     {
         try {
             $validatedParties = $this->getPartiesJoueurByLicence($joueurId);
-            $totalPointsObtenus = array_sum(array_map(function($partie) {
-                return round($partie->getPointsObtenus(), 1);
+            $totalPointsObtenus = array_sum(array_map(function ($partie) use ($arePointdPhase2Updated) {
+                /** Si les points officiels sont différents des points de début de saison (points de phase 2 à jour), on ne prend que les matches à partir de janvier */
+                return $arePointdPhase2Updated && $partie->getDate()->format('n') >= 1 && $partie->getDate()->format('n') <= 6 ? round($partie->getPointsObtenus(), 1) : 0.0;
             }, $validatedParties));
         } catch (NoFFTTResponseException $e) {
             $validatedParties = [];
@@ -569,7 +570,8 @@ class FFTTApi
             $virtualMonthlyPointsWon = 0.0;
             $virtualMonthlyPoints = 0.0;
             $latestMonth = null;
-            $data = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId);
+            $arePointdPhase2Updated = $classement->getPointsDebutSaison() !== $classement->getLicence();
+            $data = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId, $arePointdPhase2Updated);
             $monthPoints = round(($classement->getPointsLicence() + $data['totalPointsObtenus']), 1);
             $unvalidatedParties = $data['unvalidatedParties'];
 
