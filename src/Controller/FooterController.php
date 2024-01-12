@@ -298,7 +298,6 @@ class FooterController extends AbstractController
         }
 
         return new JsonResponse($this->render('ajax/tournois/listeTournois.html.twig', array(
-            'nbTournois' => count($tournois),
             'tournoisParMois' => $tournoisParMois,
             'dateStart' => (new DateTime())->format('d/m/Y'),
             'dateEnd' => date('d/m/Y', strtotime('+1 year'))

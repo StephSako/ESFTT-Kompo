@@ -40,9 +40,11 @@ function switchUnjoinableTournois() {
 
     if (displayUnjoinableTournois) {
         $('li.notJoinable').removeClass('hide');
+        $('p.moisToHide').removeClass('hide');
         $('p.notJoinable.message').removeClass('hide');
     } else {
         $('li.notJoinable').addClass('hide');
+        $('p.moisToHide').addClass('hide');
         $('p.notJoinable.message').addClass('hide');
     }
 }

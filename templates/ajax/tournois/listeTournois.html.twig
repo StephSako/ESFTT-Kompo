@@ -3,7 +3,7 @@
 </div>
 
 <div id="entete">
-    {% set nbTournoisJouables = tournoisParMois | map(tpm => (tpm | filter(t => t.joinableRegion == true and t.joinableDepartement == true))) | map((v) => v | length) | array_sum %}
+    {% set nbTournoisJouables = tournoisParMois | map(tpm => (tpm | filter(t => t.joinableRegion and t.joinableDepartement))) | map((v) => v | length) | array_sum %}
 
     <p class="center" id="nbTournois"><b>{{ nbTournoisJouables }} tournoi{{ nbTournoisJouables > 1 ? 's' : '' }} jouable{{ nbTournoisJouables > 1 ? 's' : '' }} jusqu'au {{ dateEnd }}</b></p>
 
@@ -22,7 +22,8 @@
 
 <ul class="collapsible">
     {% for mois, tournois in tournoisParMois %}
-        <p class="mois"><b>{{ mois | format_datetime(pattern='MMMM', locale='fr') | title }}</b></p>
+        {% set nbTournoisDuMoisNonJouables = (tournois | filter(t => not t.joinableRegion or not t.joinableDepartement)) | map((v) => v | length) | array_sum %}
+        <p class="mois{% if (tournois | length) == nbTournoisDuMoisNonJouables %} moisToHide hide{% endif %}"><b>{{ mois | format_datetime(pattern='MMMM', locale='fr') | title }}</b></p>
         {% for tournoi in tournois %}
             <li id="{{ tournoi.id }}" class="{% if not tournoi.joinableRegion or not tournoi.joinableDepartement %}notJoinable hide{% endif %}">
                 <div onclick="getDetailsTableauxTournoi('{{ tournoi.id }}')" class="collapsible-header">
