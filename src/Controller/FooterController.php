@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Fichier;
 use App\Entity\TournoiFFTT\Tableau;
 use App\Entity\TournoiFFTT\Tournoi;
 use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
+use App\Repository\FichierRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use DateTime;
@@ -16,6 +18,7 @@ use Exception;
 use League\Csv\Reader;
 use League\Csv\Statement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,11 +41,13 @@ class FooterController extends AbstractController
     private $rencontreRepository;
     private $settingsRepository;
     private $clientHTTP;
+    private $fichierRepository;
 
     /**
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
+     * @param FichierRepository $fichierRepository
      * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      * @param HttpClientInterface $clientHTTP
@@ -51,6 +56,7 @@ class FooterController extends AbstractController
     public function __construct(ChampionnatRepository   $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository   $competiteurRepository,
+                                FichierRepository       $fichierRepository,
                                 RencontreRepository     $rencontreRepository,
                                 SettingsRepository      $settingsRepository,
                                 HttpClientInterface     $clientHTTP,
@@ -63,6 +69,7 @@ class FooterController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->settingsRepository = $settingsRepository;
         $this->clientHTTP = $clientHTTP;
+        $this->fichierRepository = $fichierRepository;
     }
 
     /**
@@ -128,6 +135,8 @@ class FooterController extends AbstractController
         $showConcernedPlayers = $setting->getDisplayTableRole();
         $concernedPlayers = $showConcernedPlayers ? $this->competiteurRepository->findJoueursByRole($showConcernedPlayers, null) : null;
 
+        $fichiersUploades = $this->fichierRepository->findBy(['setting' => $type]);
+
         return $this->render('journee/infos.html.twig', [
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
@@ -136,12 +145,41 @@ class FooterController extends AbstractController
             'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'disposJoueur' => $disposJoueurFormatted,
             'HTMLContent' => $setting->getContent(),
+            'typePage' => $setting->getType(),
+            'idSetting' => $setting->getId(),
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
             'title' => $setting->getTitle(),
             'label' => $setting->getLabel(),
-            'isBackOffice' => $isBackoffice
+            'isBackOffice' => $isBackoffice,
+            'fichiersUploades' => $fichiersUploades
         ]);
+    }
+
+    /**
+     * Appelée depuis un appel Ajax et upload un fichier depuis une page d'information
+     * @Route("/informations/{type}/upload-file", name="informations.file.upload", methods={"POST"})
+     * @param Request $request
+     * @param string $type
+     * @return JsonResponse
+     */
+    public function readImportFile(Request $request, string $type): JsonResponse
+    {
+        dump($type);
+        try {
+            $setting = $this->settingsRepository->find($type);
+            if ($setting === null) throw new Exception('Information inexistante', 1234);
+
+            /** @var UploadedFile $file */
+            $file = $request->files->get('uploadFile');
+            $fileToUpload = new Fichier($setting, $file->getClientOriginalName());
+            $this->em->persist($fileToUpload);
+            $this->em->flush();
+            dump($fileToUpload);
+        } catch (Exception $e) {
+            dump($e);
+        }
+        return new JsonResponse('');
     }
 
     /**

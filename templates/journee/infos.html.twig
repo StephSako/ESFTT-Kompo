@@ -2,6 +2,9 @@
 {% import 'macros/flash.html.twig' as _flash %}
 {% block style %}
     <link type="text/css" rel="stylesheet" href="{{ asset('ckeditor5/ckeditor.scss') }}" media="screen,projection"/>
+    {% if typePage == 'infos' %}
+        <script type="text/javascript" defer src="{{ asset('JS/uploadFichier.min.js') }}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -73,6 +76,19 @@
                         </div>
                     </div>
 
+                    <div class="file-field input-field">
+                        <div class="btn blue">
+                            <span>Uploader un fichier</span>
+                            <input type="file" name="uploadFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/pdf" id="uploadFile">
+                        </div>
+                        <div class="file-path-wrapper" style="width: 0">
+                            <label for="inputTextUploadFile"></label>
+                            <input class="file-path validate" id="inputTextUploadFile" type="text" placeholder="Upload one or more files">
+                        </div>
+                    </div>
+
+                    <p>{{ dump(fichiersUploades) }}</p>
+
                     <div id="editor"></div>
 
                     <br>
@@ -85,6 +101,7 @@
 
             <script type="text/javascript">
                 let ckeditor_content = '{{ HTMLContent }}';
+                let idSetting = '{{ idSetting }}';
             </script>
             <script type="text/javascript" src="{{ asset('ckeditor5/ckeditor.js') }}"></script>
             <script type="text/javascript" src="{{ asset('JS/ckeditor5.min.js') }}"></script>

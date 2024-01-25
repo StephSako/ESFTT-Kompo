@@ -38,7 +38,7 @@ class Settings
      *)
      *
      * @Assert\Length(
-     *      max = 80,
+     *      max = 100,
      *      maxMessage = "Le titre doit contenir au maximum {{ limit }} caractères"
      * )
      */
