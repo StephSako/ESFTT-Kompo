@@ -348,7 +348,7 @@
                     <div class="col s12 l3 m6 col_infos_licence">
                         <p><b>Titularisation{{ equipesAssociees|length ? 's' : '' }}</b></p>
                         {% if equipesAssociees|length and type != 'backoffice' %}
-                            <ul class="collection">
+                            <ul class="collection listeTitularisations">
                                 {% for championnat, numero in equipesAssociees %}
                                 <li class="collection-item"><b>{{ championnat }} :</b>
                                     {% if numero %}

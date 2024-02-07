@@ -152,7 +152,7 @@ html, body {
   }
 }
 
-ul.collection {
+ul.collection.listeTitularisations {
   margin: 0 auto;
   width: fit-content;
   border-color: $gradient_blue_light;
@@ -593,19 +593,62 @@ button.renew_certif_table {
 }
 
 // On restylise le contenu du formulaire WYSIWYG
-#ckeditor-render {
-  word-wrap: break-word;
-  hyphens: auto;
-  padding: 10px;
-
-  figure.table {
-    width: 100%;
-    overflow-x: scroll;
-    margin-left: 0;
+#settings-page {
+  h5.adminTitle {
+    font-family: Lobster, cursive !important;
+    margin-top: 0 !important;
   }
 
-  li {
+  ul.listeFichiersUploades {
     padding-left: 0;
+
+    .collection-item {
+      padding-left: 20px !important;
+
+      .row {
+        margin: 0;
+
+        button {
+          margin-top: 6px;
+        }
+      }
+    }
+  }
+
+  .file-field {
+    width: fit-content;
+    margin: auto;
+
+    .btn {
+      margin-top: 0;
+    }
+
+    .file-path-wrapper {
+      width: 0;
+      padding: 0;
+    }
+  }
+
+  #ckeditor-render {
+    word-wrap: break-word;
+    hyphens: auto;
+    padding: 10px;
+
+    figure.table {
+      width: 100%;
+      overflow-x: hidden;
+      margin-left: 0;
+
+      table {
+        margin: auto;
+        width: fit-content;
+        border: 2px solid #9ab7ca;
+      }
+    }
+
+    li {
+      padding-left: 0;
+    }
   }
 }
 

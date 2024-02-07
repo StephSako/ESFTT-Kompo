@@ -23,6 +23,7 @@ parameters:
   referer_get_tournois: '%env(REFERER_GET_TOURNOIS)%'
   origin_get_tournois: '%env(ORIGIN_GET_TOURNOIS)%'
   log_file_path: '%env(LOG_FILE_PATH)%'
+  fichier_upload_path: '%env(FICHIER_UPLOAD_PATH)%'
 
 services:
   _defaults:

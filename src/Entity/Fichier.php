@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,6 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\FichierRepository")
  * @ORM\Table(
  *     name="prive_fichier",
+ *     indexes={
+ *         @Index(name="IDX_setting", columns={"id_setting"})
+ *     },
  *     uniqueConstraints={
  *          @UniqueConstraint(name="UNIQ_nom_fichier", columns={"nom_fichier"})
  *     }

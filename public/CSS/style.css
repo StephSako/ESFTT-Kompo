@@ -123,13 +123,13 @@ html, body {
   left: 8px;
 }
 
-ul.collection {
+ul.collection.listeTitularisations {
   margin: 0 auto;
   width: fit-content;
   border-color: #1174b8;
   border-radius: 4px;
 }
-ul.collection .collection-item {
+ul.collection.listeTitularisations .collection-item {
   border-bottom-color: #1174b8;
 }
 
@@ -499,17 +499,49 @@ button.renew_certif_table i {
   background: #1565c0;
 }
 
-#ckeditor-render {
+#settings-page h5.adminTitle {
+  font-family: Lobster, cursive !important;
+  margin-top: 0 !important;
+}
+#settings-page ul.listeFichiersUploades {
+  padding-left: 0;
+}
+#settings-page ul.listeFichiersUploades .collection-item {
+  padding-left: 20px !important;
+}
+#settings-page ul.listeFichiersUploades .collection-item .row {
+  margin: 0;
+}
+#settings-page ul.listeFichiersUploades .collection-item .row button {
+  margin-top: 6px;
+}
+#settings-page .file-field {
+  width: fit-content;
+  margin: auto;
+}
+#settings-page .file-field .btn {
+  margin-top: 0;
+}
+#settings-page .file-field .file-path-wrapper {
+  width: 0;
+  padding: 0;
+}
+#settings-page #ckeditor-render {
   word-wrap: break-word;
   hyphens: auto;
   padding: 10px;
 }
-#ckeditor-render figure.table {
+#settings-page #ckeditor-render figure.table {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: hidden;
   margin-left: 0;
 }
-#ckeditor-render li {
+#settings-page #ckeditor-render figure.table table {
+  margin: auto;
+  width: fit-content;
+  border: 2px solid #9ab7ca;
+}
+#settings-page #ckeditor-render li {
   padding-left: 0;
 }
 
