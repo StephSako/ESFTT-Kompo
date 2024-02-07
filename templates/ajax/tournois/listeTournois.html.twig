@@ -40,7 +40,7 @@
                             {% elseif not tournoi.joinableDepartement %}<p class="pastille red centered center">Tournoi départemental non jouable</p>{% endif %}
                         </div>
                         <div class="col s1">
-                            <i onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id }}", "Lien du tournoi copié")' class="material-icons blue lighten-1 white-text right">share</i>
+                            <i onclick='copyPaste("{{ url('index.tournois') ~ "#" ~ tournoi.id ~ ' - ' ~ tournoi.address.addressLocality ~ ' (' ~ tournoi.startDate|date('d/m') ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|date('d/m') : '') ~ ')' }}", "Lien du tournoi copié")' class="material-icons blue lighten-1 white-text right">share</i>
                         </div>
                     </div>
                     <h6 class="center"><b>{{ tournoi.startDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title ~ (tournoi.endDate != tournoi.startDate ? ' au ' ~ tournoi.endDate|format_datetime(pattern='EEEE d MMM', locale='fr')|title : '') }}</b></h6>
