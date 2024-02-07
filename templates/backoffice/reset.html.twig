@@ -29,7 +29,7 @@
                 <div style="padding-top: 8px; padding-bottom: 8px; margin-bottom: 10px;" class="col pastille blue lighten-1 reset"><i class="material-icons white-text">info</i> Seuls les membres ayant leurs licences renseignées dans Kompo sont sujets à la mise à jour</div>
 
                 {% if joueursIssued.competition %}
-                    <p id="messageNbJoueursIssued" class="col pastille reset {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}orange darken-2{% else %}blue{% endif %}" style="margin-bottom: 10px;">
+                    <p id="messageNbJoueursIssued" class="col pastille reset {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}orange darken-2{% else %}green{% endif %}" style="margin-bottom: 10px;">
                         <span id="nbJoueurs">
                             {% if ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) > 0 %}
                                 {{ ((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) ~ ' joueur' ~ (((joueursIssued.competition|length) - joueursIssued.nbJoueursCritFedOnly) <= 1 ? ' sera' : 's seront') ~' mis à jour' }}
