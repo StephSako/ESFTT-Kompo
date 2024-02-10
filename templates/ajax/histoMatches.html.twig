@@ -20,8 +20,8 @@
                             <p class="nomAdversaire">{{ match.adversaire }}</p>
                         </div>
                         <div class="col s2">
-                            <p class="{{ match.isForfait ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text ta-end">
-                                {{ (match.pointsGagnes > 0 ? '+' : '') ~ match.pointsGagnes }}
+                            <p class="{{ match.isForfait or match.pointsGagnes == 0 ? 'grey' : (match.isVictoire ? 'green' : 'red') }}-text ta-end">
+                                {{ (match.pointsGagnes >= 0 and match.isVictoire ? '+' : (match.pointsGagnes == 0 and not match.isVictoire ? '-' : '')) ~ match.pointsGagnes }}
                             </p>
                         </div>
                         <div class="col s3">
@@ -36,8 +36,8 @@
                         <b>Coeff. {{ matches.coefficient }} </b><i class="material-icons blue-text text-darken-3">trending_flat</i>
                     </div>
                     <div class="col s2 finalPointsWon">
-                        <p class="{{ matches.totalPointsWon > 0 ? 'green' : 'red' }}-text ta-end">
-                            <b>{{ (matches.totalPointsWon > 0 ? '+' : '') ~ matches.totalPointsWon }}</b>
+                        <p class="{{ matches.totalPointsWon == 0 ? 'grey' : (matches.totalPointsWon > 0 ? 'green' : 'red') }}-text ta-end">
+                            <b>{{ (matches.totalPointsWon >= 0 ? '+' : '') ~ matches.totalPointsWon }}</b>
                         </p>
                     </div>
                 </div>
