@@ -13,6 +13,7 @@ use App\Repository\FichierRepository;
 use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use DateTime;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use League\Csv\Reader;
@@ -161,11 +162,11 @@ class FooterController extends AbstractController
      * @Route("/informations/{type}/upload-file", name="informations.file.upload", methods={"POST"})
      * @param Request $request
      * @param string $type
-     * @return JsonResponse
+     * @return Response
      */
-    public function readImportFile(Request $request, string $type): JsonResponse
+    public function readImportFile(Request $request, string $type): Response
     {
-        dump($type);
+        $json = null;
         try {
             $setting = $this->settingsRepository->find($type);
             if ($setting === null) throw new Exception('Information inexistante', 1234);
@@ -176,10 +177,18 @@ class FooterController extends AbstractController
             $this->em->persist($fileToUpload);
             $this->em->flush();
             dump($fileToUpload);
+            $json = json_encode(['message' => "L'e-mail a été envoyé", 'success' => true]);
+        } catch (UniqueConstraintViolationException $e) {
+            dump($e);
+            $json = json_encode(['message' => "Le fichier a déjà été uploadé", 'success' => false]);
         } catch (Exception $e) {
             dump($e);
+            $json = json_encode(['message' => "Une erreur est survenue", 'success' => false]);
         }
-        return new JsonResponse('');
+
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
