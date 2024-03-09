@@ -23,15 +23,15 @@
                                 {% set nomFormatted = nom|split('#')|first %}
                                 {% if nomFormatted %}
                                     <tr>
-                                        <td style="max-width: 50px">
+                                        <td class="nomJoueur">
                                             <span class="truncate">{{ nomFormatted }}</span>
                                         </td>
-                                        <td>{% if donnees.points %}
+                                        <td class="pointsJoueur">{% if donnees.points %}
                                                 <span class="reset pastille light-blue darken-3">{{ donnees.points }}</span>
                                             {% else %}
                                                 <i style="font-size: 1.5em" class="material-icons tiny grey-text text">help</i>
                                             {% endif %}
-                                        <td>
+                                        <td class="resultatsJoueur">
                                             {% for resultat in donnees.resultats %}
                                                 <span class="reset pastille {{ resultat.resultat }}">{{ resultat.pointsJoueurAdversaire | raw }}</span>
                                             {% endfor %}
@@ -41,23 +41,23 @@
                             {% endfor %}
                             {% for id, donnees in journee.doubles %}
                                 <tr>
-                                    <td style="max-width: 50px" colspan="2">
-                                    <span class="reset pastille {{ 'isBinomeWO' in donnees|keys ? 'blue lighten-2' : 'light-blue darken-3' }}">
-                                        {% if 'isBinomeWO' not in donnees|keys %}
-                                            {% for points in donnees.binomeAdversaire %}
-                                                {% if points %}
-                                                    {{ points }}
-                                                {% else %}
-                                                    <i style="font-size: 1.7em" class="material-icons tiny">help</i>
-                                                {% endif %}
-                                                {% if not loop.last %} - {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            WO
-                                        {% endif %}
-                                    </span>
+                                    <td class="nomJoueur" colspan="2">
+                                        <span class="reset pastille {{ 'isBinomeWO' in donnees|keys ? 'blue lighten-2' : 'light-blue darken-3' }}">
+                                            {% if 'isBinomeWO' not in donnees|keys %}
+                                                {% for points in donnees.binomeAdversaire %}
+                                                    {% if points %}
+                                                        {{ points }}
+                                                    {% else %}
+                                                        <i style="font-size: 1.7em" class="material-icons tiny">help</i>
+                                                    {% endif %}
+                                                    {% if not loop.last %} - {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                WO
+                                            {% endif %}
+                                        </span>
                                     </td>
-                                    <td>
+                                    <td class="resultatsJoueur">
                                         <span class="reset pastille {{ donnees.isBinomeWinner }} {{ 'isBinomeBisWO' in donnees|keys ? 'lighten-3' : (donnees.isBinomeWinner != 'red' ? '' : 'lighten-1') }}">
                                             {% if 'isBinomeBisWO' not in donnees|keys %}
                                                 {% for points in donnees.binomeAdversaireBis %}

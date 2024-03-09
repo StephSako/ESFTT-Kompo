@@ -1605,6 +1605,20 @@ table.table-last-compos {
   td {
     padding-top: 10px;
     padding-bottom: 10px;
+
+    &.nomJoueur {
+      max-width: 50px;
+      padding-right: 2px;
+    }
+
+    &.resultatsJoueur {
+      max-width: 60px;
+    }
+
+    &.pointsJoueur {
+      max-width: 19px;
+      text-align: start;
+    }
   }
 
   tr {

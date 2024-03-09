@@ -643,8 +643,8 @@ class HomeController extends AbstractController
                                     ];
                                 }, $matches);
 
-                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom()) . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
-                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom()) . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
+                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()) . '#' . $joueurAdversaire->getLicence()]['points'] = $joueurAdversaire->getPoints();
+                                $joueursAdversaireFormatted[trim($joueurAdversaire->getNom() . ' ' . $joueurAdversaire->getPrenom()) . '#' . $joueurAdversaire->getLicence()]['resultats'] = $resultatMatches;
                             }
                         }
                     }
