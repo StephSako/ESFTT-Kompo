@@ -1058,78 +1058,99 @@ table.rankingVirtualPoints {
     }
   }
 
-  &#histoMatches .modal-content {
-    padding: 2px;
+  &#histoMatches, &.classementResultatsPoule {
+    .modal-content {
+      padding: 2px;
 
-    h6 {
-      margin-top: 15px;
-    }
+      h6 {
+        margin-top: 15px;
+      }
 
-    #histoMatchesContent {
-      margin-top: 18px;
+      #histoMatchesContent, .histoMatchesContentPoule {
+        margin-top: 50px;
 
-      .rencontre {
-        padding: 1px;
-        width: 90%;
-        margin: 15px auto 20px auto;
+        .rencontre {
+          padding: 1px;
+          width: 90%;
+          margin: 15px auto 20px auto;
 
-        .trending_icon {
-          margin: 5px auto;
-          text-align: end;
-          vertical-align: middle;
-        }
-
-        p {
-          margin: 5px auto;
-
-          &.date {
-            position: absolute;
-            top: -5px;
-            left: 0;
-            border-radius: 0 0 5px 0;
-            background-color: #1d5db9;
+          .trending_icon {
+            margin: 5px auto;
+            text-align: end;
+            vertical-align: middle;
           }
 
-          &.evolution {
-            position: absolute;
-            top: 1px;
-            right: 0;
-            border-radius: 0 0 0 5px;
-          }
+          p {
+            margin: 5px auto;
 
-          &.epreuve {
-            padding-top: 4px;
-            margin-top: 30px;
-            width: 95%;
-            text-align: center;
-            font-size: 12px;
-          }
-
-          &.nomAdversaire {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-        }
-
-        .row {
-          margin: 0;
-
-          .col {
-            padding: 0;
-
-            &:not(.trending_icon) {
-              margin: 0;
+            &.date {
+              position: absolute;
+              top: -5px;
+              left: 0;
+              border-radius: 0 0 5px 0;
+              background-color: #1d5db9;
             }
 
-            p.ta-end {
-              text-align: end;
+            &.evolution {
+              position: absolute;
+              top: 1px;
+              right: 0;
+              border-radius: 0 0 0 5px;
+            }
+
+            &.epreuve {
+              padding-top: 4px;
+              margin-top: 30px;
+              width: 95%;
+              text-align: center;
+              font-size: 12px;
+            }
+
+            &.nomAdversaire {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             }
           }
-        }
 
-        .finalPointsWon p {
-          margin-top: 7px;
+          .row {
+            margin: 0;
+
+            .col {
+              padding: 0;
+
+              &:not(.trending_icon) {
+                margin: 0;
+              }
+
+              p.ta-end {
+                text-align: end;
+              }
+            }
+          }
+
+          .finalPointsWon p {
+            margin-top: 7px;
+          }
+
+          &.journeePoule {
+            .row {
+              &.depthed {
+                border-radius: 10px;
+                background-color: #dce8f0;
+              }
+
+              p.nomAdversaire {
+                margin: 3px;
+              }
+
+              span.scoreRencontre {
+                vertical-align: sub;
+              }
+            }
+
+            margin-bottom: 20px;
+          }
         }
       }
     }
@@ -1360,14 +1381,14 @@ table.rankingVirtualPoints {
 
 table.classementPoule {
   td {
-    padding: 14px 5px;
+    padding: 5px;
 
     &.td-position_club {
       width: 60px;
     }
 
     &.td-club_points, &.td-pg_pp {
-      width: 70px;
+      width: 85px;
 
       .pg_pp {
         display: flex;
@@ -1608,7 +1629,7 @@ table.table-last-compos {
 
     &.nomJoueur {
       max-width: 50px;
-      padding-right: 2px;
+      padding-right: 4px;
     }
 
     &.resultatsJoueur {
@@ -2292,7 +2313,7 @@ blockquote {
       width: 96% !important;
     }
 
-    &#histoMatches .modal-content #histoMatchesContent .rencontre {
+    &#histoMatches .modal-content .histoMatchesContentPoule .rencontre {
       width: 96%;
     }
   }
@@ -2409,6 +2430,10 @@ blockquote {
     td {
       padding: 10px 0;
     }
+  }
+
+  .histoMatchesContentPoule {
+    font-size: 85%;
   }
 }
 

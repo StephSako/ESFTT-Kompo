@@ -886,67 +886,80 @@ table.rankingVirtualPoints td .chip .nom {
 .modal .modal-content > .row .row {
   margin: 10px 0 12px 0 !important;
 }
-.modal#histoMatches .modal-content {
+.modal#histoMatches .modal-content, .modal.classementResultatsPoule .modal-content {
   padding: 2px;
 }
-.modal#histoMatches .modal-content h6 {
+.modal#histoMatches .modal-content h6, .modal.classementResultatsPoule .modal-content h6 {
   margin-top: 15px;
 }
-.modal#histoMatches .modal-content #histoMatchesContent {
-  margin-top: 18px;
+.modal#histoMatches .modal-content #histoMatchesContent, .modal#histoMatches .modal-content .histoMatchesContentPoule, .modal.classementResultatsPoule .modal-content #histoMatchesContent, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule {
+  margin-top: 50px;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre {
   padding: 1px;
   width: 90%;
   margin: 15px auto 20px auto;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .trending_icon {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .trending_icon, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .trending_icon, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .trending_icon, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .trending_icon {
   margin: 5px auto;
   text-align: end;
   vertical-align: middle;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre p {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre p, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre p, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre p {
   margin: 5px auto;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.date {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.date, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre p.date, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre p.date, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre p.date {
   position: absolute;
   top: -5px;
   left: 0;
   border-radius: 0 0 5px 0;
   background-color: #1d5db9;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.evolution {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.evolution, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre p.evolution, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre p.evolution, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre p.evolution {
   position: absolute;
   top: 1px;
   right: 0;
   border-radius: 0 0 0 5px;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.epreuve {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.epreuve, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre p.epreuve, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre p.epreuve, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre p.epreuve {
   padding-top: 4px;
   margin-top: 30px;
   width: 95%;
   text-align: center;
   font-size: 12px;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.nomAdversaire {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre p.nomAdversaire, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre p.nomAdversaire, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre p.nomAdversaire, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre p.nomAdversaire {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .row, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .row, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .row {
   margin: 0;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .row .col, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .row .col, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .row .col {
   padding: 0;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col:not(.trending_icon) {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col:not(.trending_icon), .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .row .col:not(.trending_icon), .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .row .col:not(.trending_icon), .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .row .col:not(.trending_icon) {
   margin: 0;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col p.ta-end {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .row .col p.ta-end, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .row .col p.ta-end, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .row .col p.ta-end, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .row .col p.ta-end {
   text-align: end;
 }
-.modal#histoMatches .modal-content #histoMatchesContent .rencontre .finalPointsWon p {
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre .finalPointsWon p, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre .finalPointsWon p, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre .finalPointsWon p, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre .finalPointsWon p {
   margin-top: 7px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre.journeePoule, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre.journeePoule, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre.journeePoule, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre.journeePoule {
+  margin-bottom: 20px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre.journeePoule .row.depthed, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row.depthed, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre.journeePoule .row.depthed, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row.depthed {
+  border-radius: 10px;
+  background-color: #dce8f0;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre.journeePoule .row p.nomAdversaire, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row p.nomAdversaire, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre.journeePoule .row p.nomAdversaire, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row p.nomAdversaire {
+  margin: 3px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent .rencontre.journeePoule .row span.scoreRencontre, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row span.scoreRencontre, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre.journeePoule .row span.scoreRencontre, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre.journeePoule .row span.scoreRencontre {
+  vertical-align: sub;
 }
 .modal.modal-medium {
   margin-top: 4% !important;
@@ -1133,13 +1146,13 @@ table.rankingVirtualPoints td .chip .nom {
 }
 
 table.classementPoule td {
-  padding: 14px 5px;
+  padding: 5px;
 }
 table.classementPoule td.td-position_club {
   width: 60px;
 }
 table.classementPoule td.td-club_points, table.classementPoule td.td-pg_pp {
-  width: 70px;
+  width: 85px;
 }
 table.classementPoule td.td-club_points .pg_pp, table.classementPoule td.td-pg_pp .pg_pp {
   display: flex;
@@ -1343,7 +1356,7 @@ table.table-last-compos td {
 }
 table.table-last-compos td.nomJoueur {
   max-width: 50px;
-  padding-right: 2px;
+  padding-right: 4px;
 }
 table.table-last-compos td.resultatsJoueur {
   max-width: 60px;
@@ -1911,7 +1924,7 @@ blockquote {
   .modal.modal-small {
     width: 96% !important;
   }
-  .modal#histoMatches .modal-content #histoMatchesContent .rencontre {
+  .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre {
     width: 96%;
   }
 }
@@ -2012,6 +2025,10 @@ blockquote {
   }
   table.table-last-compos td {
     padding: 10px 0;
+  }
+
+  .histoMatchesContentPoule {
+    font-size: 85%;
   }
 }
 @media screen and (max-width: 432px) {

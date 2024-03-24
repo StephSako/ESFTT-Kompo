@@ -25,6 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     const ABSENT_ABSENT = 'Absent Absent';
+    const REGEX_JOURNEE_DATE = '/^Poule [0-9]+ - tour n°[0-9]+ du (?<date>\d{2}\/\d{2}\/\d{4})$/';
     const WO = 'WO';
     const LENGTH_GRAPH_CLASSEMENT = 4;
     private $em;
@@ -1072,13 +1073,14 @@ class HomeController extends AbstractController
     public function getClassementPoule(Request $request): JsonResponse
     {
         set_time_limit(intval($this->getParameter('time_limit_ajax')));
+        $lienDivision = $request->request->get('lienDivision');
         $classementPoule = [];
+        $resultatsPoule = [];
         $erreur = null;
         $equipe = ['division' => $request->get('division'), 'poule' => $request->get('poule')];
+        $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
 
         try {
-            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            $lienDivision = $request->request->get('lienDivision');
             $classementPouleAPI = $api->getClassementPouleByLienDivision($lienDivision);
             $points = null;
             $classement = 0;
@@ -1103,8 +1105,27 @@ class HomeController extends AbstractController
             $erreur = 'Classement de la poule indisponible';
         }
 
+        try {
+            $resultatsRaw = $api->getRencontrePouleByLienDivision($lienDivision);
+            foreach ($resultatsRaw as $resultat) {
+                preg_match(self::REGEX_JOURNEE_DATE, $resultat->getLibelle(), $libelle);
+                $date = $libelle['date'];
+
+                if (!array_key_exists($date, $resultatsPoule)) $resultatsPoule[$date] = [];
+                $resultatsPoule[$date][] = [
+                    'equipeA' => $resultat->getNomEquipeA(),
+                    'equipeB' => $resultat->getNomEquipeB(),
+                    'score' => $resultat->getScoreEquipeA() . ' - ' . $resultat->getScoreEquipeB(),
+                    'winner' => $resultat->getScoreEquipeA() > $resultat->getScoreEquipeB() ? 'A' : ($resultat->getScoreEquipeA() < $resultat->getScoreEquipeB() ? 'B' : ($resultat->getScoreEquipeA() == 0 && $resultat->getScoreEquipeB() == 0 ? 'LATER' : 'NUL'))
+                ];
+            }
+        } catch (Exception $e) {
+            $erreur = 'Résultats de la poule indisponibles';
+        }
+
         return new JsonResponse($this->render('ajax/classementPoule.html.twig', [
             'classementPoule' => $classementPoule,
+            'resultatsPoule' => $resultatsPoule,
             'erreur' => $erreur,
             'equipe' => $equipe
         ])->getContent());

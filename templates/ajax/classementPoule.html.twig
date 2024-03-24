@@ -2,6 +2,8 @@
     <p class="pastille red white-text erreurXHR" style="margin-top: 15px">{{ erreur }}</p>
 {% else %}
     <h6><b>{{ equipe.division }} - Poule {{ equipe.poule }} - {{ equipe.nom }}</b></h6>
+
+    {# Classement de la poule #}
     {% if classementPoule|length > 0 %}
         <table class="striped classementPoule">
             {% for equipeClassement in classementPoule %}
@@ -28,5 +30,35 @@
         </table>
     {% else %}
         <h6 class="center pastille reset orange">Aucune équipe n'est enregistrée pour le moment</h6>
+    {% endif %}
+
+    {# Résultats des journées de la poule #}
+    {% if resultatsPoule|length > 0 %}
+        <div class="histoMatchesContentPoule">
+            {% for date, resultatsJournees in resultatsPoule %}
+                <div class="card grey lighten-4 z-depth-0 rencontre journeePoule">
+                    <p class="date white-text">{{ date }}</p>
+                    <p class="blue-text text-darken-2"><b>Journée {{ loop.index }}</b></p>
+
+                    {% for journee in resultatsJournees %}
+                        <div class="row{% if journee.equipeA == (equipe.nom | upper) or journee.equipeB == (equipe.nom | upper) %} depthed{% endif %}">
+                            <div class="col s5">
+                                <p class="nomAdversaire {{ journee.winner == 'A' ? 'green' : (journee.winner == 'B' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text">{{ journee.equipeA }}</p>
+                            </div>
+                            <div class="col s2">
+                                {% if journee.winner != 'LATER' %}
+                                    <span class="scoreRencontre"><b>{{ journee.score }}</b></span>
+                                {% endif %}
+                            </div>
+                            <div class="col s5">
+                                <p class="nomAdversaire {{ journee.winner == 'B' ? 'green' : (journee.winner == 'A' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text">{{ journee.equipeB }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h6 class="center pastille reset orange">Aucun résultat n'est enregistré pour le moment</h6>
     {% endif %}
 {% endif %}
