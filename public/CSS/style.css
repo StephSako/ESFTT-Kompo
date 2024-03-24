@@ -892,8 +892,11 @@ table.rankingVirtualPoints td .chip .nom {
 .modal#histoMatches .modal-content h6, .modal.classementResultatsPoule .modal-content h6 {
   margin-top: 15px;
 }
-.modal#histoMatches .modal-content #histoMatchesContent, .modal#histoMatches .modal-content .histoMatchesContentPoule, .modal.classementResultatsPoule .modal-content #histoMatchesContent, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule {
+.modal#histoMatches .modal-content .histoMatchesContentPoule, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule {
   margin-top: 50px;
+}
+.modal#histoMatches .modal-content #histoMatchesContent, .modal.classementResultatsPoule .modal-content #histoMatchesContent {
+  margin-top: 18px;
 }
 .modal#histoMatches .modal-content #histoMatchesContent .rencontre, .modal#histoMatches .modal-content .histoMatchesContentPoule .rencontre, .modal.classementResultatsPoule .modal-content #histoMatchesContent .rencontre, .modal.classementResultatsPoule .modal-content .histoMatchesContentPoule .rencontre {
   padding: 1px;

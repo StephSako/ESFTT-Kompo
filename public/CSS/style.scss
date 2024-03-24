@@ -1066,9 +1066,15 @@ table.rankingVirtualPoints {
         margin-top: 15px;
       }
 
-      #histoMatchesContent, .histoMatchesContentPoule {
+      .histoMatchesContentPoule {
         margin-top: 50px;
+      }
 
+      #histoMatchesContent {
+        margin-top: 18px;
+      }
+
+      #histoMatchesContent, .histoMatchesContentPoule {
         .rencontre {
           padding: 1px;
           width: 90%;
