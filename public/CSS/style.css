@@ -1155,7 +1155,7 @@ table.classementPoule td.td-position_club {
   width: 60px;
 }
 table.classementPoule td.td-club_points, table.classementPoule td.td-pg_pp {
-  width: 85px;
+  width: 70px;
 }
 table.classementPoule td.td-club_points .pg_pp, table.classementPoule td.td-pg_pp .pg_pp {
   display: flex;
