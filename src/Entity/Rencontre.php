@@ -654,7 +654,7 @@ class Rencontre
     }
 
     /**
-     * Retourne le message pour alerter les joueurs de leur sélection
+     * Retourne le message pour alerter les joueurs de leurs sélections
      * @param string $prenomSender
      * @return string
      */
@@ -662,19 +662,19 @@ class Rencontre
     {
         setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
         date_default_timezone_set('Europe/Paris');
-        $br = '%0D%0A%0D%0A';
+        $br = '%0D%0A';
         $date = !$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench();
-        $message = "&body=Salut, c'est " . $prenomSender . '.' . $br;
+        $message = "Salut, c'est " . $prenomSender . '.' . $br . $br;
         $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero() . ' pour le championnat : ' . $this->getIdChampionnat()->getNom();
         $message .= (!$this->getIdJournee()->getUndefined() ? ', le ' . $date : ', à une date indéterminée pour le moment') . ".";
 
-        if ($this->isExempt()) $message .= "%0D%0ACependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . 'Bonne journée à vous.';
+        if ($this->isExempt()) $message .= $br . "Cependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . $br . 'Bonne journée à vous.';
         else {
-            $message .= $br . 'Les joueurs sélectionnés sont :%0D%0A' . implode('%0D%0A', array_map(function ($joueur) {
+            $message .= $br . $br . 'Les joueurs sélectionnés sont :' . $br . implode($br, array_map(function ($joueur) {
                     return $joueur->getPrenom() . ' ' . $joueur->getNom();
-                }, $this->getListSelectedPlayers())) . $br;
+                }, $this->getListSelectedPlayers())) . $br . $br;
 
-            $message .= 'Merci de me confirmer votre disponibilité en réponse à ce message !%0D%0AVous avez rendez-vous à la ';
+            $message .= 'Merci de me confirmer votre disponibilité en réponse à ce message !' . $br . 'Vous avez rendez-vous à la ';
 
             if ($this->getDomicile() && !$this->getVilleHost()) $message .= 'salle Albert Marquet à 19h45';
             else $message .= 'gare de La Frette à 19h30';
@@ -686,8 +686,8 @@ class Rencontre
 
             $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
-            $message .= '.' . $br;
-            if ($this->getConsigne()) $message .= $this->getConsigne() . '.' . $br;
+            $message .= '.' . $br . $br;
+            if ($this->getConsigne()) $message .= $this->getConsigne() . '.' . $br . $br;
             $message .= 'A ' . strtok($date, ' ') . ' !';
         }
 

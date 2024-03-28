@@ -17,13 +17,12 @@ function jumpTo(anchor) {
 }
 
 function copyPaste(value, message, modalId = null) {
-    let refDoc = modalId != null ? document.getElementById(modalId) : document.body;
-    let temp = document.createElement("input");
-    temp.value = value;
-    refDoc.appendChild(temp);
-    temp.select();
+    let temp = $("<textarea>");
+    let brRegex = /%0D%0A/gi;
+    $(modalId != null ? '#' + modalId : '#main').append(temp);
+    temp.val(value.replace(brRegex, "\r\n")).select();
     document.execCommand("copy");
-    refDoc.removeChild(temp);
+    temp.remove();
     M.toast({html: message})
 }
 

@@ -21,6 +21,12 @@
                 {% if options.isCustom is defined and options.isCustom %}
                     {{ _self.modalCustomMessage(id, response) }}
                 {% else %}
+                    {% if options.showCopyContentButton is defined and options.showCopyContentButton %}
+                        <button onclick='copyPaste("{{ options.contentToCopy }}", "Convocation copiée", "modal{{ id }}")' class="z-depth-3 btn-small btn-floating white waves-effect modal-trigger" style="margin-bottom: 5px">
+                            <i class="material-icons white black-text">content_copy</i>
+                        </button>
+                    {% endif %}
+
                     {% if response.sms.contactables is empty and response.sms.notContactables is empty and response.mail.contactables is empty and response.mail.notContactables is empty %}
                         <p style="margin-bottom: 10px; padding-top: 0; padding-bottom: 0; margin-top: 10px;"><span class="pastille orange reset">Aucun joueur trouvé</span></p>
                     {% else %}

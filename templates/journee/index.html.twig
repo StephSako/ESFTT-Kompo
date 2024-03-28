@@ -407,9 +407,13 @@
                                             compo.id,
                                             getListContactSelectedPlayers,
                                             'Convoquer les joueurs',
-                                            'mailto:' ~ getListContactSelectedPlayers.mail.toString ~ compo.objetAlertPlayers ~ compo.messageAlertPlayers(app.user.prenom),
-                                            'sms:' ~ getListContactSelectedPlayers.sms.toString ~ ';?' ~ compo.messageAlertPlayers(app.user.prenom),
-                                            false
+                                            'mailto:' ~ getListContactSelectedPlayers.mail.toString ~ compo.objetAlertPlayers ~ '&body=' ~ compo.messageAlertPlayers(app.user.prenom),
+                                            'sms:' ~ getListContactSelectedPlayers.sms.toString ~ ';?&body=' ~ compo.messageAlertPlayers(app.user.prenom),
+                                            false,
+                                            {
+                                                showCopyContentButton: true,
+                                                contentToCopy: compo.messageAlertPlayers(app.user.prenom)
+                                            }
                                         ) }}
                                     {% endif %}
                                     <a onclick="return confirm('Êtes-vous sûr de vider la compo ?')" class="center-align btn waves-effect red lighten-2" href="{{ path('composition.vider', {type: championnat.idChampionnat, idJournee: numJournee, idCompo: compo.id}) }}">
