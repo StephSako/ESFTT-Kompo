@@ -1,0 +1,30 @@
+{% macro classementRencontres(lienDivision, numeroEquipe, division, poule, idChampActif) %}
+    <div id="modalClassement{{ numeroEquipe }}" class="modal modal-fixed-footer modal-medium center classementResultatsPoule">
+        <div class="modal-content">
+            <a onclick="getClassementPoule('{{ lienDivision }}', '{{ numeroEquipe }}', '{{ division }}', '{{ poule }}', true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_classement_poule" href="#modalClassement{{ numeroEquipe }}">
+                <i class="material-icons">refresh</i>
+            </a>
+            <div id="classementRencontresPoulesContent{{ numeroEquipe }}"></div>
+            <div id="classementRencontresPoulesLoader{{ numeroEquipe }}" style="padding-right: 4px;padding-left: 4px;">
+                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">FERMER</a>
+        </div>
+    </div>
+{% endmacro %}

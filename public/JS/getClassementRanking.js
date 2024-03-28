@@ -1,6 +1,11 @@
-function getClassementPoule(lienDivision, numeroEquipe, division, poule) {
-    if (!alreadyCalledClassementPoule.includes(numeroEquipe)) {
+function getClassementPoule(lienDivision, numeroEquipe, division, poule, forceReload) {
+    if (!alreadyCalledClassementPoule.includes(numeroEquipe) || forceReload) {
         alreadyCalledClassementPoule.push(numeroEquipe);
+        if (forceReload) {
+            $('a.reload_classement_poule').addClass('hide');
+            $('#classementRencontresPoulesLoader' + numeroEquipe).removeClass('hide');
+            $('#classementRencontresPoulesContent' + numeroEquipe).addClass('hide');
+        }
         $.ajax({
             url: '/journee/classement-poule',
             type: 'POST',
@@ -21,7 +26,9 @@ function getClassementPoule(lienDivision, numeroEquipe, division, poule) {
 }
 
 function templatingClassementPoule(numeroEquipe, response) {
-    $('#classementContent' + numeroEquipe).html(response);
+    $('a.reload_classement_poule').removeClass('hide');
+    $('#classementRencontresPoulesLoader' + numeroEquipe).addClass('hide');
+    $('#classementRencontresPoulesContent' + numeroEquipe).html(response).removeClass('hide');
 }
 
 let alreadyCalledClassementPoule = [];

@@ -1067,7 +1067,7 @@ table.rankingVirtualPoints {
       }
 
       .histoMatchesContentPoule {
-        margin-top: 50px;
+        margin-top: 40px;
       }
 
       #histoMatchesContent {
@@ -1386,6 +1386,8 @@ table.rankingVirtualPoints {
 }
 
 table.classementPoule {
+  margin-top: 20px;
+
   td {
     padding: 5px;
 
@@ -1886,7 +1888,7 @@ span.progression {
   }
 }
 
-a.reload_ranking, a.reload_histoMatches {
+a.reload_ranking, a.reload_histoMatches, a.reload_classement_poule {
   position: absolute;
   right: 8px;
   top: 8px;
@@ -2509,7 +2511,7 @@ blockquote {
 }
 
 @media screen and (min-width: 351px) and (max-width: 430px) {
-  a.reload_ranking, a.reload_histoMatches {
+  a.reload_ranking, a.reload_histoMatches, a.reload_classement_poule {
     top: 6px;
     right: 6px;
   }
@@ -2613,7 +2615,7 @@ blockquote {
 }
 
 @media screen and (max-width: 275px) {
-  a.reload_ranking, a.reload_histoMatches {
+  a.reload_ranking, a.reload_histoMatches, a.reload_classement_poule {
     display: none;
   }
 }

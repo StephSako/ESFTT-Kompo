@@ -4,6 +4,7 @@
 {% import 'macros/modalContact.html.twig' as _modalContact %}
 {% import 'macros/modales/previousResultatsAdversaire.html.twig' as _previousResultatsAdversaire %}
 {% import 'macros/brulages.html.twig' as _brulage %}
+{% import 'macros/modales/classementRencontresPoule.html.twig' as _classementRencontresPoule %}
 
 {% block title %}J{{ numJournee }} - Équipe {{ compo.idEquipe.numero }}{% endblock %}
 
@@ -106,7 +107,7 @@
                         </h5>
                         <div class="poule">
                             {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                            <a style="margin-bottom: 4px" onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}', '{{ compo.idEquipe.idDivision.shortName }}', '{{ compo.idEquipe.idPoule.poule }}')" class="btn-small blue lighten-1 waves-effect modal-trigger poule" href="#modalClassement{{ compo.idEquipe.numero }}">
+                            <a style="margin-bottom: 4px" onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}', '{{ compo.idEquipe.idDivision.shortName }}', '{{ compo.idEquipe.idPoule.poule }}', false)" class="btn-small blue lighten-1 waves-effect modal-trigger poule" href="#modalClassement{{ compo.idEquipe.numero }}">
                                 {% endif %}
                                 <span>
                                     Poule
@@ -220,30 +221,7 @@
                     {{ _previousResultatsAdversaire.previousResultats(compo.idEquipe.numero, compo.adversaire | title) }}
                 {% endif %}
 
-                <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center">
-                    <div class="modal-content">
-                        <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                            <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                <div class="preloader-wrapper small active">
-                                    <div class="spinner-layer spinner-blue-only">
-                                        <div class="circle-clipper left">
-                                            <div class="circle"></div>
-                                        </div>
-                                        <div class="gap-patch">
-                                            <div class="circle"></div>
-                                        </div>
-                                        <div class="circle-clipper right">
-                                            <div class="circle"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">FERMER</a>
-                    </div>
-                </div>
+                {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
 
                 {{ form_start(form, {'attr': {'id': 'form_joueurs_compo'}}) }}
                 <div class="form_div_list">

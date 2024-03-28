@@ -5,7 +5,9 @@
 {% import 'macros/brulages.html.twig' as _brulage %}
 {% import 'macros/disponibilites.html.twig' as _disponibilites %}
 {% import 'macros/virtualPointsClassement.html.twig' as _virtualPointsClassement %}
+{% import 'macros/modales/classementGeneral.html.twig' as _classementGeneral %}
 {% import 'macros/modales/previousResultatsAdversaire.html.twig' as _previousResultatsAdversaire %}
+{% import 'macros/modales/classementRencontresPoule.html.twig' as _classementRencontresPoule %}
 
 {% block title %}J{{ numJournee }} - {{ championnat.nom }}{% endblock %}
 
@@ -250,7 +252,7 @@
                                 </h5>
                                 <div class="poule">
                                     {% if compo.idEquipe.idPoule and compo.idEquipe.lienDivision %}
-                                    <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}', '{{ compo.idEquipe.idDivision.shortName }}', '{{ compo.idEquipe.idPoule.poule }}')" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
+                                    <a onclick="getClassementPoule('{{ compo.idEquipe.lienDivision | raw }}', '{{ compo.idEquipe.numero }}', '{{ compo.idEquipe.idDivision.shortName }}', '{{ compo.idEquipe.idPoule.poule }}', false)" class="btn-small blue lighten-1 waves-effect modal-trigger" href="#modalClassement{{ compo.idEquipe.numero }}">
                                         {% endif %}
                                         Poule
                                         {% if compo.idEquipe.idPoule %}
@@ -442,30 +444,7 @@
                         {% endif %}
                     </div>
 
-                    <div id="modalClassement{{ compo.idEquipe.numero }}" class="modal modal-fixed-footer modal-medium center classementResultatsPoule">
-                        <div class="modal-content">
-                            <div id="classementContent{{ compo.idEquipe.numero }}" style="padding-right: 4px;padding-left: 4px;">
-                                <div style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-                                    <div class="preloader-wrapper small active">
-                                        <div class="spinner-layer spinner-blue-only">
-                                            <div class="circle-clipper left">
-                                                <div class="circle"></div>
-                                            </div>
-                                            <div class="gap-patch">
-                                                <div class="circle"></div>
-                                            </div>
-                                            <div class="circle-clipper right">
-                                                <div class="circle"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect waves-blue btn-flat grey-text">FERMER</a>
-                        </div>
-                    </div>
+                    {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
 
                 {% endfor %}
             {% else %}
@@ -529,7 +508,7 @@
         {% endif %}
 
         {# Modale des classement des points virtuels #}
-        {{ _virtualPointsClassement.modaleGeneralRanking(championnat.idChampionnat) }}
+        {{ _classementGeneral.modaleGeneralRanking(championnat.idChampionnat) }}
 
         {# Modale de l'historique des matches #}
         {% if app.user.competiteur %}
