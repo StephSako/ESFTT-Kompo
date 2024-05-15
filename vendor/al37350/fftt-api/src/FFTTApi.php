@@ -532,7 +532,15 @@ class FFTTApi
                             /** Si le joueur n'est pas absent */
                             && !str_contains($prenom, "Absent") and !str_contains($nom, "Absent")
                             /** Si le match s'est déroulé après la date du dernier match validé */
-                            && $datePartie->getTimestamp() <= $lastValidatedMatchDate;
+                            && $datePartie->getTimestamp() <= $lastValidatedMatchDate
+                            /** Si la partie a été réalisée durant le mois dernier ou durant le mois actuel */
+                            && !($validatedPartie->getPointsObtenus() === 0.0
+                                && (
+                                    ($datePartie->format('n') === (new DateTime())->format('n')
+                                     && $datePartie->format('Y') === (new DateTime())->format('Y'))
+                                    || ($datePartie->format('n') . '/' . $datePartie->format('Y')) === date('n', strtotime('-1 month')) . '/' . date('Y', strtotime('-1 month'))
+                                )
+                            );
                     }));
 
                     if (!$found) {
