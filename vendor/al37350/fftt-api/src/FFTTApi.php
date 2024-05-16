@@ -332,6 +332,10 @@ class FFTTApi
         }
     }
 
+    /**
+     * @param array $joueurDetails
+     * @return JoueurDetails
+     */
     private function returnJoueurDetails(array $joueurDetails): JoueurDetails
     {
         return new JoueurDetails(
@@ -816,11 +820,11 @@ class FFTTApi
         }
 
         // Vérification s'il y a inversion des équipes sur la feuille de match
-        preg_match('/^renc_id=[0-9]+&is_retour=[0-9]+&phase=[0-9]+&res_1=[0-9]+&res_2=[0-9]+&equip_1=(?<equip_1>[A-Za-z0-9+\-(?:%28)(?:%29)]+)&equip_2=(?<equip_2>[A-Za-z0-9+\-(?:%28)(?:%29)]+)&equip_id1=[0-9]+&equip_id2=[0-9]+&clubnum_1=[0-9]+&clubnum_2=[0-9]+$/', $lienRencontre, $match);
+        preg_match('/^renc_id=[0-9]+&is_retour=[0-9]+&phase=[0-9]+&res_1=[0-9]+&res_2=[0-9]+&equip_1=(?<equip_1>[A-Za-z0-9+\-\.(?:%28)(?:%29)]+)&equip_2=(?<equip_2>[A-Za-z0-9+\-\.(?:%28)(?:%29)]+)&equip_id1=[0-9]+&equip_id2=[0-9]+&clubnum_1=[0-9]+&clubnum_2=[0-9]+$/', $lienRencontre, $match);
         $equipesInversees = false;
         if (
             array_key_exists('equip_1', $match) &&
-            array_key_exists('equip_1', $match) &&
+            array_key_exists('equip_2', $match) &&
             $match['equip_1'] == urlencode($data['resultat']['equb']) &&
             $match['equip_2'] == urlencode($data['resultat']['equa'])
         ) {
