@@ -462,7 +462,6 @@ class FFTTApi
             $jour = $date->format('j');
             $mois = $date->format('n');
             $annee = $date->format('Y');
-            $moisActuel = (new Datetime())->format('n');
 
             while (!array_key_exists($mois, self::DATES_PUBLICATION)) {
                 if ($mois == 12) {
@@ -583,7 +582,7 @@ class FFTTApi
             $virtualMonthlyPointsWon = 0.0;
             $virtualMonthlyPoints = 0.0;
             $latestMonth = null;
-            $arePointdPhase2Updated = $classement->getPointsDebutSaison() !== $classement->getLicence();
+            $arePointdPhase2Updated = $classement->getPointsDebutSaison() !== $classement->getLicence() && (new DateTime())->format('n') < 2;
             $data = $this->getUnvalidatedPartiesJoueurByLicenceAndEarnedPoints($joueurId, $arePointdPhase2Updated);
             $monthPoints = round(($classement->getPointsLicence() + $data['totalPointsObtenus']), 1, PHP_ROUND_HALF_EVEN);
             $unvalidatedParties = $data['unvalidatedParties'];
