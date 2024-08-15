@@ -165,7 +165,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param array $teams
-     * @param int $mode : 0 => delete, 1 => create, 2 => update
+     * @param int $mode : 0 => non enregistrées, 1 => create, 2 => update
      * @return string
      */
     public function listeEquipeToManage(array $teams, int $mode): string
@@ -179,8 +179,8 @@ class AppExtension extends AbstractExtension
             elseif ($i < $nbEquipes - 1) $str .= ', ';
         }
 
-        $str .= $nbEquipes > 1 ? ' seront ' : ' sera ';
-        $str .= ($mode == 0 ? 'supprimée' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 ? 's' : '');
+        $str .= ($mode == 0 ? ($nbEquipes > 1 ? ' ne sont pas ' : " n'est pas ") : ($nbEquipes > 1 ? ' seront ' : ' sera '));
+        $str .= ($mode == 0 ? 'enregistrées auprès de la FFTT' : ($mode == 1 ? 'créée' : 'modifiée')) . ($nbEquipes > 1 && $mode > 0 ? 's' : '');
 
         return $str;
     }

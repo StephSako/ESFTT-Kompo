@@ -698,6 +698,8 @@ ul.dropdown-content.select-dropdown li.optgroup:hover {
 ul.dropdown-content.select-dropdown li.optgroup span {
   padding-top: 4px;
   padding-bottom: 4px;
+  color: black;
+  font-weight: bold;
 }
 
 .input_file .file-field.input-field {

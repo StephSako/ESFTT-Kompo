@@ -38,9 +38,10 @@ class ChampionnatRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param array $organismes
      * @return array
      */
-    public function getAllDivisions(): array
+    public function getAllDivisions(array $organismes): array
     {
         $query = $this->createQueryBuilder('c')
             ->select('d.longName')
@@ -51,6 +52,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('d.nbJoueurs')
             ->addSelect('d.idDivision')
             ->addSelect('c.idChampionnat')
+            ->addSelect('d.organismePere')
             ->leftJoin('c.divisions', 'd')
             ->leftJoin('d.equipes', 'e')
             ->groupBy('d.idDivision')
@@ -67,6 +69,7 @@ class ChampionnatRepository extends ServiceEntityRepository
                 if (!array_key_exists('idChampionnat', $querySorted[$division['nom']])) $querySorted[$division['nom']]['idChampionnat'] = $division['idChampionnat'];
                 if (!array_key_exists('divisions', $querySorted[$division['nom']])) $querySorted[$division['nom']]['divisions'] = [];
                 $querySorted[$division['nom']]['divisions'][$key] = $division;
+                if ($division["organismePere"]) $querySorted[$division['nom']]['divisions'][$key]["organismePere"] = $organismes[$division["organismePere"]];
             }
         }
         return $querySorted;
@@ -134,28 +137,6 @@ class ChampionnatRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne la liste formattée des organismes de Ligue et Départementaux
-     * @param array $groupesOrganismes
-     * @return array
-     */
-    public function getOrganismesFormatted(array $groupesOrganismes): array
-    {
-        $organismes = [];
-        foreach ($groupesOrganismes as $nomGroupeOrganismes => $groupeOrganismes) {
-            usort($groupeOrganismes, function ($orga1, $orga2) {
-                return $orga1->getLibelle() > $orga2->getLibelle();
-            });
-
-            $organismesGroupe = [];
-            foreach ($groupeOrganismes as $organisme) {
-                $organismesGroupe[mb_convert_case($organisme->getLibelle(), MB_CASE_UPPER, "UTF-8")] = $organisme->getId();
-            }
-            $organismes[$nomGroupeOrganismes] = $organismesGroupe;
-        }
-        return $organismes;
-    }
-
-    /**
      * @param int $idChampionnat
      * @return void
      */
@@ -181,7 +162,6 @@ class ChampionnatRepository extends ServiceEntityRepository
     public function getChampionnatsUpdatableByFFTTApi(): array
     {
         return $this->createQueryBuilder('c')
-            ->where('c.organismePere IS NOT NULL')
             ->orderBy('c.nom')
             ->getQuery()
             ->getResult();

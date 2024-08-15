@@ -10,6 +10,7 @@ use App\Repository\DivisionRepository;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,10 +48,32 @@ class BackOfficeDivisionController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $organismes = $this->getOrganismesFormatted(true);
         return $this->render('backoffice/division/index.html.twig', [
-            'divisions' => $this->championnatRepository->getAllDivisions(),
+            'divisions' => $this->championnatRepository->getAllDivisions($organismes),
             'active' => $request->query->get('active')
         ]);
+    }
+
+    /**
+     * @param bool $flatten
+     * @return array
+     */
+    public function getOrganismesFormatted(bool $flatten): array
+    {
+        try {
+            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
+            return $flatten ?
+                $this->divisionRepository->getOrganismesBasic(array_merge($api->getOrganismes('L'), $api->getOrganismes('D')))
+                : $this->divisionRepository->getOrganismesFormatted(
+                    [
+                        'Ligue' => $api->getOrganismes('L'),
+                        'Département' => $api->getOrganismes('D')
+                    ]);
+        } catch (Exception $e) {
+            $this->addFlash('fail', 'Récupération des organismes impossible');
+            return [];
+        }
     }
 
     /**
@@ -63,9 +86,11 @@ class BackOfficeDivisionController extends AbstractController
     {
         $division = new Division();
         $listChamps = $this->championnatRepository->getAllChampionnats();
+        $organismes = $this->getOrganismesFormatted(false);
         $form = $this->createForm(DivisionType::class, $division, [
             'listChamps' => $listChamps,
-            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division')
+            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division'),
+            'organismesOptGroup' => $organismes
         ]);
         $form->handleRequest($request);
 
@@ -85,6 +110,7 @@ class BackOfficeDivisionController extends AbstractController
                 } catch (Exception $e) {
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', "Le diminutif '" . $division->getShortName() . "' est déjà attribué");
+                        else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', "Il existe déjà un championnat pour '" . array_search($division->getOrganismePere(), array_merge(...array_values($organismes))) . "'");
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', "Le nom '" . $division->getLongName() . "' est déjà attribué");
                         else $this->addFlash('fail', "Le formulaire n'est pas valide");
                     } else $this->addFlash('fail', "Le formulaire n'est pas valide");
@@ -113,8 +139,10 @@ class BackOfficeDivisionController extends AbstractController
         }
 
         $nbJoueurs = $division->getNbJoueurs();
+        $organismes = $this->getOrganismesFormatted(false);
         $form = $this->createForm(DivisionType::class, $division, [
-            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division')
+            'nbMaxJoueurs' => $this->getParameter('nb_joueurs_default_division'),
+            'organismesOptGroup' => $organismes
         ]);
         $form->handleRequest($request);
 
@@ -147,6 +175,7 @@ class BackOfficeDivisionController extends AbstractController
                     if ($e->getPrevious()->getCode() == "23000") {
                         if (str_contains($e->getPrevious()->getMessage(), 'short_name')) $this->addFlash('fail', "Le diminutif '" . $division->getShortName() . "' est déjà attribué");
                         else if (str_contains($e->getPrevious()->getMessage(), 'long_name')) $this->addFlash('fail', "Le nom '" . $division->getLongName() . "' est déjà attribué");
+                        else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', "Il existe déjà un championnat pour '" . array_search($division->getOrganismePere(), array_merge(...array_values($organismes))) . "'");
                         else $this->addFlash('fail', "Le formulaire n'est pas valide");
                     } else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 }

@@ -56,4 +56,42 @@ class DivisionRepository extends ServiceEntityRepository
         }
         return $querySorted;
     }
+
+    /**
+     * Retourne la liste formattée d'une liste de groupes d'organismes triées selon le type
+     * LIBELLE => ID_ORGANISME
+     * @param array $groupesOrganismes
+     * @return array
+     */
+    public function getOrganismesFormatted(array $groupesOrganismes): array
+    {
+        $organismes = [];
+        foreach ($groupesOrganismes as $nomGroupeOrganismes => $groupeOrganismes) {
+            usort($groupeOrganismes, function ($orga1, $orga2) {
+                return $orga1->getLibelle() > $orga2->getLibelle();
+            });
+
+            $organismesGroupe = [];
+            foreach ($groupeOrganismes as $organisme) {
+                $organismesGroupe[mb_convert_case($organisme->getLibelle(), MB_CASE_UPPER, "UTF-8")] = $organisme->getId();
+            }
+            $organismes[$nomGroupeOrganismes] = $organismesGroupe;
+        }
+        return $organismes;
+    }
+
+    /**
+     * Retourne la liste formattée d'une liste d'organismes
+     * ID_ORGANISME => LIBELLE
+     * @param array $organismesRaw
+     * @return array
+     */
+    public function getOrganismesBasic(array $organismesRaw): array
+    {
+        $organismes = [];
+        foreach ($organismesRaw as $organisme) {
+            $organismes[$organisme->getId()] = mb_convert_case($organisme->getLibelle(), MB_CASE_UPPER, "UTF-8");
+        }
+        return $organismes;
+    }
 }

@@ -444,7 +444,9 @@
                         {% endif %}
                     </div>
 
-                    {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
+                    {% if compo.idEquipe.idPoule is not null %}
+                        {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
+                    {% endif %}
 
                 {% endfor %}
             {% else %}

@@ -221,7 +221,9 @@
                     {{ _previousResultatsAdversaire.previousResultats(compo.idEquipe.numero, compo.adversaire | title) }}
                 {% endif %}
 
-                {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
+                {% if compo.idEquipe.idPoule is not null %}
+                    {{ _classementRencontresPoule.classementRencontres((compo.idEquipe.lienDivision | raw), compo.idEquipe.numero, compo.idEquipe.idDivision.shortName, compo.idEquipe.idPoule.poule, championnat.idChampionnat) }}
+                {% endif %}
 
                 {{ form_start(form, {'attr': {'id': 'form_joueurs_compo'}}) }}
                 <div class="form_div_list">

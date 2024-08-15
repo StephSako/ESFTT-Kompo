@@ -41,7 +41,6 @@
                         <th>Brûlage</th>
                         <th>Règle brûlage J2</th>
                         <th>Tri auto.</th>
-                        <th>Lié à la FFTT</th>
                         {% if app.user.admin %}
                             <th></th>
                             <th></th>
@@ -69,11 +68,6 @@
                             </td>
                             <td>
                                 <i class='material-icons'>{% if championnat.compoSorted %}check{% else %}clear{% endif %}</i>
-                            </td>
-                            <td>
-                                {% if championnat.organismePere %} <i class='material-icons green-text'>leak_add</i>
-                                {% else %} <i class='material-icons red-text'>leak_remove</i>
-                                {% endif %}
                             </td>
                             {% if app.user.admin %}
                                 <td>

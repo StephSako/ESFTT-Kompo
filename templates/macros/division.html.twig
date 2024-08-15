@@ -5,6 +5,7 @@
             <tr>
                 <th>Diminutif</th>
                 <th>Nom</th>
+                <th>Organisme</th>
                 <th class="hide-on-med-and-down">Nombre de joueurs/composition</th>
                 <th class="hide-on-large-only">Nb joueurs/compo</th>
                 <th>Nombre d'équipes</th>
@@ -24,6 +25,11 @@
                         <b>{{ division.shortName }}</b>
                     </td>
                     <td>{{ division.longName }}</td>
+                    <td>
+                        {% if division.organismePere %} {{ division.organismePere }}
+                        {% else %} <i class='material-icons red-text'>clear</i>
+                        {% endif %}
+                    </td>
                     <td>{{ division.nbJoueurs }}</td>
                     <td>{{ division.nbEquipes }}</td>
                     {% if app.user.admin %}

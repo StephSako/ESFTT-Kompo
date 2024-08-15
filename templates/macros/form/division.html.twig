@@ -12,18 +12,22 @@
 
             {{ form_start(form) }}
             <div class="row">
-                <div class="col s12 {% if not editMode %}l2{% else %}m3{% endif %}">
+                <div class="col s12 l2">
                     <b><i class="material-icons prefix">short_text</i> Diminutif</b>{{ form_row(form.shortName) }}
                 </div>
-                <div class="col s12 {% if not editMode %}l4{% else %}m5{% endif %}">
+                <div class="col s12 l4">
                     <b><i class="material-icons prefix">subject</i> Nom</b>{{ form_row(form.longName) }}
                 </div>
-                <div class="col s12 {% if not editMode %}l3{% else %}m4{% endif %}">
+                <div class="col s12 l3">
                     <b><i class="material-icons prefix">people</i> Nombre de joueurs</b>
                     {{ form_row(form.nbJoueurs) }}
                 </div>
+                <div class="col s12 l3">
+                    <b><i class="material-icons prefix ">manage_accounts</i> Organisme</b>
+                    {{ form_row(form.organismePere) }}
+                </div>
                 {% if not editMode %}
-                    <div class="col s12 l3">
+                    <div class="col s12 offset-l4 l4">
                         <b><i class="material-icons prefix">stars</i> Championnat</b>
                         {{ form_row(form.idChampionnat) }}
                     </div>
