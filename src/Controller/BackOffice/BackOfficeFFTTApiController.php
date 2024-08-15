@@ -184,9 +184,9 @@ class BackOfficeFFTTApiController extends AbstractController
                         return preg_replace('/\D/', '', $this->getEquipeNumero($equipeToEditIndex->getLibelle()));
                     }, $equipesToCreate), array_values($equipesToCreate));
 
-                    $equipesToDeleteIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
-                    $equipesToDelete = array_filter($equipesKompo, function ($equipeKompo) use ($equipesToDeleteIDs) {
-                        return in_array($equipeKompo->getNumero(), $equipesToDeleteIDs);
+                    $equipesNonEnregistreesIDs = array_diff($equipesIDsKompo, $equipesIDsFFTT);
+                    $equipesNonEnregistrees = array_filter($equipesKompo, function ($equipeKompo) use ($equipesNonEnregistreesIDs) {
+                        return in_array($equipeKompo->getNumero(), $equipesNonEnregistreesIDs);
                     });
 
                     $equipesIDsCommon = array_intersect($equipesIDsFFTT, $equipesIDsKompo);
@@ -205,7 +205,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         $equipeIssued = [];
 
                         /** L'équipe est recensée des 2 côtés */
-                        if (!in_array($numeroEquipeFFTT, array_merge($equipesToCreateIDs, $equipesToDeleteIDs))) {
+                        if (!in_array($numeroEquipeFFTT, array_merge($equipesToCreateIDs, $equipesNonEnregistreesIDs))) {
                             $equipeKompo = array_values(array_filter($equipesKompo, function ($equipe) use ($numeroEquipeFFTT) {
                                 return $equipe->getNumero() == $numeroEquipeFFTT;
                             }))[0];
@@ -233,9 +233,11 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                     }
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["issued"] = $equipesIssued;
-                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toDelete"] = $equipesToDelete;
-                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toDeleteIDs"] = $equipesToDeleteIDs;
+                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["notRegistered"] = $equipesNonEnregistrees;
+                    sort($equipesNonEnregistreesIDs);
+                    $allChampionnatsReset[$championnatActif->getNom()]["teams"]["notRegisteredIDs"] = $equipesNonEnregistreesIDs;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreate"] = $equipesToCreate;
+                    sort($equipesToCreateIDs);
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toCreateIDs"] = $equipesToCreateIDs;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["kompo"] = $equipesKompo;
                     $allChampionnatsReset[$championnatActif->getNom()]["teams"]["toUpdate"] = array_map(function ($equipe) {
@@ -660,12 +662,6 @@ class BackOfficeFFTTApiController extends AbstractController
                                 ->setIdPoule($arrayDivisionPoule[1]);
                         }
                         $this->em->refresh($championnat);
-
-                        /** On supprime les équipes superflux */
-                        foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toDelete"] as $equipeToDelete) {
-                            $this->em->remove($equipeToDelete);
-                            $this->em->flush();
-                        }
 
                         /** On créé les équipes inexistantes */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {

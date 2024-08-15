@@ -227,7 +227,7 @@
                             <div class='backoffice-panel center card-panel'>
                                 <h3 style="margin-top: 10px; margin-bottom: 10px;">La phase</h3>
 
-                                {% if not (data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
+                                {% if not (data.teams.toUpdate or data.teams.notRegistered or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
                                     <p class="pastille green white-text reset">Toutes les données sont à jour</p>
                                     <div style="margin-top: 25px; margin-bottom: 15px;"></div>
                                 {% endif %}
@@ -292,11 +292,11 @@
                                 <div class="center">
                                     <h4>Les équipes</h4>
                                     {% if data.teams.toUpdate %}<p class="col pastille orange darken-2 reset">{{ data.teams.toUpdate|listeEquipeToManage(2) }}</p>{% endif %}
-                                    {% if data.teams.toDelete %}<p class="col pastille red lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toDeleteIDs|listeEquipeToManage(0) }}</p>{% endif %}
+                                    {% if data.teams.notRegistered %}<p class="col pastille grey reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.notRegisteredIDs|listeEquipeToManage(0) }}</p>{% endif %}
                                     {% if data.teams.toCreate %}<p class="col pastille green lighten-1 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.teams.toCreateIDs|listeEquipeToManage(1) }}</p>{% endif %}
-                                    {% if not data.teams.toUpdate and not data.teams.toDelete and not data.teams.toCreate %}<p class="col pastille blue reset">Toutes les équipes sont à jour</p>{% endif %}
+                                    {% if not data.teams.toUpdate and not data.teams.toCreate %}<p class="col pastille blue reset">Toutes les équipes sont à jour</p>{% endif %}
 
-                                    {% if data.teams.issued or data.teams.toCreate or data.teams.toDelete %}
+                                    {% if data.teams.issued or data.teams.toCreate %}
                                         <table class="striped centered responsive-table">
                                             <thead>
                                             <tr>
@@ -339,28 +339,6 @@
                                                         {{ equipe.poule }}
                                                     </td>
                                                     <td><i class='material-icons green-text'>leak_add</i></td>
-                                                </tr>
-                                            {% endfor %}
-
-                                            {% for equipe in data.teams.toDelete %}
-                                                <tr>
-                                                    <td><i class="material-icons red-text">delete</i></td>
-                                                    <td><b>{{ equipe.numero }}</b></td>
-                                                    <td>
-                                                        {% if equipe.idDivision %}
-                                                            {{ equipe.idDivision.shortName }}
-                                                        {% else %}
-                                                            <span class="red-text lighten-2">Division indéfinie</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>
-                                                        {% if equipe.idPoule %}
-                                                            {{ equipe.idPoule.poule }}
-                                                        {% else %}
-                                                            <span class="red-text lighten-2">Poule indéfinie</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td><i class='material-icons black-text'>leak_add</i></td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>
@@ -453,7 +431,7 @@
                                     {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
                                     {% endif %}
 
-                                    {% if data.teams.toUpdate or data.teams.toDelete or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
+                                    {% if data.teams.toUpdate or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
                                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                         <form class="center" action="{{ path('backoffice.settings.update') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">

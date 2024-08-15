@@ -86,7 +86,7 @@ class Championnat
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="type_epreuve", nullable=true, length=100)
+     * @ORM\Column(type="string", name="type_epreuve", nullable=false, length=100)
      */
     private $typeEpreuve;
 
