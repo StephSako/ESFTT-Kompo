@@ -11,12 +11,14 @@ class Equipe
     private $libelle;
     private $division;
     private $lienDivision;
+    private $epreuve;
 
-    public function __construct(string $libelle, string $division, string $lienDivision)
+    public function __construct(string $libelle, string $division, string $lienDivision, string $epreuve)
     {
         $this->libelle = $libelle;
         $this->division = $division;
         $this->lienDivision = $lienDivision;
+        $this->epreuve = $epreuve;
     }
 
     public function getLibelle(): string
@@ -32,5 +34,10 @@ class Equipe
     public function getLienDivision(): string
     {
         return $this->lienDivision;
+    }
+
+    public function getEpreuve(): string
+    {
+        return $this->epreuve;
     }
 }

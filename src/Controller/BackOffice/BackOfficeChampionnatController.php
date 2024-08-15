@@ -12,7 +12,6 @@ use App\Repository\JourneeRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use FFTTApi\FFTTApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,11 +56,8 @@ class BackOfficeChampionnatController extends AbstractController
      */
     public function new(Request $request, UtilController $utilController): Response
     {
-        $organismes = $this->getOrganismesFormatted();
         $championnat = new Championnat();
-        $form = $this->createForm(ChampionnatType::class, $championnat, [
-            'organismesOptGroup' => $organismes
-        ]);
+        $form = $this->createForm(ChampionnatType::class, $championnat);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -93,7 +89,6 @@ class BackOfficeChampionnatController extends AbstractController
             } catch (Exception $e) {
                 if ($e->getPrevious()->getCode() == "23000") {
                     if (str_contains($e->getPrevious()->getMessage(), 'nom')) $this->addFlash('fail', "Le nom '" . $championnat->getNom() . "' est déjà attribué");
-                    else if (str_contains($e->getPrevious()->getMessage(), 'lien_fftt_api')) $this->addFlash('fail', "Il existe déjà un championnat pour '" . array_search($championnat->getOrganismePere(), array_merge(...array_values($organismes))) . "'");
                     else $this->addFlash('fail', "Le formulaire n'est pas valide");
                 } else $this->addFlash('fail', "Le formulaire n'est pas valide");
             }
@@ -104,24 +99,6 @@ class BackOfficeChampionnatController extends AbstractController
             'title' => 'Créer un championnat',
             'macro' => 'championnat'
         ]);
-    }
-
-    /**
-     * @return array
-     */
-    public function getOrganismesFormatted(): array
-    {
-        try {
-            $api = new FFTTApi($this->getParameter('fftt_api_login'), $this->getParameter('fftt_api_password'));
-            return $this->championnatRepository->getOrganismesFormatted(
-                [
-                    'Ligue' => $api->getOrganismes('Lzz'),
-                    'Département' => $api->getOrganismes('D')
-                ]);
-        } catch (Exception $e) {
-            $this->addFlash('fail', 'Récupération des organismes impossible');
-            return [];
-        }
     }
 
     /**
@@ -139,10 +116,7 @@ class BackOfficeChampionnatController extends AbstractController
         }
         $limiteBrulage = $championnat->getLimiteBrulage();
 
-        $organismes = $this->getOrganismesFormatted();
-        $form = $this->createForm(ChampionnatType::class, $championnat, [
-            'organismesOptGroup' => $organismes
-        ]);
+        $form = $this->createForm(ChampionnatType::class, $championnat);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

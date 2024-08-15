@@ -27,10 +27,6 @@
         </div>
 
         <div class="row" style="margin-bottom: 0">
-            <div class="col s12 l4 form_div_list">
-                <b><i class="material-icons prefix ">star</i> Championnat</b>
-                {{ form_row(form.organismePere) }}
-            </div>
             <div class="col s12 l4">
                 <b><i class="material-icons">sort</i> Tri auto. des classements</b><br>
                 <div style="margin-top: 15px;">{{ form_row(form.compoSorted) }}</div>
@@ -40,12 +36,17 @@
                 <b>Règle du brûlage de la J2 appliquée ?</b><br>
                 <div style="margin-top: 15px;">{{ form_row(form.j2Rule, {'id': 'cb_regle_j2'}) }}</div>
             </div>
+
+            <div class="col s12 l4">
+                <b><i class="material-icons">tonality</i>Périodicité</b><br>
+                {{ form_row(form.periodicite) }}
+            </div>
         </div>
 
         <div class="row">
-            <div class="col s12 m4 offset-m4">
-                <b><i class="material-icons">tonality</i>Périodicité</b><br>
-                {{ form_row(form.periodicite) }}
+            <div class="col s12 l6 offset-l3">
+                <b><i class="material-icons">tonality</i>Type d'épreuve</b><br>
+                {{ form_row(form.typeEpreuve) }}
             </div>
         </div>
 

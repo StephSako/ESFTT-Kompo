@@ -79,6 +79,10 @@ class FFTTApi
 
     /**
      * @param string $type
+     * F = Fédération
+     * Z = Zone
+     * L = Ligue
+     * D = Département
      * @return Organisme[]
      * @throws Exception\InvalidURIParametersException
      * @throws Exception\URIPartNotValidException
@@ -86,8 +90,8 @@ class FFTTApi
      */
     public function getOrganismes(string $type = "Z"): array
     {
-        if (!in_array($type, ['Z', 'L', 'D'])) {
-            $type = 'L';
+        if (!in_array($type, ['F', 'Z', 'L', 'D'])) {
+            $type = 'Z';
         }
 
         $organismes = $this->apiRequest->get('xml_organisme', [
@@ -686,7 +690,8 @@ class FFTTApi
             $result[] = new Equipe(
                 $dataEquipe['libequipe'],
                 $dataEquipe['libdivision'],
-                $dataEquipe['liendivision']
+                $dataEquipe['liendivision'],
+                $dataEquipe['libepr']
             );
         }
         return $result;

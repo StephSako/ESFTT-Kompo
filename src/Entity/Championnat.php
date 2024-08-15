@@ -31,6 +31,12 @@ class Championnat
         'Saison' => false
     ];
 
+    /** Type d'épreuve */
+    const TYPE_EPREUVE = [
+        'Championnat de France par Equipes Masculin' => 'FED_Championnat de France par Equipes Masculin',
+        'Championnat de Paris IDF' => 'L08_Championnat de Paris IDF'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -78,11 +84,11 @@ class Championnat
     private $limiteBrulage;
 
     /**
-     * @var int|null
+     * @var string
      *
-     * @ORM\Column(type="integer", name="lien_fftt_api", nullable=true)
+     * @ORM\Column(type="string", name="type_epreuve", nullable=true, length=100)
      */
-    private $organismePere;
+    private $typeEpreuve;
 
     /**
      * @var int
@@ -351,20 +357,20 @@ class Championnat
     }
 
     /**
-     * @return int|null
+     * @return string
      */
-    public function getOrganismePere(): ?int
+    public function getTypeEpreuve(): string
     {
-        return $this->organismePere;
+        return $this->typeEpreuve;
     }
 
     /**
-     * @param int|null $organismePere
+     * @param string $typeEpreuve
      * @return Championnat
      */
-    public function setOrganismePere(?int $organismePere): self
+    public function setTypeEpreuve(string $typeEpreuve): Championnat
     {
-        $this->organismePere = $organismePere;
+        $this->typeEpreuve = $typeEpreuve;
         return $this;
     }
 

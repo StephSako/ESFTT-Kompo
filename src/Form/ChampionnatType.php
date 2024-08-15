@@ -44,11 +44,10 @@ class ChampionnatType extends AbstractType
                 'label' => ' ',
                 'required' => false
             ])
-            ->add('organismePere', ChoiceType::class, [
+            ->add('typeEpreuve', ChoiceType::class, [
                 'label' => ' ',
-                'choices' => $options['organismesOptGroup'],
-                'required' => false,
-                'placeholder' => 'Définir vide'
+                'choices' => Championnat::TYPE_EPREUVE,
+                'required' => true
             ])
             ->add('compoSorted', CheckboxType::class, [
                 'label' => ' ',
@@ -65,8 +64,7 @@ class ChampionnatType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Championnat::class,
-            'translation_domain' => 'forms',
-            'organismesOptGroup' => []
+            'translation_domain' => 'forms'
         ]);
     }
 }

@@ -13,7 +13,6 @@ use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\PouleRepository;
-use App\Repository\SettingsRepository;
 use Cocur\Slugify\Slugify;
 use DateInterval;
 use DatePeriod;
@@ -43,6 +42,10 @@ class BackOfficeFFTTApiController extends AbstractController
             "shortName" => "H",
             "longName" => "Honneur"
         ],
+        "L08_R3 Messieurs" => [
+            "shortName" => "R3",
+            "longName" => "Régionale 3"
+        ],
         "L08_2eme Division" => [
             "shortName" => "D2",
             "longName" => "Division 2"
@@ -53,7 +56,6 @@ class BackOfficeFFTTApiController extends AbstractController
     private $em;
     private $divisionRepository;
     private $pouleRepository;
-    private $settingsRepository;
 
     /**
      * @param CompetiteurRepository $competiteurRepository
@@ -61,21 +63,18 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param DivisionRepository $divisionRepository
      * @param PouleRepository $pouleRepository
      * @param EntityManagerInterface $em
-     * @param SettingsRepository $settingsRepository
      */
     public function __construct(CompetiteurRepository  $competiteurRepository,
                                 ChampionnatRepository  $championnatRepository,
                                 DivisionRepository     $divisionRepository,
                                 PouleRepository        $pouleRepository,
-                                EntityManagerInterface $em,
-                                SettingsRepository     $settingsRepository)
+                                EntityManagerInterface $em)
     {
         $this->competiteurRepository = $competiteurRepository;
         $this->championnatRepository = $championnatRepository;
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
-        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -149,9 +148,9 @@ class BackOfficeFFTTApiController extends AbstractController
                 /** Gestion des équipes */
                 $equipesKompo = $championnatActif->getEquipes()->toArray();
                 $equipesFFTT = array_values(array_filter($api->getEquipesByClub($this->getParameter('club_id'), 'M'), function (Equipe $eq) use ($championnatActif) {
-                    $organisme_pere = $this->getValueFromRegex(self::REGEX_ORGANISME_PERE, $eq->getLienDivision());
+                    $typeEpreuve = $eq->getEpreuve();
                     $phase = $this->getValueFromRegex(self::REGEX_NUMERO_EQUIPE, $eq->getLibelle(), 2);
-                    return $organisme_pere == strval($championnatActif->getOrganismePere()) && (!$championnatActif->isPeriodicite() || $phase == $this->getDatePhase());
+                    return $typeEpreuve == $championnatActif->getTypeEpreuve() && (!$championnatActif->isPeriodicite() || $phase == $this->getDatePhase());
                 }));
 
                 /** On ordonne les objets des Equipes selon leurs numéros */
@@ -160,9 +159,11 @@ class BackOfficeFFTTApiController extends AbstractController
                 });
 
                 /** On vérifie que le championnat est enregistré du côté de la FFTT en comptant les équipes */
-                $allChampionnatsReset[$championnatActif->getNom()]["recorded"] = count($equipesFFTT) > 0;
+                $allChampionnatsReset[$championnatActif->getNom()]["enAttenteNouvellePhase"] = !(count($equipesFFTT) == 0 && count(array_filter($equipesKompo, function (\App\Entity\Equipe $equipeKompo) {
+                        return $equipeKompo->getIdPoule() == null;
+                    })) == count($equipesKompo));
 
-                if ($allChampionnatsReset[$championnatActif->getNom()]["recorded"]) {
+                if ($allChampionnatsReset[$championnatActif->getNom()]["enAttenteNouvellePhase"]) {
                     $allChampionnatsReset[$championnatActif->getNom()]["idChampionnat"] = $championnatActif->getIdChampionnat();
 
                     $equipesIssued = [];
@@ -342,7 +343,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                             $rencontreTemp['infosContact']['telephone'] = ($rencontresEquipeKompo[$i]->getAdversaire() != $rencontreTemp['adversaireFFTT']) || ($noCoordonneesRencontreKompo && strlen(trim($idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getTelCoordo() : '') > 0 && !strlen($rencontresEquipeKompo[$i]->getTelephone())));
 
                                             $rencontreTemp['rencontre'] = $rencontresEquipeKompo[$i];
-                                            $rencontreTemp['recorded'] = true;
+                                            $rencontreTemp['enAttenteNouvellePhase'] = true;
                                             $rencontresParEquipes[] = $rencontreTemp;
                                         }
                                     } else if (in_array($nbEquipe, $equipesToCreateIDs)) {
@@ -382,7 +383,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                         $rencontreTemp['infosContact']['telephone'] = strlen(trim($idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getTelCoordo() : ''));
 
                                         $rencontreTemp['rencontre'] = $rencontreToCreate;
-                                        $rencontreTemp['recorded'] = false;
+                                        $rencontreTemp['enAttenteNouvellePhase'] = false;
                                         $rencontresParEquipes[] = $rencontreTemp;
                                     }
                                 } else {
@@ -420,7 +421,7 @@ class BackOfficeFFTTApiController extends AbstractController
                                     $rencontreTemp['infosContact']['telephone'] = strlen(trim($idClubAdversaire ? $adressesClubs[$idClubAdversaire]->getTelCoordo() : ''));
 
                                     $rencontreTemp['rencontre'] = $rencontreKompo;
-                                    $rencontreTemp['recorded'] = false;
+                                    $rencontreTemp['enAttenteNouvellePhase'] = false;
                                     $rencontresParEquipes[] = $rencontreTemp;
                                 }
                             }
@@ -488,7 +489,7 @@ class BackOfficeFFTTApiController extends AbstractController
                     });
                     $allChampionnatsReset[$championnatActif->getNom()]["preRentree"]["countDispos"] = count($championnatActif->getDispos()->toArray());
                 } else {
-                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "Les équipes ne sont pas encore connues pour ce championnat";
+                    $allChampionnatsReset[$championnatActif->getNom()]["messageChampionnat"] = "La phase n'est pas encore lancée par la FFTT pour ce championnat";
                 }
             }
 
@@ -587,7 +588,6 @@ class BackOfficeFFTTApiController extends AbstractController
                         }
                         $this->em->flush();
                         $this->addFlash('success', 'Championnat ' . $championnat->getNom() . ' réinitialisé');
-
                         $joueursToContact = array_filter($this->competiteurRepository->findJoueursByRole('Competiteur', null), function ($j) use ($championnat) {
                             return in_array($championnat->getIdChampionnat(), array_map(function ($t) {
                                 return $t->getIdChampionnat()->getIdChampionnat();
@@ -684,7 +684,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         /** On fix/créé les rencontres **/
                         foreach ($allChampionnatsReset[$championnat->getNom()]["matches"]["issued"] as $rencontresParEquipe) {
-                            if ($rencontresParEquipe['recorded']) {
+                            if ($rencontresParEquipe['enAttenteNouvellePhase']) {
                                 /** On modifie les rencontres existantes ... */
                                 $rencontresParEquipe['rencontre']
                                     ->setAdversaire($rencontresParEquipe['adversaireFFTT'])

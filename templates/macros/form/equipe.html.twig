@@ -1,4 +1,4 @@
-{% macro form(form, btnText, champHasDivisions) %}
+{% macro form(form, btnText, champHasDivisions, championnat) %}
     <style>
         li {
             color: red;
@@ -8,11 +8,11 @@
     {% if champHasDivisions %}
         <div class="card-panel center-align {% if form.vars.value.lastUpdate is not null %}relative{% endif %}">
             <h4 style="margin-bottom: 10px;" class="h4_form">{{ btnText }} une équipe</h4>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{% if form.vars.value.idChampionnat %}{{ form.vars.value.idChampionnat.nom }}{% endif %}</h5>
+            {% if championnat is not null %}<h5 style="margin-bottom: 20px ; margin-top: 4px ;">Équipe {{ form.vars.value.numero }} - {{ championnat }}</h5>{% endif %}
 
             {{ form_start(form) }}
             <div class="row">
-                <div class="col s12 m4">
+                <div class="col s12 l4">
                     <b>Numéro</b>
                     {% if btnText == 'Créer' %}
                         {{ form_row(form.numero) }}
@@ -20,10 +20,10 @@
                         <p><b>{{ form.vars.value.numero }}</b></p>
                     {% endif %}
                 </div>
-                <div class="col s12 m4 {% if btnText != 'Modifier' %}form_div_list{% endif %}">
+                <div class="col s12 l4 {% if btnText != 'Modifier' %}form_div_list{% endif %}">
                     <b>Division</b>{{ form_row(form.idDivision) }}
                 </div>
-                <div class="col s12 m4 form_div_list">
+                <div class="col s12 l4 form_div_list">
                     <b>Poule</b>{{ form_row(form.idPoule) }}
                 </div>
             </div>

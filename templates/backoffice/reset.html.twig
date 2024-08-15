@@ -147,7 +147,7 @@
 
             {% for nomChampionnat, data in allChampionnatsReset %}
                 <div id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
-                    {% if data.recorded %}
+                    {% if data.enAttenteNouvellePhase %}
                         {% if data.preRentree.finished.launchable %}
                             <div class='backoffice-panel center card-panel'>
 
@@ -402,7 +402,7 @@
                                                             <tbody>
                                                             {% for rencontre in rencontres %}
                                                                 <tr>
-                                                                    <td><i class="material-icons {{ rencontre.recorded ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.recorded ? 'edit' : 'add_circle' }}</i></td>
+                                                                    <td><i class="material-icons {{ rencontre.enAttenteNouvellePhase ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.enAttenteNouvellePhase ? 'edit' : 'add_circle' }}</i></td>
                                                                     <td>{{ rencontre.journee }}</td>
                                                                     <td>
                                                                         {% if not rencontre.exempt %}
@@ -432,7 +432,7 @@
                                                                             </span>
                                                                         {% if rencontre.rencontre.domicile is null or rencontre.rencontre.domicile != rencontre.domicileFFTT %}<i class="material-icons black-text">arrow_forward</i>{{ rencontre.domicileFFTT ? "<i class='material-icons'>home</i>" : "<i class='material-icons'>directions_car</i>" }}{% endif %}
                                                                     </td>
-                                                                    <td class="{{ rencontre.recorded ? 'orange' : 'green' }}-text">
+                                                                    <td class="{{ rencontre.enAttenteNouvellePhase ? 'orange' : 'green' }}-text">
                                                                         {% if not rencontre.infosContact.complementAdresse and not rencontre.infosContact.site and not rencontre.infosContact.telephone and not rencontre.infosContact.adresse %}
                                                                             <i class="material-icons green-text">done</i>
                                                                         {% else %}

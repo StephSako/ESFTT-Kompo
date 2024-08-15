@@ -109,6 +109,13 @@ class Division
     private $lastUpdate;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", name="lien_fftt_api", nullable=false)
+     */
+    private $organismePere;
+
+    /**
      * @return mixed
      */
     public function getIdDivision()
@@ -231,6 +238,24 @@ class Division
     public function setLastUpdate(?string $lastUpdate): self
     {
         $this->lastUpdate = $lastUpdate;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrganismePere(): int
+    {
+        return $this->organismePere;
+    }
+
+    /**
+     * @param int $organismePere
+     * @return Division
+     */
+    public function setOrganismePere(int $organismePere): self
+    {
+        $this->organismePere = $organismePere;
         return $this;
     }
 }

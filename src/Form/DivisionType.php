@@ -40,6 +40,11 @@ class DivisionType extends AbstractType
                     'min' => 1,
                     'max' => $options['nbMaxJoueurs']
                 ]
+            ])
+            ->add('organismePere', ChoiceType::class, [
+                'label' => false,
+                'choices' => $options['organismesOptGroup'],
+                'required' => true
             ]);
 
         if ($options['listChamps']) {
@@ -57,7 +62,8 @@ class DivisionType extends AbstractType
             'nbMaxJoueurs' => null,
             'data_class' => Division::class,
             'translation_domain' => 'forms',
-            'listChamps' => []
+            'listChamps' => [],
+            'organismesOptGroup' => []
         ]);
     }
 }
