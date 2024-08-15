@@ -6,7 +6,6 @@ use App\Form\CompetiteurType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +31,6 @@ class SecurityController extends AbstractController
     private $competiteurRepository;
     private $disponibiliteRepository;
     private $settingsRepository;
-    private $rencontreRepository;
     private $logger;
 
     /**
@@ -42,7 +40,6 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface $em
      * @param SettingsRepository $settingsRepository
      * @param AuthenticationUtils $utils
-     * @param RencontreRepository $rencontreRepository
      * @param UploadHandler $uploadHandler
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param LoggerInterface $logger
@@ -53,7 +50,6 @@ class SecurityController extends AbstractController
                                 EntityManagerInterface       $em,
                                 SettingsRepository           $settingsRepository,
                                 AuthenticationUtils          $utils,
-                                RencontreRepository          $rencontreRepository,
                                 UploadHandler                $uploadHandler,
                                 DisponibiliteRepository      $disponibiliteRepository,
                                 LoggerInterface              $logger,
@@ -67,7 +63,6 @@ class SecurityController extends AbstractController
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->settingsRepository = $settingsRepository;
-        $this->rencontreRepository = $rencontreRepository;
         $this->logger = $logger;
     }
 
@@ -98,7 +93,7 @@ class SecurityController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $championnat = $disposJoueurFormatted = $journees = null;
         $allChampionnats = $this->championnatRepository->getAllChampionnats();
         $equipesAssociees = $this->getUser()->getTableEquipesAssociees($allChampionnats);
 
@@ -107,7 +102,7 @@ class SecurityController extends AbstractController
             if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
             else $championnat = ($this->championnatRepository->find($this->get('session')->get('type')) ?: $nextJourneeToPlayAllChampsIdChamp);
 
-            $journees = ($championnat ? $championnat->getJournees()->toArray() : []);
+            $journees = $utilController->getJourneesNavbar($championnat);
 
             // Disponibilités du joueur
             $id = $championnat->getIdChampionnat();
@@ -118,8 +113,6 @@ class SecurityController extends AbstractController
                     $disposJoueurFormatted[$dispo->getIdJournee()->getIdJournee()] = $dispo->getDisponibilite();
                 }
             }
-
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
         $user = $this->getUser();
         $form = $this->createForm(CompetiteurType::class, $user, [
@@ -160,7 +153,6 @@ class SecurityController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'equipesAssociees' => $equipesAssociees,
             'form' => $form->createView(),
             'isBackOffice' => $isBackoffice

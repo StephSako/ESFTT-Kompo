@@ -106,7 +106,7 @@ class HomeController extends AbstractController
     public function journee(int $type, int $idJournee, ContactController $contactController, UtilController $utilController): Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
-        $journees = $championnat->getJournees()->toArray();
+        $journees = $utilController->getJourneesNavbar($championnat);
 
         if (!in_array($idJournee, array_map(function ($journee) {
             return $journee->getIdJournee();
@@ -267,7 +267,6 @@ class HomeController extends AbstractController
             'numJournee' => $numJournee,
             'equipesSansDivision' => $equipesSansDivision,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres['ids'],
             'journeesWithReportedRencontresFormatted' => $journeesWithReportedRencontresFormatted,
             'nbMaxSelectedJoueurs' => $nbMaxSelectedJoueurs,
             'nbMaxPotentielPlayers' => array_sum(array_map(function ($equipe) {
@@ -332,7 +331,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
         }
 
-        $journees = $championnat->getJournees()->toArray();
+        $journees = $utilController->getJourneesNavbar($championnat);
         $numJournee = array_search($compo->getIdJournee()->getIdJournee(), array_map(function ($j) {
                 return $j->getIdJournee();
             }, $journees)) + 1;
@@ -446,7 +445,6 @@ class HomeController extends AbstractController
         return $this->render('journee/edit.html.twig', [
             'joueursBrules' => $joueursBrules,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'],
             'nbJoueursDivision' => $nbJoueursDivision,
             'brulageSelectionnables' => $brulageSelectionnables ? $brulageSelectionnables['par_equipes'] : [],
             'idEquipesBrulagePrint' => $idEquipesBrulageVisuel,

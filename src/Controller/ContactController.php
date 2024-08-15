@@ -6,7 +6,6 @@ use App\Entity\Competiteur;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\RencontreRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,19 +23,16 @@ class ContactController extends AbstractController
     private $championnatRepository;
     private $mailer;
     private $disponibiliteRepository;
-    private $rencontreRepository;
 
     /**
      * ContactController constructor.
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
-     * @param RencontreRepository $rencontreRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param MailerInterface $mailer
      */
     public function __construct(CompetiteurRepository   $competiteurRepository,
                                 ChampionnatRepository   $championnatRepository,
-                                RencontreRepository     $rencontreRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 MailerInterface         $mailer)
     {
@@ -44,7 +40,6 @@ class ContactController extends AbstractController
         $this->championnatRepository = $championnatRepository;
         $this->mailer = $mailer;
         $this->disponibiliteRepository = $disponibiliteRepository;
-        $this->rencontreRepository = $rencontreRepository;
     }
 
     /**
@@ -59,7 +54,7 @@ class ContactController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = null;
         if (!$isBackoffice) {
             $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
             if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
@@ -75,8 +70,7 @@ class ContactController extends AbstractController
                 }
             }
 
-            $journees = $championnat->getJournees()->toArray();
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
+            $journees = $utilController->getJourneesNavbar($championnat);
             $allChampionnats = $this->championnatRepository->getAllChampionnats();
         }
 
@@ -110,7 +104,6 @@ class ContactController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'categories' => $categories,
             'isBackOffice' => $isBackoffice
         ]);

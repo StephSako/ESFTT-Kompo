@@ -8,7 +8,6 @@ use App\Form\SettingsType;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
-use App\Repository\RencontreRepository;
 use App\Repository\SettingsRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,7 +34,6 @@ class FooterController extends AbstractController
     private $competiteurRepository;
     private $championnatRepository;
     private $disponibiliteRepository;
-    private $rencontreRepository;
     private $settingsRepository;
     private $clientHTTP;
 
@@ -43,7 +41,6 @@ class FooterController extends AbstractController
      * @param ChampionnatRepository $championnatRepository
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
-     * @param RencontreRepository $rencontreRepository
      * @param SettingsRepository $settingsRepository
      * @param HttpClientInterface $clientHTTP
      * @param EntityManagerInterface $em
@@ -51,13 +48,11 @@ class FooterController extends AbstractController
     public function __construct(ChampionnatRepository   $championnatRepository,
                                 DisponibiliteRepository $disponibiliteRepository,
                                 CompetiteurRepository   $competiteurRepository,
-                                RencontreRepository     $rencontreRepository,
                                 SettingsRepository      $settingsRepository,
                                 HttpClientInterface     $clientHTTP,
                                 EntityManagerInterface  $em)
     {
         $this->em = $em;
-        $this->rencontreRepository = $rencontreRepository;
         $this->competiteurRepository = $competiteurRepository;
         $this->disponibiliteRepository = $disponibiliteRepository;
         $this->championnatRepository = $championnatRepository;
@@ -78,7 +73,7 @@ class FooterController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = null;
         if (!$isBackoffice) {
             $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
             if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
@@ -100,9 +95,8 @@ class FooterController extends AbstractController
                 }
             }
 
-            $journees = $championnat->getJournees()->toArray();
+            $journees = $utilController->getJourneesNavbar($championnat);
             $allChampionnats = $this->championnatRepository->getAllChampionnats(true);
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
 
         $setting = $this->settingsRepository->find($type);
@@ -133,7 +127,6 @@ class FooterController extends AbstractController
             'championnat' => $championnat,
             'form' => $isAdmin ? $form->createView() : null,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'disposJoueur' => $disposJoueurFormatted,
             'HTMLContent' => $setting->getContent(),
             'showConcernedPlayers' => $showConcernedPlayers,
@@ -156,7 +149,7 @@ class FooterController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = null;
         if (!$isBackoffice) {
             $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
             if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
@@ -172,9 +165,8 @@ class FooterController extends AbstractController
                 }
             }
 
-            $journees = $championnat->getJournees()->toArray();
+            $journees = $utilController->getJourneesNavbar($championnat);
             $allChampionnats = $this->championnatRepository->getAllChampionnats();
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
 
         $markdown_data = file_get_contents(__DIR__ . $this->getParameter('read_md_path'));
@@ -183,7 +175,6 @@ class FooterController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'markdown_data' => $markdown_data,
             'isBackOffice' => $isBackoffice
         ]);
@@ -201,7 +192,7 @@ class FooterController extends AbstractController
         if ($checkIsBackOffice['issue']) return $checkIsBackOffice['redirect'];
         else $isBackoffice = $request->query->get('backoffice') == 'true';
 
-        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = $journeesWithReportedRencontres = null;
+        $allChampionnats = $championnat = $disposJoueurFormatted = $journees = null;
         if (!$isBackoffice) {
             $nextJourneeToPlayAllChampsIdChamp = $utilController->nextJourneeToPlayAllChamps()->getIdChampionnat();
             if (!$this->get('session')->get('type')) $championnat = $nextJourneeToPlayAllChampsIdChamp;
@@ -217,9 +208,8 @@ class FooterController extends AbstractController
                 }
             }
 
-            $journees = $championnat->getJournees()->toArray();
+            $journees = $utilController->getJourneesNavbar($championnat);
             $allChampionnats = $this->championnatRepository->findAll();
-            $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat())['ids'];
         }
 
         return $this->render('journee/tournois.html.twig', [
@@ -227,7 +217,6 @@ class FooterController extends AbstractController
             'championnat' => $championnat,
             'disposJoueur' => $disposJoueurFormatted,
             'journees' => $journees,
-            'journeesWithReportedRencontres' => $journeesWithReportedRencontres,
             'isBackOffice' => $isBackoffice
         ]);
     }

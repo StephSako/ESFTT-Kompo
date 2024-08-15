@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Championnat;
 use App\Entity\Journee;
 use App\Entity\Rencontre;
+use App\Entity\Titularisation;
 use App\Repository\ChampionnatRepository;
 use App\Repository\RencontreRepository;
 use DateInterval;
@@ -301,5 +302,25 @@ class UtilController extends AbstractController
             else $formattedMatches[$match->getDate()]['totalPointsWon'] += $match->getPointsGagnes();
         }
         return array_reverse($formattedMatches);
+    }
+
+    /**
+     * Retourne la liste des journées à afficher dans le navbar en fonction de la titularisation du joueur dans le championnat
+     * @param Championnat $championnat
+     * @return array
+     */
+    public function getJourneesNavbar(Championnat $championnat): array
+    {
+        $journees = $championnat->getJournees()->toArray();
+        $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
+            return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
+        }));
+        if ($titularisationActifChampionnat) {
+            $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
+            foreach ($journees as $i => $journee) {
+                $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
+            }
+        }
+        return $journees;
     }
 }
