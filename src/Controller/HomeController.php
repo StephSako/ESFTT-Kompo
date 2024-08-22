@@ -987,7 +987,11 @@ class HomeController extends AbstractController
         try {
             $histoMatches = $this->get('session')->get('histoMatches' . $licence);
             if ($histoMatches === null) {
-                throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
+                if ($this->getUser()->getLicence()) {
+                    throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
+                } else {
+                    throw new Exception("Vous n'avez pas de licence renseignée", 12345);
+                }
             }
             $matches = $utilController->formatHistoMatches($licence, $histoMatches);
         } catch (Exception $e) {

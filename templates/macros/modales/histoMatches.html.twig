@@ -1,9 +1,11 @@
 {% macro histoMatches(licence) %}
     <div id="histoMatches" class="modal modal-fixed-footer modal-small center">
         <div class="modal-content">
-            <a onclick="getHistoMatches('{{ licence }}', true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_histoMatches" href="#histoMatches">
-                <i class="material-icons">refresh</i>
-            </a>
+            {% if licence %}
+                <a onclick="getHistoMatches('{{ licence }}', true)" class="hide btn-small btn-floating blue lighten-1 waves-effect modal-trigger reload_histoMatches" href="#histoMatches">
+                    <i class="material-icons">refresh</i>
+                </a>
+            {% endif %}
             <h6><b>Calculs virtuels anticipés</b></h6>
             <div id="histoMatchesContent"></div>
             <div id="histoMatchesContentLoader" style="padding-right: 4px; padding-left: 4px;">
