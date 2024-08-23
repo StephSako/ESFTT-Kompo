@@ -1634,4 +1634,13 @@ class Competiteur implements UserInterface, Serializable
         $this->titularisations = $titularisations;
         return $this;
     }
+
+    /**
+     * Détermine l'accès ou non à la modification des pages d'infos en collaboration
+     * @return bool
+     */
+    public function hasAccesToCollaboratif(): bool
+    {
+        return $this->isCompetiteur() || $this->isEntraineur() || $this->isAdmin() || $this->isCapitaine() || $this->isCritFed();
+    }
 }
