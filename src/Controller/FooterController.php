@@ -102,9 +102,9 @@ class FooterController extends AbstractController
         $setting = $this->settingsRepository->find($type);
         $form = null;
         $isAdmin = $this->getUser()->isAdmin();
-        if ($isAdmin) {
+        if ($isAdmin || $setting->isCollaboratif()) {
             $form = $this->createForm(SettingsType::class, $setting, [
-                'show_title_form' => true
+                'show_title_form' => $isAdmin
             ]);
             $form->handleRequest($request);
 
@@ -125,13 +125,14 @@ class FooterController extends AbstractController
         return $this->render('journee/infos.html.twig', [
             'allChampionnats' => $allChampionnats,
             'championnat' => $championnat,
-            'form' => $isAdmin ? $form->createView() : null,
+            'form' => $isAdmin || $setting->isCollaboratif() ? $form->createView() : null,
             'journees' => $journees,
             'disposJoueur' => $disposJoueurFormatted,
             'HTMLContent' => $setting->getContent(),
             'showConcernedPlayers' => $showConcernedPlayers,
             'concernedPlayers' => $concernedPlayers,
             'title' => $setting->getTitle(),
+            'isCollaboratif' => $setting->isCollaboratif(),
             'label' => $setting->getLabel(),
             'isBackOffice' => $isBackoffice
         ]);

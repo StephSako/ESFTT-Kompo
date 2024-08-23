@@ -66,6 +66,13 @@ class Settings
     private $type;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="collaboratif", nullable=false)
+     */
+    private $collaboratif;
+
+    /**
      * @return string
      */
     public function getId(): string
@@ -170,6 +177,24 @@ class Settings
     public function setLabel(string $label): self
     {
         $this->label = $label;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCollaboratif(): bool
+    {
+        return $this->collaboratif;
+    }
+
+    /**
+     * @param bool $collaboratif
+     * @return Settings
+     */
+    public function setCollaboratif(bool $collaboratif): Settings
+    {
+        $this->collaboratif = $collaboratif;
         return $this;
     }
 }

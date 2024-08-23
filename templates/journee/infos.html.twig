@@ -25,55 +25,64 @@
             <h4 style="font-family: Lobster, cursive">{{ title }}</h4>
         </div>
 
-        <div class="card-panel" id="ckeditor-render">
-            {% if showConcernedPlayers %}
-                <h5><b>Compétiteurs concernés</b></h5>
-                {% if concernedPlayers|length %}
-                    <table class="striped responsive-table">
-                        <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Catégorie</th>
-                            <th>N° licence</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for player in concernedPlayers %}
+        {% if not isCollaboratif %}
+            <div class="card-panel" id="ckeditor-render">
+                {% if showConcernedPlayers %}
+                    <h5><b>Compétiteurs concernés</b></h5>
+                    {% if concernedPlayers|length %}
+                        <table class="striped responsive-table">
+                            <thead>
                             <tr>
-                                <td>{{ player.nom }}</td>
-                                <td>{{ player.prenom }}</td>
-                                <td {% if player.categorieAgeLabel is null %}class="red-text"{% endif %}>{{ player.categorieAgeLabel ?: 'Âge indéfini' }}</td>
-                                <td>{{ player.licence }}</td>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Catégorie</th>
+                                <th>N° licence</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p class="center"><i>Aucun joueur ne participe au {{ label | lower }} pour le moment ...</i></p>
-                {% endif %}
-            {% endif %}
-            <p {% if not HTMLContent %}class="center"{% endif %}>
-                {% if HTMLContent %}{{ HTMLContent | raw }}
-                {% else %}<i>Il n'y a pas de contenu pour le moment ...</i>
-                {% endif %}
-            </p>
-        </div>
+                            </thead>
 
-        {% if app.user.admin %}
+                            <tbody>
+                            {% for player in concernedPlayers %}
+                                <tr>
+                                    <td>{{ player.nom }}</td>
+                                    <td>{{ player.prenom }}</td>
+                                    <td {% if player.categorieAgeLabel is null %}class="red-text"{% endif %}>{{ player.categorieAgeLabel ?: 'Âge indéfini' }}</td>
+                                    <td>{{ player.licence }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="center"><i>Aucun joueur ne participe au {{ label | lower }} pour le moment ...</i></p>
+                    {% endif %}
+                {% endif %}
+                <p {% if not HTMLContent %}class="center"{% endif %}>
+                    {% if HTMLContent %}{{ HTMLContent | raw }}
+                    {% else %}<i>Il n'y a pas de contenu pour le moment ...</i>
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
+
+        {% if app.user.admin or isCollaboratif %}
             <div class="card-panel" id="settings-form">
                 {{ form_start(form) }}
                 <div class="center">
-                    <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition administrateur</h5><br>
-
-                    <div class="row">
-                        <div class="col s12 m8 offset-m2 l6 offset-l3">
-                            <b><i class="material-icons prefix">short_text</i> Titre</b>{{ form_row(form.title) }}
-                        </div>
-                    </div>
+                    {% if not isCollaboratif %}
+                        <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition administrateur</h5><br>
+                    {% else %}
+                        <h5 style="font-family: Lobster, cursive; margin-top: 0;">Formulaire d'édition collaboratif</h5><br>
+                    {% endif %}
 
                     <div id="editor"></div>
+
+                    {% if app.user.admin %}
+                        <br>
+                        <div class="row">
+                            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                                <b><i class="material-icons prefix">short_text</i> Titre (pour administrateur)</b>{{ form_row(form.title) }}
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <br>
                     <button class="btn waves-effect blue lighten-2 btn_gestion">

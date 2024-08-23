@@ -26,6 +26,7 @@
             <div class="lien_court">
                 <a class="center{% if app.request.getPathInfo starts with '/informations/general' %} active{% endif %}" href="{{ path('informations', {type: 'general', backoffice: suffixebackoffice}) }}">Infos générales</a><br>
             </div>
+            <a class="center{% if app.request.getPathInfo starts with '/informations/les-actus' %} active{% endif %}" href="{{ path('informations', {type: 'process', backoffice: suffixebackoffice}) }}">Process</a><br>
             <a target="_blank" class="center" href="https://www.pingpocket.fr/">PingPocket</a><br>
             <a class="center{% if app.request.getPathInfo starts with '/aide' %} active{% endif %}" href="{{ path('aide', suffixebackoffice ? {backoffice: suffixebackoffice} : {}) }}">Aide Kompo</a>
         </div>
