@@ -120,9 +120,9 @@ class UtilController extends AbstractController
      */
     public function encryptToken(string $token): string
     {
-        $encryption_iv = hex2bin($this->getParameter('encryption_iv'));
-        $encryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-        $encrypted = base64_encode(openssl_encrypt($token, "BF-CBC", $encryption_key, 0, $encryption_iv));
+        $key = hash('sha256', $this->getParameter('secret_phrase'));
+        $iv = substr(hash('sha256', $key), 0, openssl_cipher_iv_length($this->getParameter('cipher')));
+        $encrypted = urlencode(openssl_encrypt($token, $this->getParameter('cipher'), $key, 0, $iv));
 
         // On vérifie que le token est bien déchiffrable
         try {
@@ -141,10 +141,12 @@ class UtilController extends AbstractController
      */
     public function decryptToken(string $token): ?array
     {
-        $tokenDecoded = base64_decode($token);
-        $decryption_key = openssl_digest($this->getParameter('decryption_key'), 'MD5', TRUE);
-        $decryption = openssl_decrypt($tokenDecoded, "BF-CBC", $decryption_key, 0, hex2bin($this->getParameter('encryption_iv')));
+        $key = hash('sha256', $this->getParameter('secret_phrase'));
+        $iv = substr(hash('sha256', $key), 0, openssl_cipher_iv_length($this->getParameter('cipher')));
+        $tokenDecoded = urldecode($token);
+        $decryption = openssl_decrypt($tokenDecoded, $this->getParameter('cipher'), $key, 0, $iv);
         $tokenDecoded = json_decode($decryption, true);
+
         if ($tokenDecoded == null) {
             $this->logger->error("TOKEN DECRYPTION INVALID : " . $token);
             throw new Exception("Le token est invalide !", 500);

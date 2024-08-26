@@ -1,8 +1,8 @@
 parameters:
   fftt_api_login: '%env(FFTT_API_LOGIN)%'
   fftt_api_password: '%env(FFTT_API_PASSWORD)%'
-  encryption_iv: '%env(ENCRYPTION_IV)%'
-  decryption_key: '%env(DECRYPTION_KEY)%'
+  secret_phrase: '%env(SECRET_PHRASE)%'
+  cipher: '%env(CIPHER)%'
   default_password: '%env(DEFAULT_PASSWORD)%'
   maintenance_file_path: '%kernel.project_dir%/public/.maintenance'
   club_id: '%env(CLUB_ID)%'
