@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
+use App\Entity\Journee;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
 use App\Form\RencontreType;
@@ -106,9 +107,11 @@ class HomeController extends AbstractController
     public function journee(int $type, int $idJournee, ContactController $contactController, UtilController $utilController): Response
     {
         if (!($championnat = $this->championnatRepository->find($type))) return $this->redirectToRoute('index');
+
+        /** @var Journee[] $journees */
         $journees = $utilController->getJourneesNavbar($championnat);
 
-        if (!in_array($idJournee, array_map(function ($journee) {
+        if (!in_array($idJournee, array_map(function (Journee $journee) {
             return $journee->getIdJournee();
         }, $journees))) {
             $this->addFlash('fail', 'Journée inexistante pour ce championnat');
@@ -324,11 +327,11 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
 
-        $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
-        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
+        $dateDepassee = intval((new DateTime())->diff($compo->getDateRencontre())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateRencontre())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
             $this->addFlash('fail', "Cette rencontre n'est plus modifiable : date de journée dépassée");
-            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
+            return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()]);
         }
 
         $journees = $utilController->getJourneesNavbar($championnat);
@@ -472,7 +475,7 @@ class HomeController extends AbstractController
         }
 
         $dateDepassee = intval((new DateTime())->diff($compo->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
-        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateReport())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($compo->getDateRencontre())->format('%R%a')) >= 0;
         if (!(($dateDepassee && !$compo->isReporte()) || ($dateReporteeDepassee && $compo->isReporte()) || $compo->getIdJournee()->getUndefined())) {
             $this->addFlash('fail', "Cette rencontre n'est plus modifiable : date de journée dépassée");
             return $this->redirectToRoute('journee.show', ['type' => $type, 'idJournee' => $compo->getIdJournee()->getIdJournee()]);
@@ -987,7 +990,7 @@ class HomeController extends AbstractController
         try {
             $histoMatches = $this->get('session')->get('histoMatches' . $licence);
             if ($histoMatches === null) {
-                if ($this->getUser()->getLicence()) {
+                if ($licence) {
                     throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
                 } else {
                     throw new Exception("Vous n'avez pas de licence renseignée", 12345);

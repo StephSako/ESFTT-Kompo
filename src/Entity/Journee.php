@@ -5,8 +5,6 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
-use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JourneeRepository")
@@ -14,9 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     name="prive_journee",
  *     indexes={
  *          @Index(name="IDX_j_champ", columns={"id_championnat"}),
- *     },
- *     uniqueConstraints={
- *          @UniqueConstraint(name="UNIQ_journee", columns={"date_journee", "id_championnat"})
  *     }
  * )
  */
@@ -33,9 +28,7 @@ class Journee
      */
     private $idJournee;
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(type="date", name="date_journee", nullable=false)
+     * @var DateTime|null
      */
     private $dateJournee;
     /**
@@ -46,22 +39,9 @@ class Journee
      */
     private $idChampionnat;
     /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", name="undefined", nullable=false)
+     * @var bool|null
      */
     private $undefined;
-    /**
-     * @var string|null
-     *
-     * @Assert\Length(
-     *      max = 100,
-     *      maxMessage = "Le log de mise à jour doit contenir au maximum {{ limit }} lettres"
-     * )
-     *
-     * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
-     */
-    private $lastUpdate;
 
     /**
      * @return Championnat
@@ -108,18 +88,18 @@ class Journee
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getDateJournee(): DateTime
+    public function getDateJournee(): ?DateTime
     {
         return $this->dateJournee;
     }
 
     /**
-     * @param DateTime $dateJournee
+     * @param DateTime|null $dateJournee
      * @return Journee
      */
-    public function setDateJournee(Datetime $dateJournee): self
+    public function setDateJournee(?Datetime $dateJournee): self
     {
         $this->dateJournee = $dateJournee;
         return $this;
@@ -131,29 +111,24 @@ class Journee
      */
     public function isOver(): bool
     {
-        return !$this->getUndefined()
-            && intval((new DateTime())->diff($this->getDateJournee())->format('%R%a')) < 0
-            && !count(array_filter($this->getRencontres()->toArray(), function ($r) {
-                return !$r->isOver();
-            }));
+        return false; //TODO DELETE
+//        return !$this->getUndefined()
+//            && intval((new DateTime())->diff($this->getDateJournee())->format('%R%a')) < 0
+//            && !count(array_filter($this->getRencontres()->toArray(), function ($r) {
+//                return !$r->isOver();
+//            }));
     }
 
     /**
-     * @return bool
+     * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
      */
-    public function getUndefined(): bool
+    public function getLatestDate(): DateTime
     {
-        return $this->undefined;
-    }
+        $datesEtReportsJournee = array_map(function ($rencontre) {
+            return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
+        }, $this->getRencontres()->toArray());
 
-    /**
-     * @param bool $undefined
-     * @return Journee
-     */
-    public function setUndefined(bool $undefined): self
-    {
-        $this->undefined = $undefined;
-        return $this;
+        return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
     }
 
     /**
@@ -175,32 +150,20 @@ class Journee
     }
 
     /**
-     * Récupère la date au plus tard entre la date de la journée et les dates de report de chacunes de ses rencontres
+     * @return bool|null
      */
-    public function getLatestDate(): DateTime
+    public function isUndefined(): ?bool
     {
-        $datesEtReportsJournee = array_map(function ($rencontre) {
-            return $rencontre->isReporte() ? $rencontre->getDateReport() : $this->getDateJournee();
-        }, $this->getRencontres()->toArray());
-
-        return count($datesEtReportsJournee) ? max(max($datesEtReportsJournee), $this->getDateJournee()) : $this->getDateJournee();
+        return $this->undefined;
     }
 
     /**
-     * @return string|null
-     */
-    public function getLastUpdate(): ?string
-    {
-        return $this->lastUpdate;
-    }
-
-    /**
-     * @param string|null $lastUpdate
+     * @param bool|null $undefined
      * @return Journee
      */
-    public function setLastUpdate(?string $lastUpdate): self
+    public function setUndefined(?bool $undefined): self
     {
-        $this->lastUpdate = $lastUpdate;
+        $this->undefined = $undefined;
         return $this;
     }
 }

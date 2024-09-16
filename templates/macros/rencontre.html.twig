@@ -36,13 +36,13 @@
                                             <i class="material-icons red-text">event_busy</i>
                                         {% else %}
                                             <div class="hide-on-small-only">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</span>
-                                                {% else %}{{ rencontre.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateRencontre > rencontre.dateRencontre ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateRencontre | format_datetime(pattern='EEEE d LLLL y', locale='fr') | title }}</span>
+                                                {% else %}{{ rencontre.dateRencontre|format_datetime('long', 'none', locale='fr')|title }}
                                                 {% endif %}
                                             </div>
                                             <div class="hide-on-med-and-up">
-                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateJournee > rencontre.dateReport ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateReport | format_datetime(pattern='EEEE d/MM/y', locale='fr') | title }}</span>
-                                                {% else %}{{ rencontre.dateJournee | date("d/m/Y") }}
+                                                {% if rencontre.reporte %}<span class="orange-text"><i class="material-icons">update</i> {{ rencontre.dateRencontre > rencontre.dateRencontre ? 'Avancé' : 'Reporté' }} au {{ rencontre.dateRencontre | format_datetime(pattern='EEEE d/MM/y', locale='fr') | title }}</span>
+                                                {% else %}{{ rencontre.dateRencontre | date("d/m/Y") }}
                                                 {% endif %}
                                             </div>
                                         {% endif %}

@@ -65,9 +65,9 @@ class BackOfficeRencontreController extends AbstractController
         $form->handleRequest($request);
 
         $journees = $rencontre->getIdChampionnat()->getJournees()->toArray();
-        $journee = $rencontre->getIDJournee();
+        $journee = $rencontre->getIdJournee();
         $posJournee = array_keys(array_filter($journees, function ($journeeChamp) use ($journee) {
-            return $journeeChamp->getDateJournee() == $journee->getDateJournee();
+            return $journeeChamp->getIdJournee() == $journee->getIdJournee();
         }))[0] += 1;
 
         if ($form->isSubmitted()) {
@@ -79,7 +79,6 @@ class BackOfficeRencontreController extends AbstractController
                         $rencontre->setVilleHost(null);
                         $rencontre->setConsigne(null);
                         $rencontre->setReporte(false);
-                        $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                         $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
 
                         $this->em->flush();
@@ -92,14 +91,14 @@ class BackOfficeRencontreController extends AbstractController
 
                         /** Si la rencontre n'est pas ou plus avancée/reportée, la date redevient celle de la journée associée **/
                         if ($rencontre->isReporte()) {
-                            if ($rencontre->getDateReport() == $rencontre->getIdJournee()->getDateJournee()) throw new Exception('Renseignez une date de report différente de la date initiale', 12345);
+                            if ($rencontre->getDateRencontre() == $rencontre->getIdJournee()->getDateJournee()) throw new Exception('Renseignez une date de report différente de la date initiale', 12345);
 
                             /** On ne peut pas mélanger les dates */
                             $journeesBefore = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
-                                return $rencChamp->getDateJournee() <= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
+                                return $rencChamp->getDateJournee() <= $rencontre->getDateRencontre() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
                             });
                             $journeesAfter = array_filter($rencontre->getIdChampionnat()->getJournees()->toArray(), function ($rencChamp) use ($rencontre) {
-                                return $rencChamp->getDateJournee() >= $rencontre->getDateReport() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
+                                return $rencChamp->getDateJournee() >= $rencontre->getDateRencontre() && $rencChamp->getDateJournee() != $rencontre->getIdJournee()->getDateJournee();
                             });
                             $journeeBefore = $journeesBefore ? end($journeesBefore) : null;
                             $journeeAfter = $journeesAfter ? array_shift($journeesAfter) : null;
@@ -115,7 +114,6 @@ class BackOfficeRencontreController extends AbstractController
                                 ]);
                             }
                         } else {
-                            $rencontre->setDateReport($rencontre->getIdJournee()->getDateJournee());
                             $rencontre->setLastUpdate($utilController->getAdminUpdateLog('Modifiée par '));
                             $this->em->flush();
                             $this->addFlash('success', 'Rencontre modifiée');

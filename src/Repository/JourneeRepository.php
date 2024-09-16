@@ -27,8 +27,6 @@ class JourneeRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('j')
             ->select('j.idJournee')
-            ->addSelect('j.dateJournee')
-            ->addSelect('j.undefined')
             ->addSelect('c.nom')
             ->addSelect('c.idChampionnat')
             ->leftJoin('j.idChampionnat', 'c')

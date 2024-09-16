@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Controller\UtilController;
+use App\Entity\Championnat;
+use App\Entity\Division;
 use App\Entity\Rencontre;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -136,6 +138,7 @@ class RencontreRepository extends ServiceEntityRepository
      */
     public function reset(int $nbJoueurs)
     {
+        //TODO RESET DATE CORRECTEMENT
         $query = $this->createQueryBuilder('r')->update('App\Entity\Rencontre', 'r');
         for ($i = 0; $i < $nbJoueurs; $i++) {
             $query = $query->set('r.idJoueur' . $i, null);
@@ -143,7 +146,7 @@ class RencontreRepository extends ServiceEntityRepository
 
         return $query
             ->set('r.reporte', false)
-            ->set('r.dateReport', 'j.dateJournee')
+            ->set('r.dateRencontre', 'j.dateJournee')
             ->set('r.domicile', null)
             ->set('r.villeHost', false)
             ->set('r.exempt', false)
@@ -212,5 +215,43 @@ class RencontreRepository extends ServiceEntityRepository
             }, $rencontres),
             'rencontres' => $rencontres
         ];
+    }
+
+    /**
+     * Récupère les dates des journées "classiques" des matches du championnat dont l'utilisateur est titulaire
+     * @param int $limitNbJournees
+     * @param string $typeEpreuve
+     * @param int $idChampionnat
+     * @return array
+     */
+    public function getJourneesClassiquesChampionnat(int $limitNbJournees, string $typeEpreuve, int $idChampionnat): array
+    {
+        return array_slice($this->createQueryBuilder('r')
+            ->leftJoin('r.idEquipe', 'e')
+            ->leftJoin('e.idDivision', 'd')
+            ->where('d.organismePere = :ORGANISME_PERE')
+            ->andWhere('r.idChampionnat = :ID_CHAMPIONNAT')
+            ->setParameter('ORGANISME_PERE', $this->getOrganismeClassiquePourTypeEpreuve($typeEpreuve))
+            ->setParameter('ID_CHAMPIONNAT', $idChampionnat)
+            ->orderBy('r.idEquipe')
+            ->addOrderBy('r.dateRencontre')
+            ->getQuery()
+            ->getResult(), 0, $limitNbJournees);
+    }
+
+    /**
+     * Récupère l'organisme par défaut selon le type d'épreuve
+     * @param string $typeEpreuve
+     * @return int
+     */
+    public function getOrganismeClassiquePourTypeEpreuve(string $typeEpreuve): int
+    {
+        switch ($typeEpreuve) {
+            case Championnat::EPREUVE_DEFAULT_PARIS:
+                return Division::ORGANISME_ILE_DE_FRANCE;
+            case Championnat::EPREUVE_DEFAULT_DEPARTEMENTAL:
+            default:
+                return Division::ORGANISME_VAL_DOISE;
+        }
     }
 }

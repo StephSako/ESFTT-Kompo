@@ -154,13 +154,6 @@
                                 <h3 style="margin-top: 10px; margin-bottom: 10px;">La pré-phase</h3>
                                 <p class="pastille green white-text reset" style="margin-bottom: 25px;">{{ data.preRentree.finished.message }}</p>
 
-                                <div class="center">
-                                    <h4>Les journées</h4>
-                                    {% if data.preRentree.journees|length > 0 %}<p class="pastille reset orange darken-2">{{ data.preRentree.journees|length ~ (data.preRentree.journees|length == 1 ? ' date sera réinitialisée' : ' dates seront réinitialisées') }}</p>
-                                    {% else %}<p class="pastille reset blue">Toutes les dates ont été réinitialisées</p>
-                                    {% endif %}
-                                </div>
-
                                 <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                 <div class="center">
@@ -227,67 +220,10 @@
                             <div class='backoffice-panel center card-panel'>
                                 <h3 style="margin-top: 10px; margin-bottom: 10px;">La phase</h3>
 
-                                {% if not (data.teams.toUpdate or data.teams.notRegistered or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted) %}
+                                {% if not (data.teams.toUpdate or data.teams.notRegistered or data.teams.toCreate or data.matches.issuedSorted) %}
                                     <p class="pastille green white-text reset">Toutes les données sont à jour</p>
                                     <div style="margin-top: 25px; margin-bottom: 15px;"></div>
                                 {% endif %}
-
-                                <div class="center">
-                                    <h4>Les journées</h4>
-                                    {% if not data.dates.issued and not data.dates.missing and not data.dates.surplus %}<p class="pastille blue reset" style="margin-top: 5px; margin-bottom: 5px;">Toutes les journées sont à jour</p>{% endif %}
-                                    {% if data.dates.issued %}<p class="pastille orange darken-2 reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.issued|length ~ (data.dates.issued|length == 1 ? ' date sera mise à jour' : ' dates seront mises à jour') }}</p>{% endif %}
-                                    {% if data.dates.missing %}<p class="pastille green reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.missing|length ~ (data.dates.missing|length == 1 ? ' dates sera créée' : ' dates seront créées') }}</p>{% endif %}
-                                    {% if data.dates.surplus %}<p class="pastille red reset" style="margin-top: 5px; margin-bottom: 5px;">{{ data.dates.surplus|length ~ (data.dates.surplus|length == 1 ? ' date sera supprimée' : ' dates seront supprimées') }}</p>{% endif %}
-
-                                    {% if data.dates.issued or data.dates.missing or data.dates.surplus %}
-                                        <table class="striped centered responsive-table">
-                                            <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Journée</th>
-                                                <th>Date</th>
-                                            </tr>
-                                            </thead>
-
-                                            <tbody>
-                                            {% for dateIssued in data.dates.issued %}
-                                                <tr>
-                                                    <td><i class="material-icons orange-text text-darken-2">edit</i></td>
-                                                    <td><b>{{ dateIssued.nJournee }}</b></td>
-                                                    <td>
-                                                        <span class="red-text">{{ dateIssued.undefined ? "<i class='material-icons red-text'>event_busy</i>" : dateIssued.journee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</span>
-                                                        <i class="material-icons black-text">arrow_forward</i> {{ dateIssued.dateFFTT|format_datetime('long', 'none', locale='fr')|title }}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-
-                                            {% for index, dateMissing in data.dates.missing %}
-                                                <tr>
-                                                    <td><i class="material-icons green-text">add_circle</i></td>
-                                                    <td><b>{{ index }}</b></td>
-                                                    <td>{{ dateMissing.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</td>
-                                                </tr>
-                                            {% endfor %}
-
-                                            {% for dateSurplus in data.dates.surplus %}
-                                                <tr>
-                                                    <td><i class="material-icons red-text">delete</i></td>
-                                                    <td><b>{{ loop.index + data.dates.realNbDates }}</b></td>
-                                                    <td>
-                                                        {% if dateSurplus.undefined %}
-                                                            <i class='material-icons red-text'>event_busy</i>
-                                                        {% else %}
-                                                            {{ dateSurplus.dateJournee|format_datetime('long', 'none', locale='fr')|title }}
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-                                </div>
-
-                                <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                 <div class="center">
                                     <h4>Les équipes</h4>
@@ -371,6 +307,7 @@
                                                             <tr>
                                                                 <th></th>
                                                                 <th>Journée</th>
+                                                                <th>Date</th>
                                                                 <th>Adversaire</th>
                                                                 <th>Lieu</th>
                                                                 <th>Coordonnées</th>
@@ -382,6 +319,12 @@
                                                                 <tr>
                                                                     <td><i class="material-icons {{ rencontre.enAttenteNouvellePhase ? 'orange' : 'green' }}-text text-darken-2">{{ rencontre.enAttenteNouvellePhase ? 'edit' : 'add_circle' }}</i></td>
                                                                     <td>{{ rencontre.journee }}</td>
+                                                                    <td>
+                                                                        <span {% if (rencontre.rencontre.dateRencontre|format_datetime('long', 'none', locale='fr')|title) != (rencontre.datePrevue|format_datetime('long', 'none', locale='fr')|title) %}class="red-text"{% endif %}>
+                                                                            {{ rencontre.rencontre.dateRencontre|format_datetime('long', 'none', locale='fr')|title }}
+                                                                        </span>
+                                                                        {% if (rencontre.rencontre.dateRencontre|format_datetime('long', 'none', locale='fr')|title) != (rencontre.datePrevue|format_datetime('long', 'none', locale='fr')|title) %}<i class="material-icons black-text">arrow_forward</i> {{ rencontre.datePrevue|format_datetime('long', 'none', locale='fr')|title }}{% endif %}
+                                                                    </td>
                                                                     <td>
                                                                         {% if not rencontre.exempt %}
                                                                             <span {% if rencontre.rencontre.adversaire != rencontre.adversaireFFTT %}class="red-text"{% endif %}>
@@ -431,7 +374,7 @@
                                     {% else %}<p class="pastille blue reset">Toutes les rencontres sont à jour</p>
                                     {% endif %}
 
-                                    {% if data.teams.toUpdate or data.teams.toCreate or data.dates.issued or data.dates.missing or data.dates.surplus or data.matches.issuedSorted %}
+                                    {% if data.teams.toUpdate or data.teams.toCreate or data.matches.issuedSorted %}
                                         <div style="margin-top: 45px; margin-bottom: 35px;"></div>
 
                                         <form class="center" action="{{ path('backoffice.settings.update') }}" method="POST" onsubmit="return resetPhasePreloader('{{ nomChampionnat }}')">

@@ -137,7 +137,7 @@
             <div class="row hide" id="equipesAssocieesForm">
                 <h5 class="dark_blue" style="margin-top: 0;">Titularisations</h5>
                 {% for nomChampionnat, infos in options.equipesAssociees %}
-                    <div class="form_div_list col m6 s12 l4">
+                    <div class="form_div_list col m6 s12 offset-l4 l4">
                         <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">{{ nomChampionnat }}</label>
                         <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
                             <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Sans équipe</option>
@@ -223,7 +223,7 @@
                     </p>
                 {% endif %}
 
-                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                <div class="col s12 {{ options.createMode is defined ? 'm8 offset-m2 l6 offset-l3' : 'm7 offset-m2 l5 offset-l3' }}">
                     <b><i class="material-icons prefix">mail</i> Adresse e-mail principale</b>{{ form_row(form.mail, {'id': 'i_mail'}) }}
                 </div>
                 {% if not options.createMode is defined %}
@@ -233,7 +233,7 @@
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                <div class="col s12 {{ options.createMode is defined ? 'm8 offset-m2 l6 offset-l3' : 'm7 offset-m2 l5 offset-l3' }}">
                     <b><i class="material-icons prefix">mail</i> Adresse e-mail secondaire</b>{{ form_row(form.mail2, {'id': 'i_mail_2'}) }}
                 </div>
                 {% if not options.createMode is defined %}
@@ -243,7 +243,7 @@
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                <div class="col s12 {{ options.createMode is defined ? 'm8 offset-m2 l6 offset-l3' : 'm7 offset-m2 l5 offset-l3' }}">
                     <b><i class="material-icons prefix">smartphone</i> Téléphone principal</b>{{ form_row(form.phoneNumber, {'id': 'i_num'}) }}
                 </div>
                 {% if not options.createMode is defined %}
@@ -253,7 +253,7 @@
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col s12 {{ options.createMode is defined ? 'm10 offset-m1' : 'm7 offset-m2' }}">
+                <div class="col s12 {{ options.createMode is defined ? 'm8 offset-m2 l6 offset-l3' : 'm7 offset-m2 l5 offset-l3' }}">
                     <b><i class="material-icons prefix">smartphone</i> Téléphone secondaire</b>{{ form_row(form.phoneNumber2, {'id': 'i_num_2'}) }}
                 </div>
                 {% if not options.createMode is defined %}

@@ -23,6 +23,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Division
 {
+    /** Type d'épreuve */
+    const ORGANISME_VAL_DOISE = 105;
+    const ORGANISME_ILE_DE_FRANCE = 16;
     /**
      * @var Collection
      *
@@ -107,7 +110,6 @@ class Division
      * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
      */
     private $lastUpdate;
-
     /**
      * @var int
      *

@@ -57,7 +57,7 @@ class RencontreType extends AbstractType
                 )->add('reporte', CheckboxType::class, [
                     'label' => 'Match avancé/reporté',
                     'required' => false
-                ])->add('dateReport', DateType::class, [
+                ])->add('dateRencontre', DateType::class, [
                     'label' => false,
                     'format' => 'd MMMM y'
                 ])->add('exempt', CheckboxType::class, [
@@ -101,7 +101,10 @@ class RencontreType extends AbstractType
                     'attr' => [
                         'maxlength' => 300
                     ]
-                ]);
+                ])->add('undefined', CheckboxType::class, [
+                    'label' => 'Date indéfinie',
+                    'required' => false
+                ]);;
         }
     }
 

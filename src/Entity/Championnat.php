@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Cocur\Slugify\Slugify;
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -31,10 +30,13 @@ class Championnat
         'Saison' => false
     ];
 
+    const EPREUVE_DEFAULT_DEPARTEMENTAL = 'FED_Championnat de France par Equipes Masculin';
+    const EPREUVE_DEFAULT_PARIS = 'L08_Championnat de Paris IDF';
+
     /** Type d'épreuve */
     const TYPE_EPREUVE = [
-        'Championnat de France par Equipes Masculin' => 'FED_Championnat de France par Equipes Masculin',
-        'Championnat de Paris IDF' => 'L08_Championnat de Paris IDF'
+        'Championnat de France par Equipes Masculin' => self::EPREUVE_DEFAULT_DEPARTEMENTAL,
+        'Championnat de Paris IDF' => self::EPREUVE_DEFAULT_PARIS
     ];
 
     /**
@@ -414,12 +416,14 @@ class Championnat
      * Retourne l'ID de la prochaine journée à jouer
      * @return Journee|null
      */
+    // TODO A DEPLACER DANS COMPETITEUR AVEC SES TITULARISATIONS
     public function getNextJourneeToPlay(): ?Journee
     {
-        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function ($journee) {
-            return !$journee->getUndefined() && (int)(new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
-        });
-        return array_shift($nextJourneeToPlay) ?: null;
+//        $nextJourneeToPlay = array_filter($this->getJournees()->toArray(), function ($journee) {
+//            return !$journee->getUndefined() && (int)(new DateTime())->diff($journee->getDateJournee())->format('%R%a') >= 0;
+//        });
+//        return array_shift($nextJourneeToPlay) ?: null;
+        return null;// TODO DELETE
     }
 
     /**

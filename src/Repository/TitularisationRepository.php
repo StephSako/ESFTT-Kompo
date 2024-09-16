@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Rencontre;
 use App\Entity\Titularisation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,5 +33,21 @@ class TitularisationRepository extends ServiceEntityRepository
             ->setParameter('idCompetiteur', $idCompetiteur)
             ->getQuery()
             ->execute();
+    }
+
+    public function getRencontresParTitularisation(array $journeesClassiquesChampionnat): array
+    {
+        $allTitularisations = array_map(function ($titularisation) {
+            return array_map(function (Rencontre $rencontre) use ($titularisation) {
+                return [
+                    'undefined' => $rencontre->isUndefined(),
+                    'dateRencontre' => $rencontre->getDateRencontre(),
+                    'idJournee' => $rencontre->getIdJournee()->getIdJournee(),
+                    'idChampionnat' => $rencontre->getIdChampionnat()->getIdChampionnat(),
+                    'idCompetiteur' => $titularisation->getIdCompetiteur()->getIdCompetiteur()
+                ];
+            }, $titularisation->getIdEquipe()->getRencontres()->toArray());
+        }, $this->findAll());
+        return $allTitularisations;
     }
 }

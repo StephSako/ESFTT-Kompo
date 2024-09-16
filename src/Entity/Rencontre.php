@@ -212,9 +212,9 @@ class Rencontre
     /**
      * @var DateTime
      *
-     * @ORM\Column(type="date", name="date_report", nullable=false)
+     * @ORM\Column(type="date", name="date_rencontre", nullable=false)
      */
-    private $dateReport;
+    private $dateRencontre;
     /**
      * @var string|null
      *
@@ -243,6 +243,12 @@ class Rencontre
      * @ORM\Column(type="string", name="last_update", nullable=true, length=100)
      */
     private $lastUpdate;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", name="undefined", nullable=false)
+     */
+    private $undefined;
 
     /**
      * Rencontre constructor.
@@ -568,7 +574,7 @@ class Rencontre
 
         if (!$this->getIdJournee()->getUndefined()) {
             $objet .= ' - ';
-            $objet .= (!$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench());
+            $objet .= $this->getDateRencontreFrench();
         }
         return $objet;
     }
@@ -610,46 +616,28 @@ class Rencontre
     }
 
     /**
-     * @return bool
-     */
-    public function isReporte(): bool
-    {
-        return $this->reporte;
-    }
-
-    /**
-     * @param bool $reporte
-     * @return Rencontre
-     */
-    public function setReporte(bool $reporte): self
-    {
-        $this->reporte = $reporte;
-        return $this;
-    }
-
-    /**
      * @return string
      */
-    public function getDateReportFrench(): string
+    public function getDateRencontreFrench(): string
     {
-        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateReport()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
+        return mb_convert_case(strftime("%A %d %B %Y", $this->getDateRencontre()->getTimestamp()), MB_CASE_TITLE, "UTF-8");
     }
 
     /**
      * @return DateTime
      */
-    public function getDateReport(): DateTime
+    public function getDateRencontre(): DateTime
     {
-        return $this->dateReport;
+        return $this->dateRencontre;
     }
 
     /**
-     * @param DateTime $dateReport
+     * @param DateTime $dateRencontre
      * @return Rencontre
      */
-    public function setDateReport(DateTime $dateReport): self
+    public function setDateRencontre(DateTime $dateRencontre): self
     {
-        $this->dateReport = $dateReport;
+        $this->dateRencontre = $dateRencontre;
         return $this;
     }
 
@@ -663,10 +651,10 @@ class Rencontre
         setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
         date_default_timezone_set('Europe/Paris');
         $br = '%0D%0A';
-        $date = !$this->isReporte() ? $this->getIdJournee()->getDateJourneeFrench() : $this->getDateReportFrench();
+        $date = $this->getDateRencontreFrench();
         $message = "Salut, c'est " . $prenomSender . '.' . $br . $br;
         $message .= 'Vous êtes sélectionnés en équipe ' . $this->getIdEquipe()->getNumero() . ' pour le championnat : ' . $this->getIdChampionnat()->getNom();
-        $message .= (!$this->getIdJournee()->getUndefined() ? ', le ' . $date : ', à une date indéterminée pour le moment') . ".";
+        $message .= (!$this->isUndefined() ? ', le ' . $date : ', à une date indéterminée pour le moment') . ".";
 
         if ($this->isExempt()) $message .= $br . "Cependant, l'équipe " . $this->getIdEquipe()->getNumero() . " est exemptée pour cette journée ce qui signifie qu'il n'y aura donc pas match à cette date." . $br . $br . 'Bonne journée à vous.';
         else {
@@ -692,6 +680,24 @@ class Rencontre
         }
 
         return $message;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUndefined(): bool
+    {
+        return $this->undefined;
+    }
+
+    /**
+     * @param bool $undefined
+     * @return Rencontre
+     */
+    public function setUndefined(bool $undefined): Rencontre
+    {
+        $this->undefined = $undefined;
+        return $this;
     }
 
     /**
@@ -791,7 +797,7 @@ class Rencontre
     public function sortComposition(): void
     {
         if ($this->getIdChampionnat()->isCompoSorted() && count($this->getListSelectedPlayers())
-            && intval((new DateTime())->diff(max($this->getDateReport(), $this->getIdJournee()->getDateJournee()))->format('%R%a')) >= 0) {
+            && intval((new DateTime())->diff(max($this->getDateRencontre(), $this->getDateRencontre()))->format('%R%a')) >= 0) {
             $compoToSort = $this->getListSelectedPlayers();
             $this->emptyCompo();
             usort($compoToSort, function ($joueur1, $joueur2) {
@@ -924,9 +930,27 @@ class Rencontre
      */
     public function isOver(): bool
     {
-        $dateDepassee = intval((new DateTime())->diff($this->getIdJournee()->getDateJournee())->format('%R%a')) >= 0;
-        $dateReporteeDepassee = intval((new DateTime())->diff($this->getDateReport())->format('%R%a')) >= 0;
+        $dateDepassee = intval((new DateTime())->diff($this->getDateRencontre())->format('%R%a')) >= 0;
+        $dateReporteeDepassee = intval((new DateTime())->diff($this->getDateRencontre())->format('%R%a')) >= 0;
         return !(($dateDepassee && !$this->isReporte()) || ($dateReporteeDepassee && $this->isReporte()) || $this->getIdJournee()->getUndefined());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReporte(): bool
+    {
+        return $this->reporte;
+    }
+
+    /**
+     * @param bool $reporte
+     * @return Rencontre
+     */
+    public function setReporte(bool $reporte): self
+    {
+        $this->reporte = $reporte;
+        return $this;
     }
 
     /**

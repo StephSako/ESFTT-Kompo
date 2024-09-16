@@ -69,7 +69,7 @@ class Rencontre
 
     public function getDatePrevue(): \DateTime
     {
-        return $this->datePrevue;
+        return $this->datePrevue->setTime(0,0, 0, 0);
     }
 
     public function getDateReelle(): ?\DateTime

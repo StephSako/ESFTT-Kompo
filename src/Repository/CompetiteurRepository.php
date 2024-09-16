@@ -454,11 +454,12 @@ class CompetiteurRepository extends ServiceEntityRepository
 
     /**
      * Liste des disponibilités de tous les joueurs
-     * @param Championnat[] $allChampionnats
+     * @param array $allChampionnats
+     * @param array $journeesClassiquesAllChampionnats
      * @return array
      * @throws Exception
      */
-    public function findAllDisponibilites(array $allChampionnats): array
+    public function findAllDisponibilites(array $allChampionnats, array $journeesClassiquesAllChampionnats): array
     {
         $query = $this->createQueryBuilder('c')
             ->select('c.avatar')
@@ -470,16 +471,20 @@ class CompetiteurRepository extends ServiceEntityRepository
             ->addSelect('j.idJournee')
             ->addSelect('champ.nom AS nomChamp')
             ->addSelect('champ.idChampionnat')
-            ->addSelect('j.undefined')
             ->addSelect('(SELECT d1.idDisponibilite FROM App\Entity\Disponibilite d1 ' .
                 'WHERE c.idCompetiteur = d1.idCompetiteur ' .
                 'AND d1.idJournee = j.idJournee) AS idDisponibilite')
             ->addSelect('(SELECT d2.disponibilite FROM App\Entity\Disponibilite d2 ' .
                 'WHERE c.idCompetiteur = d2.idCompetiteur ' .
                 'AND d2.idJournee = j.idJournee) AS disponibilite')
-            ->addSelect('j.dateJournee')
-            ->addSelect('(SELECT MAX(pr.dateReport) FROM App\Entity\Rencontre pr ' .
-                'WHERE pr.idJournee = j.idJournee) as latestDate')
+            ->addSelect('(SELECT pr.dateRencontre FROM App\Entity\Rencontre pr, App\Entity\Titularisation t ' .
+                'WHERE t.idCompetiteur = c.idCompetiteur ' .
+                'AND pr.idEquipe = t.idEquipe ' .
+                'AND pr.idJournee = j.idJournee) as dateRencontre')
+            ->addSelect('(SELECT pr2.undefined FROM App\Entity\Rencontre pr2, App\Entity\Titularisation t2 ' .
+                'WHERE t2.idCompetiteur = c.idCompetiteur ' .
+                'AND pr2.idEquipe = t2.idEquipe ' .
+                'AND pr2.idJournee = j.idJournee) as undefined')
             ->from('App:Journee', 'j')
             ->leftJoin('j.idChampionnat', 'champ')
             ->where('c.isCompetiteur = true')
@@ -508,7 +513,18 @@ class CompetiteurRepository extends ServiceEntityRepository
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['classement_officiel'] = $item['classement_officiel'];
                     $queryFinal[$championnat->getNom()]['joueurs'][$nom]['disponibilites'] = [];
                 }
-                $item['latestDate'] = max(new DateTime($item['latestDate']), $item['dateJournee']);
+
+                // Définition de la date de la rencontre
+                if ($item['dateRencontre'] == null) {
+                    $rencontreParDefaut = current(array_filter($journeesClassiquesAllChampionnats[$championnat->getNom()], function ($dispo) use ($item) {
+                        return $dispo->getIdJournee()->getIdJournee() === $item['idJournee'];
+                    }));
+                    $item['dateRencontre'] = $rencontreParDefaut->getDateRencontre();
+                    $item['undefined'] = $rencontreParDefaut->isUndefined();
+                } else {
+                    $item['dateRencontre'] = new DateTime($item['dateRencontre']);
+                }
+
                 $queryFinal[$championnat->getNom()]['joueurs'][$nom]['disponibilites'][] = $item;
             }
         }

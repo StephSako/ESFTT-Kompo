@@ -31,9 +31,6 @@
                 <li class="waves-effect li_in_line{% if app.request.getPathInfo starts with '/backoffice/championnat' %} active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.championnats") }}"><i class="material-icons left">emoji_events</i>Championnat</a>
                 </li>
-                <li class="waves-effect li_in_line{% if app.request.getPathInfo starts with '/backoffice/journee' %} active blue darken-3{% endif %}">
-                    <a class="white-text" href="{{ path("backoffice.journees") }}"><i class="material-icons left">date_range</i>Journée</a>
-                </li>
                 <li class="waves-effect li_in_line {% if app.request.getPathInfo starts with '/backoffice/rencontre' %} active blue darken-3{% endif %}">
                     <a class="white-text" href="{{ path("backoffice.rencontres") }}"><i class="material-icons left">flash_on</i>Rencontre</a>
                 </li>
@@ -93,9 +90,6 @@
         {% endif %}
         <li class="li_in_line{% if app.request.getPathInfo starts with '/backoffice/championnat' %} active blue darken-3{% endif %}">
             <a class="white-text center-align" href="{{ path("backoffice.championnats") }}"><i class="white-text material-icons left">emoji_events</i>Championnat</a>
-        </li>
-        <li class="li_in_line{% if app.request.getPathInfo starts with '/backoffice/journee' %} active blue darken-3{% endif %}">
-            <a class="white-text center-align" href="{{ path("backoffice.journees") }}"><i class="white-text material-icons left">date_range</i>Journée</a>
         </li>
         <li class="li_in_line{% if app.request.getPathInfo starts with '/backoffice/rencontre' %} active blue darken-3{% endif %}">
             <a class="white-text center-align" href="{{ path("backoffice.rencontres") }}"><i class="white-text material-icons left">flash_on</i>Rencontre</a>

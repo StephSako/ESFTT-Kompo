@@ -3,12 +3,14 @@
 namespace App\Controller\BackOffice;
 
 use App\Controller\UtilController;
+use App\Entity\Championnat;
 use App\Entity\Disponibilite;
 use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DisponibiliteRepository;
 use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
+use App\Repository\TitularisationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,22 +27,25 @@ class BackOfficeDisponibiliteController extends AbstractController
     private $journeeRepository;
     private $rencontreRepository;
     private $championnatRepository;
+    private $titularisationRepository;
 
     /**
      * BackOfficeController constructor.
      * @param DisponibiliteRepository $disponibiliteRepository
      * @param CompetiteurRepository $competiteurRepository
+     * @param TitularisationRepository $titularisationRepository
      * @param JourneeRepository $journeeRepository
      * @param EntityManagerInterface $em
      * @param ChampionnatRepository $championnatRepository
      * @param RencontreRepository $rencontreRepository
      */
-    public function __construct(DisponibiliteRepository $disponibiliteRepository,
-                                CompetiteurRepository   $competiteurRepository,
-                                JourneeRepository       $journeeRepository,
-                                EntityManagerInterface  $em,
-                                ChampionnatRepository   $championnatRepository,
-                                RencontreRepository     $rencontreRepository)
+    public function __construct(DisponibiliteRepository  $disponibiliteRepository,
+                                CompetiteurRepository    $competiteurRepository,
+                                TitularisationRepository $titularisationRepository,
+                                JourneeRepository        $journeeRepository,
+                                EntityManagerInterface   $em,
+                                ChampionnatRepository    $championnatRepository,
+                                RencontreRepository      $rencontreRepository)
     {
         $this->em = $em;
         $this->disponibiliteRepository = $disponibiliteRepository;
@@ -48,6 +53,7 @@ class BackOfficeDisponibiliteController extends AbstractController
         $this->journeeRepository = $journeeRepository;
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
+        $this->titularisationRepository = $titularisationRepository;
     }
 
     /**
@@ -58,8 +64,12 @@ class BackOfficeDisponibiliteController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $allChampionnats = $this->championnatRepository->getAllChampionnats();
+        $journeesClassiquesAllChampionnats = array_map(function (Championnat $championnat) {
+            return $this->rencontreRepository->getJourneesClassiquesChampionnat($championnat->getNbJournees(), $championnat->getTypeEpreuve(), $championnat->getIdChampionnat());
+        }, $allChampionnats);
         return $this->render('backoffice/disponibilites/index.html.twig', [
-            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($this->championnatRepository->getAllChampionnats()),
+            'disponibilites' => $this->competiteurRepository->findAllDisponibilites($allChampionnats, $journeesClassiquesAllChampionnats),
             'active' => $request->query->get('active')
         ]);
     }

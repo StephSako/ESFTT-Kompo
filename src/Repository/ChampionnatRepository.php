@@ -86,8 +86,7 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('j.idJournee')
             ->addSelect('c.nom')
             ->addSelect('c.idChampionnat')
-            ->addSelect('j.dateJournee')
-            ->addSelect('j.undefined')
+            ->addSelect('r.undefined')
             ->addSelect('r.id')
             ->addSelect('r.adversaire')
             ->addSelect('r.domicile')
@@ -95,16 +94,13 @@ class ChampionnatRepository extends ServiceEntityRepository
             ->addSelect('d.idDivision')
             ->addSelect('r.reporte')
             ->addSelect('r.exempt')
-            ->addSelect('r.dateReport')
+            ->addSelect('r.dateRencontre')
             ->addSelect('r.id')
             ->leftJoin('c.rencontres', 'r')
             ->leftJoin('r.idJournee', 'j')
             ->leftJoin('r.idEquipe', 'e')
             ->leftJoin('e.idDivision', 'd')
-            ->orderBy('c.nom')
-            ->addOrderBy('j.dateJournee')
-            ->addOrderBy('r.idJournee')
-            ->addOrderBy('e.numero')
+            ->orderBy('r.idJournee')
             ->getQuery()
             ->getResult();
 
@@ -142,7 +138,7 @@ class ChampionnatRepository extends ServiceEntityRepository
      */
     public function resetLastUpdateForChampEntities(int $idChampionnat)
     {
-        $tablesToResetLastUpdate = ['Championnat', 'Division', 'Journee', 'Rencontre', 'Equipe'];
+        $tablesToResetLastUpdate = ['Championnat', 'Division', 'Rencontre', 'Equipe'];
 
         foreach ($tablesToResetLastUpdate as $table) {
             $this->createQueryBuilder('t')

@@ -20,7 +20,7 @@ function getGeneralClassementsVirtuels(idChampActif, forceReload) {
                 if (alreadyCalledClassementEquipes) getEquipesClassementsVirtuels(idChampActif, true)
             },
             error: () => {
-                templatingClassementVirtuel('#rankingContent', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#rankingContentLoader', null, false, true);
+                templatingClassementVirtuel('#rankingContent', "<p class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#rankingContentLoader', null, false, true);
             }
         });
     }
@@ -45,7 +45,7 @@ function getEquipesClassementsVirtuels(idChampActif, forceReload) {
                 templatingClassementVirtuel('#progressionsEquipes', responseTemplate, '#preloaderProgressionsEquipes', null, false, true);
             },
             error: () => {
-                templatingClassementVirtuel('#progressionsEquipes', "<p style='margin-top: 10px' class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#preloaderProgressionsEquipes', null, false, true);
+                templatingClassementVirtuel('#progressionsEquipes', "<p class='pastille reset red'>Le service de la FFTT rencontre des perturbations. Réessayez plus tard</p>", '#preloaderProgressionsEquipes', null, false, true);
             }
         });
     }
@@ -55,7 +55,7 @@ let alreadyCalledClassement = false;
 let alreadyCalledClassementEquipes = false;
 
 function getPersonnalClassementVirtuel(licence, isReloadFromHistoMatches) {
-    if (!licence) templatingClassementVirtuel('.personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Licence indéfinie</p>", '.preloader_personnal_virtual_rank', licence, false, false);
+    if (!licence) templatingClassementVirtuel('.personnal_virtual_rank', "<p class='pastille reset red'>Licence indéfinie</p>", '.preloader_personnal_virtual_rank', licence, false, false);
     else {
         if (isReloadFromHistoMatches) {
             $('.personnal_virtual_rank').each(function () {
@@ -74,7 +74,7 @@ function getPersonnalClassementVirtuel(licence, isReloadFromHistoMatches) {
                 templatingClassementVirtuel('.personnal_virtual_rank', responseTemplate, '.preloader_personnal_virtual_rank', licence, isReloadFromHistoMatches, false);
             },
             error: () => {
-                templatingClassementVirtuel('.personnal_virtual_rank', "<p style='margin-top: 10px' class='pastille reset red'>Service FFTT indisponible</p>", '.preloader_personnal_virtual_rank', licence, isReloadFromHistoMatches, false);
+                templatingClassementVirtuel('.personnal_virtual_rank', "<p class='pastille reset red'>Service FFTT indisponible</p>", '.preloader_personnal_virtual_rank', licence, isReloadFromHistoMatches, false);
             }
         });
     }

@@ -7,6 +7,7 @@ use App\Entity\Journee;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
 use App\Repository\ChampionnatRepository;
+use App\Repository\JourneeRepository;
 use App\Repository\RencontreRepository;
 use DateInterval;
 use DateTime;
@@ -25,19 +26,23 @@ class UtilController extends AbstractController
     private $rencontreRepository;
     private $championnatRepository;
     private $logger;
+    private $journeeRepository;
 
     /**
      * @param RencontreRepository $rencontreRepository
+     * @param JourneeRepository $journeeRepository
      * @param LoggerInterface $logger
      * @param ChampionnatRepository $championnatRepository
      */
     public function __construct(RencontreRepository   $rencontreRepository,
+                                JourneeRepository     $journeeRepository,
                                 LoggerInterface       $logger,
                                 ChampionnatRepository $championnatRepository)
     {
         $this->rencontreRepository = $rencontreRepository;
         $this->championnatRepository = $championnatRepository;
         $this->logger = $logger;
+        $this->journeeRepository = $journeeRepository;
     }
 
     /**
@@ -91,7 +96,7 @@ class UtilController extends AbstractController
     public function getLastDates(Championnat $championnat): array
     {
         return array_unique(array_map(function (Rencontre $renc) {
-            return max([$renc->isReporte() ? $renc->getDateReport() : null, $renc->getIdJournee()->getDateJournee()]);
+            return $renc->getDateRencontre();
         }, $championnat->getRencontres()->toArray()), SORT_REGULAR);
     }
 
@@ -305,22 +310,27 @@ class UtilController extends AbstractController
     }
 
     /**
-     * Retourne la liste des journées à afficher dans le navbar en fonction de la titularisation du joueur dans le championnat
+     * Retourne la liste des journées à afficher dans la navbar en fonction de la titularisation du joueur pour le championnat
      * @param Championnat $championnat
      * @return array
      */
     public function getJourneesNavbar(Championnat $championnat): array
     {
         $journees = $championnat->getJournees()->toArray();
+
+        // Rencontres par défaut du championnat actif
+        $rencontresParDefautChampionnat = $this->rencontreRepository->getJourneesClassiquesChampionnat($championnat->getNbJournees(), $championnat->getTypeEpreuve(), $championnat->getIdChampionnat());
+
+        // Rencontres du championnat actif dont le compétiteur est titulaire
         $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
             return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
         }));
-        if ($titularisationActifChampionnat) {
-            $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
-            foreach ($journees as $i => $journee) {
-                $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
-            }
+        $rencontresNavBar = $titularisationActifChampionnat ? $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray() : $rencontresParDefautChampionnat;
+        foreach ($journees as $i => $journee) {
+            $journee->setDateJournee($rencontresNavBar[$i]->getDateRencontre());
+            $journee->setUndefined($rencontresNavBar[$i]->isUndefined());
         }
+
         return $journees;
     }
 }

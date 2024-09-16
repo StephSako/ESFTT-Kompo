@@ -4,34 +4,30 @@ $(document).ready(() => {
     let adversaire = $('#adversaire');
     let ville_host = $('#ville_host');
     let reported = $('#reporte');
-    let selectsDateReport = $('#rencontre_dateReport');
-
-    if (!reported.is(':checked')) selectsDateReport.hide();
+    let div_reported = $('#div_reported');
+    let selectsDateRecontre = $('#rencontre_dateRencontre');
 
     if (exempt.is(':checked')) {
-        reported.prop('disabled', true);
+        div_reported.hide();
         adversaire.val("").attr('placeholder', "Pas d'adversaire").prop('disabled', true);
         lieu_rencontre.prop('disabled', true);
         ville_host.prop('disabled', true);
     }
 
     exempt.change((e) => {
-        reported.prop('disabled', e.currentTarget.checked);
         adversaire.prop('disabled', e.currentTarget.checked);
         ville_host.prop('disabled', e.currentTarget.checked);
         lieu_rencontre.prop('disabled', e.currentTarget.checked);
-        selectsDateReport.hide();
         if (e.currentTarget.checked) {
             reported.prop('checked', false);
+            div_reported.hide();
+            selectsDateRecontre.hide();
             adversaire.val("").attr('placeholder', "Pas d'adversaire");
             ville_host.val("");
         } else {
+            div_reported.show();
+            selectsDateRecontre.show();
             adversaire.attr('placeholder', "Adversaire");
         }
-    });
-
-    reported.change((e) => {
-        if (e.currentTarget.checked) selectsDateReport.show();
-        else selectsDateReport.hide();
     });
 });
