@@ -377,7 +377,7 @@
             </div>
 
             {% if showPointsVirtuels %}
-                {{ _virtualPointsClassement.labelVirtualPoints('1', null, form.vars.value.licence) }}
+                {{ _virtualPointsClassement.labelVirtualPoints('1', null, form.vars.value.licence, type == 'backoffice') }}
                 {{ _histoMatches.histoMatches(form.vars.value.licence) }}
 
                 <script type="text/javascript">

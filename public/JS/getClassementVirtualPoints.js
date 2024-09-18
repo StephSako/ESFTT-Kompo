@@ -93,5 +93,5 @@ function templatingClassementVirtuel(selector, response, preloader, licence, rel
         }
     })
 
-    if (reloadHistoMatches && licence) getHistoMatches(licence, false);
+    if (reloadHistoMatches && licence) getHistoMatches(licence, false, false);
 }

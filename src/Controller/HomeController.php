@@ -982,15 +982,16 @@ class HomeController extends AbstractController
     public function getHistoMatchesTemplate(UtilController $utilController, Request $request): JsonResponse
     {
         $licence = $request->get('licence');
+        $fromAdmin = $request->get('fromAdmin');
         $erreur = null;
         $matches = [];
         try {
             $histoMatches = $this->get('session')->get('histoMatches' . $licence);
             if ($histoMatches === null) {
-                if ($this->getUser()->getLicence()) {
+                if ($licence) {
                     throw new Exception("Rechargez les matches à l'aide du bouton bleu", 12345);
                 } else {
-                    throw new Exception("Vous n'avez pas de licence renseignée", 12345);
+                    throw new Exception($fromAdmin ? "Le joueur n'a pas de licence renseignée" : "Vous n'avez pas de licence renseignée", 12345);
                 }
             }
             $matches = $utilController->formatHistoMatches($licence, $histoMatches);
@@ -1115,8 +1116,8 @@ class HomeController extends AbstractController
 
                 if (!array_key_exists($date, $resultatsPoule)) $resultatsPoule[$date] = [];
                 $resultatsPoule[$date][] = [
-                    'equipeA' => $resultat->getNomEquipeA(),
-                    'equipeB' => $resultat->getNomEquipeB(),
+                    'equipeA' => mb_convert_case($resultat->getNomEquipeA(), MB_CASE_TITLE, "UTF-8"),
+                    'equipeB' => mb_convert_case($resultat->getNomEquipeB(), MB_CASE_TITLE, "UTF-8"),
                     'score' => $resultat->getScoreEquipeA() . ' - ' . $resultat->getScoreEquipeB(),
                     'winner' => $resultat->getScoreEquipeA() > $resultat->getScoreEquipeB() ? 'A' : ($resultat->getScoreEquipeA() < $resultat->getScoreEquipeB() ? 'B' : ($resultat->getScoreEquipeA() == 0 && $resultat->getScoreEquipeB() == 0 ? 'LATER' : 'NUL'))
                 ];

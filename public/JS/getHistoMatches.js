@@ -1,4 +1,4 @@
-function getHistoMatches(licence, forceReloadHistoMatches) {
+function getHistoMatches(licence, forceReloadHistoMatches, fromAdmin) {
     if (!alreadyCalledHistoMatches || forceReloadHistoMatches) {
         alreadyCalledHistoMatches = true;
         if (forceReloadHistoMatches) {
@@ -12,7 +12,8 @@ function getHistoMatches(licence, forceReloadHistoMatches) {
                 url: '/journee/histo-matches',
                 type: 'POST',
                 data: {
-                    licence: licence
+                    licence: licence,
+                    fromAdmin: fromAdmin
                 },
                 dataType: 'json',
                 success: (responseTemplate) => {
