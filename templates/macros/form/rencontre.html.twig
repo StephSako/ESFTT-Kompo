@@ -1,14 +1,13 @@
 {% macro form(form, idJournee) %}
     <div class="card-panel center-align {% if form.vars.value.lastUpdate is not null %}relative{% endif %}">
         <div class="hide-on-small-only">
-            <h4 class="titre">Journée {{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }} - {{ form.vars.value.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h4>
+            <h4 class="titre">Journée {{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }}</h4>
             <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ form.vars.value.idChampionnat.nom }}</h5>
         </div>
 
         <div class="hide-on-med-and-up">
             <h4 class="titre">J{{ idJournee }} - Équipe {{ form.vars.value.idEquipe.numero }}</h4>
             <h5 style="margin-top: 0;">{{ form.vars.value.idChampionnat.nom }}</h5>
-            <h5 style="margin-bottom: 20px ; margin-top: 4px ;">{{ form.vars.value.undefined ? "<span style='color: red'>Date indéfinie</span>" : form.vars.value.idJournee.dateJournee|format_datetime('long', 'none', locale='fr')|title }}</h5>
         </div>
 
         {{ form_start(form) }}
@@ -16,6 +15,10 @@
             <div class="row">
                 <div class="col s10 offset-s1 m8 offset-m2">
                     {{ form_row(form.undefined) }}
+                </div>
+                <div class="container titlecase">
+                    <b>Date de la rencontre</b>
+                    {{ form_row(form.dateRencontre) }}
                 </div>
             </div>
 
@@ -65,11 +68,6 @@
             <div class="issue">
                 <div id="div_reported">
                     {{ form_row(form.reporte, {'id': 'reporte'}) }}
-                </div>
-                <div style="padding-left: 0; padding-right: 0;">
-                    <div class="container titlecase">
-                        {{ form_row(form.dateRencontre) }}
-                    </div>
                 </div>
             </div>
             <div style="margin-top: 30px;">
