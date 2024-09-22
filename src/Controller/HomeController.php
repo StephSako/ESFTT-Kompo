@@ -324,7 +324,7 @@ class HomeController extends AbstractController
         }
 
         if (($compo->isValidationCompo())) {
-            $this->addFlash('success', "La compo d'équipe est déjà validée");
+            $this->addFlash('warning', "La compo d'équipe est déjà validée");
             return $this->redirectToRoute('index.type', ['type' => $type]);
         }
 

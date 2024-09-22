@@ -1,5 +1,5 @@
 {% macro message(message, color) %}
-    <div class="card-panel center-align white-text {{ color }} lighten-1 title_journee">
+    <div class="card-panel center-align white-text {{ color }} {{ color != 'orange' ? 'lighten-1 ' : 'darken-1 ' }}title_journee">
         <p class="flash">{{ message | raw }}</p>
     </div>
 {% endmacro %}
