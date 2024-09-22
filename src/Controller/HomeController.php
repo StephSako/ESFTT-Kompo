@@ -515,7 +515,7 @@ class HomeController extends AbstractController
             /** On récupère toutes les équipes de la poule pour extraire le numéro du club adversaire */
             $equipesPoules = $api->getClassementPouleByLienDivision($lienDivision);
             $numeroClubAdversaire = array_filter($equipesPoules, function ($equ) use ($nomAdversaire) {
-                return $equ->getNomEquipe() == $nomAdversaire;
+                return mb_convert_case($equ->getNomEquipe(), MB_CASE_UPPER, "UTF-8") == $nomAdversaire;
             });
             $numeroClubAdversaire = count($numeroClubAdversaire) == 1 ? $numeroClubAdversaire[array_key_first($numeroClubAdversaire)]->getNumero() : null;
 
@@ -530,7 +530,7 @@ class HomeController extends AbstractController
                     /** On récupère le numéro du club adversaire ... de notre adversaire */
                     $nomAdversaireBis = $domicile ? mb_convert_case($rencontrePoule->getNomEquipeB(), MB_CASE_UPPER, "UTF-8") : mb_convert_case($rencontrePoule->getNomEquipeA(), MB_CASE_UPPER, "UTF-8");
                     $numeroClubAdversaireBis = array_filter($equipesPoules, function ($equ) use ($nomAdversaireBis) {
-                        return $equ->getNomEquipe() == $nomAdversaireBis;
+                        return mb_convert_case($equ->getNomEquipe(), MB_CASE_UPPER, "UTF-8") == $nomAdversaireBis;
                     });
                     $numeroClubAdversaireBis = count($numeroClubAdversaireBis) == 1 ? $numeroClubAdversaireBis[array_key_first($numeroClubAdversaireBis)]->getNumero() : null;
 
