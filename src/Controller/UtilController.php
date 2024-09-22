@@ -195,8 +195,8 @@ class UtilController extends AbstractController
             ['nom' => 'ASC']
         );
 
-        $nextJourneeByChampionnats = array_map(function ($c) {
-            return $c->getNextJourneeToPlay();
+        $nextJourneeByChampionnats = array_map(function (Championnat $championnat) {
+            return $championnat->getNextJourneeToPlay($this->getJourneesNavbar($championnat));
         }, $allChamps);
 
         $nextJourneeByChampionnats = array_filter($nextJourneeByChampionnats, function ($cNJTP) {
@@ -215,6 +215,27 @@ class UtilController extends AbstractController
             return $a->getDateJournee()->getTimestamp() - $b->getDateJournee()->getTimestamp();
         });
         return array_shift($nextJourneeByChampionnats);
+    }
+
+    /**
+     * Retourne la liste des journées à afficher dans le navbar en fonction de la titularisation du joueur dans le championnat
+     * @param Championnat $championnat
+     * @return array
+     */
+    public function getJourneesNavbar(Championnat $championnat): array
+    {
+        $journees = $championnat->getJournees();
+        $journeesCloned = unserialize(serialize($journees->toArray()));
+        $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
+            return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
+        }));
+        if ($titularisationActifChampionnat) {
+            $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
+            foreach ($journeesCloned as $i => $journee) {
+                $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
+            }
+        }
+        return $journeesCloned;
     }
 
     /**
@@ -302,25 +323,5 @@ class UtilController extends AbstractController
             else $formattedMatches[$match->getDate()]['totalPointsWon'] += $match->getPointsGagnes();
         }
         return array_reverse($formattedMatches);
-    }
-
-    /**
-     * Retourne la liste des journées à afficher dans le navbar en fonction de la titularisation du joueur dans le championnat
-     * @param Championnat $championnat
-     * @return array
-     */
-    public function getJourneesNavbar(Championnat $championnat): array
-    {
-        $journees = $championnat->getJournees()->toArray();
-        $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
-            return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
-        }));
-        if ($titularisationActifChampionnat) {
-            $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
-            foreach ($journees as $i => $journee) {
-                $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
-            }
-        }
-        return $journees;
     }
 }

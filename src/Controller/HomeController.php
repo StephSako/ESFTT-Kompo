@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Championnat;
 use App\Entity\Competiteur;
+use App\Entity\Journee;
 use App\Entity\Rencontre;
 use App\Entity\Titularisation;
 use App\Form\RencontreType;
@@ -80,16 +81,19 @@ class HomeController extends AbstractController
     /**
      * @Route("/journee/{type}", name="index.type", requirements={"type"="\d+"})
      * @param int $type
+     * @param UtilController $utilController
      * @return Response
-     * @throws Exception
      */
-    public function indexTypeAction(int $type): Response
+    public function indexTypeAction(int $type, UtilController $utilController): Response
     {
+        /** @var Championnat $championnat */
         $championnat = $this->championnatRepository->find($type);
         if ($championnat) {
+            /** @var Journee[] $journeesSelonTitularisation */
+            $journeesSelonTitularisation = $utilController->getJourneesNavbar($championnat);
             return $this->redirectToRoute('journee.show', [
                 'type' => $championnat->getIdChampionnat(),
-                'idJournee' => $championnat->getNextJourneeToPlay() ? $championnat->getNextJourneeToPlay()->getIdJournee() : $championnat->getJournees()->toArray()[0]->getIdJournee()
+                'idJournee' => $championnat->getNextJourneeToPlay($journeesSelonTitularisation) ? $championnat->getNextJourneeToPlay($journeesSelonTitularisation)->getIdJournee() : $championnat->getJournees()->toArray()[0]->getIdJournee()
             ]);
         } else return $this->redirectToRoute('index');
     }
