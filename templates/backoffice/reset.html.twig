@@ -331,7 +331,7 @@
                                             {% for numero, equipe in data.teams.toCreate %}
                                                 <tr>
                                                     <td><i class="material-icons green-text">add_circle</i></td>
-                                                    <td><b>{{ numero }}</b></td>
+                                                    <td><b>{{ club_name|title ~ ' ' ~ numero }}</b></td>
                                                     <td>
                                                         {{ equipe.divisionShortName }}
                                                     </td>

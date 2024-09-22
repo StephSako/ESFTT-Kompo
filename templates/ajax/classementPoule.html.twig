@@ -41,9 +41,9 @@
                     <p class="blue-text text-darken-2"><b>Journée {{ loop.index }}</b></p>
 
                     {% for journee in resultatsJournees %}
-                        <div class="row{% if journee.equipeA == (equipe.nom | upper) or journee.equipeB == (equipe.nom | upper) %} depthed{% endif %}">
+                        <div class="row{% if (journee.equipeA | upper) == (equipe.nom | upper) or (journee.equipeB | upper) == (equipe.nom | upper) %} depthed{% endif %}">
                             <div class="col s5">
-                                <p class="nomAdversaire {{ journee.winner == 'A' ? 'green' : (journee.winner == 'B' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text">{{ journee.equipeA }}</p>
+                                <p class="nomAdversaire {{ journee.winner == 'A' ? 'green' : (journee.winner == 'B' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text{% if (journee.equipeA | upper) == (equipe.nom | upper) %} bold{% endif %}">{{ journee.equipeA }}</p>
                             </div>
                             <div class="col s2">
                                 {% if journee.winner != 'LATER' %}
@@ -51,7 +51,7 @@
                                 {% endif %}
                             </div>
                             <div class="col s5">
-                                <p class="nomAdversaire {{ journee.winner == 'B' ? 'green' : (journee.winner == 'A' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text">{{ journee.equipeB }}</p>
+                                <p class="nomAdversaire {{ journee.winner == 'B' ? 'green' : (journee.winner == 'A' ? 'red' : (journee.winner == 'NUL' ? 'grey' : 'black')) }}-text{% if (journee.equipeB | upper) == (equipe.nom | upper) %} bold{% endif %}">{{ journee.equipeB }}</p>
                             </div>
                         </div>
                     {% endfor %}

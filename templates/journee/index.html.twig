@@ -394,7 +394,7 @@
                         {% endif %}
 
                         {% if (app.user.capitaine or app.user.admin) and not compo.isOver %}
-                            <div style="margin-bottom: 10px; margin-top: 5px;">
+                            <div class="line-buttons-manage-team">
                                 <a id="compoEdition{{ compo.id }}" href="{{ path('composition.edit', {type: championnat.idChampionnat, compo: compo.id}) }}" class="center-align btn waves-effect green lighten-2{% if compo.isValidationCompo %} hide{% endif %}">
                                     <i class="material-icons">group_add</i>
                                 </a>
