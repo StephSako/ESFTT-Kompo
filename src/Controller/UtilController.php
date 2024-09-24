@@ -226,13 +226,17 @@ class UtilController extends AbstractController
     {
         $journees = $championnat->getJournees();
         $journeesCloned = unserialize(serialize($journees->toArray()));
-        $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
-            return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
-        }));
-        if ($titularisationActifChampionnat) {
-            $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
-            foreach ($journeesCloned as $i => $journee) {
-                $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
+
+        if ($this->getUser()) {
+            $titularisationActifChampionnat = current(array_filter($this->getUser()->getTitularisations()->toArray(), function (Titularisation $titularisation) use ($championnat) {
+                return $titularisation->getIdChampionnat()->getIdChampionnat() == $championnat->getIdChampionnat();
+            }));
+
+            if ($titularisationActifChampionnat) {
+                $datesRencontresEquipeTitulaire = $titularisationActifChampionnat->getIdEquipe()->getRencontres()->toArray();
+                foreach ($journeesCloned as $i => $journee) {
+                    $journee->setDateJournee($datesRencontresEquipeTitulaire[$i]->getDateReport());
+                }
             }
         }
         return $journeesCloned;
