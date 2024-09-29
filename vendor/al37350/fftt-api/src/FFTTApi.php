@@ -349,7 +349,7 @@ class FFTTApi
             $joueurDetails['numclub'],
             $joueurDetails['nomclub'],
             'M' === $joueurDetails['sexe'],
-            $joueurDetails['cat'],
+            gettype($joueurDetails['cat']) == "string" ? $joueurDetails['cat'] : "",
             $joueurDetails['initm'] ? (float) $joueurDetails['initm'] : null,
             (float) $joueurDetails['point'],
             $joueurDetails['pointm'] ? (float) $joueurDetails['pointm'] : (float) $joueurDetails['point'],
