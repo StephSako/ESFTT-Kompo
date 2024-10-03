@@ -684,7 +684,7 @@ class Rencontre
                 $message .= ($this->getDomicile() && !$this->getVilleHost() ? " à domicile" : " à l'extérieur");
             } else $message .= " à un lieu indéterminé";
 
-            $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle indisponible : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
+            $message .= " contre " . ($this->getAdversaire() ? $this->getAdversaire() . ($this->getVilleHost() ? ' (salle délocalisée : rencontre à ' . $this->getVilleHost() . ')' : '') : 'une équipe indéterminée pour le moment');
 
             $message .= '.' . $br . $br;
             if ($this->getConsigne()) $message .= $this->getConsigne() . '.' . $br . $br;
