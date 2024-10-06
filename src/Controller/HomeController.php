@@ -258,7 +258,7 @@ class HomeController extends AbstractController
         ];
 
         $nextJourneeToPlayAllChamps = $utilController->nextJourneeToPlayAllChamps();
-        $linkNextJournee = ($nextJourneeToPlayAllChamps->getDateJournee() !== $journee->getDateJournee() ? '/journee/' . $nextJourneeToPlayAllChamps->getIdChampionnat()->getIdChampionnat() . '/' . $nextJourneeToPlayAllChamps->getIdJournee() : null);
+        $linkNextJournee = ($nextJourneeToPlayAllChamps->getDateJournee()->getTimestamp() !== $journee->getDateJournee()->getTimestamp() ? '/journee/' . $nextJourneeToPlayAllChamps->getIdChampionnat()->getIdChampionnat() . '/' . $nextJourneeToPlayAllChamps->getIdJournee() : null);
         $journeesWithReportedRencontres = $this->rencontreRepository->getJourneesWithReportedRencontres($championnat->getIdChampionnat());
         $journeesWithReportedRencontresFormatted = array_filter($journeesWithReportedRencontres['rencontres'], function (Rencontre $r) use ($idJournee) {
             return $r->getIdJournee()->getIdJournee() == $idJournee;

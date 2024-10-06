@@ -79,8 +79,7 @@ class UtilController extends AbstractController
         $maxDate = clone max($latestDate);
         $latestDateMax = new DateTime(date_format(($maxDate->add(new DateInterval('P1D'))), 'Y-m-d'));
         $today = new DateTime();
-        if (!count($latestDate)) return ['launchable' => false, 'message' => "Ce championnat n'a pas d'équipes enregistrées"];
-        else if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase est prête à être lancée'];
+        if ($latestDateMax <= $today) return ['launchable' => true, 'message' => 'La phase est terminée et la pré-phase est prête à être lancée'];
         else return ['launchable' => false, 'message' => null];
     }
 
@@ -195,6 +194,22 @@ class UtilController extends AbstractController
             $idChampionnat ? ['idChampionnat' => $idChampionnat] : [],
             ['nom' => 'ASC']
         );
+
+        // Cas d'un championnat en cache qui vient d'être supprimé
+        if (!count($allChamps)) {
+            $allChamps = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
+        }
+
+        $titularisations = $this->getUser()->getTitularisations()->toArray();
+        if (count($titularisations)) {
+            $allChampsTitularisations = array_filter($allChamps, function (Championnat $championnatAllChamp) use ($titularisations) {
+                return in_array($championnatAllChamp->getIdChampionnat(), array_map(function (Titularisation $titularisation) {
+                    return $titularisation->getIdChampionnat()->getIdChampionnat();
+                }, $titularisations));
+            });
+
+            if (count($allChampsTitularisations)) $allChamps = $allChampsTitularisations;
+        }
 
         $nextJourneeByChampionnats = array_map(function (Championnat $championnat) {
             return $championnat->getNextJourneeToPlay($this->getJourneesNavbar($championnat));
