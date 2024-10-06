@@ -78,7 +78,7 @@ class BackOfficeChampionnatController extends AbstractController
                     $journee = new Journee();
                     $journee->setIdChampionnat($championnat);
                     $journee->setUndefined(true);
-                    $journee->setDateJournee((new DateTime())->modify('+' . $i . ' day'));
+                    $journee->setDateJournee((new DateTime())->modify('+' . $i . ' day +1 year'));
                     $this->em->persist($journee);
                 }
                 $championnat->setLastUpdate($utilController->getAdminUpdateLog('Créé par '));
@@ -157,12 +157,12 @@ class BackOfficeChampionnatController extends AbstractController
                     }
                 } else if ($championnat->getNbJournees() > count($journees)) {
                     $equipes = $championnat->getEquipes()->toArray();
-                    $earliestDate = $this->journeeRepository->findEarlistDate($idChampionnat);
+                    $earliestDate = $this->journeeRepository->findEarliestDate($idChampionnat);
                     for ($i = count($journees); $i < $championnat->getNbJournees(); $i++) {
                         $journee = new Journee();
                         $journee->setIdChampionnat($championnat);
                         $journee->setUndefined(true);
-                        $journee->setDateJournee($earliestDate->modify('+1 day'));
+                        $journee->setDateJournee($earliestDate->modify('+1 day +1 year'));
                         $this->em->persist($journee);
                         $this->em->flush();
 

@@ -13,6 +13,7 @@ use App\Repository\ChampionnatRepository;
 use App\Repository\CompetiteurRepository;
 use App\Repository\DivisionRepository;
 use App\Repository\PouleRepository;
+use App\Repository\SettingsRepository;
 use Cocur\Slugify\Slugify;
 use DateInterval;
 use DatePeriod;
@@ -49,6 +50,10 @@ class BackOfficeFFTTApiController extends AbstractController
         "L08_2eme Division" => [
             "shortName" => "D2",
             "longName" => "Division 2"
+        ],
+        "championnat veteran" => [
+            "indexShortName" => 2,
+            "indexLongName" => 2,
         ]
     ];
     private $competiteurRepository;
@@ -56,17 +61,20 @@ class BackOfficeFFTTApiController extends AbstractController
     private $em;
     private $divisionRepository;
     private $pouleRepository;
+    private $settingsRepository;
 
     /**
      * @param CompetiteurRepository $competiteurRepository
      * @param ChampionnatRepository $championnatRepository
      * @param DivisionRepository $divisionRepository
+     * @param SettingsRepository $settingsRepository
      * @param PouleRepository $pouleRepository
      * @param EntityManagerInterface $em
      */
     public function __construct(CompetiteurRepository  $competiteurRepository,
                                 ChampionnatRepository  $championnatRepository,
                                 DivisionRepository     $divisionRepository,
+                                SettingsRepository     $settingsRepository,
                                 PouleRepository        $pouleRepository,
                                 EntityManagerInterface $em)
     {
@@ -75,6 +83,7 @@ class BackOfficeFFTTApiController extends AbstractController
         $this->em = $em;
         $this->divisionRepository = $divisionRepository;
         $this->pouleRepository = $pouleRepository;
+        $this->settingsRepository = $settingsRepository;
     }
 
     /**
@@ -654,7 +663,7 @@ class BackOfficeFFTTApiController extends AbstractController
                         /** On fix les équipes */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["issued"] as $equipeIssued) {
                             /** On set la division et la poule à l'équipe */
-                            $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat);
+                            $arrayDivisionPoule = $this->getDivisionPoule($equipeIssued['divisionFFTTLongName'], $equipeIssued['divisionFFTTShortName'], $equipeIssued['pouleFFTT'], $championnat, $equipeIssued['lienDivision']);
                             $equipeIssued['equipe']
                                 ->setLastUpdate(null)
                                 ->setLienDivision($equipeIssued['lienDivision'])
@@ -665,7 +674,7 @@ class BackOfficeFFTTApiController extends AbstractController
 
                         /** On créé les équipes inexistantes */
                         foreach ($allChampionnatsReset[$championnat->getNom()]["teams"]["toCreate"] as $numero => $equipeToCreate) {
-                            $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat);
+                            $arrayDivisionPoule = $this->getDivisionPoule($equipeToCreate["divisionLongName"], $equipeToCreate["divisionShortName"], $equipeToCreate["poule"], $championnat, $equipeToCreate['lienDivision']);
                             $newEquipe = new \App\Entity\Equipe();
                             $newEquipe->setIdPoule($arrayDivisionPoule[1]);
                             $newEquipe->setNumero($numero);
@@ -777,10 +786,17 @@ class BackOfficeFFTTApiController extends AbstractController
     {
         $libelleLong = $libelleBrutFFTT[self::DIVISION_PARTIE_UN] . ' ' . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX];
         /** Si le libellé doit être traduit */
-        if (array_key_exists($libelleLong, self::CONVERTIONS)) return self::CONVERTIONS[$libelleLong];
+        if (array_key_exists($libelleLong, self::CONVERTIONS)) {
+            if (array_key_exists("indexShortName", self::CONVERTIONS[$libelleLong])) {
+                return [
+                    "longName" => mb_convert_case(array_key_exists("indexLongName", self::CONVERTIONS[$libelleLong]) ? $libelleBrutFFTT[self::CONVERTIONS[$libelleLong]['indexLongName']] : $libelleLong, MB_CASE_TITLE, "UTF-8"),
+                    "shortName" => mb_convert_case($libelleBrutFFTT[self::CONVERTIONS[$libelleLong]['indexShortName']], MB_CASE_UPPER, "UTF-8")
+                ];
+            } else return self::CONVERTIONS[$libelleLong];
+        }
         return [
             "longName" => mb_convert_case($libelleLong, MB_CASE_TITLE, "UTF-8"),
-            "shortName" => $libelleBrutFFTT[self::DIVISION_PARTIE_UN][0] . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX][0]
+            "shortName" => mb_convert_case($libelleBrutFFTT[self::DIVISION_PARTIE_UN][0] . $libelleBrutFFTT[self::DIVISION_PARTIE_DEUX][0], MB_CASE_UPPER, "UTF-8")
         ];
     }
 
@@ -812,9 +828,10 @@ class BackOfficeFFTTApiController extends AbstractController
      * @param string $divisionShortName
      * @param string|null $pouleName
      * @param Championnat $championnat
+     * @param string $lienDivision
      * @return array
      */
-    public function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat): array
+    public function getDivisionPoule(string $divisionLongName, string $divisionShortName, ?string $pouleName, Championnat $championnat, string $lienDivision): array
     {
         /** Si la division n'existe pas, on la créé **/
         $divisionsSearch = $this->divisionRepository->findBy(['shortName' => $divisionShortName, 'idChampionnat' => $championnat->getIdChampionnat()]);
@@ -824,6 +841,7 @@ class BackOfficeFFTTApiController extends AbstractController
             $division->setLongName($divisionLongName);
             $division->setShortName($divisionShortName);
             $division->setIdChampionnat($championnat);
+            $division->setOrganismePere($this->getValueFromRegex(self::REGEX_ORGANISME_PERE, $lienDivision));
             $division->setNbJoueurs($this->getParameter('nb_joueurs_default_division'));
             $this->em->persist($division);
         } else if (count($divisionsSearch) == 1) $division = $divisionsSearch[0];

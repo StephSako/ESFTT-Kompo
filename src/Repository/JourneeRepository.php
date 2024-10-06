@@ -51,7 +51,7 @@ class JourneeRepository extends ServiceEntityRepository
      * @param int $idChampionnat
      * @return int|mixed|string
      */
-    public function findEarlistDate(int $idChampionnat): DateTime
+    public function findEarliestDate(int $idChampionnat): DateTime
     {
         $query = $this->createQueryBuilder('j')
             ->select('j.dateJournee')

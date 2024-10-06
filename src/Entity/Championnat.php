@@ -34,7 +34,8 @@ class Championnat
     /** Type d'épreuve */
     const TYPE_EPREUVE = [
         'Championnat de France par Equipes Masculin' => 'FED_Championnat de France par Equipes Masculin',
-        'Championnat de Paris IDF' => 'L08_Championnat de Paris IDF'
+        'Championnat de Paris IDF' => 'L08_Championnat de Paris IDF',
+        'Championnat Vétérans 95' => 'D95_ Championnat Vétérans'
     ];
 
     /**
@@ -99,7 +100,7 @@ class Championnat
      * )
      *
      * @Assert\LessThanOrEqual (
-     *     value = 10,
+     *     value = 20,
      *     message = "Il doit y avoir au maximum {{ compared_value }} journée"
      * )
      *
@@ -335,7 +336,7 @@ class Championnat
      */
     public function getSlug(): string
     {
-        return (new Slugify())->slugify($this->nom);
+        return (new Slugify())->slugify($this->nom, "_");
     }
 
     /**

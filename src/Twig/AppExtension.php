@@ -128,7 +128,7 @@ class AppExtension extends AbstractExtension
      */
     public function customSlug(string $chaine): string
     {
-        return (new Slugify())->slugify($chaine);
+        return (new Slugify())->slugify($chaine, "_");
     }
 
     /**

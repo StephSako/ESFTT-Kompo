@@ -20,7 +20,7 @@ use Exception;
  */
 class CompetiteurRepository extends ServiceEntityRepository
 {
-    const LABEL_SANS_EQUIPE = 'Sans équipe';
+    const LABEL_SANS_EQUIPE = 'Non titularisé(s)';
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -171,7 +171,7 @@ class CompetiteurRepository extends ServiceEntityRepository
             $disposTemp = $championnat["dispos"];
             unset($queryChamp[$nomChamp]["dispos"]);
             foreach ($disposTemp as $dispo) {
-                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp)] ? 'Équipe ' . $dispo['numero' . (new Slugify())->slugify($nomChamp)] : self::LABEL_SANS_EQUIPE;
+                $labelEquipe = $dispo['numero' . (new Slugify())->slugify($nomChamp, "_")] ? 'Équipe ' . $dispo['numero' . (new Slugify())->slugify($nomChamp, "_")] : self::LABEL_SANS_EQUIPE;
                 $queryChamp[$nomChamp]["dispos"][$labelEquipe][] = $dispo;
                 usort($queryChamp[$nomChamp]["dispos"][$labelEquipe], function ($dispo1, $dispo2) {
                     if ($dispo2['classement_officiel'] == $dispo1['classement_officiel']) {

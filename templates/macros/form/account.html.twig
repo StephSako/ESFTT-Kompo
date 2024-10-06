@@ -140,7 +140,7 @@
                     <div class="form_div_list col m6 s12 l4">
                         <label for="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">{{ nomChampionnat }}</label>
                         <select name="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}" id="equipesAssociees-{{ infos.idChampionnat.idChampionnat }}">
-                            <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Sans équipe</option>
+                            <option value="" {% if options.idsEquipesAssociees|length == 0 %}selected{% endif %}>Non titularisé(s)</option>
                             {% for equipe in infos.listeEquipes %}
                                 <option value="{{ equipe.idEquipe }}" {% if equipe.idEquipe in options.idsEquipesAssociees %}selected{% endif %}>Équipe {{ equipe.numero }}</option>
                             {% endfor %}
@@ -354,7 +354,7 @@
                                     {% if numero %}
                                         Équipe {{ numero }}
                                     {% else %}
-                                        <i>Sans équipe</i>
+                                        <i>Non titularisé(s)</i>
                                     {% endif %}
                                     {% endfor %}
                             </ul>

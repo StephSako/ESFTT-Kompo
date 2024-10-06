@@ -37,7 +37,7 @@ class ChampionnatType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'min' => 1,
-                    'max' => 10
+                    'max' => 20
                 ]
             ])
             ->add('j2Rule', CheckboxType::class, [

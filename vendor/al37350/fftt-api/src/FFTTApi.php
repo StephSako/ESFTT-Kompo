@@ -667,6 +667,11 @@ class FFTTApi
     /**
      * @param string $clubId
      * @param string|null $type
+     * type :
+     * - M : équipes du championnat de France masculin
+     * - F : équipes du championnat de France féminin
+     * - A : équipes Masculines et Féminines du championnat de France
+     * - vide : toutes les équipes
      * @return Equipe[]
      * @throws Exception\InvalidURIParametersException
      * @throws Exception\URIPartNotValidException

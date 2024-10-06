@@ -75,6 +75,7 @@ class UtilController extends AbstractController
     public function isPreRentreeLaunchable(Championnat $championnat): array
     {
         $latestDate = $this->getLastDates($championnat);
+        if (!count($latestDate)) return ['launchable' => false, 'message' => "Ce championnat n'a pas d'équipes enregistrées"];
         $maxDate = clone max($latestDate);
         $latestDateMax = new DateTime(date_format(($maxDate->add(new DateInterval('P1D'))), 'Y-m-d'));
         $today = new DateTime();

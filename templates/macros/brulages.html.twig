@@ -96,18 +96,16 @@
             {% if selectionnables|length %}
                 {% for nomEquipe, brulagesEquipe in selectionnables %}
                     <table class="striped{% if not idEquipes|length %} centered{% endif %}">
-                        {% if not (selectionnables|length == 1 and 'Sans équipe' in selectionnables|keys) %}
-                            <thead>
-                            <tr>
-                                <th class="center">
-                                    <h6>{{ nomEquipe }}</h6>
-                                </th>
-                                {% for idEquipe in idEquipes %}
-                                    <th class="center"><h5 style="margin: 0">{{ idEquipe }}</h5></th>
-                                {% endfor %}
-                            </tr>
-                            </thead>
-                        {% endif %}
+                        <thead>
+                        <tr>
+                            <th class="center">
+                                <h6>{{ nomEquipe }}</h6>
+                            </th>
+                            {% for idEquipe in idEquipes %}
+                                <th class="center"><h5 style="margin: 0">{{ idEquipe }}</h5></th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
 
                         <tbody>
                         {% for nom, brulage in brulagesEquipe %}
