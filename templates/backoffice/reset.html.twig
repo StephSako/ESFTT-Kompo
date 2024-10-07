@@ -140,13 +140,13 @@
             {% if allChampionnatsReset|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1' style='margin-top: 20px;'>
                     {% for nomChampionnat, data in allChampionnatsReset %}
-                        <li class='tab'><a href='{{ '#championnat_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                        <li class='tab'><a href='{{ '#championnat_' ~ nomChampionnat|slug('_')|lower }}'>{{ nomChampionnat }}</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
             {% for nomChampionnat, data in allChampionnatsReset %}
-                <div id='{{ 'championnat_' ~ nomChampionnat|slug }}'>
+                <div id='{{ 'championnat_' ~ nomChampionnat|slug('_')|lower }}'>
                     {% if data.enAttenteNouvellePhase %}
                         {% if data.preRentree.finished.launchable %}
                             <div class='backoffice-panel center card-panel'>

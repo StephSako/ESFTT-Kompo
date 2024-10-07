@@ -36,13 +36,13 @@
             {% if rencontres|length > 1 %}
                 <ul class='tabs tabs-fixed-width tab-demo z-depth-1'>
                     {% for nomChampionnat, id_et_rencontres in rencontres %}
-                        <li class='tab'><a {% if id_et_rencontres.idChampionnat == active %} class="active" {% endif %} href='{{ '#journees_' ~ nomChampionnat|slug }}'>{{ nomChampionnat }}</a></li>
+                        <li class='tab'><a {% if id_et_rencontres.idChampionnat == active %} class="active" {% endif %} href='{{ '#journees_' ~ id_et_rencontres.idChampionnat }}'>{{ nomChampionnat }}</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
             {% for nomChampionnat, id_et_rencontres in rencontres %}
-                <div class='card-panel backoffice-panel' id='{{ 'journees_' ~ nomChampionnat|slug }}'>
+                <div class='card-panel backoffice-panel' id='{{ 'journees_' ~ id_et_rencontres.idChampionnat }}'>
                     {{ _rencontre.table(id_et_rencontres.rencontres) }}
                 </div>
             {% endfor %}

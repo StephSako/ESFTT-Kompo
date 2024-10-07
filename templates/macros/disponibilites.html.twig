@@ -98,14 +98,14 @@
         <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="margin-bottom: 2px">
             {% for nomChamp, disponibilites in allDisponibilites %}
                 <li class="tab">
-                    <a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug }}" {% if nomChamp|slug|lower == championnat|lower %} class="active"{% endif %}>{{ nomChamp }}</a>
+                    <a href="{{ '#all_dispo_' ~ nomTab ~ nomChamp|slug('_')|lower }}" {% if nomChamp|slug('_')|lower == championnat|lower %} class="active"{% endif %}>{{ nomChamp }}</a>
                 </li>
             {% endfor %}
         </ul>
     {% endif %}
 
     {% for nomChamp, disponibilites in allDisponibilites %}
-        <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug }}" style="margin-top: 15px">
+        <div id="{{ 'all_dispo_' ~ nomTab ~ nomChamp|slug('_')|lower }}" style="margin-top: 15px">
 
             {% for nomEquipe, disponibilitesEquipes in disponibilites.dispos %}
                 <h6 class="hide-on-large-only hide-on-extra-large-only recapitulatifDispos">{{ nomEquipe }}</h6>

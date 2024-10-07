@@ -48,6 +48,10 @@
                             <div class="col s2">
                                 {% if journee.winner != 'LATER' %}
                                     <span class="scoreRencontre"><b>{{ journee.score }}</b></span>
+                                {% elseif not journee.equipeA or not journee.equipeB %}
+                                    <span class="scoreRencontre grey-text text-lighten-1"><b>Exemptée</b></span>
+                                {% else %}
+                                    <span class="scoreRencontre"><b>-</b></span>
                                 {% endif %}
                             </div>
                             <div class="col s5">

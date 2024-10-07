@@ -200,15 +200,17 @@ class UtilController extends AbstractController
             $allChamps = $this->championnatRepository->findBy([], ['nom' => 'ASC']);
         }
 
-        $titularisations = $this->getUser()->getTitularisations()->toArray();
-        if (count($titularisations)) {
-            $allChampsTitularisations = array_filter($allChamps, function (Championnat $championnatAllChamp) use ($titularisations) {
-                return in_array($championnatAllChamp->getIdChampionnat(), array_map(function (Titularisation $titularisation) {
-                    return $titularisation->getIdChampionnat()->getIdChampionnat();
-                }, $titularisations));
-            });
+        if ($this->getUser()) {
+            $titularisations = $this->getUser()->getTitularisations()->toArray();
+            if (count($titularisations)) {
+                $allChampsTitularisations = array_filter($allChamps, function (Championnat $championnatAllChamp) use ($titularisations) {
+                    return in_array($championnatAllChamp->getIdChampionnat(), array_map(function (Titularisation $titularisation) {
+                        return $titularisation->getIdChampionnat()->getIdChampionnat();
+                    }, $titularisations));
+                });
 
-            if (count($allChampsTitularisations)) $allChamps = $allChampsTitularisations;
+                if (count($allChampsTitularisations)) $allChamps = $allChampsTitularisations;
+            }
         }
 
         $nextJourneeByChampionnats = array_map(function (Championnat $championnat) {
