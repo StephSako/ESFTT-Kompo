@@ -11,10 +11,12 @@
             <div class="lien_long">
                 <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-departemental' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-departemental', backoffice: suffixebackoffice}) }}">Championnat départemental</a><br>
                 <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-de-paris' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-de-paris', backoffice: suffixebackoffice}) }}">Championnat de Paris</a><br>
+                <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-veterans' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-veterans', backoffice: suffixebackoffice}) }}">Championnat Vétérans 95</a><br>
             </div>
             <div class="lien_court">
                 <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-departemental' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-departemental', backoffice: suffixebackoffice}) }}">Champ. depart.</a><br>
                 <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-de-paris' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-de-paris', backoffice: suffixebackoffice}) }}">Champ. de Paris</a><br>
+                <a class="center{% if app.request.getPathInfo starts with '/informations/championnat-veterans' %} active{% endif %}" href="{{ path('informations', {type: 'championnat-veterans', backoffice: suffixebackoffice}) }}">Champ. Vétérans</a><br>
             </div>
             <a class="center{% if app.request.getPathInfo starts with '/informations/criterium-federal' %} active{% endif %}" href="{{ path('informations', {type: 'criterium-federal', backoffice: suffixebackoffice}) }}">Critérium fédéral</a><br>
             <a class="center{% if app.request.getPathInfo starts with '/tournois' %} active{% endif %}" href="{{ path('index.tournois', {backoffice: suffixebackoffice}) }}">Tournois FFTT</a><br>
